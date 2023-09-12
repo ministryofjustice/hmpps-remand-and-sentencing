@@ -3,10 +3,10 @@
 
 generic-service:
   ingress:
-    host: hmpps-remand-and-sentencing.hmpps.service.justice.gov.uk
+    host: remand-and-sentencing.hmpps.service.justice.gov.uk
 
   env:
-    INGRESS_URL: "https://hmpps-remand-and-sentencing.hmpps.service.justice.gov.uk"
+    INGRESS_URL: "https://remand-and-sentencing.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
 

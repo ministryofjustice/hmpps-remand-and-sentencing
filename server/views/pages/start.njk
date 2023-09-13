@@ -12,8 +12,7 @@
 
     {{ mojTicketPanel({
         attributes: {
-            'aria-label': 'Person Details',
-            'data-qa': 'person-details'
+            'aria-label': 'Person Details'
         },
     items: [{
             html: '<div class="govuk-grid-row"><div class="govuk-grid-column-one-quarter"><p>' +
@@ -27,8 +26,7 @@
 
         {{ govukButton({
             text: "Add a court case",
-            href: "/person/" + nomsId + "/court-cases/add",
-            attributes: { 'data-qa': 'start-now-button'}
+            href: "/person/" + nomsId + "/court-cases/add"
         }) }}
 
 {% endblock %}

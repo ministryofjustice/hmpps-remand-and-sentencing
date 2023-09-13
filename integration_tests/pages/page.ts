@@ -16,4 +16,6 @@ export default abstract class Page {
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
+
+  button = (): PageElement => cy.get('.govuk-button')
 }

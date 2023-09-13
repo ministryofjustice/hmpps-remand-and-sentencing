@@ -5,7 +5,7 @@ import { AgentConfig } from '../config'
 const restClient = new RestClient(
   'name-1',
   {
-    url: 'http://localhost:8080/api',
+    url: 'http://127.0.0.1:8080/api',
     timeout: {
       response: 1000,
       deadline: 1000,
@@ -17,7 +17,7 @@ const restClient = new RestClient(
 
 describe('POST', () => {
   it('Should return response body', async () => {
-    nock('http://localhost:8080', {
+    nock('http://127.0.0.1:8080', {
       reqheaders: { authorization: 'Bearer token-1' },
     })
       .post('/api/test')
@@ -35,7 +35,7 @@ describe('POST', () => {
   })
 
   it('Should return raw response body', async () => {
-    nock('http://localhost:8080', {
+    nock('http://127.0.0.1:8080', {
       reqheaders: { authorization: 'Bearer token-1' },
     })
       .post('/api/test')
@@ -57,7 +57,7 @@ describe('POST', () => {
   })
 
   it('Should not retry by default', async () => {
-    nock('http://localhost:8080', {
+    nock('http://127.0.0.1:8080', {
       reqheaders: { authorization: 'Bearer token-1' },
     })
       .post('/api/test')
@@ -74,7 +74,7 @@ describe('POST', () => {
   })
 
   it('retries if configured to do so', async () => {
-    nock('http://localhost:8080', {
+    nock('http://127.0.0.1:8080', {
       reqheaders: { authorization: 'Bearer token-1' },
     })
       .post('/api/test')
@@ -96,7 +96,7 @@ describe('POST', () => {
   })
 
   it('can recover through retries', async () => {
-    nock('http://localhost:8080', {
+    nock('http://127.0.0.1:8080', {
       reqheaders: { authorization: 'Bearer token-1' },
     })
       .post('/api/test')

@@ -37,7 +37,7 @@ export default {
   https: production,
   staticResourceCacheDuration: '1h',
   redis: {
-    host: get('REDIS_HOST', 'localhost', requiredInProduction),
+    host: get('REDIS_HOST', '127.0.0.1', requiredInProduction),
     port: parseInt(process.env.REDIS_PORT, 10) || 6379,
     password: process.env.REDIS_AUTH_TOKEN,
     tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
@@ -48,8 +48,8 @@ export default {
   },
   apis: {
     hmppsAuth: {
-      url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
-      externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://localhost:9090/auth')),
+      url: get('HMPPS_AUTH_URL', 'http://127.0.0.1:9090/auth', requiredInProduction),
+      externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://127.0.0.1:9090/auth')),
       timeout: {
         response: Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('HMPPS_AUTH_TIMEOUT_DEADLINE', 10000)),
@@ -61,7 +61,7 @@ export default {
       systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
     },
     tokenVerification: {
-      url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
+      url: get('TOKEN_VERIFICATION_API_URL', 'http://127.0.0.1:8100', requiredInProduction),
       timeout: {
         response: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE', 5000)),
@@ -70,7 +70,7 @@ export default {
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
     prisonApi: {
-      url: get('PRISON_API_URL', 'http://localhost:8080', requiredInProduction),
+      url: get('PRISON_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
       timeout: {
         response: get('PRISON_API_TIMEOUT_RESPONSE', 10000),
         deadline: get('PRISON_API_TIMEOUT_DEADLINE', 10000),
@@ -78,5 +78,5 @@ export default {
       agent: new AgentConfig(),
     },
   },
-  domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  domain: get('INGRESS_URL', 'http://127.0.0.1:3000', requiredInProduction),
 }

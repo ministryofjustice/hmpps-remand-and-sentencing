@@ -4,12 +4,12 @@ import { Response } from 'superagent'
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 
-const createToken = () => {
+const createToken = (username: string, authorities: string[]) => {
   const payload = {
-    user_name: 'USER1',
+    user_name: username,
     scope: ['read'],
     auth_source: 'nomis',
-    authorities: [],
+    authorities,
     jti: '83b50a10-cca6-41db-985f-e87efb303ddb',
     client_id: 'clientid',
   }
@@ -95,7 +95,7 @@ const manageDetails = () =>
     },
   })
 
-const token = () =>
+const token = (username = 'USER1', authorities = ['ROLE_REMAND_AND_SENTENCING', 'ROLE_CALCULATE_RELEASE_DATES']) =>
   stubFor({
     request: {
       method: 'POST',
@@ -108,9 +108,9 @@ const token = () =>
         Location: 'http://127.0.0.1:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createToken(),
+        access_token: createToken(username, authorities),
         token_type: 'bearer',
-        user_name: 'USER1',
+        user_name: username,
         expires_in: 599,
         scope: 'read',
         internalUser: true,
@@ -138,25 +138,12 @@ const stubUser = (name: string) =>
     },
   })
 
-const stubUserRoles = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/auth/api/user/me/roles',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: [{ roleCode: 'SOME_USER_ROLE' }],
-    },
-  })
-
 export default {
   getSignInUrl,
   stubAuthPing: ping,
   stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
-  stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
+  stubAuthUser: (name = 'john smith'): Promise<Response> => stubUser(name),
+  stubToken: ({ username, authorities }: { username?: string; authorities?: string[] }): Promise<Response> =>
+    token(username, authorities),
 }

@@ -2,6 +2,7 @@ import IndexPage from '../pages/index'
 import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
 import AuthManageDetailsPage from '../pages/authManageDetails'
+import AuthErrorPage from '../pages/authError'
 
 context('SignIn', () => {
   beforeEach(() => {
@@ -64,5 +65,17 @@ context('SignIn', () => {
     cy.signIn()
 
     indexPage.headerUserName().contains('B. Brown')
+  })
+
+  it('User without both roles is shown auth error page', () => {
+    cy.task('stubToken', { authorities: ['ROLE_REMAND_AND_SENTENCING'] })
+    cy.signIn({ failOnStatusCode: false })
+    Page.verifyOnPage(AuthErrorPage)
+  })
+
+  it('User with no roles is shown auth error page', () => {
+    cy.task('stubToken', { authorities: [] })
+    cy.signIn({ failOnStatusCode: false })
+    Page.verifyOnPage(AuthErrorPage)
   })
 })

@@ -26,7 +26,8 @@
     "int-test": "cypress run --config video=false",
     "int-test-ui": "cypress open",
     "clean": "rm -rf dist build node_modules stylesheets",
-    "generate-prison-api-types": "openapi-typescript https://api-dev.prison.service.justice.gov.uk/v3/api-docs > ./server/@types/prisonApi/index.d.ts"
+    "generate-prison-api-types": "openapi-typescript https://api-dev.prison.service.justice.gov.uk/v3/api-docs > ./server/@types/prisonApi/index.d.ts",
+    "generate-court-register-types": "openapi-typescript https://court-register-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/courtRegisterApi/index.d.ts"
   },
   "engines": {
     "node": "^18",

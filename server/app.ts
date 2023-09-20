@@ -39,7 +39,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
   app.get('/person/:nomsId', setupPrisonerDetails(services.prisonerService))
-  app.use(routes())
+  app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))

@@ -4,29 +4,15 @@
 
 
 {% set pageTitle = applicationName + " - Home" %}
-{% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-
-    <h1>{{ prisonerDetails.firstName + ' ' + prisonerDetails.lastName }}'s court cases</h1>
-
-    {{ mojTicketPanel({
-        attributes: {
-            'aria-label': 'Person Details'
-        },
-    items: [{
-            html: '<div class="govuk-grid-row"><div class="govuk-grid-column-one-quarter"><p>' +
-            prisonerDetails.firstName + ' ' + prisonerDetails.lastName + '<br/>' + prisonerDetails.offenderNo + '</p></div>' +
-            '<div class="govuk-grid-column-one-quarter"><strong>Establishment</strong><br/>' + prisonerDetails.assignedLivingUnit.agencyName + '</div>' +
-            '<div class="govuk-grid-column-one-half"><strong>Cell number</strong><br/>' + prisonerDetails.assignedLivingUnit.description + '</div>' +
-            '</div>'
-    }]
-    })
-    }}
-
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
         {{ govukButton({
             text: "Add a court case",
             href: "/person/" + nomsId + "/court-cases/add"
         }) }}
+        </div>
+    </div>
 
 {% endblock %}

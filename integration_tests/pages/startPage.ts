@@ -5,5 +5,5 @@ export default class StartPage extends Page {
     super(`${prisonerName}'s court cases`)
   }
 
-  ticketPanel = (): PageElement => cy.get('.moj-ticket-panel')
+  prisonerBanner = (): PageElement => cy.get('.dwf-header')
 }

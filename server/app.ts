@@ -18,6 +18,7 @@ import setUpWebSession from './middleware/setUpWebSession'
 
 import routes from './routes'
 import type { Services } from './services'
+import setupPrisonerDetails from './middleware/setUpPrisonerDetails'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -37,8 +38,8 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware(['ROLE_REMAND_AND_SENTENCING', 'ROLE_CALCULATE_RELEASE_DATES']))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-
-  app.use(routes(services))
+  app.get('/person/:nomsId', setupPrisonerDetails(services.prisonerService))
+  app.use(routes())
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))

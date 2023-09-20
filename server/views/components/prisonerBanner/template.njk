@@ -1,0 +1,23 @@
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="dwf-header">
+            <div class="dwf-header-inner">
+                <div class="dwf-header-left">
+                    <img class="dwf-header-profile-img" src="/assets/images/prisoner-profile-image.png" alt="{{ params.firstName + ' ' + params.lastName }}">
+                </div>
+                <div class="govuk-grid-column-one-quarter">
+                    <p class="govuk-body govuk-!-margin-bottom-1"><a class="govuk-link--no-visited-state" href="#">{{ params.firstName + ' ' + params.lastName }}</a></p>
+                    <p class="govuk-!-margin-bottom-1">{{ params.offenderNo }}</p>
+                    <p>{% if params.onRemand %}On remand{% endif %}</p>
+                </div>
+                <div class="govuk-grid-column-one-third govuk-!-padding-0">
+                    <ul class="dwf-header-info">
+                        <li><span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Establishment</span><span class="govuk-body">{{ params.establishment }}</span></li>
+                        <li><span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Cell number</span><span class="govuk-body">{{ params.cellNumber }}</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

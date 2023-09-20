@@ -4,7 +4,7 @@
         <div class="dwf-header">
             <div class="dwf-header-inner">
                 <div class="dwf-header-left">
-                    <img class="dwf-header-profile-img" src="/assets/images/prisoner-profile-image.png" alt="{{ params.firstName + ' ' + params.lastName }}">
+                    <img class="dwf-header-profile-img" src="/api/person/{{ params.offenderNo }}/image" alt="{{ params.firstName + ' ' + params.lastName }}">
                 </div>
                 <div class="govuk-grid-column-one-quarter">
                     <p class="govuk-body govuk-!-margin-bottom-1"><a class="govuk-link--no-visited-state" href="#">{{ params.firstName + ' ' + params.lastName }}</a></p>

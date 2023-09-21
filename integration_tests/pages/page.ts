@@ -18,4 +18,6 @@ export default abstract class Page {
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
   button = (): PageElement => cy.get('.govuk-button')
+
+  prisonerBanner = (): PageElement => cy.get('.dwf-header')
 }

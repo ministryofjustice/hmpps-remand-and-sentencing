@@ -1,0 +1,33 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+
+
+{% set pageTitle = applicationName + " - Home" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/submit-reference">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Add a court case</span>
+                {{ govukInput({
+                    label: {
+                        text: "Enter the court case reference number",
+                        classes: "govuk-label--l",
+                        isPageHeading: true
+                    },
+                    id: "reference-number",
+                    name: "referenceNumber"
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

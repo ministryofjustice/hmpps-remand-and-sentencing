@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import type { CourtCaseReferenceForm } from 'forms'
+import type { CourtCaseReferenceForm, CourtCaseWarrantDateForm } from 'forms'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
 
@@ -26,5 +26,25 @@ export default class RemandAndSentencingRoutes {
     this.courtCaseService.setCourtCaseReference(req.session, nomsId, referenceForm.referenceNumber)
 
     return res.redirect(`/person/${nomsId}/court-cases/warrant-date`)
+  }
+
+  public getWarrantDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    return res.render('pages/courtCase/warrant-date', {
+      nomsId,
+    })
+  }
+
+  public submitWarrantDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const warrantDateForm = trimForm<CourtCaseWarrantDateForm>(req.body)
+    const warrantDate = new Date(
+      warrantDateForm['warrantDate-year'],
+      warrantDateForm['warrantDate-month'],
+      warrantDateForm['warrantDate-day'],
+    )
+    this.courtCaseService.setWarrantDate(req.session, nomsId, warrantDate)
+
+    return res.redirect(`/person/${nomsId}/court-cases/court-name`)
   }
 }

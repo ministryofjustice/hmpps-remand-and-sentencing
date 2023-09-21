@@ -19,6 +19,7 @@ export default function routes(services: Services): Router {
   get('/', (req, res, next) => {
     res.render('pages/index')
   })
+  get('/api/person/:nomsId/image', apiRoutes.personImage)
 
   get('/person/:nomsId', remandAndSentencingRoutes.start)
 
@@ -26,7 +27,9 @@ export default function routes(services: Services): Router {
 
   post('/person/:nomsId/court-cases/submit-reference', remandAndSentencingRoutes.submitReference)
 
-  get('/api/person/:nomsId/image', apiRoutes.personImage)
+  get('/person/:nomsId/court-cases/warrant-date', remandAndSentencingRoutes.getWarrantDate)
+
+  post('/person/:nomsId/court-cases/submit-warrant-date', remandAndSentencingRoutes.submitWarrantDate)
 
   return router
 }

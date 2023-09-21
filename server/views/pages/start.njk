@@ -1,6 +1,5 @@
 {% extends "../partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{%- from "moj/components/ticket-panel/macro.njk" import mojTicketPanel -%}
 
 
 {% set pageTitle = applicationName + " - Home" %}
@@ -10,7 +9,7 @@
         <div class="govuk-grid-column-full">
         {{ govukButton({
             text: "Add a court case",
-            href: "/person/" + nomsId + "/court-cases/add"
+            href: "/person/" + nomsId + "/court-cases/reference"
         }) }}
         </div>
     </div>

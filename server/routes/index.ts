@@ -11,7 +11,9 @@ export default function routes(services: Services): Router {
 
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  const remandAndSentencingRoutes = new RemandAndSentencingRoutes()
+  const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
+
+  const remandAndSentencingRoutes = new RemandAndSentencingRoutes(services.courtCaseService)
   const apiRoutes = new ApiRoutes(services.prisonerService)
 
   get('/', (req, res, next) => {
@@ -19,6 +21,10 @@ export default function routes(services: Services): Router {
   })
 
   get('/person/:nomsId', remandAndSentencingRoutes.start)
+
+  get('/person/:nomsId/court-cases/reference', remandAndSentencingRoutes.getReference)
+
+  post('/person/:nomsId/court-cases/submit-reference', remandAndSentencingRoutes.submitReference)
 
   get('/api/person/:nomsId/image', apiRoutes.personImage)
 

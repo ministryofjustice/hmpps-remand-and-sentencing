@@ -38,7 +38,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware(['ROLE_REMAND_AND_SENTENCING', 'ROLE_CALCULATE_RELEASE_DATES']))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.get('/person/:nomsId', setupPrisonerDetails(services.prisonerService))
+  app.use('/person/:nomsId', setupPrisonerDetails(services.prisonerService))
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

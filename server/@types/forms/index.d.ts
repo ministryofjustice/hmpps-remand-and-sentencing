@@ -8,4 +8,8 @@ declare module 'forms' {
     'warrantDate-month'?: number
     'warrantDate-year'?: number
   }
+
+  export interface CourtCaseCourtNameForm {
+    courtName?: string
+  }
 }

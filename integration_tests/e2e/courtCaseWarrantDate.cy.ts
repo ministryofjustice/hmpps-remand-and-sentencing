@@ -1,4 +1,5 @@
 import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
+import Page from '../pages/page'
 
 context('Court Case Warrant Date Page', () => {
   let courtCaseWarrantDatePage: CourtCaseWarrantDatePage
@@ -9,7 +10,7 @@ context('Court Case Warrant Date Page', () => {
     cy.task('stubGetPrisonerDetails')
     cy.signIn()
     cy.visit('/person/A1234AB/court-cases/warrant-date')
-    courtCaseWarrantDatePage = new CourtCaseWarrantDatePage('Marvin Haggler')
+    courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
   })
 
   it('displays person details', () => {

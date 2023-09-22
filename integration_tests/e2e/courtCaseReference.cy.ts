@@ -1,4 +1,5 @@
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
+import Page from '../pages/page'
 
 context('Court Case Reference Page', () => {
   let courtCaseReferencePage: CourtCaseReferencePage
@@ -9,7 +10,7 @@ context('Court Case Reference Page', () => {
     cy.task('stubGetPrisonerDetails')
     cy.signIn()
     cy.visit('/person/A1234AB/court-cases/reference')
-    courtCaseReferencePage = new CourtCaseReferencePage('Marvin Haggler')
+    courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
   })
 
   it('displays person details', () => {

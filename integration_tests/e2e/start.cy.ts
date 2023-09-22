@@ -1,4 +1,5 @@
 import StartPage from '../pages/startPage'
+import Page from '../pages/page'
 
 context('Start Page', () => {
   let startPage: StartPage
@@ -9,7 +10,7 @@ context('Start Page', () => {
     cy.task('stubGetPrisonerDetails')
     cy.signIn()
     cy.visit('/person/A1234AB')
-    startPage = new StartPage('Marvin Haggler')
+    startPage = Page.verifyOnPage(StartPage)
   })
 
   it('displays person details', () => {

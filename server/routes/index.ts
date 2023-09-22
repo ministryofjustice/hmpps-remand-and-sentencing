@@ -35,5 +35,12 @@ export default function routes(services: Services): Router {
 
   post('/person/:nomsId/court-cases/submit-court-name', remandAndSentencingRoutes.submitCourtName)
 
+  get('/person/:nomsId/court-cases/next-court-date-question', remandAndSentencingRoutes.getNextCourtDateQuestion)
+
+  post(
+    '/person/:nomsId/court-cases/submit-next-court-date-question',
+    remandAndSentencingRoutes.submitNextCourtDateQuestion,
+  )
+
   return router
 }

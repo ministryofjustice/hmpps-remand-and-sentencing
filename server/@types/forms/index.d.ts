@@ -12,4 +12,8 @@ declare module 'forms' {
   export interface CourtCaseCourtNameForm {
     courtName?: string
   }
+
+  export interface CourtCaseNextCourtDateQuestionForm {
+    nextCourtDateKnown?: string
+  }
 }

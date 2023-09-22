@@ -1,5 +1,10 @@
 import { RequestHandler } from 'express'
-import type { CourtCaseCourtNameForm, CourtCaseReferenceForm, CourtCaseWarrantDateForm } from 'forms'
+import type {
+  CourtCaseCourtNameForm,
+  CourtCaseNextCourtDateQuestionForm,
+  CourtCaseReferenceForm,
+  CourtCaseWarrantDateForm,
+} from 'forms'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
 
@@ -62,5 +67,22 @@ export default class RemandAndSentencingRoutes {
     this.courtCaseService.setCourtName(req.session, nomsId, courtNameForm.courtName)
 
     return res.redirect(`/person/${nomsId}/court-cases/next-court-date-question`)
+  }
+
+  public getNextCourtDateQuestion: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    return res.render('pages/courtCase/next-court-date-question', {
+      nomsId,
+    })
+  }
+
+  public submitNextCourtDateQuestion: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const nextCourtDateQuestionForm = trimForm<CourtCaseNextCourtDateQuestionForm>(req.body)
+
+    if (nextCourtDateQuestionForm.nextCourtDateKnown === 'yes') {
+      return res.redirect(`/person/${nomsId}/court-cases/next-court-date`)
+    }
+    return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
   }
 }

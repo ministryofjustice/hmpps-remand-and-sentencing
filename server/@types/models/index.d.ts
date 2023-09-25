@@ -3,5 +3,6 @@ declare module 'models' {
     referenceNumber?: string
     warrantDate?: Date
     courtName?: string
+    nextCourtDate?: Date
   }
 }

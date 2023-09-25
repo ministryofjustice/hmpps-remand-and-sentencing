@@ -22,6 +22,13 @@ export default class CourtCaseService {
     session.courtCases[nomsId] = courtCase
   }
 
+  setNextCourtDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, nextCourtDate: Date) {
+    const courtCase = this.getCourtCase(session.courtCases, nomsId)
+    courtCase.nextCourtDate = nextCourtDate
+    // eslint-disable-next-line no-param-reassign
+    session.courtCases[nomsId] = courtCase
+  }
+
   private getCourtCase(courtCases: Map<string, CourtCase>, nomsId: string): CourtCase {
     return courtCases[nomsId] ?? {}
   }

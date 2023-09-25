@@ -4,6 +4,7 @@ import type {
   CourtCaseNextCourtDateQuestionForm,
   CourtCaseReferenceForm,
   CourtCaseWarrantDateForm,
+  CourtCaseNextCourtDateForm,
 } from 'forms'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
@@ -83,6 +84,29 @@ export default class RemandAndSentencingRoutes {
     if (nextCourtDateQuestionForm.nextCourtDateKnown === 'yes') {
       return res.redirect(`/person/${nomsId}/court-cases/next-court-date`)
     }
+    return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+  }
+
+  public getNextCourtDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    return res.render('pages/courtCase/next-court-date', {
+      nomsId,
+    })
+  }
+
+  public submitNextCourtDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const nextCourtDateForm = trimForm<CourtCaseNextCourtDateForm>(req.body)
+    const [nextCourtHour, nextCourtMinute] = nextCourtDateForm.nextCourtTime.split(':')
+    const nextCourtDate = new Date(
+      nextCourtDateForm['nextCourtDate-year'],
+      nextCourtDateForm['nextCourtDate-month'],
+      nextCourtDateForm['nextCourtDate-day'],
+      parseInt(nextCourtHour, 10),
+      parseInt(nextCourtMinute, 10),
+    )
+    this.courtCaseService.setNextCourtDate(req.session, nomsId, nextCourtDate)
+
     return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
   }
 }

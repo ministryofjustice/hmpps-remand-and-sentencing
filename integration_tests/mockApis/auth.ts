@@ -95,7 +95,7 @@ const manageDetails = () =>
     },
   })
 
-const token = (username = 'USER1', authorities = ['ROLE_REMAND_AND_SENTENCING', 'ROLE_CALCULATE_RELEASE_DATES']) =>
+const token = (username = 'USER1', authorities = ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']) =>
   stubFor({
     request: {
       method: 'POST',

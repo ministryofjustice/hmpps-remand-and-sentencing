@@ -1,0 +1,99 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+
+
+{% set pageTitle = applicationName + " - Add a court case court name" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+                <span class="govuk-caption-l">Add a court case</span>
+                <h1 class="govuk-heading-l">Check your answers</h1>
+
+                {{ govukSummaryList({
+                    rows: [
+                        {
+                            key: {
+                            text: "Court case reference number"
+                        },
+                            value: {
+                            text: courtCase.referenceNumber
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "#",
+                                    text: "Change",
+                                    visuallyHiddenText: "court case reference number"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Warrant date"
+                        },
+                            value: {
+                            text: courtCase.warrantDate
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "#",
+                                    text: "Change",
+                                    visuallyHiddenText: "warrant date"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Court Name"
+                        },
+                            value: {
+                            text: courtCase.courtName
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "#",
+                                    text: "Change",
+                                    visuallyHiddenText: "court name"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Next court date"
+                        },
+                            value: {
+                            text: courtCase.nextCourtDate
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "#",
+                                    text: "Change",
+                                    visuallyHiddenText: "next court date"
+                                }
+                            ]
+                        }
+                        }
+
+                    ]
+                }) }}
+
+            <form method="post" action="/person/{{ nomsId }}/court-cases/submit-check-answers">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {{ govukButton({
+                    text: "Save court case"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -46,7 +46,7 @@ export default class RemandAndSentencingRoutes {
     const warrantDateForm = trimForm<CourtCaseWarrantDateForm>(req.body)
     const warrantDate = new Date(
       warrantDateForm['warrantDate-year'],
-      warrantDateForm['warrantDate-month'],
+      warrantDateForm['warrantDate-month'] - 1,
       warrantDateForm['warrantDate-day'],
     )
     this.courtCaseService.setWarrantDate(req.session, nomsId, warrantDate)
@@ -100,7 +100,7 @@ export default class RemandAndSentencingRoutes {
     const [nextCourtHour, nextCourtMinute] = nextCourtDateForm.nextCourtTime.split(':')
     const nextCourtDate = new Date(
       nextCourtDateForm['nextCourtDate-year'],
-      nextCourtDateForm['nextCourtDate-month'],
+      nextCourtDateForm['nextCourtDate-month'] - 1,
       nextCourtDateForm['nextCourtDate-day'],
     )
     if (nextCourtHour && nextCourtMinute) {

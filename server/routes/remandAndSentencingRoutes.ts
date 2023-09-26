@@ -102,9 +102,10 @@ export default class RemandAndSentencingRoutes {
       nextCourtDateForm['nextCourtDate-year'],
       nextCourtDateForm['nextCourtDate-month'],
       nextCourtDateForm['nextCourtDate-day'],
-      parseInt(nextCourtHour, 10),
-      parseInt(nextCourtMinute, 10),
     )
+    if (nextCourtHour && nextCourtMinute) {
+      nextCourtDate.setHours(parseInt(nextCourtHour, 10), parseInt(nextCourtMinute, 10), 0)
+    }
     this.courtCaseService.setNextCourtDate(req.session, nomsId, nextCourtDate)
 
     return res.redirect(`/person/${nomsId}/court-cases/check-answers`)

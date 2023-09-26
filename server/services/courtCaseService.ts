@@ -29,6 +29,10 @@ export default class CourtCaseService {
     session.courtCases[nomsId] = courtCase
   }
 
+  getSessionCourtCase(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    return this.getCourtCase(session.courtCases, nomsId)
+  }
+
   private getCourtCase(courtCases: Map<string, CourtCase>, nomsId: string): CourtCase {
     return courtCases[nomsId] ?? {}
   }

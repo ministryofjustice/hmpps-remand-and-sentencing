@@ -109,4 +109,13 @@ export default class RemandAndSentencingRoutes {
 
     return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
   }
+
+  public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const courtCase = this.courtCaseService.getSessionCourtCase(req.session, nomsId)
+    return res.render('pages/courtCase/check-answers', {
+      nomsId,
+      courtCase,
+    })
+  }
 }

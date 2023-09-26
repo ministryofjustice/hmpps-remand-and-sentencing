@@ -46,5 +46,7 @@ export default function routes(services: Services): Router {
 
   post('/person/:nomsId/court-cases/submit-next-court-date', remandAndSentencingRoutes.submitNextCourtDate)
 
+  get('/person/:nomsId/court-cases/check-answers', remandAndSentencingRoutes.getCheckAnswers)
+
   return router
 }

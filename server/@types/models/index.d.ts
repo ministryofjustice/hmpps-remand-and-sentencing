@@ -1,8 +1,8 @@
 declare module 'models' {
   export interface CourtCase {
     referenceNumber?: string
-    warrantDate?: string
+    warrantDate?: Date
     courtName?: string
-    nextCourtDate?: string
+    nextCourtDate?: Date
   }
 }

@@ -10,7 +10,7 @@ export default class CourtCaseService {
 
   setWarrantDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, warrantDate: Date) {
     const courtCase = this.getCourtCase(session.courtCases, nomsId)
-    courtCase.warrantDate = warrantDate.toLocaleString('en-GB', { timeZone: 'Europe/London' })
+    courtCase.warrantDate = warrantDate
     // eslint-disable-next-line no-param-reassign
     session.courtCases[nomsId] = courtCase
   }
@@ -24,7 +24,7 @@ export default class CourtCaseService {
 
   setNextCourtDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, nextCourtDate: Date) {
     const courtCase = this.getCourtCase(session.courtCases, nomsId)
-    courtCase.nextCourtDate = nextCourtDate.toLocaleString('en-GB', { timeZone: 'Europe/London' })
+    courtCase.nextCourtDate = nextCourtDate
     // eslint-disable-next-line no-param-reassign
     session.courtCases[nomsId] = courtCase
   }

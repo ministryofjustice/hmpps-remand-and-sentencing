@@ -45,9 +45,9 @@ context('Court Case Check Answers Page', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Court case reference number': '1234',
-      'Warrant date': '2023-06-11T23:00:00.000Z',
+      'Warrant date': '12/06/2023, 00:00:00',
       'Court name': 'Bradford Crown Court',
-      'Next court date': '2023-09-22T23:00:00.000Z',
+      'Next court date': '23/09/2023, 00:00:00',
     })
   })
 })

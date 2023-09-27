@@ -20,4 +20,12 @@ export default abstract class Page {
   button = (): PageElement => cy.get('.govuk-button')
 
   prisonerBanner = (): PageElement => cy.get('.dwf-header')
+
+  input = (): PageElement => cy.get('.govuk-input')
+
+  dayDateInput = (idPrefix: string): PageElement => cy.get(`#${idPrefix}-day`)
+
+  monthDateInput = (idPrefix: string): PageElement => cy.get(`#${idPrefix}-month`)
+
+  yearDateInput = (idPrefix: string): PageElement => cy.get(`#${idPrefix}-year`)
 }

@@ -1,5 +1,6 @@
 import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 import Page from '../pages/page'
+import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 
 context('Court Case Check Answers Page', () => {
   let courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage
@@ -24,5 +25,13 @@ context('Court Case Check Answers Page', () => {
 
   it('button to Save court case is displayed', () => {
     courtCaseCheckAnswersPage.button().should('contain.text', 'Save court case')
+  })
+
+  it('clicking court case reference number change and submitting goes back to check answers page', () => {
+    courtCaseCheckAnswersPage.changeLink('A1234AB', 'reference').click()
+    const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+    courtCaseReferencePage.input().type('1234')
+    courtCaseReferencePage.button().click()
+    Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 })

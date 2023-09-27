@@ -8,6 +8,10 @@ export default class CourtCaseService {
     session.courtCases[nomsId] = courtCase
   }
 
+  getCourtCaseReference(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtCase(session.courtCases, nomsId).referenceNumber
+  }
+
   setWarrantDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, warrantDate: Date) {
     const courtCase = this.getCourtCase(session.courtCases, nomsId)
     courtCase.warrantDate = warrantDate

@@ -9,7 +9,7 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/court-cases/submit-reference">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/submit-reference{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">Add a court case</span>
                 {{ govukInput({
@@ -19,7 +19,8 @@
                         isPageHeading: true
                     },
                     id: "reference-number",
-                    name: "referenceNumber"
+                    name: "referenceNumber",
+                    value: courtCaseReference
                 }) }}
 
                 {{ govukButton({

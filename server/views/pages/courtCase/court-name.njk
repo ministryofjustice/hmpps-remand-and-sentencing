@@ -9,7 +9,7 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/court-cases/submit-court-name">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/submit-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">Add a court case</span>
                 {{ govukSelect({
@@ -25,51 +25,63 @@
                     name: "courtName",
                     items: [
                         {
-                            text: ""
+                            text: "",
+                            selected: not courtName
                         },
                         {
                             value:"Bedford Magistrates Court",
-                            text: "Bedford Magistrates Court"
+                            text: "Bedford Magistrates Court",
+                            selected: courtName === "Bedford Magistrates Court"
                         },
                         {
                             value: "Birmingham Crown Court",
-                            text: "Birmingham Crown Court"
+                            text: "Birmingham Crown Court",
+                            selected: courtName === "Birmingham Crown Court"
                         },
                         {
                             value: "Birmingham Magistrates Court",
-                            text: "Birmingham Magistrates Court"
+                            text: "Birmingham Magistrates Court",
+                            selected: courtName === "Birmingham Magistrates Court"
                         },
                         {
                             value: "Bradford Magistrates Court",
-                            text: "Bradford Magistrates Court"
+                            text: "Bradford Magistrates Court",
+                            selected: courtName === "Bradford Magistrates Court"
                         },
                         {
                             value: "Bradford Crown Court",
-                            text: "Bradford Crown Court"
+                            text: "Bradford Crown Court",
+                            selected: courtName === "Bradford Crown Court"
                         },
                         {
                             value: "Carlisle Magistrates Court",
-                            text: "Carlisle Magistrates Court"
+                            text: "Carlisle Magistrates Court",
+                            selected: courtName === "Carlisle Magistrates Court"
                         },
                         {
                             value: "Chester Combined Court Centre",
-                            text: "Chester Combined Court Centre"
+                            text: "Chester Combined Court Centre",
+                            selected: courtName === "Chester Combined Court Centre"
                         },
                         {
                             value: "Doncaster Magistrates Court",
-                            text: "Doncaster Magistrates Court"
+                            text: "Doncaster Magistrates Court",
+                            selected: courtName === "Doncaster Magistrates Court"
                         },
                         {
                             value: "Leeds Combined Court Centre",
-                            text: "Leeds Combined Court Centre"
+                            text: "Leeds Combined Court Centre",
+                            selected: courtName === "Leeds Combined Court Centre"
                         },
                         {
                             value: "Luton Crown Court",
-                            text: "Luton Crown Court"
+                            text: "Luton Crown Court",
+                            selected: courtName === "Luton Crown Court"
                         },
                         {
                             value: "Luton Magistrates Court",
-                            text: "Luton Magistrates Court"
+                            text: "Luton Magistrates Court",
+                            selected: courtName === "Luton Magistrates Court"
                         }
                     ]
                 }) }}
@@ -86,5 +98,5 @@
 
 {% block javascripts %}
     <script src="/assets/accessible-autocomplete.min.js"></script>
-    <script id="autocomplete-script" src="/assets/js/autoCompleteCourtName.js"></script>
+    <script id="autocomplete-script" src="/assets/js/autoCompleteCourtName.js" data-court-name="{{ courtName if courtName else '' }}"></script>
 {% endblock %}

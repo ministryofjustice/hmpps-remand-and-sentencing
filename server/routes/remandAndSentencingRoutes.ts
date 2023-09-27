@@ -85,8 +85,15 @@ export default class RemandAndSentencingRoutes {
 
   public getCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
+    const { submitToCheckAnswers } = req.query
+    let courtName: string
+    if (submitToCheckAnswers) {
+      courtName = this.courtCaseService.getCourtName(req.session, nomsId)
+    }
     return res.render('pages/courtCase/court-name', {
       nomsId,
+      submitToCheckAnswers,
+      courtName,
     })
   }
 
@@ -95,7 +102,10 @@ export default class RemandAndSentencingRoutes {
     const courtNameForm = trimForm<CourtCaseCourtNameForm>(req.body)
 
     this.courtCaseService.setCourtName(req.session, nomsId, courtNameForm.courtName)
-
+    const { submitToCheckAnswers } = req.query
+    if (submitToCheckAnswers) {
+      return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+    }
     return res.redirect(`/person/${nomsId}/court-cases/next-court-date-question`)
   }
 

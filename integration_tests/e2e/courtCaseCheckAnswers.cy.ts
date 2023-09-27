@@ -2,6 +2,7 @@ import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 import Page from '../pages/page'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
+import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseNextCourtDateQuestionPage from '../pages/courtCaseNextCourtDateQuestionPage'
 import CourtCaseNextCourtDatePage from '../pages/courtCaseNextCourtDatePage'
 
@@ -45,6 +46,15 @@ context('Court Case Check Answers Page', () => {
     courtCaseWarrantDatePage.monthDateInput('warrant-date').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrant-date').type('2023')
     courtCaseWarrantDatePage.button().click()
+    Page.verifyOnPage(CourtCaseCheckAnswersPage)
+  })
+
+  it('clicking court name change and submitting goes back to check answers page', () => {
+    courtCaseCheckAnswersPage.changeLink('A1234AB', 'court-name').click()
+    const courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
+    courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 

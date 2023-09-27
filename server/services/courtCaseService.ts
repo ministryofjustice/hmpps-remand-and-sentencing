@@ -30,6 +30,10 @@ export default class CourtCaseService {
     session.courtCases[nomsId] = courtCase
   }
 
+  getCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtCase(session.courtCases, nomsId).courtName
+  }
+
   setNextCourtDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, nextCourtDate: Date) {
     const courtCase = this.getCourtCase(session.courtCases, nomsId)
     courtCase.nextCourtDate = nextCourtDate

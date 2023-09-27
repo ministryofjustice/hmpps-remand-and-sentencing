@@ -31,7 +31,7 @@ context('Court Case Check Answers Page', () => {
     const courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
-    courtCaseWarrantDatePage.button().click()
+    courtCaseCourtNamePage.button().click()
     const courtCaseNextCourtDateQuestionPage = Page.verifyOnPage(CourtCaseNextCourtDateQuestionPage)
     courtCaseNextCourtDateQuestionPage.yesRadioButton().click()
     courtCaseNextCourtDateQuestionPage.button().click()

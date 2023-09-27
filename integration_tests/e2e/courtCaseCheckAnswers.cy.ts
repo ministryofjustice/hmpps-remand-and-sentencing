@@ -1,6 +1,7 @@
 import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 import Page from '../pages/page'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
+import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 
 context('Court Case Check Answers Page', () => {
   let courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage
@@ -32,6 +33,15 @@ context('Court Case Check Answers Page', () => {
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
     courtCaseReferencePage.input().type('1234')
     courtCaseReferencePage.button().click()
+    Page.verifyOnPage(CourtCaseCheckAnswersPage)
+  })
+
+  it('clicking court name change and submitting goes back to check answers page', () => {
+    courtCaseCheckAnswersPage.changeLink('A1234AB', 'court-name').click()
+    const courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
+    courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 })

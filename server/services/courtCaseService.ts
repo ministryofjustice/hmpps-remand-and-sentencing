@@ -41,6 +41,11 @@ export default class CourtCaseService {
     session.courtCases[nomsId] = courtCase
   }
 
+  deleteNextCourtDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    const courtCase = this.getCourtCase(session.courtCases, nomsId)
+    delete courtCase.nextCourtDate
+  }
+
   getSessionCourtCase(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     return this.getCourtCase(session.courtCases, nomsId)
   }

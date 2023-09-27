@@ -46,8 +46,24 @@ export default class RemandAndSentencingRoutes {
 
   public getWarrantDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
+    const { submitToCheckAnswers } = req.query
+    let warrantDateDay: number
+    let warrantDateMonth: number
+    let warrantDateYear: number
+    if (submitToCheckAnswers) {
+      const warrantDate = this.courtCaseService.getWarrantDate(req.session, nomsId)
+      if (warrantDate) {
+        warrantDateDay = warrantDate.getDate()
+        warrantDateMonth = warrantDate.getMonth() + 1
+        warrantDateYear = warrantDate.getFullYear()
+      }
+    }
     return res.render('pages/courtCase/warrant-date', {
       nomsId,
+      submitToCheckAnswers,
+      warrantDateDay,
+      warrantDateMonth,
+      warrantDateYear,
     })
   }
 
@@ -60,7 +76,10 @@ export default class RemandAndSentencingRoutes {
       warrantDateForm['warrantDate-day'],
     )
     this.courtCaseService.setWarrantDate(req.session, nomsId, warrantDate)
-
+    const { submitToCheckAnswers } = req.query
+    if (submitToCheckAnswers) {
+      return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+    }
     return res.redirect(`/person/${nomsId}/court-cases/court-name`)
   }
 

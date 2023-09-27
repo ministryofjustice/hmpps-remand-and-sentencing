@@ -1,6 +1,7 @@
 import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 import Page from '../pages/page'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
+import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 
 context('Court Case Check Answers Page', () => {
   let courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage
@@ -32,6 +33,16 @@ context('Court Case Check Answers Page', () => {
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
     courtCaseReferencePage.input().type('1234')
     courtCaseReferencePage.button().click()
+    Page.verifyOnPage(CourtCaseCheckAnswersPage)
+  })
+
+  it('clicking warrant date change and submitting goes back to check answers page', () => {
+    courtCaseCheckAnswersPage.changeLink('A1234AB', 'warrant-date').click()
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrant-date').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrant-date').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrant-date').type('2023')
+    courtCaseWarrantDatePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 })

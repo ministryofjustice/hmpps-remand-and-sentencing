@@ -6,4 +6,7 @@ export default class CourtCaseCheckAnswersPage extends Page {
   }
 
   summaryList = (): PageElement => cy.get('.govuk-summary-list')
+
+  changeLink = (personId: string, page: string): PageElement =>
+    cy.get(`a[href="/person/${personId}/court-cases/${page}?submitToCheckAnswers=true"]`)
 }

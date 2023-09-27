@@ -21,8 +21,15 @@ export default class RemandAndSentencingRoutes {
 
   public getReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
+    const { submitToCheckAnswers } = req.query
+    let courtCaseReference: string
+    if (submitToCheckAnswers) {
+      courtCaseReference = this.courtCaseService.getCourtCaseReference(req.session, nomsId)
+    }
     return res.render('pages/courtCase/reference', {
       nomsId,
+      submitToCheckAnswers,
+      courtCaseReference,
     })
   }
 
@@ -30,7 +37,10 @@ export default class RemandAndSentencingRoutes {
     const { nomsId } = req.params
     const referenceForm = trimForm<CourtCaseReferenceForm>(req.body)
     this.courtCaseService.setCourtCaseReference(req.session, nomsId, referenceForm.referenceNumber)
-
+    const { submitToCheckAnswers } = req.query
+    if (submitToCheckAnswers) {
+      return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+    }
     return res.redirect(`/person/${nomsId}/court-cases/warrant-date`)
   }
 

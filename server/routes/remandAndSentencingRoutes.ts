@@ -113,6 +113,7 @@ export default class RemandAndSentencingRoutes {
     if (nextCourtDateQuestionForm.nextCourtDateKnown === 'yes') {
       return res.redirect(`/person/${nomsId}/court-cases/next-court-date`)
     }
+    this.courtCaseService.deleteNextCourtDate(req.session, nomsId)
     return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
   }
 

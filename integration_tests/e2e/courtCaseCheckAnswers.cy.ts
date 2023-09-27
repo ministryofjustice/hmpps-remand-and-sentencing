@@ -2,6 +2,8 @@ import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 import Page from '../pages/page'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
+import CourtCaseNextCourtDateQuestionPage from '../pages/courtCaseNextCourtDateQuestionPage'
+import CourtCaseNextCourtDatePage from '../pages/courtCaseNextCourtDatePage'
 
 context('Court Case Check Answers Page', () => {
   let courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage
@@ -43,6 +45,20 @@ context('Court Case Check Answers Page', () => {
     courtCaseWarrantDatePage.monthDateInput('warrant-date').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrant-date').type('2023')
     courtCaseWarrantDatePage.button().click()
+    Page.verifyOnPage(CourtCaseCheckAnswersPage)
+  })
+
+  it('clicking next court date change and submitting goes back to check answers page', () => {
+    courtCaseCheckAnswersPage.changeLink('A1234AB', 'next-court-date-question').click()
+    const courtCaseNextCourtDateQuestionPage = Page.verifyOnPage(CourtCaseNextCourtDateQuestionPage)
+    courtCaseNextCourtDateQuestionPage.yesRadioButton().click()
+    courtCaseNextCourtDateQuestionPage.button().click()
+
+    const courtCaseNextCourtDatePage = Page.verifyOnPage(CourtCaseNextCourtDatePage)
+    courtCaseNextCourtDatePage.dayDateInput('next-court-date').type('23')
+    courtCaseNextCourtDatePage.monthDateInput('next-court-date').type('8')
+    courtCaseNextCourtDatePage.yearDateInput('next-court-date').type('2023')
+    courtCaseNextCourtDateQuestionPage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 })

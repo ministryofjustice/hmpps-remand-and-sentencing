@@ -53,7 +53,7 @@ export default class CourtCaseService {
   saveCourtCase(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
     const courtCase = this.getCourtCase(session.courtCases, nomsId)
     // eslint-disable-next-line no-param-reassign
-    session.savedCourtCases[`${nomsId}-${courtCase.referenceNumber}`] = courtCase
+    session.savedCourtCases[this.getCourtCasePersistId(nomsId, courtCase.referenceNumber)] = courtCase
     return courtCase.referenceNumber
   }
 
@@ -70,7 +70,11 @@ export default class CourtCaseService {
     nomsId: string,
     courtCaseReference: string,
   ): CourtCase {
-    return savedCourtCases[`${nomsId}-${courtCaseReference}`]
+    return savedCourtCases[this.getCourtCasePersistId(nomsId, courtCaseReference)]
+  }
+
+  private getCourtCasePersistId(nomsId: string, courtCaseReference: string) {
+    return `${nomsId}-${courtCaseReference}`
   }
 
   private getCourtCase(courtCases: Map<string, CourtCase>, nomsId: string): CourtCase {

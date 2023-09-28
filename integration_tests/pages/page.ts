@@ -28,4 +28,6 @@ export default abstract class Page {
   monthDateInput = (idPrefix: string): PageElement => cy.get(`#${idPrefix}-month`)
 
   yearDateInput = (idPrefix: string): PageElement => cy.get(`#${idPrefix}-year`)
+
+  summaryList = (): PageElement => cy.get('.govuk-summary-list')
 }

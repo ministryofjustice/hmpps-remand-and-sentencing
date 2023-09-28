@@ -1,0 +1,71 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+
+
+{% set pageTitle = applicationName + " - Court case overview" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+
+            {{ govukSummaryList({
+                card: {
+                    title: {
+                        text: "Court case " + courtCase.referenceNumber,
+                        headingLevel: 1
+                    }
+                },
+                rows: [
+                    {
+                        key: {
+                        text: "Court case reference number"
+                    },
+                        value: {
+                        text: courtCase.referenceNumber
+                    }
+                    },
+                    {
+                        key: {
+                        text: "Warrant date"
+                    },
+                        value: {
+                        text: courtCase.warrantDate
+                    }
+                    },
+                    {
+                        key: {
+                        text: "Court name"
+                    },
+                        value: {
+                        text: courtCase.courtName
+                    }
+                    },
+                    {
+                        key: {
+                        text: "Next court date"
+                    },
+                        value: {
+                        text: courtCase.nextCourtDate
+                    }
+                    }
+
+                ]
+            })
+            }}
+
+                {{ govukButton({
+                    text: "Continue to add offences",
+                    href: "/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/count-number"
+                }) }}
+
+            <p class="govuk-body">
+                <a href="/person/{{ nomsId }}">Save and return to court cases</a>
+            </p>
+
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -30,6 +30,9 @@ export default function setUpWebSession(): Router {
     if (!req.session.courtCases) {
       req.session.courtCases = new Map<string, CourtCase>()
     }
+    if (!req.session.savedCourtCases) {
+      req.session.savedCourtCases = new Map<string, CourtCase>()
+    }
     next()
   })
 

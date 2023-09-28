@@ -6,6 +6,7 @@ import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseNextCourtDateQuestionPage from '../pages/courtCaseNextCourtDateQuestionPage'
 import CourtCaseNextCourtDatePage from '../pages/courtCaseNextCourtDatePage'
+import CourtCaseOverviewPage from '../pages/courtCaseOverviewPage'
 
 context('Court Case Check Answers Page', () => {
   beforeEach(() => {
@@ -44,6 +45,14 @@ context('Court Case Check Answers Page', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Court case reference number': '1234',
+      'Warrant date': '2023-05-12T00:00:00.000Z',
+      'Court name': 'Bradford Crown Court',
+      'Next court date': '2023-08-23T00:00:00.000Z',
+    })
+    courtCaseCheckAnswersPage.button().click()
+    const courtCaseOverviewPage = new CourtCaseOverviewPage('1234')
+    courtCaseOverviewPage.summaryList().getSummaryList().should('deep.equal', {
       'Court case reference number': '1234',
       'Warrant date': '2023-05-12T00:00:00.000Z',
       'Court name': 'Bradford Crown Court',

@@ -1,6 +1,7 @@
 {% extends "../../partials/prisonerBannerLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 
 
@@ -9,6 +10,13 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
+            {% if onSave %}
+                {{ mojBanner({
+                    type: 'success',
+                    text: 'Court ' + courtCase.referenceNumber + ' case added',
+                    iconFallbackText: 'Success'
+                }) }}
+            {% endif %}
 
             {{ govukSummaryList({
                 card: {

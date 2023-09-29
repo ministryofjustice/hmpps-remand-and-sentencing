@@ -1,0 +1,47 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+
+
+
+{% set pageTitle = applicationName + " - Add a court case Warrant Date" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-offence-date">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
+
+                {{ govukInput({
+                    label: {
+                        text: "Enter the offence code",
+                        classes: "govuk-label--l",
+                        isPageHeading: true
+                    },
+                    id: "offence-code",
+                    name: "offenceCode"
+                }) }}
+
+                {{ govukCheckboxes({
+                    name: "unknownCode",
+                    items: [
+                        {
+                            value: "true",
+                            text: "I do not have the offence code"
+                        }
+                    ]
+                })}}
+
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

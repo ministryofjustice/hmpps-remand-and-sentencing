@@ -32,4 +32,9 @@ declare module 'forms' {
     'offenceEndDate-month'?: number
     'offenceEndDate-year'?: number
   }
+
+  export interface OffenceOffenceCodeForm {
+    offenceCode?: string
+    unknownCode?: string
+  }
 }

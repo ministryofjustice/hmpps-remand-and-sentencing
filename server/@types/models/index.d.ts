@@ -9,5 +9,6 @@ declare module 'models' {
   export interface Offence {
     offenceStartDate?: Date
     offenceEndDate?: Date
+    offenceCode?: string
   }
 }

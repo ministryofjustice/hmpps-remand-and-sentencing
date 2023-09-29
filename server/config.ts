@@ -86,6 +86,14 @@ export default {
       },
       agent: new AgentConfig(),
     },
+    manageOffencesApi: {
+      url: get('MANAGE_OFFENCES_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      timeout: {
+        response: get('MANAGE_OFFENCES_API_TIMEOUT_RESPONSE', 10000),
+        deadline: get('MANAGE_OFFENCES_API_TIMEOUT_DEADLINE', 10000),
+      },
+      agent: new AgentConfig(),
+    },
   },
   domain: get('INGRESS_URL', 'http://127.0.0.1:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),

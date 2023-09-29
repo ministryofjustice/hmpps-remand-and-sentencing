@@ -2,6 +2,7 @@ import { dataAccess } from '../data'
 import UserService from './userService'
 import PrisonerService from './prisonerService'
 import CourtCaseService from './courtCaseService'
+import OffenceService from './offenceService'
 
 export const services = () => {
   const { hmppsAuthClient, applicationInfo } = dataAccess()
@@ -12,11 +13,14 @@ export const services = () => {
 
   const courtCaseService = new CourtCaseService()
 
+  const offenceService = new OffenceService()
+
   return {
     applicationInfo,
     userService,
     prisonerService,
     courtCaseService,
+    offenceService,
   }
 }
 

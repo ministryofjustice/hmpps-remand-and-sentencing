@@ -1,9 +1,10 @@
 import { type RequestHandler, Router } from 'express'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import RemandAndSentencingRoutes from './remandAndSentencingRoutes'
+import CourtCaseRoutes from './courtCaseRoutes'
 import { Services } from '../services'
 import ApiRoutes from './apiRoutes'
+import OffenceRoutes from './offenceRoutes'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
@@ -13,8 +14,9 @@ export default function routes(services: Services): Router {
 
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
-  const remandAndSentencingRoutes = new RemandAndSentencingRoutes(services.courtCaseService)
+  const remandAndSentencingRoutes = new CourtCaseRoutes(services.courtCaseService)
   const apiRoutes = new ApiRoutes(services.prisonerService)
+  const offenceRoutes = new OffenceRoutes(services.courtCaseService, services.offenceService)
 
   get('/', (req, res, next) => {
     res.render('pages/index')
@@ -51,6 +53,10 @@ export default function routes(services: Services): Router {
   post('/person/:nomsId/court-cases/submit-check-answers', remandAndSentencingRoutes.submitCheckAnswers)
 
   get('/person/:nomsId/court-cases/:courtCaseReference/overview', remandAndSentencingRoutes.getCourtCaseOverview)
+
+  get('/person/:nomsId/court-cases/:courtCaseReference/offence-date', offenceRoutes.getOffenceDate)
+
+  post('/person/:nomsId/court-cases/:courtCaseReference/submit-offence-date', offenceRoutes.submitOffenceDate)
 
   return router
 }

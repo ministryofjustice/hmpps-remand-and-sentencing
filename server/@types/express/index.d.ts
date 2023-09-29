@@ -1,4 +1,4 @@
-import type { CourtCase } from 'models'
+import type { CourtCase, Offence } from 'models'
 
 export default {}
 
@@ -9,6 +9,7 @@ declare module 'express-session' {
     nowInMinutes: number
     courtCases: Map<string, CourtCase>
     savedCourtCases: Map<string, CourtCase>
+    offences: Map<string, Offence>
   }
 }
 

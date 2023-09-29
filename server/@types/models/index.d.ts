@@ -5,4 +5,9 @@ declare module 'models' {
     courtName?: string
     nextCourtDate?: Date
   }
+
+  export interface Offence {
+    offenceStartDate?: Date
+    offenceEndDate?: Date
+  }
 }

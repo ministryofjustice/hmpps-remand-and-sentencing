@@ -10,7 +10,7 @@ import createError from 'http-errors'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
 
-export default class RemandAndSentencingRoutes {
+export default class CourtCaseRoutes {
   constructor(private readonly courtCaseService: CourtCaseService) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {

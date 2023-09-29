@@ -7,5 +7,7 @@ declare namespace Cypress {
     signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
 
     getSummaryList()
+
+    createCourtCase(personId: string, courtCaseReference: string): Chainable<AUTWindow>
   }
 }

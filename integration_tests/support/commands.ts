@@ -1,3 +1,7 @@
+import Page from '../pages/page'
+import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
+import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
+
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
   return cy.task('getSignInUrl').then((url: string) => cy.visit(url, options))
@@ -29,3 +33,13 @@ const getSummaryList = subject => {
 }
 
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
+
+Cypress.Commands.add('createCourtCase', (personId: string, courtCaseReference: string) => {
+  cy.visit(`/person/${personId}/court-cases/check-answers`)
+  const courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+  courtCaseCheckAnswersPage.changeLink(personId, 'reference').click()
+  const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+  courtCaseReferencePage.input().type(courtCaseReference)
+  courtCaseReferencePage.button().click()
+  courtCaseCheckAnswersPage.button().click()
+})

@@ -23,4 +23,13 @@ declare module 'forms' {
     'nextCourtDate-year'?: number
     nextCourtTime?: string
   }
+
+  export interface OffenceOffenceDateForm {
+    'offenceStartDate-day'?: number
+    'offenceStartDate-month'?: number
+    'offenceStartDate-year'?: number
+    'offenceEndDate-day'?: number
+    'offenceEndDate-month'?: number
+    'offenceEndDate-year'?: number
+  }
 }

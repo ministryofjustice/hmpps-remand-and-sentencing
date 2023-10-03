@@ -16,7 +16,11 @@ export default function routes(services: Services): Router {
 
   const courtCaseRoutes = new CourtCaseRoutes(services.courtCaseService)
   const apiRoutes = new ApiRoutes(services.prisonerService)
-  const offenceRoutes = new OffenceRoutes(services.courtCaseService, services.offenceService)
+  const offenceRoutes = new OffenceRoutes(
+    services.courtCaseService,
+    services.offenceService,
+    services.manageOffencesService,
+  )
 
   get('/', (req, res, next) => {
     res.render('pages/index')
@@ -58,6 +62,8 @@ export default function routes(services: Services): Router {
   get('/person/:nomsId/court-cases/:courtCaseReference/offence-code', offenceRoutes.getOffenceCode)
 
   post('/person/:nomsId/court-cases/:courtCaseReference/submit-offence-code', offenceRoutes.submitOffenceCode)
+
+  get('/person/:nomsId/court-cases/:courtCaseReference/confirm-offence-code', offenceRoutes.getConfirmOffenceCode)
 
   return router
 }

@@ -11,7 +11,7 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-offence-date">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-offence-code">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
 

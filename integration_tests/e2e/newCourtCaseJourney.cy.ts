@@ -7,6 +7,7 @@ import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseNextCourtDateQuestionPage from '../pages/courtCaseNextCourtDateQuestionPage'
 import CourtCaseNextCourtDatePage from '../pages/courtCaseNextCourtDatePage'
 import CourtCaseOverviewPage from '../pages/courtCaseOverviewPage'
+import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 
 context('Court Case Check Answers Page', () => {
   beforeEach(() => {
@@ -58,5 +59,8 @@ context('Court Case Check Answers Page', () => {
       'Court name': 'Bradford Crown Court',
       'Next court date': '2023-08-23T00:00:00.000Z',
     })
+
+    courtCaseOverviewPage.button().click()
+    Page.verifyOnPage(OffenceOffenceDatePage)
   })
 })

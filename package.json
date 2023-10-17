@@ -146,7 +146,7 @@
     "audit-ci": "^6.6.1",
     "concurrently": "^8.2.1",
     "cookie-session": "^2.0.0",
-    "cypress": "^13.3.0",
+    "cypress": "^13.3.1",
     "cypress-multi-reporters": "^1.6.3",
     "dotenv": "^16.3.1",
     "eslint": "^8.51.0",
@@ -169,7 +169,7 @@
     "openapi-typescript": "^6.7.0",
     "prettier": "^3.0.3",
     "prettier-plugin-jinja-template": "^1.2.0",
-    "sass": "^1.69.2",
+    "sass": "^1.69.3",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",
     "typescript": "^5.2.2"

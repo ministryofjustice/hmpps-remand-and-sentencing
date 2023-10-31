@@ -117,33 +117,11 @@ const token = (username = 'USER1', authorities = ['ROLE_REMAND_AND_SENTENCING', 
       },
     },
   })
-
-const stubUser = (name: string) =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/auth/api/user/me',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: {
-        staffId: 231232,
-        username: 'USER1',
-        active: true,
-        name,
-      },
-    },
-  })
-
 export default {
   getSignInUrl,
   stubAuthPing: ping,
   stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
-  stubAuthUser: (name = 'john smith'): Promise<Response> => stubUser(name),
   stubToken: ({ username, authorities }: { username?: string; authorities?: string[] }): Promise<Response> =>
     token(username, authorities),
 }

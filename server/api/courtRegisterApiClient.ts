@@ -10,6 +10,6 @@ export default class CourtRegisterApiClient {
   }
 
   async getAllCourts(): Promise<Court[]> {
-    return (await this.restClient.get({ path: '/courts/all' })) as Promise<Court[]>
+    return (await this.restClient.get({ path: '/courts/all' })) as unknown as Promise<Court[]>
   }
 }

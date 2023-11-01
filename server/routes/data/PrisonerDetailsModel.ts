@@ -28,6 +28,8 @@ export default class PrisonerDetailsModel {
     const prisonerPNCNumber = prisonApiPrisoner.identifiers.find(identifier => identifier.type === 'PNC')
     if (prisonerPNCNumber) {
       this.pncNumber = prisonerPNCNumber.value
+    } else {
+      this.pncNumber = 'Not available'
     }
     this.status = prisonApiPrisoner.legalStatus
   }

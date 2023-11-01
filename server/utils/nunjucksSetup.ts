@@ -15,6 +15,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.applicationName = 'Hmpps Remand And Sentencing'
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+  app.locals.digitalPrisonServicesUrl = config.digitalPrisonServices.ui_url
 
   // Cachebusting version string
   if (production) {

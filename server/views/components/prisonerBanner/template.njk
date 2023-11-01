@@ -1,17 +1,18 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <div class="dwf-header">
+        <div class="dwf-header govuk-!-margin-top-6 govuk-!-margin-bottom-4">
             <div class="dwf-header-inner">
-                <div class="dwf-header-left">
-                    <img class="dwf-header-profile-img" src="/api/person/{{ params.offenderNo }}/image" alt="{{ params.firstName + ' ' + params.lastName }}">
+                <div class="govuk-grid-column-one-third govuk-!-padding-left-0">
+                    <div class="dwf-header-left">
+                        <img class="dwf-header-profile-img" src="/api/person/{{ params.offenderNo }}/image" alt="{{ params.firstName + ' ' + params.lastName }}">
+                    </div>
+                    <p class="govuk-heading-s govuk-!-margin-bottom-1"><a class="govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ params.offenderNo }}" target="_blank">{{ params.firstName + ' ' + params.lastName }}</a></p>
+                    <ul class="govuk-list">
+                        <li>{{ params.offenderNo }}</li>
+                    </ul>
                 </div>
-                <div class="govuk-grid-column-one-quarter">
-                    <p class="govuk-body govuk-!-margin-bottom-1"><a class="govuk-link--no-visited-state" href="#">{{ params.firstName + ' ' + params.lastName }}</a></p>
-                    <p class="govuk-!-margin-bottom-1">{{ params.offenderNo }}</p>
-                    <p>{% if params.onRemand %}On remand{% endif %}</p>
-                </div>
-                <div class="govuk-grid-column-one-third govuk-!-padding-0">
+                <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
                     <ul class="dwf-header-info">
                         <li><span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Date of birth</span><span class="govuk-body">{{ params.dateOfBirth }}</span></li>
                         <li><span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">PNC number</span><span class="govuk-body">{{ params.pncNumber }}</span></li>

@@ -13,6 +13,7 @@ generic-service:
     COURT_REGISTER_API_URL: "https://court-register.hmpps.service.justice.gov.uk"
     MANAGE_OFFENCES_API_URL: "https://manage-offences-api.hmpps.service.justice.gov.uk"
     MANAGE_USERS_API_URL: "https://manage-users-api.hmpps.service.justice.gov.uk"
+    DIGITAL_PRISON_SERVICES_URL: "https://digital.prison.service.justice.gov.uk"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service

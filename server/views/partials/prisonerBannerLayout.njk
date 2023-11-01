@@ -21,9 +21,11 @@
                     firstName: prisonerDetails.firstName,
                     lastName: prisonerDetails.lastName,
                     offenderNo: prisonerDetails.offenderNo,
-                    onRemand: prisonerDetails.legalStatus === 'REMAND',
-                    establishment: prisonerDetails.assignedLivingUnit.agencyName,
-                    cellNumber: prisonerDetails.assignedLivingUnit.description
+                    establishment: prisonerDetails.establishment,
+                    cellNumber: prisonerDetails.cellNumber,
+                    dateOfBirth: prisonerDetails.dateOfBirth,
+                    pncNumber: prisonerDetails.pncNumber,
+                    status: prisonerDetails.status
                 })
                 }}
             {% endblock %}

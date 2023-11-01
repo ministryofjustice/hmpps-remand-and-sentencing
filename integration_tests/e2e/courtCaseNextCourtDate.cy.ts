@@ -6,7 +6,7 @@ context('Court Case Next Court Date Page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubManageUser')
     cy.task('stubGetPrisonerDetails')
     cy.signIn()
     cy.visit('/person/A1234AB/court-cases/next-court-date')

@@ -11,7 +11,7 @@ context('Court Case Check Answers Page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubManageUser')
     cy.task('stubGetPrisonerDetails')
     cy.signIn()
     cy.visit('/person/A1234AB/court-cases/check-answers')

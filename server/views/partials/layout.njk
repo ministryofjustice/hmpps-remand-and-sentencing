@@ -16,12 +16,6 @@
           nonce="{{ cspNonce }}"
           crossorigin="anonymous"></script>
 
-  {% if feComponents.jsInclude %}
-    {% for js in feComponents.jsIncludes %}
-      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
-    {% endfor %}
-  {% endif %}
-
   <link href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css" rel="stylesheet" nonce="{{ cspNonce }}" crossorigin>
   {% if feComponents.cssIncludes %}
     {% for css in feComponents.cssIncludes %}
@@ -48,16 +42,22 @@
   {% if feComponents.footer %}
     {{ feComponents.footer | safe }}
   {% else %}
-    {% include "./footer.njk" %}
+    {{ super() }}
   {% endif %}
 {% endblock %}
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the
   <body>, to avoid blocking the initial render. #}
+  {% if feComponents.jsInclude %}
+    {% for js in feComponents.jsIncludes %}
+      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+    {% endfor %}
+  {% endif %}
   <script src="/assets/govuk/all.js"></script>
   <script src="/assets/govukFrontendInit.js"></script>
   <script src="/assets/moj/all.js"></script>
+
   {% block javascripts %}
     {% endblock %}
 {% endblock %}

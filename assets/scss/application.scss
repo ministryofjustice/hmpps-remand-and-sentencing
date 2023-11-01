@@ -9,6 +9,7 @@ $govuk-page-width: $moj-page-width;
 @import 'dist/accessible-autocomplete.min';
 
 @import './components/header-bar';
+@import './components/service-header';
 @import './components/prisoner-banner';
 @import './components/footer';
 @import 'assets/scss/local';

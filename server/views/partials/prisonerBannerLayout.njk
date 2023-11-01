@@ -1,20 +1,12 @@
 {% extends "./layout.njk" %}
 {% from "../components/prisonerBanner/macro.njk" import prisonerBanner %}
+{%- from "moj/components/sub-navigation/macro.njk" import mojSubNavigation -%}
+
 
 {% block main %}
     <main class="govuk-main-wrapper app-container govuk-body" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
         <div class="govuk-width-container">
             {% block beforeContent %}{% endblock %}
-
-            {% block title %}
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds">
-                        <h2 class="govuk-heading-xl govuk-!-margin-top-4 govuk-!-margin-bottom-7">
-                            {{ prisonerDetails.firstName + ' ' + prisonerDetails.lastName }}'s court cases
-                        </h2>
-                    </div>
-                </div>
-            {% endblock %}
             {% block banner %}
                 {{
                 prisonerBanner({
@@ -30,6 +22,31 @@
                 })
                 }}
             {% endblock %}
+
+            {{ mojSubNavigation({
+                label: 'Sub navigation',
+                items: [{
+                    text: 'Dashboard',
+                    href: '#'
+                }, {
+                    text: 'Release dates',
+                    href: calculateReleaseDatesUIUrl
+                }, {
+                    text: 'Court cases',
+                    href: '/',
+                    active: true
+                }, {
+                    text: 'Adjustments',
+                    href: adjustmentsUIUrl
+                }, {
+                    text: 'Documents',
+                    href: '#'
+                }, {
+                    text: 'Timeline',
+                    href: '#'
+                }]
+            }) }}    
+
             {% block content %}{% endblock %}
         </div>
     </main>

@@ -7,7 +7,7 @@ context('Add Offence Offence Code Page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubManageUser')
     cy.task('stubGetPrisonerDetails')
     cy.task('stubGetOffenceByCode')
     cy.signIn()

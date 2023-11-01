@@ -10,6 +10,6 @@ export default class ManageOffencesApiClient {
   }
 
   async getOffenceByCode(code: string): Promise<Offence> {
-    return (await this.restClient.get({ path: `/offences/code/unique/${code}` })) as Promise<Offence>
+    return (await this.restClient.get({ path: `/offences/code/unique/${code}` })) as unknown as Promise<Offence>
   }
 }

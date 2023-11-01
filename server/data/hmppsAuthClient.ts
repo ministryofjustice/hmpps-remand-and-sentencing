@@ -1,4 +1,5 @@
 import { URLSearchParams } from 'url'
+
 import superagent from 'superagent'
 
 import type TokenStore from './tokenStore'
@@ -31,25 +32,11 @@ function getSystemClientTokenFromHmppsAuth(username?: string): Promise<superagen
     .timeout(timeoutSpec)
 }
 
-export interface User {
-  name: string
-  activeCaseLoadId: string
-}
-
-export interface UserRole {
-  roleCode: string
-}
-
 export default class HmppsAuthClient {
   constructor(private readonly tokenStore: TokenStore) {}
 
   private static restClient(token: string): RestClient {
     return new RestClient('HMPPS Auth Client', config.apis.hmppsAuth, token)
-  }
-
-  getUser(token: string): Promise<User> {
-    logger.info(`Getting user details: calling HMPPS Auth`)
-    return HmppsAuthClient.restClient(token).get({ path: '/api/user/me' }) as Promise<User>
   }
 
   async getSystemClientToken(username?: string): Promise<string> {

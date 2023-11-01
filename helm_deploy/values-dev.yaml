@@ -14,6 +14,8 @@ generic-service:
     PRISON_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
     COURT_REGISTER_API_URL: "https://court-register-dev.hmpps.service.justice.gov.uk"
     MANAGE_OFFENCES_API_URL: "https://manage-offences-api-dev.hmpps.service.justice.gov.uk"
+    MANAGE_USERS_API_URL: "https://manage-users-api-dev.hmpps.service.justice.gov.uk"
+    ENVIRONMENT_NAME: DEV
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

@@ -1,11 +1,11 @@
 import IndexPage from '../pages/index'
 import Page from '../pages/page'
 
-context('SignIn', () => {
+context('Common Components', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubManageUser')
     cy.task('stubComponents')
   })
 

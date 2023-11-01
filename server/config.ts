@@ -103,7 +103,7 @@ export default {
       agent: new AgentConfig(),
     },
     frontendComponents: {
-      url: get('COMPONENT_API_URL', 'http://localhost:8082', requiredInProduction),
+      url: get('COMPONENT_API_URL', 'http://127.0.0.1:8082', requiredInProduction),
       timeout: {
         response: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000)),
         deadline: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000)),
@@ -113,7 +113,13 @@ export default {
     },
   },
   digitalPrisonServices: {
-    ui_url: get('DIGITAL_PRISON_SERVICES_URL', 'http://localhost:3000/dps', requiredInProduction),
+    ui_url: get('DIGITAL_PRISON_SERVICES_URL', 'http://127.0.0.1:3000/dps', requiredInProduction),
+  },
+  calculateReleaseDatesService: {
+    ui_url: get('CALCULATE_RELEASE_DATES_UI_URL', 'http://127.0.0.1:3000/crds', requiredInProduction),
+  },
+  adjustmentsService: {
+    ui_url: get('ADJUSTMENTS_UI_URL', 'http://127.0.0.1:3000/adjustments', requiredInProduction),
   },
   domain: get('INGRESS_URL', 'http://127.0.0.1:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),

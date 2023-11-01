@@ -109,7 +109,7 @@ export default {
         deadline: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000)),
       },
       agent: new AgentConfig(Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000))),
-      enabled: get('COMMON_COMPONENTS_ENABLED', 'true') === 'true',
+      enabled: get('COMMON_COMPONENTS_ENABLED', 'false') === 'true',
     },
   },
   digitalPrisonServices: {

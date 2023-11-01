@@ -29,8 +29,12 @@ export default class PrisonerDetailsModel {
     if (prisonerPNCNumber) {
       this.pncNumber = prisonerPNCNumber.value
     } else {
-      this.pncNumber = 'Not available'
+      this.pncNumber = 'No number'
     }
-    this.status = prisonApiPrisoner.legalStatus
+    if (prisonApiPrisoner.legalStatus) {
+      this.status = prisonApiPrisoner.legalStatus
+    } else {
+      this.status = 'No status'
+    }
   }
 }

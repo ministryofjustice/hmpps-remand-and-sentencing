@@ -22,6 +22,19 @@ export default {
             agencyName: 'HMP Bedford',
             description: 'CELL-1',
           },
+          identifiers: [
+            {
+              type: 'PNC',
+              value: '1231/XX/121',
+              offenderNo: 'A1234AB',
+              bookingId: 1231223,
+              issuedAuthorityText: 'Important Auth',
+              issuedDate: '2018-01-21',
+              caseloadType: 'GENERAL',
+              whenCreated: '2021-07-05T10:35:17',
+            },
+          ],
+          legalStatus: 'REMAND',
         },
       },
     })

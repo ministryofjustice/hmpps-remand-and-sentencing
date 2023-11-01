@@ -1,0 +1,69 @@
+.service-header {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: #1d70b8;
+    color:#fff;
+}
+
+.service-header__container {
+  max-width: 1170px;
+  margin-right: 15px;
+  margin-left: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@supports (margin: max(calc(0px))) {
+  .service-header__container {
+    margin-right: max(15px, 15px + env(safe-area-inset-right));
+    margin-left: max(15px, 15px + env(safe-area-inset-left));
+  }
+}
+@media (min-width: 40.0625em) {
+  .service-header__container {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+  @supports (margin: max(calc(0px))) {
+    .service-header__container {
+      margin-right: max(30px, 15px + env(safe-area-inset-right));
+      margin-left: max(30px, 15px + env(safe-area-inset-left));
+    }
+  }
+}
+@media (min-width: 1230px) {
+  .service-header__container {
+    margin-right: auto;
+    margin-left: auto;
+  }
+  @supports (margin: max(calc(0px))) {
+    .service-header__container {
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+}
+
+.service-header__container a {
+    text-decoration: none !important;
+    color: #fff !important;
+    font-weight: normal;
+}
+
+.service-header__container a:hover{
+    text-decoration: underline !important;
+    text-decoration-thickness: 1.5px !important;
+}
+
+.service-header__container a:visited {
+    color: inherit !important;
+}
+
+.service-header__service-name {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 24px;
+    font-size: 1.5rem;
+    line-height: 1.25;
+}

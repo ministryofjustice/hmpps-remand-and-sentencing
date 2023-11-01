@@ -24,7 +24,7 @@ export default function setUpWebSecurity(): Router {
   const styleSrc = ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`]
   const fontSrc = ["'self'"]
   const imgSrc = ["'self'", 'data:']
-  const formAction = [`'self' ${config.apis.hmppsAuth.externalUrl}`]
+  const formAction = [`'self' ${config.apis.hmppsAuth.externalUrl} ${config.digitalPrisonServices.ui_url}`]
 
   if (config.apis.frontendComponents.url) {
     scriptSrc.push(config.apis.frontendComponents.url)

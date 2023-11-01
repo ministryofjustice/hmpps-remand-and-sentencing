@@ -30,6 +30,11 @@
 {% block header %}
   {% if feComponents.header %}
     {{ feComponents.header | safe }}
+    <div class="service-header">
+    <div class="service-header__container">
+        <a href="/"><span class="service-header__service-name">Court cases and release dates</span></a>
+    </div>
+</div>
   {% else %}
     {% include "./header.njk" %}
   {% endif %}
@@ -49,15 +54,15 @@
 {% block bodyEnd %}
   {# Run JavaScript at end of the
   <body>, to avoid blocking the initial render. #}
-  {% if feComponents.jsInclude %}
-    {% for js in feComponents.jsIncludes %}
-      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
-    {% endfor %}
-  {% endif %}
+  
   <script src="/assets/govuk/all.js"></script>
   <script src="/assets/govukFrontendInit.js"></script>
   <script src="/assets/moj/all.js"></script>
-
+  {% if feComponents.jsIncludes %}
+      {% for js in feComponents.jsIncludes %}
+        <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+      {% endfor %}
+    {% endif %}
   {% block javascripts %}
     {% endblock %}
 {% endblock %}

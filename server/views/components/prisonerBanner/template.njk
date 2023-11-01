@@ -7,7 +7,7 @@
                     <div class="dwf-header-left">
                         <img class="dwf-header-profile-img" src="/api/person/{{ params.offenderNo }}/image" alt="{{ params.firstName + ' ' + params.lastName }}">
                     </div>
-                    <p class="govuk-heading-s govuk-!-margin-bottom-1"><a class="govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ params.offenderNo }}" target="_blank">{{ params.firstName + ' ' + params.lastName }}</a></p>
+                    <p class="govuk-heading-s govuk-!-margin-bottom-1"><a class="govuk-link--no-visited-state" href="{{ params.digitalPrisonServicesUrl }}/prisoner/{{ params.offenderNo }}" target="_blank">{{ params.firstName + ' ' + params.lastName }}</a></p>
                     <ul class="govuk-list">
                         <li>{{ params.offenderNo }}</li>
                     </ul>

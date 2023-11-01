@@ -9,5 +9,7 @@ declare namespace Cypress {
     getSummaryList()
 
     createCourtCase(personId: string, courtCaseReference: string): Chainable<AUTWindow>
+    setupComponentsStubs(): Chainable<AUTWindow>
+    setupComponentsStubsFail(): Chainable<AUTWindow>
   }
 }

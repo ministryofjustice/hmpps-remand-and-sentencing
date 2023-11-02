@@ -5,7 +5,7 @@
 {% set pageTitle = applicationName + " - Add a court case Outcome applied to all" %}
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading">Does the outcome apply to all offences on the warrant?</h1>
-    <p class="govuk-body-l">{{ caseOutcomeAppliedAll }}</p>
+    <p class="govuk-body-l">{{ overallCaseOutcome }}</p>
 {% endset %}
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
@@ -24,11 +24,13 @@
                     items: [
                         {
                             value: "true",
-                            text: "Yes"
+                            text: "Yes",
+                            checked: caseOutcomeAppliedAll === true
                         },
                         {
                             value: "false",
-                            text: "No"
+                            text: "No",
+                            checked: caseOutcomeAppliedAll === false
                         }
                     ]
                 }) }}

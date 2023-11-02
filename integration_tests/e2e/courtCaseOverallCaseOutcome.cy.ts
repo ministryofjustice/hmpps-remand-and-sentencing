@@ -1,20 +1,20 @@
-import CourtCaseNextCourtDatePage from '../pages/courtCaseNextCourtDatePage'
+import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import Page from '../pages/page'
 
-context('Court Case Next Court Date Page', () => {
-  let courtCaseNextCourtDatePage: CourtCaseNextCourtDatePage
+context('Court Case Overall Case Outcome Page', () => {
+  let courtCaseOverallCaseOutcomePage: CourtCaseOverallCaseOutcomePage
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubGetPrisonerDetails')
     cy.signIn()
-    cy.visit('/person/A1234AB/court-cases/next-court-date')
-    courtCaseNextCourtDatePage = Page.verifyOnPage(CourtCaseNextCourtDatePage)
+    cy.visit('/person/A1234AB/court-cases/overall-case-outcome')
+    courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
   })
 
   it('displays person details', () => {
-    courtCaseNextCourtDatePage
+    courtCaseOverallCaseOutcomePage
       .prisonerBanner()
       .should('contain.text', 'Marvin Haggler')
       .and('contain.text', 'A1234AB')
@@ -23,6 +23,6 @@ context('Court Case Next Court Date Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseNextCourtDatePage.button().should('contain.text', 'Continue')
+    courtCaseOverallCaseOutcomePage.button().should('contain.text', 'Continue')
   })
 })

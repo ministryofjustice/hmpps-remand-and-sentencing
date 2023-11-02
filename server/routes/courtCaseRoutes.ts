@@ -1,10 +1,9 @@
 import { RequestHandler } from 'express'
 import type {
   CourtCaseCourtNameForm,
-  CourtCaseNextCourtDateQuestionForm,
   CourtCaseReferenceForm,
   CourtCaseWarrantDateForm,
-  CourtCaseNextCourtDateForm,
+  CourtCaseOverallCaseOutcomeForm,
 } from 'forms'
 import createError from 'http-errors'
 import trimForm from '../utils/trim'
@@ -110,49 +109,34 @@ export default class CourtCaseRoutes {
     if (submitToCheckAnswers) {
       return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
     }
-    return res.redirect(`/person/${nomsId}/court-cases/next-court-date-question`)
+    return res.redirect(`/person/${nomsId}/court-cases/overall-case-outcome`)
   }
 
-  public getNextCourtDateQuestion: RequestHandler = async (req, res): Promise<void> => {
+  public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    return res.render('pages/courtCase/next-court-date-question', {
+    const { submitToCheckAnswers } = req.query
+    const overallCaseOutcome: string = this.courtCaseService.getOverallCaseOutcome(req.session, nomsId)
+    return res.render('pages/courtCase/overall-case-outcome', {
       nomsId,
+      submitToCheckAnswers,
+      overallCaseOutcome,
+      backLink: `/person/${nomsId}/court-cases/court-name`,
     })
   }
 
-  public submitNextCourtDateQuestion: RequestHandler = async (req, res): Promise<void> => {
+  public submitOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const nextCourtDateQuestionForm = trimForm<CourtCaseNextCourtDateQuestionForm>(req.body)
+    const overallCaseOutcomeForm = trimForm<CourtCaseOverallCaseOutcomeForm>(req.body)
 
-    if (nextCourtDateQuestionForm.nextCourtDateKnown === 'yes') {
-      return res.redirect(`/person/${nomsId}/court-cases/next-court-date`)
+    this.courtCaseService.setOverallCaseOutcome(req.session, nomsId, overallCaseOutcomeForm.overallCaseOutcome)
+    const { submitToCheckAnswers } = req.query
+    if (submitToCheckAnswers) {
+      return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
     }
-    this.courtCaseService.deleteNextCourtDate(req.session, nomsId)
-    return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
-  }
-
-  public getNextCourtDate: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
-    return res.render('pages/courtCase/next-court-date', {
-      nomsId,
-    })
-  }
-
-  public submitNextCourtDate: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
-    const nextCourtDateForm = trimForm<CourtCaseNextCourtDateForm>(req.body)
-    const [nextCourtHour, nextCourtMinute] = nextCourtDateForm.nextCourtTime.split(':')
-    const nextCourtDate = new Date(
-      nextCourtDateForm['nextCourtDate-year'],
-      nextCourtDateForm['nextCourtDate-month'] - 1,
-      nextCourtDateForm['nextCourtDate-day'],
-    )
-    if (nextCourtHour && nextCourtMinute) {
-      nextCourtDate.setHours(parseInt(nextCourtHour, 10), parseInt(nextCourtMinute, 10), 0)
+    if (overallCaseOutcomeForm.overallCaseOutcome === 'LOOKUPDIFFERENT') {
+      return res.redirect(`/person/${nomsId}/court-cases/lookup-case-outcome`)
     }
-    this.courtCaseService.setNextCourtDate(req.session, nomsId, nextCourtDate)
-
-    return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+    return res.redirect(`/person/${nomsId}/court-cases/case-outcome-applied-all`)
   }
 
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {

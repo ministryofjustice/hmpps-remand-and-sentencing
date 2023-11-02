@@ -6,12 +6,6 @@
 
 {% block content %}
 
-    {{ govukBackLink({
-    text: "Back",
-    href: "/person/" + nomsId,
-    classes: 'govuk-!-margin-top-0'
-    }) }}
-
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/court-cases/submit-reference{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">

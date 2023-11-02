@@ -34,6 +34,21 @@ export default class CourtCaseService {
     return this.getCourtCase(session.courtCases, nomsId).courtName
   }
 
+  setOverallCaseOutcome(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    overallCaseOutcome: string,
+  ) {
+    const courtCase = this.getCourtCase(session.courtCases, nomsId)
+    courtCase.overallCaseOutcome = overallCaseOutcome
+    // eslint-disable-next-line no-param-reassign
+    session.courtCases[nomsId] = courtCase
+  }
+
+  getOverallCaseOutcome(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtCase(session.courtCases, nomsId).overallCaseOutcome
+  }
+
   setNextCourtDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, nextCourtDate: Date) {
     const courtCase = this.getCourtCase(session.courtCases, nomsId)
     courtCase.nextCourtDate = nextCourtDate

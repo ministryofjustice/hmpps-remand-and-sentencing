@@ -31,6 +31,7 @@ export default class CourtCaseRoutes {
       nomsId,
       submitToCheckAnswers,
       courtCaseReference,
+      backLink: `/person/${nomsId}`,
     })
   }
 
@@ -65,6 +66,7 @@ export default class CourtCaseRoutes {
       warrantDateDay,
       warrantDateMonth,
       warrantDateYear,
+      backLink: `/person/${nomsId}/court-cases/reference`,
     })
   }
 
@@ -95,6 +97,7 @@ export default class CourtCaseRoutes {
       nomsId,
       submitToCheckAnswers,
       courtName,
+      backLink: `/person/${nomsId}/court-cases/warrant-date`,
     })
   }
 

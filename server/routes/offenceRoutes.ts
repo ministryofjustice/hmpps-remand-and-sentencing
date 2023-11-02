@@ -21,6 +21,7 @@ export default class OffenceRoutes {
         nomsId,
         courtCaseReference,
         courtCase,
+        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/confirm-offence-code`,
       })
     }
     throw createError(404, 'Not found')
@@ -60,6 +61,7 @@ export default class OffenceRoutes {
         nomsId,
         courtCaseReference,
         courtCase,
+        backLink: `/person/${nomsId}/court-cases/check-answers`,
       })
     }
     throw createError(404, 'Not found')
@@ -91,6 +93,7 @@ export default class OffenceRoutes {
         courtCaseReference,
         courtCase,
         offence,
+        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/offence-code`,
       })
     }
     throw createError(404, 'Not found')

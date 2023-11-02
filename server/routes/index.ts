@@ -41,13 +41,9 @@ export default function routes(services: Services): Router {
 
   post('/person/:nomsId/court-cases/submit-court-name', courtCaseRoutes.submitCourtName)
 
-  get('/person/:nomsId/court-cases/next-court-date-question', courtCaseRoutes.getNextCourtDateQuestion)
+  get('/person/:nomsId/court-cases/overall-case-outcome', courtCaseRoutes.getOverallCaseOutcome)
 
-  post('/person/:nomsId/court-cases/submit-next-court-date-question', courtCaseRoutes.submitNextCourtDateQuestion)
-
-  get('/person/:nomsId/court-cases/next-court-date', courtCaseRoutes.getNextCourtDate)
-
-  post('/person/:nomsId/court-cases/submit-next-court-date', courtCaseRoutes.submitNextCourtDate)
+  post('/person/:nomsId/court-cases/submit-overall-case-outcome', courtCaseRoutes.submitOverallCaseOutcome)
 
   get('/person/:nomsId/court-cases/check-answers', courtCaseRoutes.getCheckAnswers)
 

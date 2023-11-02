@@ -13,15 +13,8 @@ declare module 'forms' {
     courtName?: string
   }
 
-  export interface CourtCaseNextCourtDateQuestionForm {
-    nextCourtDateKnown?: string
-  }
-
-  export interface CourtCaseNextCourtDateForm {
-    'nextCourtDate-day'?: number
-    'nextCourtDate-month'?: number
-    'nextCourtDate-year'?: number
-    nextCourtTime?: string
+  export interface CourtCaseOverallCaseOutcomeForm {
+    overallCaseOutcome?: string
   }
 
   export interface OffenceOffenceDateForm {

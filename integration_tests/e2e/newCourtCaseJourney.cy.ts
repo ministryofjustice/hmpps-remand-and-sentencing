@@ -4,6 +4,8 @@ import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
+import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 
 context('Court Case Check Answers Page', () => {
   beforeEach(() => {
@@ -33,16 +35,20 @@ context('Court Case Check Answers Page', () => {
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
     courtCaseOverallCaseOutcomePage.radioSelector('Remand in Custody (Bail Refused)').click()
-    // TODO: uncomment after overvall case outcome applied story is complete
-    // courtCaseOverallCaseOutcomePage.button().click()
+    courtCaseOverallCaseOutcomePage.button().click()
 
-    // const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'Court case reference number': '1234',
-    //   'Warrant date': '2023-05-12T00:00:00.000Z',
-    //   'Court name': 'Bradford Crown Court',
-    //   'Next court date': '2023-08-23T00:00:00.000Z',
-    // })
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.radioSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.button().click()
+
+    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Court case reference number': '1234',
+      'Court name': 'Bradford Crown Court',
+      'Warrant date': '2023-05-12T00:00:00.000Z',
+      'Overall case outcome': 'Remand in Custody (Bail Refused)',
+    })
+    // TODO: comment out after doing the check answers page story
     // courtCaseCheckAnswersPage.button().click()
     // Page.verifyOnPage(OffenceOffenceDatePage)
   })

@@ -2,30 +2,32 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Add a court case Next Court Date" %}
-
+{% set pageTitle = applicationName + " - Add a court case Outcome applied to all" %}
+{% set fieldSetHtml %}
+    <h1 class="govuk-fieldset__heading">Does the outcome apply to all offences on the warrant?</h1>
+    <p class="govuk-body-l">{{ caseOutcomeAppliedAll }}</p>
+{% endset %}
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/court-cases/submit-next-court-date-question">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/submit-case-outcome-applied-all">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">Add a court case</span>
                 {{ govukRadios({
-                    name: "nextCourtDateKnown",
+                    name: "caseOutcomeAppliedAll",
                     fieldset: {
                         legend: {
-                            text: "Do you know the next court date?",
-                            isPageHeading: true,
+                            html: fieldSetHtml,
                             classes: "govuk-fieldset__legend--l"
                         }
                     },
                     items: [
                         {
-                            value: "yes",
+                            value: "true",
                             text: "Yes"
                         },
                         {
-                            value: "no",
+                            value: "false",
                             text: "No"
                         }
                     ]

@@ -4,7 +4,7 @@ declare module 'models' {
     warrantDate?: Date
     courtName?: string
     overallCaseOutcome?: string
-    nextCourtDate?: Date
+    caseOutcomeAppliedAll?: boolean
   }
 
   export interface Offence {

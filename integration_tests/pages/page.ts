@@ -30,4 +30,6 @@ export default abstract class Page {
   yearDateInput = (idPrefix: string): PageElement => cy.get(`#${idPrefix}-year`)
 
   summaryList = (): PageElement => cy.get('.govuk-summary-list')
+
+  radioSelector = (value: string): PageElement => cy.get(`:radio[value="${value}"]`)
 }

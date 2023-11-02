@@ -33,23 +33,6 @@
                         },
                         {
                             key: {
-                            text: "Warrant date"
-                        },
-                            value: {
-                            text: courtCase.warrantDate
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/court-cases/warrant-date?submitToCheckAnswers=true",
-                                    text: "Change",
-                                    visuallyHiddenText: "warrant date"
-                                }
-                            ]
-                        }
-                        },
-                        {
-                            key: {
                             text: "Court name"
                         },
                             value: {
@@ -67,17 +50,34 @@
                         },
                         {
                             key: {
-                            text: "Next court date"
+                            text: "Warrant date"
                         },
                             value: {
-                            text: courtCase.nextCourtDate
+                            text: courtCase.warrantDate
                         },
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/next-court-date-question?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/court-cases/warrant-date?submitToCheckAnswers=true",
                                     text: "Change",
-                                    visuallyHiddenText: "next court date"
+                                    visuallyHiddenText: "warrant date"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Overall case outcome"
+                        },
+                            value: {
+                            text: courtCase.overallCaseOutcome
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/court-cases/overall-case-outcome?submitToCheckAnswers=true",
+                                    text: "Change",
+                                    visuallyHiddenText: "overall case outcome"
                                 }
                             ]
                         }

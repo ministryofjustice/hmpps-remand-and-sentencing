@@ -128,14 +128,13 @@ export default class CourtCaseRoutes {
   public submitOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const overallCaseOutcomeForm = trimForm<CourtCaseOverallCaseOutcomeForm>(req.body)
-
+    if (overallCaseOutcomeForm.overallCaseOutcome === 'LOOKUPDIFFERENT') {
+      return res.redirect(`/person/${nomsId}/court-cases/lookup-case-outcome`)
+    }
     this.courtCaseService.setOverallCaseOutcome(req.session, nomsId, overallCaseOutcomeForm.overallCaseOutcome)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
-    }
-    if (overallCaseOutcomeForm.overallCaseOutcome === 'LOOKUPDIFFERENT') {
-      return res.redirect(`/person/${nomsId}/court-cases/lookup-case-outcome`)
     }
     return res.redirect(`/person/${nomsId}/court-cases/case-outcome-applied-all`)
   }

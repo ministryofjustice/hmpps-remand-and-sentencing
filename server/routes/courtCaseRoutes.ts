@@ -4,6 +4,7 @@ import type {
   CourtCaseReferenceForm,
   CourtCaseWarrantDateForm,
   CourtCaseOverallCaseOutcomeForm,
+  CourtCaseCaseOutcomeAppliedAllForm,
 } from 'forms'
 import createError from 'http-errors'
 import trimForm from '../utils/trim'
@@ -137,6 +138,32 @@ export default class CourtCaseRoutes {
       return res.redirect(`/person/${nomsId}/court-cases/lookup-case-outcome`)
     }
     return res.redirect(`/person/${nomsId}/court-cases/case-outcome-applied-all`)
+  }
+
+  public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const { submitToCheckAnswers } = req.query
+    const overallCaseOutcome: string = this.courtCaseService.getOverallCaseOutcome(req.session, nomsId)
+    const caseOutcomeAppliedAll: boolean = this.courtCaseService.getCaseOutcomeAppliedAll(req.session, nomsId)
+    return res.render('pages/courtCase/case-outcome-applied-all', {
+      nomsId,
+      submitToCheckAnswers,
+      overallCaseOutcome,
+      caseOutcomeAppliedAll,
+      backLink: `/person/${nomsId}/court-cases/overall-case-outcome`,
+    })
+  }
+
+  public submitCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const caseOutcomeAppliedAllForm = trimForm<CourtCaseCaseOutcomeAppliedAllForm>(req.body)
+
+    this.courtCaseService.setCaseOutcomeAppliedAll(
+      req.session,
+      nomsId,
+      caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true',
+    )
+    return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
   }
 
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {

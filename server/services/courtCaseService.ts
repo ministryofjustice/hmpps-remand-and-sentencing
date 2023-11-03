@@ -49,16 +49,19 @@ export default class CourtCaseService {
     return this.getCourtCase(session.courtCases, nomsId).overallCaseOutcome
   }
 
-  setNextCourtDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, nextCourtDate: Date) {
+  setCaseOutcomeAppliedAll(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    caseOutcomeAppliedAll: boolean,
+  ) {
     const courtCase = this.getCourtCase(session.courtCases, nomsId)
-    courtCase.nextCourtDate = nextCourtDate
+    courtCase.caseOutcomeAppliedAll = caseOutcomeAppliedAll
     // eslint-disable-next-line no-param-reassign
     session.courtCases[nomsId] = courtCase
   }
 
-  deleteNextCourtDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
-    const courtCase = this.getCourtCase(session.courtCases, nomsId)
-    delete courtCase.nextCourtDate
+  getCaseOutcomeAppliedAll(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    return this.getCourtCase(session.courtCases, nomsId).caseOutcomeAppliedAll
   }
 
   getSessionCourtCase(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {

@@ -53,8 +53,6 @@ export default function routes(services: Services): Router {
 
   post('/person/:nomsId/court-cases/submit-check-answers', courtCaseRoutes.submitCheckAnswers)
 
-  get('/person/:nomsId/court-cases/:courtCaseReference/overview', courtCaseRoutes.getCourtCaseOverview)
-
   get('/person/:nomsId/court-cases/:courtCaseReference/offence-date', offenceRoutes.getOffenceDate)
 
   post('/person/:nomsId/court-cases/:courtCaseReference/submit-offence-date', offenceRoutes.submitOffenceDate)

@@ -6,7 +6,6 @@ import type {
   CourtCaseOverallCaseOutcomeForm,
   CourtCaseCaseOutcomeAppliedAllForm,
 } from 'forms'
-import createError from 'http-errors'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
 
@@ -172,6 +171,7 @@ export default class CourtCaseRoutes {
     return res.render('pages/courtCase/check-answers', {
       nomsId,
       courtCase,
+      backLink: `/person/${nomsId}/court-cases/case-outcome-applied-all`,
     })
   }
 
@@ -179,21 +179,6 @@ export default class CourtCaseRoutes {
     const { nomsId } = req.params
     const courtCaseReference = this.courtCaseService.saveCourtCase(req.session, nomsId)
 
-    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/overview?onSave=true`)
-  }
-
-  public getCourtCaseOverview: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference } = req.params
-    const { onSave } = req.query
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase) {
-      return res.render('pages/courtCase/overview', {
-        nomsId,
-        courtCaseReference,
-        courtCase,
-        onSave,
-      })
-    }
-    throw createError(404, 'Not found')
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-code`)
   }
 }

@@ -6,6 +6,7 @@ import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
+import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 
 context('Court Case Check Answers Page', () => {
   beforeEach(() => {
@@ -48,8 +49,7 @@ context('Court Case Check Answers Page', () => {
       'Warrant date': '2023-05-12T00:00:00.000Z',
       'Overall case outcome': 'Remand in Custody (Bail Refused)',
     })
-    // TODO: comment out after doing the check answers page story
-    // courtCaseCheckAnswersPage.button().click()
-    // Page.verifyOnPage(OffenceOffenceDatePage)
+    courtCaseCheckAnswersPage.button().click()
+    Page.verifyOnPage(OffenceOffenceCodePage)
   })
 })

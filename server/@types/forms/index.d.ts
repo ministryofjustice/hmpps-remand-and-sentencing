@@ -17,6 +17,10 @@ declare module 'forms' {
     overallCaseOutcome?: string
   }
 
+  export interface CourtCaseLookupCaseOutcomeForm {
+    caseOutcome?: string
+  }
+
   export interface CourtCaseCaseOutcomeAppliedAllForm {
     caseOutcomeAppliedAll?: string
   }

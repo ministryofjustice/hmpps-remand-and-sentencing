@@ -6,7 +6,6 @@ import type {
   CourtCaseOverallCaseOutcomeForm,
   CourtCaseCaseOutcomeAppliedAllForm,
 } from 'forms'
-import createError from 'http-errors'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
 

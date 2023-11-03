@@ -45,6 +45,10 @@ export default function routes(services: Services): Router {
 
   post('/person/:nomsId/court-cases/submit-overall-case-outcome', courtCaseRoutes.submitOverallCaseOutcome)
 
+  get('/person/:nomsId/court-cases/lookup-case-outcome', courtCaseRoutes.getLookupCaseOutcome)
+
+  post('/person/:nomsId/court-cases/submit-lookup-case-outcome', courtCaseRoutes.submitLookupCaseOutcome)
+
   get('/person/:nomsId/court-cases/case-outcome-applied-all', courtCaseRoutes.getCaseOutcomeAppliedAll)
 
   post('/person/:nomsId/court-cases/submit-case-outcome-applied-all', courtCaseRoutes.submitCaseOutcomeAppliedAll)

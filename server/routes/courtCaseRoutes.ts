@@ -5,6 +5,7 @@ import type {
   CourtCaseWarrantDateForm,
   CourtCaseOverallCaseOutcomeForm,
   CourtCaseCaseOutcomeAppliedAllForm,
+  CourtCaseLookupCaseOutcomeForm,
 } from 'forms'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
@@ -136,6 +137,21 @@ export default class CourtCaseRoutes {
     if (overallCaseOutcomeForm.overallCaseOutcome === 'LOOKUPDIFFERENT') {
       return res.redirect(`/person/${nomsId}/court-cases/lookup-case-outcome`)
     }
+    return res.redirect(`/person/${nomsId}/court-cases/case-outcome-applied-all`)
+  }
+
+  public getLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    return res.render('pages/courtCase/lookup-case-outcome', {
+      nomsId,
+      backLink: `/person/${nomsId}/court-cases/overall-case-outcome`,
+    })
+  }
+
+  public submitLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const lookupCaseOutcomeForm = trimForm<CourtCaseLookupCaseOutcomeForm>(req.body)
+    this.courtCaseService.setOverallCaseOutcome(req.session, nomsId, lookupCaseOutcomeForm.caseOutcome)
     return res.redirect(`/person/${nomsId}/court-cases/case-outcome-applied-all`)
   }
 

@@ -5,4 +5,8 @@ export default class ManageOffencesService {
   async getOffenceByCode(offenceCode: string, token: string): Promise<Offence> {
     return new ManageOffencesApiClient(token).getOffenceByCode(offenceCode)
   }
+
+  async searchOffence(searchString: string, token: string): Promise<Offence[]> {
+    return new ManageOffencesApiClient(token).searchOffence(searchString)
+  }
 }

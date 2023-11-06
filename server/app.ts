@@ -39,7 +39,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware(['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.use('/person/:nomsId', setupPrisonerDetails(services.prisonerService))
+  app.use('/person/:nomsId', setupPrisonerDetails(services.remandAndSentencingService))
   app.get('*', getFrontendComponents(services))
 
   app.use(routes(services))

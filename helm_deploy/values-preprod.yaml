@@ -21,6 +21,7 @@ generic-service:
     COMMON_COMPONENTS_ENABLED: 'true'
     CALCULATE_RELEASE_DATES_UI_URL: "https://calculate-release-dates-preprod.hmpps.service.justice.gov.uk"
     ADJUSTMENTS_UI_URL: "https://adjust-release-dates-preprod.hmpps.service.justice.gov.uk"
+    REMAND_AND_SENTENCING_API_URL: "https://remand-and-sentencing-api-preprod.hmpps.service.justice.gov.uk"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

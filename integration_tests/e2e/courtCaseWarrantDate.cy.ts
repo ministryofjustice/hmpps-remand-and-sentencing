@@ -7,7 +7,7 @@ context('Court Case Warrant Date Page', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('stubGetPersonDetails')
     cy.signIn()
     cy.visit('/person/A1234AB/court-cases/warrant-date')
     courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)

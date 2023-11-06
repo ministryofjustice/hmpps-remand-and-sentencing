@@ -1,10 +1,14 @@
 import { RequestHandler } from 'express'
 import path from 'path'
 import PrisonerService from '../services/prisonerService'
+import ManageOffencesService from '../services/manageOffencesService'
 
 const placeHolderImage = path.join(process.cwd(), '/assets/images/prisoner-profile-image.png')
 export default class ApiRoutes {
-  constructor(private readonly prisonerService: PrisonerService) {}
+  constructor(
+    private readonly prisonerService: PrisonerService,
+    private readonly manageOffencesService: ManageOffencesService,
+  ) {}
 
   public personImage: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
@@ -19,5 +23,11 @@ export default class ApiRoutes {
       .catch(_error => {
         res.sendFile(placeHolderImage)
       })
+  }
+
+  public searchOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { searchString } = req.query
+    const result = await this.manageOffencesService.searchOffence(searchString as string, res.locals.user.token)
+    res.status(200).send(result)
   }
 }

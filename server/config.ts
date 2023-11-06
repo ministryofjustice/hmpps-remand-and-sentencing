@@ -111,6 +111,14 @@ export default {
       agent: new AgentConfig(Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000))),
       enabled: get('COMMON_COMPONENTS_ENABLED', 'false') === 'true',
     },
+    remandAndSentencingApi: {
+      url: get('REMAND_AND_SENTENCING_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      timeout: {
+        response: get('REMAND_AND_SENTENCING_API_TIMEOUT_RESPONSE', 10000),
+        deadline: get('REMAND_AND_SENTENCING_API_TIMEOUT_DEADLINE', 10000),
+      },
+      agent: new AgentConfig(10000),
+    },
   },
   digitalPrisonServices: {
     ui_url: get('DIGITAL_PRISON_SERVICES_URL', 'http://127.0.0.1:3000/dps', requiredInProduction),

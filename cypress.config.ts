@@ -2,10 +2,10 @@ import { defineConfig } from 'cypress'
 import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
-import prisonApi from './integration_tests/mockApis/prisonApi'
 import manageOffencesApi from './integration_tests/mockApis/manageOffencesApi'
 import manageUsersApi from './integration_tests/mockApis/manageUsersApi'
 import components from './integration_tests/mockApis/components'
+import remandAndSentencingApi from './integration_tests/mockApis/remandAndSentencingApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -25,10 +25,10 @@ export default defineConfig({
         reset: resetStubs,
         ...auth,
         ...tokenVerification,
-        ...prisonApi,
         ...manageOffencesApi,
         ...manageUsersApi,
         ...components,
+        ...remandAndSentencingApi,
       })
     },
     baseUrl: 'http://localhost:3007',

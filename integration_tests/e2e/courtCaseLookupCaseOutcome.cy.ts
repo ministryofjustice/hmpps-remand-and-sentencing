@@ -7,7 +7,7 @@ context('Court Case Overall Case Outcome Page', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('stubGetPersonDetails')
     cy.signIn()
     cy.visit('/person/A1234AB/court-cases/lookup-case-outcome')
     courtCaseLookupCaseOutcomePage = Page.verifyOnPage(CourtCaseLookupCaseOutcomePage)

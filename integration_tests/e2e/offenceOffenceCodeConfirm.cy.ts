@@ -8,7 +8,7 @@ context('Add Offence Offence Code Page', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('stubGetPersonDetails')
     cy.task('stubGetOffenceByCode')
     cy.signIn()
     cy.createCourtCase('A1234AB', '12345')

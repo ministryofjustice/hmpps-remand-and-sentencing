@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { PrisonApiPrisoner } from '../../@types/prisonApi/prisonClientTypes'
+import { RemandAndSentencingPerson } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class PrisonerDetailsModel {
   offenderNo: string
@@ -18,23 +18,14 @@ export default class PrisonerDetailsModel {
 
   status: string
 
-  constructor(prisonApiPrisoner: PrisonApiPrisoner) {
-    this.offenderNo = prisonApiPrisoner.offenderNo
-    this.firstName = prisonApiPrisoner.firstName
-    this.lastName = prisonApiPrisoner.lastName
-    this.establishment = prisonApiPrisoner.assignedLivingUnit.agencyName
-    this.cellNumber = prisonApiPrisoner.assignedLivingUnit.description
-    this.dateOfBirth = dayjs(prisonApiPrisoner.dateOfBirth).format('DD/MM/YYYY')
-    const prisonerPNCNumber = prisonApiPrisoner.identifiers.find(identifier => identifier.type === 'PNC')
-    if (prisonerPNCNumber) {
-      this.pncNumber = prisonerPNCNumber.value
-    } else {
-      this.pncNumber = 'No number'
-    }
-    if (prisonApiPrisoner.legalStatus) {
-      this.status = prisonApiPrisoner.legalStatus
-    } else {
-      this.status = 'No status'
-    }
+  constructor(remandAndSentencingPerson: RemandAndSentencingPerson) {
+    this.offenderNo = remandAndSentencingPerson.personId
+    this.firstName = remandAndSentencingPerson.firstName
+    this.lastName = remandAndSentencingPerson.lastName
+    this.establishment = remandAndSentencingPerson.establishment
+    this.cellNumber = remandAndSentencingPerson.cellNumber
+    this.dateOfBirth = dayjs(remandAndSentencingPerson.dateOfBirth).format('DD/MM/YYYY')
+    this.pncNumber = remandAndSentencingPerson.pncNumber ?? 'No number'
+    this.status = remandAndSentencingPerson.status ?? 'No status'
   }
 }

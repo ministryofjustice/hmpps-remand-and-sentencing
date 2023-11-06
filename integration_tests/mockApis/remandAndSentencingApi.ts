@@ -6,7 +6,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/person/A1234AB',
+        urlPattern: '/remand-and-sentencing-api/person/A1234AB',
       },
       response: {
         status: 200,

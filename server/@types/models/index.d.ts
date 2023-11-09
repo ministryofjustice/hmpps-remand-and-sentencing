@@ -11,5 +11,6 @@ declare module 'models' {
     offenceStartDate?: Date
     offenceEndDate?: Date
     offenceCode?: string
+    offenceName?: string
   }
 }

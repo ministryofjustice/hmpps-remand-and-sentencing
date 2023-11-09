@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
-import type { OffenceOffenceCodeForm, OffenceOffenceDateForm } from 'forms'
+import type { OffenceOffenceCodeForm, OffenceOffenceDateForm, OffenceOffenceNameForm } from 'forms'
 import CourtCaseService from '../services/courtCaseService'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
@@ -78,6 +78,31 @@ export default class OffenceRoutes {
     this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, offenceCodeForm.offenceCode)
 
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/confirm-offence-code`)
+  }
+
+  public getOffenceName: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
+    if (courtCase) {
+      return res.render('pages/offence/offence-name', {
+        nomsId,
+        courtCaseReference,
+        courtCase,
+        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/offence-code`,
+      })
+    }
+    throw createError(404, 'Not found')
+  }
+
+  public submitOffenceName: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const offenceNameForm = trimForm<OffenceOffenceNameForm>(req.body)
+    const [offenceCode, offenceName] = offenceNameForm.offenceName.split('_', 1)
+
+    this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, offenceCode)
+    this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, offenceName)
+
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/confirm-date`)
   }
 
   public getConfirmOffenceCode: RequestHandler = async (req, res): Promise<void> => {

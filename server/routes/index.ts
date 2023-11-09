@@ -67,6 +67,10 @@ export default function routes(services: Services): Router {
 
   post('/person/:nomsId/court-cases/:courtCaseReference/submit-offence-code', offenceRoutes.submitOffenceCode)
 
+  get('/person/:nomsId/court-cases/:courtCaseReference/offence-name', offenceRoutes.getOffenceName)
+
+  post('/person/:nomsId/court-cases/:courtCaseReference/submit-offence-name', offenceRoutes.submitOffenceName)
+
   get('/person/:nomsId/court-cases/:courtCaseReference/confirm-offence-code', offenceRoutes.getConfirmOffenceCode)
 
   return router

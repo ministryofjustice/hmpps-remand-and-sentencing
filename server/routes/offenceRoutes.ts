@@ -1,6 +1,11 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
-import type { OffenceOffenceCodeForm, OffenceOffenceDateForm, OffenceOffenceNameForm } from 'forms'
+import type {
+  OffenceConfirmOffenceForm,
+  OffenceOffenceCodeForm,
+  OffenceOffenceDateForm,
+  OffenceOffenceNameForm,
+} from 'forms'
 import CourtCaseService from '../services/courtCaseService'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
@@ -97,12 +102,13 @@ export default class OffenceRoutes {
   public submitOffenceName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
     const offenceNameForm = trimForm<OffenceOffenceNameForm>(req.body)
-    const [offenceCode, offenceName] = offenceNameForm.offenceName.split('_', 1)
+    const [offenceCode, ...offenceNames] = offenceNameForm.offenceName.split(' ')
+    const offenceName = offenceNames.join(' ')
 
     this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, offenceCode)
     this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, offenceName)
 
-    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/confirm-date`)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-date`)
   }
 
   public getConfirmOffenceCode: RequestHandler = async (req, res): Promise<void> => {
@@ -122,5 +128,14 @@ export default class OffenceRoutes {
       })
     }
     throw createError(404, 'Not found')
+  }
+
+  public submitConfirmOffenceCode: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const confirmOffenceForm = trimForm<OffenceConfirmOffenceForm>(req.body)
+    this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, confirmOffenceForm.offenceCode)
+    this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, confirmOffenceForm.offenceName)
+
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-date`)
   }
 }

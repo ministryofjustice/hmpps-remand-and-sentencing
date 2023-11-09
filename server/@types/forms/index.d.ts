@@ -42,4 +42,9 @@ declare module 'forms' {
   export interface OffenceOffenceNameForm {
     offenceName?: string
   }
+
+  export interface OffenceConfirmOffenceForm {
+    offenceCode?: string
+    offenceName?: string
+  }
 }

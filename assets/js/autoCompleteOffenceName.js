@@ -15,7 +15,7 @@ function govukFont(text) {
 }
 
 function offenceValue(offence) {
-  return offence.code + '_' + offence.description
+  return offence.code + ' ' + offence.description
 }
 
 const request = new XMLHttpRequest()
@@ -25,6 +25,7 @@ window.addEventListener('load', function () {
     defaultValue: '',
     selectElement: document.querySelector('#offence-name'),
     confirmOnBlur: false,
+    name: 'offenceName',
     templates: {
       inputValue: function (result) {
         return (result && offenceValue(result)) ?? ''
@@ -36,7 +37,7 @@ window.addEventListener('load', function () {
         if (typeof result === 'string') {
           return govukFont('Clear the selection')
         }
-        return result && govukFont(result.code + ' ' + result.description)
+        return result && govukFont(offenceValue(result))
       },
     },
     minLength: 2,

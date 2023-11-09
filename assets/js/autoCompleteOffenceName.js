@@ -18,6 +18,8 @@ function offenceValue(offence) {
   return offence.code + '_' + offence.description
 }
 
+const request = new XMLHttpRequest()
+
 window.addEventListener('load', function () {
   accessibleAutocomplete.enhanceSelectElement({
     defaultValue: '',
@@ -39,13 +41,12 @@ window.addEventListener('load', function () {
     },
     minLength: 2,
     source: debounce(function (query, populateResults) {
-      var request = new XMLHttpRequest()
       request.open('GET', '/api/search-offence?searchString=' + query, true)
       // Time to wait before giving up fetching the search index
       request.timeout = 2 * 1000
       request.onreadystatechange = function () {
         // XHR client readyState DONE
-        if (request.readyState === 4) {
+        if (request.readyState === XMLHttpRequest.DONE) {
           if (request.status === 200) {
             var response = request.responseText
             var json = JSON.parse(response)

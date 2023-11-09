@@ -73,5 +73,7 @@ export default function routes(services: Services): Router {
 
   get('/person/:nomsId/court-cases/:courtCaseReference/confirm-offence-code', offenceRoutes.getConfirmOffenceCode)
 
+  post('/person/:nomsId/court-cases/:courtCaseReference/submit-confirm-offence', offenceRoutes.submitConfirmOffenceCode)
+
   return router
 }

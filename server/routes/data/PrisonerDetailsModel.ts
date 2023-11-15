@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { RemandAndSentencingPerson } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import config from '../../config'
 
 export default class PrisonerDetailsModel {
   offenderNo: string
@@ -24,7 +25,7 @@ export default class PrisonerDetailsModel {
     this.lastName = remandAndSentencingPerson.lastName
     this.establishment = remandAndSentencingPerson.establishment
     this.cellNumber = remandAndSentencingPerson.cellNumber
-    this.dateOfBirth = dayjs(remandAndSentencingPerson.dateOfBirth).format('DD/MM/YYYY')
+    this.dateOfBirth = dayjs(remandAndSentencingPerson.dateOfBirth).format(config.dateFormat)
     this.pncNumber = remandAndSentencingPerson.pncNumber ?? 'No number'
     this.status = remandAndSentencingPerson.status ?? 'No status'
   }

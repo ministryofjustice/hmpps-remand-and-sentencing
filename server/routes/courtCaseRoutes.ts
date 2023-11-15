@@ -7,6 +7,7 @@ import type {
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseLookupCaseOutcomeForm,
 } from 'forms'
+import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
 
@@ -73,12 +74,12 @@ export default class CourtCaseRoutes {
   public submitWarrantDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const warrantDateForm = trimForm<CourtCaseWarrantDateForm>(req.body)
-    const warrantDate = new Date(
-      warrantDateForm['warrantDate-year'],
-      warrantDateForm['warrantDate-month'] - 1,
-      warrantDateForm['warrantDate-day'],
-    )
-    this.courtCaseService.setWarrantDate(req.session, nomsId, warrantDate)
+    const warrantDate = dayjs({
+      year: warrantDateForm['warrantDate-year'],
+      month: warrantDateForm['warrantDate-month'] - 1,
+      day: warrantDateForm['warrantDate-day'],
+    })
+    this.courtCaseService.setWarrantDate(req.session, nomsId, warrantDate.toDate())
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(`/person/${nomsId}/court-cases/check-answers`)

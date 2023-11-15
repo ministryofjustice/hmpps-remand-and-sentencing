@@ -37,6 +37,8 @@ export default {
   production,
   https: production,
   staticResourceCacheDuration: '1h',
+  dateFormat: 'DD MM YYYY',
+  dateTimeFormat: 'DD MM YYYY HH:mm',
   redis: {
     host: get('REDIS_HOST', '127.0.0.1', requiredInProduction),
     port: parseInt(process.env.REDIS_PORT, 10) || 6379,

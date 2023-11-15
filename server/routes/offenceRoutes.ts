@@ -6,6 +6,7 @@ import type {
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
 } from 'forms'
+import dayjs from 'dayjs'
 import CourtCaseService from '../services/courtCaseService'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
@@ -35,24 +36,24 @@ export default class OffenceRoutes {
   public submitOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
     const offenceDateForm = trimForm<OffenceOffenceDateForm>(req.body)
-    const offenceStartDate = new Date(
-      offenceDateForm['offenceStartDate-year'],
-      offenceDateForm['offenceStartDate-month'] - 1,
-      offenceDateForm['offenceStartDate-day'],
-    )
-    this.offenceService.setOffenceStartDate(req.session, nomsId, courtCaseReference, offenceStartDate)
+    const offenceStartDate = dayjs({
+      year: offenceDateForm['offenceStartDate-year'],
+      month: offenceDateForm['offenceStartDate-month'] - 1,
+      day: offenceDateForm['offenceStartDate-day'],
+    })
+    this.offenceService.setOffenceStartDate(req.session, nomsId, courtCaseReference, offenceStartDate.toDate())
 
     if (
       offenceDateForm['offenceEndDate-day'] &&
       offenceDateForm['offenceEndDate-month'] &&
       offenceDateForm['offenceEndDate-year']
     ) {
-      const offenceEndDate = new Date(
-        offenceDateForm['offenceEndDate-year'],
-        offenceDateForm['offenceEndDate-month'] - 1,
-        offenceDateForm['offenceEndDate-day'],
-      )
-      this.offenceService.setOffenceEndDate(req.session, nomsId, courtCaseReference, offenceEndDate)
+      const offenceEndDate = dayjs({
+        year: offenceDateForm['offenceEndDate-year'],
+        month: offenceDateForm['offenceEndDate-month'] - 1,
+        day: offenceDateForm['offenceEndDate-day'],
+      })
+      this.offenceService.setOffenceEndDate(req.session, nomsId, courtCaseReference, offenceEndDate.toDate())
     }
 
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-code`)

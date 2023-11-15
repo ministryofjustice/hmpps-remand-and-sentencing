@@ -46,7 +46,7 @@ context('Court Case Check Answers Page', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Court case reference number': '1234',
       'Court name': 'Bradford Crown Court',
-      'Warrant date': '2023-05-12T00:00:00.000Z',
+      'Warrant date': '12 05 2023',
       'Overall case outcome': 'Remand in Custody (Bail Refused)',
     })
     courtCaseCheckAnswersPage.button().click()

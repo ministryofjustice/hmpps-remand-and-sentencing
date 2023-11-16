@@ -5,6 +5,7 @@ declare module 'models' {
     courtName?: string
     overallCaseOutcome?: string
     caseOutcomeAppliedAll?: boolean
+    nextHearingSelect?: boolean
   }
 
   export interface Offence {

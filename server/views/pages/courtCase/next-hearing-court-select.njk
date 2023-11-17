@@ -1,0 +1,46 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Next hearing been set" %}
+{% set fieldSetHtml %}
+    <h1 class="govuk-fieldset__heading">Is the next appearance at the same court?</h1>
+    <p class="govuk-body-l">{{ courtName }}</p>
+{% endset %}
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-next-hearing-court-select">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Add a court case</span>
+                {{ govukRadios({
+                    name: "nextHearingCourtSelect",
+                    fieldset: {
+                        legend: {
+                            html: fieldSetHtml,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes",
+                            checked: nextHearingCourtSelect === true
+                        },
+                        {
+                            value: "false",
+                            text: "No",
+                            checked: nextHearingCourtSelect === false
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -8,6 +8,7 @@ import type {
   CourtCaseLookupCaseOutcomeForm,
   CourtCaseNextHearingSelectForm,
   CourtCaseNextHearingTypeForm,
+  CourtCaseNextHearingCourtSelectForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
@@ -239,5 +240,29 @@ export default class CourtCaseRoutes {
     const nextHearingTypeForm = trimForm<CourtCaseNextHearingTypeForm>(req.body)
     this.courtCaseService.setNextHearingType(req.session, nomsId, nextHearingTypeForm.nextHearingType)
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-date`)
+  }
+
+  public getNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const nextHearingCourtSelect = this.courtCaseService.getNextHearingCourtSelect(req.session, nomsId)
+    const courtName = this.courtCaseService.getCourtName(req.session, nomsId)
+    return res.render('pages/courtCase/next-hearing-court-select', {
+      nomsId,
+      nextHearingCourtSelect,
+      courtName,
+      courtCaseReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-type`,
+    })
+  }
+
+  public submitNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const nextHearingCourtSelectForm = trimForm<CourtCaseNextHearingCourtSelectForm>(req.body)
+    const nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect === 'true'
+    this.courtCaseService.setNextHearingCourtSelect(req.session, nomsId, nextHearingCourtSelect)
+    if (nextHearingCourtSelect) {
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-answers`)
+    }
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/next-court-name`)
   }
 }

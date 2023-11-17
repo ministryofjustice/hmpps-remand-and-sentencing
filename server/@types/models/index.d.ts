@@ -7,6 +7,8 @@ declare module 'models' {
     caseOutcomeAppliedAll?: boolean
     nextHearingSelect?: boolean
     nextHearingType?: string
+    nextHearingCourtSelect?: boolean
+    nextCourtName?: string
   } // at some point this needs to change to appearance model
 
   export interface Offence {

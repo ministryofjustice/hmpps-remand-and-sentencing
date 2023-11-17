@@ -90,6 +90,24 @@ export default class CourtCaseService {
     session.courtCases[nomsId] = courtCase
   }
 
+  getNextHearingCourtSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    return this.getCourtCase(session.courtCases, nomsId).nextHearingCourtSelect
+  }
+
+  setNextHearingCourtSelect(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    nextHearingCourtSelect: boolean,
+  ) {
+    const courtCase = this.getCourtCase(session.courtCases, nomsId)
+    courtCase.nextHearingCourtSelect = nextHearingCourtSelect
+    if (nextHearingCourtSelect) {
+      courtCase.nextCourtName = courtCase.courtName
+    }
+    // eslint-disable-next-line no-param-reassign
+    session.courtCases[nomsId] = courtCase
+  }
+
   getSessionCourtCase(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     return this.getCourtCase(session.courtCases, nomsId)
   }

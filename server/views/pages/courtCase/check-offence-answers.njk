@@ -1,0 +1,85 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+
+
+{% set pageTitle = applicationName + " - Check offence answers" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+                <span class="govuk-caption-l">Add an offence to a court case</span>
+                <h1 class="govuk-heading-l">Check your answers</h1>
+                <h2 class="govuk-heading-m">Next hearing details</h2>
+
+                {{ govukSummaryList({
+                    rows: [
+                        {
+                            key: {
+                            text: "Next hearing date"
+                        },
+                            value: {
+                            text: courtCase.nextHearingDate | formatDateTime
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/next-hearing-date?submitToCheckAnswers=true",
+                                    text: "Change",
+                                    visuallyHiddenText: "next hearing date"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Next hearing type"
+                        },
+                            value: {
+                            text: courtCase.nextHearingType
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/next-hearing-type?submitToCheckAnswers=true",
+                                    text: "Change",
+                                    visuallyHiddenText: "next hearing type"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Next hearing location"
+                        },
+                            value: {
+                            text: courtCase.nextHearingCourtName
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/next-hearing-court-select?submitToCheckAnswers=true",
+                                    text: "Change",
+                                    visuallyHiddenText: "next hearing location"
+                                }
+                            ]
+                        }
+                        }
+                    ]
+                }) }}
+
+            <h2 class="govuk-heading-m">Now save this court case</h2>
+            <p class="govuk-body">By saving this court case, you are confirming that the details you are providing match the details on the warrant.</p>
+
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-check-offence-answers">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {{ govukButton({
+                    text: "Save and continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

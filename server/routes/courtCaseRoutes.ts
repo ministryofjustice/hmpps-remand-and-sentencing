@@ -7,6 +7,7 @@ import type {
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseLookupCaseOutcomeForm,
   CourtCaseNextHearingSelectForm,
+  CourtCaseNextHearingTypeForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
@@ -220,5 +221,23 @@ export default class CourtCaseRoutes {
     }
     // this would be where we save which we don't currently have and then redirect to all court cases page
     return res.redirect(`/person/${nomsId}`)
+  }
+
+  public getNextHearingType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const nextHearingType = this.courtCaseService.getNextHearingType(req.session, nomsId)
+    return res.render('pages/courtCase/next-hearing-type', {
+      nomsId,
+      nextHearingType,
+      courtCaseReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-select`,
+    })
+  }
+
+  public submitNextHearingType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const nextHearingTypeForm = trimForm<CourtCaseNextHearingTypeForm>(req.body)
+    this.courtCaseService.setNextHearingType(req.session, nomsId, nextHearingTypeForm.nextHearingType)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-date`)
   }
 }

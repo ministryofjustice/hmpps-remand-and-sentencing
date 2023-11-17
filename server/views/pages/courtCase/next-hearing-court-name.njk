@@ -1,0 +1,102 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+
+
+{% set pageTitle = applicationName + " - Add a court case court name" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-next-hearing-court-name">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Add a court case</span>
+                {{ govukSelect({
+                    label: {
+                        text: "What court is the next hearing at?",
+                        classes: "govuk-label--l",
+                        isPageHeading: true
+                    },
+                    hint: {
+                        text: "Enter a court name, address, town or city."
+                    },
+                    id: "next-hearing-court-name",
+                    name: "nextHearingCourtName",
+                    items: [
+                        {
+                            text: "",
+                            selected: not nextHearingCourtName
+                        },
+                        {
+                            value:"Bedford Magistrates Court",
+                            text: "Bedford Magistrates Court",
+                            selected: nextHearingCourtName === "Bedford Magistrates Court"
+                        },
+                        {
+                            value: "Birmingham Crown Court",
+                            text: "Birmingham Crown Court",
+                            selected: nextHearingCourtName === "Birmingham Crown Court"
+                        },
+                        {
+                            value: "Birmingham Magistrates Court",
+                            text: "Birmingham Magistrates Court",
+                            selected: nextHearingCourtName === "Birmingham Magistrates Court"
+                        },
+                        {
+                            value: "Bradford Magistrates Court",
+                            text: "Bradford Magistrates Court",
+                            selected: nextHearingCourtName === "Bradford Magistrates Court"
+                        },
+                        {
+                            value: "Bradford Crown Court",
+                            text: "Bradford Crown Court",
+                            selected: nextHearingCourtName === "Bradford Crown Court"
+                        },
+                        {
+                            value: "Carlisle Magistrates Court",
+                            text: "Carlisle Magistrates Court",
+                            selected: nextHearingCourtName === "Carlisle Magistrates Court"
+                        },
+                        {
+                            value: "Chester Combined Court Centre",
+                            text: "Chester Combined Court Centre",
+                            selected: nextHearingCourtName === "Chester Combined Court Centre"
+                        },
+                        {
+                            value: "Doncaster Magistrates Court",
+                            text: "Doncaster Magistrates Court",
+                            selected: nextHearingCourtName === "Doncaster Magistrates Court"
+                        },
+                        {
+                            value: "Leeds Combined Court Centre",
+                            text: "Leeds Combined Court Centre",
+                            selected: nextHearingCourtName === "Leeds Combined Court Centre"
+                        },
+                        {
+                            value: "Luton Crown Court",
+                            text: "Luton Crown Court",
+                            selected: nextHearingCourtName === "Luton Crown Court"
+                        },
+                        {
+                            value: "Luton Magistrates Court",
+                            text: "Luton Magistrates Court",
+                            selected: nextHearingCourtName === "Luton Magistrates Court"
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/assets/accessible-autocomplete.min.js"></script>
+    <script id="autocomplete-script" src="/assets/js/autoCompleteNextHearingCourtName.js" data-next-hearing-court-name="{{ nextHearingCourtName if nextHearingCourtName else '' }}"></script>
+{% endblock %}

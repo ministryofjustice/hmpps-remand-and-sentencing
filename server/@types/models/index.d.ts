@@ -8,7 +8,7 @@ declare module 'models' {
     nextHearingSelect?: boolean
     nextHearingType?: string
     nextHearingCourtSelect?: boolean
-    nextCourtName?: string
+    nextHearingCourtName?: string
   } // at some point this needs to change to appearance model
 
   export interface Offence {

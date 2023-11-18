@@ -262,9 +262,9 @@ export default class CourtCaseRoutes {
     const nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect === 'true'
     this.courtCaseService.setNextHearingCourtSelect(req.session, nomsId, nextHearingCourtSelect)
     if (nextHearingCourtSelect) {
-      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-answers`)
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
     }
-    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/next-court-name`)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-court-name`)
   }
 
   public getNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
@@ -282,6 +282,24 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingCourtNameForm = trimForm<CourtCaseNextHearingCourtNameForm>(req.body)
     this.courtCaseService.setNextHearingCourtName(req.session, nomsId, nextHearingCourtNameForm.nextHearingCourtName)
-    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-answers`)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
+  }
+
+  public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const courtCase = this.courtCaseService.getSessionCourtCase(req.session, nomsId)
+    return res.render('pages/courtCase/check-offence-answers', {
+      nomsId,
+      courtCase,
+      courtCaseReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-court-name`,
+    })
+  }
+
+  public submiCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    this.courtCaseService.saveCourtCase(req.session, nomsId)
+
+    return res.redirect(`/person/${nomsId}`)
   }
 }

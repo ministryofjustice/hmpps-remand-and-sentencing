@@ -258,7 +258,7 @@ export default class CourtCaseRoutes {
       nextHearingCourtSelect,
       courtName,
       courtCaseReference,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-type`,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-date`,
     })
   }
 

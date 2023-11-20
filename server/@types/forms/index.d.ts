@@ -63,4 +63,8 @@ declare module 'forms' {
     offenceCode?: string
     offenceName?: string
   }
+
+  export interface OffenceOffenceOutcomeForm {
+    offenceOutcome?: string
+  }
 }

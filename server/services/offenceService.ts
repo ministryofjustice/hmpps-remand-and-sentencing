@@ -71,6 +71,15 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
+  getOffenceOutcome(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ): string {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    return this.getOffence(session.offences, id).outcome
+  }
+
   private getOffenceId(nomsId: string, courtCaseReference: string) {
     return `${nomsId}-${courtCaseReference}`
   }

@@ -2,6 +2,7 @@ import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import type {
   OffenceConfirmOffenceForm,
+  OffenceLookupOffenceOutcomeForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
@@ -88,6 +89,34 @@ export default class OffenceRoutes {
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/lookup-offence-outcome`)
     }
     this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm.offenceOutcome)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
+  }
+
+  public getLookupOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
+    if (courtCase) {
+      const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
+      return res.render('pages/offence/lookup-offence-outcome', {
+        nomsId,
+        courtCaseReference,
+        courtCase,
+        offenceOutcome,
+        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/offence-outcome`,
+      })
+    }
+    throw createError(404, 'Not found')
+  }
+
+  public submitLookupOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const lookupOffenceOutcomeForm = trimForm<OffenceLookupOffenceOutcomeForm>(req.body)
+    this.offenceService.setOffenceOutcome(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      lookupOffenceOutcomeForm.offenceOutcome,
+    )
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
   }
 

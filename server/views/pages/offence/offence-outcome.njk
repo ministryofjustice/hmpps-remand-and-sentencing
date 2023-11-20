@@ -1,0 +1,75 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+
+
+{% set pageTitle = applicationName + " - Add a offence outcome" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-offence-outcome">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
+
+                {{ govukRadios({
+                    name: "offenceOutcome",
+                    fieldset: {
+                        legend: {
+                        text: "Select the outcome for this offence",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                        {
+                        value: "Remand in Custody (Bail Refused)",
+                        text: "Remand in Custody (Bail Refused)",
+                        checked: offenceOutcome === "Remand in Custody (Bail Refused)"
+                        },
+                        {
+                        value: "Commit/Transfer/Send to Crown Court for Trial in Custody",
+                        text: "Commit/Transfer/Send to Crown Court for Trial in Custody",
+                        checked: offenceOutcome === "Commit/Transfer/Send to Crown Court for Trial in Custody"
+                        },
+                        {
+                        value: "Commit to Crown Court for Trial (Summary / Either Way Offences)",
+                        text: "Commit to Crown Court for Trial (Summary / Either Way Offences)",
+                        checked: offenceOutcome === "Commit to Crown Court for Trial (Summary / Either Way Offences)"
+                        },
+                        {
+                        value: "Recall to Prison",
+                        text: "Recall to Prison",
+                        checked: offenceOutcome === "Recall to Prison"
+                        },
+                        {
+                        value: "Sentence Postponed",
+                        text: "Sentence Postponed",
+                        checked: offenceOutcome === "Sentence Postponed"
+                        },
+                        {
+                        value: "Commit to Crown Court for Sentence in Custody",
+                        text: "Commit to Crown Court for Sentence in Custody",
+                        checked: offenceOutcome === "Commit to Crown Court for Sentence in Custody"
+                        },
+                        {
+                        divider: "or"
+                        },
+                        {
+                        value: "LOOKUPDIFFERENT",
+                        text: "Lookup a different outcome",
+                        checked: offenceOutcome === "LOOKUPDIFFERENT"
+                        }
+                    ]
+                    }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

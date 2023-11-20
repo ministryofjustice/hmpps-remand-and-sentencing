@@ -5,6 +5,7 @@ import type {
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
+  OffenceOffenceOutcomeForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import CourtCaseService from '../services/courtCaseService'
@@ -62,6 +63,32 @@ export default class OffenceRoutes {
     }
     // redirect to outcome for offence or check answers offence page
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-outcome`)
+  }
+
+  public getOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
+    if (courtCase) {
+      const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
+      return res.render('pages/offence/offence-outcome', {
+        nomsId,
+        courtCaseReference,
+        courtCase,
+        offenceOutcome,
+        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/offence-date`,
+      })
+    }
+    throw createError(404, 'Not found')
+  }
+
+  public submitOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
+    if (offenceOutcomeForm.offenceOutcome === 'LOOKUPDIFFERENT') {
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/lookup-offence-outcome`)
+    }
+    this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm.offenceOutcome)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
   }
 
   public getOffenceCode: RequestHandler = async (req, res): Promise<void> => {

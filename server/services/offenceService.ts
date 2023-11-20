@@ -58,6 +58,19 @@ export default class OffenceService {
     return this.getOffence(session.offences, id).offenceCode
   }
 
+  setOffenceOutcome(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    outcome: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    offence.outcome = outcome
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
+  }
+
   private getOffenceId(nomsId: string, courtCaseReference: string) {
     return `${nomsId}-${courtCaseReference}`
   }

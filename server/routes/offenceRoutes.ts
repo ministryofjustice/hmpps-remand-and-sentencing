@@ -55,8 +55,13 @@ export default class OffenceRoutes {
       })
       this.offenceService.setOffenceEndDate(req.session, nomsId, courtCaseReference, offenceEndDate.toDate())
     }
-
-    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-code`)
+    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
+    if (courtCase.caseOutcomeAppliedAll) {
+      this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, courtCase.overallCaseOutcome)
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
+    }
+    // redirect to outcome for offence or check answers offence page
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-outcome`)
   }
 
   public getOffenceCode: RequestHandler = async (req, res): Promise<void> => {

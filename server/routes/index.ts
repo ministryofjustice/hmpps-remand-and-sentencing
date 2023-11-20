@@ -109,11 +109,14 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.submitNextHearingCourtName,
   )
 
-  get('/person/:nomsId/court-cases/:courtCaseReference/check-offence-answers', courtCaseRoutes.getCheckOffenceAnswers)
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/check-next-hearing-answers',
+    courtCaseRoutes.getCheckNextHearingAnswers,
+  )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/submit-check-offence-answers',
-    courtCaseRoutes.submiCheckOffenceAnswers,
+    '/person/:nomsId/court-cases/:courtCaseReference/submit-check-next-hearing-answers',
+    courtCaseRoutes.submiCheckNextHearingAnswers,
   )
 
   return router

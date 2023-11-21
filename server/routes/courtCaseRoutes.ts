@@ -69,7 +69,7 @@ export default class CourtCaseRoutes {
         warrantDateYear = warrantDate.getFullYear()
       }
     }
-    return res.render('pages/courtCase/warrant-date', {
+    return res.render('pages/courtAppearance/warrant-date', {
       nomsId,
       submitToCheckAnswers,
       warrantDateDay,
@@ -102,7 +102,7 @@ export default class CourtCaseRoutes {
     if (submitToCheckAnswers) {
       courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
     }
-    return res.render('pages/courtCase/court-name', {
+    return res.render('pages/courtAppearance/court-name', {
       nomsId,
       submitToCheckAnswers,
       courtName,

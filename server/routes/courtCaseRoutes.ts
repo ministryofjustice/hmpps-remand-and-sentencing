@@ -258,7 +258,7 @@ export default class CourtCaseRoutes {
 
   public getNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
-    const nextHearingCourtSelect = this.courtCaseService.getNextHearingCourtSelect(req.session, nomsId)
+    const nextHearingCourtSelect = this.courtAppearanceService.getNextHearingCourtSelect(req.session, nomsId)
     const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
     return res.render('pages/courtCase/next-hearing-court-select', {
       nomsId,
@@ -273,7 +273,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingCourtSelectForm = trimForm<CourtCaseNextHearingCourtSelectForm>(req.body)
     const nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect === 'true'
-    this.courtCaseService.setNextHearingCourtSelect(req.session, nomsId, nextHearingCourtSelect)
+    this.courtAppearanceService.setNextHearingCourtSelect(req.session, nomsId, nextHearingCourtSelect)
     if (nextHearingCourtSelect) {
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-next-hearing-answers`)
     }

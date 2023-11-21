@@ -38,6 +38,24 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session.courtAppearances, nomsId).courtName
   }
 
+  getNextHearingCourtSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    return this.getCourtAppearance(session.courtAppearances, nomsId).nextHearingCourtSelect
+  }
+
+  setNextHearingCourtSelect(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    nextHearingCourtSelect: boolean,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
+    courtAppearance.nextHearingCourtSelect = nextHearingCourtSelect
+    if (nextHearingCourtSelect) {
+      courtAppearance.nextHearingCourtName = courtAppearance.courtName
+    }
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   getSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
     return this.getCourtAppearance(session.courtAppearances, nomsId)
   }

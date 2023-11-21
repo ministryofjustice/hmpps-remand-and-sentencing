@@ -6,6 +6,7 @@ import OffenceService from './offenceService'
 import ManageOffencesService from './manageOffencesService'
 import FeComponentsService from './feComponentsService'
 import RemandAndSentencingService from './remandAndSentencingService'
+import CourtAppearanceService from './courtAppearanceService'
 
 export const services = () => {
   const { applicationInfo, manageUsersApiClient, feComponentsClient } = dataAccess()
@@ -24,6 +25,8 @@ export const services = () => {
 
   const remandAndSentencingService = new RemandAndSentencingService()
 
+  const courtAppearanceService = new CourtAppearanceService()
+
   return {
     applicationInfo,
     userService,
@@ -33,6 +36,7 @@ export const services = () => {
     manageOffencesService,
     feComponentsService,
     remandAndSentencingService,
+    courtAppearanceService,
   }
 }
 

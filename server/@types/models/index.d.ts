@@ -1,6 +1,6 @@
 declare module 'models' {
   export interface CourtCase {
-    referenceNumber?: string
+    uniqueIdentifier?: string
     warrantDate?: Date
     courtName?: string
     overallCaseOutcome?: string
@@ -9,7 +9,14 @@ declare module 'models' {
     nextHearingType?: string
     nextHearingCourtSelect?: boolean
     nextHearingCourtName?: string
+    appearances?: CourtAppearance[]
   } // at some point this needs to change to appearance model
+
+  export interface CourtAppearance {
+    caseReferenceNumber?: string
+    warrantDate?: Date
+    courtName?: string
+  }
 
   export interface Offence {
     offenceStartDate?: Date

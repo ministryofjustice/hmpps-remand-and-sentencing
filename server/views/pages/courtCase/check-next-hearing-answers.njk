@@ -72,7 +72,7 @@
             <h2 class="govuk-heading-m">Now save this court case</h2>
             <p class="govuk-body">By saving this court case, you are confirming that the details you are providing match the details on the warrant.</p>
 
-            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-check-offence-answers">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-check-next-hearing-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
                     text: "Save and continue"

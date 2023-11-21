@@ -5,8 +5,6 @@ declare module 'models' {
     caseOutcomeAppliedAll?: boolean
     nextHearingSelect?: boolean
     nextHearingType?: string
-    nextHearingCourtSelect?: boolean
-    nextHearingCourtName?: string
     appearances?: CourtAppearance[]
   } // at some point this needs to change to appearance model
 

@@ -282,7 +282,7 @@ export default class CourtCaseRoutes {
 
   public getNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
-    const nextHearingCourtName = this.courtCaseService.getNextHearingCourtName(req.session, nomsId)
+    const nextHearingCourtName = this.courtAppearanceService.getNextHearingCourtName(req.session, nomsId)
     return res.render('pages/courtCase/next-hearing-court-name', {
       nomsId,
       nextHearingCourtName,
@@ -294,7 +294,11 @@ export default class CourtCaseRoutes {
   public submitNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingCourtNameForm = trimForm<CourtCaseNextHearingCourtNameForm>(req.body)
-    this.courtCaseService.setNextHearingCourtName(req.session, nomsId, nextHearingCourtNameForm.nextHearingCourtName)
+    this.courtAppearanceService.setNextHearingCourtName(
+      req.session,
+      nomsId,
+      nextHearingCourtNameForm.nextHearingCourtName,
+    )
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-next-hearing-answers`)
   }
 

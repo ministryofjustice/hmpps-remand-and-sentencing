@@ -101,6 +101,13 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.submitNextHearingType,
   )
 
+  get('/person/:nomsId/court-cases/:courtCaseReference/next-hearing-date', courtCaseRoutes.getNextHearingDate)
+
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/submit-next-hearing-date',
+    courtCaseRoutes.submitNextHearingDate,
+  )
+
   get(
     '/person/:nomsId/court-cases/:courtCaseReference/next-hearing-court-select',
     courtCaseRoutes.getNextHearingCourtSelect,

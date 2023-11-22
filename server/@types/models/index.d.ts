@@ -14,6 +14,7 @@ declare module 'models' {
     caseOutcomeAppliedAll?: boolean
     nextHearingSelect?: boolean
     nextHearingType?: string
+    nextHearingDate?: Date
   }
 
   export interface Offence {

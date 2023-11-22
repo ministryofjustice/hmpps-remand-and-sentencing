@@ -10,7 +10,7 @@ context('Lookup offence outcome Page', () => {
     cy.task('stubGetPersonDetails')
     cy.signIn()
     cy.createCourtCase('A1234AB', '12345')
-    cy.visit('/person/A1234AB/court-cases/12345/lookup-offence-outcome')
+    cy.visit('/person/A1234AB/court-cases/1/lookup-offence-outcome')
     offenceLookupOffenceOutcomePage = Page.verifyOnPage(OffenceLookupOffenceOutcomePage)
   })
 

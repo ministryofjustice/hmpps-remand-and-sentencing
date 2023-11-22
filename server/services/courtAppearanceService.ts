@@ -71,6 +71,62 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
+  setOverallCaseOutcome(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    overallCaseOutcome: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
+    courtAppearance.overallCaseOutcome = overallCaseOutcome
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  getOverallCaseOutcome(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtAppearance(session.courtAppearances, nomsId).overallCaseOutcome
+  }
+
+  setCaseOutcomeAppliedAll(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    caseOutcomeAppliedAll: boolean,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
+    courtAppearance.caseOutcomeAppliedAll = caseOutcomeAppliedAll
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  getCaseOutcomeAppliedAll(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    return this.getCourtAppearance(session.courtAppearances, nomsId).caseOutcomeAppliedAll
+  }
+
+  getNextHearingSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    return this.getCourtAppearance(session.courtAppearances, nomsId).nextHearingSelect
+  }
+
+  setNextHearingSelect(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    nextHearingSelect: boolean,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
+    courtAppearance.nextHearingSelect = nextHearingSelect
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  getNextHearingType(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtAppearance(session.courtAppearances, nomsId).nextHearingType
+  }
+
+  setNextHearingType(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, nextHearingType: string) {
+    const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
+    courtAppearance.nextHearingType = nextHearingType
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   getSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
     return this.getCourtAppearance(session.courtAppearances, nomsId)
   }

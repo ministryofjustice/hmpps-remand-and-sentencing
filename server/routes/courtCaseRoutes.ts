@@ -275,7 +275,7 @@ export default class CourtCaseRoutes {
     const nextHearingDateForm = trimForm<CourtCaseNextHearingDateForm>(req.body)
     const nextHearingDate = dayjs({
       year: nextHearingDateForm['nextHearingDate-year'],
-      month: nextHearingDateForm['nextHearingDate-month'],
+      month: parseInt(nextHearingDateForm['nextHearingDate-month'], 10) - 1,
       day: nextHearingDateForm['nextHearingDate-day'],
     })
     if (nextHearingDateForm.nextHearingTime) {

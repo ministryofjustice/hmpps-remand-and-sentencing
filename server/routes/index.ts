@@ -14,7 +14,7 @@ export default function routes(services: Services): Router {
 
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
-  const courtCaseRoutes = new CourtCaseRoutes(services.courtCaseService)
+  const courtCaseRoutes = new CourtCaseRoutes(services.courtCaseService, services.courtAppearanceService)
   const apiRoutes = new ApiRoutes(services.prisonerService, services.manageOffencesService)
   const offenceRoutes = new OffenceRoutes(
     services.courtCaseService,

@@ -14,9 +14,13 @@ import type {
 import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
+import CourtAppearanceService from '../services/courtAppearanceService'
 
 export default class CourtCaseRoutes {
-  constructor(private readonly courtCaseService: CourtCaseService) {}
+  constructor(
+    private readonly courtCaseService: CourtCaseService,
+    private readonly courtAppearanceService: CourtAppearanceService,
+  ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
@@ -28,14 +32,14 @@ export default class CourtCaseRoutes {
   public getReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { submitToCheckAnswers } = req.query
-    let courtCaseReference: string
+    let caseReferenceNumber: string
     if (submitToCheckAnswers) {
-      courtCaseReference = this.courtCaseService.getCourtCaseReference(req.session, nomsId)
+      caseReferenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId)
     }
-    return res.render('pages/courtCase/reference', {
+    return res.render('pages/courtAppearance/reference', {
       nomsId,
       submitToCheckAnswers,
-      courtCaseReference,
+      caseReferenceNumber,
       backLink: `/person/${nomsId}`,
     })
   }
@@ -43,7 +47,7 @@ export default class CourtCaseRoutes {
   public submitReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const referenceForm = trimForm<CourtCaseReferenceForm>(req.body)
-    this.courtCaseService.setCourtCaseReference(req.session, nomsId, referenceForm.referenceNumber)
+    this.courtAppearanceService.setCaseReferenceNumber(req.session, nomsId, referenceForm.referenceNumber)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
@@ -58,14 +62,14 @@ export default class CourtCaseRoutes {
     let warrantDateMonth: number
     let warrantDateYear: number
     if (submitToCheckAnswers) {
-      const warrantDate = this.courtCaseService.getWarrantDate(req.session, nomsId)
+      const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId)
       if (warrantDate) {
         warrantDateDay = warrantDate.getDate()
         warrantDateMonth = warrantDate.getMonth() + 1
         warrantDateYear = warrantDate.getFullYear()
       }
     }
-    return res.render('pages/courtCase/warrant-date', {
+    return res.render('pages/courtAppearance/warrant-date', {
       nomsId,
       submitToCheckAnswers,
       warrantDateDay,
@@ -83,7 +87,7 @@ export default class CourtCaseRoutes {
       month: warrantDateForm['warrantDate-month'] - 1,
       day: warrantDateForm['warrantDate-day'],
     })
-    this.courtCaseService.setWarrantDate(req.session, nomsId, warrantDate.toDate())
+    this.courtAppearanceService.setWarrantDate(req.session, nomsId, warrantDate.toDate())
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
@@ -96,9 +100,9 @@ export default class CourtCaseRoutes {
     const { submitToCheckAnswers } = req.query
     let courtName: string
     if (submitToCheckAnswers) {
-      courtName = this.courtCaseService.getCourtName(req.session, nomsId)
+      courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
     }
-    return res.render('pages/courtCase/court-name', {
+    return res.render('pages/courtAppearance/court-name', {
       nomsId,
       submitToCheckAnswers,
       courtName,
@@ -110,7 +114,7 @@ export default class CourtCaseRoutes {
     const { nomsId } = req.params
     const courtNameForm = trimForm<CourtCaseCourtNameForm>(req.body)
 
-    this.courtCaseService.setCourtName(req.session, nomsId, courtNameForm.courtName)
+    this.courtAppearanceService.setCourtName(req.session, nomsId, courtNameForm.courtName)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
@@ -188,16 +192,19 @@ export default class CourtCaseRoutes {
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const courtCase = this.courtCaseService.getSessionCourtCase(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     return res.render('pages/courtCase/check-answers', {
       nomsId,
       courtCase,
+      courtAppearance,
       backLink: `/person/${nomsId}/court-cases/case-outcome-applied-all`,
     })
   }
 
   public submitCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const courtCaseReference = this.courtCaseService.saveCourtCase(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtCaseReference = this.courtCaseService.saveSessionCourtCase(req.session, nomsId, courtAppearance)
 
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-code`)
   }
@@ -251,8 +258,8 @@ export default class CourtCaseRoutes {
 
   public getNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
-    const nextHearingCourtSelect = this.courtCaseService.getNextHearingCourtSelect(req.session, nomsId)
-    const courtName = this.courtCaseService.getCourtName(req.session, nomsId)
+    const nextHearingCourtSelect = this.courtAppearanceService.getNextHearingCourtSelect(req.session, nomsId)
+    const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
     return res.render('pages/courtCase/next-hearing-court-select', {
       nomsId,
       nextHearingCourtSelect,
@@ -266,7 +273,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingCourtSelectForm = trimForm<CourtCaseNextHearingCourtSelectForm>(req.body)
     const nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect === 'true'
-    this.courtCaseService.setNextHearingCourtSelect(req.session, nomsId, nextHearingCourtSelect)
+    this.courtAppearanceService.setNextHearingCourtSelect(req.session, nomsId, nextHearingCourtSelect)
     if (nextHearingCourtSelect) {
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-next-hearing-answers`)
     }
@@ -275,7 +282,7 @@ export default class CourtCaseRoutes {
 
   public getNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
-    const nextHearingCourtName = this.courtCaseService.getNextHearingCourtName(req.session, nomsId)
+    const nextHearingCourtName = this.courtAppearanceService.getNextHearingCourtName(req.session, nomsId)
     return res.render('pages/courtCase/next-hearing-court-name', {
       nomsId,
       nextHearingCourtName,
@@ -287,7 +294,11 @@ export default class CourtCaseRoutes {
   public submitNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingCourtNameForm = trimForm<CourtCaseNextHearingCourtNameForm>(req.body)
-    this.courtCaseService.setNextHearingCourtName(req.session, nomsId, nextHearingCourtNameForm.nextHearingCourtName)
+    this.courtAppearanceService.setNextHearingCourtName(
+      req.session,
+      nomsId,
+      nextHearingCourtNameForm.nextHearingCourtName,
+    )
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-next-hearing-answers`)
   }
 
@@ -304,8 +315,6 @@ export default class CourtCaseRoutes {
 
   public submiCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    this.courtCaseService.saveCourtCase(req.session, nomsId)
-
     return res.redirect(`/person/${nomsId}`)
   }
 }

@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import session from 'express-session'
 import RedisStore from 'connect-redis'
 import express, { Router } from 'express'
-import type { CourtCase, Offence } from 'models'
+import type { CourtAppearance, CourtCase, Offence } from 'models'
 import { createRedisClient } from '../data/redisClient'
 import config from '../config'
 import logger from '../../logger'
@@ -35,6 +35,9 @@ export default function setUpWebSession(): Router {
     }
     if (!req.session.offences) {
       req.session.offences = new Map<string, Offence>()
+    }
+    if (!req.session.courtAppearances) {
+      req.session.courtAppearances = new Map<string, CourtAppearance>()
     }
     next()
   })

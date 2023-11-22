@@ -1,39 +1,6 @@
-import type { CourtCase } from 'models'
+import type { CourtAppearance, CourtCase } from 'models'
 
 export default class CourtCaseService {
-  setCourtCaseReference(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, referenceNumber: string) {
-    const courtCase = this.getCourtCase(session.courtCases, nomsId)
-    courtCase.referenceNumber = referenceNumber
-    // eslint-disable-next-line no-param-reassign
-    session.courtCases[nomsId] = courtCase
-  }
-
-  getCourtCaseReference(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
-    return this.getCourtCase(session.courtCases, nomsId).referenceNumber
-  }
-
-  setWarrantDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, warrantDate: Date) {
-    const courtCase = this.getCourtCase(session.courtCases, nomsId)
-    courtCase.warrantDate = warrantDate
-    // eslint-disable-next-line no-param-reassign
-    session.courtCases[nomsId] = courtCase
-  }
-
-  getWarrantDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {
-    return new Date(this.getCourtCase(session.courtCases, nomsId).warrantDate)
-  }
-
-  setCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtName: string) {
-    const courtCase = this.getCourtCase(session.courtCases, nomsId)
-    courtCase.courtName = courtName
-    // eslint-disable-next-line no-param-reassign
-    session.courtCases[nomsId] = courtCase
-  }
-
-  getCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
-    return this.getCourtCase(session.courtCases, nomsId).courtName
-  }
-
   setOverallCaseOutcome(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
@@ -90,48 +57,20 @@ export default class CourtCaseService {
     session.courtCases[nomsId] = courtCase
   }
 
-  getNextHearingCourtSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
-    return this.getCourtCase(session.courtCases, nomsId).nextHearingCourtSelect
-  }
-
-  setNextHearingCourtSelect(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    nextHearingCourtSelect: boolean,
-  ) {
-    const courtCase = this.getCourtCase(session.courtCases, nomsId)
-    courtCase.nextHearingCourtSelect = nextHearingCourtSelect
-    if (nextHearingCourtSelect) {
-      courtCase.nextHearingCourtName = courtCase.courtName
-    }
-    // eslint-disable-next-line no-param-reassign
-    session.courtCases[nomsId] = courtCase
-  }
-
-  getNextHearingCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
-    return this.getCourtCase(session.courtCases, nomsId).nextHearingCourtName
-  }
-
-  setNextHearingCourtName(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    nextHearingCourtName: string,
-  ) {
-    const courtCase = this.getCourtCase(session.courtCases, nomsId)
-    courtCase.nextHearingCourtName = nextHearingCourtName
-    // eslint-disable-next-line no-param-reassign
-    session.courtCases[nomsId] = courtCase
-  }
-
   getSessionCourtCase(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     return this.getCourtCase(session.courtCases, nomsId)
   }
 
-  saveCourtCase(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  saveSessionCourtCase(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtAppearance: CourtAppearance,
+  ): string {
     const courtCase = this.getCourtCase(session.courtCases, nomsId)
+    courtCase.appearances.push(courtAppearance)
     // eslint-disable-next-line no-param-reassign
-    session.savedCourtCases[this.getCourtCasePersistId(nomsId, courtCase.referenceNumber)] = courtCase
-    return courtCase.referenceNumber
+    session.courtCases[this.getCourtCasePersistId(nomsId, courtCase.uniqueIdentifier)] = courtCase
+    return courtCase.uniqueIdentifier
   }
 
   getSessionSavedCourtCase(
@@ -139,7 +78,7 @@ export default class CourtCaseService {
     nomsId: string,
     courtCaseReference: string,
   ): CourtCase {
-    return this.getSavedCourtCases(session.savedCourtCases, nomsId, courtCaseReference)
+    return this.getSavedCourtCases(session.courtCases, nomsId, courtCaseReference)
   }
 
   private getSavedCourtCases(
@@ -155,6 +94,6 @@ export default class CourtCaseService {
   }
 
   private getCourtCase(courtCases: Map<string, CourtCase>, nomsId: string): CourtCase {
-    return courtCases[nomsId] ?? {}
+    return courtCases[nomsId] ?? { appearances: [], uniqueIdentifier: Object.keys(courtCases).length + 1 }
   }
 }

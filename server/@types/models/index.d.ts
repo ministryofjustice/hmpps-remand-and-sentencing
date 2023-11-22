@@ -1,10 +1,6 @@
 declare module 'models' {
   export interface CourtCase {
     uniqueIdentifier?: string
-    overallCaseOutcome?: string
-    caseOutcomeAppliedAll?: boolean
-    nextHearingSelect?: boolean
-    nextHearingType?: string
     appearances?: CourtAppearance[]
   } // at some point this needs to change to appearance model
 
@@ -14,6 +10,10 @@ declare module 'models' {
     courtName?: string
     nextHearingCourtSelect?: boolean
     nextHearingCourtName?: string
+    overallCaseOutcome?: string
+    caseOutcomeAppliedAll?: boolean
+    nextHearingSelect?: boolean
+    nextHearingType?: string
   }
 
   export interface Offence {

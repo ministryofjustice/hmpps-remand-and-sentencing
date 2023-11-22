@@ -125,8 +125,8 @@ export default class CourtCaseRoutes {
   public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { submitToCheckAnswers } = req.query
-    const overallCaseOutcome: string = this.courtCaseService.getOverallCaseOutcome(req.session, nomsId)
-    return res.render('pages/courtCase/overall-case-outcome', {
+    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
+    return res.render('pages/courtAppearance/overall-case-outcome', {
       nomsId,
       submitToCheckAnswers,
       overallCaseOutcome,
@@ -140,7 +140,7 @@ export default class CourtCaseRoutes {
     if (overallCaseOutcomeForm.overallCaseOutcome === 'LOOKUPDIFFERENT') {
       return res.redirect(`/person/${nomsId}/court-cases/lookup-case-outcome`)
     }
-    this.courtCaseService.setOverallCaseOutcome(req.session, nomsId, overallCaseOutcomeForm.overallCaseOutcome)
+    this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, overallCaseOutcomeForm.overallCaseOutcome)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
@@ -150,7 +150,7 @@ export default class CourtCaseRoutes {
 
   public getLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    return res.render('pages/courtCase/lookup-case-outcome', {
+    return res.render('pages/courtAppearance/lookup-case-outcome', {
       nomsId,
       backLink: `/person/${nomsId}/court-cases/overall-case-outcome`,
     })
@@ -159,16 +159,16 @@ export default class CourtCaseRoutes {
   public submitLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const lookupCaseOutcomeForm = trimForm<CourtCaseLookupCaseOutcomeForm>(req.body)
-    this.courtCaseService.setOverallCaseOutcome(req.session, nomsId, lookupCaseOutcomeForm.caseOutcome)
+    this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, lookupCaseOutcomeForm.caseOutcome)
     return res.redirect(`/person/${nomsId}/court-cases/case-outcome-applied-all`)
   }
 
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { submitToCheckAnswers } = req.query
-    const overallCaseOutcome: string = this.courtCaseService.getOverallCaseOutcome(req.session, nomsId)
-    const caseOutcomeAppliedAll: boolean = this.courtCaseService.getCaseOutcomeAppliedAll(req.session, nomsId)
-    return res.render('pages/courtCase/case-outcome-applied-all', {
+    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
+    const caseOutcomeAppliedAll: boolean = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
+    return res.render('pages/courtAppearance/case-outcome-applied-all', {
       nomsId,
       submitToCheckAnswers,
       overallCaseOutcome,
@@ -181,7 +181,7 @@ export default class CourtCaseRoutes {
     const { nomsId } = req.params
     const caseOutcomeAppliedAllForm = trimForm<CourtCaseCaseOutcomeAppliedAllForm>(req.body)
 
-    this.courtCaseService.setCaseOutcomeAppliedAll(
+    this.courtAppearanceService.setCaseOutcomeAppliedAll(
       req.session,
       nomsId,
       caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true',
@@ -193,7 +193,7 @@ export default class CourtCaseRoutes {
     const { nomsId } = req.params
     const courtCase = this.courtCaseService.getSessionCourtCase(req.session, nomsId)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    return res.render('pages/courtCase/check-answers', {
+    return res.render('pages/courtAppearance/check-answers', {
       nomsId,
       courtCase,
       courtAppearance,
@@ -211,8 +211,8 @@ export default class CourtCaseRoutes {
 
   public getNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
-    const nextHearingSelect = this.courtCaseService.getNextHearingSelect(req.session, nomsId)
-    return res.render('pages/courtCase/next-hearing-select', {
+    const nextHearingSelect = this.courtAppearanceService.getNextHearingSelect(req.session, nomsId)
+    return res.render('pages/courtAppearance/next-hearing-select', {
       nomsId,
       nextHearingSelect,
       courtCaseReference,
@@ -224,7 +224,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingSelectForm = trimForm<CourtCaseNextHearingSelectForm>(req.body)
     const nextHearingSelect = nextHearingSelectForm.nextHearingSelect === 'true'
-    this.courtCaseService.setNextHearingSelect(req.session, nomsId, nextHearingSelect)
+    this.courtAppearanceService.setNextHearingSelect(req.session, nomsId, nextHearingSelect)
     if (nextHearingSelect) {
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-type`)
     }
@@ -235,8 +235,8 @@ export default class CourtCaseRoutes {
   public getNextHearingType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
     const { submitToCheckAnswers } = req.query
-    const nextHearingType = this.courtCaseService.getNextHearingType(req.session, nomsId)
-    return res.render('pages/courtCase/next-hearing-type', {
+    const nextHearingType = this.courtAppearanceService.getNextHearingType(req.session, nomsId)
+    return res.render('pages/courtAppearance/next-hearing-type', {
       nomsId,
       nextHearingType,
       courtCaseReference,
@@ -248,7 +248,7 @@ export default class CourtCaseRoutes {
   public submitNextHearingType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingTypeForm = trimForm<CourtCaseNextHearingTypeForm>(req.body)
-    this.courtCaseService.setNextHearingType(req.session, nomsId, nextHearingTypeForm.nextHearingType)
+    this.courtAppearanceService.setNextHearingType(req.session, nomsId, nextHearingTypeForm.nextHearingType)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-next-hearing-answers`)
@@ -260,7 +260,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingCourtSelect = this.courtAppearanceService.getNextHearingCourtSelect(req.session, nomsId)
     const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
-    return res.render('pages/courtCase/next-hearing-court-select', {
+    return res.render('pages/courtAppearance/next-hearing-court-select', {
       nomsId,
       nextHearingCourtSelect,
       courtName,
@@ -283,7 +283,7 @@ export default class CourtCaseRoutes {
   public getNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingCourtName = this.courtAppearanceService.getNextHearingCourtName(req.session, nomsId)
-    return res.render('pages/courtCase/next-hearing-court-name', {
+    return res.render('pages/courtAppearance/next-hearing-court-name', {
       nomsId,
       nextHearingCourtName,
       courtCaseReference,
@@ -304,10 +304,10 @@ export default class CourtCaseRoutes {
 
   public getCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
-    const courtCase = this.courtCaseService.getSessionCourtCase(req.session, nomsId)
-    return res.render('pages/courtCase/check-next-hearing-answers', {
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    return res.render('pages/courtAppearance/check-next-hearing-answers', {
       nomsId,
-      courtCase,
+      courtAppearance,
       courtCaseReference,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-court-name`,
     })

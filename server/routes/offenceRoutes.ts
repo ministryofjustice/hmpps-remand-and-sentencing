@@ -13,12 +13,14 @@ import CourtCaseService from '../services/courtCaseService'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
+import CourtAppearanceService from '../services/courtAppearanceService'
 
 export default class OffenceRoutes {
   constructor(
     private readonly courtCaseService: CourtCaseService,
     private readonly offenceService: OffenceService,
     private readonly manageOffencesService: ManageOffencesService,
+    private readonly courtAppearanceService: CourtAppearanceService,
   ) {}
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -57,9 +59,14 @@ export default class OffenceRoutes {
       })
       this.offenceService.setOffenceEndDate(req.session, nomsId, courtCaseReference, offenceEndDate.toDate())
     }
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase.caseOutcomeAppliedAll) {
-      this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, courtCase.overallCaseOutcome)
+    const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
+    if (caseOutcomeAppliedAll) {
+      this.offenceService.setOffenceOutcome(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId),
+      )
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
     }
     // redirect to outcome for offence or check answers offence page

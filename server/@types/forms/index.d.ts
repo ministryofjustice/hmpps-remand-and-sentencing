@@ -33,6 +33,13 @@ declare module 'forms' {
     nextHearingType?: string
   }
 
+  export interface CourtCaseNextHearingDateForm {
+    'nextHearingDate-year'?: string
+    'nextHearingDate-month'?: string
+    'nextHearingDate-day'?: string
+    nextHearingTime?: string
+  }
+
   export interface CourtCaseNextHearingCourtSelectForm {
     nextHearingCourtSelect?: string
   }

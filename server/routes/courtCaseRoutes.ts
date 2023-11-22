@@ -10,6 +10,7 @@ import type {
   CourtCaseNextHearingTypeForm,
   CourtCaseNextHearingCourtSelectForm,
   CourtCaseNextHearingCourtNameForm,
+  CourtCaseNextHearingDateForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
@@ -254,6 +255,40 @@ export default class CourtCaseRoutes {
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-next-hearing-answers`)
     }
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-date`)
+  }
+
+  public getNextHearingDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const { submitToCheckAnswers } = req.query
+    const nextHearingDate = this.courtAppearanceService.getNextHearingDate(req.session, nomsId)
+    return res.render('pages/courtAppearance/next-hearing-date', {
+      nomsId,
+      nextHearingDate,
+      courtCaseReference,
+      submitToCheckAnswers,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-type`,
+    })
+  }
+
+  public submitNextHearingDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const nextHearingDateForm = trimForm<CourtCaseNextHearingDateForm>(req.body)
+    const nextHearingDate = dayjs({
+      year: nextHearingDateForm['nextHearingDate-year'],
+      month: nextHearingDateForm['nextHearingDate-month'],
+      day: nextHearingDateForm['nextHearingDate-day'],
+    })
+    if (nextHearingDateForm.nextHearingTime) {
+      const [nextHearingHour, nextHearingMinute] = nextHearingDateForm.nextHearingTime.split(':')
+      nextHearingDate.set('hour', parseInt(nextHearingHour, 10))
+      nextHearingDate.set('minute', parseInt(nextHearingMinute, 10))
+    }
+    this.courtAppearanceService.setNextHearingDate(req.session, nomsId, nextHearingDate.toDate())
+    const { submitToCheckAnswers } = req.query
+    if (submitToCheckAnswers) {
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-next-hearing-answers`)
+    }
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/next-hearing-court-select`)
   }
 
   public getNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {

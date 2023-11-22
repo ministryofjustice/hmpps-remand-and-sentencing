@@ -127,6 +127,17 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
+  getNextHearingDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {
+    return this.getCourtAppearance(session.courtAppearances, nomsId).nextHearingDate
+  }
+
+  setNextHearingDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, nextHearingDate: Date) {
+    const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
+    courtAppearance.nextHearingDate = nextHearingDate
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   getSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
     return this.getCourtAppearance(session.courtAppearances, nomsId)
   }

@@ -1,0 +1,60 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set pageTitle = applicationName + " - Add a court case Next Court Date" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-next-hearing-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Add a court case</span>
+
+                {% call govukFieldset({
+                    legend: {
+                        text: "Enter the date of the next court appearance",
+                        classes: "govuk-fieldset__legend--l",
+                        isPageHeading: true
+                    }
+                }) %}
+
+                    {{ govukDateInput({
+                        id: "next-hearing-date",
+                        namePrefix: "nextHearingDate",
+                        fieldset: {
+                            legend: {
+                                text: "Next court date",
+                                classes: "govuk-label--s"
+                            }
+
+                        }
+                    }) }}
+
+                    {{ govukInput({
+                        label: {
+                            text: "Time of next court appearance (optional)",
+                            classes: "govuk-label--s"
+                        },
+                        hint: {
+                            text: "For example, 1:00 or 13:00"
+                        },
+                        classes: "govuk-input--width-4",
+                        id: "next-hearing-time",
+                        name: "nextHearingTime"
+                    }) }}
+
+                {% endcall %}
+
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

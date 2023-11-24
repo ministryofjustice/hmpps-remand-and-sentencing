@@ -273,17 +273,22 @@ export default class CourtCaseRoutes {
   public submitNextHearingDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference } = req.params
     const nextHearingDateForm = trimForm<CourtCaseNextHearingDateForm>(req.body)
-    const nextHearingDate = dayjs({
+    let nextHearingDate = dayjs({
       year: nextHearingDateForm['nextHearingDate-year'],
       month: parseInt(nextHearingDateForm['nextHearingDate-month'], 10) - 1,
       day: nextHearingDateForm['nextHearingDate-day'],
     })
     if (nextHearingDateForm.nextHearingTime) {
       const [nextHearingHour, nextHearingMinute] = nextHearingDateForm.nextHearingTime.split(':')
-      nextHearingDate.set('hour', parseInt(nextHearingHour, 10))
-      nextHearingDate.set('minute', parseInt(nextHearingMinute, 10))
+      nextHearingDate = nextHearingDate.set('hour', parseInt(nextHearingHour, 10))
+      nextHearingDate = nextHearingDate.set('minute', parseInt(nextHearingMinute, 10))
     }
-    this.courtAppearanceService.setNextHearingDate(req.session, nomsId, nextHearingDate.toDate())
+    this.courtAppearanceService.setNextHearingDate(
+      req.session,
+      nomsId,
+      nextHearingDate.toDate(),
+      Boolean(nextHearingDateForm.nextHearingTime),
+    )
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-next-hearing-answers`)

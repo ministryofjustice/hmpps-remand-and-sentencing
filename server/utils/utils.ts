@@ -31,8 +31,8 @@ export const formatDate = (date?: string): string | null => {
   return dayjs(date).format(config.dateFormat)
 }
 
-export const formatDateTime = (date?: string): string | null => {
+export const formatDateTime = (date?: string, showTime?: boolean): string | null => {
   if (!date) return null
 
-  return dayjs(date).format(config.dateTimeFormat)
+  return showTime ? dayjs(date).format(config.dateTimeFormat) : formatDate(date)
 }

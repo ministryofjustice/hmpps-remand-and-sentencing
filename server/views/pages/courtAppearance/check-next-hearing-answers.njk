@@ -20,7 +20,7 @@
                             text: "Next hearing date"
                         },
                             value: {
-                            text: courtAppearance.nextHearingDate | formatDateTime
+                            text: courtAppearance.nextHearingDate | formatDateTime(courtAppearance.nextHearingTimeSet)
                         },
                             actions: {
                             items: [

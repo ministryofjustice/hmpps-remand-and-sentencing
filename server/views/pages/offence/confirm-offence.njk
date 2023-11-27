@@ -11,7 +11,7 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-confirm-offence">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offences/{{ offenceReference }}/submit-confirm-offence">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <input type="hidden" name="offenceCode" value="{{ offence.code }}">
                 <input type="hidden" name="offenceName" value="{{ offence.description }}">
@@ -48,10 +48,10 @@
                 }) }}
             </form>
             <p class="govuk-body">
-                <a href="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offence-code">Enter a different offence code</a>
+                <a href="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offences/{{ offenceReference }}/offence-code">Enter a different offence code</a>
             </p>
             <p class="govuk-body">
-                <a href="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offence-name">Look up an offence by name</a>
+                <a href="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offences/{{ offenceReference }}/offence-name">Look up an offence by name</a>
             </p>
 
         </div>

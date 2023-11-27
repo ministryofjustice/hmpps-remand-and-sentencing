@@ -60,36 +60,75 @@ export default function routes(services: Services): Router {
 
   post('/person/:nomsId/court-cases/submit-check-answers', courtCaseRoutes.submitCheckAnswers)
 
-  get('/person/:nomsId/court-cases/:courtCaseReference/offence-date', offenceRoutes.getOffenceDate)
-
-  post('/person/:nomsId/court-cases/:courtCaseReference/submit-offence-date', offenceRoutes.submitOffenceDate)
-
-  get('/person/:nomsId/court-cases/:courtCaseReference/offence-outcome', offenceRoutes.getOffenceOutcome)
-
-  post('/person/:nomsId/court-cases/:courtCaseReference/submit-offence-outcome', offenceRoutes.submitOffenceOutcome)
-
-  get('/person/:nomsId/court-cases/:courtCaseReference/lookup-offence-outcome', offenceRoutes.getLookupOffenceOutcome)
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/offence-date',
+    offenceRoutes.getOffenceDate,
+  )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/submit-lookup-offence-outcome',
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/submit-offence-date',
+    offenceRoutes.submitOffenceDate,
+  )
+
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/offence-outcome',
+    offenceRoutes.getOffenceOutcome,
+  )
+
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/submit-offence-outcome',
+    offenceRoutes.submitOffenceOutcome,
+  )
+
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/lookup-offence-outcome',
+    offenceRoutes.getLookupOffenceOutcome,
+  )
+
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/submit-lookup-offence-outcome',
     offenceRoutes.submitLookupOffenceOutcome,
   )
 
-  get('/person/:nomsId/court-cases/:courtCaseReference/offence-code', offenceRoutes.getOffenceCode)
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/offence-code',
+    offenceRoutes.getOffenceCode,
+  )
 
-  post('/person/:nomsId/court-cases/:courtCaseReference/submit-offence-code', offenceRoutes.submitOffenceCode)
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/submit-offence-code',
+    offenceRoutes.submitOffenceCode,
+  )
 
-  get('/person/:nomsId/court-cases/:courtCaseReference/offence-name', offenceRoutes.getOffenceName)
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/offence-name',
+    offenceRoutes.getOffenceName,
+  )
 
-  post('/person/:nomsId/court-cases/:courtCaseReference/submit-offence-name', offenceRoutes.submitOffenceName)
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/submit-offence-name',
+    offenceRoutes.submitOffenceName,
+  )
 
-  get('/person/:nomsId/court-cases/:courtCaseReference/confirm-offence-code', offenceRoutes.getConfirmOffenceCode)
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/confirm-offence-code',
+    offenceRoutes.getConfirmOffenceCode,
+  )
 
-  post('/person/:nomsId/court-cases/:courtCaseReference/submit-confirm-offence', offenceRoutes.submitConfirmOffenceCode)
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/submit-confirm-offence',
+    offenceRoutes.submitConfirmOffenceCode,
+  )
 
-  get('/person/:nomsId/court-cases/:courtCaseReference/check-offence-answers', offenceRoutes.getCheckOffenceAnswers)
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/check-offence-answers',
+    offenceRoutes.getCheckOffenceAnswers,
+  )
 
-  get('/person/:nomsId/court-cases/:courtCaseReference/add-another-offence', offenceRoutes.addAnotherOffence)
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/add-another-offence',
+    offenceRoutes.addAnotherOffence,
+  )
 
   get('/person/:nomsId/court-cases/:courtCaseReference/next-hearing-select', courtCaseRoutes.getNextHearingSelect)
 

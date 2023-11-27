@@ -1,0 +1,16 @@
+{% extends "./prisonerBannerLayout.njk" %}
+
+{% block content %}
+
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+
+        <div class="govuk-grid-column-two-thirds">
+            {% block pageContent %}{% endblock %}
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="offence-summary">
+                <h2 class="govuk-heading-m govuk-!-margin-top-4">Appearance details</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}

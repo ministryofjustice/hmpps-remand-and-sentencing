@@ -1,16 +1,10 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-
-
-
-
 {% set pageTitle = applicationName + " - Add a court case Confirm Offence" %}
 
-{% block content %}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
+{% block pageContent %}
             <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offences/{{ offenceReference }}/submit-confirm-offence">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <input type="hidden" name="offenceCode" value="{{ offence.code }}">
@@ -53,8 +47,5 @@
             <p class="govuk-body">
                 <a href="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offences/{{ offenceReference }}/offence-name">Look up an offence by name</a>
             </p>
-
-        </div>
-    </div>
 
 {% endblock %}

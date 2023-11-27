@@ -27,7 +27,7 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference } = req.params
     const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
     if (courtCase) {
-      return res.render('pages/offences/offence-date', {
+      return res.render('pages/offence/offence-date', {
         nomsId,
         courtCaseReference,
         courtCase,
@@ -84,7 +84,7 @@ export default class OffenceRoutes {
     const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
     if (courtCase) {
       const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
-      return res.render('pages/offences/offence-outcome', {
+      return res.render('pages/offence/offence-outcome', {
         nomsId,
         courtCaseReference,
         courtCase,
@@ -116,7 +116,7 @@ export default class OffenceRoutes {
     const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
     if (courtCase) {
       const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
-      return res.render('pages/offences/lookup-offence-outcome', {
+      return res.render('pages/offence/lookup-offence-outcome', {
         nomsId,
         courtCaseReference,
         courtCase,
@@ -147,7 +147,7 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference } = req.params
     const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
     if (courtCase) {
-      return res.render('pages/offences/offence-code', {
+      return res.render('pages/offence/offence-code', {
         nomsId,
         courtCaseReference,
         courtCase,
@@ -179,7 +179,7 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference } = req.params
     const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
     if (courtCase) {
-      return res.render('pages/offences/offence-name', {
+      return res.render('pages/offence/offence-name', {
         nomsId,
         courtCaseReference,
         courtCase,
@@ -210,7 +210,7 @@ export default class OffenceRoutes {
         this.offenceService.getOffenceCode(req.session, nomsId, courtCaseReference),
         req.user.token,
       )
-      return res.render('pages/offences/confirm-offence', {
+      return res.render('pages/offence/confirm-offence', {
         nomsId,
         courtCaseReference,
         courtCase,
@@ -236,7 +236,7 @@ export default class OffenceRoutes {
     const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
     if (courtCase) {
       const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-      return res.render('pages/offences/check-offence-answers', {
+      return res.render('pages/offence/check-offence-answers', {
         nomsId,
         courtCaseReference,
         courtCase,

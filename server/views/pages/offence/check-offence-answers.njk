@@ -37,7 +37,7 @@
                 {{ govukButton({
                     text: "Add another offence",
                     classes: "govuk-button--secondary",
-                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/offences/" + offenceReference + "/add-another-offence"
+                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
                 }) }}
 
                 {{ govukButton({
@@ -56,7 +56,7 @@
                         outcome: offence.outcome,
                         nomsId: nomsId,
                         courtCaseReference: courtCaseReference,
-                        offenceReference: loop.index0,
+                        offenceReference: loop.index0
                     })
                 }}
             {% endfor %}

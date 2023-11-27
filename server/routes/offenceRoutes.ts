@@ -68,10 +68,8 @@ export default class OffenceRoutes {
         courtCaseReference,
         this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId),
       )
-      this.saveOffenceInAppearance(req, nomsId, offenceReference, courtCaseReference)
-      return res.redirect(
-        `/person/${nomsId}/court-cases/${courtCaseReference}/offences/${offenceReference}/check-offence-answers`,
-      )
+      this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offences/check-offence-answers`)
     }
     // redirect to outcome for offence or check answers offence page
     return res.redirect(
@@ -105,10 +103,8 @@ export default class OffenceRoutes {
       )
     }
     this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm.offenceOutcome)
-    this.saveOffenceInAppearance(req, nomsId, offenceReference, courtCaseReference)
-    return res.redirect(
-      `/person/${nomsId}/court-cases/${courtCaseReference}/offences/${offenceReference}/check-offence-answers`,
-    )
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offences/check-offence-answers`)
   }
 
   public getLookupOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
@@ -137,10 +133,8 @@ export default class OffenceRoutes {
       courtCaseReference,
       lookupOffenceOutcomeForm.offenceOutcome,
     )
-    this.saveOffenceInAppearance(req, nomsId, offenceReference, courtCaseReference)
-    return res.redirect(
-      `/person/${nomsId}/court-cases/${courtCaseReference}/offences/${offenceReference}/check-offence-answers`,
-    )
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offences/check-offence-answers`)
   }
 
   public getOffenceCode: RequestHandler = async (req, res): Promise<void> => {
@@ -232,7 +226,7 @@ export default class OffenceRoutes {
   }
 
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, offenceReference } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
     if (courtCase) {
       const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
@@ -241,7 +235,6 @@ export default class OffenceRoutes {
         courtCaseReference,
         courtCase,
         courtAppearance,
-        offenceReference,
       })
     }
     throw createError(404, 'Not found')

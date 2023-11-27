@@ -121,7 +121,7 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/check-offence-answers',
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/check-offence-answers',
     offenceRoutes.getCheckOffenceAnswers,
   )
 

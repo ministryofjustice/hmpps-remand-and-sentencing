@@ -16,6 +16,7 @@ declare module 'models' {
     nextHearingType?: string
     nextHearingDate?: Date
     nextHearingTimeSet?: boolean
+    offences?: Offence[]
   }
 
   export interface Offence {

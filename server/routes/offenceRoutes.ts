@@ -67,6 +67,7 @@ export default class OffenceRoutes {
         courtCaseReference,
         this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId),
       )
+      this.saveOffenceInAppearance(req, nomsId, courtCaseReference)
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
     }
     // redirect to outcome for offence or check answers offence page
@@ -96,6 +97,7 @@ export default class OffenceRoutes {
       return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/lookup-offence-outcome`)
     }
     this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm.offenceOutcome)
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference)
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
   }
 
@@ -124,6 +126,7 @@ export default class OffenceRoutes {
       courtCaseReference,
       lookupOffenceOutcomeForm.offenceOutcome,
     )
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference)
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-offence-answers`)
   }
 
@@ -206,5 +209,31 @@ export default class OffenceRoutes {
     this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, confirmOffenceForm.offenceName)
 
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-date`)
+  }
+
+  public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
+    if (courtCase) {
+      const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+      return res.render('pages/offence/check-offence-answers', {
+        nomsId,
+        courtCaseReference,
+        courtCase,
+        courtAppearance,
+      })
+    }
+    throw createError(404, 'Not found')
+  }
+
+  public addAnotherOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference } = req.params
+    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-code`)
+  }
+
+  private saveOffenceInAppearance(req, nomsId: string, courtCaseReference: string) {
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    this.courtAppearanceService.addOffence(req.session, nomsId, offence)
   }
 }

@@ -1,4 +1,4 @@
-import type { CourtAppearance } from 'models'
+import type { CourtAppearance, Offence } from 'models'
 
 export default class CourtAppearanceService {
   setCaseReferenceNumber(
@@ -148,7 +148,14 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session.courtAppearances, nomsId)
   }
 
+  addOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offence: Offence) {
+    const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
+    courtAppearance.offences.push(offence)
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   private getCourtAppearance(courtAppearances: Map<string, CourtAppearance>, nomsId: string): CourtAppearance {
-    return courtAppearances[nomsId] ?? {}
+    return courtAppearances[nomsId] ?? { offences: [] }
   }
 }

@@ -1,0 +1,36 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+<div class="offence-card">
+    <div class="offence-card-offence-details">
+        <h4 class="govuk-heading-s">{{ params.offenceCode }} {{ params.offenceName }}</h4>
+
+        {{ govukSummaryList({
+            classes: "govuk-summary-list--no-border",
+            rows: [
+                {
+                    key: {
+                        text: "Committed on"
+                    },
+                    value: {
+                        text: params.offenceStartDate | formatDate + (" to " + params.offenceEndDate | formatDate if params.offenceEndDate else '')
+                    }
+                },
+                {
+                    key: {
+                    text: "Outcome"
+                },
+                    value: {
+                    text: params.outcome
+                }
+                }
+            ]
+            }) 
+        }}
+    </div>
+    <div class="offence-card-actions">
+        <ul class="offence-card-actions-list">
+            <li class="offence-card-action-link"><a href="# class="govuk-link">Edit</a></li>
+            <li class="offence-card-action-link"><a href="#" class="govuk-link">Delete</a></li>
+        </ul>
+    </div>
+</div>

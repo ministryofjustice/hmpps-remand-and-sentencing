@@ -148,9 +148,18 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session.courtAppearances, nomsId)
   }
 
-  addOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offence: Offence) {
+  addOffence(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+    offence: Offence,
+  ) {
     const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
-    courtAppearance.offences.push(offence)
+    if (courtAppearance.offences.length >= offenceReference) {
+      courtAppearance.offences[offenceReference] = offence
+    } else {
+      courtAppearance.offences.push(offence)
+    }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

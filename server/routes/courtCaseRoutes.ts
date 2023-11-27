@@ -207,7 +207,9 @@ export default class CourtCaseRoutes {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const courtCaseReference = this.courtCaseService.saveSessionCourtCase(req.session, nomsId, courtAppearance)
 
-    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offence-code`)
+    return res.redirect(
+      `/person/${nomsId}/court-cases/${courtCaseReference}/offences/${courtAppearance.offences.length}/offence-code`,
+    )
   }
 
   public getNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {

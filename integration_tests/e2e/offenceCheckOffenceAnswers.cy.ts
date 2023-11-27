@@ -10,7 +10,7 @@ context('Check Offence Answers Page', () => {
     cy.task('stubGetOffenceByCode')
     cy.signIn()
     cy.createCourtCase('A1234AB', '12345')
-    cy.visit('/person/A1234AB/court-cases/1/check-offence-answers')
+    cy.visit('/person/A1234AB/court-cases/1/offences/check-offence-answers')
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, '12345')
   })
 

@@ -1,0 +1,54 @@
+.offence-summary {
+	border-top: 4px solid #1d70b8;
+}
+
+.offences-summary-title {
+    font-size: 1.5rem;
+}
+
+.offences-summary-card {
+    padding: 5px 15px;
+}
+
+.offences-summary-card-court-details-row > .govuk-summary-list__key, .offences-summary-card-court-details-row > .govuk-summary-list__value {
+    padding-bottom: 0px;
+}
+
+.offences-summary-card-court-details-row dt {
+    width: 50%;
+}
+
+.offences-summary-card-offence-details-row dt {
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.offences-summary-card-key {
+    margin-bottom: 5px;
+}
+
+.offences-summary-card-value {
+    margin-left: 0;
+    margin-bottom: 10px;
+}
+
+.offences-summary-card-row {
+    border-bottom: 1px solid #b1b4b6;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+.offences-summary-card-row:last-of-type {
+    border-bottom: none;
+}
+
+.offences-summary-card-title-wrapper {
+border-bottom: 1px solid rgba(0, 0, 0, 0);
+background-color: #f3f2f1;
+display: block;
+padding: 10px;
+}
+
+.offences-summary-card-content {
+    margin-bottom: 0;
+}

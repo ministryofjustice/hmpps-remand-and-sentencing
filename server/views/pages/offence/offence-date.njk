@@ -1,15 +1,11 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
-
-
 {% set pageTitle = applicationName + " - Add a court case Warrant Date" %}
 
-{% block content %}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
+{% block pageContent %}
             <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offences/{{ offenceReference }}/submit-offence-date">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
@@ -55,8 +51,5 @@
                     text: "Continue"
                 }) }}
             </form>
-
-        </div>
-    </div>
 
 {% endblock %}

@@ -9,7 +9,7 @@
                 <dt class="offences-summary-card-key govuk-!-font-weight-bold">
                     {{ offence.offenceCode + ' ' + offence.offenceName }}
                 </dt>
-                <dd class="offences-summary-card-value govuk-body-s">Committed on {{ params.offenceStartDate | formatDate + (" to " + params.offenceEndDate | formatDate if params.offenceEndDate else '') }}</dd>
+                <dd class="offences-summary-card-value govuk-body-s">Committed on {{ offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '') }}</dd>
             </div>
         {% endfor %}
     </dl>

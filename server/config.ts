@@ -121,6 +121,14 @@ export default {
       },
       agent: new AgentConfig(10000),
     },
+    documentManagementApi: {
+      url: get('DOCUMENT_MANAGEMENT_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      timeout: {
+        response: get('DOCUMENT_MANAGEMENT_API_TIMEOUT_RESPONSE', 10000),
+        deadline: get('DOCUMENT_MANAGEMENT_API_TIMEOUT_DEADLINE', 10000),
+      },
+      agent: new AgentConfig(10000),
+    },
   },
   digitalPrisonServices: {
     ui_url: get('DIGITAL_PRISON_SERVICES_URL', 'http://127.0.0.1:3000/dps', requiredInProduction),

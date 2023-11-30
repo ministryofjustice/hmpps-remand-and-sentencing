@@ -11,5 +11,6 @@ declare namespace Cypress {
     createCourtCase(personId: string, courtCaseNumber: string): Chainable<AUTWindow>
     setupComponentsStubs(): Chainable<AUTWindow>
     setupComponentsStubsFail(): Chainable<AUTWindow>
+    createOffence(personId: string, courtCaseReference: string, offenceReference: string): Chainable<AUTWindow>
   }
 }

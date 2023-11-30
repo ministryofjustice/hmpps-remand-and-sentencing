@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "../../components/offenceCard/macro.njk" import offenceCard %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 {% set pageTitle = applicationName + " - Check offences" %}
 
@@ -9,6 +10,15 @@
 
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
+            {% if infoBanner | length %}
+                {{ mojBanner({
+                type: 'success',
+                text: infoBanner | join(","),
+                iconFallbackText: 'Success'
+            }) }}
+            {% endif %}
+            
+            <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
             <h1 class="govuk-heading-l">You have added {{ courtAppearance.offences | length }} offences to case {{ courtAppearance.caseReferenceNumber }} </h1>
             {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
@@ -54,9 +64,20 @@
                         offenceStartDate: offence.offenceStartDate,
                         offenceEndDate: offence.offenceEndDate,
                         outcome: offence.outcome,
-                        nomsId: nomsId,
-                        courtCaseReference: courtCaseReference,
-                        offenceReference: loop.index0
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/court-cases/"+ courtCaseReference +"/offences/" + loop.index0 + "/offence-code",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit offence"
+                                },
+                                {
+                                    href: "/person/" + nomsId + "/court-cases/"+ courtCaseReference +"/offences/" + loop.index0 + "/delete-offence",
+                                    text: "Delete",
+                                    visuallyHiddenText: "delete offence"
+                                }
+                            ]
+                        }
                     })
                 }}
             {% endfor %}

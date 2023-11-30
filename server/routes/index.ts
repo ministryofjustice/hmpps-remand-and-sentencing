@@ -130,6 +130,16 @@ export default function routes(services: Services): Router {
     offenceRoutes.addAnotherOffence,
   )
 
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/delete-offence',
+    offenceRoutes.getDeleteOffence,
+  )
+
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/submit-delete-offence',
+    offenceRoutes.submitDeleteOffence,
+  )
+
   get('/person/:nomsId/court-cases/:courtCaseReference/next-hearing-select', courtCaseRoutes.getNextHearingSelect)
 
   post(

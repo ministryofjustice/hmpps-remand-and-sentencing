@@ -2,6 +2,7 @@ import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import type {
   OffenceConfirmOffenceForm,
+  OffenceDeleteOffenceForm,
   OffenceLookupOffenceOutcomeForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
@@ -235,6 +236,7 @@ export default class OffenceRoutes {
         courtCaseReference,
         courtCase,
         courtAppearance,
+        infoBanner: req.flash('infoBanner'),
       })
     }
     throw createError(404, 'Not found')
@@ -244,6 +246,32 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference } = req.params
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
     return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offences/${offenceReference}/offence-code`)
+  }
+
+  public getDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference } = req.params
+    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
+    if (courtCase) {
+      const offence = this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10))
+      return res.render('pages/offence/delete-offence', {
+        nomsId,
+        courtCaseReference,
+        courtCase,
+        offence,
+        offenceReference,
+      })
+    }
+    throw createError(404, 'Not found')
+  }
+
+  public submitDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference } = req.params
+    const deleteOffenceForm = trimForm<OffenceDeleteOffenceForm>(req.body)
+    if (deleteOffenceForm.deleteOffence === 'true') {
+      this.courtAppearanceService.deleteOffence(req.session, nomsId, parseInt(offenceReference, 10))
+      req.flash('infoBanner', 'Offence deleted')
+    }
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/offences/check-offence-answers`)
   }
 
   private saveOffenceInAppearance(req, nomsId: string, courtCaseReference: string, offenceReference: string) {

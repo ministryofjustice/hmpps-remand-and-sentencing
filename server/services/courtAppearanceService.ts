@@ -164,6 +164,18 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
+  deleteOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number) {
+    const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
+    courtAppearance.offences.splice(offenceReference, 1)
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  getOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number): Offence {
+    const courtAppearance = this.getCourtAppearance(session.courtAppearances, nomsId)
+    return courtAppearance.offences[offenceReference]
+  }
+
   private getCourtAppearance(courtAppearances: Map<string, CourtAppearance>, nomsId: string): CourtAppearance {
     return courtAppearances[nomsId] ?? { offences: [] }
   }

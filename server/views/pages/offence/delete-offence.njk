@@ -1,0 +1,59 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "../../components/offenceCard/macro.njk" import offenceCard %}
+
+{% set pageTitle = applicationName + " - Delete an offence" %}
+
+
+{% set hintHtml %}
+    {{
+        offenceCard({
+            offenceCode: offence.offenceCode,
+            offenceName: offence.offenceName,
+            offenceStartDate: offence.offenceStartDate,
+            offenceEndDate: offence.offenceEndDate,
+            outcome: offence.outcome
+        })
+    }}
+{% endset %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offences/{{ offenceReference }}/submit-delete-offence">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
+
+                {{ govukRadios({
+                    name: "deleteOffence",
+                    fieldset: {
+                        legend: {
+                            text: "Are you sure you want to delete this offence?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    hint: {
+                        html: hintHtml
+                    },
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes"
+                        },
+                        {
+                            value: "false",
+                            text: "No"
+                        }
+                    ]
+                }) }}
+
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

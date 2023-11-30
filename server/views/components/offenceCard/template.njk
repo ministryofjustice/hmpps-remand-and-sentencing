@@ -27,10 +27,18 @@
             }) 
         }}
     </div>
-    <div class="offence-card-actions">
-        <ul class="offence-card-actions-list">
-            <li class="offence-card-action-link"><a href="/person/{{ params.nomsId }}/court-cases/{{ params.courtCaseReference }}/offences/{{ params.offenceReference }}/offence-code" class="govuk-link">Edit</a></li>
-            <li class="offence-card-action-link"><a href="/person/{{ params.nomsId }}/court-cases/{{ params.courtCaseReference }}/offences/{{ params.offenceReference }}/delete-offence" class="govuk-link">Delete</a></li>
-        </ul>
-    </div>
+    {% if params.actions %}
+       <div class="offence-card-actions">
+            <ul class="offence-card-actions-list"> 
+                {% for item in params.actions.items %}
+                    <li class="offence-card-action-link">
+                        <a href="{{ item.href }}" class="govuk-link">{{ item.text }}</a>  
+                        {%- if item.visuallyHiddenText -%}
+                            <span class="govuk-visually-hidden"> {{ item.visuallyHiddenText }}</span>
+                        {% endif -%}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 </div>

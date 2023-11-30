@@ -78,4 +78,7 @@ declare module 'forms' {
   export interface OffenceLookupOffenceOutcomeForm {
     offenceOutcome?: string
   }
+  export interface OffenceDeleteOffenceForm {
+    deleteOffence?: string
+  }
 }

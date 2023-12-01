@@ -9,8 +9,8 @@ context('Add Offence Offence Date Page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.signIn()
-    cy.createCourtCase('A1234AB', '12345')
-    cy.visit('/person/A1234AB/court-cases/1/offences/0/offence-date')
+    cy.createCourtCase('A1234AB', '0')
+    cy.visit('/person/A1234AB/court-cases/0/offences/0/offence-date')
     offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
   })
 

@@ -32,33 +32,45 @@ export default function routes(services: Services): Router {
 
   get('/person/:nomsId', courtCaseRoutes.start)
 
-  get('/person/:nomsId/court-cases/reference', courtCaseRoutes.getReference)
+  get('/person/:nomsId/court-cases/:courtCaseReference/reference', courtCaseRoutes.getReference)
 
-  post('/person/:nomsId/court-cases/submit-reference', courtCaseRoutes.submitReference)
+  post('/person/:nomsId/court-cases/:courtCaseReference/submit-reference', courtCaseRoutes.submitReference)
 
-  get('/person/:nomsId/court-cases/warrant-date', courtCaseRoutes.getWarrantDate)
+  get('/person/:nomsId/court-cases/:courtCaseReference/warrant-date', courtCaseRoutes.getWarrantDate)
 
-  post('/person/:nomsId/court-cases/submit-warrant-date', courtCaseRoutes.submitWarrantDate)
+  post('/person/:nomsId/court-cases/:courtCaseReference/submit-warrant-date', courtCaseRoutes.submitWarrantDate)
 
-  get('/person/:nomsId/court-cases/court-name', courtCaseRoutes.getCourtName)
+  get('/person/:nomsId/court-cases/:courtCaseReference/court-name', courtCaseRoutes.getCourtName)
 
-  post('/person/:nomsId/court-cases/submit-court-name', courtCaseRoutes.submitCourtName)
+  post('/person/:nomsId/court-cases/:courtCaseReference/submit-court-name', courtCaseRoutes.submitCourtName)
 
-  get('/person/:nomsId/court-cases/overall-case-outcome', courtCaseRoutes.getOverallCaseOutcome)
+  get('/person/:nomsId/court-cases/:courtCaseReference/overall-case-outcome', courtCaseRoutes.getOverallCaseOutcome)
 
-  post('/person/:nomsId/court-cases/submit-overall-case-outcome', courtCaseRoutes.submitOverallCaseOutcome)
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/submit-overall-case-outcome',
+    courtCaseRoutes.submitOverallCaseOutcome,
+  )
 
-  get('/person/:nomsId/court-cases/lookup-case-outcome', courtCaseRoutes.getLookupCaseOutcome)
+  get('/person/:nomsId/court-cases/:courtCaseReference/lookup-case-outcome', courtCaseRoutes.getLookupCaseOutcome)
 
-  post('/person/:nomsId/court-cases/submit-lookup-case-outcome', courtCaseRoutes.submitLookupCaseOutcome)
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/submit-lookup-case-outcome',
+    courtCaseRoutes.submitLookupCaseOutcome,
+  )
 
-  get('/person/:nomsId/court-cases/case-outcome-applied-all', courtCaseRoutes.getCaseOutcomeAppliedAll)
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/case-outcome-applied-all',
+    courtCaseRoutes.getCaseOutcomeAppliedAll,
+  )
 
-  post('/person/:nomsId/court-cases/submit-case-outcome-applied-all', courtCaseRoutes.submitCaseOutcomeAppliedAll)
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/submit-case-outcome-applied-all',
+    courtCaseRoutes.submitCaseOutcomeAppliedAll,
+  )
 
-  get('/person/:nomsId/court-cases/check-answers', courtCaseRoutes.getCheckAnswers)
+  get('/person/:nomsId/court-cases/:courtCaseReference/check-answers', courtCaseRoutes.getCheckAnswers)
 
-  post('/person/:nomsId/court-cases/submit-check-answers', courtCaseRoutes.submitCheckAnswers)
+  post('/person/:nomsId/court-cases/:courtCaseReference/submit-check-answers', courtCaseRoutes.submitCheckAnswers)
 
   get(
     '/person/:nomsId/court-cases/:courtCaseReference/offences/:offenceReference/offence-date',

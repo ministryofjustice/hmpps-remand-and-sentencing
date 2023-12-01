@@ -25,13 +25,15 @@ export default class CourtCaseRoutes {
 
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
+    const newCourtCaseId = this.courtCaseService.getNewSessionCourtCaseId(req.session, nomsId)
     return res.render('pages/start', {
       nomsId,
+      newCourtCaseId,
     })
   }
 
   public getReference: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const { submitToCheckAnswers } = req.query
     let caseReferenceNumber: string
     if (submitToCheckAnswers) {
@@ -41,23 +43,24 @@ export default class CourtCaseRoutes {
       nomsId,
       submitToCheckAnswers,
       caseReferenceNumber,
+      courtCaseReference,
       backLink: `/person/${nomsId}`,
     })
   }
 
   public submitReference: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const referenceForm = trimForm<CourtCaseReferenceForm>(req.body)
     this.courtAppearanceService.setCaseReferenceNumber(req.session, nomsId, referenceForm.referenceNumber)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
-      return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-answers`)
     }
-    return res.redirect(`/person/${nomsId}/court-cases/warrant-date`)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/warrant-date`)
   }
 
   public getWarrantDate: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const { submitToCheckAnswers } = req.query
     let warrantDateDay: number
     let warrantDateMonth: number
@@ -76,12 +79,13 @@ export default class CourtCaseRoutes {
       warrantDateDay,
       warrantDateMonth,
       warrantDateYear,
-      backLink: `/person/${nomsId}/court-cases/reference`,
+      courtCaseReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/reference`,
     })
   }
 
   public submitWarrantDate: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const warrantDateForm = trimForm<CourtCaseWarrantDateForm>(req.body)
     const warrantDate = dayjs({
       year: warrantDateForm['warrantDate-year'],
@@ -91,13 +95,13 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setWarrantDate(req.session, nomsId, warrantDate.toDate())
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
-      return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-answers`)
     }
-    return res.redirect(`/person/${nomsId}/court-cases/court-name`)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/court-name`)
   }
 
   public getCourtName: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const { submitToCheckAnswers } = req.query
     let courtName: string
     if (submitToCheckAnswers) {
@@ -107,65 +111,68 @@ export default class CourtCaseRoutes {
       nomsId,
       submitToCheckAnswers,
       courtName,
-      backLink: `/person/${nomsId}/court-cases/warrant-date`,
+      courtCaseReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/warrant-date`,
     })
   }
 
   public submitCourtName: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const courtNameForm = trimForm<CourtCaseCourtNameForm>(req.body)
 
     this.courtAppearanceService.setCourtName(req.session, nomsId, courtNameForm.courtName)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
-      return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-answers`)
     }
-    return res.redirect(`/person/${nomsId}/court-cases/overall-case-outcome`)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/overall-case-outcome`)
   }
 
   public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const { submitToCheckAnswers } = req.query
     const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
     return res.render('pages/courtAppearance/overall-case-outcome', {
       nomsId,
       submitToCheckAnswers,
       overallCaseOutcome,
-      backLink: `/person/${nomsId}/court-cases/court-name`,
+      courtCaseReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/court-name`,
     })
   }
 
   public submitOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const overallCaseOutcomeForm = trimForm<CourtCaseOverallCaseOutcomeForm>(req.body)
     if (overallCaseOutcomeForm.overallCaseOutcome === 'LOOKUPDIFFERENT') {
-      return res.redirect(`/person/${nomsId}/court-cases/lookup-case-outcome`)
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/lookup-case-outcome`)
     }
     this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, overallCaseOutcomeForm.overallCaseOutcome)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
-      return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+      return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-answers`)
     }
-    return res.redirect(`/person/${nomsId}/court-cases/case-outcome-applied-all`)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/case-outcome-applied-all`)
   }
 
   public getLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     return res.render('pages/courtAppearance/lookup-case-outcome', {
       nomsId,
-      backLink: `/person/${nomsId}/court-cases/overall-case-outcome`,
+      courtCaseReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/overall-case-outcome`,
     })
   }
 
   public submitLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const lookupCaseOutcomeForm = trimForm<CourtCaseLookupCaseOutcomeForm>(req.body)
     this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, lookupCaseOutcomeForm.caseOutcome)
-    return res.redirect(`/person/${nomsId}/court-cases/case-outcome-applied-all`)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/case-outcome-applied-all`)
   }
 
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const { submitToCheckAnswers } = req.query
     const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
     const caseOutcomeAppliedAll: boolean = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
@@ -174,12 +181,13 @@ export default class CourtCaseRoutes {
       submitToCheckAnswers,
       overallCaseOutcome,
       caseOutcomeAppliedAll,
-      backLink: `/person/${nomsId}/court-cases/overall-case-outcome`,
+      courtCaseReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/overall-case-outcome`,
     })
   }
 
   public submitCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const caseOutcomeAppliedAllForm = trimForm<CourtCaseCaseOutcomeAppliedAllForm>(req.body)
 
     this.courtAppearanceService.setCaseOutcomeAppliedAll(
@@ -187,25 +195,26 @@ export default class CourtCaseRoutes {
       nomsId,
       caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true',
     )
-    return res.redirect(`/person/${nomsId}/court-cases/check-answers`)
+    return res.redirect(`/person/${nomsId}/court-cases/${courtCaseReference}/check-answers`)
   }
 
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
-    const courtCase = this.courtCaseService.getSessionCourtCase(req.session, nomsId)
+    const { nomsId, courtCaseReference } = req.params
+    const courtCase = this.courtCaseService.getSessionCourtCase(req.session, nomsId, courtCaseReference)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     return res.render('pages/courtAppearance/check-answers', {
       nomsId,
       courtCase,
       courtAppearance,
-      backLink: `/person/${nomsId}/court-cases/case-outcome-applied-all`,
+      courtCaseReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/case-outcome-applied-all`,
     })
   }
 
   public submitCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const courtCaseReference = this.courtCaseService.saveSessionCourtCase(req.session, nomsId, courtAppearance)
+    this.courtCaseService.saveSessionCourtCase(req.session, nomsId, courtCaseReference, courtAppearance)
 
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/offences/${courtAppearance.offences.length}/offence-code`,

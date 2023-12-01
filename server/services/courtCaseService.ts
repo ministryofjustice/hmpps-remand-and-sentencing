@@ -1,19 +1,32 @@
 import type { CourtAppearance, CourtCase } from 'models'
 
 export default class CourtCaseService {
-  getSessionCourtCase(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
-    return this.getCourtCase(session.courtCases, nomsId)
+  getNewSessionCourtCaseId(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return Object.keys(session.courtCases)
+      .filter(key => key.startsWith(nomsId))
+      .length.toString()
+  }
+
+  getSessionCourtCase(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ) {
+    const persistId = this.getCourtCasePersistId(nomsId, courtCaseReference)
+    return this.getCourtCase(session.courtCases, persistId, courtCaseReference)
   }
 
   saveSessionCourtCase(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
+    courtCaseReference: string,
     courtAppearance: CourtAppearance,
   ): string {
-    const courtCase = this.getCourtCase(session.courtCases, nomsId)
+    const persistId = this.getCourtCasePersistId(nomsId, courtCaseReference)
+    const courtCase = this.getCourtCase(session.courtCases, persistId, courtCaseReference)
     courtCase.appearances.push(courtAppearance)
     // eslint-disable-next-line no-param-reassign
-    session.courtCases[this.getCourtCasePersistId(nomsId, courtCase.uniqueIdentifier)] = courtCase
+    session.courtCases[persistId] = courtCase
     return courtCase.uniqueIdentifier
   }
 
@@ -37,7 +50,7 @@ export default class CourtCaseService {
     return `${nomsId}-${courtCaseReference}`
   }
 
-  private getCourtCase(courtCases: Map<string, CourtCase>, nomsId: string): CourtCase {
-    return courtCases[nomsId] ?? { appearances: [], uniqueIdentifier: Object.keys(courtCases).length + 1 }
+  private getCourtCase(courtCases: Map<string, CourtCase>, courtCaseId: string, uniqueIdentifier: string): CourtCase {
+    return courtCases[courtCaseId] ?? { appearances: [], uniqueIdentifier }
   }
 }

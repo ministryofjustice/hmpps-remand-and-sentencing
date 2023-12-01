@@ -39,9 +39,9 @@ const getSummaryList = subject => {
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
 
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string) => {
-  cy.visit(`/person/${personId}/court-cases/check-answers`)
+  cy.visit(`/person/${personId}/court-cases/${courtCaseNumber}/check-answers`)
   const courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
-  courtCaseCheckAnswersPage.changeLink(personId, 'reference').click()
+  courtCaseCheckAnswersPage.changeLink(personId, courtCaseNumber, 'reference').click()
   const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
   courtCaseReferencePage.input().type(courtCaseNumber)
   courtCaseReferencePage.button().click()

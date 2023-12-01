@@ -5,6 +5,6 @@ export default class CourtCaseCheckAnswersPage extends Page {
     super('Check your answers')
   }
 
-  changeLink = (personId: string, page: string): PageElement =>
-    cy.get(`a[href="/person/${personId}/court-cases/${page}?submitToCheckAnswers=true"]`)
+  changeLink = (personId: string, courtCaseReference: string, page: string): PageElement =>
+    cy.get(`a[href="/person/${personId}/court-cases/${courtCaseReference}/${page}?submitToCheckAnswers=true"]`)
 }

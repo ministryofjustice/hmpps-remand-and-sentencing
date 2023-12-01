@@ -8,9 +8,14 @@ declare namespace Cypress {
 
     getSummaryList()
 
-    createCourtCase(personId: string, courtCaseNumber: string): Chainable<AUTWindow>
+    createCourtCase(personId: string, courtCaseNumber: string, appearanceReference: string): Chainable<AUTWindow>
     setupComponentsStubs(): Chainable<AUTWindow>
     setupComponentsStubsFail(): Chainable<AUTWindow>
-    createOffence(personId: string, courtCaseReference: string, offenceReference: string): Chainable<AUTWindow>
+    createOffence(
+      personId: string,
+      courtCaseReference: string,
+      appearanceReference: string,
+      offenceReference: string,
+    ): Chainable<AUTWindow>
   }
 }

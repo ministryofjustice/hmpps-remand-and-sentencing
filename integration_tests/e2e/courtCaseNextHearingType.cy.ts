@@ -9,8 +9,8 @@ context('Next hearing type page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.signIn()
-    cy.createCourtCase('A1234AB', '12345')
-    cy.visit('/person/A1234AB/court-cases/12345/next-hearing-type')
+    cy.createCourtCase('A1234AB', '0', '0')
+    cy.visit('/person/A1234AB/court-cases/0/appearance/0/next-hearing-type')
     courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
   })
 

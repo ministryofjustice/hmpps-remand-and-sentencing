@@ -47,12 +47,12 @@
                 {{ govukButton({
                     text: "Add another offence",
                     classes: "govuk-button--secondary",
-                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
+                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
                 }) }}
 
                 {{ govukButton({
                     text: "Finish adding offences and continue",
-                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/next-hearing-select"
+                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-select"
                 }) }}
             </div>
 
@@ -67,12 +67,12 @@
                         actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/"+ courtCaseReference +"/offences/" + loop.index0 + "/offence-code",
+                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/offence-code",
                                     text: "Edit",
                                     visuallyHiddenText: "edit offence"
                                 },
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/"+ courtCaseReference +"/offences/" + loop.index0 + "/delete-offence",
+                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
                                     text: "Delete",
                                     visuallyHiddenText: "delete offence"
                                 }

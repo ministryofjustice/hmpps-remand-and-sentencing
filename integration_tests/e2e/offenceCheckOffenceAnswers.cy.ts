@@ -11,8 +11,8 @@ context('Check Offence Answers Page', () => {
     cy.task('stubGetPersonDetails')
     cy.task('stubGetOffenceByCode')
     cy.signIn()
-    cy.createCourtCase('A1234AB', '0')
-    cy.visit('/person/A1234AB/court-cases/0/offences/check-offence-answers')
+    cy.createCourtCase('A1234AB', '0', '0')
+    cy.visit('/person/A1234AB/court-cases/0/appearance/0/offences/check-offence-answers')
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, '0')
   })
 
@@ -30,9 +30,9 @@ context('Check Offence Answers Page', () => {
   })
 
   it('deleting offence removes from list and goes back to check answers page', () => {
-    cy.createOffence('A1234AB', '0', '0')
+    cy.createOffence('A1234AB', '0', '0', '0')
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '0')
-    offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0').click()
+    offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
     const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
     offenceDeleteOffencePage.radioSelector('true').click()
     offenceDeleteOffencePage.button().click()

@@ -25,7 +25,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/next-hearing-date?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/court-cases/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-date?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "next hearing date"
                                 }
@@ -42,7 +42,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/next-hearing-type?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/court-cases/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-type?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "next hearing type"
                                 }
@@ -59,7 +59,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/next-hearing-court-select?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/court-cases/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-court-select?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "next hearing location"
                                 }
@@ -72,7 +72,7 @@
             <h2 class="govuk-heading-m">Now save this court case</h2>
             <p class="govuk-body">By saving this court case, you are confirming that the details you are providing match the details on the warrant.</p>
 
-            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/submit-check-next-hearing-answers">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-check-next-hearing-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
                     text: "Save and continue"

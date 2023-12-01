@@ -7,6 +7,12 @@ export default class CourtCaseService {
       .length.toString()
   }
 
+  getSessionCourtCases(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtCase[] {
+    return Object.keys(session.courtCases)
+      .filter(key => key.startsWith(nomsId))
+      .map(key => session.courtCases[key])
+  }
+
   getSessionCourtCase(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
@@ -41,6 +47,16 @@ export default class CourtCaseService {
     courtCaseReference: string,
   ): CourtCase {
     return this.getSavedCourtCases(session.courtCases, nomsId, courtCaseReference)
+  }
+
+  getLastSavedAppearance(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ): CourtAppearance {
+    const persistId = this.getCourtCasePersistId(nomsId, courtCaseReference)
+    const { appearances } = this.getCourtCase(session.courtCases, persistId, courtCaseReference)
+    return appearances[appearances.length - 1] ?? {}
   }
 
   private getSavedCourtCases(

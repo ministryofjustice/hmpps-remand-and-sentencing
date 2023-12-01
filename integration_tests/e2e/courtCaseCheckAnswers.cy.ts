@@ -12,7 +12,7 @@ context('Court Case Check Answers Page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.signIn()
-    cy.visit('/person/A1234AB/court-cases/0/check-answers')
+    cy.visit('/person/A1234AB/court-cases/0/appearance/0/check-answers')
     courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 
@@ -30,7 +30,7 @@ context('Court Case Check Answers Page', () => {
   })
 
   it('clicking court case reference number change and submitting goes back to check answers page', () => {
-    courtCaseCheckAnswersPage.changeLink('A1234AB', '0', 'reference').click()
+    courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'reference').click()
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
     courtCaseReferencePage.input().type('1234')
     courtCaseReferencePage.button().click()
@@ -38,7 +38,7 @@ context('Court Case Check Answers Page', () => {
   })
 
   it('clicking warrant date change and submitting goes back to check answers page', () => {
-    courtCaseCheckAnswersPage.changeLink('A1234AB', '0', 'warrant-date').click()
+    courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'warrant-date').click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrant-date').type('12')
     courtCaseWarrantDatePage.monthDateInput('warrant-date').type('5')
@@ -48,7 +48,7 @@ context('Court Case Check Answers Page', () => {
   })
 
   it('clicking court name change and submitting goes back to check answers page', () => {
-    courtCaseCheckAnswersPage.changeLink('A1234AB', '0', 'court-name').click()
+    courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'court-name').click()
     const courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()

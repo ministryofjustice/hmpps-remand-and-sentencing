@@ -5,6 +5,13 @@ export default class CourtCaseOverviewPage extends Page {
     super(`You have added ${offenceCount} offences to case ${courtCaseReference}`)
   }
 
-  deleteOffenceLink = (personId: string, courtCaseId: string, offenceId: string): PageElement =>
-    cy.get(`a[href="/person/${personId}/court-cases/${courtCaseId}/offences/${offenceId}/delete-offence"]`)
+  deleteOffenceLink = (
+    personId: string,
+    courtCaseId: string,
+    appearanceReference: string,
+    offenceId: string,
+  ): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/court-cases/${courtCaseId}/appearance/${appearanceReference}/offences/${offenceId}/delete-offence"]`,
+    )
 }

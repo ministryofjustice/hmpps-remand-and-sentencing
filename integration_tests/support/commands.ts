@@ -38,29 +38,34 @@ const getSummaryList = subject => {
 
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
 
-Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string) => {
-  cy.visit(`/person/${personId}/court-cases/${courtCaseNumber}/check-answers`)
+Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
+  cy.visit(`/person/${personId}/court-cases/${courtCaseNumber}/appearance/${appearanceReference}/check-answers`)
   const courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
-  courtCaseCheckAnswersPage.changeLink(personId, courtCaseNumber, 'reference').click()
+  courtCaseCheckAnswersPage.changeLink(personId, courtCaseNumber, appearanceReference, 'reference').click()
   const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
   courtCaseReferencePage.input().type(courtCaseNumber)
   courtCaseReferencePage.button().click()
   courtCaseCheckAnswersPage.button().click()
 })
 
-Cypress.Commands.add('createOffence', (personId: string, courtCaseReference: string, offenceReference: string) => {
-  cy.visit(`/person/${personId}/court-cases/${courtCaseReference}/offences/${offenceReference}/offence-code`)
-  const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-  offenceOffenceCodePage.input().type('CC12345')
-  offenceOffenceCodePage.button().click()
-  const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-  offenceOffenceCodeConfirmPage.button().click()
-  const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
-  offenceOffenceDatePage.dayDateInput('offence-start-date').type('15')
-  offenceOffenceDatePage.monthDateInput('offence-start-date').type('7')
-  offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
-  offenceOffenceDatePage.button().click()
-  const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
-  offenceOffenceOutcomePage.radioSelector('Recall to Prison').click()
-  offenceOffenceOutcomePage.button().click()
-})
+Cypress.Commands.add(
+  'createOffence',
+  (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
+    cy.visit(
+      `/person/${personId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
+    )
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.input().type('CC12345')
+    offenceOffenceCodePage.button().click()
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.button().click()
+    const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage.dayDateInput('offence-start-date').type('15')
+    offenceOffenceDatePage.monthDateInput('offence-start-date').type('7')
+    offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
+    offenceOffenceDatePage.button().click()
+    const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+    offenceOffenceOutcomePage.radioSelector('Recall to Prison').click()
+    offenceOffenceOutcomePage.button().click()
+  },
+)

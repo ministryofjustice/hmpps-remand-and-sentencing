@@ -6,7 +6,7 @@
 
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/offences/{{ offenceReference }}/submit-lookup-offence-outcome">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-lookup-offence-outcome">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
                 {{ govukSelect({

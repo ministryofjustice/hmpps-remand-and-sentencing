@@ -13,8 +13,8 @@ context('Check Next Hearing Answers page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.signIn()
-    cy.createCourtCase('A1234AB', '12345')
-    cy.visit('/person/A1234AB/court-cases/1/check-next-hearing-answers')
+    cy.createCourtCase('A1234AB', '0', '0')
+    cy.visit('/person/A1234AB/court-cases/0/appearance/0/check-next-hearing-answers')
     courtCaseCheckOffenceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
 
@@ -32,7 +32,7 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('clicking next hearing type and submitting goes back to check answers page', () => {
-    courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '1', 'next-hearing-type').click()
+    courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-type').click()
     const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
     courtCaseNextHearingTypePage.radioSelector('Court appearance').click()
     courtCaseNextHearingTypePage.button().click()
@@ -40,7 +40,7 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('clicking next hearing location and submitting goes back to check answers page', () => {
-    courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '1', 'next-hearing-court-select').click()
+    courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-court-select').click()
     const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
     courtCaseNextHearingCourtSetPage.radioSelector('false').click()
     courtCaseNextHearingCourtSetPage.button().click()
@@ -52,7 +52,7 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('clicking next hearing date and submitting goes back to check answers page', () => {
-    courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '1', 'next-hearing-date').click()
+    courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-date').click()
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
     courtCaseNextHearingDatePage.dayDateInput('next-hearing-date').type('15')
     courtCaseNextHearingDatePage.monthDateInput('next-hearing-date').type('12')

@@ -29,6 +29,6 @@ context('Start Page', () => {
     startPage
       .button()
       .should('contain', 'Add a court case')
-      .and('have.attr', 'href', '/person/A1234AB/court-cases/0/reference')
+      .and('have.attr', 'href', '/person/A1234AB/court-cases/0/appearance/0/reference')
   })
 })

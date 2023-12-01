@@ -20,11 +20,16 @@ export default class CourtCaseService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
+    appearanceReference: number,
     courtAppearance: CourtAppearance,
   ): string {
     const persistId = this.getCourtCasePersistId(nomsId, courtCaseReference)
     const courtCase = this.getCourtCase(session.courtCases, persistId, courtCaseReference)
-    courtCase.appearances.push(courtAppearance)
+    if (courtCase.appearances.length >= appearanceReference) {
+      courtCase.appearances[appearanceReference] = courtAppearance
+    } else {
+      courtCase.appearances.push(courtAppearance)
+    }
     // eslint-disable-next-line no-param-reassign
     session.courtCases[persistId] = courtCase
     return courtCase.uniqueIdentifier

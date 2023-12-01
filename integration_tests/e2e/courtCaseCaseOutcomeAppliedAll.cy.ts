@@ -9,7 +9,7 @@ context('Court Case Case Outcome applied all Page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.signIn()
-    cy.visit('/person/A1234AB/court-cases/0/case-outcome-applied-all')
+    cy.visit('/person/A1234AB/court-cases/0/appearance/0/case-outcome-applied-all')
     courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
   })
 

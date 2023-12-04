@@ -277,7 +277,11 @@ export default class CourtCaseRoutes {
 
   public submitCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
-    const courtAppearance = this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
 
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${courtAppearance.offences.length}/offence-code`,

@@ -14,6 +14,7 @@ import type {
   CourtCaseSelectReferenceForm,
 } from 'forms'
 import dayjs from 'dayjs'
+import type { CourtAppearance } from 'models'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
 import CourtAppearanceService from '../services/courtAppearanceService'
@@ -318,13 +319,6 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
-    this.courtCaseService.saveSessionCourtCase(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      parseInt(appearanceReference, 10),
-      courtAppearance,
-    )
 
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${courtAppearance.offences.length}/offence-code`,
@@ -354,18 +348,7 @@ export default class CourtCaseRoutes {
       )
     }
     // this would be where we save which we don't currently have and then redirect to all court cases page
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
-    this.courtCaseService.saveSessionCourtCase(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      parseInt(appearanceReference, 10),
-      courtAppearance,
-    )
+    this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference)
     return res.redirect(`/person/${nomsId}`)
   }
 
@@ -535,18 +518,25 @@ export default class CourtCaseRoutes {
   public submiCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     // save appearance here
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference)
+    return res.redirect(`/person/${nomsId}`)
+  }
+
+  private saveAppearance(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+  ): CourtAppearance {
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(session, nomsId, courtCaseReference)
     this.courtCaseService.saveSessionCourtCase(
-      req.session,
+      session,
       nomsId,
       courtCaseReference,
       parseInt(appearanceReference, 10),
       courtAppearance,
     )
-    return res.redirect(`/person/${nomsId}`)
+    this.courtAppearanceService.clearSessionCourtAppearance(session, nomsId)
+    return courtAppearance
   }
 }

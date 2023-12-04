@@ -257,6 +257,11 @@ export default class CourtAppearanceService {
     return courtAppearance.offences[offenceReference]
   }
 
+  clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    // eslint-disable-next-line no-param-reassign
+    delete session.courtAppearances[nomsId]
+  }
+
   private getCourtAppearance(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

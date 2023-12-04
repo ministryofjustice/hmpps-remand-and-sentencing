@@ -3,6 +3,10 @@ declare module 'forms' {
     referenceNumber?: string
   }
 
+  export interface CourtCaseSelectReferenceForm {
+    referenceNumberSelect?: string
+  }
+
   export interface CourtCaseWarrantDateForm {
     'warrantDate-day'?: number
     'warrantDate-month'?: number

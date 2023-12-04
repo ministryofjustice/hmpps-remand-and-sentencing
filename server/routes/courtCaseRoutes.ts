@@ -11,6 +11,7 @@ import type {
   CourtCaseNextHearingCourtSelectForm,
   CourtCaseNextHearingCourtNameForm,
   CourtCaseNextHearingDateForm,
+  CourtCaseSelectReferenceForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
@@ -68,6 +69,42 @@ export default class CourtCaseRoutes {
     }
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
+    )
+  }
+
+  public getSelectReference: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference } = req.params
+    const { submitToCheckAnswers } = req.query
+    const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
+    return res.render('pages/courtAppearance/select-reference', {
+      nomsId,
+      submitToCheckAnswers,
+      lastCaseReferenceNumber: lastSavedAppearance.caseReferenceNumber,
+      courtCaseReference,
+      appearanceReference,
+      backLink: `/person/${nomsId}`,
+    })
+  }
+
+  public submitSelectReference: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference } = req.params
+    const referenceForm = trimForm<CourtCaseSelectReferenceForm>(req.body)
+    if (referenceForm.referenceNumberSelect === 'true') {
+      const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
+      this.courtAppearanceService.setCaseReferenceNumber(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        lastSavedAppearance.caseReferenceNumber,
+      )
+      return res.redirect(
+        `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
+      )
+    }
+    const { submitToCheckAnswers } = req.query
+    const submitToCheckAnswersQuery = submitToCheckAnswers ? `?submitToCheckAnswers=${submitToCheckAnswers}` : ''
+    return res.redirect(
+      `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/reference${submitToCheckAnswersQuery}`,
     )
   }
 

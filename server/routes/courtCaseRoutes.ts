@@ -43,12 +43,16 @@ export default class CourtCaseRoutes {
     if (submitToCheckAnswers) {
       caseReferenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId, courtCaseReference)
     }
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/reference', {
       nomsId,
       submitToCheckAnswers,
       caseReferenceNumber,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}`,
     })
   }
@@ -123,6 +127,8 @@ export default class CourtCaseRoutes {
         warrantDateYear = warrantDate.getFullYear()
       }
     }
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/warrant-date', {
       nomsId,
       submitToCheckAnswers,
@@ -131,6 +137,8 @@ export default class CourtCaseRoutes {
       warrantDateYear,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/reference`,
     })
   }
@@ -162,12 +170,16 @@ export default class CourtCaseRoutes {
     if (submitToCheckAnswers) {
       courtName = this.courtAppearanceService.getCourtName(req.session, nomsId, courtCaseReference)
     }
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/court-name', {
       nomsId,
       submitToCheckAnswers,
       courtName,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
     })
   }
@@ -196,12 +208,16 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/overall-case-outcome', {
       nomsId,
       submitToCheckAnswers,
       overallCaseOutcome,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/court-name`,
     })
   }
@@ -233,10 +249,14 @@ export default class CourtCaseRoutes {
 
   public getLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/lookup-case-outcome', {
       nomsId,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/overall-case-outcome`,
     })
   }
@@ -268,6 +288,8 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/case-outcome-applied-all', {
       nomsId,
       submitToCheckAnswers,
@@ -275,6 +297,8 @@ export default class CourtCaseRoutes {
       caseOutcomeAppliedAll,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/overall-case-outcome`,
     })
   }
@@ -302,12 +326,16 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/check-answers', {
       nomsId,
       courtCase,
       courtAppearance,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/case-outcome-applied-all`,
     })
   }
@@ -328,11 +356,15 @@ export default class CourtCaseRoutes {
   public getNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const nextHearingSelect = this.courtAppearanceService.getNextHearingSelect(req.session, nomsId, courtCaseReference)
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/next-hearing-select', {
       nomsId,
       nextHearingSelect,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/check-offence-answers`,
     })
   }
@@ -356,12 +388,16 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const { submitToCheckAnswers } = req.query
     const nextHearingType = this.courtAppearanceService.getNextHearingType(req.session, nomsId, courtCaseReference)
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/next-hearing-type', {
       nomsId,
       nextHearingType,
       courtCaseReference,
       appearanceReference,
       submitToCheckAnswers,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-select`,
     })
   }
@@ -390,12 +426,16 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const { submitToCheckAnswers } = req.query
     const nextHearingDate = this.courtAppearanceService.getNextHearingDate(req.session, nomsId, courtCaseReference)
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/next-hearing-date', {
       nomsId,
       nextHearingDate,
       courtCaseReference,
       appearanceReference,
       submitToCheckAnswers,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-type`,
     })
   }
@@ -439,12 +479,16 @@ export default class CourtCaseRoutes {
       courtCaseReference,
     )
     const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId, courtCaseReference)
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/next-hearing-court-select', {
       nomsId,
       nextHearingCourtSelect,
       courtName,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-date`,
     })
   }
@@ -476,11 +520,15 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/next-hearing-court-name', {
       nomsId,
       nextHearingCourtName,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-court-select`,
     })
   }
@@ -506,11 +554,15 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/check-next-hearing-answers', {
       nomsId,
       courtAppearance,
       courtCaseReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-court-name`,
     })
   }

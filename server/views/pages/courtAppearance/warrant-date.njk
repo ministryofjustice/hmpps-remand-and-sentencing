@@ -10,7 +10,13 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-warrant-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <span class="govuk-caption-l">Add a court case</span>
+                <span class="govuk-caption-l">
+                    {% if isFirstAppearance %}
+                        Add a court case
+                        {% else %}
+                        Add an appearance to court case {{courtCaseUniqueIdentifier}}
+                    {% endif %}
+                </span>
                 {{ govukDateInput({
                     id: "warrant-date",
                     namePrefix: "warrantDate",

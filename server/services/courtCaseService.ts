@@ -59,6 +59,15 @@ export default class CourtCaseService {
     return appearances[appearances.length - 1] ?? {}
   }
 
+  getUniqueIdentifier(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ) {
+    const persistId = this.getCourtCasePersistId(nomsId, courtCaseReference)
+    return this.getCourtCase(session.courtCases, persistId, courtCaseReference).uniqueIdentifier
+  }
+
   private getSavedCourtCases(
     savedCourtCases: Map<string, Map<string, CourtCase>>,
     nomsId: string,
@@ -71,7 +80,7 @@ export default class CourtCaseService {
     return `${nomsId}-${courtCaseReference}`
   }
 
-  private getCourtCase(courtCases: Map<string, CourtCase>, courtCaseId: string, uniqueIdentifier: string): CourtCase {
-    return courtCases[courtCaseId] ?? { appearances: [], uniqueIdentifier }
+  private getCourtCase(courtCases: Map<string, CourtCase>, courtCaseId: string, courtCaseReference: string): CourtCase {
+    return courtCases[courtCaseId] ?? { appearances: [], uniqueIdentifier: parseInt(courtCaseReference, 10) + 1 }
   }
 }

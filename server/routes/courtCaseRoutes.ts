@@ -26,9 +26,11 @@ export default class CourtCaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const newCourtCaseId = this.courtCaseService.getNewSessionCourtCaseId(req.session, nomsId)
+    const courtCases = this.courtCaseService.getSessionCourtCases(req.session, nomsId)
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
+      courtCases,
     })
   }
 
@@ -37,7 +39,7 @@ export default class CourtCaseRoutes {
     const { submitToCheckAnswers } = req.query
     let caseReferenceNumber: string
     if (submitToCheckAnswers) {
-      caseReferenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId)
+      caseReferenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId, courtCaseReference)
     }
     return res.render('pages/courtAppearance/reference', {
       nomsId,
@@ -52,7 +54,12 @@ export default class CourtCaseRoutes {
   public submitReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const referenceForm = trimForm<CourtCaseReferenceForm>(req.body)
-    this.courtAppearanceService.setCaseReferenceNumber(req.session, nomsId, referenceForm.referenceNumber)
+    this.courtAppearanceService.setCaseReferenceNumber(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      referenceForm.referenceNumber,
+    )
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -71,7 +78,7 @@ export default class CourtCaseRoutes {
     let warrantDateMonth: number
     let warrantDateYear: number
     if (submitToCheckAnswers) {
-      const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId)
+      const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId, courtCaseReference)
       if (warrantDate) {
         warrantDateDay = warrantDate.getDate()
         warrantDateMonth = warrantDate.getMonth() + 1
@@ -98,7 +105,7 @@ export default class CourtCaseRoutes {
       month: warrantDateForm['warrantDate-month'] - 1,
       day: warrantDateForm['warrantDate-day'],
     })
-    this.courtAppearanceService.setWarrantDate(req.session, nomsId, warrantDate.toDate())
+    this.courtAppearanceService.setWarrantDate(req.session, nomsId, courtCaseReference, warrantDate.toDate())
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -115,7 +122,7 @@ export default class CourtCaseRoutes {
     const { submitToCheckAnswers } = req.query
     let courtName: string
     if (submitToCheckAnswers) {
-      courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
+      courtName = this.courtAppearanceService.getCourtName(req.session, nomsId, courtCaseReference)
     }
     return res.render('pages/courtAppearance/court-name', {
       nomsId,
@@ -131,7 +138,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const courtNameForm = trimForm<CourtCaseCourtNameForm>(req.body)
 
-    this.courtAppearanceService.setCourtName(req.session, nomsId, courtNameForm.courtName)
+    this.courtAppearanceService.setCourtName(req.session, nomsId, courtCaseReference, courtNameForm.courtName)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -146,7 +153,11 @@ export default class CourtCaseRoutes {
   public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const { submitToCheckAnswers } = req.query
-    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
+    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
     return res.render('pages/courtAppearance/overall-case-outcome', {
       nomsId,
       submitToCheckAnswers,
@@ -165,7 +176,12 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/lookup-case-outcome`,
       )
     }
-    this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, overallCaseOutcomeForm.overallCaseOutcome)
+    this.courtAppearanceService.setOverallCaseOutcome(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      overallCaseOutcomeForm.overallCaseOutcome,
+    )
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -190,7 +206,12 @@ export default class CourtCaseRoutes {
   public submitLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const lookupCaseOutcomeForm = trimForm<CourtCaseLookupCaseOutcomeForm>(req.body)
-    this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, lookupCaseOutcomeForm.caseOutcome)
+    this.courtAppearanceService.setOverallCaseOutcome(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      lookupCaseOutcomeForm.caseOutcome,
+    )
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/case-outcome-applied-all`,
     )
@@ -199,8 +220,16 @@ export default class CourtCaseRoutes {
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const { submitToCheckAnswers } = req.query
-    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
-    const caseOutcomeAppliedAll: boolean = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
+    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
+    const caseOutcomeAppliedAll: boolean = this.courtAppearanceService.getCaseOutcomeAppliedAll(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
     return res.render('pages/courtAppearance/case-outcome-applied-all', {
       nomsId,
       submitToCheckAnswers,
@@ -219,6 +248,7 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setCaseOutcomeAppliedAll(
       req.session,
       nomsId,
+      courtCaseReference,
       caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true',
     )
     return res.redirect(
@@ -229,7 +259,11 @@ export default class CourtCaseRoutes {
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const courtCase = this.courtCaseService.getSessionCourtCase(req.session, nomsId, courtCaseReference)
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
     return res.render('pages/courtAppearance/check-answers', {
       nomsId,
       courtCase,
@@ -242,7 +276,11 @@ export default class CourtCaseRoutes {
 
   public submitCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
     this.courtCaseService.saveSessionCourtCase(
       req.session,
       nomsId,
@@ -258,7 +296,7 @@ export default class CourtCaseRoutes {
 
   public getNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
-    const nextHearingSelect = this.courtAppearanceService.getNextHearingSelect(req.session, nomsId)
+    const nextHearingSelect = this.courtAppearanceService.getNextHearingSelect(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/next-hearing-select', {
       nomsId,
       nextHearingSelect,
@@ -272,20 +310,32 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const nextHearingSelectForm = trimForm<CourtCaseNextHearingSelectForm>(req.body)
     const nextHearingSelect = nextHearingSelectForm.nextHearingSelect === 'true'
-    this.courtAppearanceService.setNextHearingSelect(req.session, nomsId, nextHearingSelect)
+    this.courtAppearanceService.setNextHearingSelect(req.session, nomsId, courtCaseReference, nextHearingSelect)
     if (nextHearingSelect) {
       return res.redirect(
         `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-type`,
       )
     }
     // this would be where we save which we don't currently have and then redirect to all court cases page
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
+    this.courtCaseService.saveSessionCourtCase(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      parseInt(appearanceReference, 10),
+      courtAppearance,
+    )
     return res.redirect(`/person/${nomsId}`)
   }
 
   public getNextHearingType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const { submitToCheckAnswers } = req.query
-    const nextHearingType = this.courtAppearanceService.getNextHearingType(req.session, nomsId)
+    const nextHearingType = this.courtAppearanceService.getNextHearingType(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/next-hearing-type', {
       nomsId,
       nextHearingType,
@@ -299,7 +349,12 @@ export default class CourtCaseRoutes {
   public submitNextHearingType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const nextHearingTypeForm = trimForm<CourtCaseNextHearingTypeForm>(req.body)
-    this.courtAppearanceService.setNextHearingType(req.session, nomsId, nextHearingTypeForm.nextHearingType)
+    this.courtAppearanceService.setNextHearingType(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      nextHearingTypeForm.nextHearingType,
+    )
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -314,7 +369,7 @@ export default class CourtCaseRoutes {
   public getNextHearingDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const { submitToCheckAnswers } = req.query
-    const nextHearingDate = this.courtAppearanceService.getNextHearingDate(req.session, nomsId)
+    const nextHearingDate = this.courtAppearanceService.getNextHearingDate(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/next-hearing-date', {
       nomsId,
       nextHearingDate,
@@ -341,6 +396,7 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setNextHearingDate(
       req.session,
       nomsId,
+      courtCaseReference,
       nextHearingDate.toDate(),
       Boolean(nextHearingDateForm.nextHearingTime),
     )
@@ -357,8 +413,12 @@ export default class CourtCaseRoutes {
 
   public getNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
-    const nextHearingCourtSelect = this.courtAppearanceService.getNextHearingCourtSelect(req.session, nomsId)
-    const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
+    const nextHearingCourtSelect = this.courtAppearanceService.getNextHearingCourtSelect(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
+    const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/next-hearing-court-select', {
       nomsId,
       nextHearingCourtSelect,
@@ -373,7 +433,12 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const nextHearingCourtSelectForm = trimForm<CourtCaseNextHearingCourtSelectForm>(req.body)
     const nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect === 'true'
-    this.courtAppearanceService.setNextHearingCourtSelect(req.session, nomsId, nextHearingCourtSelect)
+    this.courtAppearanceService.setNextHearingCourtSelect(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      nextHearingCourtSelect,
+    )
     if (nextHearingCourtSelect) {
       return res.redirect(
         `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/check-next-hearing-answers`,
@@ -386,7 +451,11 @@ export default class CourtCaseRoutes {
 
   public getNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
-    const nextHearingCourtName = this.courtAppearanceService.getNextHearingCourtName(req.session, nomsId)
+    const nextHearingCourtName = this.courtAppearanceService.getNextHearingCourtName(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
     return res.render('pages/courtAppearance/next-hearing-court-name', {
       nomsId,
       nextHearingCourtName,
@@ -402,6 +471,7 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setNextHearingCourtName(
       req.session,
       nomsId,
+      courtCaseReference,
       nextHearingCourtNameForm.nextHearingCourtName,
     )
     return res.redirect(
@@ -411,7 +481,11 @@ export default class CourtCaseRoutes {
 
   public getCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
     return res.render('pages/courtAppearance/check-next-hearing-answers', {
       nomsId,
       courtAppearance,
@@ -422,7 +496,20 @@ export default class CourtCaseRoutes {
   }
 
   public submiCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId } = req.params
+    const { nomsId, courtCaseReference, appearanceReference } = req.params
+    // save appearance here
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
+    this.courtCaseService.saveSessionCourtCase(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      parseInt(appearanceReference, 10),
+      courtAppearance,
+    )
     return res.redirect(`/person/${nomsId}`)
   }
 }

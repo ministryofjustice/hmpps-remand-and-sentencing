@@ -1,13 +1,86 @@
 {% extends "../partials/prisonerBannerLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageTitle = applicationName + " - Home" %}
+
+
 
 {% block content %}
     <h1>Start Page</h1>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+
+        <div class="govuk-grid-column-two-thirds">
+            {% for courtCase in courtCases %}
+
+                {%- set appearanceTableRows = [] -%}
+
+                {%- for appearance in courtCase.appearances -%}
+                    {%- set tableRow= [
+                        {
+                        text: appearance.caseReferenceNumber
+                        },
+                        {
+                        text: appearance.courtName
+                        },
+                        {
+                        text: appearance.warrantDate | formatDate
+                        },
+                        {
+                        text: appearance.overallCaseOutcome
+                        }
+                    ]-%}
+                    {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
+                {%- endfor -%}
+
+                {% set appearanceTableHtml %}
+                    {{ govukTable({
+                    firstCellIsHeader: true,
+                    head: [
+                        {
+                        text: "Case reference"
+                        },
+                        {
+                        text: "Location"
+                        },
+                        {
+                        text: "Warrant date"
+                        },
+                        {
+                        text: "Outcome"
+                        }
+                    ],
+                    rows: appearanceTableRows
+                    }) }}
+                {% endset %}
+                
+                {{
+                    govukSummaryList({
+                        card: {
+                            title: {
+                                text: "Court Case " + courtCase.uniqueIdentifier
+                            },
+                            actions: {
+                                items: [
+                                {
+                                    href: "/person/" + nomsId + "/court-cases/" + courtCase.uniqueIdentifier + "/appearance/"+ courtCase.appearances | length + "/reference",
+                                    text: "Add an appearance",
+                                    visuallyHiddenText: "Add an appearance"
+                                }]
+                            }
+                        },
+                        rows: [
+                        {
+                            key: { text: "Appearances" },
+                            value: { html: appearanceTableHtml }
+                        }]
+                    })
+                }}
+            {% endfor %}
+        </div>
+
+        <div class="govuk-grid-column-one-third">
         {{ govukButton({
             text: "Add a court case",
             href: "/person/" + nomsId + "/court-cases/" + newCourtCaseId + "/appearance/0/reference"

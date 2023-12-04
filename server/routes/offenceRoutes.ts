@@ -62,13 +62,17 @@ export default class OffenceRoutes {
       })
       this.offenceService.setOffenceEndDate(req.session, nomsId, courtCaseReference, offenceEndDate.toDate())
     }
-    const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
+    const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
     if (caseOutcomeAppliedAll) {
       this.offenceService.setOffenceOutcome(
         req.session,
         nomsId,
         courtCaseReference,
-        this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId),
+        this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId, courtCaseReference),
       )
       this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
       return res.redirect(
@@ -246,7 +250,11 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
     if (courtCase) {
-      const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+      const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+        req.session,
+        nomsId,
+        courtCaseReference,
+      )
       return res.render('pages/offence/check-offence-answers', {
         nomsId,
         courtCaseReference,
@@ -271,7 +279,12 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
     const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
     if (courtCase) {
-      const offence = this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10))
+      const offence = this.courtAppearanceService.getOffence(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        parseInt(offenceReference, 10),
+      )
       return res.render('pages/offence/delete-offence', {
         nomsId,
         courtCaseReference,
@@ -288,7 +301,7 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
     const deleteOffenceForm = trimForm<OffenceDeleteOffenceForm>(req.body)
     if (deleteOffenceForm.deleteOffence === 'true') {
-      this.courtAppearanceService.deleteOffence(req.session, nomsId, parseInt(offenceReference, 10))
+      this.courtAppearanceService.deleteOffence(req.session, nomsId, courtCaseReference, parseInt(offenceReference, 10))
       req.flash('infoBanner', 'Offence deleted')
     }
     return res.redirect(
@@ -298,6 +311,12 @@ export default class OffenceRoutes {
 
   private saveOffenceInAppearance(req, nomsId: string, courtCaseReference: string, offenceReference: string) {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    this.courtAppearanceService.addOffence(req.session, nomsId, parseInt(offenceReference, 10), offence)
+    this.courtAppearanceService.addOffence(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      parseInt(offenceReference, 10),
+      offence,
+    )
   }
 }

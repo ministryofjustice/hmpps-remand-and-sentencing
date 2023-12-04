@@ -12,6 +12,7 @@ import type {
   CourtCaseNextHearingCourtNameForm,
   CourtCaseNextHearingDateForm,
   CourtCaseSelectReferenceForm,
+  CourtCaseSelectCourtNameForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
@@ -81,12 +82,14 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     const { submitToCheckAnswers } = req.query
     const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/select-reference', {
       nomsId,
       submitToCheckAnswers,
       lastCaseReferenceNumber: lastSavedAppearance.caseReferenceNumber,
       courtCaseReference,
       appearanceReference,
+      courtCaseUniqueIdentifier,
       backLink: `/person/${nomsId}`,
     })
   }
@@ -158,8 +161,52 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
       )
     }
+    const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
+    if (lastSavedAppearance.nextHearingCourtName) {
+      return res.redirect(
+        `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/select-court-name`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/court-name`,
+    )
+  }
+
+  public getSelectCourtName: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference } = req.params
+    const { submitToCheckAnswers } = req.query
+    const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    return res.render('pages/courtAppearance/select-court-name', {
+      nomsId,
+      submitToCheckAnswers,
+      lastCourtName: lastSavedAppearance.nextHearingCourtName,
+      courtCaseReference,
+      appearanceReference,
+      courtCaseUniqueIdentifier,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
+    })
+  }
+
+  public submitSelectCourtName: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference } = req.params
+    const referenceForm = trimForm<CourtCaseSelectCourtNameForm>(req.body)
+    if (referenceForm.courtNameSelect === 'true') {
+      const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
+      this.courtAppearanceService.setCourtName(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        lastSavedAppearance.nextHearingCourtName,
+      )
+      return res.redirect(
+        `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/overall-case-outcome`,
+      )
+    }
+    const { submitToCheckAnswers } = req.query
+    const submitToCheckAnswersQuery = submitToCheckAnswers ? `?submitToCheckAnswers=${submitToCheckAnswers}` : ''
+    return res.redirect(
+      `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/court-name${submitToCheckAnswersQuery}`,
     )
   }
 

@@ -62,6 +62,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/select-court-name',
+    courtCaseRoutes.getSelectCourtName,
+  )
+
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-select-court-name',
+    courtCaseRoutes.submitSelectCourtName,
+  )
+
+  get(
     '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/court-name',
     courtCaseRoutes.getCourtName,
   )

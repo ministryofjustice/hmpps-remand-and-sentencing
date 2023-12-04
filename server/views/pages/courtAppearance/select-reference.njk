@@ -1,0 +1,44 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Same case reference number page" %}
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-select-reference{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Add an appearance to court case {{ courtCaseReference }}</span>
+                {{ govukRadios({
+                    name: "referenceNumberSelect",
+                    fieldset: {
+                        legend: {
+                        text: "Did this appearance use the same case reference number?",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    hint: {
+                        text: lastCaseReferenceNumber
+                    },
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes"
+                        },
+                        {
+                            value: "false",
+                            text: "No"
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

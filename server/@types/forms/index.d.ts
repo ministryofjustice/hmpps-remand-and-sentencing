@@ -13,6 +13,10 @@ declare module 'forms' {
     'warrantDate-year'?: number
   }
 
+  export interface CourtCaseSelectCourtNameForm {
+    courtNameSelect?: string
+  }
+
   export interface CourtCaseCourtNameForm {
     courtName?: string
   }

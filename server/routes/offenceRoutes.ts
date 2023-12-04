@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express'
-import createError from 'http-errors'
 import type {
   OffenceConfirmOffenceForm,
   OffenceDeleteOffenceForm,
@@ -10,7 +9,6 @@ import type {
   OffenceOffenceOutcomeForm,
 } from 'forms'
 import dayjs from 'dayjs'
-import CourtCaseService from '../services/courtCaseService'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -18,7 +16,6 @@ import CourtAppearanceService from '../services/courtAppearanceService'
 
 export default class OffenceRoutes {
   constructor(
-    private readonly courtCaseService: CourtCaseService,
     private readonly offenceService: OffenceService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly courtAppearanceService: CourtAppearanceService,
@@ -26,18 +23,13 @@ export default class OffenceRoutes {
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase) {
-      return res.render('pages/offence/offence-date', {
-        nomsId,
-        courtCaseReference,
-        courtCase,
-        offenceReference,
-        appearanceReference,
-        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`,
-      })
-    }
-    throw createError(404, 'Not found')
+    return res.render('pages/offence/offence-date', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`,
+    })
   }
 
   public submitOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -87,20 +79,15 @@ export default class OffenceRoutes {
 
   public getOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase) {
-      const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
-      return res.render('pages/offence/offence-outcome', {
-        nomsId,
-        courtCaseReference,
-        courtCase,
-        offenceOutcome,
-        offenceReference,
-        appearanceReference,
-        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
-      })
-    }
-    throw createError(404, 'Not found')
+    const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
+    return res.render('pages/offence/offence-outcome', {
+      nomsId,
+      courtCaseReference,
+      offenceOutcome,
+      offenceReference,
+      appearanceReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+    })
   }
 
   public submitOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
@@ -120,20 +107,15 @@ export default class OffenceRoutes {
 
   public getLookupOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase) {
-      const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
-      return res.render('pages/offence/lookup-offence-outcome', {
-        nomsId,
-        courtCaseReference,
-        courtCase,
-        offenceOutcome,
-        offenceReference,
-        appearanceReference,
-        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-outcome`,
-      })
-    }
-    throw createError(404, 'Not found')
+    const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
+    return res.render('pages/offence/lookup-offence-outcome', {
+      nomsId,
+      courtCaseReference,
+      offenceOutcome,
+      offenceReference,
+      appearanceReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-outcome`,
+    })
   }
 
   public submitLookupOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
@@ -153,18 +135,13 @@ export default class OffenceRoutes {
 
   public getOffenceCode: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase) {
-      return res.render('pages/offence/offence-code', {
-        nomsId,
-        courtCaseReference,
-        courtCase,
-        offenceReference,
-        appearanceReference,
-        backLink: `/person/${nomsId}/court-cases/check-answers`,
-      })
-    }
-    throw createError(404, 'Not found')
+    return res.render('pages/offence/offence-code', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      backLink: `/person/${nomsId}/court-cases/check-answers`,
+    })
   }
 
   public submitOffenceCode: RequestHandler = async (req, res): Promise<void> => {
@@ -186,18 +163,13 @@ export default class OffenceRoutes {
 
   public getOffenceName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase) {
-      return res.render('pages/offence/offence-name', {
-        nomsId,
-        courtCaseReference,
-        courtCase,
-        offenceReference,
-        appearanceReference,
-        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
-      })
-    }
-    throw createError(404, 'Not found')
+    return res.render('pages/offence/offence-name', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
+    })
   }
 
   public submitOffenceName: RequestHandler = async (req, res): Promise<void> => {
@@ -216,23 +188,18 @@ export default class OffenceRoutes {
 
   public getConfirmOffenceCode: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase) {
-      const offence = await this.manageOffencesService.getOffenceByCode(
-        this.offenceService.getOffenceCode(req.session, nomsId, courtCaseReference),
-        req.user.token,
-      )
-      return res.render('pages/offence/confirm-offence', {
-        nomsId,
-        courtCaseReference,
-        courtCase,
-        offence,
-        offenceReference,
-        appearanceReference,
-        backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
-      })
-    }
-    throw createError(404, 'Not found')
+    const offence = await this.manageOffencesService.getOffenceByCode(
+      this.offenceService.getOffenceCode(req.session, nomsId, courtCaseReference),
+      req.user.token,
+    )
+    return res.render('pages/offence/confirm-offence', {
+      nomsId,
+      courtCaseReference,
+      offence,
+      offenceReference,
+      appearanceReference,
+      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
+    })
   }
 
   public submitConfirmOffenceCode: RequestHandler = async (req, res): Promise<void> => {
@@ -248,23 +215,18 @@ export default class OffenceRoutes {
 
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase) {
-      const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-        req.session,
-        nomsId,
-        courtCaseReference,
-      )
-      return res.render('pages/offence/check-offence-answers', {
-        nomsId,
-        courtCaseReference,
-        courtCase,
-        courtAppearance,
-        appearanceReference,
-        infoBanner: req.flash('infoBanner'),
-      })
-    }
-    throw createError(404, 'Not found')
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
+    return res.render('pages/offence/check-offence-answers', {
+      nomsId,
+      courtCaseReference,
+      courtAppearance,
+      appearanceReference,
+      infoBanner: req.flash('infoBanner'),
+    })
   }
 
   public addAnotherOffence: RequestHandler = async (req, res): Promise<void> => {
@@ -277,24 +239,19 @@ export default class OffenceRoutes {
 
   public getDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
-    const courtCase = this.courtCaseService.getSessionSavedCourtCase(req.session, nomsId, courtCaseReference)
-    if (courtCase) {
-      const offence = this.courtAppearanceService.getOffence(
-        req.session,
-        nomsId,
-        courtCaseReference,
-        parseInt(offenceReference, 10),
-      )
-      return res.render('pages/offence/delete-offence', {
-        nomsId,
-        courtCaseReference,
-        courtCase,
-        offence,
-        offenceReference,
-        appearanceReference,
-      })
-    }
-    throw createError(404, 'Not found')
+    const offence = this.courtAppearanceService.getOffence(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      parseInt(offenceReference, 10),
+    )
+    return res.render('pages/offence/delete-offence', {
+      nomsId,
+      courtCaseReference,
+      offence,
+      offenceReference,
+      appearanceReference,
+    })
   }
 
   public submitDeleteOffence: RequestHandler = async (req, res): Promise<void> => {

@@ -136,6 +136,13 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, courtCaseReference)
     courtAppearance.caseOutcomeAppliedAll = caseOutcomeAppliedAll
+    if (caseOutcomeAppliedAll) {
+      courtAppearance.offences = courtAppearance.offences.map(offence => {
+        // eslint-disable-next-line no-param-reassign
+        offence.outcome = courtAppearance.overallCaseOutcome
+        return offence
+      })
+    }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

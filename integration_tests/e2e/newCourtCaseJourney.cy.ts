@@ -6,7 +6,15 @@ import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
+import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
+import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
+import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
+import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
+import CourtCaseNextHearingSetPage from '../pages/courtCaseNextHearingSetPage'
+import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
+import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
+import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
 
 context('Court Case Check Answers Page', () => {
   beforeEach(() => {
@@ -50,6 +58,34 @@ context('Court Case Check Answers Page', () => {
       'Overall case outcome': 'Remand in Custody (Bail Refused)',
     })
     courtCaseCheckAnswersPage.button().click()
-    Page.verifyOnPage(OffenceOffenceCodePage)
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.input().type('CC12345')
+    offenceOffenceCodePage.button().click()
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.button().click()
+    const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage.dayDateInput('offence-start-date').type('12')
+    offenceOffenceDatePage.monthDateInput('offence-start-date').type('5')
+    offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
+    offenceOffenceDatePage.button().click()
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, '0')
+    offenceCheckOffenceAnswersPage.button().click()
+    const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
+    courtCaseNextHearingSetPage.radioSelector('true').click()
+    courtCaseNextHearingSetPage.button().click()
+    const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
+    courtCaseNextHearingTypePage.radioSelector('Court appearance').click()
+    courtCaseNextHearingTypePage.button().click()
+    const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
+    courtCaseNextHearingDatePage.dayDateInput('next-hearing-date').type('18')
+    courtCaseNextHearingDatePage.monthDateInput('next-hearing-date').type('10')
+    courtCaseNextHearingDatePage.yearDateInput('next-hearing-date').type('2023')
+    courtCaseNextHearingDatePage.button().click()
+    const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
+    courtCaseNextHearingCourtSetPage.radioSelector('true').click()
+    courtCaseNextHearingCourtSetPage.button().click()
+    const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
+    courtCaseNextHearingAnswersPage.button().click()
+    Page.verifyOnPage(StartPage)
   })
 })

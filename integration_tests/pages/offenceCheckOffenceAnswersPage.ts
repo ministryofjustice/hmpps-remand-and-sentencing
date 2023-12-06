@@ -14,4 +14,6 @@ export default class CourtCaseOverviewPage extends Page {
     cy.get(
       `a[href="/person/${personId}/court-cases/${courtCaseId}/appearance/${appearanceReference}/offences/${offenceId}/delete-offence"]`,
     )
+
+  finishAddingButton = (): PageElement => cy.get('[data-qa="finishAddingButton"]')
 }

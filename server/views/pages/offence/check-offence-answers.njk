@@ -52,7 +52,10 @@
 
                 {{ govukButton({
                     text: "Finish adding offences and continue",
-                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-select"
+                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-select",
+                    attributes: {
+                        "data-qa": "finishAddingButton"
+                    }
                 }) }}
             </div>
 

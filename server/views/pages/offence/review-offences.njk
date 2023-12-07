@@ -1,0 +1,66 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "../../components/offenceCard/macro.njk" import offenceCard %}
+
+{% set pageTitle = applicationName + " - Review offences" %}
+
+{% block content %}
+
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            
+            <span class="govuk-caption-l">Add an appearance to court case {{ courtCaseUniqueIdentifier }}</span>
+            <h1 class="govuk-heading-l">Review the offence details for this appearance</h1>
+            
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Offences</h2>
+
+            {% for offence in courtAppearance.offences %}
+                {{
+                    offenceCard({
+                        offenceCode: offence.offenceCode,
+                        offenceName: offence.offenceName,
+                        offenceStartDate: offence.offenceStartDate,
+                        offenceEndDate: offence.offenceEndDate,
+                        outcome: offence.outcome
+                    })
+                }}
+            {% endfor %}
+            
+
+            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-review-offences">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                {{ govukRadios({
+                        classes: "govuk-radios--inline",
+                        name: "changeOffence",
+                        fieldset: {
+                            legend: {
+                            text: "Do you need to make any changes to the offences?",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend--m"
+                            }
+                        },
+                        hint: {
+                            text: "This includes adding or deleting offences."
+                        },
+                        items: [
+                            {
+                                value: "true",
+                                text: "Yes, I need to make changes"
+                            },
+                            {
+                                value: "false",
+                                text: "No"
+                            }
+                        ]
+                    }) }}
+
+                    {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

@@ -20,6 +20,7 @@ export default function routes(services: Services): Router {
     services.offenceService,
     services.manageOffencesService,
     services.courtAppearanceService,
+    services.courtCaseService,
   )
 
   get('/', (req, res, next) => {
@@ -119,6 +120,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-check-answers',
     courtCaseRoutes.submitCheckAnswers,
+  )
+
+  get(
+    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/review-offences',
+    offenceRoutes.getReviewOffences,
+  )
+
+  post(
+    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-review-offences',
+    offenceRoutes.submitReviewOffences,
   )
 
   get(

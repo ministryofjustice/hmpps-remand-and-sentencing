@@ -7,18 +7,21 @@ import type {
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
+  ReviewOffencesForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import CourtAppearanceService from '../services/courtAppearanceService'
+import CourtCaseService from '../services/courtCaseService'
 
 export default class OffenceRoutes {
   constructor(
     private readonly offenceService: OffenceService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly courtAppearanceService: CourtAppearanceService,
+    private readonly courtCaseService: CourtCaseService,
   ) {}
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -263,6 +266,36 @@ export default class OffenceRoutes {
     }
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
+    )
+  }
+
+  public getReviewOffences: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    return res.render('pages/offence/review-offences', {
+      nomsId,
+      courtCaseReference,
+      courtAppearance,
+      appearanceReference,
+      courtCaseUniqueIdentifier,
+    })
+  }
+
+  public submitReviewOffences: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference } = req.params
+    const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)
+    if (reviewOffenceForm.changeOffence === 'true') {
+      return res.redirect(
+        `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-select`,
     )
   }
 

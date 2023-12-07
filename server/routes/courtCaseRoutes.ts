@@ -360,6 +360,18 @@ export default class CourtCaseRoutes {
       courtCaseReference,
       caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true',
     )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
+
+    if (courtAppearance.offences.length) {
+      return res.redirect(
+        `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/review-offences`,
+      )
+    }
+
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
     )

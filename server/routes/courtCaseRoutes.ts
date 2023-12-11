@@ -54,7 +54,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}`,
     })
   }
 
@@ -90,7 +89,6 @@ export default class CourtCaseRoutes {
       courtCaseReference,
       appearanceReference,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}`,
     })
   }
 
@@ -142,7 +140,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/reference`,
     })
   }
 
@@ -184,7 +181,6 @@ export default class CourtCaseRoutes {
       courtCaseReference,
       appearanceReference,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
     })
   }
 
@@ -227,7 +223,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
     })
   }
 
@@ -265,7 +260,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/court-name`,
     })
   }
 
@@ -304,7 +298,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/overall-case-outcome`,
     })
   }
 
@@ -346,7 +339,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/overall-case-outcome`,
     })
   }
 
@@ -395,7 +387,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/case-outcome-applied-all`,
     })
   }
 
@@ -424,7 +415,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/check-offence-answers`,
     })
   }
 
@@ -457,7 +447,6 @@ export default class CourtCaseRoutes {
       submitToCheckAnswers,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-select`,
     })
   }
 
@@ -495,7 +484,6 @@ export default class CourtCaseRoutes {
       submitToCheckAnswers,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-type`,
     })
   }
 
@@ -548,7 +536,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-date`,
     })
   }
 
@@ -588,7 +575,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-court-select`,
     })
   }
 
@@ -622,7 +608,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       isFirstAppearance,
       courtCaseUniqueIdentifier,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-court-name`,
     })
   }
 

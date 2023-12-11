@@ -31,7 +31,6 @@ export default class OffenceRoutes {
       courtCaseReference,
       offenceReference,
       appearanceReference,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`,
     })
   }
 
@@ -89,7 +88,6 @@ export default class OffenceRoutes {
       offenceOutcome,
       offenceReference,
       appearanceReference,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
     })
   }
 
@@ -117,7 +115,6 @@ export default class OffenceRoutes {
       offenceOutcome,
       offenceReference,
       appearanceReference,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-outcome`,
     })
   }
 
@@ -143,7 +140,6 @@ export default class OffenceRoutes {
       courtCaseReference,
       offenceReference,
       appearanceReference,
-      backLink: `/person/${nomsId}/court-cases/check-answers`,
     })
   }
 
@@ -171,7 +167,6 @@ export default class OffenceRoutes {
       courtCaseReference,
       offenceReference,
       appearanceReference,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     })
   }
 
@@ -201,7 +196,6 @@ export default class OffenceRoutes {
       offence,
       offenceReference,
       appearanceReference,
-      backLink: `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     })
   }
 

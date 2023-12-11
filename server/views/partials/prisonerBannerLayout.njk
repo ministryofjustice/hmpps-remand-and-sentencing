@@ -46,14 +46,7 @@
                     text: 'Timeline',
                     href: '#'
                 }]
-            }) }}    
-            {% if backLink %}
-                {{ govukBackLink({
-                    text: "Back",
-                    href: backLink,
-                    classes: 'govuk-!-margin-top-0'
-                }) }}
-            {% endif %}
+            }) }}
 
             {% block content %}{% endblock %}
         </div>

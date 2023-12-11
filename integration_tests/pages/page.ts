@@ -23,6 +23,10 @@ export default abstract class Page {
 
   input = (): PageElement => cy.get('.govuk-input')
 
+  checkboxSelector = (value: string): PageElement => cy.get(`:checkbox[value="${value}"]`)
+
+  errorSummary = (): PageElement => cy.get('.govuk-error-summary')
+
   dayDateInput = (idPrefix: string): PageElement => cy.get(`#${idPrefix}-day`)
 
   monthDateInput = (idPrefix: string): PageElement => cy.get(`#${idPrefix}-month`)

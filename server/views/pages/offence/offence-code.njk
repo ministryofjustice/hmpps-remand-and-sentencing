@@ -3,12 +3,19 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
+
 {% set pageTitle = applicationName + " - Add a court case Warrant Date" %}
 
 {% block pageContent %}
             <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-code">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
+                <span class="govuk-caption-l">
+                    {% if isFirstAppearance %}
+                        Add an offence to court case {{ courtCaseUniqueIdentifier }}
+                        {% else %}
+                        Add an appearance to court case {{ courtCaseUniqueIdentifier }}
+                    {% endif %}
+                </span>
 
                 {{ govukInput({
                     label: {
@@ -17,7 +24,9 @@
                         isPageHeading: true
                     },
                     id: "offence-code",
-                    name: "offenceCode"
+                    name: "offenceCode",
+                    errorMessage: errors | findError('offenceCode'),
+                    value: offenceCodeForm.offenceCode
                 }) }}
 
                 {{ govukCheckboxes({
@@ -25,9 +34,11 @@
                     items: [
                         {
                             value: "true",
-                            text: "I do not have the offence code"
+                            text: "I do not have the offence code",
+                            checked: offenceCodeForm.unknownCode
                         }
-                    ]
+                    ],
+                    errorMessage: errors | findError('unknownCode')
                 })}}
 
 

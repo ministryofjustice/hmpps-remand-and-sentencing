@@ -26,4 +26,17 @@ context('Add Offence Offence Code Page', () => {
   it('button to continue is displayed', () => {
     offenceOffenceCodePage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting code filled out and I do not have box ticked results in error', () => {
+    offenceOffenceCodePage.input().type('123')
+    offenceOffenceCodePage.checkboxSelector('true').click()
+    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage
+      .errorSummary()
+      .trimTextContent()
+      .should(
+        'equal',
+        'There is a problem Either code or unknown must be submitted Either code or unknown must be submitted',
+      )
+  })
 })

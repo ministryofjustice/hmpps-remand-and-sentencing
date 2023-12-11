@@ -15,6 +15,7 @@ import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtCaseService from '../services/courtCaseService'
+import validate from '../validation/validation'
 
 export default class OffenceRoutes {
   constructor(
@@ -135,18 +136,41 @@ export default class OffenceRoutes {
 
   public getOffenceCode: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/offence/offence-code', {
       nomsId,
       courtCaseReference,
       offenceReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
+      errors: req.flash('errors') || [],
+      offenceCodeForm: req.flash('offenceCodeForm')[0] || {},
     })
   }
 
   public submitOffenceCode: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
     const offenceCodeForm = trimForm<OffenceOffenceCodeForm>(req.body)
-
+    const errors = validate(
+      offenceCodeForm,
+      {
+        offenceCode: `onlyOne:${offenceCodeForm.unknownCode ?? ''}`,
+        unknownCode: `onlyOne:${offenceCodeForm.offenceCode ?? ''}`,
+      },
+      {
+        'onlyOne.offenceCode': 'Either code or unknown must be submitted',
+        'onlyOne.unknownCode': 'Either code or unknown must be submitted',
+      },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceCodeForm', { ...offenceCodeForm })
+      return res.redirect(
+        `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      )
+    }
     if (offenceCodeForm.unknownCode) {
       return res.redirect(
         `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-name`,

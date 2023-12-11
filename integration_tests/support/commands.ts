@@ -36,7 +36,18 @@ const getSummaryList = subject => {
   }, {})
 }
 
+const trimTextContent = subject => {
+  if (subject.get().length > 1) {
+    throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
+  }
+
+  const element = subject.get()[0]
+
+  return element.textContent.trim().replace(/\s{2,}/g, ' ')
+}
+
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
+Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
   cy.visit(`/person/${personId}/court-cases/${courtCaseNumber}/appearance/${appearanceReference}/check-answers`)

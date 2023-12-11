@@ -27,11 +27,15 @@ export default class OffenceRoutes {
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/offence/offence-date', {
       nomsId,
       courtCaseReference,
       offenceReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
     })
   }
 
@@ -83,12 +87,16 @@ export default class OffenceRoutes {
   public getOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
     const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/offence/offence-outcome', {
       nomsId,
       courtCaseReference,
       offenceOutcome,
       offenceReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
     })
   }
 
@@ -110,12 +118,16 @@ export default class OffenceRoutes {
   public getLookupOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
     const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/offence/lookup-offence-outcome', {
       nomsId,
       courtCaseReference,
       offenceOutcome,
       offenceReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
     })
   }
 
@@ -186,11 +198,15 @@ export default class OffenceRoutes {
 
   public getOffenceName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference } = req.params
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/offence/offence-name', {
       nomsId,
       courtCaseReference,
       offenceReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
     })
   }
 
@@ -214,12 +230,16 @@ export default class OffenceRoutes {
       this.offenceService.getOffenceCode(req.session, nomsId, courtCaseReference),
       req.user.token,
     )
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/offence/confirm-offence', {
       nomsId,
       courtCaseReference,
       offence,
       offenceReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
     })
   }
 
@@ -241,11 +261,15 @@ export default class OffenceRoutes {
       nomsId,
       courtCaseReference,
     )
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,
       courtAppearance,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
       infoBanner: req.flash('infoBanner'),
     })
   }
@@ -266,12 +290,16 @@ export default class OffenceRoutes {
       courtCaseReference,
       parseInt(offenceReference, 10),
     )
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/offence/delete-offence', {
       nomsId,
       courtCaseReference,
       offence,
       offenceReference,
       appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
     })
   }
 

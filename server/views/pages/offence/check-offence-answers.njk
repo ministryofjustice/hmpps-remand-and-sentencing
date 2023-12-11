@@ -18,7 +18,13 @@
             }) }}
             {% endif %}
             
-            <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
+            <span class="govuk-caption-l">
+                    {% if isFirstAppearance %}
+                        Add an offence to court case {{ courtCaseUniqueIdentifier }}
+                        {% else %}
+                        Add an appearance to court case {{ courtCaseUniqueIdentifier }}
+                    {% endif %}
+                </span>
             <h1 class="govuk-heading-l">You have added {{ courtAppearance.offences | length }} offences to case {{ courtAppearance.caseReferenceNumber }} </h1>
             {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",

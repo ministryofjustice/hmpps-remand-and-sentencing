@@ -23,7 +23,13 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-delete-offence">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <span class="govuk-caption-l">Add an offence to court case {{ courtCaseReference }}</span>
+                <span class="govuk-caption-l">
+                    {% if isFirstAppearance %}
+                        Add an offence to court case {{ courtCaseUniqueIdentifier }}
+                        {% else %}
+                        Add an appearance to court case {{ courtCaseUniqueIdentifier }}
+                    {% endif %}
+                </span>
 
                 {{ govukRadios({
                     name: "deleteOffence",

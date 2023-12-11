@@ -1,6 +1,7 @@
 {% extends "./prisonerBannerLayout.njk" %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set offenceDetailHtml %}
     <dl class="offences-summary-card-content">
@@ -16,7 +17,16 @@
 {% endset %}
 
 {% block content %}
-
+    
+        {% if errors | length %}
+            <div class="govuk-grid-row govuk-!-margin-top-4">
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: errors
+                }) }}
+            </div>
+        {% endif %}
+    
     <div class="govuk-grid-row govuk-!-margin-top-4">
 
         <div class="govuk-grid-column-two-thirds">

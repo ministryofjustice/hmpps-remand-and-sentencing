@@ -26,6 +26,10 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+      flash(type: string, message: Array<Record<string, string>>): number
+      flash(message: 'errors'): Array<Record<string, string>>
+      flash(type: string, message: Record<string, unknown>): number
+      flash(message: 'offenceCodeForm'): Record<string, unknown>
     }
 
     interface Locals {

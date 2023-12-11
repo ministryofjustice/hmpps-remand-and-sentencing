@@ -8,6 +8,11 @@ import config from '../config'
 
 const production = process.env.NODE_ENV === 'production'
 
+type Error = {
+  href: string
+  text: string
+}
+
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
 
@@ -49,4 +54,14 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatDate', formatDate)
 
   njkEnv.addFilter('formatDateTime', formatDateTime)
+
+  njkEnv.addFilter('findError', (array: Error[], formFieldId: string) => {
+    const item = array.find(error => error.href === `#${formFieldId}`)
+    if (item) {
+      return {
+        text: item.text,
+      }
+    }
+    return null
+  })
 }

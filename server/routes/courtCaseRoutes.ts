@@ -430,7 +430,9 @@ export default class CourtCaseRoutes {
     }
     // this would be where we save which we don't currently have and then redirect to all court cases page
     this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference)
-    return res.redirect(`/person/${nomsId}`)
+    return res.redirect(
+      `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
+    )
   }
 
   public getNextHearingType: RequestHandler = async (req, res): Promise<void> => {
@@ -615,7 +617,9 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
     // save appearance here
     this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference)
-    return res.redirect(`/person/${nomsId}`)
+    return res.redirect(
+      `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
+    )
   }
 
   private saveAppearance(

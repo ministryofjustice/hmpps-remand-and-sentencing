@@ -87,6 +87,6 @@ context('Court Case Check Answers Page', () => {
     courtCaseNextHearingCourtSetPage.button().click()
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage.button().click()
-    Page.verifyOnPage(StartPage)
+    // once confirmation page is implemented it will go to that page
   })
 })

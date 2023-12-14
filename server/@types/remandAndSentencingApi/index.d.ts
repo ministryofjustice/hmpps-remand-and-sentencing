@@ -4,6 +4,13 @@
  */
 
 export interface paths {
+  '/courtCase': {
+    /**
+     * Create Court case
+     * @description This endpoint will create a court case
+     */
+    post: operations['createCourtCase']
+  }
   '/person/{prisonerId}': {
     /**
      * Retrieve person details
@@ -17,6 +24,41 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    CreateCharge: {
+      /** Format: uuid */
+      chargeUuid?: string
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate: string
+      /** Format: date */
+      offenceEndDate?: string
+      outcome: string
+    }
+    CreateCourtAppearance: {
+      /** Format: uuid */
+      appearanceUuid?: string
+      outcome: string
+      courtCode: string
+      courtCaseReference: string
+      /** Format: date */
+      appearanceDate: string
+      warrantId?: string
+      nextCourtAppearance?: components['schemas']['CreateNextCourtAppearance']
+      charges: components['schemas']['CreateCharge'][]
+    }
+    CreateCourtCase: {
+      prisonerId: string
+      appearances: components['schemas']['CreateCourtAppearance'][]
+    }
+    CreateNextCourtAppearance: {
+      /** Format: date */
+      appearanceDate: string
+      courtCode: string
+      appearanceType: string
+    }
+    CreateCourtCaseResponse: {
+      courtCaseUuid: string
+    }
     PersonDetails: {
       personId: string
       firstName: string
@@ -41,6 +83,37 @@ export type $defs = Record<string, never>
 export type external = Record<string, never>
 
 export interface operations {
+  /**
+   * Create Court case
+   * @description This endpoint will create a court case
+   */
+  createCourtCase: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCourtCase']
+      }
+    }
+    responses: {
+      /** @description Returns court case UUID */
+      201: {
+        content: {
+          'application/json': components['schemas']['CreateCourtCaseResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CreateCourtCaseResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CreateCourtCaseResponse']
+        }
+      }
+    }
+  }
   /**
    * Retrieve person details
    * @description This endpoint will retrieve person details

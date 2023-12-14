@@ -10,4 +10,34 @@ const getMatchingRequests = body => superagent.post(`${url}/requests/find`).send
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
-export { stubFor, getMatchingRequests, resetStubs }
+const verifyRequest = ({
+  requestUrl,
+  requestUrlPattern,
+  method,
+  body,
+  queryParameters,
+}: {
+  requestUrl?: string
+  requestUrlPattern?: string
+  method: string
+  body?: unknown
+  queryParameters?: unknown
+}): Promise<number> => {
+  const bodyPatterns =
+    (body && {
+      bodyPatterns: [{ equalToJson: JSON.stringify(body) }],
+    }) ||
+    {}
+  return superagent
+    .post(`${url}/requests/count`)
+    .send({
+      method,
+      urlPattern: requestUrlPattern,
+      url: requestUrl,
+      ...bodyPatterns,
+      queryParameters,
+    })
+    .then(response => parseInt(JSON.parse(response.text).count, 10))
+}
+
+export { stubFor, getMatchingRequests, resetStubs, verifyRequest }

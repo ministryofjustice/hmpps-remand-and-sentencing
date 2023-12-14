@@ -31,13 +31,14 @@ const offenceToCreateCharge = (offence: Offence): CreateCharge => {
 }
 
 export const courtAppearanceToCreateCourtAppearance = (courtAppearance: CourtAppearance): CreateCourtAppearance => {
+  const nextCourtAppearance = courtAppearanceToCreateNextCourtAppearance(courtAppearance)
   return {
     outcome: courtAppearance.overallCaseOutcome,
     courtCode: courtAppearance.courtName,
     courtCaseReference: courtAppearance.caseReferenceNumber,
     appearanceDate: dayjs(courtAppearance.warrantDate).format('YYYY-MM-DD'),
-    nextCourtAppearance: courtAppearanceToCreateNextCourtAppearance(courtAppearance),
     charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence)),
+    ...(nextCourtAppearance && { nextCourtAppearance }),
   } as CreateCourtAppearance
 }
 

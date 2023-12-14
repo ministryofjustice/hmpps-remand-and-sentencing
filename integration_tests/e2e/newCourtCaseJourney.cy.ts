@@ -23,6 +23,7 @@ context('Court Case Check Answers Page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.task('stubGetOffenceByCode')
+    cy.task('stubCreateCourtCase')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -87,6 +88,7 @@ context('Court Case Check Answers Page', () => {
     courtCaseNextHearingCourtSetPage.button().click()
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage.button().click()
+    cy.task('verifyCreateCourtCaseRequest').should('equal', 1)
     // once confirmation page is implemented it will go to that page
   })
 })

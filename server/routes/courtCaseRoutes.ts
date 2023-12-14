@@ -19,11 +19,13 @@ import type { CourtAppearance } from 'models'
 import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
 import CourtAppearanceService from '../services/courtAppearanceService'
+import RemandAndSentencingService from '../services/remandAndSentencingService'
 
 export default class CourtCaseRoutes {
   constructor(
     private readonly courtCaseService: CourtCaseService,
     private readonly courtAppearanceService: CourtAppearanceService,
+    private readonly remandAndSentencingService: RemandAndSentencingService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -428,8 +430,9 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-type`,
       )
     }
+    const { token } = res.locals.user
     // this would be where we save which we don't currently have and then redirect to all court cases page
-    this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference)
+    await this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference, token)
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
     )
@@ -615,20 +618,23 @@ export default class CourtCaseRoutes {
 
   public submiCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference } = req.params
+    const { token } = res.locals.user
     // save appearance here
-    this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference)
+    await this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference, token)
     return res.redirect(
       `/person/${nomsId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
     )
   }
 
-  private saveAppearance(
+  private async saveAppearance(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
     appearanceReference: string,
-  ): CourtAppearance {
+    token: string,
+  ): Promise<CourtAppearance> {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(session, nomsId, courtCaseReference)
+    // remove this when integrated with backend
     this.courtCaseService.saveSessionCourtCase(
       session,
       nomsId,
@@ -636,6 +642,8 @@ export default class CourtCaseRoutes {
       parseInt(appearanceReference, 10),
       courtAppearance,
     )
+    const courtCase = this.courtCaseService.getSessionCourtCase(session, nomsId, courtCaseReference)
+    await this.remandAndSentencingService.createCourtCase(nomsId, token, courtCase)
     this.courtAppearanceService.clearSessionCourtAppearance(session, nomsId)
     return courtAppearance
   }

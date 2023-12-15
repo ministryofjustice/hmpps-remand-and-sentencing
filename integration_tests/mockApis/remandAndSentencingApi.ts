@@ -29,7 +29,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: '/remand-and-sentencing-api/courtCase',
+        urlPattern: '/remand-and-sentencing-api/court-case',
         bodyPatterns: [
           {
             equalToJson:
@@ -51,7 +51,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/remand-and-sentencing-api/courtCase/search',
+        urlPath: '/remand-and-sentencing-api/court-case/search',
         queryParameters: {
           prisonerId: {
             equalTo: 'A1234AB',
@@ -145,7 +145,7 @@ export default {
 
   verifyCreateCourtCaseRequest: (): Promise<number> => {
     return verifyRequest({
-      requestUrlPattern: '/remand-and-sentencing-api/courtCase',
+      requestUrlPattern: '/remand-and-sentencing-api/court-case',
       method: 'POST',
       body: {
         prisonerId: 'A1234AB',

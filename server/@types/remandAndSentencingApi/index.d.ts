@@ -11,6 +11,20 @@ export interface paths {
      */
     post: operations['createCourtCase']
   }
+  '/court-case': {
+    /**
+     * Create Court case
+     * @description This endpoint will create a court case
+     */
+    post: operations['createCourtCase_1']
+  }
+  '/court-appearance': {
+    /**
+     * Create Court appearance
+     * @description This endpoint will create a court appearance in a given court case
+     */
+    post: operations['createCourtAppearance']
+  }
   '/person/{prisonerId}': {
     /**
      * Retrieve person details
@@ -18,12 +32,19 @@ export interface paths {
      */
     get: operations['getPersonDetails']
   }
-  '/courtCase/search': {
+  '/court-case/search': {
     /**
      * Retrieve all court cases for person
      * @description This endpoint will retrieve all court cases for a person
      */
     get: operations['searchCourtCases']
+  }
+  '/courtCase/search': {
+    /**
+     * Retrieve all court cases for person
+     * @description This endpoint will retrieve all court cases for a person
+     */
+    get: operations['searchCourtCases_1']
   }
 }
 
@@ -42,6 +63,7 @@ export interface components {
       outcome: string
     }
     CreateCourtAppearance: {
+      courtCaseUuid?: string
       /** Format: uuid */
       appearanceUuid?: string
       outcome: string
@@ -65,6 +87,10 @@ export interface components {
     }
     CreateCourtCaseResponse: {
       courtCaseUuid: string
+    }
+    CreateCourtAppearanceResponse: {
+      /** Format: uuid */
+      appearanceUuid: string
     }
     PersonDetails: {
       personId: string
@@ -129,11 +155,11 @@ export interface components {
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
-      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
       last?: boolean
+      first?: boolean
       empty?: boolean
     }
     PageableObject: {
@@ -197,6 +223,68 @@ export interface operations {
     }
   }
   /**
+   * Create Court case
+   * @description This endpoint will create a court case
+   */
+  createCourtCase_1: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCourtCase']
+      }
+    }
+    responses: {
+      /** @description Returns court case UUID */
+      201: {
+        content: {
+          'application/json': components['schemas']['CreateCourtCaseResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CreateCourtCaseResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CreateCourtCaseResponse']
+        }
+      }
+    }
+  }
+  /**
+   * Create Court appearance
+   * @description This endpoint will create a court appearance in a given court case
+   */
+  createCourtAppearance: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCourtAppearance']
+      }
+    }
+    responses: {
+      /** @description Returns court case UUID */
+      201: {
+        content: {
+          'application/json': components['schemas']['CreateCourtAppearanceResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CreateCourtAppearanceResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CreateCourtAppearanceResponse']
+        }
+      }
+    }
+  }
+  /**
    * Retrieve person details
    * @description This endpoint will retrieve person details
    */
@@ -232,6 +320,38 @@ export interface operations {
    * @description This endpoint will retrieve all court cases for a person
    */
   searchCourtCases: {
+    parameters: {
+      query: {
+        prisonerId: string
+        pageable: components['schemas']['Pageable']
+      }
+    }
+    responses: {
+      /** @description Returns court cases */
+      200: {
+        content: {
+          'application/json': components['schemas']['PageCourtCase']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['PageCourtCase']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['PageCourtCase']
+        }
+      }
+    }
+  }
+  /**
+   * Retrieve all court cases for person
+   * @description This endpoint will retrieve all court cases for a person
+   */
+  searchCourtCases_1: {
     parameters: {
       query: {
         prisonerId: string

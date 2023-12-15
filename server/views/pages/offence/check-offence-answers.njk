@@ -53,12 +53,12 @@
                 {{ govukButton({
                     text: "Add another offence",
                     classes: "govuk-button--secondary",
-                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
                 }) }}
 
                 {{ govukButton({
                     text: "Finish adding offences and continue",
-                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-select",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-select",
                     attributes: {
                         "data-qa": "finishAddingButton"
                     }
@@ -76,12 +76,12 @@
                         actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/offence-code",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/offence-code",
                                     text: "Edit",
                                     visuallyHiddenText: "edit offence"
                                 },
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
                                     text: "Delete",
                                     visuallyHiddenText: "delete offence"
                                 }

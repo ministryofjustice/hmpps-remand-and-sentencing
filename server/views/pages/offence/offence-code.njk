@@ -7,7 +7,7 @@
 {% set pageTitle = applicationName + " - Add a court case Warrant Date" %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-code">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-code">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">
                     {% if isFirstAppearance %}

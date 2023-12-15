@@ -68,6 +68,18 @@ export default class CourtCaseService {
     return this.getCourtCase(session.courtCases, persistId, courtCaseReference).uniqueIdentifier
   }
 
+  addAllCourtCasesToSession(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCases: CourtCase[],
+  ) {
+    courtCases.forEach(courtCase => {
+      const persistId = this.getCourtCasePersistId(nomsId, courtCase.uniqueIdentifier)
+      // eslint-disable-next-line no-param-reassign
+      session.courtCases[persistId] = courtCase
+    })
+  }
+
   private getSavedCourtCases(
     savedCourtCases: Map<string, Map<string, CourtCase>>,
     nomsId: string,

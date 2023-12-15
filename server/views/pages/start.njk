@@ -64,7 +64,7 @@
                             actions: {
                                 items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" + loop.index0 + "/appearance/"+ courtCase.appearances | length + "/select-reference",
+                                    href: "/person/" + nomsId + "/edit-court-case/" + courtCase.courtCaseUuid + "/appearance/"+ courtCase.appearances | length + "/select-reference",
                                     text: "Add an appearance",
                                     visuallyHiddenText: "Add an appearance"
                                 }]
@@ -83,7 +83,7 @@
         <div class="govuk-grid-column-one-third">
         {{ govukButton({
             text: "Add a court case",
-            href: "/person/" + nomsId + "/court-cases/" + newCourtCaseId + "/appearance/0/reference"
+            href: "/person/" + nomsId + "/add-court-case/" + newCourtCaseId + "/appearance/0/reference"
         }) }}
         </div>
     </div>

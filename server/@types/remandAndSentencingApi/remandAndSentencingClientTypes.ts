@@ -11,3 +11,5 @@ export type CreateNextCourtAppearance = components['schemas']['CreateNextCourtAp
 export type CreateCharge = components['schemas']['CreateCharge']
 
 export type CreateCourtCaseResponse = components['schemas']['CreateCourtCaseResponse']
+
+export type PageCourtCase = components['schemas']['PageCourtCase']

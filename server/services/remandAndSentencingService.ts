@@ -1,6 +1,7 @@
 import type { CourtCase } from 'models'
 import type {
   CreateCourtCaseResponse,
+  PageCourtCase,
   RemandAndSentencingPerson,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
@@ -14,5 +15,9 @@ export default class RemandAndSentencingService {
   async createCourtCase(prisonerId: string, token: string, courtCase: CourtCase): Promise<CreateCourtCaseResponse> {
     const createCourtCase = courtCaseToCreateCourtCase(prisonerId, courtCase)
     return new RemandAndSentencingApiClient(token).createCourtCase(createCourtCase)
+  }
+
+  async searchCourtCases(prisonerId: string, token: string): Promise<PageCourtCase> {
+    return new RemandAndSentencingApiClient(token).searchCourtCases(prisonerId)
   }
 }

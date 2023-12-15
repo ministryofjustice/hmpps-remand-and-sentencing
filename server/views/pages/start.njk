@@ -12,23 +12,23 @@
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
-            {% for courtCase in courtCases %}
+            {% for courtCase in courtCases.content %}
 
                 {%- set appearanceTableRows = [] -%}
 
                 {%- for appearance in courtCase.appearances -%}
                     {%- set tableRow= [
                         {
-                        text: appearance.caseReferenceNumber
+                        text: appearance.courtCaseReference
                         },
                         {
-                        text: appearance.courtName
+                        text: appearance.courtCode
                         },
                         {
-                        text: appearance.warrantDate | formatDate
+                        text: appearance.appearanceDate | formatDate
                         },
                         {
-                        text: appearance.overallCaseOutcome
+                        text: appearance.outcome
                         }
                     ]-%}
                     {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
@@ -59,7 +59,7 @@
                     govukSummaryList({
                         card: {
                             title: {
-                                text: "Court Case " + courtCase.uniqueIdentifier
+                                text: "Court Case " + courtCase.courtCaseUuid
                             },
                             actions: {
                                 items: [

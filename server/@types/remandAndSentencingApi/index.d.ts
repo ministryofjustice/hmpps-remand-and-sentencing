@@ -18,6 +18,13 @@ export interface paths {
      */
     get: operations['getPersonDetails']
   }
+  '/courtCase/search': {
+    /**
+     * Retrieve all court cases for person
+     * @description This endpoint will retrieve all court cases for a person
+     */
+    get: operations['searchCourtCases']
+  }
 }
 
 export type webhooks = Record<string, never>
@@ -69,6 +76,81 @@ export interface components {
       dateOfBirth: string
       pncNumber?: string
       status?: string
+    }
+    Pageable: {
+      /** Format: int32 */
+      page?: number
+      /** Format: int32 */
+      size?: number
+      sort?: string[]
+    }
+    Charge: {
+      /** Format: uuid */
+      chargeUuid: string
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate: string
+      /** Format: date */
+      offenceEndDate?: string
+      outcome: string
+    }
+    CourtAppearance: {
+      /** Format: uuid */
+      appearanceUuid: string
+      outcome: string
+      courtCode: string
+      courtCaseReference: string
+      /** Format: date */
+      appearanceDate: string
+      warrantId?: string
+      nextCourtAppearance?: components['schemas']['NextCourtAppearance']
+      charges: components['schemas']['Charge'][]
+    }
+    CourtCase: {
+      prisonerId: string
+      courtCaseUuid: string
+      latestAppearance: components['schemas']['CourtAppearance']
+      appearances: components['schemas']['CourtAppearance'][]
+    }
+    NextCourtAppearance: {
+      /** Format: date */
+      appearanceDate: string
+      courtCode: string
+      appearanceType: string
+    }
+    PageCourtCase: {
+      /** Format: int32 */
+      totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
+      /** Format: int32 */
+      size?: number
+      content?: components['schemas']['CourtCase'][]
+      /** Format: int32 */
+      number?: number
+      sort?: components['schemas']['SortObject']
+      first?: boolean
+      /** Format: int32 */
+      numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
+      last?: boolean
+      empty?: boolean
+    }
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageSize?: number
+      /** Format: int32 */
+      pageNumber?: number
+      paged?: boolean
+      unpaged?: boolean
+    }
+    SortObject: {
+      empty?: boolean
+      sorted?: boolean
+      unsorted?: boolean
     }
   }
   responses: never
@@ -141,6 +223,38 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['PersonDetails']
+        }
+      }
+    }
+  }
+  /**
+   * Retrieve all court cases for person
+   * @description This endpoint will retrieve all court cases for a person
+   */
+  searchCourtCases: {
+    parameters: {
+      query: {
+        prisonerId: string
+        pageable: components['schemas']['Pageable']
+      }
+    }
+    responses: {
+      /** @description Returns court cases */
+      200: {
+        content: {
+          'application/json': components['schemas']['PageCourtCase']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['PageCourtCase']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['PageCourtCase']
         }
       }
     }

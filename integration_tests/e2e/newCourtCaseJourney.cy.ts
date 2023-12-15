@@ -24,6 +24,7 @@ context('Court Case Check Answers Page', () => {
     cy.task('stubGetPersonDetails')
     cy.task('stubGetOffenceByCode')
     cy.task('stubCreateCourtCase')
+    cy.task('stubSearchCourtCases')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })

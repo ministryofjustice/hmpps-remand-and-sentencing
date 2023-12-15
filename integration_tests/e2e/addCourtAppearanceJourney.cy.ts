@@ -16,7 +16,7 @@ import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
 
-context('New Court Case journey', () => {
+context('Add court appearance journey', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
@@ -29,7 +29,7 @@ context('New Court Case journey', () => {
     cy.visit('/person/A1234AB')
   })
 
-  it('fill in whole journey and check answers shows inputted values', () => {
+  it('Add to existing court case', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.button().click()
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)

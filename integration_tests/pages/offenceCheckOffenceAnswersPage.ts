@@ -12,7 +12,7 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
     offenceId: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/court-cases/${courtCaseId}/appearance/${appearanceReference}/offences/${offenceId}/delete-offence"]`,
+      `a[href="/person/${personId}/add-court-case/${courtCaseId}/appearance/${appearanceReference}/offences/${offenceId}/delete-offence"]`,
     )
 
   finishAddingButton = (): PageElement => cy.get('[data-qa="finishAddingButton"]')

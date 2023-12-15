@@ -9,7 +9,7 @@ context('Review Offences Page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.signIn()
-    cy.visit('/person/A1234AB/court-cases/0/appearance/0/review-offences')
+    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/review-offences')
     offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
   })
 

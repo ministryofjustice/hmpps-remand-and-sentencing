@@ -1,4 +1,6 @@
 import {
+  CreateCourtAppearance,
+  CreateCourtAppearanceResponse,
   CreateCourtCase,
   CreateCourtCaseResponse,
   PageCourtCase,
@@ -27,17 +29,24 @@ export default class RemandAndSentencingApiClient {
   async createCourtCase(createCourtCase: CreateCourtCase): Promise<CreateCourtCaseResponse> {
     return (await this.restClient.post({
       data: createCourtCase,
-      path: '/courtCase',
+      path: '/court-case',
     })) as unknown as Promise<CreateCourtCaseResponse>
   }
 
   async searchCourtCases(prisonerId: string): Promise<PageCourtCase> {
     return (await this.restClient.get({
-      path: `/courtCase/search`,
+      path: `/court-case/search`,
       query: {
         prisonerId,
         sort: 'latestCourtAppearance_appearanceDate,desc',
       },
     })) as unknown as Promise<PageCourtCase>
+  }
+
+  async createCourtAppearance(createCourtAppearance: CreateCourtAppearance): Promise<CreateCourtAppearanceResponse> {
+    return (await this.restClient.post({
+      data: createCourtAppearance,
+      path: '/court-appearance',
+    })) as unknown as Promise<CreateCourtAppearanceResponse>
   }
 }

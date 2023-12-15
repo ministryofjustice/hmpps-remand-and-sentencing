@@ -30,8 +30,9 @@ export default class CourtCaseRoutes {
 
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
+    const { token } = res.locals.user
     const newCourtCaseId = this.courtCaseService.getNewSessionCourtCaseId(req.session, nomsId)
-    const courtCases = this.courtCaseService.getSessionCourtCases(req.session, nomsId)
+    const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token)
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,

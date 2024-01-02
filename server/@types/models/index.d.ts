@@ -25,5 +25,6 @@ declare module 'models' {
     offenceCode?: string
     offenceName?: string
     outcome?: string
+    chargeUuid?: string
   }
 }

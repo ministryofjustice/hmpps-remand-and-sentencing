@@ -20,6 +20,7 @@ import trimForm from '../utils/trim'
 import CourtCaseService from '../services/courtCaseService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
+import { pageCourtCaseContentToCourtCase } from '../utils/mappingUtils'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -31,8 +32,15 @@ export default class CourtCaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { token } = res.locals.user
-    const newCourtCaseId = this.courtCaseService.getNewSessionCourtCaseId(req.session, nomsId)
+
     const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token)
+    // temporary until backend is fully integrated, remove after
+    this.courtCaseService.addAllCourtCasesToSession(
+      req.session,
+      nomsId,
+      courtCases.content.map(courtCase => pageCourtCaseContentToCourtCase(courtCase)),
+    )
+    const newCourtCaseId = this.courtCaseService.getNewSessionCourtCaseId(req.session, nomsId)
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
@@ -443,7 +451,7 @@ export default class CourtCaseRoutes {
     }
     const { token } = res.locals.user
     // this would be where we save which we don't currently have and then redirect to all court cases page
-    await this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference, token)
+    await this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference, token, addOrEditCourtCase)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
     )
@@ -636,7 +644,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { token } = res.locals.user
     // save appearance here
-    await this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference, token)
+    await this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference, token, addOrEditCourtCase)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
     )
@@ -648,6 +656,7 @@ export default class CourtCaseRoutes {
     courtCaseReference: string,
     appearanceReference: string,
     token: string,
+    addOrEditCourtCase: string,
   ): Promise<CourtAppearance> {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(session, nomsId, courtCaseReference)
     // remove this when integrated with backend
@@ -658,8 +667,12 @@ export default class CourtCaseRoutes {
       parseInt(appearanceReference, 10),
       courtAppearance,
     )
-    const courtCase = this.courtCaseService.getSessionCourtCase(session, nomsId, courtCaseReference)
-    await this.remandAndSentencingService.createCourtCase(nomsId, token, courtCase)
+    if (addOrEditCourtCase === 'add-court-case') {
+      const courtCase = this.courtCaseService.getSessionCourtCase(session, nomsId, courtCaseReference)
+      await this.remandAndSentencingService.createCourtCase(nomsId, token, courtCase)
+    } else {
+      await this.remandAndSentencingService.createCourtAppearance(token, courtCaseReference, courtAppearance)
+    }
     this.courtAppearanceService.clearSessionCourtAppearance(session, nomsId)
     return courtAppearance
   }

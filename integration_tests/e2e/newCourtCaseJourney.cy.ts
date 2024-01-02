@@ -16,7 +16,7 @@ import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
 
-context('Court Case Check Answers Page', () => {
+context('New Court Case journey', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')

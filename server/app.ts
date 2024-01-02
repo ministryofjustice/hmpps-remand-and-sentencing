@@ -42,7 +42,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCurrentUser(services))
   app.use('/person/:nomsId', setupPrisonerDetails(services.remandAndSentencingService))
   app.use(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences',
     setupCurrentCourtAppearance(services.courtAppearanceService),
   )
   app.get('*', getFrontendComponents(services))

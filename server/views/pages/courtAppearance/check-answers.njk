@@ -30,7 +30,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" +courtCaseReference + "/appearance/" + appearanceReference + "/reference?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/reference?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "court case reference number"
                                 }
@@ -47,7 +47,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" +courtCaseReference + "/appearance/" + appearanceReference + "/court-name?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/court-name?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "court name"
                                 }
@@ -64,7 +64,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" +courtCaseReference + "/appearance/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "warrant date"
                                 }
@@ -81,7 +81,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/court-cases/" +courtCaseReference + "/appearance/" + appearanceReference + "/overall-case-outcome?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/overall-case-outcome?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "overall case outcome"
                                 }
@@ -95,7 +95,7 @@
             <h2 class="govuk-heading-m">Now add the offences for this appearance</h2>
             <p class="govuk-body">You will need to enter all of the offence information from the warrant.</p>
 
-            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-check-answers">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-check-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
                     text: "Confirm and continue"

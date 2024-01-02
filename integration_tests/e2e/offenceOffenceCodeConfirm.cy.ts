@@ -12,7 +12,7 @@ context('Add Offence Offence Code Page', () => {
     cy.task('stubGetOffenceByCode')
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
-    cy.visit('/person/A1234AB/court-cases/0/appearance/0/offences/0/offence-code')
+    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/0/offence-code')
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('CC12345')
     offenceOffenceCodePage.button().click()

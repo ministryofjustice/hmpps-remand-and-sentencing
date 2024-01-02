@@ -37,242 +37,242 @@ export default function routes(services: Services): Router {
   get('/person/:nomsId', courtCaseRoutes.start)
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/reference',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/reference',
     courtCaseRoutes.getReference,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-reference',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-reference',
     courtCaseRoutes.submitReference,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/select-reference',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/select-reference',
     courtCaseRoutes.getSelectReference,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-select-reference',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-select-reference',
     courtCaseRoutes.submitSelectReference,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/warrant-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/warrant-date',
     courtCaseRoutes.getWarrantDate,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-warrant-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-warrant-date',
     courtCaseRoutes.submitWarrantDate,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/select-court-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/select-court-name',
     courtCaseRoutes.getSelectCourtName,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-select-court-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-select-court-name',
     courtCaseRoutes.submitSelectCourtName,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/court-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/court-name',
     courtCaseRoutes.getCourtName,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-court-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-court-name',
     courtCaseRoutes.submitCourtName,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/overall-case-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/overall-case-outcome',
     courtCaseRoutes.getOverallCaseOutcome,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-overall-case-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-overall-case-outcome',
     courtCaseRoutes.submitOverallCaseOutcome,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/lookup-case-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/lookup-case-outcome',
     courtCaseRoutes.getLookupCaseOutcome,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-lookup-case-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-lookup-case-outcome',
     courtCaseRoutes.submitLookupCaseOutcome,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/case-outcome-applied-all',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/case-outcome-applied-all',
     courtCaseRoutes.getCaseOutcomeAppliedAll,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-case-outcome-applied-all',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-case-outcome-applied-all',
     courtCaseRoutes.submitCaseOutcomeAppliedAll,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/check-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/check-answers',
     courtCaseRoutes.getCheckAnswers,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-check-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-check-answers',
     courtCaseRoutes.submitCheckAnswers,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/review-offences',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/review-offences',
     offenceRoutes.getReviewOffences,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-review-offences',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-review-offences',
     offenceRoutes.submitReviewOffences,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/offence-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/offence-date',
     offenceRoutes.getOffenceDate,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-offence-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-offence-date',
     offenceRoutes.submitOffenceDate,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/offence-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/offence-outcome',
     offenceRoutes.getOffenceOutcome,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-offence-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-offence-outcome',
     offenceRoutes.submitOffenceOutcome,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/lookup-offence-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/lookup-offence-outcome',
     offenceRoutes.getLookupOffenceOutcome,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-lookup-offence-outcome',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-lookup-offence-outcome',
     offenceRoutes.submitLookupOffenceOutcome,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/offence-code',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/offence-code',
     offenceRoutes.getOffenceCode,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-offence-code',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-offence-code',
     offenceRoutes.submitOffenceCode,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/offence-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/offence-name',
     offenceRoutes.getOffenceName,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-offence-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-offence-name',
     offenceRoutes.submitOffenceName,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/confirm-offence-code',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/confirm-offence-code',
     offenceRoutes.getConfirmOffenceCode,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-confirm-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-confirm-offence',
     offenceRoutes.submitConfirmOffenceCode,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/check-offence-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/check-offence-answers',
     offenceRoutes.getCheckOffenceAnswers,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/add-another-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/add-another-offence',
     offenceRoutes.addAnotherOffence,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/delete-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/delete-offence',
     offenceRoutes.getDeleteOffence,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-delete-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-delete-offence',
     offenceRoutes.submitDeleteOffence,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/next-hearing-select',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/next-hearing-select',
     courtCaseRoutes.getNextHearingSelect,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-select',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-select',
     courtCaseRoutes.submitNextHearingSelect,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/next-hearing-type',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/next-hearing-type',
     courtCaseRoutes.getNextHearingType,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-type',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-type',
     courtCaseRoutes.submitNextHearingType,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/next-hearing-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/next-hearing-date',
     courtCaseRoutes.getNextHearingDate,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-date',
     courtCaseRoutes.submitNextHearingDate,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/next-hearing-court-select',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/next-hearing-court-select',
     courtCaseRoutes.getNextHearingCourtSelect,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-court-select',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-court-select',
     courtCaseRoutes.submitNextHearingCourtSelect,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/next-hearing-court-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/next-hearing-court-name',
     courtCaseRoutes.getNextHearingCourtName,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-court-name',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-next-hearing-court-name',
     courtCaseRoutes.submitNextHearingCourtName,
   )
 
   get(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/check-next-hearing-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/check-next-hearing-answers',
     courtCaseRoutes.getCheckNextHearingAnswers,
   )
 
   post(
-    '/person/:nomsId/court-cases/:courtCaseReference/appearance/:appearanceReference/submit-check-next-hearing-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-check-next-hearing-answers',
     courtCaseRoutes.submiCheckNextHearingAnswers,
   )
 

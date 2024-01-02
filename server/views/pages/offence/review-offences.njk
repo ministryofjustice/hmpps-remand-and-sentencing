@@ -28,7 +28,7 @@
             {% endfor %}
             
 
-            <form method="post" action="/person/{{ nomsId }}/court-cases/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-review-offences">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-review-offences">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
                 {{ govukRadios({

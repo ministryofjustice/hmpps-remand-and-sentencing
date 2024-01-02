@@ -50,7 +50,7 @@ Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
 Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
-  cy.visit(`/person/${personId}/court-cases/${courtCaseNumber}/appearance/${appearanceReference}/check-answers`)
+  cy.visit(`/person/${personId}/add-court-case/${courtCaseNumber}/appearance/${appearanceReference}/check-answers`)
   const courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
   courtCaseCheckAnswersPage.changeLink(personId, courtCaseNumber, appearanceReference, 'reference').click()
   const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
@@ -63,7 +63,7 @@ Cypress.Commands.add(
   'createOffence',
   (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
     cy.visit(
-      `/person/${personId}/court-cases/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     )
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('CC12345')

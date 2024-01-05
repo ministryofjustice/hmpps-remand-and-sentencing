@@ -19,4 +19,11 @@ export default class ManageOffencesApiClient {
       query: { excludeLegislation: true, searchString },
     })) as unknown as Promise<Offence[]>
   }
+
+  async getOffencesByCodes(codes: string[]): Promise<Offence[]> {
+    return (await this.restClient.get({
+      path: '/offences/code/multiple',
+      query: { offenceCodes: codes.join() },
+    })) as unknown as Promise<Offence[]>
+  }
 }

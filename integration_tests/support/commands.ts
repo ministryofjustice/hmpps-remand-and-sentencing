@@ -66,7 +66,7 @@ Cypress.Commands.add(
       `/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     )
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-    offenceOffenceCodePage.input().type('CC12345')
+    offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.button().click()
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.button().click()

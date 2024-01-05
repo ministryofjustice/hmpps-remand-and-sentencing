@@ -33,7 +33,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remand in Custody (Bail Refused)", "courtCode": "Bradford Crown Court", "courtCaseReference": "1234", "appearanceDate": "2023-05-12", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "CC12345", "offenceStartDate": "2023-05-12", "outcome": "Remand in Custody (Bail Refused)"}]}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remand in Custody (Bail Refused)", "courtCode": "Bradford Crown Court", "courtCaseReference": "1234", "appearanceDate": "2023-05-12", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remand in Custody (Bail Refused)"}]}]}',
           },
         ],
       },
@@ -161,7 +161,7 @@ export default {
               appearanceType: 'Court appearance',
             },
             charges: [
-              { offenceCode: 'CC12345', offenceStartDate: '2023-05-12', outcome: 'Remand in Custody (Bail Refused)' },
+              { offenceCode: 'PS90037', offenceStartDate: '2023-05-12', outcome: 'Remand in Custody (Bail Refused)' },
             ],
           },
         ],

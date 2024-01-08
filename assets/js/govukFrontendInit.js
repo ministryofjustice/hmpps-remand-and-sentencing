@@ -1,1 +1,3 @@
-window.GOVUKFrontend.initAll()
+import { initAll } from '/assets/govuk-frontend.min.js'
+
+initAll()

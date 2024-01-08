@@ -25,7 +25,13 @@
                         Add an appearance to court case {{ courtCaseUniqueIdentifier }}
                     {% endif %}
                 </span>
-            <h1 class="govuk-heading-l">You have added {{ courtAppearance.offences | length }} offences to case {{ courtAppearance.caseReferenceNumber }} </h1>
+            <h1 class="govuk-heading-l">
+                {% if addOrEditCourtCase === 'edit-court-case' %}
+                    Edit the offence details for this appearance
+                {% else %}
+                    You have added {{ courtAppearance.offences | length }} offences to case {{ courtAppearance.caseReferenceNumber }} 
+                {% endif %}
+                </h1>
             {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
                     rows: [
@@ -49,21 +55,6 @@
                 }) 
             }}
             <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Offences added</h2>
-            <div class="govuk-button-group govuk-!-margin-top-8">
-                {{ govukButton({
-                    text: "Add another offence",
-                    classes: "govuk-button--secondary",
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
-                }) }}
-
-                {{ govukButton({
-                    text: "Finish adding offences and continue",
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-select",
-                    attributes: {
-                        "data-qa": "finishAddingButton"
-                    }
-                }) }}
-            </div>
 
             {% for offence in courtAppearance.offences %}
                 {{
@@ -91,6 +82,21 @@
                 }}
             {% endfor %}
 
+            <div class="govuk-button-group govuk-!-margin-top-8">
+                {{ govukButton({
+                    text: "Add another offence",
+                    classes: "govuk-button--secondary",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
+                }) }}
+
+                {{ govukButton({
+                    text: "Finish adding offences and continue",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-select",
+                    attributes: {
+                        "data-qa": "finishAddingButton"
+                    }
+                }) }}
+            </div>
 
         </div>
     </div>

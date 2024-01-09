@@ -16,4 +16,6 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
     )
 
   finishAddingButton = (): PageElement => cy.get('[data-qa="finishAddingButton"]')
+
+  infoBanner = (): PageElement => cy.get('.moj-banner')
 }

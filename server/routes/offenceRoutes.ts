@@ -17,6 +17,7 @@ import ManageOffencesService from '../services/manageOffencesService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtCaseService from '../services/courtCaseService'
 import validate from '../validation/validation'
+import OffencePersistType from '../@types/models/OffencePersistType'
 
 export default class OffenceRoutes {
   constructor(
@@ -371,12 +372,17 @@ export default class OffenceRoutes {
 
   private saveOffenceInAppearance(req, nomsId: string, courtCaseReference: string, offenceReference: string) {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    this.courtAppearanceService.addOffence(
+    const offencePersistType = this.courtAppearanceService.addOffence(
       req.session,
       nomsId,
       courtCaseReference,
       parseInt(offenceReference, 10),
       offence,
     )
+    if (offencePersistType === OffencePersistType.CREATED) {
+      req.flash('infoBanner', 'New offence added')
+    } else if (offencePersistType === OffencePersistType.EDITED) {
+      req.flash('infoBanner', 'Changes successfully made')
+    }
   }
 }

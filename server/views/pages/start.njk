@@ -2,6 +2,9 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "../components/offenceCard/macro.njk" import offenceCard %}
+
 
 {% set pageTitle = applicationName + " - Home" %}
 
@@ -12,59 +15,133 @@
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
-            {% for courtCase in courtCases.content %}
 
-                {%- set appearanceTableRows = [] -%}
+            {% for courtCaseDetails in courtCaseDetailModels %}
 
-                {%- for appearance in courtCase.appearances -%}
-                    {%- set tableRow= [
-                        {
-                        text: appearance.courtCaseReference
-                        },
-                        {
-                        text: appearance.courtCode
-                        },
-                        {
-                        text: appearance.appearanceDate | formatDate
-                        },
-                        {
-                        text: appearance.outcome
-                        }
-                    ]-%}
-                    {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
-                {%- endfor -%}
+                {% set courtCaseSummary %}
 
-                {% set appearanceTableHtml %}
+                    {% set nextHearingHtml %}
+                        <ul class="govuk-list">
+                            {% for nextHearingValue in courtCaseDetails.nextHearing %}
+                                <li> {{ nextHearingValue }} </li>
+                            {% endfor %}
+                        </ul>
+                    {% endset %}
+                    {{
+                        govukSummaryList({
+                            rows: [
+                            {
+                                key: { text: "Case references"},
+                                value: { text: courtCaseDetails.caseReferences }
+                            },
+                            {
+                                key: { text: "Overall case outcome"},
+                                value: { text: courtCaseDetails.overallCaseOutcome }
+                            },
+                            {
+                                key: { text: "Next hearing"},
+                                value: { html: nextHearingHtml }
+                            }
+                            ]
+                        })
+                    }}
+
+                    <hr class="govuk-section-break govuk-section-break--visible">
+
+                    {%- set appearanceTableRows = [] -%}
+
+                    {%- for appearance in courtCaseDetails.latestAppearances -%}
+                        {%- set tableRow= [
+                            {
+                                text: appearance.courtCaseReference
+                            },
+                            {
+                                text: appearance.courtCode
+                            },
+                            {
+                                text: appearance.appearanceDate | formatDate
+                            },
+                            {
+                                text: appearance.outcome
+                            },
+                            {
+                                html: '<a href="/person/' + nomsId + '/view-appearance/' + appearance.appearanceUuid + '">View and edit</a>'
+                            }
+                        ]-%}
+                        {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
+                    {%- endfor -%}
+
                     {{ govukTable({
-                    firstCellIsHeader: true,
-                    head: [
-                        {
-                        text: "Case reference"
-                        },
-                        {
-                        text: "Location"
-                        },
-                        {
-                        text: "Warrant date"
-                        },
-                        {
-                        text: "Outcome"
-                        }
-                    ],
-                    rows: appearanceTableRows
+                        classes: 'govuk-!-margin-top-6',
+                        caption: 'Appearances (' + ('showing ' + courtCaseDetails.showingAppearanceTotal + ' of ' + courtCaseDetails.appearanceTotal if courtCaseDetails.showingAppearanceTotal else courtCaseDetails.appearanceTotal) + ')',
+                        captionClasses: "govuk-table__caption--m",
+                        head: [
+                            {
+                            text: "Case reference"
+                            },
+                            {
+                            text: "Location"
+                            },
+                            {
+                            text: "Warrant date"
+                            },
+                            {
+                            text: "Outcome"
+                            },
+                            {
+                            text: ""
+                            }
+                        ],
+                        rows: appearanceTableRows
                     }) }}
+
+                    <h2 class="govuk-heading-m govuk-!-margin-top-4">Offences <span class="govuk-body">(
+                        {% if courtCaseDetails.showingChargeTotal %}
+                            showing {{ courtCaseDetails.showingChargeTotal }} of {{ courtCaseDetails.chargeTotal }}
+                        {% else %}
+                            {{ courtCaseDetails.chargeTotal }}
+                        {% endif %}
+                        )</span></h2>
+
+                    <div class="govuk-grid-row">
+                            <div class="govuk-grid-column-two-thirds">
+                                <p class="govuk-hint">These offences come from the most recent appearance at {{ courtCaseDetails.latestCourtName }} on {{ courtCaseDetails.latestAppearanceDate }}.</p>
+                            </div>
+                        </div>    
+
+                    {% set offenceDetailsHtml %}
+                        {% for charge in courtCaseDetails.charges %}
+                            {{
+                                offenceCard({
+                                    offenceCode: charge.offenceCode,
+                                    offenceName: offenceMap[charge.offenceCode],
+                                    offenceStartDate: charge.offenceStartDate,
+                                    offenceEndDate: charge.offenceEndDate,
+                                    outcome: charge.outcome
+                                })
+                            }}
+                        {% endfor %}
+                    {% endset %}
+
+                    {{ govukDetails({
+                        summaryText: "Show offences",
+                        html: offenceDetailsHtml
+                    }) }}
+
+                     <a href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}">View details about this court case</a>
+
                 {% endset %}
-                
+
                 {{
                     govukSummaryList({
                         card: {
                             title: {
-                                text: "Court Case " + courtCase.courtCaseUuid
+                                text: "Court Case " + courtCaseDetails.courtCaseUuid
                             },
                             actions: {
                                 items: [
                                 {
-                                    href: "/person/" + nomsId + "/edit-court-case/" + courtCase.courtCaseUuid + "/appearance/"+ courtCase.appearances | length + "/select-reference",
+                                    href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/appearance/"+ courtCaseDetails.appearanceTotal + "/select-reference",
                                     text: "Add an appearance",
                                     visuallyHiddenText: "Add an appearance"
                                 }]
@@ -72,11 +149,12 @@
                         },
                         rows: [
                         {
-                            key: { text: "Appearances" },
-                            value: { html: appearanceTableHtml }
+                            key: { text: "", classes: 'govuk-!-display-none' },
+                            value: { html: courtCaseSummary }
                         }]
                     })
                 }}
+
             {% endfor %}
         </div>
 

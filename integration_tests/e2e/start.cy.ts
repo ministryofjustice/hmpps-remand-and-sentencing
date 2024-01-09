@@ -9,6 +9,7 @@ context('Start Page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.task('stubSearchCourtCases')
+    cy.task('stubGetOffencesByCodes')
     cy.signIn()
     cy.visit('/person/A1234AB')
     startPage = Page.verifyOnPage(StartPage)

@@ -21,6 +21,7 @@ import CourtCaseService from '../services/courtCaseService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import { pageCourtCaseContentToCourtCase } from '../utils/mappingUtils'
+import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -34,6 +35,9 @@ export default class CourtCaseRoutes {
     const { token } = res.locals.user
 
     const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token)
+    const courtCaseDetailModels = courtCases.content.map(
+      pageCourtCaseContent => new CourtCaseDetailsModel(pageCourtCaseContent),
+    )
     // temporary until backend is fully integrated, remove after
     this.courtCaseService.addAllCourtCasesToSession(
       req.session,
@@ -44,7 +48,7 @@ export default class CourtCaseRoutes {
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
-      courtCases,
+      courtCaseDetailModels,
     })
   }
 

@@ -32,4 +32,12 @@ context('Start Page', () => {
       .should('contain', 'Add a court case')
       .and('have.attr', 'href', '/person/A1234AB/add-court-case/1/appearance/0/reference')
   })
+
+  it('displays court case summary', () => {
+    startPage.courtCaseSummaryList('3fa85f64-5717-4562-b3fc-2c963f66afa6').getSummaryList().should('deep.equal', {
+      'Case references': 'C894623',
+      'Overall case outcome': 'Remand in Custody (Bail Refused)',
+      'Next hearing': 'Birmingham Crown Court Court appearance 15 12 2024',
+    })
+  })
 })

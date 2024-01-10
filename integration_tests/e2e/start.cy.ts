@@ -35,9 +35,31 @@ context('Start Page', () => {
 
   it('displays court case summary', () => {
     startPage.courtCaseSummaryList('3fa85f64-5717-4562-b3fc-2c963f66afa6').getSummaryList().should('deep.equal', {
-      'Case references': 'C894623',
+      'Case references': 'C894623, F23325',
       'Overall case outcome': 'Remand in Custody (Bail Refused)',
       'Next hearing': 'Birmingham Crown Court Court appearance 15 12 2024',
     })
+  })
+
+  it('displays court case appearances', () => {
+    startPage
+      .courtCaseAppearanceTable('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+      .getTable()
+      .should('deep.equal', [
+        {
+          'Case reference': 'C894623',
+          Location: 'Birmingham Crown Court',
+          'Warrant date': '15 12 2023',
+          Outcome: 'Remand in Custody (Bail Refused)',
+          '': 'View and edit',
+        },
+        {
+          'Case reference': 'F23325',
+          Location: 'Birmingham Crown Court',
+          'Warrant date': '15 10 2022',
+          Outcome: 'Sentence Postponed',
+          '': 'View and edit',
+        },
+      ])
   })
 })

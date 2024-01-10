@@ -113,6 +113,26 @@ export default {
                     },
                   ],
                 },
+                {
+                  appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
+                  outcome: 'Sentence Postponed',
+                  courtCode: 'Birmingham Crown Court',
+                  courtCaseReference: 'F23325',
+                  appearanceDate: '2022-10-15',
+                  nextCourtAppearance: {
+                    appearanceDate: '2023-12-15',
+                    courtCode: 'Birmingham Crown Court',
+                    appearanceType: 'Court appearance',
+                  },
+                  charges: [
+                    {
+                      chargeUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+                      offenceCode: 'PS90037',
+                      offenceStartDate: '2023-12-15',
+                      outcome: 'Remand in Custody (Bail Refused)',
+                    },
+                  ],
+                },
               ],
             },
           ],

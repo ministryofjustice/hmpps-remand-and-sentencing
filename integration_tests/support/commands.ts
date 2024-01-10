@@ -11,6 +11,25 @@ Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   return cy.task('getSignInUrl').then((url: string) => cy.visit(url, options))
 })
 
+const getTable = subject => {
+  if (subject.get().length > 1) {
+    throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
+  }
+
+  const tableElement = subject.get()[0]
+  const headers = [...tableElement.querySelectorAll('thead th')].map(e => e.textContent.replace(/\s/g, ' '))
+
+  const rows = [...tableElement.querySelectorAll('tbody tr')].map(row => {
+    return [...row.querySelectorAll('td, th')].map(e => e.textContent.replace(/\r?\n|\r|\n/g, '').trim())
+  })
+
+  return rows.map(row =>
+    row.reduce((acc, curr, index) => {
+      return { ...acc, [headers[index]]: curr }
+    }, {}),
+  )
+}
+
 const getSummaryList = subject => {
   if (subject.get().length > 1) {
     throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
@@ -46,6 +65,7 @@ const trimTextContent = subject => {
   return element.textContent.trim().replace(/\s{2,}/g, ' ')
 }
 
+Cypress.Commands.add('getTable', { prevSubject: true }, getTable)
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
 Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 

@@ -48,6 +48,56 @@
 
                     <hr class="govuk-section-break govuk-section-break--visible">
 
+                    {%- set appearanceTableRows = [] -%}
+
+                    {%- for appearance in courtCaseDetails.latestAppearances -%}
+                        {%- set tableRow= [
+                            {
+                                text: appearance.courtCaseReference
+                            },
+                            {
+                                text: appearance.courtCode
+                            },
+                            {
+                                text: appearance.appearanceDate | formatDate
+                            },
+                            {
+                                text: appearance.outcome
+                            },
+                            {
+                                html: '<a href="/person/' + nomsId + '/view-appearance/' + appearance.appearanceUuid + '">View and edit</a>'
+                            }
+                        ]-%}
+                        {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
+                    {%- endfor -%}
+
+                    {{ govukTable({
+                        classes: 'govuk-!-margin-top-6',
+                        caption: 'Appearances (' + ('showing ' + courtCaseDetails.showingAppearanceTotal + ' of ' + courtCaseDetails.appearanceTotal if courtCaseDetails.showingAppearanceTotal else courtCaseDetails.appearanceTotal) + ')',
+                        captionClasses: "govuk-table__caption--m",
+                        head: [
+                            {
+                            text: "Case reference"
+                            },
+                            {
+                            text: "Location"
+                            },
+                            {
+                            text: "Warrant date"
+                            },
+                            {
+                            text: "Outcome"
+                            },
+                            {
+                            text: ""
+                            }
+                        ],
+                        rows: appearanceTableRows,
+                            attributes: {
+                                "data-qa": "courtCaseAppearanceTable-" + courtCaseDetails.courtCaseUuid
+                            }
+                    }) }}
+
                 {% endset %}
 
                 {{

@@ -1,5 +1,8 @@
 import dayjs from 'dayjs'
-import { PageCourtCaseContent } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import {
+  PageCourtCaseAppearance,
+  PageCourtCaseContent,
+} from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 
 export default class CourtCaseDetailsModel {
@@ -12,6 +15,10 @@ export default class CourtCaseDetailsModel {
   nextHearing: string[]
 
   appearanceTotal: number
+
+  showingAppearanceTotal?: number
+
+  latestAppearances: PageCourtCaseAppearance[]
 
   constructor(pageCourtCaseContent: PageCourtCaseContent) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
@@ -35,5 +42,11 @@ export default class CourtCaseDetailsModel {
       this.nextHearing = ['Date to be fixed']
     }
     this.appearanceTotal = pageCourtCaseContent.appearances.length
+    if (this.appearanceTotal > 5) {
+      this.showingAppearanceTotal = 5
+    }
+    this.latestAppearances = pageCourtCaseContent.appearances
+      .sort((a, b) => (dayjs(a.appearanceDate).isBefore(dayjs(b.appearanceDate)) ? 1 : -1))
+      .slice(0, 5)
   }
 }

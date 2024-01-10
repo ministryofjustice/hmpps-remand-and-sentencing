@@ -8,7 +8,7 @@ context('Start Page', () => {
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
-    cy.task('stubSearchCourtCases')
+    cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes')
     cy.signIn()
     cy.visit('/person/A1234AB')
@@ -75,5 +75,11 @@ context('Start Page', () => {
           Outcome: 'Remand in Custody (Bail Refused)',
         },
       ])
+  })
+
+  it('can sort by earliest', () => {
+    cy.task('stubSearchCourtCases', { sortBy: 'asc' })
+    startPage.sortLink('asc').click()
+    Page.verifyOnPage(StartPage)
   })
 })

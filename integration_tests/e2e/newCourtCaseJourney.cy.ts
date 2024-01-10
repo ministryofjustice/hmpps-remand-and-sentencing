@@ -24,7 +24,7 @@ context('New Court Case journey', () => {
     cy.task('stubGetPersonDetails')
     cy.task('stubGetOffenceByCode')
     cy.task('stubCreateCourtCase')
-    cy.task('stubSearchCourtCases')
+    cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes')
     cy.signIn()
     cy.visit('/person/A1234AB')

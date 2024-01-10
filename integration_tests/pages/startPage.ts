@@ -14,4 +14,6 @@ export default class StartPage extends Page {
     cy.get(`[data-qa=courtCaseDetailsComponent-${courtCaseUuid}]`)
 
   actionListLink = (): PageElement => cy.get('.actions-list a')
+
+  sortLink = (sortBy: string): PageElement => cy.get(`a[href="/person/A1234AB?sortBy=${sortBy}"]`)
 }

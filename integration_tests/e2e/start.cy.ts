@@ -9,6 +9,7 @@ context('Start Page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.task('stubSearchCourtCases')
+    cy.task('stubGetOffencesByCodes')
     cy.signIn()
     cy.visit('/person/A1234AB')
     startPage = Page.verifyOnPage(StartPage)
@@ -59,6 +60,19 @@ context('Start Page', () => {
           'Warrant date': '15 10 2022',
           Outcome: 'Sentence Postponed',
           '': 'View and edit',
+        },
+      ])
+  })
+
+  it('displays offences', () => {
+    startPage
+      .courtCaseDetailsComponent('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '15 12 2023',
+          Outcome: 'Remand in Custody (Bail Refused)',
         },
       ])
   })

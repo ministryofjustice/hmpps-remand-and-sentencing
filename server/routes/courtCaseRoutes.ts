@@ -22,12 +22,14 @@ import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import { pageCourtCaseContentToCourtCase } from '../utils/mappingUtils'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
+import ManageOffencesService from '../services/manageOffencesService'
 
 export default class CourtCaseRoutes {
   constructor(
     private readonly courtCaseService: CourtCaseService,
     private readonly courtAppearanceService: CourtAppearanceService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
+    private readonly manageOffencesService: ManageOffencesService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -38,6 +40,12 @@ export default class CourtCaseRoutes {
     const courtCaseDetailModels = courtCases.content.map(
       pageCourtCaseContent => new CourtCaseDetailsModel(pageCourtCaseContent),
     )
+    const chargeCodes = courtCases.content
+      .map(courtCase => courtCase.appearances.map(appearance => appearance.charges.map(charge => charge.offenceCode)))
+      .flat()
+      .flat()
+    const offenceMap = await this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token)
+
     // temporary until backend is fully integrated, remove after
     this.courtCaseService.addAllCourtCasesToSession(
       req.session,
@@ -49,6 +57,7 @@ export default class CourtCaseRoutes {
       nomsId,
       newCourtCaseId,
       courtCaseDetailModels,
+      offenceMap,
     })
   }
 

@@ -10,7 +10,6 @@ import type {
   ReviewOffencesForm,
 } from 'forms'
 import dayjs from 'dayjs'
-import type { Offence } from 'models'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -271,7 +270,10 @@ export default class OffenceRoutes {
     )
     const isFirstAppearance = appearanceReference === '0'
     const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
-    const offenceMap = await this.getOffenceMap(courtAppearance.offences, req.user.token)
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode))),
+      req.user.token,
+    )
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,
@@ -334,7 +336,10 @@ export default class OffenceRoutes {
       nomsId,
       courtCaseReference,
     )
-    const offenceMap = await this.getOffenceMap(courtAppearance.offences, req.user.token)
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode))),
+      req.user.token,
+    )
     const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/offence/review-offences', {
       nomsId,
@@ -358,16 +363,6 @@ export default class OffenceRoutes {
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-select`,
     )
-  }
-
-  private async getOffenceMap(offencesToLookup: Offence[], token: string) {
-    let offenceMap = {}
-    if (offencesToLookup?.length) {
-      const offenceCodes = Array.from(new Set(offencesToLookup.map(offence => offence.offenceCode)))
-      const offences = await this.manageOffencesService.getOffencesByCodes(offenceCodes, token)
-      offenceMap = Object.fromEntries(offences.map(offence => [offence.code, offence.description]))
-    }
-    return offenceMap
   }
 
   private saveOffenceInAppearance(req, nomsId: string, courtCaseReference: string, offenceReference: string) {

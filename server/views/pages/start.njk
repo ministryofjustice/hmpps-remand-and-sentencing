@@ -2,6 +2,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "../components/offenceCard/macro.njk" import offenceCard %}
 
 {% set pageTitle = applicationName + " - Home" %}
 
@@ -97,6 +99,44 @@
                                 "data-qa": "courtCaseAppearanceTable-" + courtCaseDetails.courtCaseUuid
                             }
                     }) }}
+
+                    <h2 class="govuk-heading-m govuk-!-margin-top-4">Offences <span class="govuk-body">(
+                        {% if courtCaseDetails.showingChargeTotal %}
+                            showing {{ courtCaseDetails.showingChargeTotal }} of {{ courtCaseDetails.chargeTotal }}
+                        {% else %}
+                            {{ courtCaseDetails.chargeTotal }}
+                        {% endif %}
+                        )</span></h2>
+
+                    <div class="govuk-grid-row">
+                            <div class="govuk-grid-column-two-thirds">
+                                <p class="govuk-hint">These offences come from the most recent appearance at {{ courtCaseDetails.latestCourtName }} on {{ courtCaseDetails.latestAppearanceDate }}.</p>
+                            </div>
+                        </div>    
+
+                    {% set offenceDetailsHtml %}
+                        {% for charge in courtCaseDetails.charges %}
+                            {{
+                                offenceCard({
+                                    offenceCode: charge.offenceCode,
+                                    offenceName: offenceMap[charge.offenceCode],
+                                    offenceStartDate: charge.offenceStartDate,
+                                    offenceEndDate: charge.offenceEndDate,
+                                    outcome: charge.outcome
+                                })
+                            }}
+                        {% endfor %}
+                    {% endset %}
+
+                    {{ govukDetails({
+                        summaryText: "Show offences",
+                        html: offenceDetailsHtml,
+                            attributes: {
+                                "data-qa": "courtCaseDetailsComponent-" + courtCaseDetails.courtCaseUuid
+                            }
+                    }) }}
+
+                    <a href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}">View details about this court case</a>
 
                 {% endset %}
 

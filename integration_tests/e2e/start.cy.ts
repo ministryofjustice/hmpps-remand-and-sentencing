@@ -27,10 +27,10 @@ context('Start Page', () => {
       .and('contain.text', 'Cell numberCELL-1')
   })
 
-  it('button to add a court case is displayed', () => {
+  it('action list link to add a court case is displayed', () => {
     startPage
-      .button()
-      .should('contain', 'Add a court case')
+      .actionListLink()
+      .should('contain', 'Add a new court case')
       .and('have.attr', 'href', '/person/A1234AB/add-court-case/1/appearance/0/reference')
   })
 

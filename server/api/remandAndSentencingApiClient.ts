@@ -33,12 +33,12 @@ export default class RemandAndSentencingApiClient {
     })) as unknown as Promise<CreateCourtCaseResponse>
   }
 
-  async searchCourtCases(prisonerId: string): Promise<PageCourtCase> {
+  async searchCourtCases(prisonerId: string, sortBy: string): Promise<PageCourtCase> {
     return (await this.restClient.get({
       path: `/court-case/search`,
       query: {
         prisonerId,
-        sort: 'latestCourtAppearance_appearanceDate,desc',
+        sort: `latestCourtAppearance_appearanceDate,${sortBy}`,
       },
     })) as unknown as Promise<PageCourtCase>
   }

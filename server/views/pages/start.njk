@@ -7,26 +7,53 @@
 
 {% set pageTitle = applicationName + " - Home" %}
 
-
-
 {% block content %}
-    <h1>Start Page</h1>
+    <h1>Court cases </h1>
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
-            
+
+            <div class="govuk-grid-row govuk-!-margin-bottom-3">
+                <div class="govuk-grid-column-full">
+                    <div class="content-top">
+                        <div>
+                            <span class="govuk-body govuk-!-font-weight-bold">Sort by:</span>
+                            <span class="govuk-body govuk-!-margin-left-2">
+                                {% if sortBy === 'desc' %}
+                                Most recent 
+                            {% else %}
+                                    <a href="/person/{{nomsId}}?sortBy=desc">Most recent</a>
+                                {% endif %}
+                                <span class="seperator">|</span>
+                                {% if sortBy === 'asc'%}
+                                Earliest
+                            {% else %}
+                                    <a href="/person/{{nomsId}}?sortBy=asc">Earliest</a>
+                                {% endif %}
+
+                            </span>
+                        </div>
+                        <div>
+                            <span class="govuk-body">Showing <strong>{{ courtCaseTotal }}</strong> court cases</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {% for courtCaseDetails in courtCaseDetailModels %}
 
                 {% set courtCaseSummary %}
 
-                    {% set nextHearingHtml %}
-                        <ul class="govuk-list">
-                            {% for nextHearingValue in courtCaseDetails.nextHearing %}
-                                <li> {{ nextHearingValue }} </li>
-                            {% endfor %}
-                        </ul>
-                    {% endset %}
-                    {{
+                {% set nextHearingHtml %}
+                <ul class="govuk-list">
+                    {% for nextHearingValue in courtCaseDetails.nextHearing %}
+                        <li>
+                            {{ nextHearingValue }}
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endset %}
+                {{
                         govukSummaryList({
                             rows: [
                             {
@@ -48,12 +75,12 @@
                         })
                     }}
 
-                    <hr class="govuk-section-break govuk-section-break--visible">
+                <hr class="govuk-section-break govuk-section-break--visible">
 
-                    {%- set appearanceTableRows = [] -%}
+                {%- set appearanceTableRows = [] -%}
 
-                    {%- for appearance in courtCaseDetails.latestAppearances -%}
-                        {%- set tableRow= [
+                {%- for appearance in courtCaseDetails.latestAppearances -%}
+                    {%- set tableRow= [
                             {
                                 text: appearance.courtCaseReference
                             },
@@ -70,10 +97,10 @@
                                 html: '<a href="/person/' + nomsId + '/view-appearance/' + appearance.appearanceUuid + '">View and edit</a>'
                             }
                         ]-%}
-                        {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
-                    {%- endfor -%}
+                    {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
+                {%- endfor -%}
 
-                    {{ govukTable({
+                {{ govukTable({
                         classes: 'govuk-!-margin-top-6',
                         caption: 'Appearances (' + ('showing ' + courtCaseDetails.showingAppearanceTotal + ' of ' + courtCaseDetails.appearanceTotal if courtCaseDetails.showingAppearanceTotal else courtCaseDetails.appearanceTotal) + ')',
                         captionClasses: "govuk-table__caption--m",
@@ -100,7 +127,7 @@
                             }
                     }) }}
 
-                    <h2 class="govuk-heading-m govuk-!-margin-top-4">Offences <span class="govuk-body">(
+                <h2 class="govuk-heading-m govuk-!-margin-top-4">Offences <span class="govuk-body">(
                         {% if courtCaseDetails.showingChargeTotal %}
                             showing {{ courtCaseDetails.showingChargeTotal }} of {{ courtCaseDetails.chargeTotal }}
                         {% else %}
@@ -108,15 +135,15 @@
                         {% endif %}
                         )</span></h2>
 
-                    <div class="govuk-grid-row">
-                            <div class="govuk-grid-column-two-thirds">
-                                <p class="govuk-hint">These offences come from the most recent appearance at {{ courtCaseDetails.latestCourtName }} on {{ courtCaseDetails.latestAppearanceDate }}.</p>
-                            </div>
-                        </div>    
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        <p class="govuk-hint">These offences come from the most recent appearance at {{ courtCaseDetails.latestCourtName }} on {{ courtCaseDetails.latestAppearanceDate }}.</p>
+                    </div>
+                </div>
 
-                    {% set offenceDetailsHtml %}
-                        {% for charge in courtCaseDetails.charges %}
-                            {{
+                {% set offenceDetailsHtml %}
+                {% for charge in courtCaseDetails.charges %}
+                    {{
                                 offenceCard({
                                     offenceCode: charge.offenceCode,
                                     offenceName: offenceMap[charge.offenceCode],
@@ -125,10 +152,10 @@
                                     outcome: charge.outcome
                                 })
                             }}
-                        {% endfor %}
-                    {% endset %}
+                {% endfor %}
+                {% endset %}
 
-                    {{ govukDetails({
+                {{ govukDetails({
                         summaryText: "Show offences",
                         html: offenceDetailsHtml,
                             attributes: {
@@ -136,7 +163,7 @@
                             }
                     }) }}
 
-                    <a href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}">View details about this court case</a>
+                <a href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}">View details about this court case</a>
 
                 {% endset %}
 
@@ -168,10 +195,13 @@
         </div>
 
         <div class="govuk-grid-column-one-third">
-        {{ govukButton({
-            text: "Add a court case",
-            href: "/person/" + nomsId + "/add-court-case/" + newCourtCaseId + "/appearance/0/reference"
-        }) }}
+
+            <div class="actions-list">
+                <ul class="govuk-list actions-list-list">
+                    <span class="govuk-heading-m actions-list-header">Actions</span>
+                    <li><a href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/appearance/0/reference">Add a new court case</a></li>
+                </ul>
+            </div>  
         </div>
     </div>
 

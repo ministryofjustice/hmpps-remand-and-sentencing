@@ -23,6 +23,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import { pageCourtCaseContentToCourtCase } from '../utils/mappingUtils'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
+import { getAsStringOrDefault } from '../utils/utils'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -35,8 +36,9 @@ export default class CourtCaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { token } = res.locals.user
+    const sortBy = getAsStringOrDefault(req.query.sortBy, 'desc')
 
-    const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token)
+    const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy)
     const courtCaseDetailModels = courtCases.content.map(
       pageCourtCaseContent => new CourtCaseDetailsModel(pageCourtCaseContent),
     )
@@ -58,6 +60,8 @@ export default class CourtCaseRoutes {
       newCourtCaseId,
       courtCaseDetailModels,
       offenceMap,
+      sortBy,
+      courtCaseTotal: courtCaseDetailModels.length,
     })
   }
 

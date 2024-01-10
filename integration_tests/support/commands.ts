@@ -36,7 +36,10 @@ const getSummaryList = subject => {
   }
 
   const summaryListElement = subject.get()[0]
+  return summaryListElementToObject(summaryListElement)
+}
 
+const summaryListElementToObject = summaryListElement => {
   const rows = [...summaryListElement.querySelectorAll('.govuk-summary-list__row')].map(row => {
     const key = row
       .querySelector('.govuk-summary-list__key')
@@ -55,6 +58,27 @@ const getSummaryList = subject => {
   }, {})
 }
 
+const getOffenceCards = subject => {
+  if (subject.get().length > 1) {
+    throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
+  }
+
+  const offenceCardContainer = subject.get()[0]
+
+  return [...offenceCardContainer.querySelectorAll('.offence-card-offence-details')].map(offenceCardElement => {
+    const offenceCardHeader = offenceCardElement
+      .querySelector('.govuk-heading-s')
+      .textContent.trim()
+      .replace(/\s{2,}/g, ' ')
+
+    const offenceCardSummaryList = summaryListElementToObject(
+      offenceCardElement.querySelector('[data-qa=offenceSummaryList]'),
+    )
+
+    return { offenceCardHeader, ...offenceCardSummaryList }
+  })
+}
+
 const trimTextContent = subject => {
   if (subject.get().length > 1) {
     throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
@@ -68,6 +92,7 @@ const trimTextContent = subject => {
 Cypress.Commands.add('getTable', { prevSubject: true }, getTable)
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
 Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
+Cypress.Commands.add('getOffenceCards', { prevSubject: true }, getOffenceCards)
 
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
   cy.visit(`/person/${personId}/add-court-case/${courtCaseNumber}/appearance/${appearanceReference}/check-answers`)

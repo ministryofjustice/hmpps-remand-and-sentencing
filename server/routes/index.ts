@@ -18,6 +18,7 @@ export default function routes(services: Services): Router {
     services.courtCaseService,
     services.courtAppearanceService,
     services.remandAndSentencingService,
+    services.manageOffencesService,
   )
   const apiRoutes = new ApiRoutes(services.prisonerService, services.manageOffencesService)
   const offenceRoutes = new OffenceRoutes(

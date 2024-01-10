@@ -9,4 +9,7 @@ export default class StartPage extends Page {
 
   courtCaseAppearanceTable = (courtCaseUuid: string): PageElement =>
     cy.get(`[data-qa=courtCaseAppearanceTable-${courtCaseUuid}]`)
+
+  courtCaseDetailsComponent = (courtCaseUuid: string): PageElement =>
+    cy.get(`[data-qa=courtCaseDetailsComponent-${courtCaseUuid}]`)
 }

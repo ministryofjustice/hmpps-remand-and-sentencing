@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class StartPage extends Page {
   constructor() {
-    super('Start Page')
+    super('Court cases')
   }
 
   courtCaseSummaryList = (courtCaseUuid: string): PageElement => cy.get(`[data-qa=courtCaseSummary-${courtCaseUuid}]`)
@@ -12,4 +12,8 @@ export default class StartPage extends Page {
 
   courtCaseDetailsComponent = (courtCaseUuid: string): PageElement =>
     cy.get(`[data-qa=courtCaseDetailsComponent-${courtCaseUuid}]`)
+
+  actionListLink = (): PageElement => cy.get('.actions-list a')
+
+  sortLink = (sortBy: string): PageElement => cy.get(`a[href="/person/A1234AB?sortBy=${sortBy}"]`)
 }

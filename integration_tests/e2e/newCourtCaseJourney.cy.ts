@@ -24,7 +24,7 @@ context('New Court Case journey', () => {
     cy.task('stubGetPersonDetails')
     cy.task('stubGetOffenceByCode')
     cy.task('stubCreateCourtCase')
-    cy.task('stubSearchCourtCases')
+    cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes')
     cy.signIn()
     cy.visit('/person/A1234AB')
@@ -32,7 +32,7 @@ context('New Court Case journey', () => {
 
   it('fill in whole journey and check answers shows inputted values', () => {
     const startPage = Page.verifyOnPage(StartPage)
-    startPage.button().click()
+    startPage.actionListLink().click()
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
     courtCaseReferencePage.input().type('1234')
     courtCaseReferencePage.button().click()

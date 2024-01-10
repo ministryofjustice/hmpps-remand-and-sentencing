@@ -8,7 +8,7 @@ context('Review Offences Page', () => {
     cy.task('stubSignIn')
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
-    cy.task('stubSearchCourtCases')
+    cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes')
     cy.signIn()
     cy.visit('/person/A1234AB')

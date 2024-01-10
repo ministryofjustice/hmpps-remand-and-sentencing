@@ -47,7 +47,7 @@ export default {
     })
   },
 
-  stubSearchCourtCases: (): SuperAgentRequest => {
+  stubSearchCourtCases: ({ sortBy = 'desc' }: { sortBy: string }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -57,7 +57,7 @@ export default {
             equalTo: 'A1234AB',
           },
           sort: {
-            equalTo: 'latestCourtAppearance_appearanceDate,desc',
+            equalTo: `latestCourtAppearance_appearanceDate,${sortBy}`,
           },
         },
       },

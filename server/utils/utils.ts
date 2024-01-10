@@ -36,3 +36,8 @@ export const formatDateTime = (date?: string, showTime?: boolean): string | null
 
   return showTime ? dayjs(date).format(config.dateTimeFormat) : formatDate(date)
 }
+
+export const getAsStringOrDefault = (value: unknown, defaultValue: string): string | null => {
+  if (typeof value === 'string') return value
+  return defaultValue
+}

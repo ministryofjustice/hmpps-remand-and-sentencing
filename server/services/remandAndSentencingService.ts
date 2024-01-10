@@ -18,8 +18,8 @@ export default class RemandAndSentencingService {
     return new RemandAndSentencingApiClient(token).createCourtCase(createCourtCase)
   }
 
-  async searchCourtCases(prisonerId: string, token: string): Promise<PageCourtCase> {
-    return new RemandAndSentencingApiClient(token).searchCourtCases(prisonerId)
+  async searchCourtCases(prisonerId: string, token: string, sortBy: string): Promise<PageCourtCase> {
+    return new RemandAndSentencingApiClient(token).searchCourtCases(prisonerId, sortBy)
   }
 
   async createCourtAppearance(

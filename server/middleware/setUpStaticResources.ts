@@ -27,7 +27,7 @@ export default function setUpStaticResources(): Router {
     router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
   })
 
-  Array.of('/node_modules/govuk-frontend/dist/govuk/assets/images/images').forEach(dir => {
+  Array.of('/node_modules/govuk-frontend/dist/govuk/assets/images').forEach(dir => {
     router.use('/assets/images/icons', express.static(path.join(process.cwd(), dir), cacheControl))
   })
 

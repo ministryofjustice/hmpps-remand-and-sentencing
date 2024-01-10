@@ -38,5 +38,18 @@ context('Check Offence Answers Page', () => {
     offenceDeleteOffencePage.radioSelector('true').click()
     offenceDeleteOffencePage.button().click()
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, '0')
+    offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'Offence deleted')
+  })
+
+  it('creating a new offence results in new offence added info banner', () => {
+    cy.createOffence('A1234AB', '0', '0', '0')
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '0')
+    offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'New offence added')
+  })
+  it('changing an existing offence results in changes successfully made info banner', () => {
+    cy.createOffence('A1234AB', '0', '0', '0')
+    cy.createOffence('A1234AB', '0', '0', '0')
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '0')
+    offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'Changes successfully made')
   })
 })

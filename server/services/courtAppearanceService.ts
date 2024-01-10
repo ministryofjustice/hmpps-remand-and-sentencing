@@ -1,5 +1,6 @@
 import type { CourtAppearance, Offence } from 'models'
 import CourtCaseService from './courtCaseService'
+import OffencePersistType from '../@types/models/OffencePersistType'
 
 export default class CourtAppearanceService {
   constructor(private readonly courtCaseService: CourtCaseService) {}
@@ -231,15 +232,18 @@ export default class CourtAppearanceService {
     courtCaseReference: string,
     offenceReference: number,
     offence: Offence,
-  ) {
+  ): OffencePersistType {
     const courtAppearance = this.getCourtAppearance(session, nomsId, courtCaseReference)
-    if (courtAppearance.offences.length >= offenceReference) {
+    let offencePersistType = OffencePersistType.CREATED
+    if (courtAppearance.offences.length > offenceReference) {
       courtAppearance.offences[offenceReference] = offence
+      offencePersistType = OffencePersistType.EDITED
     } else {
       courtAppearance.offences.push(offence)
     }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
+    return offencePersistType
   }
 
   deleteOffence(

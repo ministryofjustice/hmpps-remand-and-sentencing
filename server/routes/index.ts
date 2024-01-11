@@ -88,6 +88,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/warrant-type',
+    courtCaseRoutes.getWarrantType,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-warrant-type',
+    courtCaseRoutes.submitWarrantType,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/overall-case-outcome',
     courtCaseRoutes.getOverallCaseOutcome,
   )

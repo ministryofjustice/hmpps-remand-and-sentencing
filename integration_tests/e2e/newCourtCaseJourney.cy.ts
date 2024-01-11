@@ -15,6 +15,7 @@ import CourtCaseNextHearingSetPage from '../pages/courtCaseNextHearingSetPage'
 import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
+import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -45,6 +46,10 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()
+
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioSelector('REMAND').click()
+    courtCaseWarrantTypePage.button().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
     courtCaseOverallCaseOutcomePage.radioSelector('Remand in Custody (Bail Refused)').click()

@@ -65,6 +65,26 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, courtCaseReference).courtName
   }
 
+  setWarrantType(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    warrantType: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, courtCaseReference)
+    courtAppearance.warrantType = warrantType
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  getWarrantType(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ): string {
+    return this.getCourtAppearance(session, nomsId, courtCaseReference).warrantType
+  }
+
   getNextHearingCourtSelect(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

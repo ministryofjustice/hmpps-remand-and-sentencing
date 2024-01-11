@@ -1,0 +1,47 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Same case reference number page" %}
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-warrant-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">
+                    {% if isFirstAppearance %}
+                        Add a court case
+                        {% else %}
+                        Add an appearance to court case {{courtCaseUniqueIdentifier}}
+                    {% endif %}
+                </span>
+                {{ govukRadios({
+                    name: "warrantType",
+                    fieldset: {
+                        legend: {
+                        text: "Select the type of warrant",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "REMAND",
+                            text: "Remand"
+                        },
+                        {
+                            value: "SENTENCING",
+                            text: "Sentencing"
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

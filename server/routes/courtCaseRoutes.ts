@@ -13,6 +13,7 @@ import type {
   CourtCaseNextHearingDateForm,
   CourtCaseSelectReferenceForm,
   CourtCaseSelectCourtNameForm,
+  CourtCaseWarrantTypeForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
@@ -228,7 +229,7 @@ export default class CourtCaseRoutes {
         lastSavedAppearance.nextHearingCourtName,
       )
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/overall-case-outcome`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`,
       )
     }
     const { submitToCheckAnswers } = req.query
@@ -264,6 +265,43 @@ export default class CourtCaseRoutes {
     const courtNameForm = trimForm<CourtCaseCourtNameForm>(req.body)
 
     this.courtAppearanceService.setCourtName(req.session, nomsId, courtCaseReference, courtNameForm.courtName)
+    const { submitToCheckAnswers } = req.query
+    if (submitToCheckAnswers) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`,
+    )
+  }
+
+  public getWarrantType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { submitToCheckAnswers } = req.query
+    let warrantType: string
+    if (submitToCheckAnswers) {
+      warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    }
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    return res.render('pages/courtAppearance/warrant-type', {
+      nomsId,
+      submitToCheckAnswers,
+      warrantType,
+      courtCaseReference,
+      appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
+      addOrEditCourtCase,
+    })
+  }
+
+  public submitWarrantType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const warrantTypeForm = trimForm<CourtCaseWarrantTypeForm>(req.body)
+
+    this.courtAppearanceService.setWarrantType(req.session, nomsId, courtCaseReference, warrantTypeForm.warrantType)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(

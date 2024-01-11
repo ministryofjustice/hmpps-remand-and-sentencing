@@ -4,19 +4,36 @@
  */
 
 export interface paths {
-  '/courtCase': {
+  '/court-case/{courtCaseUuid}': {
+    /**
+     * Retrieve court case details
+     * @description This endpoint will retrieve court case details
+     */
+    get: operations['getCourtCaseDetails']
     /**
      * Create Court case
      * @description This endpoint will create a court case
      */
-    post: operations['createCourtCase']
+    put: operations['putCourtCase']
+  }
+  '/court-appearance/{appearanceUuid}': {
+    /**
+     * Retrieve court appearance details
+     * @description This endpoint will retrieve court appearance details
+     */
+    get: operations['getCourtAppearanceDetails']
+    /**
+     * Create Court appearance
+     * @description This endpoint will create a court appearance in a given court case
+     */
+    put: operations['updateCourtAppearance']
   }
   '/court-case': {
     /**
      * Create Court case
      * @description This endpoint will create a court case
      */
-    post: operations['createCourtCase_1']
+    post: operations['createCourtCase']
   }
   '/court-appearance': {
     /**
@@ -39,12 +56,12 @@ export interface paths {
      */
     get: operations['searchCourtCases']
   }
-  '/courtCase/search': {
+  '/charge/{chargeUuid}': {
     /**
-     * Retrieve all court cases for person
-     * @description This endpoint will retrieve all court cases for a person
+     * Retrieve charge details
+     * @description This endpoint will retrieve charge details
      */
-    get: operations['searchCourtCases_1']
+    get: operations['getChargeDetails']
   }
 }
 
@@ -72,6 +89,7 @@ export interface components {
       /** Format: date */
       appearanceDate: string
       warrantId?: string
+      warrantType: string
       nextCourtAppearance?: components['schemas']['CreateNextCourtAppearance']
       charges: components['schemas']['CreateCharge'][]
     }
@@ -103,13 +121,6 @@ export interface components {
       pncNumber?: string
       status?: string
     }
-    Pageable: {
-      /** Format: int32 */
-      page?: number
-      /** Format: int32 */
-      size?: number
-      sort?: string[]
-    }
     Charge: {
       /** Format: uuid */
       chargeUuid: string
@@ -129,6 +140,7 @@ export interface components {
       /** Format: date */
       appearanceDate: string
       warrantId?: string
+      warrantType: string
       nextCourtAppearance?: components['schemas']['NextCourtAppearance']
       charges: components['schemas']['Charge'][]
     }
@@ -144,6 +156,13 @@ export interface components {
       courtCode: string
       appearanceType: string
     }
+    Pageable: {
+      /** Format: int32 */
+      page?: number
+      /** Format: int32 */
+      size?: number
+      sort?: string[]
+    }
     PageCourtCase: {
       /** Format: int32 */
       totalPages?: number
@@ -152,14 +171,14 @@ export interface components {
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
-      /** Format: int32 */
-      number?: number
+      first?: boolean
+      last?: boolean
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
-      numberOfElements?: number
+      number?: number
       pageable?: components['schemas']['PageableObject']
-      last?: boolean
-      first?: boolean
+      /** Format: int32 */
+      numberOfElements?: number
       empty?: boolean
     }
     PageableObject: {
@@ -167,16 +186,16 @@ export interface components {
       offset?: number
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
-      pageSize?: number
-      /** Format: int32 */
       pageNumber?: number
+      /** Format: int32 */
+      pageSize?: number
       paged?: boolean
       unpaged?: boolean
     }
     SortObject: {
       empty?: boolean
-      sorted?: boolean
       unsorted?: boolean
+      sorted?: boolean
     }
   }
   responses: never
@@ -192,16 +211,64 @@ export type external = Record<string, never>
 
 export interface operations {
   /**
+   * Retrieve court case details
+   * @description This endpoint will retrieve court case details
+   */
+  getCourtCaseDetails: {
+    parameters: {
+      path: {
+        courtCaseUuid: string
+      }
+    }
+    responses: {
+      /** @description Returns court case details */
+      200: {
+        content: {
+          'application/json': components['schemas']['CourtCase']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CourtCase']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CourtCase']
+        }
+      }
+      /** @description Not found if no court case at uuid */
+      404: {
+        content: {
+          'application/json': components['schemas']['CourtCase']
+        }
+      }
+    }
+  }
+  /**
    * Create Court case
    * @description This endpoint will create a court case
    */
-  createCourtCase: {
+  putCourtCase: {
+    parameters: {
+      path: {
+        courtCaseUuid: string
+      }
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CreateCourtCase']
       }
     }
     responses: {
+      /** @description OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['CreateCourtCaseResponse']
+        }
+      }
       /** @description Returns court case UUID */
       201: {
         content: {
@@ -223,10 +290,89 @@ export interface operations {
     }
   }
   /**
+   * Retrieve court appearance details
+   * @description This endpoint will retrieve court appearance details
+   */
+  getCourtAppearanceDetails: {
+    parameters: {
+      path: {
+        appearanceUuid: string
+      }
+    }
+    responses: {
+      /** @description Returns court appearance details */
+      200: {
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+      /** @description Not found if no court appearance at uuid */
+      404: {
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+    }
+  }
+  /**
+   * Create Court appearance
+   * @description This endpoint will create a court appearance in a given court case
+   */
+  updateCourtAppearance: {
+    parameters: {
+      path: {
+        appearanceUuid: string
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCourtAppearance']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          'application/json': components['schemas']['CreateCourtAppearanceResponse']
+        }
+      }
+      /** @description Returns court case UUID */
+      201: {
+        content: {
+          'application/json': components['schemas']['CreateCourtAppearanceResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CreateCourtAppearanceResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CreateCourtAppearanceResponse']
+        }
+      }
+    }
+  }
+  /**
    * Create Court case
    * @description This endpoint will create a court case
    */
-  createCourtCase_1: {
+  createCourtCase: {
     requestBody: {
       content: {
         'application/json': components['schemas']['CreateCourtCase']
@@ -348,33 +494,38 @@ export interface operations {
     }
   }
   /**
-   * Retrieve all court cases for person
-   * @description This endpoint will retrieve all court cases for a person
+   * Retrieve charge details
+   * @description This endpoint will retrieve charge details
    */
-  searchCourtCases_1: {
+  getChargeDetails: {
     parameters: {
-      query: {
-        prisonerId: string
-        pageable: components['schemas']['Pageable']
+      path: {
+        chargeUuid: string
       }
     }
     responses: {
-      /** @description Returns court cases */
+      /** @description Returns charge details */
       200: {
         content: {
-          'application/json': components['schemas']['PageCourtCase']
+          'application/json': components['schemas']['Charge']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         content: {
-          'application/json': components['schemas']['PageCourtCase']
+          'application/json': components['schemas']['Charge']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
         content: {
-          'application/json': components['schemas']['PageCourtCase']
+          'application/json': components['schemas']['Charge']
+        }
+      }
+      /** @description Not found if no charge at uuid */
+      404: {
+        content: {
+          'application/json': components['schemas']['Charge']
         }
       }
     }

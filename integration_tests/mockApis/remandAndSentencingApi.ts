@@ -175,6 +175,7 @@ export default {
             courtCode: 'Bradford Crown Court',
             courtCaseReference: '1234',
             appearanceDate: '2023-05-12',
+            warrantType: 'REMAND',
             nextCourtAppearance: {
               appearanceDate: '2023-10-18',
               courtCode: 'Bradford Crown Court',

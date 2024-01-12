@@ -1,9 +1,11 @@
 import crypto from 'crypto'
 import fs from 'fs'
 import DocumentManagementApiClient from '../api/documentManagementApiClient'
-import { dataAccess } from '../data'
+import { HmppsAuthClient } from '../data'
 
 export default class DocumentManagementService {
+  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+
   async uploadWarrant(
     prisonerId: string,
     fileToUpload: Express.Multer.File,
@@ -11,7 +13,7 @@ export default class DocumentManagementService {
     activeCaseLoadId: string,
   ): Promise<string> {
     const documentId = crypto.randomUUID()
-    const token = await dataAccess().hmppsAuthClient.getSystemClientToken(username)
+    const token = await this.hmppsAuthClient.getSystemClientToken(username)
     await new DocumentManagementApiClient(token).uploadWarrantDocument(
       prisonerId,
       documentId,

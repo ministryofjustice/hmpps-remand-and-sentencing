@@ -28,6 +28,12 @@ interface StreamRequest {
   errorLogger?: (e: UnsanitisedError) => void
 }
 
+interface PostMultiPartRequest extends Request {
+  metadata?: Record<string, unknown>
+  retry?: boolean
+  fileToUpload: Express.Multer.File
+}
+
 export default class RestClient {
   agent: Agent
 
@@ -119,6 +125,45 @@ export default class RestClient {
 
   async put<Response = unknown>(request: RequestWithBody): Promise<Response> {
     return this.requestWithBody('put', request)
+  }
+
+  async postMultiPart<Response = unknown>({
+    path,
+    query = {},
+    headers = {},
+    responseType = '',
+    metadata = {},
+    raw = false,
+    retry = false,
+    fileToUpload,
+  }: PostMultiPartRequest): Promise<Response> {
+    logger.info(`${this.name} POST: ${path}`)
+    try {
+      const result = await superagent
+        .post(`${this.apiUrl()}${path}`)
+        .query(query)
+        .attach('file', fileToUpload.path, { filename: fileToUpload.originalname, contentType: fileToUpload.mimetype })
+        .field('metadata', JSON.stringify(metadata))
+        .agent(this.agent)
+        .use(restClientMetricsMiddleware)
+        .retry(2, (err, res) => {
+          if (retry === false) {
+            return false
+          }
+          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
+          return undefined // retry handler only for logging retries, not to influence retry logic
+        })
+        .auth(this.token, { type: 'bearer' })
+        .set(headers)
+        .responseType(responseType)
+        .timeout(this.timeoutConfig())
+
+      return raw ? result : result.body
+    } catch (error) {
+      const sanitisedError = sanitiseError(error)
+      logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'POST'`)
+      throw sanitisedError
+    }
   }
 
   async delete<Response = unknown>({

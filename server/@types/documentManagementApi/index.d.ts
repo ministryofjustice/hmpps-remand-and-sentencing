@@ -4,14 +4,35 @@
  */
 
 export interface paths {
+  '/queue-admin/retry-dlq/{dlqName}': {
+    /**
+     * @description
+     *
+     * Requires one of the following roles:
+     * * ROLE_DOCUMENT_ADMIN
+     */
+    put: operations['retryDlq']
+  }
+  '/queue-admin/retry-all-dlqs': {
+    put: operations['retryAllDlqs']
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    /**
+     * @description
+     *
+     * Requires one of the following roles:
+     * * ROLE_DOCUMENT_ADMIN
+     */
+    put: operations['purgeQueue']
+  }
   '/documents/{documentUuid}/metadata': {
     /**
      * Replace the metadata associated with a document
      * @description Accepts JSON based metadata to associate with the document identified by the supplied unique identifier. Applies authorisation and validation rules based on the type of document. If valid, the previous metadata will be stored and the metadata associated with the document will be replaced with the supplied metadata.
      *
      * Requires one of the following roles:
-     * * DOCUMENT_WRITER
-     * * DOCUMENT_ADMIN
+     * * ROLE_DOCUMENT_WRITER
+     * * ROLE_DOCUMENT_ADMIN
      */
     put: operations['replaceDocumentMetadata']
   }
@@ -21,21 +42,30 @@ export interface paths {
      * @description Accepts a document file binary and associated metadata. Uses the supplied document type to apply any validation rules and extra security then stores the file, creates and populates a document object with file properties and supplied metadata and saves that document object. The document is associated with the client supplied unique identifier. This identifier is used as an idempotency key and therefore cannot be reused once the upload operation is successful.
      *
      * Requires one of the following roles:
-     * * DOCUMENT_WRITER
-     * * DOCUMENT_ADMIN
+     * * ROLE_DOCUMENT_WRITER
+     * * ROLE_DOCUMENT_ADMIN
      */
     post: operations['uploadDocument']
   }
   '/documents/search': {
     /**
-     * Search for documents with matching metadata and optionally document type
-     * @description Uses the supplied metadata and optional document type to filter and return documents. Documents will match if they are of the supplied type (optional) and/or their metadata contains all the supplied properties and their values e.g. prisonCode = "KMI" AND prisonNumber = "A1234BC". Value matching is partial and case insensitive so court = "ham magis" will match "Birmingham Magistrates".
+     * Search for documents with matching document type and/or metadata criteria
+     * @description Uses the supplied document type and metadata criteria to filter and return documents. Documents will match if they are of the supplied type and/or their metadata contains all the supplied properties and their values e.g. prisonCode = "KMI" AND prisonNumber = "A1234BC". Value matching is partial and case insensitive so court = "ham magis" will match "Birmingham Magistrates". Document type or metadata criteria must be supplied. Note that documents with types that require additional roles will be filtered out of the search results if the client does not have the required roles.
      *
      * Requires one of the following roles:
-     * * DOCUMENT_READER
-     * * DOCUMENT_ADMIN
+     * * ROLE_DOCUMENT_READER
+     * * ROLE_DOCUMENT_ADMIN
      */
     post: operations['searchDocuments']
+  }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    /**
+     * @description
+     *
+     * Requires one of the following roles:
+     * * ROLE_DOCUMENT_ADMIN
+     */
+    get: operations['getDlqMessages']
   }
   '/documents/{documentUuid}': {
     /**
@@ -43,8 +73,8 @@ export interface paths {
      * @description Returns document properties and metadata associated with the document. The document file must be downloaded separately using the GET /documents/{documentUuid}/file endpoint.
      *
      * Requires one of the following roles:
-     * * DOCUMENT_READER
-     * * DOCUMENT_ADMIN
+     * * ROLE_DOCUMENT_READER
+     * * ROLE_DOCUMENT_ADMIN
      */
     get: operations['getDocument']
     /**
@@ -52,8 +82,8 @@ export interface paths {
      * @description
      *
      * Requires one of the following roles:
-     * * DOCUMENT_WRITER
-     * * DOCUMENT_ADMIN
+     * * ROLE_DOCUMENT_WRITER
+     * * ROLE_DOCUMENT_ADMIN
      */
     delete: operations['deleteDocument']
   }
@@ -63,17 +93,32 @@ export interface paths {
      * @description Returns document file binary with Content-Type and Content-Disposition headers.
      *
      * Requires one of the following roles:
-     * * DOCUMENT_READER
-     * * DOCUMENT_ADMIN
+     * * ROLE_DOCUMENT_READER
+     * * ROLE_DOCUMENT_ADMIN
      */
     get: operations['downloadDocumentFile']
   }
 }
 
-export type webhooks = Record<string, unknown>
+export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never>
+      }
+      messageId: string
+    }
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      messages: components['schemas']['DlqMessage'][]
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
     /**
      * @description JSON structured metadata associated with the document. May contain prison codes, prison numbers, dates, tags etc. and the properties available will be defined by the document's type.
      * @example {
@@ -83,16 +128,7 @@ export interface components {
      *   "warrantDate": "2023-11-14"
      * }
      */
-    JsonNode: Record<string, unknown>
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      /** Format: int32 */
-      errorCode?: number
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
+    JsonNode: Record<string, never>
     /** @description Document properties and metadata associated with the document. The document file must be downloaded separately using the GET /documents/{documentUuid}/file endpoint. */
     Document: {
       /**
@@ -106,7 +142,12 @@ export interface components {
        * @example HMCTS_WARRANT
        * @enum {string}
        */
-      documentType: 'HMCTS_WARRANT' | 'SUBJECT_ACCESS_REQUEST_REPORT'
+      documentType: 'HMCTS_WARRANT' | 'SUBJECT_ACCESS_REQUEST_REPORT' | 'EXCLUSION_ZONE_MAP'
+      /**
+       * @description The generated filename the document file will be given when downloaded. The format of this filename can be document type specific and may include type information. the filename of the document file when it was uploaded as well as relevant metadata e.g. case reference or prison number
+       * @example warrant_for_remand
+       */
+      documentFilename: string
       /**
        * @description The filename of the document file when it was uploaded with the file extension removed
        * @example warrant_for_remand
@@ -150,21 +191,71 @@ export interface components {
        */
       createdByUsername?: string
     }
-    /** @description Describes the search parameters to use to filter documents. */
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      /** Format: int32 */
+      errorCode?: number
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
+    }
+    /** @description Describes the search parameters to use to filter documents. Document type or metadata criteria must be supplied. */
     DocumentSearchRequest: {
       /**
-       * @description The type or category of the document within HMPPS (optional)
+       * @description The type or category of the document within HMPPS
        * @example HMCTS_WARRANT
        * @enum {string}
        */
-      documentType?: 'HMCTS_WARRANT' | 'SUBJECT_ACCESS_REQUEST_REPORT'
-      metadata: components['schemas']['JsonNode']
+      documentType?: 'HMCTS_WARRANT' | 'SUBJECT_ACCESS_REQUEST_REPORT' | 'EXCLUSION_ZONE_MAP'
+      metadata?: components['schemas']['JsonNode']
+      /**
+       * Format: int32
+       * @description The requested page of search results. Starts from 0
+       * @default 0
+       * @example 5
+       */
+      page: number
+      /**
+       * Format: int32
+       * @description The number of results to return per page
+       * @default 10
+       * @example 25
+       */
+      pageSize: number
+      /**
+       * @description The property to order the search results by
+       * @default CREATED_TIME
+       * @example FILESIZE
+       * @enum {string}
+       */
+      orderBy: 'FILENAME' | 'FILE_EXTENSION' | 'FILESIZE' | 'CREATED_TIME'
+      /**
+       * @description The sort direction to use when ordering search results
+       * @default DESC
+       * @example ASC
+       * @enum {string}
+       */
+      orderByDirection: 'ASC' | 'DESC'
     }
     /** @description Describes the search parameters that were used to filter documents and the documents matching the supplied search parameters */
     DocumentSearchResult: {
       request: components['schemas']['DocumentSearchRequest']
-      /** @description The documents matching the supplied search parameters */
+      /** @description The documents matching the supplied search parameters. Note that documents with types that require additional roles will have been filtered out of these results if the client does not have the required roles. */
       results: components['schemas']['Document'][]
+      /**
+       * Format: int64
+       * @description The total number of available results not limited by page size
+       * @example 56
+       */
+      totalResultsCount: number
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
   }
   responses: never
@@ -180,18 +271,72 @@ export type external = Record<string, never>
 
 export interface operations {
   /**
+   * @description
+   *
+   * Requires one of the following roles:
+   * * ROLE_DOCUMENT_ADMIN
+   */
+  retryDlq: {
+    parameters: {
+      path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  /**
+   * @description
+   *
+   * Requires one of the following roles:
+   * * ROLE_DOCUMENT_ADMIN
+   */
+  purgeQueue: {
+    parameters: {
+      path: {
+        queueName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
+  /**
    * Replace the metadata associated with a document
    * @description Accepts JSON based metadata to associate with the document identified by the supplied unique identifier. Applies authorisation and validation rules based on the type of document. If valid, the previous metadata will be stored and the metadata associated with the document will be replaced with the supplied metadata.
    *
    * Requires one of the following roles:
-   * * DOCUMENT_WRITER
-   * * DOCUMENT_ADMIN
+   * * ROLE_DOCUMENT_WRITER
+   * * ROLE_DOCUMENT_ADMIN
    */
   replaceDocumentMetadata: {
     parameters: {
       header: {
         /** @description Client supplied name of the calling service. This should be the product name of the service as listed in the developer portal */
         'Service-Name': string
+        /** @description The active case load id of the user interacting with the client service */
+        'Active-Case-Load-Id'?: string
         /** @description The username of the user interacting with the client service */
         Username?: string
       }
@@ -207,7 +352,7 @@ export interface operations {
     }
     responses: {
       /** @description Document metadata replaced successfully */
-      202: {
+      200: {
         content: {
           'application/json': components['schemas']['Document']
         }
@@ -237,20 +382,22 @@ export interface operations {
    * @description Accepts a document file binary and associated metadata. Uses the supplied document type to apply any validation rules and extra security then stores the file, creates and populates a document object with file properties and supplied metadata and saves that document object. The document is associated with the client supplied unique identifier. This identifier is used as an idempotency key and therefore cannot be reused once the upload operation is successful.
    *
    * Requires one of the following roles:
-   * * DOCUMENT_WRITER
-   * * DOCUMENT_ADMIN
+   * * ROLE_DOCUMENT_WRITER
+   * * ROLE_DOCUMENT_ADMIN
    */
   uploadDocument: {
     parameters: {
       header: {
         /** @description Client supplied name of the calling service. This should be the product name of the service as listed in the developer portal */
         'Service-Name': string
+        /** @description The active case load id of the user interacting with the client service */
+        'Active-Case-Load-Id'?: string
         /** @description The username of the user interacting with the client service */
         Username?: string
       }
       path: {
         /** @description The type of document being uploaded. This categorises the document and may enforce additional authentication and validation rules */
-        documentType: 'HMCTS_WARRANT' | 'SUBJECT_ACCESS_REQUEST_REPORT'
+        documentType: 'HMCTS_WARRANT' | 'SUBJECT_ACCESS_REQUEST_REPORT' | 'EXCLUSION_ZONE_MAP'
         /** @description Client supplied document unique identifier. A version 1 or version 4 (preferred) UUID. Used as an idempotency key preventing duplicate document uploads */
         documentUuid: string
       }
@@ -302,18 +449,20 @@ export interface operations {
     }
   }
   /**
-   * Search for documents with matching metadata and optionally document type
-   * @description Uses the supplied metadata and optional document type to filter and return documents. Documents will match if they are of the supplied type (optional) and/or their metadata contains all the supplied properties and their values e.g. prisonCode = "KMI" AND prisonNumber = "A1234BC". Value matching is partial and case insensitive so court = "ham magis" will match "Birmingham Magistrates".
+   * Search for documents with matching document type and/or metadata criteria
+   * @description Uses the supplied document type and metadata criteria to filter and return documents. Documents will match if they are of the supplied type and/or their metadata contains all the supplied properties and their values e.g. prisonCode = "KMI" AND prisonNumber = "A1234BC". Value matching is partial and case insensitive so court = "ham magis" will match "Birmingham Magistrates". Document type or metadata criteria must be supplied. Note that documents with types that require additional roles will be filtered out of the search results if the client does not have the required roles.
    *
    * Requires one of the following roles:
-   * * DOCUMENT_READER
-   * * DOCUMENT_ADMIN
+   * * ROLE_DOCUMENT_READER
+   * * ROLE_DOCUMENT_ADMIN
    */
   searchDocuments: {
     parameters: {
       header: {
         /** @description Client supplied name of the calling service. This should be the product name of the service as listed in the developer portal */
         'Service-Name': string
+        /** @description The active case load id of the user interacting with the client service */
+        'Active-Case-Load-Id'?: string
         /** @description The username of the user interacting with the client service */
         Username?: string
       }
@@ -325,7 +474,7 @@ export interface operations {
     }
     responses: {
       /** @description Search request accepted and results returned */
-      202: {
+      200: {
         content: {
           'application/json': components['schemas']['DocumentSearchResult']
         }
@@ -351,18 +500,44 @@ export interface operations {
     }
   }
   /**
+   * @description
+   *
+   * Requires one of the following roles:
+   * * ROLE_DOCUMENT_ADMIN
+   */
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
+        }
+      }
+    }
+  }
+  /**
    * Get a document by its unique identifier
    * @description Returns document properties and metadata associated with the document. The document file must be downloaded separately using the GET /documents/{documentUuid}/file endpoint.
    *
    * Requires one of the following roles:
-   * * DOCUMENT_READER
-   * * DOCUMENT_ADMIN
+   * * ROLE_DOCUMENT_READER
+   * * ROLE_DOCUMENT_ADMIN
    */
   getDocument: {
     parameters: {
       header: {
         /** @description Client supplied name of the calling service. This should be the product name of the service as listed in the developer portal */
         'Service-Name': string
+        /** @description The active case load id of the user interacting with the client service */
+        'Active-Case-Load-Id'?: string
         /** @description The username of the user interacting with the client service */
         Username?: string
       }
@@ -403,14 +578,16 @@ export interface operations {
    * @description
    *
    * Requires one of the following roles:
-   * * DOCUMENT_WRITER
-   * * DOCUMENT_ADMIN
+   * * ROLE_DOCUMENT_WRITER
+   * * ROLE_DOCUMENT_ADMIN
    */
   deleteDocument: {
     parameters: {
       header: {
         /** @description Client supplied name of the calling service. This should be the product name of the service as listed in the developer portal */
         'Service-Name': string
+        /** @description The active case load id of the user interacting with the client service */
+        'Active-Case-Load-Id'?: string
         /** @description The username of the user interacting with the client service */
         Username?: string
       }
@@ -421,7 +598,7 @@ export interface operations {
     }
     responses: {
       /** @description Document deleted */
-      202: {
+      204: {
         content: never
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -449,14 +626,16 @@ export interface operations {
    * @description Returns document file binary with Content-Type and Content-Disposition headers.
    *
    * Requires one of the following roles:
-   * * DOCUMENT_READER
-   * * DOCUMENT_ADMIN
+   * * ROLE_DOCUMENT_READER
+   * * ROLE_DOCUMENT_ADMIN
    */
   downloadDocumentFile: {
     parameters: {
       header: {
         /** @description Client supplied name of the calling service. This should be the product name of the service as listed in the developer portal */
         'Service-Name': string
+        /** @description The active case load id of the user interacting with the client service */
+        'Active-Case-Load-Id'?: string
         /** @description The username of the user interacting with the client service */
         Username?: string
       }
@@ -466,7 +645,7 @@ export interface operations {
       }
     }
     responses: {
-      /** @description Document found */
+      /** @description Document file found */
       200: {
         content: {
           'application/pdf': string
@@ -484,7 +663,7 @@ export interface operations {
           'application/pdf': components['schemas']['ErrorResponse']
         }
       }
-      /** @description The document associated with this unique identifier was not found. */
+      /** @description The document file associated with this unique identifier was not found. */
       404: {
         content: {
           'application/pdf': components['schemas']['ErrorResponse']

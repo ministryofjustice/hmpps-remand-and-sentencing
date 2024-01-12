@@ -25,6 +25,7 @@ import { pageCourtCaseContentToCourtCase } from '../utils/mappingUtils'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
 import { getAsStringOrDefault } from '../utils/utils'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -32,6 +33,7 @@ export default class CourtCaseRoutes {
     private readonly courtAppearanceService: CourtAppearanceService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly manageOffencesService: ManageOffencesService,
+    private readonly documentManagementService: DocumentManagementService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -303,6 +305,42 @@ export default class CourtCaseRoutes {
 
     this.courtAppearanceService.setWarrantType(req.session, nomsId, courtCaseReference, warrantTypeForm.warrantType)
     const { submitToCheckAnswers } = req.query
+    if (submitToCheckAnswers) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-upload`,
+    )
+  }
+
+  public getWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { submitToCheckAnswers } = req.query
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    return res.render('pages/courtAppearance/warrant-upload', {
+      nomsId,
+      submitToCheckAnswers,
+      courtCaseReference,
+      appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
+      addOrEditCourtCase,
+    })
+  }
+
+  public submitWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { submitToCheckAnswers } = req.query
+    const { username, activeCaseLoadId } = res.locals.user
+
+    if (req.file) {
+      const warrantId = await this.documentManagementService.uploadWarrant(nomsId, req.file, username, activeCaseLoadId)
+      this.courtAppearanceService.setWarrantId(req.session, nomsId, courtCaseReference, warrantId)
+    }
+
     if (submitToCheckAnswers) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,

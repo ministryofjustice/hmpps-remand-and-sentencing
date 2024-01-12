@@ -1,4 +1,5 @@
 import { type RequestHandler, Router } from 'express'
+import multer from 'multer'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import CourtCaseRoutes from './courtCaseRoutes'
@@ -6,6 +7,7 @@ import { Services } from '../services'
 import ApiRoutes from './apiRoutes'
 import OffenceRoutes from './offenceRoutes'
 
+const upload = multer({ dest: 'uploads/' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
   const router = Router()
@@ -14,11 +16,15 @@ export default function routes(services: Services): Router {
 
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
+  const postWithFileUpload = (path: string | string[], handler: RequestHandler) =>
+    router.post(path, upload.single('warrantUpload'), asyncMiddleware(handler))
+
   const courtCaseRoutes = new CourtCaseRoutes(
     services.courtCaseService,
     services.courtAppearanceService,
     services.remandAndSentencingService,
     services.manageOffencesService,
+    services.documentManagementService,
   )
   const apiRoutes = new ApiRoutes(services.prisonerService, services.manageOffencesService)
   const offenceRoutes = new OffenceRoutes(
@@ -95,6 +101,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-warrant-type',
     courtCaseRoutes.submitWarrantType,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/warrant-upload',
+    courtCaseRoutes.getWarrantUpload,
+  )
+
+  postWithFileUpload(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-warrant-upload',
+    courtCaseRoutes.submitWarrantUpload,
   )
 
   get(

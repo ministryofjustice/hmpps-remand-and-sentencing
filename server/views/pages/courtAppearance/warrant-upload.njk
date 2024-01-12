@@ -1,0 +1,41 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+
+{% set pageTitle = applicationName + " - Same case reference number page" %}
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" enctype="multipart/form-data" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-warrant-upload?_csrf={{ csrfToken }}{{ "&submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                <span class="govuk-caption-l">
+                    {% if isFirstAppearance %}
+                        Add a court case
+                        {% else %}
+                        Add an appearance to court case {{courtCaseUniqueIdentifier}}
+                    {% endif %}
+                </span>
+                {{ govukFileUpload({
+                    id: "warrant-upload",
+                    name: "warrantUpload",
+                    label: {
+                        text: "Upload a warrant",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                    },
+                    hint: {
+                        text: "You can upload PDF or JPG files"
+                    },
+                    attributes: {
+                        accept: "image/*,.pdf"
+                    }
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -47,6 +47,7 @@ export const courtAppearanceToCreateCourtAppearance = (
     appearanceDate: dayjs(courtAppearance.warrantDate).format('YYYY-MM-DD'),
     charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence)),
     warrantType: courtAppearance.warrantType,
+    warrantId: courtAppearance.warrantId,
     ...(nextCourtAppearance && { nextCourtAppearance }),
   } as CreateCourtAppearance
 }
@@ -101,6 +102,7 @@ const pageCourtAppearanceContentToCourtAppearance = (
     courtName: pageCourtCaseAppearance.courtCode,
     overallCaseOutcome: pageCourtCaseAppearance.outcome,
     warrantType: pageCourtCaseAppearance.warrantType,
+    warrantId: pageCourtCaseAppearance.warrantId,
     caseOutcomeAppliedAll,
     offences,
     ...nextHearing,

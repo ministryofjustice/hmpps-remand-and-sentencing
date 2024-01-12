@@ -334,10 +334,16 @@ export default class CourtCaseRoutes {
   public submitWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const { token } = res.locals.user
+    const { token, username, activeCaseLoadId } = res.locals.user
 
     if (req.file) {
-      const warrantId = await this.documentManagementService.uploadWarrant(nomsId, token, req.file)
+      const warrantId = await this.documentManagementService.uploadWarrant(
+        nomsId,
+        token,
+        req.file,
+        username,
+        activeCaseLoadId,
+      )
       this.courtAppearanceService.setWarrantId(req.session, nomsId, courtCaseReference, warrantId)
     }
 

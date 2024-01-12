@@ -1,18 +1,17 @@
 import crypto from 'crypto'
 import fs from 'fs'
 import DocumentManagementApiClient from '../api/documentManagementApiClient'
+import { dataAccess } from '../data'
 
 export default class DocumentManagementService {
   async uploadWarrant(
     prisonerId: string,
-    token: string,
     fileToUpload: Express.Multer.File,
     username: string,
     activeCaseLoadId: string,
   ): Promise<string> {
     const documentId = crypto.randomUUID()
-    // get system token
-    // set correct expected headers
+    const token = await dataAccess().hmppsAuthClient.getSystemClientToken(username)
     await new DocumentManagementApiClient(token).uploadWarrantDocument(
       prisonerId,
       documentId,

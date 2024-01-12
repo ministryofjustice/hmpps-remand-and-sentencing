@@ -18,6 +18,7 @@ declare module 'models' {
     nextHearingTimeSet?: boolean
     offences?: Offence[]
     warrantType?: string
+    warrantId?: string
   }
 
   export interface Offence {

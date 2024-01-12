@@ -33,7 +33,8 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remand in Custody (Bail Refused)", "courtCode": "Bradford Crown Court", "courtCaseReference": "1234", "appearanceDate": "2023-05-12", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remand in Custody (Bail Refused)"}]}]}',
+              // eslint-disable-next-line no-template-curly-in-string
+              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remand in Custody (Bail Refused)", "courtCode": "Bradford Crown Court", "courtCaseReference": "1234", "appearanceDate": "2023-05-12", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remand in Custody (Bail Refused)"}], "warrantType": "REMAND", "WarrantId":"${json-unit.any-string}"}]}',
           },
         ],
       },
@@ -176,6 +177,8 @@ export default {
             courtCaseReference: '1234',
             appearanceDate: '2023-05-12',
             warrantType: 'REMAND',
+            // eslint-disable-next-line no-template-curly-in-string
+            warrantId: '${json-unit.any-string}',
             nextCourtAppearance: {
               appearanceDate: '2023-10-18',
               courtCode: 'Bradford Crown Court',

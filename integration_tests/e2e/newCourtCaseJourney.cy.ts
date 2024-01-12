@@ -16,6 +16,7 @@ import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
+import CourtCaseWarrantUploadPage from '../pages/courtCaseWarrantUploadPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -27,6 +28,7 @@ context('New Court Case journey', () => {
     cy.task('stubCreateCourtCase')
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes')
+    cy.task('stubUploadWarrant')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -50,6 +52,10 @@ context('New Court Case journey', () => {
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
+
+    const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
+    courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
+    courtCaseWarrantUploadPage.button().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
     courtCaseOverallCaseOutcomePage.radioSelector('Remand in Custody (Bail Refused)').click()

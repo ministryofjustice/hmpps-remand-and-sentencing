@@ -128,3 +128,4 @@ integration_tests/screenshots/
 **/Chart.lock
 /hmpps-remand-and-sentencing.iml
 .DS_Store
+/uploads/

@@ -26,6 +26,7 @@ import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
 import { getAsStringOrDefault } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
+import CaseOutcomeService from '../services/caseOutcomeService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -34,6 +35,7 @@ export default class CourtCaseRoutes {
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly documentManagementService: DocumentManagementService,
+    private readonly caseOutcomeService: CaseOutcomeService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -359,6 +361,8 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
+    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const topCaseOutcomes = this.caseOutcomeService.getTopCaseOutcomes(warrantType)
     const isFirstAppearance = appearanceReference === '0'
     const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/overall-case-outcome', {
@@ -370,6 +374,7 @@ export default class CourtCaseRoutes {
       isFirstAppearance,
       courtCaseUniqueIdentifier,
       addOrEditCourtCase,
+      topCaseOutcomes,
     })
   }
 

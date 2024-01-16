@@ -27,7 +27,7 @@ export default function routes(services: Services): Router {
     services.documentManagementService,
     services.caseOutcomeService,
   )
-  const apiRoutes = new ApiRoutes(services.prisonerService, services.manageOffencesService)
+  const apiRoutes = new ApiRoutes(services.prisonerService, services.manageOffencesService, services.caseOutcomeService)
   const offenceRoutes = new OffenceRoutes(
     services.offenceService,
     services.manageOffencesService,
@@ -41,6 +41,7 @@ export default function routes(services: Services): Router {
   get('/api/person/:nomsId/image', apiRoutes.personImage)
 
   get('/api/search-offence', apiRoutes.searchOffence)
+  get('/api/search-case-outcome', apiRoutes.searchCaseOutcome)
 
   get('/person/:nomsId', courtCaseRoutes.start)
 

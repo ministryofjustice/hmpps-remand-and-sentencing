@@ -1,4 +1,5 @@
 import CourtCaseLookupCaseOutcomePage from '../pages/courtCaseLookupCaseOutcomePage'
+import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import Page from '../pages/page'
 
 context('Court Case Overall Case Outcome Page', () => {
@@ -9,6 +10,10 @@ context('Court Case Overall Case Outcome Page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.signIn()
+    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioSelector('REMAND').click()
+    courtCaseWarrantTypePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/lookup-case-outcome')
     courtCaseLookupCaseOutcomePage = Page.verifyOnPage(CourtCaseLookupCaseOutcomePage)
   })

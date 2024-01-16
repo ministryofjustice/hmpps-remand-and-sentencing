@@ -407,6 +407,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const isFirstAppearance = appearanceReference === '0'
     const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/lookup-case-outcome', {
       nomsId,
       courtCaseReference,
@@ -414,6 +415,7 @@ export default class CourtCaseRoutes {
       isFirstAppearance,
       courtCaseUniqueIdentifier,
       addOrEditCourtCase,
+      warrantType,
     })
   }
 

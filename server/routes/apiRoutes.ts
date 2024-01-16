@@ -2,12 +2,14 @@ import { RequestHandler } from 'express'
 import path from 'path'
 import PrisonerService from '../services/prisonerService'
 import ManageOffencesService from '../services/manageOffencesService'
+import CaseOutcomeService from '../services/caseOutcomeService'
 
 const placeHolderImage = path.join(process.cwd(), '/assets/images/prisoner-profile-image.png')
 export default class ApiRoutes {
   constructor(
     private readonly prisonerService: PrisonerService,
     private readonly manageOffencesService: ManageOffencesService,
+    private readonly caseOutcomeService: CaseOutcomeService,
   ) {}
 
   public personImage: RequestHandler = async (req, res): Promise<void> => {
@@ -28,6 +30,12 @@ export default class ApiRoutes {
   public searchOffence: RequestHandler = async (req, res): Promise<void> => {
     const { searchString } = req.query
     const result = await this.manageOffencesService.searchOffence(searchString as string, res.locals.user.token)
+    res.status(200).send(result)
+  }
+
+  public searchCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const { searchString, type } = req.query
+    const result = this.caseOutcomeService.searchOutcomes(searchString as string, type as string)
     res.status(200).send(result)
   }
 }

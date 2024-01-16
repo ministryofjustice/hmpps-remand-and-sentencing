@@ -16,4 +16,15 @@ export default class CaseOutcomeService {
       })
       .slice(0, 6)
   }
+
+  searchOutcomes(searchString: string, type: string): CaseOutcome[] {
+    return this.caseOutcomes
+      .filter(
+        caseOutcome =>
+          caseOutcome.type === type && caseOutcome.description.toLowerCase().includes(searchString.toLowerCase()),
+      )
+      .sort((a, b) => {
+        return a.rank - b.rank
+      })
+  }
 }

@@ -7,13 +7,7 @@
 {% block pageContent %}
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-name">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <span class="govuk-caption-l">
-                    {% if isFirstAppearance %}
-                        Add an offence to court case {{ courtCaseUniqueIdentifier }}
-                        {% else %}
-                        Add an appearance to court case {{ courtCaseUniqueIdentifier }}
-                    {% endif %}
-                </span>
+                {% include "../../partials/offenceCaption.njk" %}
 
                 {{ govukSelect({
                     label: {

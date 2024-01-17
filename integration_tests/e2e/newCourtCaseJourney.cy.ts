@@ -142,7 +142,6 @@ context('New Court Case journey', () => {
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
     courtCaseTaggedBailPage.input().type('5')
     courtCaseTaggedBailPage.button().click()
-    // this is where tagged bail would appear
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {

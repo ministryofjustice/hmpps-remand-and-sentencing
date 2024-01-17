@@ -17,6 +17,7 @@ import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtCaseService from '../services/courtCaseService'
 import validate from '../validation/validation'
 import OffencePersistType from '../@types/models/OffencePersistType'
+import CaseOutcomeService from '../services/caseOutcomeService'
 
 export default class OffenceRoutes {
   constructor(
@@ -24,6 +25,7 @@ export default class OffenceRoutes {
     private readonly manageOffencesService: ManageOffencesService,
     private readonly courtAppearanceService: CourtAppearanceService,
     private readonly courtCaseService: CourtCaseService,
+    private readonly caseOutcomeService: CaseOutcomeService,
   ) {}
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -91,6 +93,8 @@ export default class OffenceRoutes {
     const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
     const isFirstAppearance = appearanceReference === '0'
     const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const topCaseOutcomes = this.caseOutcomeService.getTopCaseOutcomes(warrantType)
     return res.render('pages/offence/offence-outcome', {
       nomsId,
       courtCaseReference,
@@ -100,6 +104,7 @@ export default class OffenceRoutes {
       isFirstAppearance,
       courtCaseUniqueIdentifier,
       addOrEditCourtCase,
+      topCaseOutcomes,
     })
   }
 

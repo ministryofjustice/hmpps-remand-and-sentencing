@@ -1,0 +1,12 @@
+
+<span class="govuk-caption-l">
+    {% if isFirstAppearance %}
+        {% if courtAppearance.warrantType === 'SENTENCING' %}
+            Add sentences to a court case
+        {% else %}
+            Add an offence to court case {{ courtCaseUniqueIdentifier }}
+        {% endif %}
+    {% else %}
+        Add an appearance to court case {{ courtCaseUniqueIdentifier }}
+    {% endif %}
+</span>

@@ -18,13 +18,7 @@
             }) }}
             {% endif %}
             
-            <span class="govuk-caption-l">
-                    {% if isFirstAppearance %}
-                        Add an offence to court case {{ courtCaseUniqueIdentifier }}
-                        {% else %}
-                        Add an appearance to court case {{ courtCaseUniqueIdentifier }}
-                    {% endif %}
-                </span>
+            {% include "../../partials/offenceCaption.njk" %}
             <h1 class="govuk-heading-l">
                 {% if addOrEditCourtCase === 'edit-court-case' %}
                     Edit the offence details for this appearance

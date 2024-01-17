@@ -10,13 +10,7 @@
                 <input type="hidden" name="offenceCode" value="{{ offence.code }}">
                 <input type="hidden" name="offenceName" value="{{ offence.description }}">
                 <h1 class="govuk-heading-l">
-                    <span class="govuk-caption-l">
-                    {% if isFirstAppearance %}
-                        Add an offence to court case {{ courtCaseUniqueIdentifier }}
-                        {% else %}
-                        Add an appearance to court case {{ courtCaseUniqueIdentifier }}
-                    {% endif %}
-                </span>
+                    {% include "../../partials/offenceCaption.njk" %}
                     Confirm the offence
                 </h1>
 

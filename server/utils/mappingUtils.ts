@@ -48,6 +48,7 @@ export const courtAppearanceToCreateCourtAppearance = (
     charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence)),
     warrantType: courtAppearance.warrantType,
     warrantId: courtAppearance.warrantId,
+    ...(courtAppearance.taggedBail && { taggedBail: parseInt(courtAppearance.taggedBail, 10) }),
     ...(nextCourtAppearance && { nextCourtAppearance }),
   } as CreateCourtAppearance
 }
@@ -103,6 +104,7 @@ const pageCourtAppearanceContentToCourtAppearance = (
     overallCaseOutcome: pageCourtCaseAppearance.outcome,
     warrantType: pageCourtCaseAppearance.warrantType,
     warrantId: pageCourtCaseAppearance.warrantId,
+    taggedBail: pageCourtCaseAppearance.taggedBail,
     caseOutcomeAppliedAll,
     offences,
     ...nextHearing,

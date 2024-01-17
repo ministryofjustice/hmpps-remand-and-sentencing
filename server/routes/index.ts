@@ -146,6 +146,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/tagged-bail',
+    courtCaseRoutes.getTaggedBail,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-tagged-bail',
+    courtCaseRoutes.submitTaggedBail,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/check-answers',
     courtCaseRoutes.getCheckAnswers,
   )

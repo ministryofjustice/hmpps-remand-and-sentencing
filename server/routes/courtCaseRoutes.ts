@@ -14,6 +14,7 @@ import type {
   CourtCaseSelectReferenceForm,
   CourtCaseSelectCourtNameForm,
   CourtCaseWarrantTypeForm,
+  CourtCaseTaggedBailForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
@@ -477,11 +478,49 @@ export default class CourtCaseRoutes {
       courtCaseReference,
     )
 
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/tagged-bail`,
+      )
+    }
+
     if (courtAppearance.offences.length) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/review-offences`,
       )
     }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
+    )
+  }
+
+  public getTaggedBail: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { submitToCheckAnswers } = req.query
+    let taggedBail: string
+    if (submitToCheckAnswers) {
+      taggedBail = this.courtAppearanceService.getTaggedBail(req.session, nomsId, courtCaseReference)
+    }
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    return res.render('pages/courtAppearance/tagged-bail', {
+      nomsId,
+      submitToCheckAnswers,
+      taggedBail,
+      courtCaseReference,
+      appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
+      addOrEditCourtCase,
+    })
+  }
+
+  public submitTaggedBail: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const taggedBailForm = trimForm<CourtCaseTaggedBailForm>(req.body)
+
+    this.courtAppearanceService.setTaggedBail(req.session, nomsId, courtCaseReference, taggedBailForm.taggedBail)
 
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,

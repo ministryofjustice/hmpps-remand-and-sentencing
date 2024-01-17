@@ -1,0 +1,48 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+
+{% set pageTitle = applicationName + " - Same case reference number page" %}
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-tagged-bail{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">
+                    {% if isFirstAppearance %}
+                        Add a court case
+                        {% else %}
+                        Add an appearance to court case {{courtCaseUniqueIdentifier}}
+                    {% endif %}
+                </span>
+
+                {% call govukFieldset({
+                    legend: {
+                        text: "How many days tagged bail?",
+                        classes: "govuk-fieldset__legend--l",
+                        isPageHeading: true
+                    }
+                }) %}
+
+                {{ govukInput({
+                    name: "taggedBail",
+                    label: {
+                        text: "Number of days"
+                    },
+                    inputmode: "numeric",
+                    classes: "govuk-input--width-3"
+                }) }}
+
+                {% endcall %}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

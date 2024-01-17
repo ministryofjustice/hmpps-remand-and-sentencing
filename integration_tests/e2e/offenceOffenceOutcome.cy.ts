@@ -1,3 +1,4 @@
+import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import Page from '../pages/page'
 
@@ -9,7 +10,10 @@ context('Add Offence Outcome Page', () => {
     cy.task('stubManageUser')
     cy.task('stubGetPersonDetails')
     cy.signIn()
-    cy.createCourtCase('A1234AB', '0', '0')
+    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/0/offence-outcome')
     offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
   })

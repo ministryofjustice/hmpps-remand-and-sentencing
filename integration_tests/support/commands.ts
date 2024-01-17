@@ -5,6 +5,7 @@ import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
+import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
@@ -107,6 +108,11 @@ Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: stri
 Cypress.Commands.add(
   'createOffence',
   (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
+    cy.visit(`/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`)
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioSelector('REMAND').click()
+    courtCaseWarrantTypePage.button().click()
+
     cy.visit(
       `/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     )

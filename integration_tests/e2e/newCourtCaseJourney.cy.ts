@@ -17,6 +17,7 @@ import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourt
 import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import CourtCaseWarrantUploadPage from '../pages/courtCaseWarrantUploadPage'
+import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -138,6 +139,9 @@ context('New Court Case journey', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
 
+    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
+    courtCaseTaggedBailPage.input().type('5')
+    courtCaseTaggedBailPage.button().click()
     // this is where tagged bail would appear
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)

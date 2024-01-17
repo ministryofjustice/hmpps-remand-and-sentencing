@@ -97,4 +97,8 @@ declare module 'forms' {
   export interface CourtCaseWarrantTypeForm {
     warrantType?: string
   }
+
+  export interface CourtCaseTaggedBailForm {
+    taggedBail?: string
+  }
 }

@@ -19,6 +19,7 @@ declare module 'models' {
     offences?: Offence[]
     warrantType?: string
     warrantId?: string
+    taggedBail?: string
   }
 
   export interface Offence {

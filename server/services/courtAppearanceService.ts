@@ -188,6 +188,26 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, courtCaseReference).caseOutcomeAppliedAll
   }
 
+  setTaggedBail(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    taggedBail: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, courtCaseReference)
+    courtAppearance.taggedBail = taggedBail
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  getTaggedBail(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ): string {
+    return this.getCourtAppearance(session, nomsId, courtCaseReference).taggedBail
+  }
+
   getNextHearingSelect(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

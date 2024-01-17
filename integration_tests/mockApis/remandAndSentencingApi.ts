@@ -48,6 +48,29 @@ export default {
     })
   },
 
+  stubCreateSentenceCourtCase: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: '/remand-and-sentencing-api/court-case',
+        bodyPatterns: [
+          {
+            equalToJson:
+              // eslint-disable-next-line no-template-curly-in-string
+              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Sentencing outcome 1", "courtCode": "Bradford Crown Court", "courtCaseReference": "1234", "appearanceDate": "2023-05-12", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Sentencing outcome 1"}], "warrantType": "SENTENCING", "WarrantId":"${json-unit.any-string}"}]}',
+          },
+        ],
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
+        },
+      },
+    })
+  },
+
   stubSearchCourtCases: ({ sortBy = 'desc' }: { sortBy: string }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -187,6 +210,33 @@ export default {
             charges: [
               { offenceCode: 'PS90037', offenceStartDate: '2023-05-12', outcome: 'Remand in Custody (Bail Refused)' },
             ],
+          },
+        ],
+      },
+    })
+  },
+
+  verifyCreateSentenceCourtCaseRequest: (): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/court-case',
+      method: 'POST',
+      body: {
+        prisonerId: 'A1234AB',
+        appearances: [
+          {
+            outcome: 'Sentencing outcome 1',
+            courtCode: 'Bradford Crown Court',
+            courtCaseReference: '1234',
+            appearanceDate: '2023-05-12',
+            warrantType: 'SENTENCING',
+            // eslint-disable-next-line no-template-curly-in-string
+            warrantId: '${json-unit.any-string}',
+            nextCourtAppearance: {
+              appearanceDate: '2023-10-18',
+              courtCode: 'Bradford Crown Court',
+              appearanceType: 'Court appearance',
+            },
+            charges: [{ offenceCode: 'PS90037', offenceStartDate: '2023-05-12', outcome: 'Sentencing outcome 1' }],
           },
         ],
       },

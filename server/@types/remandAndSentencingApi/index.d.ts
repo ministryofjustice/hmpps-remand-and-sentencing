@@ -90,6 +90,8 @@ export interface components {
       appearanceDate: string
       warrantId?: string
       warrantType: string
+      /** Format: int32 */
+      taggedBail?: number
       nextCourtAppearance?: components['schemas']['CreateNextCourtAppearance']
       charges: components['schemas']['CreateCharge'][]
     }
@@ -141,6 +143,8 @@ export interface components {
       appearanceDate: string
       warrantId?: string
       warrantType: string
+      /** Format: int32 */
+      taggedBail?: number
       nextCourtAppearance?: components['schemas']['NextCourtAppearance']
       charges: components['schemas']['Charge'][]
     }
@@ -169,22 +173,22 @@ export interface components {
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
-      size?: number
-      content?: components['schemas']['CourtCase'][]
+      number?: number
+      sort?: components['schemas']['SortObject']
       first?: boolean
       last?: boolean
-      sort?: components['schemas']['SortObject']
       /** Format: int32 */
-      number?: number
-      pageable?: components['schemas']['PageableObject']
+      size?: number
+      content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
+      sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
-      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageNumber?: number
       /** Format: int32 */

@@ -1,4 +1,4 @@
-import type { Offence } from 'models'
+import type { Offence, SentenceLength } from 'models'
 
 export default class OffenceService {
   setOffenceStartDate(
@@ -116,6 +116,21 @@ export default class OffenceService {
   ): string {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     return this.getOffence(session.offences, id).outcome
+  }
+
+  setCustodialSentenceLength(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    sentenceLength: SentenceLength[],
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = offence.sentence ?? {}
+    sentence.custodialSentenceLength = sentenceLength
+    offence.sentence = sentence
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
   }
 
   getSessionOffence(

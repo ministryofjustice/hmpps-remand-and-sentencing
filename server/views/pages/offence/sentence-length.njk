@@ -1,0 +1,58 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+
+
+
+{% set pageTitle = applicationName + " - Add a court case Count Number" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-sentence-length">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {{ govukDateInput({
+                    id: "sentence-length",
+                    namePrefix: "sentenceLength",
+                    fieldset: {
+                        legend: {
+                        text: "Enter the sentence length",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                    {
+                        classes: "govuk-input--width-2",
+                        label: "Years",
+                        name:"years"
+                    },
+                    {
+                        classes: "govuk-input--width-2",
+                        label: "Months",
+                        name:"months"
+                    },
+                    {
+                        classes: "govuk-input--width-2",
+                        label: "Weeks",
+                        name:"weeks"
+                    },
+                    {
+                        classes: "govuk-input--width-2",
+                        label: "Days",
+                        name:"days"
+                    }
+                    ]
+                }) }}
+
+                <p class="govuk-body">
+                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/alternative-sentence-length">The sentence length is formatted differently</a>
+                </p>
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+{% endblock %}

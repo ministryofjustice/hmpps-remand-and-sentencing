@@ -1,0 +1,60 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "../../components/alternativeSentenceLength/macro.njk" import alternativeSentenceLength%}
+{% set pageTitle = applicationName + " - Add sentence length" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-alternative-sentence-length">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {% call govukFieldset({
+                    legend: {
+                        text: "Enter the sentence length",
+                        classes: "govuk-fieldset__legend--l",
+                        isPageHeading: true
+                    }
+                }) %}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "sentenceLengths[0]",
+                        name: "sentenceLengths[0]",
+                        selectedItem: "years"
+                    })
+                }}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "sentenceLengths[1]",
+                        name: "sentenceLengths[1]",
+                        selectedItem: "months"
+                    })
+                }}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "sentenceLengths[2]",
+                        name: "sentenceLengths[2]",
+                        selectedItem: "weeks"
+                    })
+                }}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "sentenceLengths[3]",
+                        name: "sentenceLengths[3]",
+                        selectedItem: "days"
+                    })
+                }}
+
+
+                {% endcall %}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+{% endblock %}

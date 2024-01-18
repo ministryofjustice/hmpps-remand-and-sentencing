@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import type {
+  OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
   OffenceCountNumberForm,
   OffenceDeleteOffenceForm,
@@ -417,6 +418,43 @@ export default class OffenceRoutes {
       return { order: index, ...length }
     })
     this.offenceService.setCustodialSentenceLength(req.session, nomsId, courtCaseReference, sentenceLength)
+
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
+    )
+  }
+
+  public getAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    return res.render('pages/offence/alternative-sentence-length', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
+      addOrEditCourtCase,
+    })
+  }
+
+  public submitAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const offenceAlternativeSentenceLengthForm = trimForm<OffenceAlternativeSentenceLengthForm>(req.body)
+    const sentenceLengths = offenceAlternativeSentenceLengthForm.sentenceLengths
+      .filter(sentenceLength => sentenceLength.value)
+      .map((sentenceLength, index) => {
+        return {
+          order: index,
+          ...(sentenceLength.period === 'years' && { years: sentenceLength.value }),
+          ...(sentenceLength.period === 'months' && { months: sentenceLength.value }),
+          ...(sentenceLength.period === 'weeks' && { weeks: sentenceLength.value }),
+          ...(sentenceLength.period === 'days' && { days: sentenceLength.value }),
+        }
+      })
+    this.offenceService.setCustodialSentenceLength(req.session, nomsId, courtCaseReference, sentenceLengths)
 
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(

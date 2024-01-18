@@ -116,4 +116,19 @@ declare module 'forms' {
     'sentenceLength-weeks'?: string
     'sentenceLength-days'?: string
   }
+
+  export interface OffenceAlternativeSentenceLengthForm {
+    sentenceLengths: {
+      value: string
+      period: string
+    }[]
+    firstValue?: string
+    firstPeriod?: string
+    secondValue?: string
+    secondPeriod?: string
+    thirdValue?: string
+    thirdPeriod?: string
+    fourthValue?: string
+    fourthPeriod?: string
+  }
 }

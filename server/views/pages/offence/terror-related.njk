@@ -1,0 +1,39 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Terror related offence" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-terror-related">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {{ govukRadios({
+                    name: "terrorRelated",
+                    classes: "govuk-radios--inline",
+                    fieldset: {
+                        legend: {
+                            text: "Was the offence terror related?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes"
+                        },
+                        {
+                            value: "false",
+                            text: "No"
+                        }
+                    ]
+                }) }}
+
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+{% endblock %}

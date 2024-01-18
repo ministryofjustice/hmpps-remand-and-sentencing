@@ -105,4 +105,8 @@ declare module 'forms' {
   export interface OffenceCountNumberForm {
     countNumber?: string
   }
+
+  export interface OffenceTerrorRelatedForm {
+    terrorRelated?: string
+  }
 }

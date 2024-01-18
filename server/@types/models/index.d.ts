@@ -30,6 +30,7 @@ declare module 'models' {
     outcome?: string
     chargeUuid?: string
     sentence?: Sentence
+    terrorRelated?: boolean
   }
 
   export interface Sentence {

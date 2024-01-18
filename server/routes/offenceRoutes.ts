@@ -8,6 +8,7 @@ import type {
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
+  OffenceTerrorRelatedForm,
   ReviewOffencesForm,
 } from 'forms'
 import dayjs from 'dayjs'
@@ -258,6 +259,18 @@ export default class OffenceRoutes {
     this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, offenceCode)
     this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, offenceName)
 
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
+
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/terror-related`,
+      )
+    }
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
     )
@@ -288,6 +301,45 @@ export default class OffenceRoutes {
     const confirmOffenceForm = trimForm<OffenceConfirmOffenceForm>(req.body)
     this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, confirmOffenceForm.offenceCode)
     this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, confirmOffenceForm.offenceName)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      courtCaseReference,
+    )
+
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/terror-related`,
+      )
+    }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+    )
+  }
+
+  public getTerrorRelated: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const terrorRelated = this.offenceService.getTerrorRelated(req.session, nomsId, courtCaseReference)
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    return res.render('pages/offence/terror-related', {
+      nomsId,
+      courtCaseReference,
+      terrorRelated,
+      offenceReference,
+      appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
+      addOrEditCourtCase,
+    })
+  }
+
+  public submitTerrorRelated: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const terrorRelatedForm = trimForm<OffenceTerrorRelatedForm>(req.body)
+    const terrorRelated = terrorRelatedForm.terrorRelated === 'true'
+    this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, terrorRelated)
 
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,

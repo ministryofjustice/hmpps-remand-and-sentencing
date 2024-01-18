@@ -177,8 +177,6 @@ context('New Court Case journey', () => {
 
     // this is where sentence type would appear
 
-    // this is where sentence length would appear
-
     const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
     offenceSentenceLengthPage.yearsInput().type('4')
     offenceSentenceLengthPage.monthsInput().type('5')

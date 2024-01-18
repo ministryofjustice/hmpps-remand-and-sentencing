@@ -122,13 +122,5 @@ declare module 'forms' {
       value: string
       period: string
     }[]
-    firstValue?: string
-    firstPeriod?: string
-    secondValue?: string
-    secondPeriod?: string
-    thirdValue?: string
-    thirdPeriod?: string
-    fourthValue?: string
-    fourthPeriod?: string
   }
 }

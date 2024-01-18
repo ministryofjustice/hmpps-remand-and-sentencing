@@ -109,4 +109,11 @@ declare module 'forms' {
   export interface OffenceTerrorRelatedForm {
     terrorRelated?: string
   }
+
+  export interface OffenceSentenceLengthForm {
+    'sentenceLength-years'?: string
+    'sentenceLength-months'?: string
+    'sentenceLength-weeks'?: string
+    'sentenceLength-days'?: string
+  }
 }

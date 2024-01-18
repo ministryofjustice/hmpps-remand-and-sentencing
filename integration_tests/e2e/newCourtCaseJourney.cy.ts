@@ -20,6 +20,7 @@ import CourtCaseWarrantUploadPage from '../pages/courtCaseWarrantUploadPage'
 import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
+import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -176,7 +177,10 @@ context('New Court Case journey', () => {
 
     // this is where sentence type would appear
 
-    // this is where sentence length would appear
+    const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
+    offenceSentenceLengthPage.yearsInput().type('4')
+    offenceSentenceLengthPage.monthsInput().type('5')
+    offenceSentenceLengthPage.button().click()
 
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()

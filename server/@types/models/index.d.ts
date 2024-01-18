@@ -35,5 +35,14 @@ declare module 'models' {
 
   export interface Sentence {
     countNumber?: string
+    custodialSentenceLength?: SentenceLength[]
+  }
+
+  export interface SentenceLength {
+    years?: string
+    months?: string
+    weeks?: string
+    days?: string
+    order: number
   }
 }

@@ -8,6 +8,7 @@ import type {
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
+  OffenceSentenceLengthForm,
   OffenceTerrorRelatedForm,
   ReviewOffencesForm,
 } from 'forms'
@@ -79,6 +80,12 @@ export default class OffenceRoutes {
         courtCaseReference,
         this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId, courtCaseReference),
       )
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+      if (warrantType === 'SENTENCING') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+        )
+      }
       this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
@@ -119,6 +126,12 @@ export default class OffenceRoutes {
       )
     }
     this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm.offenceOutcome)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    if (warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+      )
+    }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
@@ -151,6 +164,13 @@ export default class OffenceRoutes {
       courtCaseReference,
       lookupOffenceOutcomeForm.offenceOutcome,
     )
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    if (warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+      )
+    }
+
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
@@ -343,6 +363,64 @@ export default class OffenceRoutes {
 
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+    )
+  }
+
+  public getSentenceLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    return res.render('pages/offence/sentence-length', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
+      addOrEditCourtCase,
+    })
+  }
+
+  public submitSentenceLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const offenceSentenceLengthForm = trimForm<OffenceSentenceLengthForm>(req.body)
+    const sentenceLength = [
+      ...(offenceSentenceLengthForm['sentenceLength-years']
+        ? [
+            {
+              years: offenceSentenceLengthForm['sentenceLength-years'],
+            },
+          ]
+        : []),
+      ...(offenceSentenceLengthForm['sentenceLength-months']
+        ? [
+            {
+              months: offenceSentenceLengthForm['sentenceLength-months'],
+            },
+          ]
+        : []),
+      ...(offenceSentenceLengthForm['sentenceLength-weeks']
+        ? [
+            {
+              weeks: offenceSentenceLengthForm['sentenceLength-weeks'],
+            },
+          ]
+        : []),
+      ...(offenceSentenceLengthForm['sentenceLength-days']
+        ? [
+            {
+              days: offenceSentenceLengthForm['sentenceLength-days'],
+            },
+          ]
+        : []),
+    ].map((length, index) => {
+      return { order: index, ...length }
+    })
+    this.offenceService.setCustodialSentenceLength(req.session, nomsId, courtCaseReference, sentenceLength)
+
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
     )
   }
 

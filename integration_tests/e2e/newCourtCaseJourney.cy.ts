@@ -19,6 +19,7 @@ import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import CourtCaseWarrantUploadPage from '../pages/courtCaseWarrantUploadPage'
 import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
+import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -163,7 +164,9 @@ context('New Court Case journey', () => {
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.button().click()
 
-    // this is where terror related would appear
+    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
+    offenceTerrorRelatedPage.radioSelector('true').click()
+    offenceTerrorRelatedPage.button().click()
 
     const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
     offenceOffenceDatePage.dayDateInput('offence-start-date').type('12')

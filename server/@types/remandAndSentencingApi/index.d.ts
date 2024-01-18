@@ -78,6 +78,7 @@ export interface components {
       /** Format: date */
       offenceEndDate?: string
       outcome: string
+      terrorRelated?: boolean
     }
     CreateCourtAppearance: {
       courtCaseUuid?: string
@@ -132,6 +133,7 @@ export interface components {
       /** Format: date */
       offenceEndDate?: string
       outcome: string
+      terrorRelated?: boolean
     }
     CourtAppearance: {
       /** Format: uuid */
@@ -174,32 +176,32 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       number?: number
-      sort?: components['schemas']['SortObject']
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
+      sort?: components['schemas']['SortObject']
+      first?: boolean
+      last?: boolean
+      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
-      sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
-      /** Format: int32 */
-      pageNumber?: number
+      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
+      /** Format: int32 */
+      pageNumber?: number
       paged?: boolean
       unpaged?: boolean
     }
     SortObject: {
       empty?: boolean
-      unsorted?: boolean
       sorted?: boolean
+      unsorted?: boolean
     }
   }
   responses: never

@@ -30,6 +30,7 @@ const offenceToCreateCharge = (offence: Offence): CreateCharge => {
     offenceCode: offence.offenceCode,
     offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),
     outcome: offence.outcome,
+    ...(offence.terrorRelated !== undefined && { terrorRelated: offence.terrorRelated }),
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
   } as CreateCharge
 }
@@ -70,6 +71,7 @@ const chargeToOffence = (charge: Charge): Offence => {
     offenceCode: charge.offenceCode,
     outcome: charge.outcome,
     chargeUuid: charge.chargeUuid,
+    terrorRelated: charge.terrorRelated,
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
   } as Offence
 }

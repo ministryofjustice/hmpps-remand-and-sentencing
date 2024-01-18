@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import type {
   OffenceConfirmOffenceForm,
+  OffenceCountNumberForm,
   OffenceDeleteOffenceForm,
   OffenceLookupOffenceOutcomeForm,
   OffenceOffenceCodeForm,
@@ -152,6 +153,33 @@ export default class OffenceRoutes {
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
+    )
+  }
+
+  public getCountNumber: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const countNumber = this.offenceService.getCountNumber(req.session, nomsId, courtCaseReference)
+    const isFirstAppearance = appearanceReference === '0'
+    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    return res.render('pages/offence/count-number', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      isFirstAppearance,
+      courtCaseUniqueIdentifier,
+      addOrEditCourtCase,
+      countNumber,
+    })
+  }
+
+  public submitCountNumber: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const countNumberForm = trimForm<OffenceCountNumberForm>(req.body)
+    this.offenceService.setCountNumber(req.session, nomsId, courtCaseReference, countNumberForm.countNumber)
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     )
   }
 

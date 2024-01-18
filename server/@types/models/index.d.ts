@@ -29,5 +29,10 @@ declare module 'models' {
     offenceName?: string
     outcome?: string
     chargeUuid?: string
+    sentence?: Sentence
+  }
+
+  export interface Sentence {
+    countNumber?: string
   }
 }

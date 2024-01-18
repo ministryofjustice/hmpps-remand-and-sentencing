@@ -1,0 +1,41 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+
+
+{% set pageTitle = applicationName + " - Add a court case Count Number" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-count-number">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {% call govukFieldset({
+                    legend: {
+                        text: "Enter the count number",
+                        classes: "govuk-fieldset__legend--l",
+                        isPageHeading: true
+                    }
+                }) %}
+
+                   {{ govukInput({
+                        hint: {
+                            text: "You must enter it exactly as it is written on the warrant."
+                        },
+                        id: "count-number",
+                        name: "countNumber",
+                        classes: "govuk-input--width-5"
+                    }) }} 
+
+                {% endcall %}
+
+
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+{% endblock %}

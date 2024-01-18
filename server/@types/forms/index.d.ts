@@ -101,4 +101,8 @@ declare module 'forms' {
   export interface CourtCaseTaggedBailForm {
     taggedBail?: string
   }
+
+  export interface OffenceCountNumberForm {
+    countNumber?: string
+  }
 }

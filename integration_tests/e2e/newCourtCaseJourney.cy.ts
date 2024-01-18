@@ -18,6 +18,7 @@ import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHea
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import CourtCaseWarrantUploadPage from '../pages/courtCaseWarrantUploadPage'
 import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
+import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -150,10 +151,12 @@ context('New Court Case journey', () => {
       'Warrant date': '12 05 2023',
       'Overall case outcome': 'Sentencing outcome 1',
     })
-
-    // this is where count number would appear
-
     courtCaseCheckAnswersPage.button().click()
+
+    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.input().type('1')
+    offenceCountNumberPage.button().click()
+
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.button().click()

@@ -556,7 +556,11 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
-
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${courtAppearance.offences.length}/count-number`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${courtAppearance.offences.length}/offence-code`,
     )

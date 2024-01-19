@@ -88,7 +88,7 @@ context('New Court Case journey', () => {
     offenceOffenceDatePage.monthDateInput('offence-start-date').type('5')
     offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
     offenceOffenceDatePage.button().click()
-    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234')
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234', 'offences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
     const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
     courtCaseNextHearingSetPage.radioSelector('true').click()
@@ -182,7 +182,7 @@ context('New Court Case journey', () => {
     offenceSentenceLengthPage.monthsInput().type('5')
     offenceSentenceLengthPage.button().click()
 
-    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234')
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234', 'sentences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
     // this is where consecutive sentences would appear

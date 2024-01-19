@@ -6,6 +6,9 @@ import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPag
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
+import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
+import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
+import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
@@ -129,5 +132,47 @@ Cypress.Commands.add(
     const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
     offenceOffenceOutcomePage.radioSelector('Recall to Prison').click()
     offenceOffenceOutcomePage.button().click()
+  },
+)
+
+Cypress.Commands.add(
+  'createSentencedOffence',
+  (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
+    cy.visit(`/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`)
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.button().click()
+
+    cy.visit(
+      `/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/count-number`,
+    )
+    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.input().type('1')
+    offenceCountNumberPage.button().click()
+
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.button().click()
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.button().click()
+
+    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
+    offenceTerrorRelatedPage.radioSelector('true').click()
+    offenceTerrorRelatedPage.button().click()
+
+    const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage.dayDateInput('offence-start-date').type('12')
+    offenceOffenceDatePage.monthDateInput('offence-start-date').type('5')
+    offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
+    offenceOffenceDatePage.button().click()
+
+    const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+    offenceOffenceOutcomePage.radioSelector('Sentencing outcome 1').click()
+    offenceOffenceOutcomePage.button().click()
+
+    const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
+    offenceSentenceLengthPage.yearsInput().type('4')
+    offenceSentenceLengthPage.monthsInput().type('5')
+    offenceSentenceLengthPage.button().click()
   },
 )

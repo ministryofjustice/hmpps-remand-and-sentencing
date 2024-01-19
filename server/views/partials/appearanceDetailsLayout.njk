@@ -16,6 +16,8 @@
     </dl>
 {% endset %}
 
+{% set offenceSentence = 'sentences' if courtAppearance.warrantType === 'SENTENCING' else 'offences' %}
+
 {% block content %}
     
         {% if errors | length %}
@@ -68,13 +70,13 @@
                     ]
                 }) }}
                 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-                <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Offences</h2>
+                <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">{{offenceSentence | capitalize }}</h2>
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border offences-summary-card-content",
                     rows: [
                         {
                             key: {
-                                text: "Offences added"
+                                text: offenceSentence | capitalize + " added"
                             },
                             value: {
                                 text: courtAppearance.offences | length
@@ -85,7 +87,7 @@
                 }) }}
                 {% if courtAppearance.offences | length %}
                 {{ govukDetails({
-                    summaryText: "Show offences",
+                    summaryText: "Show " + offenceSentence,
                     html: offenceDetailHtml
                 }) }}
                 {% endif %}

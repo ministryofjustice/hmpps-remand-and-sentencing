@@ -1,12 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-<div class="offence-card">
-    <div class="offence-card-offence-details">
-        <h4 class="govuk-heading-s">{{ params.offenceCode }} {{ params.offenceName }}</h4>
-
-        {{ govukSummaryList({
-            classes: "govuk-summary-list--no-border",
-            rows: [
+{%- set summaryListRows=[
                 {
                     key: {
                         text: "Committed on"
@@ -23,7 +17,63 @@
                     text: params.outcome
                 }
                 }
-            ],
+            ]-%}
+
+{% if params.sentenceType %}
+    {% set summaryListRows = (summaryListRows.push({
+                    key: {
+                    text: "Sentence type"
+                },
+                    value: {
+                    text: params.sentenceType
+                }
+                }), summaryListRows)%}
+{% endif %}
+{% if params.custodialSentenceLength %}
+    {% set sentenceLengthValue = '' %}
+    {% for sentenceLength in params.custodialSentenceLength | sort(false,false,"order") %}
+        {% if sentenceLength.years %}
+            {% set sentenceLengthValue = sentenceLengthValue + ' ' + sentenceLength.years + ' years' %}
+        {% endif %}
+        {% if sentenceLength.months %}
+            {% set sentenceLengthValue = sentenceLengthValue + ' ' + sentenceLength.months + ' months' %}
+        {% endif %}
+        {% if sentenceLength.weeks %}
+            {% set sentenceLengthValue = sentenceLengthValue + ' ' + sentenceLength.weeks + ' weeks' %}
+        {% endif %}
+        {% if sentenceLength.days %}
+            {% set sentenceLengthValue = sentenceLengthValue + ' ' + sentenceLength.days + ' days' %}
+        {% endif %}
+    {%endfor %}
+
+    {% set summaryListRows = (summaryListRows.push({
+                    key: {
+                    text: "Sentence length"
+                },
+                    value: {
+                    text: sentenceLengthValue
+                }
+                }), summaryListRows)%}
+{% endif %}
+
+<div class="offence-card {% if params.isSentenced %} sentence-card {% endif %}">
+    <div class="offence-card-offence-details">
+        {% if params.countNumber %}
+            <span class="govuk-body-s">Count {{ params.countNumber }}</span>
+        {% endif %}
+        <h4 class="govuk-heading-s">
+            {{ params.offenceCode }} {{ params.offenceName }}
+            {% if params.terrorRelated %}
+                <br>
+                <strong class="govuk-tag govuk-!-margin-top-2">
+                    Terror-related
+                </strong>
+            {% endif %}    
+        </h4>
+
+        {{ govukSummaryList({
+            classes: "govuk-summary-list--no-border",
+            rows: summaryListRows,
             attributes: {
                 "data-qa": "offenceSummaryList"
             }

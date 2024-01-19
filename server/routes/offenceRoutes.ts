@@ -491,6 +491,12 @@ export default class OffenceRoutes {
   public addAnotherOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    if (warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/count-number`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     )
@@ -523,7 +529,9 @@ export default class OffenceRoutes {
     const deleteOffenceForm = trimForm<OffenceDeleteOffenceForm>(req.body)
     if (deleteOffenceForm.deleteOffence === 'true') {
       this.courtAppearanceService.deleteOffence(req.session, nomsId, courtCaseReference, parseInt(offenceReference, 10))
-      req.flash('infoBanner', 'Offence deleted')
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+      const sentenceOffence = warrantType === 'SENTENCING' ? 'Sentence' : 'Offence'
+      req.flash('infoBanner', `${sentenceOffence} deleted`)
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
@@ -575,8 +583,10 @@ export default class OffenceRoutes {
       parseInt(offenceReference, 10),
       offence,
     )
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const sentenceOffence = warrantType === 'SENTENCING' ? 'sentence' : 'offence'
     if (offencePersistType === OffencePersistType.CREATED) {
-      req.flash('infoBanner', 'New offence added')
+      req.flash('infoBanner', `New ${sentenceOffence} added`)
     } else if (offencePersistType === OffencePersistType.EDITED) {
       req.flash('infoBanner', 'Changes successfully made')
     }

@@ -6,6 +6,7 @@
 
 {% set pageTitle = applicationName + " - Check offences" %}
 
+{% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
 {% block content %}
 
     <div class="govuk-grid-row govuk-!-margin-top-4">
@@ -21,9 +22,9 @@
             {% include "../../partials/offenceCaption.njk" %}
             <h1 class="govuk-heading-l">
                 {% if addOrEditCourtCase === 'edit-court-case' %}
-                    Edit the offence details for this appearance
+                    Edit the {{ offenceSentence }} details for this appearance
                 {% else %}
-                    You have added {{ courtAppearance.offences | length }} offences to case {{ courtAppearance.caseReferenceNumber }} 
+                    You have added {{ courtAppearance.offences | length }} {{ offenceSentence }}s to case {{ courtAppearance.caseReferenceNumber }} 
                 {% endif %}
                 </h1>
             {{ govukSummaryList({
@@ -44,11 +45,19 @@
                             value: {
                             text: courtAppearance.warrantDate | formatDate
                         }
+                        },
+                        {
+                            key: {
+                            text: "Warrant type"
+                        },
+                            value: {
+                            text: courtAppearance.warrantType | capitalize
+                        }
                         }
                     ]
                 }) 
             }}
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Offences added</h2>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">{{ offenceSentence | capitalize }}s added</h2>
 
             {% for offence in courtAppearance.offences %}
                 {{
@@ -58,10 +67,14 @@
                         offenceStartDate: offence.offenceStartDate,
                         offenceEndDate: offence.offenceEndDate,
                         outcome: offence.outcome,
+                        countNumber: offence.sentence.countNumber,
+                        terrorRelated: offence.terrorRelated,
+                        isSentenced: offence.sentence,
+                        custodialSentenceLength: offence.sentence.custodialSentenceLength,
                         actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/offence-code",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + ("/count-number" if courtAppearance.warrantType === "SENTENCING" else "/offence-code"  ),
                                     text: "Edit",
                                     visuallyHiddenText: "edit offence"
                                 },

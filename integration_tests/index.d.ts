@@ -19,5 +19,11 @@ declare namespace Cypress {
       appearanceReference: string,
       offenceReference: string,
     ): Chainable<AUTWindow>
+    createSentencedOffence(
+      personId: string,
+      courtCaseReference: string,
+      appearanceReference: string,
+      offenceReference: string,
+    ): Chainable<AUTWindow>
   }
 }

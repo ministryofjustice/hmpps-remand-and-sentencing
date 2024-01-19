@@ -4,9 +4,11 @@ import { Response } from 'superagent'
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 
-const createToken = (username: string, authorities: string[]) => {
+const createToken = (roles: string[] = []) => {
+  // authorities in the session are always prefixed by ROLE.
+  const authorities = roles.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`))
   const payload = {
-    user_name: username,
+    user_name: 'USER1',
     scope: ['read'],
     auth_source: 'nomis',
     authorities,
@@ -61,7 +63,7 @@ const redirect = () =>
         'Content-Type': 'text/html',
         Location: 'http://127.0.0.1:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
-      body: '<html><body>SignIn page<h1>Sign in</h1></body></html>',
+      body: '<html><body>Sign in page<h1>Sign in</h1></body></html>',
     },
   })
 
@@ -76,11 +78,26 @@ const signOut = () =>
       headers: {
         'Content-Type': 'text/html',
       },
-      body: '<html><body>SignIn page<h1>Sign in</h1></body></html>',
+      body: '<html><body>Sign in page<h1>Sign in</h1></body></html>',
     },
   })
 
-const token = (username = 'USER1', authorities = ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']) =>
+const manageDetails = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/auth/account-details.*',
+    },
+    response: {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html',
+      },
+      body: '<html><body><h1>Your account details</h1></body></html>',
+    },
+  })
+
+const token = (roles: string[] = ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']) =>
   stubFor({
     request: {
       method: 'POST',
@@ -93,9 +110,9 @@ const token = (username = 'USER1', authorities = ['ROLE_REMAND_AND_SENTENCING', 
         Location: 'http://127.0.0.1:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createToken(username, authorities),
+        access_token: createToken(roles),
         token_type: 'bearer',
-        user_name: username,
+        user_name: 'USER1',
         expires_in: 599,
         scope: 'read',
         internalUser: true,
@@ -105,8 +122,8 @@ const token = (username = 'USER1', authorities = ['ROLE_REMAND_AND_SENTENCING', 
 export default {
   getSignInUrl,
   stubAuthPing: ping,
-  stubSignIn: (): Promise<[Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), token(), tokenVerification.stubVerifyToken()]),
-  stubToken: ({ username, authorities }: { username?: string; authorities?: string[] }): Promise<Response> =>
-    token(username, authorities),
+  stubAuthManageDetails: manageDetails,
+  stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), token(roles), tokenVerification.stubVerifyToken()]),
+  stubToken: ({ roles }: { roles?: string[] }): Promise<Response> => token(roles),
 }

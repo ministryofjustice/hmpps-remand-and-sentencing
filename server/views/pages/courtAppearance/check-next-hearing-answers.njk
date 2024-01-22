@@ -9,13 +9,7 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-                <span class="govuk-caption-l">
-                    {% if isFirstAppearance %}
-                        Add a court case
-                        {% else %}
-                        Add an appearance to court case {{courtCaseUniqueIdentifier}}
-                    {% endif %}
-                </span>
+                {% include "../../partials/appearanceCaption.njk" %}
                 <h1 class="govuk-heading-l">Check your answers</h1>
                 <h2 class="govuk-heading-m">Next hearing details</h2>
 

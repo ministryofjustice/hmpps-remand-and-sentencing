@@ -78,16 +78,13 @@ export default class CourtCaseRoutes {
     if (submitToCheckAnswers) {
       caseReferenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId, courtCaseReference)
     }
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/reference', {
       nomsId,
       submitToCheckAnswers,
       caseReferenceNumber,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -116,14 +113,12 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
     const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/select-reference', {
       nomsId,
       submitToCheckAnswers,
       lastCaseReferenceNumber: lastSavedAppearance.caseReferenceNumber,
       courtCaseReference,
       appearanceReference,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -164,8 +159,7 @@ export default class CourtCaseRoutes {
         warrantDateYear = warrantDate.getFullYear()
       }
     }
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/warrant-date', {
       nomsId,
       submitToCheckAnswers,
@@ -174,8 +168,6 @@ export default class CourtCaseRoutes {
       warrantDateYear,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -210,14 +202,12 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
     const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/select-court-name', {
       nomsId,
       submitToCheckAnswers,
       lastCourtName: lastSavedAppearance.nextHearingCourtName,
       courtCaseReference,
       appearanceReference,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -251,16 +241,13 @@ export default class CourtCaseRoutes {
     if (submitToCheckAnswers) {
       courtName = this.courtAppearanceService.getCourtName(req.session, nomsId, courtCaseReference)
     }
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/court-name', {
       nomsId,
       submitToCheckAnswers,
       courtName,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -288,16 +275,13 @@ export default class CourtCaseRoutes {
     if (submitToCheckAnswers) {
       warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
     }
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/warrant-type', {
       nomsId,
       submitToCheckAnswers,
       warrantType,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -321,15 +305,12 @@ export default class CourtCaseRoutes {
   public getWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/warrant-upload', {
       nomsId,
       submitToCheckAnswers,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -364,16 +345,13 @@ export default class CourtCaseRoutes {
     )
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
     const topCaseOutcomes = this.caseOutcomeService.getTopCaseOutcomes(warrantType)
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/overall-case-outcome', {
       nomsId,
       submitToCheckAnswers,
       overallCaseOutcome,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
       topCaseOutcomes,
     })
@@ -406,15 +384,12 @@ export default class CourtCaseRoutes {
 
   public getLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
     return res.render('pages/courtAppearance/lookup-case-outcome', {
       nomsId,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
       warrantType,
     })
@@ -447,8 +422,7 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/case-outcome-applied-all', {
       nomsId,
       submitToCheckAnswers,
@@ -456,8 +430,6 @@ export default class CourtCaseRoutes {
       caseOutcomeAppliedAll,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -502,16 +474,13 @@ export default class CourtCaseRoutes {
     if (submitToCheckAnswers) {
       taggedBail = this.courtAppearanceService.getTaggedBail(req.session, nomsId, courtCaseReference)
     }
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/tagged-bail', {
       nomsId,
       submitToCheckAnswers,
       taggedBail,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -529,22 +498,17 @@ export default class CourtCaseRoutes {
 
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const courtCase = this.courtCaseService.getSessionCourtCase(req.session, nomsId, courtCaseReference)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
       courtCaseReference,
     )
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/check-answers', {
       nomsId,
-      courtCase,
       courtAppearance,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -569,15 +533,12 @@ export default class CourtCaseRoutes {
   public getNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const nextHearingSelect = this.courtAppearanceService.getNextHearingSelect(req.session, nomsId, courtCaseReference)
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/next-hearing-select', {
       nomsId,
       nextHearingSelect,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -604,16 +565,13 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
     const nextHearingType = this.courtAppearanceService.getNextHearingType(req.session, nomsId, courtCaseReference)
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/next-hearing-type', {
       nomsId,
       nextHearingType,
       courtCaseReference,
       appearanceReference,
       submitToCheckAnswers,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -642,16 +600,13 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
     const nextHearingDate = this.courtAppearanceService.getNextHearingDate(req.session, nomsId, courtCaseReference)
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/next-hearing-date', {
       nomsId,
       nextHearingDate,
       courtCaseReference,
       appearanceReference,
       submitToCheckAnswers,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -695,16 +650,13 @@ export default class CourtCaseRoutes {
       courtCaseReference,
     )
     const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId, courtCaseReference)
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/next-hearing-court-select', {
       nomsId,
       nextHearingCourtSelect,
       courtName,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -736,15 +688,12 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/next-hearing-court-name', {
       nomsId,
       nextHearingCourtName,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }
@@ -770,15 +719,12 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
     )
-    const isFirstAppearance = appearanceReference === '0'
-    const courtCaseUniqueIdentifier = this.courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+
     return res.render('pages/courtAppearance/check-next-hearing-answers', {
       nomsId,
       courtAppearance,
       courtCaseReference,
       appearanceReference,
-      isFirstAppearance,
-      courtCaseUniqueIdentifier,
       addOrEditCourtCase,
     })
   }

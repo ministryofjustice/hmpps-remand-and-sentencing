@@ -10,13 +10,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-reference{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <span class="govuk-caption-l">
-                    {% if isFirstAppearance %}
-                        Add a court case
-                        {% else %}
-                        Add an appearance to court case {{courtCaseUniqueIdentifier}}
-                    {% endif %}
-                </span>
+                {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukInput({
                     label: {
                         text: "Enter the court case reference number",

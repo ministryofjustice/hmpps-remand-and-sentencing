@@ -21,10 +21,10 @@
             
             {% include "../../partials/offenceCaption.njk" %}
             <h1 class="govuk-heading-l">
-                {% if addOrEditCourtCase === 'edit-court-case' %}
-                    Edit the {{ offenceSentence }} details for this appearance
-                {% else %}
+                {% if isAddCourtCase %}
                     You have added {{ courtAppearance.offences | length }} {{ offenceSentence }}s to case {{ courtAppearance.caseReferenceNumber }} 
+                {% else %}
+                    Edit the {{ offenceSentence }} details for this appearance
                 {% endif %}
                 </h1>
             {{ govukSummaryList({

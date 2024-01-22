@@ -21,6 +21,7 @@ import routes from './routes'
 import type { Services } from './services'
 import setupPrisonerDetails from './middleware/setUpPrisonerDetails'
 import setupCurrentCourtAppearance from './middleware/setUpCurrentCourtAppearance'
+import setupCurrentCourtCase from './middleware/setUpCurrentCourtCase'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -41,6 +42,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
   app.use('/person/:nomsId', setupPrisonerDetails(services.remandAndSentencingService))
+  app.use('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference', setupCurrentCourtCase(services.courtCaseService))
   app.use(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences',
     setupCurrentCourtAppearance(services.courtAppearanceService),

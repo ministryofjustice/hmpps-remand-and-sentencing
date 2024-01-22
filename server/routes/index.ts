@@ -32,7 +32,6 @@ export default function routes(services: Services): Router {
     services.offenceService,
     services.manageOffencesService,
     services.courtAppearanceService,
-    services.courtCaseService,
     services.caseOutcomeService,
   )
 

@@ -20,7 +20,6 @@ export default function routes(services: Services): Router {
     router.post(path, upload.single('warrantUpload'), asyncMiddleware(handler))
 
   const courtCaseRoutes = new CourtCaseRoutes(
-    services.courtCaseService,
     services.courtAppearanceService,
     services.remandAndSentencingService,
     services.manageOffencesService,
@@ -33,6 +32,7 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.courtAppearanceService,
     services.caseOutcomeService,
+    services.remandAndSentencingService,
   )
 
   get('/', (req, res, next) => {

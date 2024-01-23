@@ -15,7 +15,7 @@
             
             <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Offences</h2>
 
-            {% for offence in courtAppearance.offences %}
+            {% for offence in latestCourtAppearance.charges %}
                 {{
                     offenceCard({
                         offenceCode: offence.offenceCode,

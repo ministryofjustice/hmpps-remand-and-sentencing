@@ -6,9 +6,6 @@ import {
   CreateCourtAppearance,
   CreateCourtCase,
   CreateNextCourtAppearance,
-  NextCourtAppearance,
-  PageCourtCaseAppearance,
-  PageCourtCaseContent,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 const courtAppearanceToCreateNextCourtAppearance = (
@@ -65,7 +62,7 @@ export const courtCaseToCreateCourtCase = (prisonerId: string, courtCase: CourtC
   } as CreateCourtCase
 }
 
-const chargeToOffence = (charge: Charge): Offence => {
+export const chargeToOffence = (charge: Charge): Offence => {
   return {
     offenceStartDate: dayjs(charge.offenceStartDate).toDate(),
     offenceCode: charge.offenceCode,
@@ -74,51 +71,4 @@ const chargeToOffence = (charge: Charge): Offence => {
     terrorRelated: charge.terrorRelated,
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
   } as Offence
-}
-
-const nextCourtAppearanceToCourtAppearance = (
-  nextCourtAppearance?: NextCourtAppearance,
-): CourtAppearance | undefined => {
-  let nextHearing
-  if (nextCourtAppearance) {
-    nextHearing = {
-      nextHearingCourtSelect: true,
-      nextHearingCourtName: nextCourtAppearance.courtCode,
-      nextHearingSelect: true,
-      nextHearingType: nextCourtAppearance.appearanceType,
-      nextHearingDate: dayjs(nextCourtAppearance.appearanceDate).toDate(),
-    } as CourtAppearance
-  }
-  return nextHearing
-}
-
-const pageCourtAppearanceContentToCourtAppearance = (
-  pageCourtCaseAppearance: PageCourtCaseAppearance,
-): CourtAppearance => {
-  const offences = pageCourtCaseAppearance.charges.map(charge => chargeToOffence(charge))
-  const uniqueOutcomes = [...new Set(pageCourtCaseAppearance.charges.map(charge => charge.outcome))]
-  const caseOutcomeAppliedAll = uniqueOutcomes.length === 1 && uniqueOutcomes[0] === pageCourtCaseAppearance.outcome
-  const nextHearing = nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance)
-  return {
-    caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
-    warrantDate: dayjs(pageCourtCaseAppearance.appearanceDate).toDate(),
-    courtName: pageCourtCaseAppearance.courtCode,
-    overallCaseOutcome: pageCourtCaseAppearance.outcome,
-    warrantType: pageCourtCaseAppearance.warrantType,
-    warrantId: pageCourtCaseAppearance.warrantId,
-    taggedBail: pageCourtCaseAppearance.taggedBail,
-    caseOutcomeAppliedAll,
-    offences,
-    ...nextHearing,
-  } as CourtAppearance
-}
-
-export const pageCourtCaseContentToCourtCase = (pageCourtCase: PageCourtCaseContent): CourtCase => {
-  const appearances = pageCourtCase.appearances.map(pageAppearance =>
-    pageCourtAppearanceContentToCourtAppearance(pageAppearance),
-  )
-  return {
-    uniqueIdentifier: pageCourtCase.courtCaseUuid,
-    appearances,
-  } as CourtCase
 }

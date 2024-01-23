@@ -21,6 +21,8 @@ import CourtAppearanceService from '../services/courtAppearanceService'
 import validate from '../validation/validation'
 import OffencePersistType from '../@types/models/OffencePersistType'
 import CaseOutcomeService from '../services/caseOutcomeService'
+import RemandAndSentencingService from '../services/remandAndSentencingService'
+import { chargeToOffence } from '../utils/mappingUtils'
 
 export default class OffenceRoutes {
   constructor(
@@ -28,6 +30,7 @@ export default class OffenceRoutes {
     private readonly manageOffencesService: ManageOffencesService,
     private readonly courtAppearanceService: CourtAppearanceService,
     private readonly caseOutcomeService: CaseOutcomeService,
+    private readonly remandAndSentencingService: RemandAndSentencingService,
   ) {}
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -481,15 +484,18 @@ export default class OffenceRoutes {
 
   public getReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+      req.user.token,
+      courtCaseReference,
+    )
     const offenceMap = await this.manageOffencesService.getOffenceMap(
-      Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode))),
+      Array.from(new Set(latestCourtAppearance.charges.map(offence => offence.offenceCode))),
       req.user.token,
     )
     return res.render('pages/offence/review-offences', {
       nomsId,
       courtCaseReference,
-      courtAppearance,
+      latestCourtAppearance,
       appearanceReference,
       addOrEditCourtCase,
       offenceMap,
@@ -498,6 +504,14 @@ export default class OffenceRoutes {
 
   public submitReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+      req.user.token,
+      courtCaseReference,
+    )
+    latestCourtAppearance.charges
+      .map(charge => chargeToOffence(charge))
+      .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))
+
     const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)
     if (reviewOffenceForm.changeOffence === 'true') {
       return res.redirect(

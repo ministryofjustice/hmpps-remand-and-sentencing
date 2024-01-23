@@ -32,6 +32,7 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.courtAppearanceService,
     services.caseOutcomeService,
+    services.remandAndSentencingService,
   )
 
   get('/', (req, res, next) => {

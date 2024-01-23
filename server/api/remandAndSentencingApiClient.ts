@@ -4,6 +4,7 @@ import {
   CreateCourtCase,
   CreateCourtCaseResponse,
   PageCourtCase,
+  PageCourtCaseAppearance,
   RemandAndSentencingPerson,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config, { ApiConfig } from '../config'
@@ -48,5 +49,11 @@ export default class RemandAndSentencingApiClient {
       data: createCourtAppearance,
       path: '/court-appearance',
     })) as unknown as Promise<CreateCourtAppearanceResponse>
+  }
+
+  async getLatestAppearanceByCourtCaseUuid(courtCaseUuid: string): Promise<PageCourtCaseAppearance> {
+    return (await this.restClient.get({
+      path: `/court-case/${courtCaseUuid}/latest-appearance`,
+    })) as unknown as Promise<PageCourtCaseAppearance>
   }
 }

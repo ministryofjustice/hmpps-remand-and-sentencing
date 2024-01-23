@@ -64,19 +64,15 @@ export default class OffenceRoutes {
       })
       this.offenceService.setOffenceEndDate(req.session, nomsId, courtCaseReference, offenceEndDate.toDate())
     }
-    const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
     if (caseOutcomeAppliedAll) {
       this.offenceService.setOffenceOutcome(
         req.session,
         nomsId,
         courtCaseReference,
-        this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId, courtCaseReference),
+        this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId),
       )
-      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
       if (warrantType === 'SENTENCING') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
@@ -97,7 +93,7 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const offenceOutcome = this.offenceService.getOffenceOutcome(req.session, nomsId, courtCaseReference)
 
-    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const topCaseOutcomes = this.caseOutcomeService.getTopCaseOutcomes(warrantType)
     return res.render('pages/offence/offence-outcome', {
       nomsId,
@@ -119,7 +115,7 @@ export default class OffenceRoutes {
       )
     }
     this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm.offenceOutcome)
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
@@ -154,7 +150,7 @@ export default class OffenceRoutes {
       courtCaseReference,
       lookupOffenceOutcomeForm.offenceOutcome,
     )
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
@@ -260,11 +256,7 @@ export default class OffenceRoutes {
     this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, offenceCode)
     this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, offenceName)
 
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
     if (courtAppearance.warrantType === 'SENTENCING') {
       return res.redirect(
@@ -299,11 +291,7 @@ export default class OffenceRoutes {
     const confirmOffenceForm = trimForm<OffenceConfirmOffenceForm>(req.body)
     this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, confirmOffenceForm.offenceCode)
     this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, confirmOffenceForm.offenceName)
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
     if (courtAppearance.warrantType === 'SENTENCING') {
       return res.redirect(
@@ -432,11 +420,7 @@ export default class OffenceRoutes {
 
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
     const offenceMap = await this.manageOffencesService.getOffenceMap(
       Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode))),
@@ -456,7 +440,7 @@ export default class OffenceRoutes {
   public addAnotherOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/count-number`,
@@ -469,12 +453,7 @@ export default class OffenceRoutes {
 
   public getDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
-    const offence = this.courtAppearanceService.getOffence(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      parseInt(offenceReference, 10),
-    )
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10))
 
     return res.render('pages/offence/delete-offence', {
       nomsId,
@@ -490,8 +469,8 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const deleteOffenceForm = trimForm<OffenceDeleteOffenceForm>(req.body)
     if (deleteOffenceForm.deleteOffence === 'true') {
-      this.courtAppearanceService.deleteOffence(req.session, nomsId, courtCaseReference, parseInt(offenceReference, 10))
-      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+      this.courtAppearanceService.deleteOffence(req.session, nomsId, parseInt(offenceReference, 10))
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
       const sentenceOffence = warrantType === 'SENTENCING' ? 'Sentence' : 'Offence'
       req.flash('infoBanner', `${sentenceOffence} deleted`)
     }
@@ -502,11 +481,7 @@ export default class OffenceRoutes {
 
   public getReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const offenceMap = await this.manageOffencesService.getOffenceMap(
       Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode))),
       req.user.token,
@@ -539,11 +514,10 @@ export default class OffenceRoutes {
     const offencePersistType = this.courtAppearanceService.addOffence(
       req.session,
       nomsId,
-      courtCaseReference,
       parseInt(offenceReference, 10),
       offence,
     )
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const sentenceOffence = warrantType === 'SENTENCING' ? 'sentence' : 'offence'
     if (offencePersistType === OffencePersistType.CREATED) {
       req.flash('infoBanner', `New ${sentenceOffence} added`)

@@ -1,7 +1,6 @@
 import { dataAccess } from '../data'
 import UserService from './userService'
 import PrisonerService from './prisonerService'
-import CourtCaseService from './courtCaseService'
 import OffenceService from './offenceService'
 import ManageOffencesService from './manageOffencesService'
 import FeComponentsService from './feComponentsService'
@@ -17,8 +16,6 @@ export const services = () => {
 
   const prisonerService = new PrisonerService()
 
-  const courtCaseService = new CourtCaseService()
-
   const offenceService = new OffenceService()
 
   const manageOffencesService = new ManageOffencesService()
@@ -27,7 +24,7 @@ export const services = () => {
 
   const remandAndSentencingService = new RemandAndSentencingService()
 
-  const courtAppearanceService = new CourtAppearanceService(courtCaseService)
+  const courtAppearanceService = new CourtAppearanceService()
 
   const documentManagementService = new DocumentManagementService(hmppsAuthClient)
 
@@ -37,7 +34,6 @@ export const services = () => {
     applicationInfo,
     userService,
     prisonerService,
-    courtCaseService,
     offenceService,
     manageOffencesService,
     feComponentsService,

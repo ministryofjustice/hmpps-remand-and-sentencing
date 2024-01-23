@@ -1,10 +1,9 @@
 import { RequestHandler } from 'express'
-import CourtCaseService from '../services/courtCaseService'
 
-export default function setupCurrentCourtCase(courtCaseService: CourtCaseService): RequestHandler {
+export default function setupCurrentCourtCase(): RequestHandler {
   return async (req, res, next) => {
-    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
-    res.locals.courtCaseUniqueIdentifier = courtCaseService.getUniqueIdentifier(req.session, nomsId, courtCaseReference)
+    const { courtCaseReference, addOrEditCourtCase } = req.params
+    res.locals.courtCaseUniqueIdentifier = courtCaseReference
     res.locals.isAddCourtCase = addOrEditCourtCase === 'add-court-case'
     next()
   }

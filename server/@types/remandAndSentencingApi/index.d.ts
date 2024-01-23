@@ -49,6 +49,13 @@ export interface paths {
      */
     get: operations['getPersonDetails']
   }
+  '/court-case/{courtCaseUuid}/latest-appearance': {
+    /**
+     * Retrieve latest court appearance of court case
+     * @description This endpoint will retrieve latest court appearance of court case
+     */
+    get: operations['getLatestAppearanceDetails']
+  }
   '/court-case/search': {
     /**
      * Retrieve all court cases for person
@@ -175,16 +182,16 @@ export interface components {
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
-      number?: number
-      /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
+      /** Format: int32 */
+      number?: number
       sort?: components['schemas']['SortObject']
-      first?: boolean
-      last?: boolean
-      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
+      last?: boolean
+      first?: boolean
       empty?: boolean
     }
     PageableObject: {
@@ -463,6 +470,43 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['PersonDetails']
+        }
+      }
+    }
+  }
+  /**
+   * Retrieve latest court appearance of court case
+   * @description This endpoint will retrieve latest court appearance of court case
+   */
+  getLatestAppearanceDetails: {
+    parameters: {
+      path: {
+        courtCaseUuid: string
+      }
+    }
+    responses: {
+      /** @description Returns latest appearance details */
+      200: {
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+      /** @description Not found if no court case at uuid */
+      404: {
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
         }
       }
     }

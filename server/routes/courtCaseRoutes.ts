@@ -17,12 +17,10 @@ import type {
   CourtCaseTaggedBailForm,
 } from 'forms'
 import dayjs from 'dayjs'
-import type { CourtAppearance } from 'models'
+import type { CourtAppearance, CourtCase } from 'models'
 import trimForm from '../utils/trim'
-import CourtCaseService from '../services/courtCaseService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
-import { pageCourtCaseContentToCourtCase } from '../utils/mappingUtils'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
 import { getAsStringOrDefault } from '../utils/utils'
@@ -31,7 +29,6 @@ import CaseOutcomeService from '../services/caseOutcomeService'
 
 export default class CourtCaseRoutes {
   constructor(
-    private readonly courtCaseService: CourtCaseService,
     private readonly courtAppearanceService: CourtAppearanceService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly manageOffencesService: ManageOffencesService,
@@ -54,13 +51,7 @@ export default class CourtCaseRoutes {
       .flat()
     const offenceMap = await this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token)
 
-    // temporary until backend is fully integrated, remove after
-    this.courtCaseService.addAllCourtCasesToSession(
-      req.session,
-      nomsId,
-      courtCases.content.map(courtCase => pageCourtCaseContentToCourtCase(courtCase)),
-    )
-    const newCourtCaseId = this.courtCaseService.getNewSessionCourtCaseId(req.session, nomsId)
+    const newCourtCaseId = courtCases.totalElements
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
@@ -76,7 +67,7 @@ export default class CourtCaseRoutes {
     const { submitToCheckAnswers } = req.query
     let caseReferenceNumber: string
     if (submitToCheckAnswers) {
-      caseReferenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId, courtCaseReference)
+      caseReferenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId)
     }
 
     return res.render('pages/courtAppearance/reference', {
@@ -92,12 +83,7 @@ export default class CourtCaseRoutes {
   public submitReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const referenceForm = trimForm<CourtCaseReferenceForm>(req.body)
-    this.courtAppearanceService.setCaseReferenceNumber(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      referenceForm.referenceNumber,
-    )
+    this.courtAppearanceService.setCaseReferenceNumber(req.session, nomsId, referenceForm.referenceNumber)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -112,11 +98,14 @@ export default class CourtCaseRoutes {
   public getSelectReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
+    const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+      req.user.token,
+      courtCaseReference,
+    )
     return res.render('pages/courtAppearance/select-reference', {
       nomsId,
       submitToCheckAnswers,
-      lastCaseReferenceNumber: lastSavedAppearance.caseReferenceNumber,
+      lastCaseReferenceNumber: latestCourtAppearance.courtCaseReference,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
@@ -127,13 +116,11 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const referenceForm = trimForm<CourtCaseSelectReferenceForm>(req.body)
     if (referenceForm.referenceNumberSelect === 'true') {
-      const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
-      this.courtAppearanceService.setCaseReferenceNumber(
-        req.session,
-        nomsId,
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        req.user.token,
         courtCaseReference,
-        lastSavedAppearance.caseReferenceNumber,
       )
+      this.courtAppearanceService.setCaseReferenceNumber(req.session, nomsId, latestCourtAppearance.courtCaseReference)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
       )
@@ -152,7 +139,7 @@ export default class CourtCaseRoutes {
     let warrantDateMonth: number
     let warrantDateYear: number
     if (submitToCheckAnswers) {
-      const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId, courtCaseReference)
+      const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId)
       if (warrantDate) {
         warrantDateDay = warrantDate.getDate()
         warrantDateMonth = warrantDate.getMonth() + 1
@@ -180,18 +167,23 @@ export default class CourtCaseRoutes {
       month: warrantDateForm['warrantDate-month'] - 1,
       day: warrantDateForm['warrantDate-day'],
     })
-    this.courtAppearanceService.setWarrantDate(req.session, nomsId, courtCaseReference, warrantDate.toDate())
+    this.courtAppearanceService.setWarrantDate(req.session, nomsId, warrantDate.toDate())
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
       )
     }
-    const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
-    if (lastSavedAppearance.nextHearingCourtName) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/select-court-name`,
+    if (addOrEditCourtCase === 'edit-court-case') {
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        req.user.token,
+        courtCaseReference,
       )
+      if (latestCourtAppearance.nextCourtAppearance?.courtCode) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/select-court-name`,
+        )
+      }
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/court-name`,
@@ -201,11 +193,14 @@ export default class CourtCaseRoutes {
   public getSelectCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
+    const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+      req.user.token,
+      courtCaseReference,
+    )
     return res.render('pages/courtAppearance/select-court-name', {
       nomsId,
       submitToCheckAnswers,
-      lastCourtName: lastSavedAppearance.nextHearingCourtName,
+      lastCourtName: latestCourtAppearance.nextCourtAppearance?.courtCode,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
@@ -216,12 +211,14 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const referenceForm = trimForm<CourtCaseSelectCourtNameForm>(req.body)
     if (referenceForm.courtNameSelect === 'true') {
-      const lastSavedAppearance = this.courtCaseService.getLastSavedAppearance(req.session, nomsId, courtCaseReference)
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        req.user.token,
+        courtCaseReference,
+      )
       this.courtAppearanceService.setCourtName(
         req.session,
         nomsId,
-        courtCaseReference,
-        lastSavedAppearance.nextHearingCourtName,
+        latestCourtAppearance.nextCourtAppearance?.courtCode,
       )
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`,
@@ -239,7 +236,7 @@ export default class CourtCaseRoutes {
     const { submitToCheckAnswers } = req.query
     let courtName: string
     if (submitToCheckAnswers) {
-      courtName = this.courtAppearanceService.getCourtName(req.session, nomsId, courtCaseReference)
+      courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
     }
 
     return res.render('pages/courtAppearance/court-name', {
@@ -256,7 +253,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const courtNameForm = trimForm<CourtCaseCourtNameForm>(req.body)
 
-    this.courtAppearanceService.setCourtName(req.session, nomsId, courtCaseReference, courtNameForm.courtName)
+    this.courtAppearanceService.setCourtName(req.session, nomsId, courtNameForm.courtName)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -273,7 +270,7 @@ export default class CourtCaseRoutes {
     const { submitToCheckAnswers } = req.query
     let warrantType: string
     if (submitToCheckAnswers) {
-      warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+      warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     }
 
     return res.render('pages/courtAppearance/warrant-type', {
@@ -290,7 +287,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const warrantTypeForm = trimForm<CourtCaseWarrantTypeForm>(req.body)
 
-    this.courtAppearanceService.setWarrantType(req.session, nomsId, courtCaseReference, warrantTypeForm.warrantType)
+    this.courtAppearanceService.setWarrantType(req.session, nomsId, warrantTypeForm.warrantType)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -322,7 +319,7 @@ export default class CourtCaseRoutes {
 
     if (req.file) {
       const warrantId = await this.documentManagementService.uploadWarrant(nomsId, req.file, username, activeCaseLoadId)
-      this.courtAppearanceService.setWarrantId(req.session, nomsId, courtCaseReference, warrantId)
+      this.courtAppearanceService.setWarrantId(req.session, nomsId, warrantId)
     }
 
     if (submitToCheckAnswers) {
@@ -338,12 +335,8 @@ export default class CourtCaseRoutes {
   public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
-    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
+    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const topCaseOutcomes = this.caseOutcomeService.getTopCaseOutcomes(warrantType)
 
     return res.render('pages/courtAppearance/overall-case-outcome', {
@@ -365,12 +358,7 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/lookup-case-outcome`,
       )
     }
-    this.courtAppearanceService.setOverallCaseOutcome(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      overallCaseOutcomeForm.overallCaseOutcome,
-    )
+    this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, overallCaseOutcomeForm.overallCaseOutcome)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -385,7 +373,7 @@ export default class CourtCaseRoutes {
   public getLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
 
-    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, courtCaseReference)
+    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     return res.render('pages/courtAppearance/lookup-case-outcome', {
       nomsId,
       courtCaseReference,
@@ -398,12 +386,7 @@ export default class CourtCaseRoutes {
   public submitLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const lookupCaseOutcomeForm = trimForm<CourtCaseLookupCaseOutcomeForm>(req.body)
-    this.courtAppearanceService.setOverallCaseOutcome(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      lookupCaseOutcomeForm.caseOutcome,
-    )
+    this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, lookupCaseOutcomeForm.caseOutcome)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/case-outcome-applied-all`,
     )
@@ -412,16 +395,8 @@ export default class CourtCaseRoutes {
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
-    const caseOutcomeAppliedAll: boolean = this.courtAppearanceService.getCaseOutcomeAppliedAll(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
+    const caseOutcomeAppliedAll: boolean = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
 
     return res.render('pages/courtAppearance/case-outcome-applied-all', {
       nomsId,
@@ -441,14 +416,9 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setCaseOutcomeAppliedAll(
       req.session,
       nomsId,
-      courtCaseReference,
       caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true',
     )
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
     if (courtAppearance.warrantType === 'SENTENCING') {
       return res.redirect(
@@ -456,7 +426,7 @@ export default class CourtCaseRoutes {
       )
     }
 
-    if (courtAppearance.offences.length) {
+    if (addOrEditCourtCase === 'edit-court-case') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/review-offences`,
       )
@@ -472,7 +442,7 @@ export default class CourtCaseRoutes {
     const { submitToCheckAnswers } = req.query
     let taggedBail: string
     if (submitToCheckAnswers) {
-      taggedBail = this.courtAppearanceService.getTaggedBail(req.session, nomsId, courtCaseReference)
+      taggedBail = this.courtAppearanceService.getTaggedBail(req.session, nomsId)
     }
 
     return res.render('pages/courtAppearance/tagged-bail', {
@@ -489,7 +459,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const taggedBailForm = trimForm<CourtCaseTaggedBailForm>(req.body)
 
-    this.courtAppearanceService.setTaggedBail(req.session, nomsId, courtCaseReference, taggedBailForm.taggedBail)
+    this.courtAppearanceService.setTaggedBail(req.session, nomsId, taggedBailForm.taggedBail)
 
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
@@ -498,11 +468,7 @@ export default class CourtCaseRoutes {
 
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
     return res.render('pages/courtAppearance/check-answers', {
       nomsId,
@@ -515,11 +481,7 @@ export default class CourtCaseRoutes {
 
   public submitCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (courtAppearance.warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${courtAppearance.offences.length}/count-number`,
@@ -532,7 +494,7 @@ export default class CourtCaseRoutes {
 
   public getNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const nextHearingSelect = this.courtAppearanceService.getNextHearingSelect(req.session, nomsId, courtCaseReference)
+    const nextHearingSelect = this.courtAppearanceService.getNextHearingSelect(req.session, nomsId)
 
     return res.render('pages/courtAppearance/next-hearing-select', {
       nomsId,
@@ -547,7 +509,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const nextHearingSelectForm = trimForm<CourtCaseNextHearingSelectForm>(req.body)
     const nextHearingSelect = nextHearingSelectForm.nextHearingSelect === 'true'
-    this.courtAppearanceService.setNextHearingSelect(req.session, nomsId, courtCaseReference, nextHearingSelect)
+    this.courtAppearanceService.setNextHearingSelect(req.session, nomsId, nextHearingSelect)
     if (nextHearingSelect) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-type`,
@@ -555,7 +517,7 @@ export default class CourtCaseRoutes {
     }
     const { token } = res.locals.user
     // this would be where we save which we don't currently have and then redirect to all court cases page
-    await this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference, token, addOrEditCourtCase)
+    await this.saveAppearance(req.session, nomsId, courtCaseReference, token, addOrEditCourtCase)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
     )
@@ -564,7 +526,7 @@ export default class CourtCaseRoutes {
   public getNextHearingType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const nextHearingType = this.courtAppearanceService.getNextHearingType(req.session, nomsId, courtCaseReference)
+    const nextHearingType = this.courtAppearanceService.getNextHearingType(req.session, nomsId)
 
     return res.render('pages/courtAppearance/next-hearing-type', {
       nomsId,
@@ -579,12 +541,7 @@ export default class CourtCaseRoutes {
   public submitNextHearingType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const nextHearingTypeForm = trimForm<CourtCaseNextHearingTypeForm>(req.body)
-    this.courtAppearanceService.setNextHearingType(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      nextHearingTypeForm.nextHearingType,
-    )
+    this.courtAppearanceService.setNextHearingType(req.session, nomsId, nextHearingTypeForm.nextHearingType)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -599,7 +556,7 @@ export default class CourtCaseRoutes {
   public getNextHearingDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const nextHearingDate = this.courtAppearanceService.getNextHearingDate(req.session, nomsId, courtCaseReference)
+    const nextHearingDate = this.courtAppearanceService.getNextHearingDate(req.session, nomsId)
 
     return res.render('pages/courtAppearance/next-hearing-date', {
       nomsId,
@@ -627,7 +584,6 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setNextHearingDate(
       req.session,
       nomsId,
-      courtCaseReference,
       nextHearingDate.toDate(),
       Boolean(nextHearingDateForm.nextHearingTime),
     )
@@ -644,12 +600,8 @@ export default class CourtCaseRoutes {
 
   public getNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const nextHearingCourtSelect = this.courtAppearanceService.getNextHearingCourtSelect(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
-    const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId, courtCaseReference)
+    const nextHearingCourtSelect = this.courtAppearanceService.getNextHearingCourtSelect(req.session, nomsId)
+    const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
 
     return res.render('pages/courtAppearance/next-hearing-court-select', {
       nomsId,
@@ -665,12 +617,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const nextHearingCourtSelectForm = trimForm<CourtCaseNextHearingCourtSelectForm>(req.body)
     const nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect === 'true'
-    this.courtAppearanceService.setNextHearingCourtSelect(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      nextHearingCourtSelect,
-    )
+    this.courtAppearanceService.setNextHearingCourtSelect(req.session, nomsId, nextHearingCourtSelect)
     if (nextHearingCourtSelect) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-next-hearing-answers`,
@@ -683,11 +630,7 @@ export default class CourtCaseRoutes {
 
   public getNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const nextHearingCourtName = this.courtAppearanceService.getNextHearingCourtName(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const nextHearingCourtName = this.courtAppearanceService.getNextHearingCourtName(req.session, nomsId)
 
     return res.render('pages/courtAppearance/next-hearing-court-name', {
       nomsId,
@@ -704,7 +647,6 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setNextHearingCourtName(
       req.session,
       nomsId,
-      courtCaseReference,
       nextHearingCourtNameForm.nextHearingCourtName,
     )
     return res.redirect(
@@ -714,11 +656,7 @@ export default class CourtCaseRoutes {
 
   public getCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      courtCaseReference,
-    )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
     return res.render('pages/courtAppearance/check-next-hearing-answers', {
       nomsId,
@@ -733,7 +671,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { token } = res.locals.user
     // save appearance here
-    await this.saveAppearance(req.session, nomsId, courtCaseReference, appearanceReference, token, addOrEditCourtCase)
+    await this.saveAppearance(req.session, nomsId, courtCaseReference, token, addOrEditCourtCase)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
     )
@@ -743,21 +681,12 @@ export default class CourtCaseRoutes {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    appearanceReference: string,
     token: string,
     addOrEditCourtCase: string,
   ): Promise<CourtAppearance> {
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(session, nomsId, courtCaseReference)
-    // remove this when integrated with backend
-    this.courtCaseService.saveSessionCourtCase(
-      session,
-      nomsId,
-      courtCaseReference,
-      parseInt(appearanceReference, 10),
-      courtAppearance,
-    )
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(session, nomsId)
     if (addOrEditCourtCase === 'add-court-case') {
-      const courtCase = this.courtCaseService.getSessionCourtCase(session, nomsId, courtCaseReference)
+      const courtCase = { appearances: [courtAppearance] } as CourtCase
       await this.remandAndSentencingService.createCourtCase(nomsId, token, courtCase)
     } else {
       await this.remandAndSentencingService.createCourtAppearance(token, courtCaseReference, courtAppearance)

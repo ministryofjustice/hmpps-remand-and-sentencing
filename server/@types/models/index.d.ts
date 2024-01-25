@@ -35,7 +35,7 @@ declare module 'models' {
 
   export interface Sentence {
     countNumber?: string
-    custodialSentenceLength?: SentenceLength[]
+    custodialSentenceLength?: SentenceLength
   }
 
   export interface SentenceLength {
@@ -43,6 +43,6 @@ declare module 'models' {
     months?: string
     weeks?: string
     days?: string
-    order: number
+    periodOrder: string[]
   }
 }

@@ -347,38 +347,26 @@ export default class OffenceRoutes {
   public submitSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const offenceSentenceLengthForm = trimForm<OffenceSentenceLengthForm>(req.body)
-    const sentenceLength = [
+    const sentenceLength = {
       ...(offenceSentenceLengthForm['sentenceLength-years']
-        ? [
-            {
-              years: offenceSentenceLengthForm['sentenceLength-years'],
-            },
-          ]
-        : []),
+        ? { years: offenceSentenceLengthForm['sentenceLength-years'] }
+        : {}),
       ...(offenceSentenceLengthForm['sentenceLength-months']
-        ? [
-            {
-              months: offenceSentenceLengthForm['sentenceLength-months'],
-            },
-          ]
-        : []),
+        ? { months: offenceSentenceLengthForm['sentenceLength-months'] }
+        : {}),
       ...(offenceSentenceLengthForm['sentenceLength-weeks']
-        ? [
-            {
-              weeks: offenceSentenceLengthForm['sentenceLength-weeks'],
-            },
-          ]
-        : []),
+        ? { weeks: offenceSentenceLengthForm['sentenceLength-weeks'] }
+        : {}),
       ...(offenceSentenceLengthForm['sentenceLength-days']
-        ? [
-            {
-              days: offenceSentenceLengthForm['sentenceLength-days'],
-            },
-          ]
-        : []),
-    ].map((length, index) => {
-      return { order: index, ...length }
-    })
+        ? { days: offenceSentenceLengthForm['sentenceLength-days'] }
+        : {}),
+      periodOrder: [
+        ...(offenceSentenceLengthForm['sentenceLength-years'] ? ['years'] : []),
+        ...(offenceSentenceLengthForm['sentenceLength-months'] ? ['months'] : []),
+        ...(offenceSentenceLengthForm['sentenceLength-weeks'] ? ['weeks'] : []),
+        ...(offenceSentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
+      ],
+    }
     this.offenceService.setCustodialSentenceLength(req.session, nomsId, courtCaseReference, sentenceLength)
 
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
@@ -404,15 +392,15 @@ export default class OffenceRoutes {
     const offenceAlternativeSentenceLengthForm = trimForm<OffenceAlternativeSentenceLengthForm>(req.body)
     const sentenceLengths = offenceAlternativeSentenceLengthForm.sentenceLengths
       .filter(sentenceLength => sentenceLength.value)
-      .map((sentenceLength, index) => {
-        return {
-          order: index,
-          ...(sentenceLength.period === 'years' && { years: sentenceLength.value }),
-          ...(sentenceLength.period === 'months' && { months: sentenceLength.value }),
-          ...(sentenceLength.period === 'weeks' && { weeks: sentenceLength.value }),
-          ...(sentenceLength.period === 'days' && { days: sentenceLength.value }),
-        }
-      })
+      .reduce(
+        (prev, current) => {
+          // eslint-disable-next-line no-param-reassign
+          prev[current.period] = current.value
+          prev.periodOrder.push(current.period)
+          return prev
+        },
+        { periodOrder: [] },
+      )
     this.offenceService.setCustodialSentenceLength(req.session, nomsId, courtCaseReference, sentenceLengths)
 
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)

@@ -1,4 +1,4 @@
-import type { CourtAppearance, CourtCase, Offence } from 'models'
+import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import {
   Charge,
@@ -6,7 +6,30 @@ import {
   CreateCourtAppearance,
   CreateCourtCase,
   CreateNextCourtAppearance,
+  CreatePeriodLength,
+  CreateSentence,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+
+const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): CreatePeriodLength => {
+  return {
+    ...(sentenceLength.days ? { days: Number(sentenceLength.days) } : {}),
+    ...(sentenceLength.weeks ? { weeks: Number(sentenceLength.weeks) } : {}),
+    ...(sentenceLength.months ? { months: Number(sentenceLength.months) } : {}),
+    ...(sentenceLength.years ? { years: Number(sentenceLength.years) } : {}),
+    periodOrder: sentenceLength.periodOrder.join(','),
+  } as CreatePeriodLength
+}
+
+const sentenceToCreateSentence = (sentence: Sentence): CreateSentence | undefined => {
+  let createSentence
+  if (sentence) {
+    createSentence = {
+      chargeNumber: sentence.countNumber,
+      custodialPeriodLength: sentenceLengthToCreatePeriodLength(sentence.custodialSentenceLength),
+    } as CreateSentence
+  }
+  return createSentence
+}
 
 const courtAppearanceToCreateNextCourtAppearance = (
   courtAppearance: CourtAppearance,
@@ -23,12 +46,14 @@ const courtAppearanceToCreateNextCourtAppearance = (
 }
 
 const offenceToCreateCharge = (offence: Offence): CreateCharge => {
+  const sentence = sentenceToCreateSentence(offence.sentence)
   return {
     offenceCode: offence.offenceCode,
     offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),
     outcome: offence.outcome,
     ...(offence.terrorRelated !== undefined && { terrorRelated: offence.terrorRelated }),
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
+    ...(sentence && { sentence }),
   } as CreateCharge
 }
 

@@ -86,6 +86,7 @@ export interface components {
       offenceEndDate?: string
       outcome: string
       terrorRelated?: boolean
+      sentence?: components['schemas']['CreateSentence']
     }
     CreateCourtAppearance: {
       courtCaseUuid?: string
@@ -112,6 +113,20 @@ export interface components {
       appearanceDate: string
       courtCode: string
       appearanceType: string
+    }
+    CreatePeriodLength: {
+      years?: number
+      months?: number
+      weeks?: number
+      days?: number
+      periodOrder: string
+    }
+    CreateSentence: {
+      /** Format: uuid */
+      sentenceUuid?: string
+      chargeNumber: string
+      custodialPeriodLength: components['schemas']['CreatePeriodLength']
+      extendedLicensePeriodLength?: components['schemas']['CreatePeriodLength']
     }
     CreateCourtCaseResponse: {
       courtCaseUuid: string
@@ -187,9 +202,9 @@ export interface components {
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       last?: boolean
       first?: boolean
       empty?: boolean
@@ -199,9 +214,9 @@ export interface components {
       offset?: number
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
-      pageSize?: number
-      /** Format: int32 */
       pageNumber?: number
+      /** Format: int32 */
+      pageSize?: number
       paged?: boolean
       unpaged?: boolean
     }

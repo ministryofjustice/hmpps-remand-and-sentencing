@@ -31,20 +31,9 @@
 {% endif %}
 {% if params.custodialSentenceLength %}
     {% set sentenceLengthValue = '' %}
-    {% for sentenceLength in params.custodialSentenceLength | sort(false,false,"order") %}
-        {% if sentenceLength.years %}
-            {% set sentenceLengthValue = sentenceLengthValue + ' ' + sentenceLength.years + ' years' %}
-        {% endif %}
-        {% if sentenceLength.months %}
-            {% set sentenceLengthValue = sentenceLengthValue + ' ' + sentenceLength.months + ' months' %}
-        {% endif %}
-        {% if sentenceLength.weeks %}
-            {% set sentenceLengthValue = sentenceLengthValue + ' ' + sentenceLength.weeks + ' weeks' %}
-        {% endif %}
-        {% if sentenceLength.days %}
-            {% set sentenceLengthValue = sentenceLengthValue + ' ' + sentenceLength.days + ' days' %}
-        {% endif %}
-    {%endfor %}
+    {% for order in params.custodialSentenceLength.periodOrder %}
+        {% set sentenceLengthValue = sentenceLengthValue + ' ' + params.custodialSentenceLength[order] + ' ' + order%}
+    {% endfor %}
 
     {% set summaryListRows = (summaryListRows.push({
                     key: {

@@ -15,14 +15,18 @@
             
             <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Offences</h2>
 
-            {% for offence in latestCourtAppearance.charges %}
+            {% for offence in offences %}
                 {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
                         offenceName: offenceMap[offence.offenceCode],
                         offenceStartDate: offence.offenceStartDate,
                         offenceEndDate: offence.offenceEndDate,
-                        outcome: offence.outcome
+                        outcome: offence.outcome,
+                        countNumber: offence.sentence.countNumber,
+                        terrorRelated: offence.terrorRelated,
+                        isSentenced: offence.sentence,
+                        custodialSentenceLength: offence.sentence.custodialSentenceLength
                     })
                 }}
             {% endfor %}

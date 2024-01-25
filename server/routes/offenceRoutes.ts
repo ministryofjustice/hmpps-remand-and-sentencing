@@ -445,7 +445,7 @@ export default class OffenceRoutes {
   public getDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10))
-
+    const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
     return res.render('pages/offence/delete-offence', {
       nomsId,
       courtCaseReference,
@@ -453,6 +453,7 @@ export default class OffenceRoutes {
       offenceReference,
       appearanceReference,
       addOrEditCourtCase,
+      offenceMap,
     })
   }
 
@@ -480,6 +481,7 @@ export default class OffenceRoutes {
       Array.from(new Set(latestCourtAppearance.charges.map(offence => offence.offenceCode))),
       req.user.token,
     )
+    const offences = latestCourtAppearance.charges.map(charge => chargeToOffence(charge))
     return res.render('pages/offence/review-offences', {
       nomsId,
       courtCaseReference,
@@ -487,6 +489,7 @@ export default class OffenceRoutes {
       appearanceReference,
       addOrEditCourtCase,
       offenceMap,
+      offences,
     })
   }
 

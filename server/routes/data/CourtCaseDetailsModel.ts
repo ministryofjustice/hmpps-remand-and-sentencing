@@ -1,10 +1,11 @@
 import dayjs from 'dayjs'
+import type { Offence } from 'models'
 import {
-  Charge,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
+import { chargeToOffence } from '../../utils/mappingUtils'
 
 export default class CourtCaseDetailsModel {
   courtCaseUuid: string
@@ -25,7 +26,7 @@ export default class CourtCaseDetailsModel {
 
   showingChargeTotal?: number
 
-  charges: Charge[]
+  offences: Offence[]
 
   latestCourtName: string
 
@@ -63,8 +64,9 @@ export default class CourtCaseDetailsModel {
     if (this.chargeTotal > 5) {
       this.showingChargeTotal = 5
     }
-    this.charges = pageCourtCaseContent.latestAppearance.charges
+    this.offences = pageCourtCaseContent.latestAppearance.charges
       .sort((a, b) => (dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1))
+      .map(charge => chargeToOffence(charge))
       .slice(0, 5)
     this.latestCourtName = pageCourtCaseContent.latestAppearance.courtCode
     this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance.appearanceDate).format(config.dateFormat)

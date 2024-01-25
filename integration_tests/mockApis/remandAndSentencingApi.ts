@@ -57,7 +57,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Sentencing outcome 1", "courtCode": "Bradford Crown Court", "courtCaseReference": "1234", "appearanceDate": "2023-05-12", "warrantType": "SENTENCING", "warrantId": "${json-unit.any-string}", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{ "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Sentencing outcome 1", "terrorRelated": true }]}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Sentencing outcome 1", "courtCode": "Bradford Crown Court", "courtCaseReference": "1234", "appearanceDate": "2023-05-12", "warrantType": "SENTENCING", "warrantId": "${json-unit.any-string}", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{ "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Sentencing outcome 1", "terrorRelated": true, "sentence":{ "chargeNumber": "1", "custodialPeriodLength": { "months" : 5, "years" : 4, "periodOrder" : "years,months"} } }]}]}',
           },
         ],
       },
@@ -276,6 +276,14 @@ export default {
                 offenceStartDate: '2023-05-12',
                 outcome: 'Sentencing outcome 1',
                 terrorRelated: true,
+                sentence: {
+                  chargeNumber: '1',
+                  custodialPeriodLength: {
+                    months: 5,
+                    years: 4,
+                    periodOrder: 'years,months',
+                  },
+                },
               },
             ],
           },

@@ -122,7 +122,7 @@ export default class OffenceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    sentenceLength: SentenceLength[],
+    sentenceLength: SentenceLength,
   ) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)

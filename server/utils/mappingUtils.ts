@@ -91,10 +91,10 @@ export const courtCaseToCreateCourtCase = (prisonerId: string, courtCase: CourtC
 
 const periodLengthToSentenceLength = (periodLength: PeriodLength): SentenceLength => {
   return {
-    ...(periodLength.days === undefined ? { days: String(periodLength.days) } : {}),
-    ...(periodLength.weeks === undefined ? { weeks: String(periodLength.weeks) } : {}),
-    ...(periodLength.months === undefined ? { months: String(periodLength.months) } : {}),
-    ...(periodLength.years === undefined ? { years: String(periodLength.years) } : {}),
+    ...(periodLength.days !== undefined ? { days: String(periodLength.days) } : {}),
+    ...(periodLength.weeks !== undefined ? { weeks: String(periodLength.weeks) } : {}),
+    ...(periodLength.months !== undefined ? { months: String(periodLength.months) } : {}),
+    ...(periodLength.years !== undefined ? { years: String(periodLength.years) } : {}),
     periodOrder: periodLength.periodOrder.split(','),
   } as SentenceLength
 }

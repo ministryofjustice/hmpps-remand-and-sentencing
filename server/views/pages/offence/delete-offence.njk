@@ -10,10 +10,14 @@
     {{
         offenceCard({
             offenceCode: offence.offenceCode,
-            offenceName: offence.offenceName,
+            offenceName: offenceMap[offence.offenceCode],
             offenceStartDate: offence.offenceStartDate,
             offenceEndDate: offence.offenceEndDate,
-            outcome: offence.outcome
+            outcome: offence.outcome,
+            countNumber: offence.sentence.countNumber,
+            terrorRelated: offence.terrorRelated,
+            isSentenced: offence.sentence,
+            custodialSentenceLength: offence.sentence.custodialSentenceLength
         })
     }}
 {% endset %}

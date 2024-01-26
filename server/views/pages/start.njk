@@ -142,14 +142,18 @@
                 </div>
 
                 {% set offenceDetailsHtml %}
-                {% for charge in courtCaseDetails.charges %}
+                {% for offence in courtCaseDetails.offences %}
                     {{
                                 offenceCard({
-                                    offenceCode: charge.offenceCode,
-                                    offenceName: offenceMap[charge.offenceCode],
-                                    offenceStartDate: charge.offenceStartDate,
-                                    offenceEndDate: charge.offenceEndDate,
-                                    outcome: charge.outcome
+                                    offenceCode: offence.offenceCode,
+                                    offenceName: offenceMap[offence.offenceCode],
+                                    offenceStartDate: offence.offenceStartDate,
+                                    offenceEndDate: offence.offenceEndDate,
+                                    outcome: offence.outcome,
+                                    countNumber: offence.sentence.countNumber,
+                                    terrorRelated: offence.terrorRelated,
+                                    isSentenced: offence.sentence,
+                                    custodialSentenceLength: offence.sentence.custodialSentenceLength
                                 })
                             }}
                 {% endfor %}

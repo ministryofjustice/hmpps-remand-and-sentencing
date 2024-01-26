@@ -27,3 +27,7 @@ export type NextCourtAppearance = components['schemas']['NextCourtAppearance']
 export type CreateSentence = components['schemas']['CreateSentence']
 
 export type CreatePeriodLength = components['schemas']['CreatePeriodLength']
+
+export type APISentence = components['schemas']['Sentence']
+
+export type PeriodLength = components['schemas']['PeriodLength']

@@ -1,6 +1,7 @@
 import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import {
+  APISentence,
   Charge,
   CreateCharge,
   CreateCourtAppearance,
@@ -8,6 +9,7 @@ import {
   CreateNextCourtAppearance,
   CreatePeriodLength,
   CreateSentence,
+  PeriodLength,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): CreatePeriodLength => {
@@ -87,6 +89,24 @@ export const courtCaseToCreateCourtCase = (prisonerId: string, courtCase: CourtC
   } as CreateCourtCase
 }
 
+const periodLengthToSentenceLength = (periodLength: PeriodLength): SentenceLength => {
+  return {
+    ...(periodLength.days === undefined ? { days: String(periodLength.days) } : {}),
+    ...(periodLength.weeks === undefined ? { weeks: String(periodLength.weeks) } : {}),
+    ...(periodLength.months === undefined ? { months: String(periodLength.months) } : {}),
+    ...(periodLength.years === undefined ? { years: String(periodLength.years) } : {}),
+    periodOrder: periodLength.periodOrder.split(','),
+  } as SentenceLength
+}
+
+const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
+  return {
+    sentenceUuid: apiSentence.sentenceUuid,
+    countNumber: apiSentence.chargeNumber,
+    custodialSentenceLength: periodLengthToSentenceLength(apiSentence.custodialPeriodLength),
+  } as Sentence
+}
+
 export const chargeToOffence = (charge: Charge): Offence => {
   return {
     offenceStartDate: dayjs(charge.offenceStartDate).toDate(),
@@ -95,5 +115,6 @@ export const chargeToOffence = (charge: Charge): Offence => {
     chargeUuid: charge.chargeUuid,
     terrorRelated: charge.terrorRelated,
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
+    ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
   } as Offence
 }

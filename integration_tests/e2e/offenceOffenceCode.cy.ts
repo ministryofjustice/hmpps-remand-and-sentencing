@@ -29,7 +29,7 @@ context('Add Offence Offence Code Page', () => {
 
   it('submitting code filled out and I do not have box ticked results in error', () => {
     offenceOffenceCodePage.input().type('123')
-    offenceOffenceCodePage.checkboxSelector('true').click()
+    offenceOffenceCodePage.checkboxLabelSelector('true').click()
     offenceOffenceCodePage.button().click()
     offenceOffenceCodePage
       .errorSummary()

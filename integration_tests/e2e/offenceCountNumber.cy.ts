@@ -12,7 +12,7 @@ context('Add Offence Count number Page', () => {
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/0/count-number')
     offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)

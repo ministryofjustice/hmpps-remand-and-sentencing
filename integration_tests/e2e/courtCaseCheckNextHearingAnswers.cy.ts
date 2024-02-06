@@ -33,7 +33,7 @@ context('Check Next Hearing Answers page', () => {
   it('clicking next hearing type and submitting goes back to check answers page', () => {
     courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-type').click()
     const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioSelector('Court appearance').click()
+    courtCaseNextHearingTypePage.radioLabelSelector('Court appearance').click()
     courtCaseNextHearingTypePage.button().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
@@ -41,7 +41,7 @@ context('Check Next Hearing Answers page', () => {
   it('clicking next hearing location and submitting goes back to check answers page', () => {
     courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-court-select').click()
     const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    courtCaseNextHearingCourtSetPage.radioSelector('false').click()
+    courtCaseNextHearingCourtSetPage.radioLabelSelector('false').click()
     courtCaseNextHearingCourtSetPage.button().click()
     const courtCaseNextHearingCourtNamePage = Page.verifyOnPage(CourtCaseNextHearingCourtNamePage)
     courtCaseNextHearingCourtNamePage.autoCompleteInput().type('cou')

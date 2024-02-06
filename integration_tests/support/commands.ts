@@ -113,7 +113,7 @@ Cypress.Commands.add(
   (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
     cy.visit(`/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`)
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioSelector('REMAND').click()
+    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
 
     cy.visit(
@@ -130,7 +130,7 @@ Cypress.Commands.add(
     offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
     offenceOffenceDatePage.button().click()
     const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
-    offenceOffenceOutcomePage.radioSelector('Recall to Prison').click()
+    offenceOffenceOutcomePage.radioLabelSelector('Recall to Prison').click()
     offenceOffenceOutcomePage.button().click()
   },
 )
@@ -140,7 +140,7 @@ Cypress.Commands.add(
   (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
     cy.visit(`/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`)
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
 
     cy.visit(
@@ -157,7 +157,7 @@ Cypress.Commands.add(
     offenceOffenceCodeConfirmPage.button().click()
 
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioSelector('true').click()
+    offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
 
     const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
@@ -167,7 +167,7 @@ Cypress.Commands.add(
     offenceOffenceDatePage.button().click()
 
     const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
-    offenceOffenceOutcomePage.radioSelector('Sentencing outcome 1').click()
+    offenceOffenceOutcomePage.radioLabelSelector('Sentencing outcome 1').click()
     offenceOffenceOutcomePage.button().click()
 
     const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)

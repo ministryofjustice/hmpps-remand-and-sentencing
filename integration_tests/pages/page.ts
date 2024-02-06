@@ -23,7 +23,11 @@ export default abstract class Page {
 
   input = (): PageElement => cy.get('.govuk-input')
 
-  checkboxSelector = (value: string): PageElement => cy.get(`:checkbox[value="${value}"]`)
+  checkboxLabelSelector = (value: string): PageElement =>
+    cy
+      .get(`:checkbox[value="${value}"]`)
+      .invoke('attr', 'id')
+      .then(id => cy.get(`label[for="${id}"]`))
 
   errorSummary = (): PageElement => cy.get('.govuk-error-summary')
 
@@ -35,5 +39,9 @@ export default abstract class Page {
 
   summaryList = (): PageElement => cy.get('.govuk-summary-list')
 
-  radioSelector = (value: string): PageElement => cy.get(`:radio[value="${value}"]`)
+  radioLabelSelector = (value: string): PageElement =>
+    cy
+      .get(`:radio[value="${value}"]`)
+      .invoke('attr', 'id')
+      .then(id => cy.get(`label[for="${id}"]`))
 }

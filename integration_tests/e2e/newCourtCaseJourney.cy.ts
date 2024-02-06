@@ -55,7 +55,7 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.button().click()
 
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioSelector('REMAND').click()
+    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
 
     const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
@@ -63,11 +63,11 @@ context('New Court Case journey', () => {
     courtCaseWarrantUploadPage.button().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
-    courtCaseOverallCaseOutcomePage.radioSelector('Remand in Custody (Bail Refused)').click()
+    courtCaseOverallCaseOutcomePage.radioLabelSelector('Remand in Custody (Bail Refused)').click()
     courtCaseOverallCaseOutcomePage.button().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
@@ -91,10 +91,10 @@ context('New Court Case journey', () => {
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234', 'offences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
     const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
-    courtCaseNextHearingSetPage.radioSelector('true').click()
+    courtCaseNextHearingSetPage.radioLabelSelector('true').click()
     courtCaseNextHearingSetPage.button().click()
     const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioSelector('Court appearance').click()
+    courtCaseNextHearingTypePage.radioLabelSelector('Court appearance').click()
     courtCaseNextHearingTypePage.button().click()
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
     courtCaseNextHearingDatePage.dayDateInput('next-hearing-date').type('18')
@@ -102,7 +102,7 @@ context('New Court Case journey', () => {
     courtCaseNextHearingDatePage.yearDateInput('next-hearing-date').type('2023')
     courtCaseNextHearingDatePage.button().click()
     const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    courtCaseNextHearingCourtSetPage.radioSelector('true').click()
+    courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
     courtCaseNextHearingCourtSetPage.button().click()
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage.button().click()
@@ -127,7 +127,7 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.button().click()
 
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
 
     const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
@@ -135,11 +135,11 @@ context('New Court Case journey', () => {
     courtCaseWarrantUploadPage.button().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
-    courtCaseOverallCaseOutcomePage.radioSelector('Sentencing outcome 1').click()
+    courtCaseOverallCaseOutcomePage.radioLabelSelector('Sentencing outcome 1').click()
     courtCaseOverallCaseOutcomePage.button().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
 
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
@@ -166,7 +166,7 @@ context('New Court Case journey', () => {
     offenceOffenceCodeConfirmPage.button().click()
 
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioSelector('true').click()
+    offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
 
     const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
@@ -190,10 +190,10 @@ context('New Court Case journey', () => {
     // there would be no next hearing journey
 
     const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
-    courtCaseNextHearingSetPage.radioSelector('true').click()
+    courtCaseNextHearingSetPage.radioLabelSelector('true').click()
     courtCaseNextHearingSetPage.button().click()
     const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioSelector('Court appearance').click()
+    courtCaseNextHearingTypePage.radioLabelSelector('Court appearance').click()
     courtCaseNextHearingTypePage.button().click()
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
     courtCaseNextHearingDatePage.dayDateInput('next-hearing-date').type('18')
@@ -201,7 +201,7 @@ context('New Court Case journey', () => {
     courtCaseNextHearingDatePage.yearDateInput('next-hearing-date').type('2023')
     courtCaseNextHearingDatePage.button().click()
     const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    courtCaseNextHearingCourtSetPage.radioSelector('true').click()
+    courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
     courtCaseNextHearingCourtSetPage.button().click()
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage.button().click()

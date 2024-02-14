@@ -2,6 +2,7 @@ generic-service:
   nameOverride: hmpps-remand-and-sentencing
   productId: "UNASSIGNED" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
 
+
   replicaCount: 4
 
   image:

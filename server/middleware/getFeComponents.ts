@@ -12,13 +12,12 @@ export default function getFrontendComponents({ feComponentsService }: Services)
     }
 
     try {
-      const { header, footer } = await feComponentsService.getComponents(['header', 'footer'], res.locals.user.token)
+      const { header } = await feComponentsService.getComponents(['header'], res.locals.user.token)
 
       res.locals.feComponents = {
         header: header.html,
-        footer: footer.html,
-        cssIncludes: [...header.css, ...footer.css],
-        jsIncludes: [...header.javascript, ...footer.javascript],
+        cssIncludes: header.css,
+        jsIncludes: header.javascript,
       }
       return next()
     } catch (error) {

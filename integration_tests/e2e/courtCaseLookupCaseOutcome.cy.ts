@@ -8,7 +8,7 @@ context('Court Case Overall Case Outcome Page', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubManageUser')
-    cy.task('stubGetPersonDetails')
+    cy.task('stubGetPrisonerDetails')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)

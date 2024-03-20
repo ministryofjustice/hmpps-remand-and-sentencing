@@ -7,7 +7,7 @@ context('Start Page', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubManageUser')
-    cy.task('stubGetPersonDetails')
+    cy.task('stubGetPrisonerDetails')
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes')
     cy.signIn()

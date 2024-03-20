@@ -8,6 +8,7 @@ import RemandAndSentencingService from './remandAndSentencingService'
 import CourtAppearanceService from './courtAppearanceService'
 import DocumentManagementService from './documentManagementService'
 import CaseOutcomeService from './caseOutcomeService'
+import PrisonerSearchService from './prisonerSearchService'
 
 export const services = () => {
   const { applicationInfo, manageUsersApiClient, feComponentsClient, hmppsAuthClient } = dataAccess()
@@ -30,6 +31,8 @@ export const services = () => {
 
   const caseOutcomeService = new CaseOutcomeService()
 
+  const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient)
+
   return {
     applicationInfo,
     userService,
@@ -41,6 +44,7 @@ export const services = () => {
     courtAppearanceService,
     documentManagementService,
     caseOutcomeService,
+    prisonerSearchService,
   }
 }
 

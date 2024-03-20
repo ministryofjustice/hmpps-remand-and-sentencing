@@ -135,6 +135,14 @@ export default {
       },
       agent: new AgentConfig(10000),
     },
+    prisonerSearchApi: {
+      url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8110', requiredInProduction),
+      timeout: {
+        response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000))),
+    },
   },
   digitalPrisonServices: {
     ui_url: get('DIGITAL_PRISON_SERVICES_URL', 'http://127.0.0.1:3000/dps', requiredInProduction),

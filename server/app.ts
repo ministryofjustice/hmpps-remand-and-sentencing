@@ -19,7 +19,7 @@ import getFrontendComponents from './middleware/getFeComponents'
 
 import routes from './routes'
 import type { Services } from './services'
-import setupPrisonerDetails from './middleware/setUpPrisonerDetails'
+import populateCurrentPrisoner from './middleware/populateCurrentPrisoner'
 import setupCurrentCourtAppearance from './middleware/setUpCurrentCourtAppearance'
 import setupCurrentCourtCase from './middleware/setUpCurrentCourtCase'
 
@@ -41,7 +41,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware(['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.use('/person/:nomsId', setupPrisonerDetails(services.remandAndSentencingService))
+  app.use('/person/:nomsId', populateCurrentPrisoner(services.prisonerSearchService))
   app.use('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference', setupCurrentCourtCase())
   app.use(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences',

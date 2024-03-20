@@ -11,7 +11,7 @@ context('Check Next Hearing Answers page', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubManageUser')
-    cy.task('stubGetPersonDetails')
+    cy.task('stubGetPrisonerDetails')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/check-next-hearing-answers')
     courtCaseCheckOffenceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)

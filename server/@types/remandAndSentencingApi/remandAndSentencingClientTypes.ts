@@ -1,7 +1,5 @@
 import { components } from './index'
 
-export type RemandAndSentencingPerson = components['schemas']['PersonDetails']
-
 export type CreateCourtCase = components['schemas']['CreateCourtCase']
 
 export type CreateCourtAppearance = components['schemas']['CreateCourtAppearance']

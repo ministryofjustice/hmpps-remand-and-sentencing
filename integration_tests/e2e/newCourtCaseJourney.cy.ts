@@ -27,7 +27,7 @@ context('New Court Case journey', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubManageUser')
-    cy.task('stubGetPersonDetails')
+    cy.task('stubGetPrisonerDetails')
     cy.task('stubGetOffenceByCode')
     cy.task('stubCreateCourtCase')
     cy.task('stubCreateSentenceCourtCase')

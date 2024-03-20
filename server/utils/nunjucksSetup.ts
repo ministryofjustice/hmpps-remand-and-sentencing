@@ -2,6 +2,12 @@
 import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
+import {
+  personProfileName,
+  personDateOfBirth,
+  personStatus,
+  firstNameSpaceLastName,
+} from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import { formatDate, formatDateTime, initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -24,6 +30,16 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.calculateReleaseDatesUIUrl = config.calculateReleaseDatesService.ui_url
   app.locals.adjustmentsUIUrl = config.adjustmentsService.ui_url
 
+  if (config.environmentName === 'LOCAL') {
+    app.locals.environment = 'local'
+  } else if (config.environmentName === 'DEV') {
+    app.locals.environment = 'dev'
+  } else if (config.environmentName === 'PRE-PRODUCTION') {
+    app.locals.environment = 'pre'
+  } else {
+    app.locals.environment = 'prod'
+  }
+
   // Cachebusting version string
   if (production) {
     // Version only changes with new commits
@@ -43,6 +59,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       'node_modules/govuk-frontend/dist/components/',
       'node_modules/@ministryofjustice/frontend/',
       'node_modules/@ministryofjustice/frontend/moj/components/',
+      'node_modules/hmpps-court-cases-release-dates-design/',
     ],
     {
       autoescape: true,
@@ -64,4 +81,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     }
     return null
   })
+
+  njkEnv.addFilter('personProfileName', personProfileName)
+  njkEnv.addFilter('personDateOfBirth', personDateOfBirth)
+  njkEnv.addFilter('personStatus', personStatus)
+  njkEnv.addFilter('firstNameSpaceLastName', firstNameSpaceLastName)
 }

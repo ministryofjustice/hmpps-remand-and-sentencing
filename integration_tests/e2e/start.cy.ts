@@ -18,9 +18,9 @@ context('Start Page', () => {
   it('displays person details', () => {
     startPage
       .prisonerBanner()
-      .should('contain.text', 'Marvin Haggler')
+      .should('contain.text', 'Haggler, Marvin')
       .and('contain.text', 'A1234AB')
-      .and('contain.text', 'Date of birth1965-02-03')
+      .and('contain.text', 'Date of birth03/02/1965')
       .and('contain.text', 'PNC number1231/XX/121')
       .and('contain.text', 'StatusREMAND')
       .and('contain.text', 'EstablishmentHMP Bedford')

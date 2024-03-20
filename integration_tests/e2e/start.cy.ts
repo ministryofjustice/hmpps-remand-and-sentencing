@@ -20,7 +20,7 @@ context('Start Page', () => {
       .prisonerBanner()
       .should('contain.text', 'Marvin Haggler')
       .and('contain.text', 'A1234AB')
-      .and('contain.text', 'Date of birth03 02 1965')
+      .and('contain.text', 'Date of birth1965-02-03')
       .and('contain.text', 'PNC number1231/XX/121')
       .and('contain.text', 'StatusREMAND')
       .and('contain.text', 'EstablishmentHMP Bedford')

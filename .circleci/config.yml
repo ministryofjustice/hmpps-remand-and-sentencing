@@ -2,19 +2,19 @@ version: 2.1
 
 orbs:
   hmpps: ministryofjustice/hmpps@8
-  slack: circleci/slack@4.12.5
+  slack: circleci/slack@4.13.1
 
 parameters:
   alerts-slack-channel:
     type: string
     # Normally team specific alert channel e.g. hmpps_tech_alerts, syscon-alerts, dps_sed_alerts
     # This is to avoid a general alert dumping ground that no-one then monitors
-    default: farsight-alerts
+    default: legacy-replacement-alerts-non-prod
 
   releases-slack-channel:
     type: string
     # Normally dps-releases for most teams / projects
-    default: dps-releases
+    default: legacy-replacement-releases
 
   node-version:
     type: string
@@ -108,7 +108,6 @@ jobs:
           path: integration_tests/screenshots
 
 workflows:
-  version: 2
   build-test-and-deploy:
     jobs:
       - build:

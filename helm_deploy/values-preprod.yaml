@@ -19,8 +19,6 @@ generic-service:
     DIGITAL_PRISON_SERVICES_URL: "https://digital-preprod.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components-preprod.hmpps.service.justice.gov.uk"
     COMMON_COMPONENTS_ENABLED: 'true'
-    CALCULATE_RELEASE_DATES_UI_URL: "https://calculate-release-dates-preprod.hmpps.service.justice.gov.uk"
-    ADJUSTMENTS_UI_URL: "https://adjust-release-dates-preprod.hmpps.service.justice.gov.uk"
     REMAND_AND_SENTENCING_API_URL: "https://remand-and-sentencing-api-preprod.hmpps.service.justice.gov.uk"
     DOCUMENT_MANAGEMENT_API_URL: "https://document-api-preprod.hmpps.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-preprod.prison.service.justice.gov.uk"

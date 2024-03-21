@@ -9,7 +9,7 @@ export default class IndexPage extends Page {
 
   fallbackHeaderPhaseBanner = (): PageElement => cy.get('[data-qa=header-phase-banner]')
 
-  commonComponentsHeader = (): PageElement => cy.get('h1').contains('Common Components Header')
+  commonComponentsHeader = (): PageElement => cy.get('[data-qa=common-header]')
 
-  commonComponentsFooter = (): PageElement => cy.get('h1').contains('Common Components Footer')
+  designLibraryFooter = (): PageElement => cy.get('[data-qa=ccrds-footer]')
 }

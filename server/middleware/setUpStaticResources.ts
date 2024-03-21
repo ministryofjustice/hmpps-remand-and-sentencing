@@ -23,6 +23,8 @@ export default function setUpStaticResources(): Router {
     '/node_modules/@ministryofjustice/frontend',
     '/node_modules/jquery/dist',
     '/node_modules/accessible-autocomplete/dist',
+    '/node_modules/hmpps-court-cases-release-dates-design/hmpps/assets',
+    '/node_modules/hmpps-court-cases-release-dates-design',
   ).forEach(dir => {
     router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
   })

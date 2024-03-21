@@ -1,4 +1,6 @@
 {% extends "govuk/template.njk" %}
+{% from "hmpps/components/court-cases-release-dates/service-header/macro.njk" import serviceHeader %}
+{% from "hmpps/components/court-cases-release-dates/footer/macro.njk" import footer %}
 
 {% block head %}
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
@@ -17,25 +19,29 @@
 {% block header %}
   {% if feComponents.header %}
     {{ feComponents.header | safe }}
-    <div class="service-header">
-    <div class="service-header__container">
-        <a href="/"><span class="service-header__service-name">Court cases and release dates</span></a>
-    </div>
-</div>
   {% else %}
     {% include "./header.njk" %}
   {% endif %}
+  {{ 
+      serviceHeader({
+      environment: environment,
+      prisonNumber: prisoner.prisonerNumber
+    })
+  }}
 {% endblock %}
 
 {% block bodyStart %}
 {% endblock %}
 
 {% block footer %}
-  {% if feComponents.footer %}
-    {{ feComponents.footer | safe }}
-  {% else %}
-    {{ super() }}
-  {% endif %}
+
+  {{ footer({
+    environment: environment, 
+    attributes: {
+      "data-qa": "ccrds-footer"
+    } 
+    }) 
+  }}
 {% endblock %}
 
 {% block bodyEnd %}

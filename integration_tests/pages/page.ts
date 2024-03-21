@@ -19,7 +19,7 @@ export default abstract class Page {
 
   button = (): PageElement => cy.get('.govuk-button')
 
-  prisonerBanner = (): PageElement => cy.get('.dwf-header')
+  prisonerBanner = (): PageElement => cy.get('.mini-profile')
 
   input = (): PageElement => cy.get('.govuk-input')
 

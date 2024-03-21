@@ -6,11 +6,10 @@ $govuk-page-width: $moj-page-width;
 
 @import 'govuk/all';
 @import 'moj/all';
+@import 'hmpps/all';
 @import 'dist/accessible-autocomplete.min';
 
 @import './components/header-bar';
-@import './components/service-header';
-@import './components/prisoner-banner';
 @import './components/offence-card';
 @import './components/offence-summary';
 @import './components/footer';

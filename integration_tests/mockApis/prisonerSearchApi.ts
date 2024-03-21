@@ -22,6 +22,7 @@ export default {
           prisonName: 'HMP Bedford',
           cellLocation: 'CELL-1',
           pncNumber: '1231/XX/121',
+          imprisonmentStatusDescription: 'Sentenced with a sentence c',
         },
       },
     })

@@ -4,7 +4,7 @@ const stubComponents = () =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/components/components\\?component=header&component=footer',
+      urlPattern: '/components/components\\?component=header',
     },
     response: {
       status: 200,
@@ -13,14 +13,9 @@ const stubComponents = () =>
       },
       jsonBody: {
         header: {
-          html: '<header><h1>Common Components Header</h1></header>',
+          html: '<header data-qa="common-header">Common Components Header</header>',
           javascript: ['/common-components/header.js'],
           css: ['/common-components/header.css'],
-        },
-        footer: {
-          html: '<footer><h1>Common Components Footer</h1></footer>',
-          javascript: ['/common-components/footer.js'],
-          css: ['/common-components/footer.css'],
         },
       },
     },

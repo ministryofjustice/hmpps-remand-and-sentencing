@@ -1,54 +1,29 @@
 {% extends "./layout.njk" %}
-{% from "../components/prisonerBanner/macro.njk" import prisonerBanner %}
-{%- from "moj/components/sub-navigation/macro.njk" import mojSubNavigation -%}
-{%- from "govuk/components/back-link/macro.njk" import govukBackLink -%}
+{% from "hmpps/components/mini-profile/macro.njk" import miniProfile %}
+{% from "hmpps/components/court-cases-release-dates/sub-navigation/macro.njk" import subNavigation %}
 
-
-{% block main %}
-    <main class="govuk-main-wrapper app-container govuk-body" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
-        <div class="govuk-width-container">
-            {% block beforeContent %}{% endblock %}
-            {% block banner %}
-                {{
-                prisonerBanner({
-                    firstName: prisoner.firstName,
-                    lastName: prisoner.lastName,
-                    offenderNo: prisoner.prisonerNumber,
-                    establishment: prisoner.prisonName,
-                    cellNumber: prisoner.cellLocation,
-                    dateOfBirth: prisoner.dateOfBirth,
-                    pncNumber: prisoner.pncNumber,
-                    status: prisoner.status,
-                    digitalPrisonServicesUrl: digitalPrisonServicesUrl
-                })
-                }}
-            {% endblock %}
-
-            {{ mojSubNavigation({
-                label: 'Sub navigation',
-                items: [{
-                    text: 'Dashboard',
-                    href: '#'
-                }, {
-                    text: 'Release dates',
-                    href: calculateReleaseDatesUIUrl
-                }, {
-                    text: 'Court cases',
-                    href: '/',
-                    active: true
-                }, {
-                    text: 'Adjustments',
-                    href: adjustmentsUIUrl
-                }, {
-                    text: 'Documents',
-                    href: '#'
-                }, {
-                    text: 'Timeline',
-                    href: '#'
-                }]
-            }) }}
-
-            {% block content %}{% endblock %}
-        </div>
-    </main>
+{% block beforeContent %}
+    <aside role="complementary">
+        {% block banner %}
+            {% set person = {
+                firstName: prisoner.firstName,
+                lastName: prisoner.lastName,
+                prisonerNumber: prisoner.prisonerNumber,
+                dateOfBirth: prisoner.dateOfBirth,
+                status: prisoner.imprisonmentStatusDescription,
+                prisonName: prisoner.prisonName,
+                cellLocation: prisoner.cellLocation
+            } %}
+            {{ miniProfile(person, '/api/person/' + prisoner.prisonerNumber + '/image', digitalPrisonServicesUrl + '/prisoner/' + prisoner.prisonerNumber) }}
+        {% endblock %}
+    </aside>
+    {% block subNavigation %}
+        {% set navigation = {
+                activeSubNav: 'court-cases',
+                documents: {
+                    enabled: false
+                }
+            } %}
+        {{ subNavigation(environment, navigation, prisoner.prisonerNumber) }}
+    {% endblock %}
 {% endblock %}

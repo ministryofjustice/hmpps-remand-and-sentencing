@@ -147,12 +147,6 @@ export default {
   digitalPrisonServices: {
     ui_url: get('DIGITAL_PRISON_SERVICES_URL', 'http://127.0.0.1:3000/dps', requiredInProduction),
   },
-  calculateReleaseDatesService: {
-    ui_url: get('CALCULATE_RELEASE_DATES_UI_URL', 'http://127.0.0.1:3000/crds', requiredInProduction),
-  },
-  adjustmentsService: {
-    ui_url: get('ADJUSTMENTS_UI_URL', 'http://127.0.0.1:3000/adjustments', requiredInProduction),
-  },
   domain: get('INGRESS_URL', 'http://127.0.0.1:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
 }

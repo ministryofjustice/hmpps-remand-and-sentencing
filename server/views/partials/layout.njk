@@ -34,7 +34,14 @@
 {% endblock %}
 
 {% block footer %}
-  {{ footer({environment: environment}) }}
+
+  {{ footer({
+    environment: environment, 
+    attributes: {
+      "data-qa": "ccrds-footer"
+    } 
+    }) 
+  }}
 {% endblock %}
 
 {% block bodyEnd %}

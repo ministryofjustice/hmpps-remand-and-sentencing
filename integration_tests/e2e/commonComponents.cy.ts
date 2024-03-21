@@ -13,6 +13,6 @@ context('Common Components', () => {
     cy.signIn()
     const indexPage = Page.verifyOnPage(IndexPage)
     indexPage.commonComponentsHeader().should('exist')
-    indexPage.commonComponentsFooter().should('exist')
+    indexPage.designLibraryFooter().should('exist')
   })
 })

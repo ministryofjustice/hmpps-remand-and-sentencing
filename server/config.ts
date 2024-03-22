@@ -149,4 +149,5 @@ export default {
   },
   domain: get('INGRESS_URL', 'http://127.0.0.1:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
+  appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
 }

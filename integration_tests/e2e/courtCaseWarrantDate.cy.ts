@@ -4,10 +4,7 @@ import Page from '../pages/page'
 context('Court Case Warrant Date Page', () => {
   let courtCaseWarrantDatePage: CourtCaseWarrantDatePage
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-date')
     courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)

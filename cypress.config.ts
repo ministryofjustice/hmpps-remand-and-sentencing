@@ -8,6 +8,7 @@ import components from './integration_tests/mockApis/components'
 import remandAndSentencingApi from './integration_tests/mockApis/remandAndSentencingApi'
 import documentManagementApi from './integration_tests/mockApis/documentManagementApi'
 import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
+import prisonApi from './integration_tests/mockApis/prisonApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -23,6 +24,16 @@ export default defineConfig({
     setupNodeEvents(on) {
       on('task', {
         reset: resetStubs,
+        happyPathStubs: async () => {
+          await resetStubs()
+          return Promise.all([
+            auth.stubSignIn(),
+            manageUsersApi.stubManageUser(),
+            prisonerSearchApi.stubGetPrisonerDetails(),
+            components.stubComponents(),
+            prisonApi.stubGetPrisonerImage(),
+          ])
+        },
         ...auth,
         ...tokenVerification,
         ...manageOffencesApi,
@@ -31,6 +42,7 @@ export default defineConfig({
         ...remandAndSentencingApi,
         ...documentManagementApi,
         ...prisonerSearchApi,
+        ...prisonApi,
       })
     },
     baseUrl: 'http://localhost:3007',

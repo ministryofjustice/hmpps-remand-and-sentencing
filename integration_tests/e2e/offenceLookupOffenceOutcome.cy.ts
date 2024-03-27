@@ -4,10 +4,7 @@ import Page from '../pages/page'
 context('Lookup offence outcome Page', () => {
   let offenceLookupOffenceOutcomePage: OffenceLookupOffenceOutcomePage
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/0/lookup-offence-outcome')

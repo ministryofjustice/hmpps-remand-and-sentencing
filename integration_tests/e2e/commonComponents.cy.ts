@@ -3,10 +3,7 @@ import Page from '../pages/page'
 
 context('Common Components', () => {
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubComponents')
+    cy.task('happyPathStubs')
   })
 
   it('Commmon components header and footer are displayed', () => {

@@ -8,10 +8,7 @@ import Page from '../pages/page'
 context('Check Next Hearing Answers page', () => {
   let courtCaseCheckOffenceAnswersPage: CourtCaseCheckNextHearingAnswersPage
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/check-next-hearing-answers')
     courtCaseCheckOffenceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)

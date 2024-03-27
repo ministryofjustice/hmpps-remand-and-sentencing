@@ -6,10 +6,7 @@ import Page from '../pages/page'
 context('Check Offence Answers Page', () => {
   let offenceCheckOffenceAnswersPage: OffenceCheckOffenceAnswersPage
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode')
     cy.task('stubGetOffencesByCodes')
     cy.signIn()

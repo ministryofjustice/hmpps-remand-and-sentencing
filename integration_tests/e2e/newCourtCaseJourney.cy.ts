@@ -24,10 +24,7 @@ import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode')
     cy.task('stubCreateCourtCase')
     cy.task('stubCreateSentenceCourtCase')

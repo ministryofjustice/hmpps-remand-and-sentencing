@@ -4,10 +4,7 @@ import Page from '../pages/page'
 context('Court Case Overall Case Outcome Page', () => {
   let courtCaseOverallCaseOutcomePage: CourtCaseOverallCaseOutcomePage
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/overall-case-outcome')
     courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)

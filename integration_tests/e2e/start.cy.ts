@@ -4,10 +4,7 @@ import Page from '../pages/page'
 context('Start Page', () => {
   let startPage: StartPage
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes')
     cy.signIn()

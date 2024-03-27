@@ -5,10 +5,7 @@ import Page from '../pages/page'
 context('Add Offence Sentence Length Page', () => {
   let offenceSentenceLengthPage: OffenceSentenceLengthPage
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)

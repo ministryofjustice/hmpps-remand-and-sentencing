@@ -4,10 +4,7 @@ import Page from '../pages/page'
 context('Select court name page', () => {
   let courtCaseSelectCourtNamePage: CourtCaseSelectCourtNamePage
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.task('stubGetLatestCourtAppearance')
     cy.signIn()
     cy.visit('/person/A1234AB/edit-court-case/12345/appearance/1/select-court-name')

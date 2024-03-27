@@ -5,10 +5,7 @@ import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPag
 context('Add Offence Offence Code Page', () => {
   let offenceOffenceCodeConfirmPage: OffenceOffenceCodeConfirmPage
   beforeEach(() => {
-    cy.task('reset')
-    cy.task('stubSignIn')
-    cy.task('stubManageUser')
-    cy.task('stubGetPrisonerDetails')
+    cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode')
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')

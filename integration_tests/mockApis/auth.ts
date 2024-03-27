@@ -123,7 +123,7 @@ export default {
   getSignInUrl,
   stubAuthPing: ping,
   stubAuthManageDetails: manageDetails,
-  stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response]> =>
+  stubSignIn: (roles?: string[]): Promise<[Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), token(roles), tokenVerification.stubVerifyToken()]),
   stubToken: ({ roles }: { roles?: string[] }): Promise<Response> => token(roles),
 }

@@ -1,9 +1,21 @@
 {% extends "../../partials/prisonerBannerLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
-{% set pageTitle = applicationName + " - Same case reference number page" %}
+
+{% set pageTitle = applicationName + " - warrant type page" %}
 {% block content %}
+
+    {% if errors | length %}
+            <div class="govuk-grid-row govuk-!-margin-top-4">
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: errors
+                }) }}
+            </div>
+        {% endif %}
+
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-warrant-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
@@ -11,6 +23,7 @@
                 {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukRadios({
                     name: "warrantType",
+                    errorMessage: errors | findError('warrantType'),
                     fieldset: {
                         legend: {
                         text: "Select the type of warrant",

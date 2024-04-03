@@ -26,6 +26,7 @@ import ManageOffencesService from '../services/manageOffencesService'
 import { getAsStringOrDefault } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import CaseOutcomeService from '../services/caseOutcomeService'
+import validate from '../validation/validation'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -279,6 +280,7 @@ export default class CourtCaseRoutes {
       warrantType,
       courtCaseReference,
       appearanceReference,
+      errors: req.flash('errors') || [],
       addOrEditCourtCase,
     })
   }
@@ -286,7 +288,17 @@ export default class CourtCaseRoutes {
   public submitWarrantType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const warrantTypeForm = trimForm<CourtCaseWarrantTypeForm>(req.body)
-
+    const errors = validate(
+      warrantTypeForm,
+      { warrantType: 'required' },
+      { 'required.warrantType': 'You must select the type of warrant' },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`,
+      )
+    }
     this.courtAppearanceService.setWarrantType(req.session, nomsId, warrantTypeForm.warrantType)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {

@@ -5,6 +5,7 @@ context('Add Offence Offence Code Page', () => {
   let offenceOffenceCodePage: OffenceOffenceCodePage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetOffenceByCode')
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/0/offence-code')
@@ -25,7 +26,7 @@ context('Add Offence Offence Code Page', () => {
   })
 
   it('submitting code filled out and I do not have box ticked results in error', () => {
-    offenceOffenceCodePage.input().type('123')
+    offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.checkboxLabelSelector('true').click()
     offenceOffenceCodePage.button().click()
     offenceOffenceCodePage
@@ -35,5 +36,21 @@ context('Add Offence Offence Code Page', () => {
         'equal',
         'There is a problem Either code or unknown must be submitted Either code or unknown must be submitted',
       )
+  })
+  it('submitting a code which does not exist results in error', () => {
+    cy.task('stubGetOffenceByCodeNotFound')
+    offenceOffenceCodePage.input().type('AB12345')
+    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter a valid offence code.')
+  })
+  it('submitting without entering a code or ticking the box results in error', () => {
+    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter the offence code')
   })
 })

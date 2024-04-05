@@ -25,17 +25,16 @@ context('Add Offence Offence Code Page', () => {
     offenceOffenceCodePage.button().should('contain.text', 'Continue')
   })
 
-  it('submitting code filled out and I do not have box ticked results in error', () => {
+  it('checking the checkbox after typing the input clears the input', () => {
     offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.checkboxLabelSelector('true').click()
-    offenceOffenceCodePage.button().click()
-    offenceOffenceCodePage
-      .errorSummary()
-      .trimTextContent()
-      .should(
-        'equal',
-        'There is a problem Either code or unknown must be submitted Either code or unknown must be submitted',
-      )
+    offenceOffenceCodePage.input().should('be.empty')
+  })
+
+  it('typing in the input after checking the checkbox clears the checkbox', () => {
+    offenceOffenceCodePage.checkboxLabelSelector('true').click()
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.unknownCodeCheckbox().should('not.be.checked')
   })
   it('submitting a code which does not exist results in error', () => {
     cy.task('stubGetOffenceByCodeNotFound')

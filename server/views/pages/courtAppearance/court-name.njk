@@ -7,6 +7,7 @@
 {% set pageTitle = applicationName + " - Add a court case court name" %}
 
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
@@ -23,6 +24,7 @@
                     },
                     id: "court-name",
                     name: "courtName",
+                    errorMessage: errors | findError('courtName'),
                     items: [
                         {
                             text: "",

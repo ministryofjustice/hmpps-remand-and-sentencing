@@ -258,6 +258,7 @@ export default class CourtCaseRoutes {
       courtName,
       courtCaseReference,
       appearanceReference,
+      errors: req.flash('errors') || [],
       addOrEditCourtCase,
     })
   }
@@ -265,6 +266,18 @@ export default class CourtCaseRoutes {
   public submitCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const courtNameForm = trimForm<CourtCaseCourtNameForm>(req.body)
+
+    const errors = validate(
+      courtNameForm,
+      { courtName: 'required' },
+      { 'required.courtName': 'You must enter the court name' },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/court-name`,
+      )
+    }
 
     this.courtAppearanceService.setCourtName(req.session, nomsId, courtNameForm.courtName)
     const { submitToCheckAnswers } = req.query

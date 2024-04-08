@@ -22,4 +22,12 @@ context('Court Case Court Name Page', () => {
   it('button to continue is displayed', () => {
     courtCaseCourtNamePage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without entering anything in the input results in an error', () => {
+    courtCaseCourtNamePage.button().click()
+    courtCaseCourtNamePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter the court name')
+  })
 })

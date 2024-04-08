@@ -19,15 +19,7 @@
 {% set offenceSentence = 'sentences' if courtAppearance.warrantType === 'SENTENCING' else 'offences' %}
 
 {% block content %}
-    
-        {% if errors | length %}
-            <div class="govuk-grid-row govuk-!-margin-top-4">
-                {{ govukErrorSummary({
-                    titleText: "There is a problem",
-                    errorList: errors
-                }) }}
-            </div>
-        {% endif %}
+    {{ super() }}
     
     <div class="govuk-grid-row govuk-!-margin-top-4">
 

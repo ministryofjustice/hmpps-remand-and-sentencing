@@ -22,4 +22,12 @@ context('Court Case Reference Page', () => {
   it('button to continue is displayed', () => {
     courtCaseReferencePage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without entering anything in the input results in an error', () => {
+    courtCaseReferencePage.button().click()
+    courtCaseReferencePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter the case reference')
+  })
 })

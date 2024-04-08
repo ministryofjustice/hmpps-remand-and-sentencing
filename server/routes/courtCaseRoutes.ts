@@ -77,6 +77,7 @@ export default class CourtCaseRoutes {
       caseReferenceNumber,
       courtCaseReference,
       appearanceReference,
+      errors: req.flash('errors') || [],
       addOrEditCourtCase,
     })
   }
@@ -84,6 +85,17 @@ export default class CourtCaseRoutes {
   public submitReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const referenceForm = trimForm<CourtCaseReferenceForm>(req.body)
+    const errors = validate(
+      referenceForm,
+      { referenceNumber: 'required' },
+      { 'required.referenceNumber': 'You must enter the case reference' },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/reference`,
+      )
+    }
     this.courtAppearanceService.setCaseReferenceNumber(req.session, nomsId, referenceForm.referenceNumber)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {

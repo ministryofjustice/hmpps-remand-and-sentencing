@@ -1,6 +1,7 @@
 {% extends "./layout.njk" %}
 {% from "hmpps/components/mini-profile/macro.njk" import miniProfile %}
 {% from "hmpps/components/court-cases-release-dates/sub-navigation/macro.njk" import subNavigation %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block beforeContent %}
     <aside role="complementary">
@@ -26,4 +27,15 @@
             } %}
         {{ subNavigation(environment, navigation, prisoner.prisonerNumber) }}
     {% endblock %}
+{% endblock %}
+
+{% block content %}
+    {% if errors | length %}
+            <div class="govuk-grid-row govuk-!-margin-top-4">
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: errors
+                }) }}
+            </div>
+        {% endif %}
 {% endblock %}

@@ -34,6 +34,24 @@ export default {
       },
     })
   },
+
+  stubGetOffenceByCodeNotFound: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/manage-offences-api/offences/code/unique/AB12345',
+      },
+      response: {
+        status: 404,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 404,
+          userMessage: 'Not found: No offence exists for the passed in offence code',
+          developerMessage: 'No offence exists for the passed in offence code',
+        },
+      },
+    })
+  },
   stubSearchOffenceByName: (): SuperAgentRequest => {
     return stubFor({
       request: {

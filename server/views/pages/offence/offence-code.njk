@@ -28,6 +28,7 @@
                     items: [
                         {
                             value: "true",
+                            id: "unknown-code",
                             text: "I do not have the offence code",
                             checked: offenceCodeForm.unknownCode
                         }
@@ -41,4 +42,8 @@
                 }) }}
             </form>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/assets/js/offenceCode.js"></script>
 {% endblock %}

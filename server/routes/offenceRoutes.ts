@@ -23,6 +23,7 @@ import OffencePersistType from '../@types/models/OffencePersistType'
 import CaseOutcomeService from '../services/caseOutcomeService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import { chargeToOffence } from '../utils/mappingUtils'
+import logger from '../../logger'
 
 export default class OffenceRoutes {
   constructor(
@@ -210,14 +211,23 @@ export default class OffenceRoutes {
     const errors = validate(
       offenceCodeForm,
       {
-        offenceCode: `onlyOne:${offenceCodeForm.unknownCode ?? ''}`,
+        offenceCode: `required_without:unknownCode|onlyOne:${offenceCodeForm.unknownCode ?? ''}`,
         unknownCode: `onlyOne:${offenceCodeForm.offenceCode ?? ''}`,
       },
       {
         'onlyOne.offenceCode': 'Either code or unknown must be submitted',
         'onlyOne.unknownCode': 'Either code or unknown must be submitted',
+        'required_without.offenceCode': 'You must enter the offence code',
       },
     )
+    if (offenceCodeForm.offenceCode && !offenceCodeForm.unknownCode) {
+      try {
+        await this.manageOffencesService.getOffenceByCode(offenceCodeForm.offenceCode, req.user.token)
+      } catch (error) {
+        logger.error(error)
+        errors.push({ text: 'You must enter a valid offence code.', href: '#offenceCode' })
+      }
+    }
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('offenceCodeForm', { ...offenceCodeForm })

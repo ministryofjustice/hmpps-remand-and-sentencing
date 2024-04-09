@@ -383,6 +383,7 @@ export default class CourtCaseRoutes {
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
+      errors: req.flash('errors') || [],
       topCaseOutcomes,
     })
   }
@@ -390,6 +391,17 @@ export default class CourtCaseRoutes {
   public submitOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const overallCaseOutcomeForm = trimForm<CourtCaseOverallCaseOutcomeForm>(req.body)
+    const errors = validate(
+      overallCaseOutcomeForm,
+      { overallCaseOutcome: 'required' },
+      { 'required.overallCaseOutcome': 'You must select the overall case outcome' },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/overall-case-outcome`,
+      )
+    }
     if (overallCaseOutcomeForm.overallCaseOutcome === 'LOOKUPDIFFERENT') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/lookup-case-outcome`,

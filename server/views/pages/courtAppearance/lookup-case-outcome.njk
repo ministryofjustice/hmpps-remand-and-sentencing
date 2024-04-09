@@ -8,6 +8,7 @@
 
 
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-lookup-case-outcome">
@@ -24,6 +25,7 @@
                     },
                     id: "case-outcome",
                     name: "caseOutcome",
+                    errorMessage: errors | findError('caseOutcome'),
                     items: []
                 }) }}
 

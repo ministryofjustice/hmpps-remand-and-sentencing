@@ -44,4 +44,6 @@ export default abstract class Page {
       .get(`:radio[value="${value}"]`)
       .invoke('attr', 'id')
       .then(id => cy.get(`label[for="${id}"]`))
+
+  autoCompleteInput = (): PageElement => cy.get('.autocomplete__input')
 }

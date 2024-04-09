@@ -27,4 +27,21 @@ context('Court Case Overall Case Outcome Page', () => {
   it('button to continue is displayed', () => {
     courtCaseLookupCaseOutcomePage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without entering anything in the input results in an error', () => {
+    courtCaseLookupCaseOutcomePage.button().click()
+    courtCaseLookupCaseOutcomePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter an outcome')
+  })
+
+  it('submitting an invalid outcome results in an error', () => {
+    courtCaseLookupCaseOutcomePage.autoCompleteInput().type('An invalid outcome').blur()
+    courtCaseLookupCaseOutcomePage.button().click()
+    courtCaseLookupCaseOutcomePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter a valid outcome')
+  })
 })

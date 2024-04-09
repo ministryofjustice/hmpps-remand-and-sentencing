@@ -27,4 +27,8 @@ export default class CaseOutcomeService {
         return a.rank - b.rank
       })
   }
+
+  validOutcome(lookupOutcome: string): boolean {
+    return this.caseOutcomes.some(caseOutcome => caseOutcome.description === lookupOutcome)
+  }
 }

@@ -429,12 +429,29 @@ export default class CourtCaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       warrantType,
+      errors: req.flash('errors') || [],
     })
   }
 
   public submitLookupCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const lookupCaseOutcomeForm = trimForm<CourtCaseLookupCaseOutcomeForm>(req.body)
+    const errors = validate(
+      lookupCaseOutcomeForm,
+      { caseOutcome: 'required' },
+      {
+        'required.caseOutcome': 'You must enter an outcome',
+      },
+    )
+    if (lookupCaseOutcomeForm.caseOutcome && !this.caseOutcomeService.validOutcome(lookupCaseOutcomeForm.caseOutcome)) {
+      errors.push({ text: 'You must enter a valid outcome', href: '#caseOutcome' })
+    }
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/lookup-case-outcome`,
+      )
+    }
     this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, lookupCaseOutcomeForm.caseOutcome)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/case-outcome-applied-all`,

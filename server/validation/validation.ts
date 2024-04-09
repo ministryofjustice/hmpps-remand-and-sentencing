@@ -1,6 +1,5 @@
 import Validator, { ErrorMessages, Rules } from 'validatorjs'
 import onlyOneValidate from './onlyOneRule'
-import { services } from '../services'
 
 export default function validate<T>(
   form: T,
@@ -22,9 +21,4 @@ const asErrors = (errors: Validator.Errors) =>
     return { text: message, href: `#${key}` }
   })
 
-function validOutcome(input: string): boolean {
-  return services().caseOutcomeService.validOutcome(input)
-}
-
 Validator.register('onlyOne', onlyOneValidate, 'only one validation rule')
-Validator.register('validOutcome', validOutcome, 'must be a valid outcome')

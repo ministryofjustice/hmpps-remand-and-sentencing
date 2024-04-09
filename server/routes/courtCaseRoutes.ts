@@ -438,12 +438,14 @@ export default class CourtCaseRoutes {
     const lookupCaseOutcomeForm = trimForm<CourtCaseLookupCaseOutcomeForm>(req.body)
     const errors = validate(
       lookupCaseOutcomeForm,
-      { caseOutcome: 'required|validOutcome' },
+      { caseOutcome: 'required' },
       {
         'required.caseOutcome': 'You must enter an outcome',
-        'validOutcome.caseOutcome': 'You must enter a valid outcome',
       },
     )
+    if (lookupCaseOutcomeForm.caseOutcome && !this.caseOutcomeService.validOutcome(lookupCaseOutcomeForm.caseOutcome)) {
+      errors.push({ text: 'You must enter a valid outcome', href: '#caseOutcome' })
+    }
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(

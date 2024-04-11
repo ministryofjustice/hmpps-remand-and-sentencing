@@ -46,6 +46,16 @@ export default function routes(services: Services): Router {
   get('/person/:nomsId', courtCaseRoutes.start)
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/warrant-type',
+    courtCaseRoutes.getWarrantType,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-warrant-type',
+    courtCaseRoutes.submitWarrantType,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/reference',
     courtCaseRoutes.getReference,
   )
@@ -93,16 +103,6 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-court-name',
     courtCaseRoutes.submitCourtName,
-  )
-
-  get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/warrant-type',
-    courtCaseRoutes.getWarrantType,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-warrant-type',
-    courtCaseRoutes.submitWarrantType,
   )
 
   get(

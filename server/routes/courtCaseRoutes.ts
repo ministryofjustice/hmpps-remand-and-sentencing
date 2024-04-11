@@ -217,13 +217,28 @@ export default class CourtCaseRoutes {
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
+      errors: req.flash('errors') || [],
+      backLink: submitToCheckAnswers
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
     })
   }
 
   public submitSelectCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const referenceForm = trimForm<CourtCaseSelectCourtNameForm>(req.body)
-    if (referenceForm.courtNameSelect === 'true') {
+    const selectCourtNameForm = trimForm<CourtCaseSelectCourtNameForm>(req.body)
+    const errors = validate(
+      selectCourtNameForm,
+      { courtNameSelect: 'required' },
+      { 'required.courtNameSelect': "Select 'Yes' if the appearance was at this court." },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/select-court-name`,
+      )
+    }
+    if (selectCourtNameForm.courtNameSelect === 'true') {
       const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
         req.user.token,
         courtCaseReference,
@@ -234,7 +249,7 @@ export default class CourtCaseRoutes {
         latestCourtAppearance.nextCourtAppearance?.courtCode,
       )
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/overall-case-outcome`,
       )
     }
     const { submitToCheckAnswers } = req.query

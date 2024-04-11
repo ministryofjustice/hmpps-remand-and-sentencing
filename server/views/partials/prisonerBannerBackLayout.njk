@@ -1,0 +1,15 @@
+{% extends "./prisonerBannerLayout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+
+{% block subNavigation %}
+        <div class="govuk-grid-row" role="navigation">
+            <div class="govuk-grid-column-one-half">
+                {{ govukBackLink({
+                    text: "Back",
+                    href: backLink
+                }) }}
+                </div>
+            <div class="govuk-grid-column-one-half govuk-!-text-align-right"><a href="/person/{{ nomsId }}" class="govuk-link govuk-body-s">Go to Court cases</a></div>
+        </div>
+    {% endblock %}

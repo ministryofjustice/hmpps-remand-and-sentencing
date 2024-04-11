@@ -307,6 +307,9 @@ export default class CourtCaseRoutes {
       appearanceReference,
       errors: req.flash('errors') || [],
       addOrEditCourtCase,
+      backLink: submitToCheckAnswers
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`
+        : `/person/${nomsId}`,
     })
   }
 
@@ -332,7 +335,7 @@ export default class CourtCaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-upload`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     )
   }
 

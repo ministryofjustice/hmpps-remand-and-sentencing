@@ -1,25 +1,28 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitle = applicationName + " - Same court name page" %}
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-select-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <span class="govuk-caption-l">Add an appearance to court case {{ courtCaseUniqueIdentifier }}</span>
+                <span class="govuk-caption-l">Add an appearance</span>
                 {{ govukRadios({
                     name: "courtNameSelect",
+                    id: "courtNameSelect",
+                    errorMessage: errors | findError('courtNameSelect'),
                     fieldset: {
                         legend: {
-                        text: "Was the appearance at this court?",
+                        text: "Was the appearance at " + lastCourtName + "?",
                         isPageHeading: true,
                         classes: "govuk-fieldset__legend--l"
                         }
                     },
                     hint: {
-                        text: lastCourtName
+                        text: "This was the court name for the previous appearance."
                     },
                     items: [
                         {

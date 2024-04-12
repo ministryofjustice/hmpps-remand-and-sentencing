@@ -1,6 +1,12 @@
 import Page from '../pages/page'
 import StartPage from '../pages/startPage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
+import CourtCaseTaskListPage from '../pages/courtCaseTaskListPage'
+import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
+import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
+import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
+import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
+import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -23,37 +29,37 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
 
-    // let courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    // courtCaseTaskListPage.appearanceInformationLink().click()
+    let courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage.appearanceInformationLink().click()
 
-    // const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
-    // courtCaseReferencePage.input().type('1234')
-    // courtCaseReferencePage.button().click()
-    // const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    // courtCaseWarrantDatePage.dayDateInput('warrant-date').type('12')
-    // courtCaseWarrantDatePage.monthDateInput('warrant-date').type('5')
-    // courtCaseWarrantDatePage.yearDateInput('warrant-date').type('2023')
-    // courtCaseWarrantDatePage.button().click()
-    // const courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
-    // courtCaseCourtNamePage.autoCompleteInput().type('cou')
-    // courtCaseCourtNamePage.firstAutoCompleteOption().click()
-    // courtCaseCourtNamePage.button().click()
+    const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+    courtCaseReferencePage.input().type('1234')
+    courtCaseReferencePage.button().click()
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrant-date').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrant-date').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrant-date').type('2023')
+    courtCaseWarrantDatePage.button().click()
+    const courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
+    courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.button().click()
 
-    // const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    // courtCaseTaggedBailPage.radioLabelSelector('Yes').click()
-    // courtCaseTaggedBailPage.input().type('5')
-    // courtCaseTaggedBailPage.button().click()
+    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
+    // courtCaseTaggedBailPage.radioLabelSelector('Yes').click() // uncomment once tagged bail ticket is done
+    courtCaseTaggedBailPage.input().type('5')
+    courtCaseTaggedBailPage.button().click()
 
-    // const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', { - sort this once the check answers ticket is done
     //   'Court case reference': '1234',
     //   'Warrant date': '12 05 2023',
     //   'Court name': 'Bradford Crown Court',
     //   'Tagged bail': '5',
     // })
-    // courtCaseCheckAnswersPage.button().click()
+    courtCaseCheckAnswersPage.button().click()
 
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
+    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
     // courtCaseTaskListPage.courtDocumentsLink().click()
 
     // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
@@ -145,33 +151,33 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
 
-    // let courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    // courtCaseTaskListPage.appearanceInformationLink().click()
+    let courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage.appearanceInformationLink().click()
 
-    // const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
-    // courtCaseReferencePage.input().type('1234')
-    // courtCaseReferencePage.button().click()
-    // const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    // courtCaseWarrantDatePage.dayDateInput('warrant-date').type('12')
-    // courtCaseWarrantDatePage.monthDateInput('warrant-date').type('5')
-    // courtCaseWarrantDatePage.yearDateInput('warrant-date').type('2023')
-    // courtCaseWarrantDatePage.button().click()
-    // const courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
-    // courtCaseCourtNamePage.autoCompleteInput().type('cou')
-    // courtCaseCourtNamePage.firstAutoCompleteOption().click()
-    // courtCaseCourtNamePage.button().click()
+    const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+    courtCaseReferencePage.input().type('1234')
+    courtCaseReferencePage.button().click()
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrant-date').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrant-date').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrant-date').type('2023')
+    courtCaseWarrantDatePage.button().click()
+    const courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
+    courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.button().click()
 
-    // const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
+    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
     // courtCaseTaggedBailPage.radioLabelSelector('Yes').click()
-    // courtCaseTaggedBailPage.input().type('5')
-    // courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage.input().type('5')
+    courtCaseTaggedBailPage.button().click()
 
     // const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     // courtCaseOverallSentenceLengthPage.yearsInput().type('4')
     // courtCaseOverallSentenceLengthPage.monthsInput().type('5')
     // courtCaseOverallSentenceLengthPage.button().click()
 
-    // const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
     //   'warrant type': 'Sentencing',
     //   'Case reference': '1234',
@@ -180,9 +186,9 @@ context('New Court Case journey', () => {
     //   'Tagged bail': '5',
     //   'Overall sentence length': '4 years 5 months',
     // })
-    // courtCaseCheckAnswersPage.button().click()
+    courtCaseCheckAnswersPage.button().click()
 
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
+    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
     // courtCaseTaskListPage.courtDocumentsLink().click()
 
     // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet

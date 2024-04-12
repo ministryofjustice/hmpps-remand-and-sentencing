@@ -16,7 +16,7 @@
                     rows: [
                         {
                             key: {
-                            text: "Court case reference number"
+                            text: "Court case reference"
                         },
                             value: {
                             text: courtAppearance.caseReferenceNumber
@@ -27,23 +27,6 @@
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/reference?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "court case reference number"
-                                }
-                            ]
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Court name"
-                        },
-                            value: {
-                            text: courtAppearance.courtName
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/court-name?submitToCheckAnswers=true",
-                                    text: "Change",
-                                    visuallyHiddenText: "court name"
                                 }
                             ]
                         }
@@ -61,6 +44,23 @@
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "warrant date"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Court name"
+                        },
+                            value: {
+                            text: courtAppearance.courtName
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/court-name?submitToCheckAnswers=true",
+                                    text: "Change",
+                                    visuallyHiddenText: "court name"
                                 }
                             ]
                         }

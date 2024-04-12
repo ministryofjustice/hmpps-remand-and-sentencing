@@ -56,6 +56,11 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/task-list',
+    courtCaseRoutes.getTaskList,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/reference',
     courtCaseRoutes.getReference,
   )

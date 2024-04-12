@@ -1,0 +1,82 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+
+{% set taskListItems = [
+{
+    title: {
+        text: "Appearance information"
+    },
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/"+ appearanceReference + "/reference",
+        status: {
+            text: "Ignore status"
+        }
+    }
+    ,
+    {
+    title: {
+        text: "Court documents"
+    },
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/"+ appearanceReference + "/document-type",
+        status: {
+            text: "Ignore status"
+        }
+},{
+        title: {
+            text: "Sentences" if warrantType === 'SENTENCING' else "Offences"
+        },
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/"+ appearanceReference + "/offences/check-offence-answers",
+            status: {
+                text: "Ignore status"
+            }
+    }
+]%}
+
+{% if warrantType === 'REMAND' %}
+    {% set taskListItems = (taskListItems.push({
+        title: {
+            text: "Next court appearance"
+        },
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/"+ appearanceReference + "/next-hearing-select",
+        status: {
+            text: "Ignore status"
+        }
+    }), taskListItems)%}
+{% endif %}
+
+
+{% set pageTitle = applicationName + " - task list page" %}
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l">
+                    {% if isAddCourtCase %}
+                        Add a court case
+                    {% else %}
+                        Add an appearance
+                    {% endif %}
+                </h1>
+                <h2 class="govuk-heading-m">
+                    {% if warrantType === 'SENTENCING'%}
+                        Enter information from a sentencing warrant
+                    {% else %}
+                        Enter information from a remand warrant
+                    {% endif %}
+                </h2>
+                <p class="govuk-body">You must enter information exactly as it is written on the warrant.</p>
+                {{ govukTaskList({
+                    classes: "govuk-!-margin-top-7",
+                    items: taskListItems
+                })
+                }}
+                <h2 class="govuk-heading-m">
+                    {% if isAddCourtCase %}
+                        Finish adding court case
+                    {% else %}
+                        Finish adding an appearance
+                    {% endif %}
+                </h2>
+                <p class="govuk-body">Once every task has been completed, you must  save the information. You will not be able to return to this page, but can edit the details in the Court cases tab.</p>
+        </div>
+    </div>
+{% endblock %}

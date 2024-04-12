@@ -8,7 +8,10 @@ context('Select court name page', () => {
     cy.task('stubGetLatestCourtAppearance')
     cy.signIn()
     cy.visit('/person/A1234AB/edit-court-case/12345/appearance/1/select-court-name')
-    courtCaseSelectCourtNamePage = Page.verifyOnPage(CourtCaseSelectCourtNamePage)
+    courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
+      CourtCaseSelectCourtNamePage,
+      'Was the appearance at Birmingham Crown Court?',
+    )
   })
 
   it('displays person details', () => {
@@ -22,5 +25,13 @@ context('Select court name page', () => {
 
   it('button to continue is displayed', () => {
     courtCaseSelectCourtNamePage.button().should('contain.text', 'Continue')
+  })
+
+  it('submitting without selecting anything in the input results in an error', () => {
+    courtCaseSelectCourtNamePage.button().click()
+    courtCaseSelectCourtNamePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', "There is a problem Select 'Yes' if the appearance was at this court.")
   })
 })

@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 
@@ -20,7 +20,7 @@
                         isPageHeading: true
                     },
                     hint: {
-                        text: "Enter a court name, address, town or city."
+                        text: "Search for a court name, address, town or city."
                     },
                     id: "court-name",
                     name: "courtName",

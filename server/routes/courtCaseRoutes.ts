@@ -263,8 +263,18 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
     let courtName: string
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`
     if (submitToCheckAnswers) {
       courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`
+    } else if (addOrEditCourtCase === 'edit-court-case') {
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        req.user.token,
+        courtCaseReference,
+      )
+      if (latestCourtAppearance.nextCourtAppearance?.courtCode) {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/select-court-name`
+      }
     }
 
     return res.render('pages/courtAppearance/court-name', {
@@ -275,6 +285,7 @@ export default class CourtCaseRoutes {
       appearanceReference,
       errors: req.flash('errors') || [],
       addOrEditCourtCase,
+      backLink,
     })
   }
 

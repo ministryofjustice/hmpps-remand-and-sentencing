@@ -49,4 +49,14 @@ context('Tagged bail page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem Enter a whole number for the number of days on tagged bail')
   })
+
+  it('selecting yes and entering a decimal in input results in error', () => {
+    courtCaseTaggedBailPage.radioLabelSelector('true').click()
+    courtCaseTaggedBailPage.input().type('2.5')
+    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Enter a whole number for the number of days on tagged bail')
+  })
 })

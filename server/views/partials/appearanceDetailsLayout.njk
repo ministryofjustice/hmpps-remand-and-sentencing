@@ -1,22 +1,24 @@
-{% extends "./prisonerBannerLayout.njk" %}
+{% extends "./prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "../components/offenceSummaryRow/macro.njk" import offenceSummaryRow %}
 
 {% set offenceDetailHtml %}
     <dl class="offences-summary-card-content">
-        {% for offence in courtAppearance.offences%}
-            <div class="offences-summary-card-row">
-                <dt class="offences-summary-card-key govuk-!-font-weight-bold">
-                    {{ offence.offenceCode + ' ' + offence.offenceName }}
-                </dt>
-                <dd class="offences-summary-card-value govuk-body-s">Committed on {{ offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '') }}</dd>
-            </div>
+        {% for offence in offences %}
+            {{ offenceSummaryRow(offence) }}
         {% endfor %}
     </dl>
 {% endset %}
 
-{% set offenceSentence = 'sentences' if courtAppearance.warrantType === 'SENTENCING' else 'offences' %}
+{% set SentenceDetailHtml %}
+    <dl class="offences-summary-card-content">
+        {% for sentence in sentences %}
+            {{ offenceSummaryRow(sentence) }}
+        {% endfor %}
+    </dl>
+{% endset %}
 
 {% block content %}
     {{ super() }}
@@ -62,28 +64,51 @@
                     ]
                 }) }}
                 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-                <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">{{offenceSentence | capitalize }}</h2>
+                <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Offences</h2>
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border offences-summary-card-content",
                     rows: [
                         {
                             key: {
-                                text: offenceSentence | capitalize + " added"
+                                text: "Offences added"
                             },
                             value: {
-                                text: courtAppearance.offences | length
+                                text: offences | length
                             },
                             classes: "offences-summary-card-offence-details-row"
                         }
                     ]
                 }) }}
-                {% if courtAppearance.offences | length %}
+                {% if offences | length %}
                 {{ govukDetails({
-                    summaryText: "Show " + offenceSentence,
+                    summaryText: "Show Offences",
                     html: offenceDetailHtml
                 }) }}
                 {% endif %}
-
+                {% if courtAppearance.warrantType === 'SENTENCING'%}
+                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                    <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Sentences</h2>
+                    {{ govukSummaryList({
+                        classes: "govuk-summary-list--no-border offences-summary-card-content",
+                        rows: [
+                            {
+                                key: {
+                                    text: "Sentences added"
+                                },
+                                value: {
+                                    text: sentences | length
+                                },
+                                classes: "offences-summary-card-offence-details-row"
+                            }
+                        ]
+                    }) }}
+                    {% if sentences | length %}
+                        {{ govukDetails({
+                            summaryText: "Show Sentences",
+                            html: SentenceDetailHtml
+                        }) }}
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>

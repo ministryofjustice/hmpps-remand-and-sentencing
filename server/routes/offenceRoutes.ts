@@ -296,6 +296,7 @@ export default class OffenceRoutes {
       offenceReference,
       appearanceReference,
       addOrEditCourtCase,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     })
   }
 

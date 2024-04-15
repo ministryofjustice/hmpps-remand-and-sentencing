@@ -6,6 +6,8 @@ export default function setupCurrentCourtAppearance(courtAppearanceService: Cour
     const { nomsId } = req.params
     const courtAppearance = courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     res.locals.courtAppearance = courtAppearance
+    res.locals.offences = courtAppearance.offences.filter(offence => !offence.sentence)
+    res.locals.sentences = courtAppearance.offences.filter(offence => offence.sentence)
     next()
   }
 }

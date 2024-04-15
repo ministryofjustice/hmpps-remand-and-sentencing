@@ -22,4 +22,31 @@ context('Tagged bail page', () => {
   it('button to continue is displayed', () => {
     courtCaseTaggedBailPage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without selecting anything results in error', () => {
+    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Enter the number of days for the tagged bail')
+  })
+
+  it('selecting yes and not entering anything into input results in error', () => {
+    courtCaseTaggedBailPage.radioLabelSelector('true').click()
+    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Enter the number of days for the tagged bail')
+  })
+
+  it('selecting yes and entering 0 input results in error', () => {
+    courtCaseTaggedBailPage.radioLabelSelector('true').click()
+    courtCaseTaggedBailPage.input().type('0')
+    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Enter a whole number for the number of days on tagged bail')
+  })
 })

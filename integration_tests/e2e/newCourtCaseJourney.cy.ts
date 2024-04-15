@@ -46,7 +46,7 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.button().click()
 
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    // courtCaseTaggedBailPage.radioLabelSelector('Yes').click() // uncomment once tagged bail ticket is done
+    courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('5')
     courtCaseTaggedBailPage.button().click()
 
@@ -168,7 +168,7 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.button().click()
 
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    // courtCaseTaggedBailPage.radioLabelSelector('Yes').click()
+    courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('5')
     courtCaseTaggedBailPage.button().click()
 

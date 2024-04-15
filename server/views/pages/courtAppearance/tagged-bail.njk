@@ -1,35 +1,55 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 
-{% set pageTitle = applicationName + " - Same case reference number page" %}
+{% set yesHtml %}
+{{ govukInput({
+    name: "taggedBail",
+    errorMessage: errors | findError('taggedBail'),
+    label: {
+        text: "Number of days"
+    },
+    inputmode: "numeric",
+    classes: "govuk-input--width-3"
+}) }}
+{% endset %}
+
+{% set pageTitle = applicationName + " - Tagged bail page" %}
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-tagged-bail{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/appearanceCaption.njk" %}
-
-                {% call govukFieldset({
-                    legend: {
-                        text: "How many days tagged bail?",
-                        classes: "govuk-fieldset__legend--l",
-                        isPageHeading: true
-                    }
-                }) %}
-
-                {{ govukInput({
-                    name: "taggedBail",
-                    label: {
-                        text: "Number of days"
+                
+                {{ govukRadios({
+                    name: "hasTaggedBail",
+                    fieldset: {
+                        legend: {
+                            text: "Is there tagged bail on the warrant?",
+                            classes: "govuk-fieldset__legend--l",
+                            isPageHeading: true
+                        }
                     },
-                    inputmode: "numeric",
-                    classes: "govuk-input--width-3"
-                }) }}
-
-                {% endcall %}
+                    errorMessage: errors | findError('hasTaggedBail'),
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes",
+                            conditional: {
+                                html: yesHtml
+                            }
+                        },
+                        {
+                            value: "false",
+                            text: "No"
+                        }
+                    ]
+                    }) }}
 
                 {{ govukButton({
                     text: "Continue"

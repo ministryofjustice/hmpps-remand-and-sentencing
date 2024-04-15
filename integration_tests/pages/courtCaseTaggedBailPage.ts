@@ -2,6 +2,6 @@ import Page from './page'
 
 export default class CourtCaseTaggedBailPage extends Page {
   constructor() {
-    super('How many days tagged bail?')
+    super('Is there tagged bail on the warrant?')
   }
 }

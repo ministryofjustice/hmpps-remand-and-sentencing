@@ -561,6 +561,7 @@ export default class CourtCaseRoutes {
       taggedBail,
       courtCaseReference,
       appearanceReference,
+      errors: req.flash('errors') || [],
       addOrEditCourtCase,
     })
   }
@@ -568,7 +569,21 @@ export default class CourtCaseRoutes {
   public submitTaggedBail: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const taggedBailForm = trimForm<CourtCaseTaggedBailForm>(req.body)
-
+    const errors = validate(
+      taggedBailForm,
+      { taggedBail: 'required_if:hasTaggedBail,true|minWholeNumber:1', hasTaggedBail: 'required' },
+      {
+        'required_if.taggedBail': 'Enter the number of days for the tagged bail',
+        'minWholeNumber.taggedBail': 'Enter a whole number for the number of days on tagged bail',
+        'required.hasTaggedBail': 'Enter the number of days for the tagged bail',
+      },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/tagged-bail`,
+      )
+    }
     this.courtAppearanceService.setTaggedBail(req.session, nomsId, taggedBailForm.taggedBail)
 
     return res.redirect(

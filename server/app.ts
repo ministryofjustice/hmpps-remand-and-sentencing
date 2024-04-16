@@ -22,6 +22,7 @@ import type { Services } from './services'
 import populateCurrentPrisoner from './middleware/populateCurrentPrisoner'
 import setupCurrentCourtAppearance from './middleware/setUpCurrentCourtAppearance'
 import setupCurrentCourtCase from './middleware/setUpCurrentCourtCase'
+import setupCurrentOffence from './middleware/setupCurrentOffence'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -46,6 +47,7 @@ export default function createApp(services: Services): express.Application {
   app.use(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences',
     setupCurrentCourtAppearance(services.courtAppearanceService),
+    setupCurrentOffence(services.offenceService),
   )
   app.get('*', getFrontendComponents(services))
 

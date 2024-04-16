@@ -29,10 +29,11 @@
                 }
                 }), summaryListRows)%}
 {% endif %}
+
 {% if params.custodialSentenceLength %}
     {% set sentenceLengthValue = '' %}
     {% for order in params.custodialSentenceLength.periodOrder %}
-        {% set sentenceLengthValue = sentenceLengthValue + ' ' + params.custodialSentenceLength[order] + ' ' + order%}
+        {% set sentenceLengthValue = sentenceLengthValue + ' ' + params.custodialSentenceLength[order] + ' ' + order %}
     {% endfor %}
 
     {% set summaryListRows = (summaryListRows.push({
@@ -44,6 +45,39 @@
                 }
                 }), summaryListRows)%}
 {% endif %}
+
+{% if params.licencePeriodLength %}
+    {% set licencePeriodLengthValue = '' %}
+    {% for order in params.licencePeriodLength.periodOrder %}
+        {% set licencePeriodLengthValue = licencePeriodLengthValue + ' ' + params.licencePeriodLength[order] + ' ' + order %}
+    {% endfor %}
+
+    {% set summaryListRows = (summaryListRows.push({
+                    key: {
+                    text: "Licence period"
+                },
+                    value: {
+                    text: licencePeriodLengthValue
+                }
+                }), summaryListRows)%}
+{% endif %}
+
+{% if params.sentenceServeType %}
+    {% set sentenceServeTypeValue = params.sentenceServeType %}
+    {% if params.consecutiveTo %}
+       {% set sentenceServeTypeValue = sentenceServeTypeValue + " to count " + params.consecutiveTo %} 
+    {% endif %}
+    {% set summaryListRows = (summaryListRows.push({
+                    key: {
+                    text: "Consecutive or concurrent"
+                },
+                    value: {
+                    text: sentenceServeTypeValue
+                }
+                }), summaryListRows)%}
+{% endif %}
+
+
 
 <div class="offence-card {% if params.isSentenced %} sentence-card {% endif %}">
     <div class="offence-card-offence-details">

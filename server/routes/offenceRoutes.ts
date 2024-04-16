@@ -436,6 +436,7 @@ export default class OffenceRoutes {
       infoBanner: req.flash('infoBanner'),
       addOrEditCourtCase,
       offenceMap,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     })
   }
 

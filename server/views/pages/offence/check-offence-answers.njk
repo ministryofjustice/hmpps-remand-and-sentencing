@@ -1,12 +1,14 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "../../components/offenceCard/macro.njk" import offenceCard %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
-{% set pageTitle = applicationName + " - Check offences" %}
 
 {% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
+
+{% set pageTitle = applicationName + " - Check "+ offenceSentence + "s" %}
+
 {% block content %}
 
     <div class="govuk-grid-row govuk-!-margin-top-4">
@@ -30,6 +32,14 @@
             {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
                     rows: [
+                        {
+                            key: {
+                                text: "Case reference"
+                            },
+                            value: {
+                                text: courtAppearance.caseReferenceNumber
+                            }
+                        },
                         {
                             key: {
                                 text: "Court name"
@@ -57,7 +67,13 @@
                     ]
                 }) 
             }}
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">{{ offenceSentence | capitalize }}s added</h2>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">{{ offenceSentence | capitalize }}s ({{ courtAppearance.offences | length }})</h2>
+
+            {{ govukButton({
+                    text: "Add a sentence" if courtAppearance.warrantType === 'SENTENCING' else "Add an offence" ,
+                    classes: "govuk-button--secondary",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
+            }) }}
 
             {% for offence in courtAppearance.offences %}
                 {{
@@ -71,17 +87,20 @@
                         terrorRelated: offence.terrorRelated,
                         isSentenced: offence.sentence,
                         custodialSentenceLength: offence.sentence.custodialSentenceLength,
+                        licencePeriodLength: offence.sentence.licencePeriodLength,
+                        sentenceServeType: offence.sentence.sentenceServeType,
+                        consecutiveTo: offence.sentence.consecutiveTo,
                         actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + ("/count-number" if courtAppearance.warrantType === "SENTENCING" else "/offence-code"  ),
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/edit-offence",
                                     text: "Edit",
-                                    visuallyHiddenText: "edit offence"
+                                    visuallyHiddenText: "edit " + offenceSentence
                                 },
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
                                     text: "Delete",
-                                    visuallyHiddenText: "delete offence"
+                                    visuallyHiddenText: "delete " + offenceSentence
                                 }
                             ]
                         }
@@ -90,15 +109,11 @@
             {% endfor %}
 
             <div class="govuk-button-group govuk-!-margin-top-8">
-                {{ govukButton({
-                    text: "Add another offence",
-                    classes: "govuk-button--secondary",
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
-                }) }}
+                
 
                 {{ govukButton({
-                    text: "Finish adding offences and continue",
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-select",
+                    text: "Accept and continue",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/task-list",
                     attributes: {
                         "data-qa": "finishAddingButton"
                     }

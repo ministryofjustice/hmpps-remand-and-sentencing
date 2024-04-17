@@ -7,6 +7,7 @@
 
 {% set yesHtml %}
 {{ govukInput({
+    id: "taggedBail",
     name: "taggedBail",
     errorMessage: errors | findError('taggedBail'),
     label: {
@@ -40,12 +41,14 @@
                         {
                             value: "true",
                             text: "Yes",
+                            checked: taggedBailForm.hasTaggedBail === 'true',
                             conditional: {
                                 html: yesHtml
                             }
                         },
                         {
                             value: "false",
+                            checked: taggedBailForm.hasTaggedBail === 'false',
                             text: "No"
                         }
                     ]

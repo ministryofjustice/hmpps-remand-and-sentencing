@@ -551,6 +551,7 @@ export default class OffenceRoutes {
       parseInt(offenceReference, 10),
       offence,
     )
+    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const sentenceOffence = warrantType === 'SENTENCING' ? 'sentence' : 'offence'
     if (offencePersistType === OffencePersistType.CREATED) {

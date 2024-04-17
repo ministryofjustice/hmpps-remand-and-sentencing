@@ -44,10 +44,11 @@ export default abstract class Page {
   summaryList = (): PageElement => cy.get('.govuk-summary-list')
 
   radioLabelSelector = (value: string): PageElement =>
-    cy
-      .get(`:radio[value="${value}"]`)
+    this.radioSelector(value)
       .invoke('attr', 'id')
       .then(id => cy.get(`label[for="${id}"]`))
+
+  radioSelector = (value: string): PageElement => cy.get(`:radio[value="${value}"]`)
 
   autoCompleteInput = (): PageElement => cy.get('.autocomplete__input')
 }

@@ -44,6 +44,7 @@ context('Tagged bail page', () => {
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('0')
     courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage.radioSelector('true').should('be.checked')
     courtCaseTaggedBailPage
       .errorSummary()
       .trimTextContent()
@@ -54,6 +55,7 @@ context('Tagged bail page', () => {
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('2.5')
     courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage.radioSelector('true').should('be.checked')
     courtCaseTaggedBailPage
       .errorSummary()
       .trimTextContent()

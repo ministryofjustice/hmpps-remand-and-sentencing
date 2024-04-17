@@ -1,6 +1,6 @@
 
 <span class="govuk-caption-l">
-    {% if offence.sentence.countNumber %}
+    {% if offence.sentence.countNumber and not isDeleteOffence %}
         Add sentence information for count {{ offence.sentence.countNumber }}
     {% elif isAddCourtCase %}
         Add a court case

@@ -465,17 +465,35 @@ export default class OffenceRoutes {
       offenceReference,
       appearanceReference,
       addOrEditCourtCase,
+      errors: req.flash('errors') || [],
       offenceMap,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
     })
   }
 
   public submitDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    const sentenceOffence = warrantType === 'SENTENCING' ? 'Sentence' : 'Offence'
     const deleteOffenceForm = trimForm<OffenceDeleteOffenceForm>(req.body)
+    const errors = validate(
+      deleteOffenceForm,
+      {
+        deleteOffence: 'required',
+      },
+      {
+        'required.deleteOffence': `You must select whether you want to delete this ${sentenceOffence.toLowerCase()}`,
+      },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/delete-offence`,
+      )
+    }
     if (deleteOffenceForm.deleteOffence === 'true') {
       this.courtAppearanceService.deleteOffence(req.session, nomsId, parseInt(offenceReference, 10))
-      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-      const sentenceOffence = warrantType === 'SENTENCING' ? 'Sentence' : 'Offence'
+
       req.flash('infoBanner', `${sentenceOffence} deleted`)
     }
     return res.redirect(

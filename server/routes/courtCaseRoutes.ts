@@ -562,6 +562,7 @@ export default class CourtCaseRoutes {
       courtCaseReference,
       appearanceReference,
       errors: req.flash('errors') || [],
+      taggedBailForm: req.flash('taggedBailForm')[0] || {},
       addOrEditCourtCase,
     })
   }
@@ -580,6 +581,7 @@ export default class CourtCaseRoutes {
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
+      req.flash('taggedBailForm', { ...taggedBailForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/tagged-bail`,
       )

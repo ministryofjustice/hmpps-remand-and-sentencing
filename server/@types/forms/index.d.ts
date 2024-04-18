@@ -126,6 +126,10 @@ declare module 'forms' {
   }
 
   export interface OffenceSentenceServeTypeForm {
-    sentenceServeType: string
+    sentenceServeType?: string
+  }
+
+  export interface OffenceConsecutiveToForm {
+    consecutiveTo?: string
   }
 }

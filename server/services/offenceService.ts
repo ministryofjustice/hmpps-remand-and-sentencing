@@ -148,6 +148,21 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
+  setConsecutiveTo(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    consecutiveTo: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = offence.sentence ?? {}
+    sentence.consecutiveTo = consecutiveTo
+    offence.sentence = sentence
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
+  }
+
   getSessionOffence(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

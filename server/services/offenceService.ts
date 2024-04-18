@@ -133,6 +133,21 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
+  setSentenceServeType(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    sentenceServeType: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = offence.sentence ?? {}
+    sentence.sentenceServeType = sentenceServeType
+    offence.sentence = sentence
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
+  }
+
   getSessionOffence(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

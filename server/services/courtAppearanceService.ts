@@ -187,6 +187,11 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId)
   }
 
+  isForwithAlreadySelected(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    return courtAppearance.offences.some(offence => offence.sentence?.sentenceServeType === 'FORTHWITH')
+  }
+
   addOffence(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

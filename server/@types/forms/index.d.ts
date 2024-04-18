@@ -124,4 +124,8 @@ declare module 'forms' {
       period: string
     }[]
   }
+
+  export interface OffenceSentenceServeTypeForm {
+    sentenceServeType: string
+  }
 }

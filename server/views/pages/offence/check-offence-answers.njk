@@ -72,7 +72,10 @@
             {{ govukButton({
                     text: "Add a sentence" if courtAppearance.warrantType === 'SENTENCING' else "Add an offence" ,
                     classes: "govuk-button--secondary",
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence"
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
+                    attributes: {
+                        "data-qa": "addAnotherOffence"
+                    }
             }) }}
 
             {% for offence in courtAppearance.offences %}

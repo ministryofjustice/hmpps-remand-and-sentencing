@@ -7,6 +7,12 @@ import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
 import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
+import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
+import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
+import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
+import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
+import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
+import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -206,28 +212,31 @@ context('New Court Case journey', () => {
     // courtCaseDocumentsPage.button().click()
 
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    // courtCaseTaskListPage.sentencesLink().click()
+    courtCaseTaskListPage.sentencesLink().click()
 
-    // const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
-    // offenceCountNumberPage.input().type('1')
-    // offenceCountNumberPage.button().click()
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, '1234', 'sentences')
+    offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
-    // const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-    // offenceOffenceCodePage.input().type('PS90037')
-    // offenceOffenceCodePage.button().click()
+    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.input().type('1')
+    offenceCountNumberPage.button().click()
 
-    // const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    // offenceOffenceCodeConfirmPage.button().click()
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.button().click()
 
-    // const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    // offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    // offenceTerrorRelatedPage.button().click()
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.button().click()
 
-    // const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
-    // offenceOffenceDatePage.dayDateInput('offence-start-date').type('12')
-    // offenceOffenceDatePage.monthDateInput('offence-start-date').type('5')
-    // offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
-    // offenceOffenceDatePage.button().click()
+    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
+    offenceTerrorRelatedPage.radioLabelSelector('true').click()
+    offenceTerrorRelatedPage.button().click()
+
+    const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage.dayDateInput('offence-start-date').type('12')
+    offenceOffenceDatePage.monthDateInput('offence-start-date').type('5')
+    offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
+    offenceOffenceDatePage.button().click()
 
     // const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     // offenceSentenceTypePage.radioLabelSelector('SDS (Standard Determinate Sentence)').click()

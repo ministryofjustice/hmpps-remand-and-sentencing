@@ -431,7 +431,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       errors: req.flash('errors') || [],
       forthwithAlreadySelected,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
     })
   }
 
@@ -482,7 +482,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       errors: req.flash('errors') || [],
       countNumber,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     })
   }
 

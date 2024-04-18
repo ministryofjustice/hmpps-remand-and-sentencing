@@ -9,6 +9,7 @@ import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
+import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
@@ -174,5 +175,9 @@ Cypress.Commands.add(
     offenceSentenceLengthPage.yearsInput().type('4')
     offenceSentenceLengthPage.monthsInput().type('5')
     offenceSentenceLengthPage.button().click()
+
+    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
+    offenceSentenceServeTypePage.button().click()
   },
 )

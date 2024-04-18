@@ -10,6 +10,7 @@ import type {
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
   OffenceSentenceLengthForm,
+  OffenceSentenceServeTypeForm,
   OffenceTerrorRelatedForm,
   ReviewOffencesForm,
 } from 'forms'
@@ -380,9 +381,8 @@ export default class OffenceRoutes {
     }
     this.offenceService.setCustodialSentenceLength(req.session, nomsId, courtCaseReference, sentenceLength)
 
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     )
   }
 
@@ -414,6 +414,55 @@ export default class OffenceRoutes {
       )
     this.offenceService.setCustodialSentenceLength(req.session, nomsId, courtCaseReference, sentenceLengths)
 
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+    )
+  }
+
+  public getSentenceServeType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const forthwithAlreadySelected = this.courtAppearanceService.isForwithAlreadySelected(req.session, nomsId)
+    return res.render('pages/offence/sentence-serve-type', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      errors: req.flash('errors') || [],
+      forthwithAlreadySelected,
+    })
+  }
+
+  public submitSentenceServeType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const offenceSentenceServeTypeForm = trimForm<OffenceSentenceServeTypeForm>(req.body)
+    const errors = validate(
+      offenceSentenceServeTypeForm,
+      {
+        sentenceServeType: 'required',
+      },
+      {
+        'required.sentenceServeType': `You must select the consecutive or concurrent`,
+      },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+      )
+    }
+    this.offenceService.setSentenceServeType(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceSentenceServeTypeForm.sentenceServeType,
+    )
+
+    if (offenceSentenceServeTypeForm.sentenceServeType === 'CONSECUTIVE') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/consecutive-to`,
+      )
+    }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,

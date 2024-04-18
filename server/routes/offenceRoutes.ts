@@ -2,6 +2,7 @@ import { RequestHandler } from 'express'
 import type {
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
+  OffenceConsecutiveToForm,
   OffenceCountNumberForm,
   OffenceDeleteOffenceForm,
   OffenceLookupOffenceOutcomeForm,
@@ -430,6 +431,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       errors: req.flash('errors') || [],
       forthwithAlreadySelected,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
     })
   }
 
@@ -463,6 +465,51 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/consecutive-to`,
       )
     }
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
+    )
+  }
+
+  public getConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const countNumber = this.offenceService.getCountNumber(req.session, nomsId, courtCaseReference)
+    return res.render('pages/offence/consecutive-to', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      errors: req.flash('errors') || [],
+      countNumber,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+    })
+  }
+
+  public submitConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const offenceConsecutiveToForm = trimForm<OffenceConsecutiveToForm>(req.body)
+    const errors = validate(
+      offenceConsecutiveToForm,
+      {
+        consecutiveTo: 'required',
+      },
+      {
+        'required.consecutiveTo': `You must enter the consecutive to`,
+      },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/consecutive-to`,
+      )
+    }
+    this.offenceService.setConsecutiveTo(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceConsecutiveToForm.consecutiveTo,
+    )
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,

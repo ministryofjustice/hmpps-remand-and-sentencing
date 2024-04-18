@@ -1,0 +1,28 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set pageTitle = applicationName + " - Consecutive to" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-consecutive-to">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+                
+                {{ govukInput({
+                    label: {
+                        text: "What sentence is count " + countNumber + " consecutive to?",
+                        classes: "govuk-fieldset__legend--l",
+                        isPageHeading: true
+                    },
+                    id: "consecutiveTo",
+                    classes: "govuk-input--width-5",
+                    errorMessage:  errors | findError('consecutiveTo'),
+                    name: "consecutiveTo"
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+{% endblock %}

@@ -38,6 +38,7 @@ declare module 'models' {
     countNumber?: string
     custodialSentenceLength?: SentenceLength
     sentenceServeType?: string
+    consecutiveTo?: string
   }
 
   export interface SentenceLength {

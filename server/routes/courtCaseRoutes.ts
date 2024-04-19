@@ -355,7 +355,7 @@ export default class CourtCaseRoutes {
     }
     this.courtAppearanceService.setWarrantType(req.session, nomsId, warrantTypeForm.warrantType)
     if (warrantTypeForm.warrantType === 'SENTENCING') {
-      this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, 'IMPRISONMENT')
+      this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, 'Imprisonment')
       this.courtAppearanceService.setCaseOutcomeAppliedAll(req.session, nomsId, true)
     }
     const { submitToCheckAnswers } = req.query

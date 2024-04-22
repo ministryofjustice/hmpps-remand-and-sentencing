@@ -10,10 +10,6 @@ function debounce(fn, delay) {
   }
 }
 
-function govukFont(text) {
-  return '<span class="govuk-body">' + text + '</span>'
-}
-
 function offenceValue(offence) {
   return offence.code + ' ' + offence.description
 }
@@ -26,18 +22,19 @@ window.addEventListener('load', function () {
     selectElement: document.querySelector('#offence-name'),
     confirmOnBlur: false,
     name: 'offenceName',
+    menuClasses: 'govuk-body',
     templates: {
       inputValue: function (result) {
         return (result && offenceValue(result)) ?? ''
       },
       suggestion: function (result) {
         if (result.unableToLoad) {
-          return govukFont('No results found')
+          return 'No results found'
         }
         if (typeof result === 'string') {
-          return govukFont('Clear the selection')
+          return 'Clear the selection'
         }
-        return result && govukFont(offenceValue(result))
+        return result && offenceValue(result)
       },
     },
     minLength: 2,

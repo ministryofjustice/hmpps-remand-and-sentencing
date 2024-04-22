@@ -20,6 +20,7 @@ declare module 'models' {
     warrantType?: string
     warrantId?: string
     taggedBail?: string
+    overallSentenceLength?: SentenceLength
   }
 
   export interface Offence {

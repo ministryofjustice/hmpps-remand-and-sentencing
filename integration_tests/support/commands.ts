@@ -167,10 +167,6 @@ Cypress.Commands.add(
     offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
     offenceOffenceDatePage.button().click()
 
-    const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
-    offenceOffenceOutcomePage.radioLabelSelector('Sentencing outcome 1').click()
-    offenceOffenceOutcomePage.button().click()
-
     const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
     offenceSentenceLengthPage.yearsInput().type('4')
     offenceSentenceLengthPage.monthsInput().type('5')

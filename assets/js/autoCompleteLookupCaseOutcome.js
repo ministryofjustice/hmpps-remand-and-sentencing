@@ -10,10 +10,6 @@ function debounce(fn, delay) {
   }
 }
 
-function govukFont(text) {
-  return '<span class="govuk-body">' + text + '</span>'
-}
-
 function caseOutcomeValue(caseOutcome) {
   return caseOutcome.description
 }
@@ -26,18 +22,19 @@ window.addEventListener('load', function () {
     selectElement: document.querySelector('#case-outcome'),
     confirmOnBlur: false,
     name: 'caseOutcome',
+    menuClasses: 'govuk-body',
     templates: {
       inputValue: function (result) {
         return (result && caseOutcomeValue(result)) ?? ''
       },
       suggestion: function (result) {
         if (result.unableToLoad) {
-          return govukFont('No results found')
+          return 'No results found'
         }
         if (typeof result === 'string') {
-          return govukFont('Clear the selection')
+          return 'Clear the selection'
         }
-        return result && govukFont(caseOutcomeValue(result))
+        return result && caseOutcomeValue(result)
       },
     },
     minLength: 2,

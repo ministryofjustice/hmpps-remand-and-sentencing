@@ -1,5 +1,5 @@
 .offence-card {
-	display: flex;
+	display: table;
 	padding: 20px 25px;
 	background-color: #f8f8f8;
 	border-left: 4px solid #ccc;
@@ -13,12 +13,12 @@
 	display: table;
 }
 
-.sentence-card-select {
+.sentence-card-select, .offence-card-select {
     display: table-cell;
 	vertical-align: middle;
 }
 
-.sentence-card-select > .govuk-form-group {
+.sentence-card-select > .govuk-form-group, .offence-card-select > .govuk-form-group {
 	margin-bottom: 0;
 }
 
@@ -31,6 +31,34 @@
 	float: left;
 }
 
+.offence-card-edit > .offence-card-offence-details {
+	width: 100%;
+	float: left;
+}
+
+.offence-card-offence-details > .offence-name {
+	width: 75%;
+	float: left;
+}
+
+.offence-card-offence-details > .offence-name-edit {
+	width: 25%;
+	float: right;
+	text-align: right;
+}
+
+.offence-card-offence-details > .govuk-summary-list > .govuk-summary-list__row > .govuk-summary-list__key {
+	width: 50% !important;
+}
+
+.offence-card-edit-offence-details-key {
+	width: 25% !important;
+}
+
+.offence-card-edit-offence-details-value {
+	width: 75% !important;
+}
+
 .offence-card-actions {
 	width: 25%;
 	float: right;
@@ -40,6 +68,14 @@
 .offence-card-offence-details > .govuk-summary-list, .offence-card > .govuk-summary-list {
 	margin: 0 !important;
 }
+
+.offence-card-offence-details > .govuk-summary-list > .govuk-summary-list__actions {
+	width: 25%;
+	float: right;
+	text-align: right;
+	float: right;
+}
+
 
 .offence-card dt, .offence-card dd {
 	padding: 5px 0 !important;

@@ -1,0 +1,17 @@
+{% from "../components/offenceCard/macro.njk" import offenceCard %}
+
+{{
+                    offenceCard({
+                        offenceCode: offence.offenceCode,
+                        offenceName: offenceMap[offence.offenceCode],
+                        offenceStartDate: offence.offenceStartDate,
+                        offenceEndDate: offence.offenceEndDate,
+                        outcome: offence.outcome,
+                        canEdit: true,
+                        nomsId: nomsId,
+                        addOrEditCourtCase: addOrEditCourtCase,
+                        courtCaseReference: courtCaseReference,
+                        appearanceReference: appearanceReference,
+                        offenceReference: offenceReference
+                    })
+}}

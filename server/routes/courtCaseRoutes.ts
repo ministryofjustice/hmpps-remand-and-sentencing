@@ -544,7 +544,12 @@ export default class CourtCaseRoutes {
       nomsId,
       caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true',
     )
-
+    const { submitToCheckAnswers } = req.query
+    if (submitToCheckAnswers) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/tagged-bail`,
     )

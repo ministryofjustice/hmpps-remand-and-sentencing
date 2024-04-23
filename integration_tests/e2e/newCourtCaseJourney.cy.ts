@@ -13,6 +13,8 @@ import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPag
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
+import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -51,18 +53,28 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()
 
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    courtCaseOverallCaseOutcomePage.radioLabelSelector('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage.button().click()
+
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.button().click()
+
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('5')
     courtCaseTaggedBailPage.button().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', { - sort this once the check answers ticket is done
-    //   'Court case reference': '1234',
-    //   'Warrant date': '12 05 2023',
-    //   'Court name': 'Bradford Crown Court',
-    //   'Tagged bail': '5',
-    // })
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Court case reference': '1234',
+      'Warrant date': '12 05 2023',
+      'Court name': 'Bradford Crown Court',
+      'Overall case outcome': 'Remanded in custody',
+      'Outcome applies to all offences': 'Yes',
+      'Tagged bail': '5 days',
+    })
     courtCaseCheckAnswersPage.button().click()
 
     courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
@@ -184,14 +196,13 @@ context('New Court Case journey', () => {
     // courtCaseOverallSentenceLengthPage.button().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'warrant type': 'Sentencing',
-    //   'Case reference': '1234',
-    //   'Warrant date': '12 05 2023',
-    //   'Court name': 'Bradford Crown Court',
-    //   'Tagged bail': '5',
-    //   'Overall sentence length': '4 years 5 months',
-    // })
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Court case reference': '1234',
+      'Warrant date': '12 05 2023',
+      'Court name': 'Bradford Crown Court',
+      'Tagged bail': '5 days',
+      // 'Overall sentence length': '4 years 5 months',
+    })
     courtCaseCheckAnswersPage.button().click()
 
     courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)

@@ -248,6 +248,12 @@ export default class CourtCaseRoutes {
         nomsId,
         latestCourtAppearance.nextCourtAppearance?.courtCode,
       )
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+      if (warrantType === 'SENTENCING') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/tagged-bail`,
+        )
+      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/overall-case-outcome`,
       )

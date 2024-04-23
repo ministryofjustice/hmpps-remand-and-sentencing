@@ -53,8 +53,11 @@
                                 }
                             ]
                         }
-                        },
-                        {
+                        }
+                    ] %}
+
+{% if courtAppearance.warrantType === 'REMAND' %}
+    {% set checkAnswersRows = (checkAnswersRows.concat([{
                             key: {
                             text: "Overall case outcome"
                         },
@@ -87,8 +90,10 @@
                                 }
                             ]
                         }
-                        },
-                        {
+                        }]))%}
+{% endif %}
+
+{% set checkAnswersRows = (checkAnswersRows.push({
                             key: {
                             text: "Tagged bail"
                         },
@@ -104,9 +109,7 @@
                                 }
                             ]
                         }
-                        }
-
-                    ] %}
+                        }), checkAnswersRows)%}
 
 {% if courtAppearance.overallSentenceLength %}
 

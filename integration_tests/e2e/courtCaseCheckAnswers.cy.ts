@@ -13,6 +13,10 @@ context('Court Case Check Answers Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
+    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
+    courtCaseWarrantTypePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/check-answers')
     courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
@@ -58,14 +62,9 @@ context('Court Case Check Answers Page', () => {
   })
 
   it('clicking Overall case outcome and submitting goes back to check answers page', () => {
-    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.button().click()
-    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/check-answers')
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'overall-case-outcome').click()
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
-    courtCaseOverallCaseOutcomePage.radioLabelSelector('Remand in Custody (Bail Refused)').click()
+    courtCaseOverallCaseOutcomePage.radioLabelSelector('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })

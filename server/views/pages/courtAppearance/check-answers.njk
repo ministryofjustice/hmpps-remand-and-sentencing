@@ -1,19 +1,8 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-
-
-{% set pageTitle = applicationName + " - Add a court case court name" %}
-
-{% block content %}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-                {% include "../../partials/appearanceCaption.njk" %}
-                <h1 class="govuk-heading-l">Check your answers</h1>
-
-                {{ govukSummaryList({
-                    rows: [
+{% set checkAnswersRows = [
                         {
                             key: {
                             text: "Court case reference"
@@ -25,7 +14,7 @@
                             items: [
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/reference?submitToCheckAnswers=true",
-                                    text: "Change",
+                                    text: "Edit",
                                     visuallyHiddenText: "court case reference number"
                                 }
                             ]
@@ -42,7 +31,7 @@
                             items: [
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
-                                    text: "Change",
+                                    text: "Edit",
                                     visuallyHiddenText: "warrant date"
                                 }
                             ]
@@ -59,7 +48,7 @@
                             items: [
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/court-name?submitToCheckAnswers=true",
-                                    text: "Change",
+                                    text: "Edit",
                                     visuallyHiddenText: "court name"
                                 }
                             ]
@@ -76,23 +65,92 @@
                             items: [
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/overall-case-outcome?submitToCheckAnswers=true",
-                                    text: "Change",
+                                    text: "Edit",
                                     visuallyHiddenText: "overall case outcome"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Outcome applies to all offences"
+                        },
+                            value: {
+                            text: "Yes" if courtAppearance.caseOutcomeAppliedAll else "No"
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit outcome applies to all offences"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Tagged bail"
+                        },
+                            value: {
+                            text: courtAppearance.taggedBail + " days" if courtAppearance.taggedBail else "None"
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/tagged-bail?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit tagged bail"
                                 }
                             ]
                         }
                         }
 
-                    ]
-                }) }}
+                    ] %}
 
-            <h2 class="govuk-heading-m">Now add the offences for this appearance</h2>
-            <p class="govuk-body">You will need to enter all of the offence information from the warrant.</p>
+{% if courtAppearance.overallSentenceLength %}
+
+{% set overallSentenceLengthValue = '' %}
+    {% for order in courtAppearance.overallSentenceLength.periodOrder %}
+        {% set overallSentenceLengthValue = overallSentenceLengthValue + ' ' + courtAppearance.overallSentenceLength[order] + ' ' + order %}
+    {% endfor %}
+
+    {% set checkAnswersRows = (checkAnswersRows.push({
+                            key: {
+                            text: "Overall sentence length"
+                        },
+                            value: {
+                            text: overallSentenceLengthValue
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/overall-sentence-length?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit overall sentence length"
+                                }
+                            ]
+                        }
+                        }), checkAnswersRows)%}
+{% endif %}
+
+
+{% set pageTitle = applicationName + " - Check court appearance answers" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+                {% include "../../partials/appearanceCaption.njk" %}
+                <h1 class="govuk-heading-l">Check your answers</h1>
+
+                {{ govukSummaryList({
+                    rows: checkAnswersRows
+                }) }}
 
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-check-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
-                    text: "Confirm and continue"
+                    text: "Accept and continue"
                 }) }}
             </form>
 

@@ -597,6 +597,23 @@ export default class OffenceRoutes {
     )
   }
 
+  public getEditOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10))
+    const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
+    return res.render('pages/offence/edit-offence', {
+      nomsId,
+      courtCaseReference,
+      offence,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      errors: req.flash('errors') || [],
+      offenceMap,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
+    })
+  }
+
   public getReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(

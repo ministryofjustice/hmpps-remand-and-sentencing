@@ -1,0 +1,102 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set offenceHtml %}
+{{ offence.offenceCode}}
+{{offenceMap[offence.offenceCode]}}
+{% if offence.terrorRelated %}
+    <br>
+    <strong class="govuk-tag govuk-!-margin-top-2">Terror-related</strong>
+{% endif %}
+{% endset %}
+
+{{
+    govukSummaryList({
+        rows: [{
+                    key: {
+                    text: "Count number"
+                },
+                    value: {
+                    text: "Count " + offence.sentence.countNumber
+                },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/ " + appearanceReference + "/offences/" + offenceReference + "/count-number?submitToEditOffence=true",
+                            text: "Edit",
+                            visuallyHiddenText: "count number"
+                        }]
+                    }
+                },
+                {
+                    key: {
+                        text: "Offence"
+                    },
+                    value: {
+                        html: offenceHtml
+                    },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/ " + appearanceReference + "/offences/" + offenceReference + "/offence-code?submitToEditOffence=true",
+                            text: "Edit",
+                            visuallyHiddenText: "offence code"
+                        }]
+                    }
+                },
+                {
+                    key: {
+                        text: "Commited on"
+                    }, value: {
+                        text: offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
+                    },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/ " + appearanceReference + "/offences/" + offenceReference + "/offence-date?submitToEditOffence=true",
+                            text: "Edit",
+                            visuallyHiddenText: "commited on"
+                        }]
+                    }
+                },
+                {
+                    key: {
+                    text: "Sentence type"
+                },
+                    value: {
+                    text: offence.sentence.sentenceType
+                },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/ " + appearanceReference + "/offences/" + offenceReference + "/sentence-type?submitToEditOffence=true",
+                            text: "Edit",
+                            visuallyHiddenText: "sentence type"
+                        }]
+                    }
+                },{
+                    key: {
+                    text: "Sentence length"
+                },
+                    value: {
+                    text: offence.sentence.custodialSentenceLength | formatLengths
+                },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/ " + appearanceReference + "/offences/" + offenceReference + "/sentence-length?submitToEditOffence=true",
+                            text: "Edit",
+                            visuallyHiddenText: "sentence length"
+                        }]
+                    }
+                },{
+                    key: {
+                    text: "Consecutive or concurrent"
+                },
+                    value: {
+                    text: offence.sentence.sentenceServeType | capitalize + (' to count ' + offence.sentence.consecutiveTo if offence.sentence.consecutiveTo else '' )
+                },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/ " + appearanceReference + "/offences/" + offenceReference + "/sentence-serve-type?submitToEditOffence=true",
+                            text: "Edit",
+                            visuallyHiddenText: "consecutive or concurrent"
+                        }]
+                    }
+        }]
+    })
+}}

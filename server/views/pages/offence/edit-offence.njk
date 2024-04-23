@@ -1,0 +1,28 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
+
+{% set pageTitle = applicationName + " - Edit an " + offenceSentence %}
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-delete-offence">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+                <h1 class="govuk-heading-l">Edit {{ offenceSentence }} details</h1>
+                
+                {% if offence.sentence %}
+                    {% include "../../partials/editSentenceDetails.njk" %}
+                {% else %}
+                    {% include "../../partials/editOffenceDetails.njk" %}
+                {% endif %}
+                {{ govukButton({
+                    text: "Accept changes"
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

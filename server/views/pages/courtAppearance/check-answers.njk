@@ -110,17 +110,12 @@
 
 {% if courtAppearance.overallSentenceLength %}
 
-{% set overallSentenceLengthValue = '' %}
-    {% for order in courtAppearance.overallSentenceLength.periodOrder %}
-        {% set overallSentenceLengthValue = overallSentenceLengthValue + ' ' + courtAppearance.overallSentenceLength[order] + ' ' + order %}
-    {% endfor %}
-
     {% set checkAnswersRows = (checkAnswersRows.push({
                             key: {
                             text: "Overall sentence length"
                         },
                             value: {
-                            text: overallSentenceLengthValue
+                            text: courtAppearance.overallSentenceLength | formatLengths
                         },
                             actions: {
                             items: [

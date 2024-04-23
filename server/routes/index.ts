@@ -321,6 +321,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/edit-offence',
+    offenceRoutes.getEditOffence,
+  )
+
+  // post(
+  //   '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-edit-offence',
+  //   offenceRoutes.submitEditOffence,
+  // )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/next-hearing-select',
     courtCaseRoutes.getNextHearingSelect,
   )

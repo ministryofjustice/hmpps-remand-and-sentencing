@@ -1,5 +1,5 @@
 <div class="govuk-form-group">
-    <input class="govuk-input govuk-input--width-2 govuk-!-margin-right-2" id="{{ params.id }}-value" name="{{params.name}}[value]" type="text" inputmode="numeric">
+    <input class="govuk-input govuk-input--width-2 govuk-!-margin-right-2" id="{{ params.id }}-value" name="{{params.name}}[value]" value="{{params.value}}" type="text" inputmode="numeric">
     <select class="govuk-select alternative-sentence-length-select" id="{{params.id}}-period" name="{{params.name}}[period]">
         <option value="years" {% if params.selectedItem === 'years' %} selected {% endif %}>years</option>
         <option value="months" {% if params.selectedItem === 'months' %} selected {% endif %}>months</option>

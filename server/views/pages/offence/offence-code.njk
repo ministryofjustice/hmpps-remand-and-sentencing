@@ -20,7 +20,7 @@
                     id: "offence-code",
                     name: "offenceCode",
                     errorMessage: errors | findError('offenceCode'),
-                    value: offenceCodeForm.offenceCode
+                    value: offenceCode
                 }) }}
 
                 {{ govukCheckboxes({
@@ -30,7 +30,7 @@
                             value: "true",
                             id: "unknown-code",
                             text: "I do not have the offence code",
-                            checked: offenceCodeForm.unknownCode
+                            checked: unknownCode
                         }
                     ],
                     errorMessage: errors | findError('unknownCode')

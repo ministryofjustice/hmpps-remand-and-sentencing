@@ -618,6 +618,8 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
     const countNumber = this.offenceService.getCountNumber(req.session, nomsId, courtCaseReference)
+    const consecutiveTo = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+      ?.sentence?.consecutiveTo
     return res.render('pages/offence/consecutive-to', {
       nomsId,
       courtCaseReference,
@@ -626,6 +628,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       errors: req.flash('errors') || [],
       countNumber,
+      consecutiveTo,
       submitToEditOffence,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     })

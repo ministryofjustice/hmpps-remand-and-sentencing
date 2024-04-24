@@ -19,7 +19,7 @@ import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeApp
 context('New Court Case journey', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
-    cy.task('stubGetOffenceByCode')
+    cy.task('stubGetOffenceByCode', {})
     cy.task('stubCreateCourtCase')
     cy.task('stubCreateSentenceCourtCase')
     cy.task('stubSearchCourtCases', {})

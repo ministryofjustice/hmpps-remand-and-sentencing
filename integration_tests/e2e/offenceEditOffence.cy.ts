@@ -1,5 +1,6 @@
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
+import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import Page from '../pages/page'
 
@@ -62,6 +63,24 @@ context('Add Offence Edit offence Page', () => {
 
     it('button to accept changes is displayed', () => {
       offenceEditOffencePage.button().should('contain.text', 'Accept changes')
+    })
+
+    it('can edit count number and return to edit page', () => {
+      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'count-number').click()
+      const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+      offenceCountNumberPage.input().should('have.value', '1')
+      offenceCountNumberPage.input().clear()
+      offenceCountNumberPage.input().type('5')
+      offenceCountNumberPage.button().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 5',
+        Offence: 'PS90037 An offence description Terror-related',
+        'Commited on': '12 05 2023',
+        'Sentence type': '',
+        'Sentence length': '4 years 5 months',
+        'Consecutive or concurrent': 'Forthwith',
+      })
     })
   })
 })

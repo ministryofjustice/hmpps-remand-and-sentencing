@@ -8,7 +8,7 @@
 {% set pageTitle = applicationName + " - Add sentence length" %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-sentence-length">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-sentence-length{{ "?submitToEditOffence=true" if submitToEditOffence }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 
@@ -47,7 +47,7 @@
                 }) }}
 
                 <p class="govuk-body">
-                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/alternative-sentence-length">The sentence length is formatted differently</a>
+                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/alternative-sentence-length{{ "?submitToEditOffence=true" if submitToEditOffence }}">The sentence length is formatted differently</a>
                 </p>
 
                 {{ govukButton({

@@ -26,7 +26,24 @@
                                 text: "Offence start date",
                                 classes: "govuk-label--s"
                             }
-                        }
+                        },
+                        items: [
+                            {
+                                classes: "govuk-input--width-2",
+                                name:"day",
+                                value: offenceStartDateDay
+                            },
+                            {
+                                classes: "govuk-input--width-2",
+                                name:"month",
+                                value: offenceStartDateMonth
+                            },
+                            {
+                                classes: "govuk-input--width-4",
+                                name:"year",
+                                value: offenceStartDateYear
+                            }
+                        ]
                     }) }}
 
                     {{ govukDateInput({
@@ -40,7 +57,24 @@
                         },
                         hint: {
                             text: "This only applies to offences occuring over multiple days"
-                        }
+                        },
+                        items: [
+                            {
+                                classes: "govuk-input--width-2",
+                                name:"day",
+                                value: offenceEndDateDay
+                            },
+                            {
+                                classes: "govuk-input--width-2",
+                                name:"month",
+                                value: offenceEndDateMonth
+                            },
+                            {
+                                classes: "govuk-input--width-4",
+                                name:"year",
+                                value: offenceEndDateYear
+                            }
+                        ]
                     }) }}
 
                 {% endcall %}

@@ -2,6 +2,7 @@ import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
+import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import Page from '../pages/page'
 
 context('Add Offence Edit offence Page', () => {
@@ -77,6 +78,26 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 5',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
+        'Sentence type': '',
+        'Sentence length': '4 years 5 months',
+        'Consecutive or concurrent': 'Forthwith',
+      })
+    })
+
+    it('can edit offence date and return to edit page', () => {
+      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'offence-date').click()
+      const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+      offenceOffenceDatePage.dayDateInput('offence-start-date').should('have.value', '12')
+      offenceOffenceDatePage.monthDateInput('offence-start-date').should('have.value', '5')
+      offenceOffenceDatePage.yearDateInput('offence-start-date').should('have.value', '2023')
+      offenceOffenceDatePage.dayDateInput('offence-start-date').clear()
+      offenceOffenceDatePage.dayDateInput('offence-start-date').type('25')
+      offenceOffenceDatePage.button().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description Terror-related',
+        'Commited on': '25 05 2023',
         'Sentence type': '',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Forthwith',

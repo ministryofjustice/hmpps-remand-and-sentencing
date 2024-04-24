@@ -17,6 +17,7 @@ import type {
 } from 'forms'
 import dayjs from 'dayjs'
 import deepmerge from 'deepmerge'
+import type { Offence } from 'models'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -40,6 +41,26 @@ export default class OffenceRoutes {
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
+    let offenceStartDateDay: number
+    let offenceStartDateMonth: number
+    let offenceStartDateYear: number
+    let offenceEndDateDay: number
+    let offenceEndDateMonth: number
+    let offenceEndDateYear: number
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+
+    if (offence.offenceStartDate) {
+      const offenceStartDate = new Date(offence.offenceStartDate)
+      offenceStartDateDay = offenceStartDate.getDate()
+      offenceStartDateMonth = offenceStartDate.getMonth() + 1
+      offenceStartDateYear = offenceStartDate.getFullYear()
+    }
+    if (offence.offenceEndDate) {
+      const offenceEndDate = new Date(offence.offenceEndDate)
+      offenceEndDateDay = offenceEndDate.getDate()
+      offenceEndDateMonth = offenceEndDate.getMonth() + 1
+      offenceEndDateYear = offenceEndDate.getFullYear()
+    }
     return res.render('pages/offence/offence-date', {
       nomsId,
       courtCaseReference,
@@ -47,6 +68,12 @@ export default class OffenceRoutes {
       appearanceReference,
       addOrEditCourtCase,
       submitToEditOffence,
+      offenceStartDateDay,
+      offenceStartDateMonth,
+      offenceStartDateYear,
+      offenceEndDateDay,
+      offenceEndDateMonth,
+      offenceEndDateYear,
     })
   }
 
@@ -201,9 +228,8 @@ export default class OffenceRoutes {
 
   public getCountNumber: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
-    const countNumber =
-      this.offenceService.getCountNumber(req.session, nomsId, courtCaseReference) ??
-      this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10))?.sentence?.countNumber
+    const countNumber = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+      ?.sentence?.countNumber
     const { submitToEditOffence } = req.query
     return res.render('pages/offence/count-number', {
       nomsId,
@@ -686,13 +712,7 @@ export default class OffenceRoutes {
 
   public getEditOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
-    const appearanceOffence = this.courtAppearanceService.getOffence(
-      req.session,
-      nomsId,
-      parseInt(offenceReference, 10),
-    )
-    const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    const offence = deepmerge(appearanceOffence, sessionOffence, { arrayMerge: (_target, source, _options) => source })
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
     return res.render('pages/offence/edit-offence', {
       nomsId,
@@ -748,6 +768,21 @@ export default class OffenceRoutes {
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-select`,
     )
+  }
+
+  private getSessionOffenceOrAppearanceOffence(
+    req,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+  ): Offence {
+    const appearanceOffence = this.courtAppearanceService.getOffence(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+    )
+    const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    return deepmerge(appearanceOffence, sessionOffence, { arrayMerge: (_target, source, _options) => source })
   }
 
   private saveOffenceInAppearance(req, nomsId: string, courtCaseReference: string, offenceReference: string) {

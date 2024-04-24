@@ -69,7 +69,7 @@
 {% endif %}
 
 {% if params.sentenceServeType %}
-    {% set sentenceServeTypeValue = params.sentenceServeType %}
+    {% set sentenceServeTypeValue = params.sentenceServeType | capitalize %}
     {% if params.consecutiveTo %}
        {% set sentenceServeTypeValue = sentenceServeTypeValue + " to count " + params.consecutiveTo %} 
     {% endif %}
@@ -90,7 +90,7 @@
         {% if params.countNumber %}
             <span class="govuk-body-s">Count {{ params.countNumber }}</span>
         {% endif %}
-        <h4 class="govuk-heading-s offence-name">
+        <h4 class="govuk-heading-s{% if params.canEdit %} offence-name {% endif %}">
             {{ params.offenceCode }} {{ params.offenceName }}
             {% if params.terrorRelated %}
                 <br>

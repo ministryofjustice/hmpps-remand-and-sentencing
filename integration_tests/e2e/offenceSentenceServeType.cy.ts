@@ -34,7 +34,7 @@ context('Add Offence Sentence Serve Type Page', () => {
 
   it('creating a sentenced offence with forthwith removes the option when going back on the page', () => {
     cy.task('stubGetOffenceByCode', {})
-    cy.task('stubGetOffencesByCodes')
+    cy.task('stubGetOffencesByCodes', {})
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/1/sentence-serve-type')
     offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)

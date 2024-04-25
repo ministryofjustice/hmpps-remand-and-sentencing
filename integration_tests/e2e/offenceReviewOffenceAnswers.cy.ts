@@ -6,7 +6,7 @@ context('Review Offences Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetLatestCourtAppearance')
-    cy.task('stubGetOffencesByCodes')
+    cy.task('stubGetOffencesByCodes', {})
     cy.signIn()
     cy.visit('/person/A1234AB/edit-court-case/12345/appearance/1/review-offences')
     offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)

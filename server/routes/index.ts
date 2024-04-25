@@ -325,10 +325,10 @@ export default function routes(services: Services): Router {
     offenceRoutes.getEditOffence,
   )
 
-  // post(
-  //   '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-edit-offence',
-  //   offenceRoutes.submitEditOffence,
-  // )
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/submit-edit-offence',
+    offenceRoutes.submitEditOffence,
+  )
 
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/next-hearing-select',

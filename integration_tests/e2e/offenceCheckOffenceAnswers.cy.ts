@@ -1,6 +1,8 @@
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
+import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
+import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import Page from '../pages/page'
 
 context('Check Offence Answers Page', () => {
@@ -55,9 +57,27 @@ context('Check Offence Answers Page', () => {
     })
     it('changing an existing offence results in changes successfully made info banner', () => {
       cy.createOffence('A1234AB', '0', '0', '0')
-      cy.createOffence('A1234AB', '0', '0', '0')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '0', 'offences')
+      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
+      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'offence-outcome').click()
+      const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+      offenceOffenceOutcomePage.radioLabelSelector('Remanded in custody').click()
+      offenceOffenceOutcomePage.button().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.button().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '0', 'offences')
       offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'Changes successfully made')
+    })
+
+    it('going to edit offence page and making no change results in no info banner', () => {
+      cy.createOffence('A1234AB', '0', '0', '0')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '0', 'offences')
+      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.button().click()
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '0', 'offences')
+      offenceCheckOffenceAnswersPage.infoBanner().should('not.exist')
     })
   })
 

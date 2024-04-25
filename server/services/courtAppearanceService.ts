@@ -201,8 +201,10 @@ export default class CourtAppearanceService {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     let offencePersistType = OffencePersistType.CREATED
     if (courtAppearance.offences.length > offenceReference) {
+      const previousOffenceRecord = courtAppearance.offences[offenceReference]
+      const isSame = JSON.stringify(previousOffenceRecord) === JSON.stringify(offence)
       courtAppearance.offences[offenceReference] = offence
-      offencePersistType = OffencePersistType.EDITED
+      offencePersistType = isSame ? OffencePersistType.NO_CHANGE : OffencePersistType.EDITED
     } else {
       courtAppearance.offences.push(offence)
     }

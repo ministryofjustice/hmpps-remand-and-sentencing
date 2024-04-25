@@ -120,7 +120,7 @@ export default class OffenceRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
         )
       }
-      this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+      this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
       )
@@ -181,7 +181,7 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
       )
     }
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
     )
@@ -230,7 +230,7 @@ export default class OffenceRoutes {
       )
     }
 
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
     )
@@ -608,7 +608,7 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
     )
@@ -664,7 +664,7 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
     )
@@ -768,6 +768,15 @@ export default class OffenceRoutes {
     })
   }
 
+  public submitEditOffence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
+    )
+  }
+
   public getReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
@@ -826,8 +835,18 @@ export default class OffenceRoutes {
     return deepmerge(appearanceOffence, sessionOffence, { arrayMerge: (_target, source, _options) => source })
   }
 
-  private saveOffenceInAppearance(req, nomsId: string, courtCaseReference: string, offenceReference: string) {
+  private saveSessionOffenceInAppearance(req, nomsId: string, courtCaseReference: string, offenceReference: string) {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
+  }
+
+  private saveOffenceInAppearance(
+    req,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+    offence: Offence,
+  ) {
     const offencePersistType = this.courtAppearanceService.addOffence(
       req.session,
       nomsId,

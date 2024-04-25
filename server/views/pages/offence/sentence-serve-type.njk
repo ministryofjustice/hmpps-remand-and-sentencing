@@ -7,15 +7,17 @@
 {% set serveTypeItems = [
     {
         value: "CONSECUTIVE",
-        text: "Consecutive"
+        text: "Consecutive",
+        checked: sentenceServeType === 'CONSECUTIVE'
     },
     {
         value: "CONCURRENT",
-        text: "Concurrent"
+        text: "Concurrent",
+        checked: sentenceServeType === 'CONCURRENT'
     }
 ]%}
 
-{% if not forthwithAlreadySelected %}
+{% if showForthwith %}
     {% set serveTypeItems = (serveTypeItems.concat([
                     {
                     divider: "or"
@@ -24,7 +26,8 @@
                     text: "Forthwith",
                     hint: {
                         text: "There can only be one forthwith sentence in a case"
-                    }
+                    },
+                    checked: sentenceServeType === 'FORTHWITH'
                 }])) %}
 {% endif %}
 

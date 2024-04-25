@@ -2,19 +2,25 @@ import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
 export default {
-  stubGetOffenceByCode: (): SuperAgentRequest => {
+  stubGetOffenceByCode: ({
+    offenceCode = 'PS90037',
+    offenceDescription = 'An offence description',
+  }: {
+    offenceCode: string
+    offenceDescription: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/manage-offences-api/offences/code/unique/PS90037',
+        urlPattern: `/manage-offences-api/offences/code/unique/${offenceCode}`,
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           id: 548265,
-          code: 'PS90037',
-          description: 'An offence description',
+          code: offenceCode,
+          description: offenceDescription,
           offenceType: 'CE',
           revisionId: 338258,
           startDate: '2007-06-30',
@@ -94,14 +100,20 @@ export default {
       },
     })
   },
-  stubGetOffencesByCodes: (): SuperAgentRequest => {
+  stubGetOffencesByCodes: ({
+    offenceCode = 'PS90037',
+    offenceDescription = 'An offence description',
+  }: {
+    offenceCode: string
+    offenceDescription: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
         urlPath: '/manage-offences-api/offences/code/multiple',
         queryParameters: {
           offenceCodes: {
-            equalTo: 'PS90037',
+            equalTo: offenceCode,
           },
         },
       },
@@ -111,8 +123,8 @@ export default {
         jsonBody: [
           {
             id: 548265,
-            code: 'PS90037',
-            description: 'An offence description',
+            code: offenceCode,
+            description: offenceDescription,
             offenceType: 'CE',
             revisionId: 338258,
             startDate: '2007-06-30',

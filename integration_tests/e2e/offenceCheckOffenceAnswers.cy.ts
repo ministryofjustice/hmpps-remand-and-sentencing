@@ -7,8 +7,8 @@ context('Check Offence Answers Page', () => {
   let offenceCheckOffenceAnswersPage: OffenceCheckOffenceAnswersPage
   beforeEach(() => {
     cy.task('happyPathStubs')
-    cy.task('stubGetOffenceByCode')
-    cy.task('stubGetOffencesByCodes')
+    cy.task('stubGetOffenceByCode', {})
+    cy.task('stubGetOffencesByCodes', {})
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/check-offence-answers')

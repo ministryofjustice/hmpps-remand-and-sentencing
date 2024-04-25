@@ -6,7 +6,7 @@ context('Add Offence Offence Code Page', () => {
   let offenceOffenceCodeConfirmPage: OffenceOffenceCodeConfirmPage
   beforeEach(() => {
     cy.task('happyPathStubs')
-    cy.task('stubGetOffenceByCode')
+    cy.task('stubGetOffenceByCode', {})
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/0/offence-code')

@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 
@@ -6,6 +6,7 @@
 {% set pageTitle = applicationName + " - Add a court case Warrant Date" %}
 
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-warrant-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
@@ -14,6 +15,7 @@
                 {{ govukDateInput({
                     id: "warrant-date",
                     namePrefix: "warrantDate",
+                    errorMessage: errors | findErrorsBeginningWith('warrantDate'),
                     fieldset: {
                         legend: {
                             text: "Enter the warrant date",
@@ -23,17 +25,20 @@
                     },
                     items: [
                         {
-                            classes: "govuk-input--width-2",
+                            id: 'warrantDate-day',
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('warrantDate-day') else ''),
                             name:"day",
                             value: warrantDateDay
                         },
                         {
-                            classes: "govuk-input--width-2",
+                            id: 'warrantDate-month',
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('warrantDate-month') else ''),
                             name:"month",
                             value: warrantDateMonth
                         },
                         {
-                            classes: "govuk-input--width-4",
+                            id: 'warrantDate-year',
+                            classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('warrantDate-year') else ''),
                             name:"year",
                             value: warrantDateYear
                         }

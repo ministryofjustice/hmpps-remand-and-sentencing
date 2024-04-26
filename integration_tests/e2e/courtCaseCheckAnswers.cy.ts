@@ -45,9 +45,9 @@ context('Court Case Check Answers Page', () => {
   it('clicking warrant date change and submitting goes back to check answers page', () => {
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'warrant-date').click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrant-date').type('12')
-    courtCaseWarrantDatePage.monthDateInput('warrant-date').type('5')
-    courtCaseWarrantDatePage.yearDateInput('warrant-date').type('2023')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
     courtCaseWarrantDatePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })

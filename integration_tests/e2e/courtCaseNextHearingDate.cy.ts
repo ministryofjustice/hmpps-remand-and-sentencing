@@ -31,7 +31,7 @@ context('Next hearing date page', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem Next court date must include year Next court date must include month Next court date must include day',
+        'There is a problem Next court date must include day Next court date must include month Next court date must include year',
       )
   })
 
@@ -45,5 +45,16 @@ context('Next hearing date page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem Time must be in 1:00 or 13:00 format')
+  })
+
+  it('submitting an invalid date results in an error', () => {
+    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type('35')
+    courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type('1')
+    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type('2024')
+    courtCaseNextHearingDatePage.button().click()
+    courtCaseNextHearingDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem This date does not exist.')
   })
 })

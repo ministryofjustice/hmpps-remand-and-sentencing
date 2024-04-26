@@ -182,18 +182,25 @@ export default class CourtAppearanceService {
     nomsId: string,
     nextHearingDateForm: CourtCaseNextHearingDateForm,
   ) {
+    const isValidDateRule =
+      nextHearingDateForm['nextHearingDate-day'] !== undefined &&
+      nextHearingDateForm['nextHearingDate-month'] !== undefined &&
+      nextHearingDateForm['nextHearingDate-year'] !== undefined
+        ? `|isValidDate:${nextHearingDateForm['nextHearingDate-year']}-${nextHearingDateForm['nextHearingDate-month'].padStart(2, '0')}-${nextHearingDateForm['nextHearingDate-day'].padStart(2, '0')}`
+        : ''
     const errors = validate(
       nextHearingDateForm,
       {
-        'nextHearingDate-year': 'required',
-        'nextHearingDate-month': 'required',
-        'nextHearingDate-day': 'required',
+        'nextHearingDate-day': `required${isValidDateRule}`,
+        'nextHearingDate-month': `required`,
+        'nextHearingDate-year': `required`,
         nextHearingTime: ['regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
       },
       {
         'required.nextHearingDate-year': 'Next court date must include year',
         'required.nextHearingDate-month': 'Next court date must include month',
         'required.nextHearingDate-day': 'Next court date must include day',
+        'isValidDate.nextHearingDate-day': 'This date does not exist.',
         'regex.nextHearingTime': 'Time must be in 1:00 or 13:00 format',
       },
     )

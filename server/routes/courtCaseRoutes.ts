@@ -16,7 +16,6 @@ import type {
   CourtCaseWarrantTypeForm,
   CourtCaseTaggedBailForm,
 } from 'forms'
-import dayjs from 'dayjs'
 import type { CourtAppearance, CourtCase } from 'models'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'

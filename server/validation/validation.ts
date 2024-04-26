@@ -1,6 +1,7 @@
 import Validator, { ErrorMessages, Rules } from 'validatorjs'
 import onlyOneValidate from './onlyOneRule'
 import minWholeNumberValidate from './minWholeNumberRule'
+import isValidDate from './isValidDate'
 
 export default function validate<T>(
   form: T,
@@ -24,3 +25,4 @@ const asErrors = (errors: Validator.Errors) =>
 
 Validator.register('onlyOne', onlyOneValidate, 'only one validation rule')
 Validator.register('minWholeNumber', minWholeNumberValidate, 'must be greater than number')
+Validator.register('isValidDate', isValidDate, 'This date does not exist.')

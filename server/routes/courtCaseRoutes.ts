@@ -689,37 +689,49 @@ export default class CourtCaseRoutes {
   public getNextHearingDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const nextHearingDate = this.courtAppearanceService.getNextHearingDate(req.session, nomsId)
+    const nextHearingDateForm = (req.flash('nextHearingDateForm')[0] || {}) as CourtCaseNextHearingDateForm
+    const nextHearingDateValue = this.courtAppearanceService.getNextHearingDate(req.session, nomsId)
+    let nextHearingDateDay: number | string = nextHearingDateForm['nextHearingDate-day']
+    let nextHearingDateMonth: number | string = nextHearingDateForm['nextHearingDate-month']
+    let nextHearingDateYear: number | string = nextHearingDateForm['nextHearingDate-year']
+    let { nextHearingTime } = nextHearingDateForm
+    if (nextHearingDateValue && !nextHearingDateForm) {
+      const nextHearingDate = new Date(nextHearingDateValue)
+      nextHearingDateDay = nextHearingDate.getDate()
+      nextHearingDateMonth = nextHearingDate.getMonth() + 1
+      nextHearingDateYear = nextHearingDate.getFullYear()
+      nextHearingTime = this.courtAppearanceService.hasNextHearingTimeSet(req.session, nomsId)
+        ? `${nextHearingDate.getHours()}:${nextHearingDate.getMinutes()}`
+        : ''
+    }
 
     return res.render('pages/courtAppearance/next-hearing-date', {
       nomsId,
-      nextHearingDate,
+      nextHearingDateDay,
+      nextHearingDateMonth,
+      nextHearingDateYear,
+      nextHearingTime,
       courtCaseReference,
       appearanceReference,
       submitToCheckAnswers,
       addOrEditCourtCase,
+      errors: req.flash('errors') || [],
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-type`,
     })
   }
 
   public submitNextHearingDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const nextHearingDateForm = trimForm<CourtCaseNextHearingDateForm>(req.body)
-    let nextHearingDate = dayjs({
-      year: nextHearingDateForm['nextHearingDate-year'],
-      month: parseInt(nextHearingDateForm['nextHearingDate-month'], 10) - 1,
-      day: nextHearingDateForm['nextHearingDate-day'],
-    })
-    if (nextHearingDateForm.nextHearingTime) {
-      const [nextHearingHour, nextHearingMinute] = nextHearingDateForm.nextHearingTime.split(':')
-      nextHearingDate = nextHearingDate.set('hour', parseInt(nextHearingHour, 10))
-      nextHearingDate = nextHearingDate.set('minute', parseInt(nextHearingMinute, 10))
+    const errors = this.courtAppearanceService.setNextHearingDate(req.session, nomsId, nextHearingDateForm)
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('nextHearingDateForm', { ...nextHearingDateForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-date`,
+      )
     }
-    this.courtAppearanceService.setNextHearingDate(
-      req.session,
-      nomsId,
-      nextHearingDate.toDate(),
-      Boolean(nextHearingDateForm.nextHearingTime),
-    )
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(

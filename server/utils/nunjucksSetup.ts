@@ -84,6 +84,19 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     return null
   })
 
+  njkEnv.addFilter('findErrorsBeginningWith', (array: Error[], beginsWith: string) => {
+    const allMessages = array
+      .filter(error => error.href.startsWith(`#${beginsWith}`))
+      .map(error => error.text)
+      .join(', ')
+    if (allMessages) {
+      return {
+        text: allMessages,
+      }
+    }
+    return null
+  })
+
   njkEnv.addFilter('personProfileName', personProfileName)
   njkEnv.addFilter('personDateOfBirth', personDateOfBirth)
   njkEnv.addFilter('personStatus', personStatus)

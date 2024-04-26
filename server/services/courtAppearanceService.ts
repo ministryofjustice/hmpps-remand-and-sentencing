@@ -1,5 +1,8 @@
 import type { CourtAppearance, Offence } from 'models'
+import type { CourtCaseNextHearingDateForm } from 'forms'
+import dayjs from 'dayjs'
 import OffencePersistType from '../@types/models/OffencePersistType'
+import validate from '../validation/validation'
 
 export default class CourtAppearanceService {
   constructor() {}
@@ -170,17 +173,55 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).nextHearingDate
   }
 
+  hasNextHearingTimeSet(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    return this.getCourtAppearance(session, nomsId).nextHearingTimeSet
+  }
+
   setNextHearingDate(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
-    nextHearingDate: Date,
-    nextHearingTimeSet: boolean,
+    nextHearingDateForm: CourtCaseNextHearingDateForm,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.nextHearingDate = nextHearingDate
-    courtAppearance.nextHearingTimeSet = nextHearingTimeSet
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+    const isValidDateRule =
+      nextHearingDateForm['nextHearingDate-day'] !== undefined &&
+      nextHearingDateForm['nextHearingDate-month'] !== undefined &&
+      nextHearingDateForm['nextHearingDate-year'] !== undefined
+        ? `|isValidDate:${nextHearingDateForm['nextHearingDate-year']}-${nextHearingDateForm['nextHearingDate-month'].padStart(2, '0')}-${nextHearingDateForm['nextHearingDate-day'].padStart(2, '0')}`
+        : ''
+    const errors = validate(
+      nextHearingDateForm,
+      {
+        'nextHearingDate-day': `required${isValidDateRule}`,
+        'nextHearingDate-month': `required`,
+        'nextHearingDate-year': `required`,
+        nextHearingTime: ['regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
+      },
+      {
+        'required.nextHearingDate-year': 'Next court date must include year',
+        'required.nextHearingDate-month': 'Next court date must include month',
+        'required.nextHearingDate-day': 'Next court date must include day',
+        'isValidDate.nextHearingDate-day': 'This date does not exist.',
+        'regex.nextHearingTime': 'Time must be in 1:00 or 13:00 format',
+      },
+    )
+    if (errors.length === 0) {
+      let nextHearingDate = dayjs({
+        year: nextHearingDateForm['nextHearingDate-year'],
+        month: parseInt(nextHearingDateForm['nextHearingDate-month'], 10) - 1,
+        day: nextHearingDateForm['nextHearingDate-day'],
+      })
+      if (nextHearingDateForm.nextHearingTime) {
+        const [nextHearingHour, nextHearingMinute] = nextHearingDateForm.nextHearingTime.split(':')
+        nextHearingDate = nextHearingDate.set('hour', parseInt(nextHearingHour, 10))
+        nextHearingDate = nextHearingDate.set('minute', parseInt(nextHearingMinute, 10))
+      }
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.nextHearingDate = nextHearingDate.toDate()
+      courtAppearance.nextHearingTimeSet = Boolean(nextHearingDateForm.nextHearingTime)
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   getSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {

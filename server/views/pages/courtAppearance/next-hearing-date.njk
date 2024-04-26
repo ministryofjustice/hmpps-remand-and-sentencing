@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
@@ -7,6 +7,7 @@
 {% set pageTitle = applicationName + " - Add a court case Next Court Date" %}
 
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-next-hearing-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
@@ -20,17 +21,38 @@
                         isPageHeading: true
                     }
                 }) %}
-
+                    
                     {{ govukDateInput({
                         id: "next-hearing-date",
                         namePrefix: "nextHearingDate",
+                        errorMessage: errors | findErrorsBeginningWith('nextHearingDate'),
                         fieldset: {
                             legend: {
                                 text: "Next court date",
                                 classes: "govuk-label--s"
                             }
 
-                        }
+                        },
+                        items: [
+                            {
+                                id: 'nextHearingDate-day',
+                                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextHearingDate-day') else ''),
+                                name:"day",
+                                value: nextHearingDateDay
+                            },
+                            {
+                                id: 'nextHearingDate-month',
+                                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextHearingDate-month') else ''),
+                                name:"month",
+                                value: nextHearingDateMonth
+                            },
+                            {
+                                id: 'nextHearingDate-year',
+                                classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('nextHearingDate-year') else ''),
+                                name:"year",
+                                value: nextHearingDateYear
+                            }
+                        ]
                     }) }}
 
                     {{ govukInput({
@@ -42,8 +64,10 @@
                             text: "For example, 1:00 or 13:00"
                         },
                         classes: "govuk-input--width-4",
-                        id: "next-hearing-time",
-                        name: "nextHearingTime"
+                        id: "nextHearingTime",
+                        name: "nextHearingTime",
+                        errorMessage: errors | findError('nextHearingTime'),
+                        value: nextHearingTime
                     }) }}
 
                 {% endcall %}

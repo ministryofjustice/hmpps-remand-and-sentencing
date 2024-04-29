@@ -4,19 +4,6 @@ import dayjs from 'dayjs'
 import validate from '../validation/validation'
 
 export default class OffenceService {
-  setOffenceStartDate(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceStartDate: Date,
-  ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    offence.offenceStartDate = offenceStartDate
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
-  }
-
   setOffenceDates(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
@@ -80,19 +67,6 @@ export default class OffenceService {
       session.offences[id] = offence
     }
     return errors
-  }
-
-  setOffenceEndDate(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceEndDate: Date,
-  ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    offence.offenceEndDate = offenceEndDate
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
   }
 
   setOffenceCode(

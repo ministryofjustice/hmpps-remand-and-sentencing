@@ -55,7 +55,7 @@ export default class OffenceRoutes {
       offenceStartDateMonth = offenceStartDate.getMonth() + 1
       offenceStartDateYear = offenceStartDate.getFullYear()
     }
-    if (offence.offenceEndDate && !offenceDateForm) {
+    if (offence.offenceEndDate && Object.keys(offenceDateForm).length === 0) {
       const offenceEndDate = new Date(offence.offenceEndDate)
       offenceEndDateDay = offenceEndDate.getDate()
       offenceEndDateMonth = offenceEndDate.getMonth() + 1

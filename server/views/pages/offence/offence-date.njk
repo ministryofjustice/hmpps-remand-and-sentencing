@@ -19,8 +19,9 @@
                 }) %}
 
                     {{ govukDateInput({
-                        id: "offence-start-date",
+                        id: "offenceStartDate",
                         namePrefix: "offenceStartDate",
+                        errorMessage: errors | findErrorsBeginningWith('offenceStartDate'),
                         fieldset: {
                             legend: {
                                 text: "Offence start date",
@@ -29,17 +30,17 @@
                         },
                         items: [
                             {
-                                classes: "govuk-input--width-2",
+                                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceStartDate-day') else ''),
                                 name:"day",
                                 value: offenceStartDateDay
                             },
                             {
-                                classes: "govuk-input--width-2",
+                                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceStartDate-month') else ''),
                                 name:"month",
                                 value: offenceStartDateMonth
                             },
                             {
-                                classes: "govuk-input--width-4",
+                                classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('offenceStartDate-year') else ''),
                                 name:"year",
                                 value: offenceStartDateYear
                             }
@@ -47,8 +48,9 @@
                     }) }}
 
                     {{ govukDateInput({
-                        id: "offence-end-date",
+                        id: "offenceEndDate",
                         namePrefix: "offenceEndDate",
+                        errorMessage: errors | findErrorsBeginningWith('offenceEndDate'),
                         fieldset: {
                             legend: {
                                 text: "Offence end date (optional)",
@@ -60,17 +62,17 @@
                         },
                         items: [
                             {
-                                classes: "govuk-input--width-2",
+                                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceEndDate-day') else ''),
                                 name:"day",
                                 value: offenceEndDateDay
                             },
                             {
-                                classes: "govuk-input--width-2",
+                                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceEndDate-month') else ''),
                                 name:"month",
                                 value: offenceEndDateMonth
                             },
                             {
-                                classes: "govuk-input--width-4",
+                                classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('offenceEndDate-year') else ''),
                                 name:"year",
                                 value: offenceEndDateYear
                             }

@@ -244,9 +244,9 @@ context('New Court Case journey', () => {
     offenceTerrorRelatedPage.button().click()
 
     const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
-    offenceOffenceDatePage.dayDateInput('offence-start-date').type('12')
-    offenceOffenceDatePage.monthDateInput('offence-start-date').type('5')
-    offenceOffenceDatePage.yearDateInput('offence-start-date').type('2023')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
 
     // const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)

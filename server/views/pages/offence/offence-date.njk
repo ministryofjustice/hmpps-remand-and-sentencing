@@ -3,7 +3,7 @@
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
-{% set pageTitle = applicationName + " - Add a court case Warrant Date" %}
+{% set pageTitle = applicationName + " - Add offence dates" %}
 
 {% block pageContent %}
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-date{{ "?submitToEditOffence=true" if submitToEditOffence }}">
@@ -78,8 +78,6 @@
                     }) }}
 
                 {% endcall %}
-
-
 
                 {{ govukButton({
                     text: "Continue"

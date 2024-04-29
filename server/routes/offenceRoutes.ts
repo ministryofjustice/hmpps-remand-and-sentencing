@@ -15,7 +15,6 @@ import type {
   OffenceTerrorRelatedForm,
   ReviewOffencesForm,
 } from 'forms'
-import dayjs from 'dayjs'
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
 import trimForm from '../utils/trim'
@@ -41,21 +40,22 @@ export default class OffenceRoutes {
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
-    let offenceStartDateDay: number
-    let offenceStartDateMonth: number
-    let offenceStartDateYear: number
-    let offenceEndDateDay: number
-    let offenceEndDateMonth: number
-    let offenceEndDateYear: number
+    const offenceDateForm = (req.flash('offenceDateForm')[0] || {}) as OffenceOffenceDateForm
+    let offenceStartDateDay: number | string = offenceDateForm['offenceStartDate-day']
+    let offenceStartDateMonth: number | string = offenceDateForm['offenceStartDate-month']
+    let offenceStartDateYear: number | string = offenceDateForm['offenceStartDate-year']
+    let offenceEndDateDay: number | string = offenceDateForm['offenceEndDate-day']
+    let offenceEndDateMonth: number | string = offenceDateForm['offenceEndDate-month']
+    let offenceEndDateYear: number | string = offenceDateForm['offenceEndDate-year']
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
 
-    if (offence.offenceStartDate) {
+    if (offence.offenceStartDate && !offenceDateForm) {
       const offenceStartDate = new Date(offence.offenceStartDate)
       offenceStartDateDay = offenceStartDate.getDate()
       offenceStartDateMonth = offenceStartDate.getMonth() + 1
       offenceStartDateYear = offenceStartDate.getFullYear()
     }
-    if (offence.offenceEndDate) {
+    if (offence.offenceEndDate && !offenceDateForm) {
       const offenceEndDate = new Date(offence.offenceEndDate)
       offenceEndDateDay = offenceEndDate.getDate()
       offenceEndDateMonth = offenceEndDate.getMonth() + 1
@@ -74,30 +74,21 @@ export default class OffenceRoutes {
       offenceEndDateDay,
       offenceEndDateMonth,
       offenceEndDateYear,
+      errors: req.flash('errors') || [],
+      backLink: req.get('Referrer'),
     })
   }
 
   public submitOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const offenceDateForm = trimForm<OffenceOffenceDateForm>(req.body)
-    const offenceStartDate = dayjs({
-      year: offenceDateForm['offenceStartDate-year'],
-      month: offenceDateForm['offenceStartDate-month'] - 1,
-      day: offenceDateForm['offenceStartDate-day'],
-    })
-    this.offenceService.setOffenceStartDate(req.session, nomsId, courtCaseReference, offenceStartDate.toDate())
-
-    if (
-      offenceDateForm['offenceEndDate-day'] &&
-      offenceDateForm['offenceEndDate-month'] &&
-      offenceDateForm['offenceEndDate-year']
-    ) {
-      const offenceEndDate = dayjs({
-        year: offenceDateForm['offenceEndDate-year'],
-        month: offenceDateForm['offenceEndDate-month'] - 1,
-        day: offenceDateForm['offenceEndDate-day'],
-      })
-      this.offenceService.setOffenceEndDate(req.session, nomsId, courtCaseReference, offenceEndDate.toDate())
+    const errors = this.offenceService.setOffenceDates(req.session, nomsId, courtCaseReference, offenceDateForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceDateForm', { ...offenceDateForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+      )
     }
     const { submitToEditOffence } = req.query
     const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)

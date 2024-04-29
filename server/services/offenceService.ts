@@ -11,16 +11,16 @@ export default class OffenceService {
     offenceOffenceDateForm: OffenceOffenceDateForm,
   ) {
     const isValidOffenceStartDateRule =
-      offenceOffenceDateForm['offenceStartDate-day'] !== undefined &&
-      offenceOffenceDateForm['offenceStartDate-month'] !== undefined &&
-      offenceOffenceDateForm['offenceStartDate-year'] !== undefined
+      offenceOffenceDateForm['offenceStartDate-day'] &&
+      offenceOffenceDateForm['offenceStartDate-month'] &&
+      offenceOffenceDateForm['offenceStartDate-year']
         ? `|isValidDate:${offenceOffenceDateForm['offenceStartDate-year']}-${offenceOffenceDateForm['offenceStartDate-month'].padStart(2, '0')}-${offenceOffenceDateForm['offenceStartDate-day'].padStart(2, '0')}`
         : ''
 
     const isValidOffenceEndDateRule =
-      offenceOffenceDateForm['offenceEndDate-day'] !== undefined &&
-      offenceOffenceDateForm['offenceEndDate-month'] !== undefined &&
-      offenceOffenceDateForm['offenceEndDate-year'] !== undefined
+      offenceOffenceDateForm['offenceEndDate-day'] &&
+      offenceOffenceDateForm['offenceEndDate-month'] &&
+      offenceOffenceDateForm['offenceEndDate-year']
         ? `|isValidDate:${offenceOffenceDateForm['offenceEndDate-year']}-${offenceOffenceDateForm['offenceEndDate-month'].padStart(2, '0')}-${offenceOffenceDateForm['offenceEndDate-day'].padStart(2, '0')}`
         : ''
 
@@ -30,18 +30,18 @@ export default class OffenceService {
         'offenceStartDate-day': `required${isValidOffenceStartDateRule}`,
         'offenceStartDate-month': `required`,
         'offenceStartDate-year': `required`,
-        'offenceEndDate-day': `required_with:offenceEndDate-month,offenceEndDate-year${isValidOffenceEndDateRule}`,
-        'offenceEndDate-month': 'required_with:offenceEndDate-day,offenceEndDate-year',
-        'offenceEndDate-year': 'required_with:offenceEndDate-day,offenceEndDate-month',
+        'offenceEndDate-day': `requiredFieldWith:offenceEndDate-month,offenceEndDate-year${isValidOffenceEndDateRule}`,
+        'offenceEndDate-month': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-year',
+        'offenceEndDate-year': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-month',
       },
       {
         'required.offenceStartDate-year': 'Offence start date must include year',
         'required.offenceStartDate-month': 'Offence start date must include month',
         'required.offenceStartDate-day': 'Offence start date must include day',
         'isValidDate.offenceStartDate-day': 'This date does not exist.',
-        'required_with.offenceEndDate-day': 'Offence end date must include day',
-        'required_with.offenceEndDate-month': 'Offence end date must include month',
-        'required_with.offenceEndDate-year': 'Offence end date must include year',
+        'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
+        'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
+        'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
         'isValidDate.offenceEndDate-day': 'This date does not exist.',
       },
     )

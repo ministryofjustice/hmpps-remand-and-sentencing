@@ -55,7 +55,7 @@ export default class OffenceService {
         day: offenceOffenceDateForm['offenceStartDate-day'],
       })
       offence.offenceStartDate = offenceStartDate.toDate()
-      if (offenceOffenceDateForm['offenceEndDate-day'] !== undefined) {
+      if (offenceOffenceDateForm['offenceEndDate-day']) {
         const offenceEndDate = dayjs({
           year: offenceOffenceDateForm['offenceEndDate-year'],
           month: parseInt(offenceOffenceDateForm['offenceEndDate-month'], 10) - 1,

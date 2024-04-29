@@ -49,7 +49,7 @@ export default class OffenceRoutes {
     let offenceEndDateYear: number | string = offenceDateForm['offenceEndDate-year']
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
 
-    if (offence.offenceStartDate && !offenceDateForm) {
+    if (offence.offenceStartDate && Object.keys(offenceDateForm).length === 0) {
       const offenceStartDate = new Date(offence.offenceStartDate)
       offenceStartDateDay = offenceStartDate.getDate()
       offenceStartDateMonth = offenceStartDate.getMonth() + 1

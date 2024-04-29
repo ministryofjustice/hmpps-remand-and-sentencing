@@ -8,9 +8,9 @@ declare module 'forms' {
   }
 
   export interface CourtCaseWarrantDateForm {
-    'warrantDate-day'?: number
-    'warrantDate-month'?: number
-    'warrantDate-year'?: number
+    'warrantDate-day'?: string
+    'warrantDate-month'?: string
+    'warrantDate-year'?: string
   }
 
   export interface CourtCaseSelectCourtNameForm {

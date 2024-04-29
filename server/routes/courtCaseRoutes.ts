@@ -16,7 +16,6 @@ import type {
   CourtCaseWarrantTypeForm,
   CourtCaseTaggedBailForm,
 } from 'forms'
-import dayjs from 'dayjs'
 import type { CourtAppearance, CourtCase } from 'models'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
@@ -148,16 +147,16 @@ export default class CourtCaseRoutes {
   public getWarrantDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    let warrantDateDay: number
-    let warrantDateMonth: number
-    let warrantDateYear: number
-    if (submitToCheckAnswers) {
-      const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId)
-      if (warrantDate) {
-        warrantDateDay = warrantDate.getDate()
-        warrantDateMonth = warrantDate.getMonth() + 1
-        warrantDateYear = warrantDate.getFullYear()
-      }
+    const warrantDateForm = (req.flash('warrantDateForm')[0] || {}) as CourtCaseWarrantDateForm
+    let warrantDateDay: number | string = warrantDateForm['warrantDate-day']
+    let warrantDateMonth: number | string = warrantDateForm['warrantDate-month']
+    let warrantDateYear: number | string = warrantDateForm['warrantDate-year']
+    const warrantDateValue = this.courtAppearanceService.getWarrantDate(req.session, nomsId)
+    if (warrantDateValue && !warrantDateForm) {
+      const warrantDate = new Date(warrantDateValue)
+      warrantDateDay = warrantDate.getDate()
+      warrantDateMonth = warrantDate.getMonth() + 1
+      warrantDateYear = warrantDate.getFullYear()
     }
 
     return res.render('pages/courtAppearance/warrant-date', {
@@ -169,18 +168,23 @@ export default class CourtCaseRoutes {
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
+      errors: req.flash('errors') || [],
+      backLink: req.get('Referrer'),
     })
   }
 
   public submitWarrantDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const warrantDateForm = trimForm<CourtCaseWarrantDateForm>(req.body)
-    const warrantDate = dayjs({
-      year: warrantDateForm['warrantDate-year'],
-      month: warrantDateForm['warrantDate-month'] - 1,
-      day: warrantDateForm['warrantDate-day'],
-    })
-    this.courtAppearanceService.setWarrantDate(req.session, nomsId, warrantDate.toDate())
+    const errors = this.courtAppearanceService.setWarrantDate(req.session, nomsId, warrantDateForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('warrantDateForm', { ...warrantDateForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
+      )
+    }
+
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(

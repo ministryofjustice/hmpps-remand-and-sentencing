@@ -22,4 +22,26 @@ context('Court Case Warrant Date Page', () => {
   it('button to continue is displayed', () => {
     courtCaseWarrantDatePage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without entering anything in the inputs results in an error', () => {
+    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should(
+        'equal',
+        'There is a problem Warrant date must include day Warrant date must include month Warrant date must include year',
+      )
+  })
+
+  it('submitting an invalid date results in an error', () => {
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('35')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('1')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2024')
+    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem This date does not exist.')
+  })
 })

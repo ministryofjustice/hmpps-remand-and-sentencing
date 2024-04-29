@@ -1,5 +1,5 @@
 import type { CourtAppearance, Offence } from 'models'
-import type { CourtCaseNextHearingDateForm } from 'forms'
+import type { CourtCaseNextHearingDateForm, CourtCaseWarrantDateForm } from 'forms'
 import dayjs from 'dayjs'
 import OffencePersistType from '../@types/models/OffencePersistType'
 import validate from '../validation/validation'
@@ -22,11 +22,46 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).caseReferenceNumber
   }
 
-  setWarrantDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, warrantDate: Date) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.warrantDate = warrantDate
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+  setWarrantDate(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseWarrantDateForm: CourtCaseWarrantDateForm,
+  ): {
+    text: string
+    href: string
+  }[] {
+    const isValidDateRule =
+      courtCaseWarrantDateForm['warrantDate-day'] !== undefined &&
+      courtCaseWarrantDateForm['warrantDate-month'] !== undefined &&
+      courtCaseWarrantDateForm['warrantDate-year'] !== undefined
+        ? `|isValidDate:${courtCaseWarrantDateForm['warrantDate-year']}-${courtCaseWarrantDateForm['warrantDate-month'].padStart(2, '0')}-${courtCaseWarrantDateForm['warrantDate-day'].padStart(2, '0')}`
+        : ''
+    const errors = validate(
+      courtCaseWarrantDateForm,
+      {
+        'warrantDate-day': `required${isValidDateRule}`,
+        'warrantDate-month': `required`,
+        'warrantDate-year': `required`,
+      },
+      {
+        'required.warrantDate-year': 'Warrant date must include year',
+        'required.warrantDate-month': 'Warrant date must include month',
+        'required.warrantDate-day': 'Warrant date must include day',
+        'isValidDate.warrantDate-day': 'This date does not exist.',
+      },
+    )
+    if (errors.length === 0) {
+      const warrantDate = dayjs({
+        year: courtCaseWarrantDateForm['warrantDate-year'],
+        month: parseInt(courtCaseWarrantDateForm['warrantDate-month'], 10) - 1,
+        day: courtCaseWarrantDateForm['warrantDate-day'],
+      })
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.warrantDate = warrantDate.toDate()
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   getWarrantDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {

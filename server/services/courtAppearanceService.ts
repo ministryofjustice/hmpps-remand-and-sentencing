@@ -31,9 +31,9 @@ export default class CourtAppearanceService {
     href: string
   }[] {
     const isValidDateRule =
-      courtCaseWarrantDateForm['warrantDate-day'] !== undefined &&
-      courtCaseWarrantDateForm['warrantDate-month'] !== undefined &&
-      courtCaseWarrantDateForm['warrantDate-year'] !== undefined
+      courtCaseWarrantDateForm['warrantDate-day'] &&
+      courtCaseWarrantDateForm['warrantDate-month'] &&
+      courtCaseWarrantDateForm['warrantDate-year']
         ? `|isValidDate:${courtCaseWarrantDateForm['warrantDate-year']}-${courtCaseWarrantDateForm['warrantDate-month'].padStart(2, '0')}-${courtCaseWarrantDateForm['warrantDate-day'].padStart(2, '0')}`
         : ''
     const errors = validate(

@@ -152,7 +152,7 @@ export default class CourtCaseRoutes {
     let warrantDateMonth: number | string = warrantDateForm['warrantDate-month']
     let warrantDateYear: number | string = warrantDateForm['warrantDate-year']
     const warrantDateValue = this.courtAppearanceService.getWarrantDate(req.session, nomsId)
-    if (warrantDateValue && !warrantDateForm) {
+    if (warrantDateValue && Object.keys(warrantDateForm).length === 0) {
       const warrantDate = new Date(warrantDateValue)
       warrantDateDay = warrantDate.getDate()
       warrantDateMonth = warrantDate.getMonth() + 1

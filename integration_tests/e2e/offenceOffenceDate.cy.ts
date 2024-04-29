@@ -23,4 +23,56 @@ context('Add Offence Offence Date Page', () => {
   it('button to continue is displayed', () => {
     offenceOffenceDatePage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without entering anything in the inputs results in an error', () => {
+    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should(
+        'equal',
+        'There is a problem Offence start date must include day Offence start date must include month Offence start date must include year',
+      )
+  })
+
+  it('submitting an invalid start date results in an error', () => {
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('35')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('1')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
+    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem This date does not exist.')
+  })
+
+  it('submitting only day of end date results in an error', () => {
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('15')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('1')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
+    offenceOffenceDatePage.dayDateInput('offenceEndDate').type('18')
+    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Offence end date must include month Offence end date must include year')
+  })
+
+  it('submitting an invalid end date results in an error', () => {
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('15')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('1')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
+    offenceOffenceDatePage.dayDateInput('offenceEndDate').type('35')
+    offenceOffenceDatePage.monthDateInput('offenceEndDate').type('1')
+    offenceOffenceDatePage.yearDateInput('offenceEndDate').type('2024')
+    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem This date does not exist.')
+  })
 })

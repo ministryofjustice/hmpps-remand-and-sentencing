@@ -1,30 +1,72 @@
+import type { OffenceOffenceDateForm } from 'forms'
 import type { Offence, SentenceLength } from 'models'
+import dayjs from 'dayjs'
+import validate from '../validation/validation'
 
 export default class OffenceService {
-  setOffenceStartDate(
+  setOffenceDates(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    offenceStartDate: Date,
+    offenceOffenceDateForm: OffenceOffenceDateForm,
   ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    offence.offenceStartDate = offenceStartDate
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
-  }
+    const isValidOffenceStartDateRule =
+      offenceOffenceDateForm['offenceStartDate-day'] &&
+      offenceOffenceDateForm['offenceStartDate-month'] &&
+      offenceOffenceDateForm['offenceStartDate-year']
+        ? `|isValidDate:${offenceOffenceDateForm['offenceStartDate-year']}-${offenceOffenceDateForm['offenceStartDate-month'].padStart(2, '0')}-${offenceOffenceDateForm['offenceStartDate-day'].padStart(2, '0')}`
+        : ''
 
-  setOffenceEndDate(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceEndDate: Date,
-  ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    offence.offenceEndDate = offenceEndDate
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
+    const isValidOffenceEndDateRule =
+      offenceOffenceDateForm['offenceEndDate-day'] &&
+      offenceOffenceDateForm['offenceEndDate-month'] &&
+      offenceOffenceDateForm['offenceEndDate-year']
+        ? `|isValidDate:${offenceOffenceDateForm['offenceEndDate-year']}-${offenceOffenceDateForm['offenceEndDate-month'].padStart(2, '0')}-${offenceOffenceDateForm['offenceEndDate-day'].padStart(2, '0')}`
+        : ''
+
+    const errors = validate(
+      offenceOffenceDateForm,
+      {
+        'offenceStartDate-day': `required${isValidOffenceStartDateRule}`,
+        'offenceStartDate-month': `required`,
+        'offenceStartDate-year': `required`,
+        'offenceEndDate-day': `requiredFieldWith:offenceEndDate-month,offenceEndDate-year${isValidOffenceEndDateRule}`,
+        'offenceEndDate-month': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-year',
+        'offenceEndDate-year': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-month',
+      },
+      {
+        'required.offenceStartDate-year': 'Offence start date must include year',
+        'required.offenceStartDate-month': 'Offence start date must include month',
+        'required.offenceStartDate-day': 'Offence start date must include day',
+        'isValidDate.offenceStartDate-day': 'This date does not exist.',
+        'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
+        'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
+        'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
+        'isValidDate.offenceEndDate-day': 'This date does not exist.',
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+
+      const offenceStartDate = dayjs({
+        year: offenceOffenceDateForm['offenceStartDate-year'],
+        month: parseInt(offenceOffenceDateForm['offenceStartDate-month'], 10) - 1,
+        day: offenceOffenceDateForm['offenceStartDate-day'],
+      })
+      offence.offenceStartDate = offenceStartDate.toDate()
+      if (offenceOffenceDateForm['offenceEndDate-day']) {
+        const offenceEndDate = dayjs({
+          year: offenceOffenceDateForm['offenceEndDate-year'],
+          month: parseInt(offenceOffenceDateForm['offenceEndDate-month'], 10) - 1,
+          day: offenceOffenceDateForm['offenceEndDate-day'],
+        })
+        offence.offenceEndDate = offenceEndDate.toDate()
+      }
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
   }
 
   setOffenceCode(

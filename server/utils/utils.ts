@@ -43,5 +43,5 @@ export const getAsStringOrDefault = (value: unknown, defaultValue: string): stri
 }
 
 export const toDateString = (year: string, month: string, day: string): string => {
-  return `${year}-${(parseInt(month, 10) - 1).toString().padStart(2, '0')}-${day.padStart(2, '0')}`
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
 }

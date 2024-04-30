@@ -41,3 +41,7 @@ export const getAsStringOrDefault = (value: unknown, defaultValue: string): stri
   if (typeof value === 'string') return value
   return defaultValue
 }
+
+export const toDateString = (year: string, month: string, day: string): string => {
+  return `${year}-${(parseInt(month, 10) - 1).toString().padStart(2, '0')}-${day.padStart(2, '0')}`
+}

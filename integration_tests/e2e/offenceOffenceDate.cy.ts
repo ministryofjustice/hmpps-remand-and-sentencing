@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import Page from '../pages/page'
 
@@ -37,6 +38,19 @@ context('Add Offence Offence Date Page', () => {
   })
 
   it('submitting an invalid start date results in an error', () => {
+    const futureDate = dayjs().add(7, 'day')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type(futureDate.date().toString())
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type((futureDate.month() + 1).toString())
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type(futureDate.year().toString())
+    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Offence start date must use a date from the past')
+  })
+
+  it('submitting a start date in the future results in an error', () => {
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('35')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('1')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
@@ -74,5 +88,21 @@ context('Add Offence Offence Date Page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem This date does not exist.')
+  })
+
+  it('submitting an invalid end date results in an error', () => {
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('15')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('1')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
+    const futureDate = dayjs().add(7, 'day')
+    offenceOffenceDatePage.dayDateInput('offenceEndDate').type(futureDate.date().toString())
+    offenceOffenceDatePage.monthDateInput('offenceEndDate').type((futureDate.month() + 1).toString())
+    offenceOffenceDatePage.yearDateInput('offenceEndDate').type(futureDate.year().toString())
+    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Offence end date must use a date from the past')
   })
 })

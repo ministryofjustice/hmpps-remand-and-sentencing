@@ -52,10 +52,12 @@ export default class OffenceService {
         'required.offenceStartDate-month': 'Offence start date must include month',
         'required.offenceStartDate-day': 'Offence start date must include day',
         'isValidDate.offenceStartDate-day': 'This date does not exist.',
+        'isPastDate.offenceStartDate-day': 'Offence start date must use a date from the past',
         'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
         'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
         'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
         'isValidDate.offenceEndDate-day': 'This date does not exist.',
+        'isPastDate.offenceEndDate-day': 'Offence end date must use a date from the past',
       },
     )
     if (errors.length === 0) {

@@ -2,6 +2,7 @@ import type { OffenceOffenceDateForm } from 'forms'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import validate from '../validation/validation'
+import { toDateString } from '../utils/utils'
 
 export default class OffenceService {
   setOffenceDates(
@@ -10,20 +11,32 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceOffenceDateForm: OffenceOffenceDateForm,
   ) {
-    const isValidOffenceStartDateRule =
+    let isValidOffenceStartDateRule = ''
+    if (
       offenceOffenceDateForm['offenceStartDate-day'] &&
       offenceOffenceDateForm['offenceStartDate-month'] &&
       offenceOffenceDateForm['offenceStartDate-year']
-        ? `|isValidDate:${offenceOffenceDateForm['offenceStartDate-year']}-${offenceOffenceDateForm['offenceStartDate-month'].padStart(2, '0')}-${offenceOffenceDateForm['offenceStartDate-day'].padStart(2, '0')}`
-        : ''
-
-    const isValidOffenceEndDateRule =
+    ) {
+      const startDateString = toDateString(
+        offenceOffenceDateForm['offenceStartDate-year'],
+        offenceOffenceDateForm['offenceStartDate-month'],
+        offenceOffenceDateForm['offenceStartDate-day'],
+      )
+      isValidOffenceStartDateRule = `|isValidDate:${startDateString}|isPastDate:${startDateString}`
+    }
+    let isValidOffenceEndDateRule = ''
+    if (
       offenceOffenceDateForm['offenceEndDate-day'] &&
       offenceOffenceDateForm['offenceEndDate-month'] &&
       offenceOffenceDateForm['offenceEndDate-year']
-        ? `|isValidDate:${offenceOffenceDateForm['offenceEndDate-year']}-${offenceOffenceDateForm['offenceEndDate-month'].padStart(2, '0')}-${offenceOffenceDateForm['offenceEndDate-day'].padStart(2, '0')}`
-        : ''
-
+    ) {
+      const endDateString = toDateString(
+        offenceOffenceDateForm['offenceEndDate-year'],
+        offenceOffenceDateForm['offenceEndDate-month'],
+        offenceOffenceDateForm['offenceEndDate-day'],
+      )
+      isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastDate:${endDateString}`
+    }
     const errors = validate(
       offenceOffenceDateForm,
       {
@@ -39,10 +52,12 @@ export default class OffenceService {
         'required.offenceStartDate-month': 'Offence start date must include month',
         'required.offenceStartDate-day': 'Offence start date must include day',
         'isValidDate.offenceStartDate-day': 'This date does not exist.',
+        'isPastDate.offenceStartDate-day': 'Offence start date must use a date from the past',
         'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
         'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
         'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
         'isValidDate.offenceEndDate-day': 'This date does not exist.',
+        'isPastDate.offenceEndDate-day': 'Offence end date must use a date from the past',
       },
     )
     if (errors.length === 0) {

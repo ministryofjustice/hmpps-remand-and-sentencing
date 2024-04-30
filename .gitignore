@@ -129,3 +129,4 @@ integration_tests/screenshots/
 /hmpps-remand-and-sentencing.iml
 .DS_Store
 /uploads/
+cypress/downloads/downloads.html

@@ -15,6 +15,7 @@ import type {
   CourtCaseSelectCourtNameForm,
   CourtCaseWarrantTypeForm,
   CourtCaseTaggedBailForm,
+  CourtCaseAlternativeSentenceLengthForm,
 } from 'forms'
 import type { CourtAppearance, CourtCase } from 'models'
 import trimForm from '../utils/trim'
@@ -600,6 +601,45 @@ export default class CourtCaseRoutes {
     }
     this.courtAppearanceService.setTaggedBail(req.session, nomsId, taggedBailForm.taggedBail)
 
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
+    )
+  }
+
+  public getAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { submitToCheckAnswers } = req.query
+    const custodialSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
+      req.session,
+      nomsId,
+    ) ?? { periodOrder: ['years', 'months', 'weeks', 'days'] }
+    return res.render('pages/courtAppearance/alternative-sentence-length', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      submitToCheckAnswers,
+      custodialSentenceLength,
+      errors: req.flash('errors') || [],
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/overall-sentence-length`,
+    })
+  }
+
+  public submitAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const courtCaseAlternativeSentenceLengthForm = trimForm<CourtCaseAlternativeSentenceLengthForm>(req.body)
+    const errors = this.courtAppearanceService.setOverallAlternativeSentenceLength(
+      req.session,
+      nomsId,
+      courtCaseAlternativeSentenceLengthForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('courtCaseAlternativeSentenceLengthForm', { ...courtCaseAlternativeSentenceLengthForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/alternative-overall-sentence-length`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
     )

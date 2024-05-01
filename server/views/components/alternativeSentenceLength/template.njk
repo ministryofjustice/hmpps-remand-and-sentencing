@@ -1,6 +1,20 @@
-<div class="govuk-form-group">
-    <input class="govuk-input govuk-input--width-2 govuk-!-margin-right-2" id="{{ params.id }}-value" name="{{params.name}}[value]" value="{{params.value}}" type="text" inputmode="numeric">
-    <select class="govuk-select alternative-sentence-length-select" id="{{params.id}}-period" name="{{params.name}}[period]">
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
+
+<div class="govuk-form-group {%- if params.errorMessage %} govuk-form-group--error{% endif %}">
+    {% if params.errorMessage %}
+        {% set errorId = params.id + '-error' %}
+        {% set describedBy = describedBy + ' ' + errorId if describedBy else errorId %}
+        {{ govukErrorMessage({
+            id: errorId,
+            classes: params.errorMessage.classes,
+            attributes: params.errorMessage.attributes,
+            html: params.errorMessage.html,
+            text: params.errorMessage.text,
+            visuallyHiddenText: params.errorMessage.visuallyHiddenText
+        }) | trim | indent(2) }}
+    {% endif %}
+    <input class="govuk-input govuk-input--width-2 govuk-!-margin-right-2  {%- if params.errorMessage %} govuk-input--error{% endif %}" id="{{ params.id }}-value" name="{{params.name}}-value" value="{{params.value}}" type="text" inputmode="numeric">
+    <select class="govuk-select alternative-sentence-length-select {%- if params.errorMessage %} govuk-select--error{% endif %}" id="{{params.id}}-period" name="{{params.name}}-period">
         <option value="years" {% if params.selectedItem === 'years' %} selected {% endif %}>years</option>
         <option value="months" {% if params.selectedItem === 'months' %} selected {% endif %}>months</option>
         <option value="weeks" {% if params.selectedItem === 'weeks' %} selected {%endif %}>weeks</option>

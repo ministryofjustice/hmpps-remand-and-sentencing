@@ -25,7 +25,7 @@ import validate from '../validation/validation'
 import OffencePersistType from '../@types/models/OffencePersistType'
 import CaseOutcomeService from '../services/caseOutcomeService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
-import { chargeToOffence } from '../utils/mappingUtils'
+import { chargeToOffence, sentenceLengthToAlternativeSentenceLengthForm } from '../utils/mappingUtils'
 import logger from '../../logger'
 
 export default class OffenceRoutes {
@@ -496,12 +496,15 @@ export default class OffenceRoutes {
   public getAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
-    const custodialSentenceLength = this.getSessionOffenceOrAppearanceOffence(
-      req,
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-    )?.sentence?.custodialSentenceLength ?? { periodOrder: ['years', 'months', 'weeks', 'days'] }
+    let offenceAlternativeSentenceLengthForm = (req.flash('offenceAlternativeSentenceLengthForm')[0] ||
+      {}) as OffenceAlternativeSentenceLengthForm
+    if (Object.keys(offenceAlternativeSentenceLengthForm).length === 0) {
+      offenceAlternativeSentenceLengthForm = sentenceLengthToAlternativeSentenceLengthForm(
+        this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)?.sentence
+          ?.custodialSentenceLength,
+      )
+    }
+
     return res.render('pages/offence/alternative-sentence-length', {
       nomsId,
       courtCaseReference,
@@ -509,25 +512,28 @@ export default class OffenceRoutes {
       appearanceReference,
       addOrEditCourtCase,
       submitToEditOffence,
-      custodialSentenceLength,
+      offenceAlternativeSentenceLengthForm,
+      errors: req.flash('errors') || [],
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
     })
   }
 
   public submitAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const offenceAlternativeSentenceLengthForm = trimForm<OffenceAlternativeSentenceLengthForm>(req.body)
-    const sentenceLengths = offenceAlternativeSentenceLengthForm.sentenceLengths
-      .filter(sentenceLength => sentenceLength.value)
-      .reduce(
-        (prev, current) => {
-          // eslint-disable-next-line no-param-reassign
-          prev[current.period] = current.value
-          prev.periodOrder.push(current.period)
-          return prev
-        },
-        { periodOrder: [] },
+    const errors = this.offenceService.setAlternativeSentenceLength(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceAlternativeSentenceLengthForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceAlternativeSentenceLengthForm', { ...offenceAlternativeSentenceLengthForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/alternative-sentence-length`,
       )
-    this.offenceService.setCustodialSentenceLength(req.session, nomsId, courtCaseReference, sentenceLengths)
+    }
     const { submitToEditOffence } = req.query
     if (submitToEditOffence) {
       return res.redirect(

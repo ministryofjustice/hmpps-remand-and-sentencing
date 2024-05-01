@@ -7,7 +7,7 @@ import type {
 import dayjs from 'dayjs'
 import OffencePersistType from '../@types/models/OffencePersistType'
 import validate from '../validation/validation'
-import { courtCaseAlternativeSentenceLengthFormToSentenceLength } from '../utils/mappingUtils'
+import { alternativeSentenceLengthFormToSentenceLength } from '../utils/mappingUtils'
 
 export default class CourtAppearanceService {
   constructor() {}
@@ -212,7 +212,7 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const sentenceLength = courtCaseAlternativeSentenceLengthFormToSentenceLength(
+      const sentenceLength = alternativeSentenceLengthFormToSentenceLength<CourtCaseAlternativeSentenceLengthForm>(
         courtCaseAlternativeSentenceLengthForm,
       )
       const courtAppearance = this.getCourtAppearance(session, nomsId)

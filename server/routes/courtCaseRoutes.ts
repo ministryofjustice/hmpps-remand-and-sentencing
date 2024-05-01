@@ -27,7 +27,7 @@ import { getAsStringOrDefault } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import CaseOutcomeService from '../services/caseOutcomeService'
 import validate from '../validation/validation'
-import { sentenceLengthToCourtCaseAlternativeSentenceLengthForm } from '../utils/mappingUtils'
+import { sentenceLengthToAlternativeSentenceLengthForm } from '../utils/mappingUtils'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -614,9 +614,10 @@ export default class CourtCaseRoutes {
       {}) as CourtCaseAlternativeSentenceLengthForm
 
     if (Object.keys(courtCaseAlternativeSentenceLengthForm).length === 0) {
-      courtCaseAlternativeSentenceLengthForm = sentenceLengthToCourtCaseAlternativeSentenceLengthForm(
-        this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
-      )
+      courtCaseAlternativeSentenceLengthForm =
+        sentenceLengthToAlternativeSentenceLengthForm<CourtCaseAlternativeSentenceLengthForm>(
+          this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
+        )
     }
     return res.render('pages/courtAppearance/alternative-sentence-length', {
       nomsId,

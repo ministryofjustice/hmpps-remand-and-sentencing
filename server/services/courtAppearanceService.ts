@@ -7,6 +7,7 @@ import type {
 import dayjs from 'dayjs'
 import OffencePersistType from '../@types/models/OffencePersistType'
 import validate from '../validation/validation'
+import { courtCaseAlternativeSentenceLengthFormToSentenceLength } from '../utils/mappingUtils'
 
 export default class CourtAppearanceService {
   constructor() {}
@@ -211,28 +212,9 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const sentenceLength = { periodOrder: [] }
-      if (courtCaseAlternativeSentenceLengthForm['firstSentenceLength-value']) {
-        sentenceLength[courtCaseAlternativeSentenceLengthForm['firstSentenceLength-period']] =
-          courtCaseAlternativeSentenceLengthForm['firstSentenceLength-value']
-        sentenceLength.periodOrder.push(courtCaseAlternativeSentenceLengthForm['firstSentenceLength-period'])
-      }
-      if (courtCaseAlternativeSentenceLengthForm['secondSentenceLength-value']) {
-        sentenceLength[courtCaseAlternativeSentenceLengthForm['secondSentenceLength-period']] =
-          courtCaseAlternativeSentenceLengthForm['secondSentenceLength-value']
-        sentenceLength.periodOrder.push(courtCaseAlternativeSentenceLengthForm['secondSentenceLength-period'])
-      }
-      if (courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-value']) {
-        sentenceLength[courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-period']] =
-          courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-value']
-        sentenceLength.periodOrder.push(courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-period'])
-      }
-      if (courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-value']) {
-        sentenceLength[courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-period']] =
-          courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-value']
-        sentenceLength.periodOrder.push(courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-period'])
-      }
-
+      const sentenceLength = courtCaseAlternativeSentenceLengthFormToSentenceLength(
+        courtCaseAlternativeSentenceLengthForm,
+      )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.overallSentenceLength = sentenceLength
       // eslint-disable-next-line no-param-reassign

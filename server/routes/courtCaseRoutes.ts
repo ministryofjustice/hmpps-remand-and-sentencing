@@ -27,6 +27,7 @@ import { getAsStringOrDefault } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import CaseOutcomeService from '../services/caseOutcomeService'
 import validate from '../validation/validation'
+import { sentenceLengthToCourtCaseAlternativeSentenceLengthForm } from '../utils/mappingUtils'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -609,49 +610,13 @@ export default class CourtCaseRoutes {
   public getAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    const courtCaseAlternativeSentenceLengthForm = (req.flash('courtCaseAlternativeSentenceLengthForm')[0] ||
+    let courtCaseAlternativeSentenceLengthForm = (req.flash('courtCaseAlternativeSentenceLengthForm')[0] ||
       {}) as CourtCaseAlternativeSentenceLengthForm
 
     if (Object.keys(courtCaseAlternativeSentenceLengthForm).length === 0) {
-      const overallCustodialSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
-        req.session,
-        nomsId,
+      courtCaseAlternativeSentenceLengthForm = sentenceLengthToCourtCaseAlternativeSentenceLengthForm(
+        this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
       )
-      if (overallCustodialSentenceLength) {
-        courtCaseAlternativeSentenceLengthForm['firstSentenceLength-value'] =
-          overallCustodialSentenceLength[overallCustodialSentenceLength.periodOrder[0]]
-        courtCaseAlternativeSentenceLengthForm['firstSentenceLength-period'] =
-          overallCustodialSentenceLength.periodOrder.at(0)
-        if (overallCustodialSentenceLength.periodOrder.length >= 2) {
-          courtCaseAlternativeSentenceLengthForm['secondSentenceLength-value'] =
-            overallCustodialSentenceLength[overallCustodialSentenceLength.periodOrder[1]]
-          courtCaseAlternativeSentenceLengthForm['secondSentenceLength-period'] =
-            overallCustodialSentenceLength.periodOrder.at(1)
-        } else {
-          courtCaseAlternativeSentenceLengthForm['secondSentenceLength-period'] = 'months'
-        }
-        if (overallCustodialSentenceLength.periodOrder.length >= 3) {
-          courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-value'] =
-            overallCustodialSentenceLength[overallCustodialSentenceLength.periodOrder[2]]
-          courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-period'] =
-            overallCustodialSentenceLength.periodOrder.at(2)
-        } else {
-          courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-period'] = 'weeks'
-        }
-        if (overallCustodialSentenceLength.periodOrder.length === 4) {
-          courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-value'] =
-            overallCustodialSentenceLength[overallCustodialSentenceLength.periodOrder[3]]
-          courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-period'] =
-            overallCustodialSentenceLength.periodOrder.at(3)
-        } else {
-          courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-period'] = 'days'
-        }
-      } else {
-        courtCaseAlternativeSentenceLengthForm['firstSentenceLength-period'] = 'years'
-        courtCaseAlternativeSentenceLengthForm['secondSentenceLength-period'] = 'months'
-        courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-period'] = 'weeks'
-        courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-period'] = 'days'
-      }
     }
     return res.render('pages/courtAppearance/alternative-sentence-length', {
       nomsId,

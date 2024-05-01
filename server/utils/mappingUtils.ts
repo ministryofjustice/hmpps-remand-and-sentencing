@@ -1,5 +1,6 @@
 import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
+import type { CourtCaseAlternativeSentenceLengthForm } from 'forms'
 import {
   APISentence,
   Charge,
@@ -117,4 +118,62 @@ export const chargeToOffence = (charge: Charge): Offence => {
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
   } as Offence
+}
+
+export const sentenceLengthToCourtCaseAlternativeSentenceLengthForm = (
+  sentenceLength: SentenceLength,
+): CourtCaseAlternativeSentenceLengthForm => {
+  const courtCaseAlternativeSentenceLengthForm = {
+    'firstSentenceLength-period': 'years',
+    'secondSentenceLength-period': 'months',
+    'thirdSentenceLength-period': 'weeks',
+    'fourthSentenceLength-period': 'days',
+  } as CourtCaseAlternativeSentenceLengthForm
+  if (sentenceLength) {
+    courtCaseAlternativeSentenceLengthForm['firstSentenceLength-value'] = sentenceLength[sentenceLength.periodOrder[0]]
+    courtCaseAlternativeSentenceLengthForm['firstSentenceLength-period'] = sentenceLength.periodOrder.at(0)
+    if (sentenceLength.periodOrder.length >= 2) {
+      courtCaseAlternativeSentenceLengthForm['secondSentenceLength-value'] =
+        sentenceLength[sentenceLength.periodOrder[1]]
+      courtCaseAlternativeSentenceLengthForm['secondSentenceLength-period'] = sentenceLength.periodOrder.at(1)
+    }
+    if (sentenceLength.periodOrder.length >= 3) {
+      courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-value'] =
+        sentenceLength[sentenceLength.periodOrder[2]]
+      courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-period'] = sentenceLength.periodOrder.at(2)
+    }
+    if (sentenceLength.periodOrder.length === 4) {
+      courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-value'] =
+        sentenceLength[sentenceLength.periodOrder[3]]
+      courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-period'] = sentenceLength.periodOrder.at(3)
+    }
+  }
+  return courtCaseAlternativeSentenceLengthForm
+}
+
+export const courtCaseAlternativeSentenceLengthFormToSentenceLength = (
+  courtCaseAlternativeSentenceLengthForm: CourtCaseAlternativeSentenceLengthForm,
+): SentenceLength => {
+  const sentenceLength = { periodOrder: [] }
+  if (courtCaseAlternativeSentenceLengthForm['firstSentenceLength-value']) {
+    sentenceLength[courtCaseAlternativeSentenceLengthForm['firstSentenceLength-period']] =
+      courtCaseAlternativeSentenceLengthForm['firstSentenceLength-value']
+    sentenceLength.periodOrder.push(courtCaseAlternativeSentenceLengthForm['firstSentenceLength-period'])
+  }
+  if (courtCaseAlternativeSentenceLengthForm['secondSentenceLength-value']) {
+    sentenceLength[courtCaseAlternativeSentenceLengthForm['secondSentenceLength-period']] =
+      courtCaseAlternativeSentenceLengthForm['secondSentenceLength-value']
+    sentenceLength.periodOrder.push(courtCaseAlternativeSentenceLengthForm['secondSentenceLength-period'])
+  }
+  if (courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-value']) {
+    sentenceLength[courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-period']] =
+      courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-value']
+    sentenceLength.periodOrder.push(courtCaseAlternativeSentenceLengthForm['thirdSentenceLength-period'])
+  }
+  if (courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-value']) {
+    sentenceLength[courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-period']] =
+      courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-value']
+    sentenceLength.periodOrder.push(courtCaseAlternativeSentenceLengthForm['fourthSentenceLength-period'])
+  }
+  return sentenceLength
 }

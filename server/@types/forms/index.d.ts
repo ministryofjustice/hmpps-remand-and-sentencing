@@ -132,4 +132,15 @@ declare module 'forms' {
   export interface OffenceConsecutiveToForm {
     consecutiveTo?: string
   }
+
+  export interface CourtCaseAlternativeSentenceLengthForm {
+    'firstSentenceLength-value'?: string
+    'firstSentenceLength-period'?: string
+    'secondSentenceLength-value'?: string
+    'secondSentenceLength-period'?: string
+    'thirdSentenceLength-value'?: string
+    'thirdSentenceLength-period'?: string
+    'fourthSentenceLength-value'?: string
+    'fourthSentenceLength-period'?: string
+  }
 }

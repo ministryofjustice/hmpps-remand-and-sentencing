@@ -1,8 +1,13 @@
-import type { CourtAppearance, Offence } from 'models'
-import type { CourtCaseNextHearingDateForm, CourtCaseWarrantDateForm } from 'forms'
+import type { CourtAppearance, Offence, SentenceLength } from 'models'
+import type {
+  CourtCaseAlternativeSentenceLengthForm,
+  CourtCaseNextHearingDateForm,
+  CourtCaseWarrantDateForm,
+} from 'forms'
 import dayjs from 'dayjs'
 import OffencePersistType from '../@types/models/OffencePersistType'
 import validate from '../validation/validation'
+import { courtCaseAlternativeSentenceLengthFormToSentenceLength } from '../utils/mappingUtils'
 
 export default class CourtAppearanceService {
   constructor() {}
@@ -176,6 +181,46 @@ export default class CourtAppearanceService {
 
   getTaggedBail(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).taggedBail
+  }
+
+  getOverallCustodialSentenceLength(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+  ): SentenceLength {
+    return this.getCourtAppearance(session, nomsId).overallSentenceLength
+  }
+
+  setOverallAlternativeSentenceLength(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseAlternativeSentenceLengthForm: CourtCaseAlternativeSentenceLengthForm,
+  ) {
+    const errors = validate(
+      courtCaseAlternativeSentenceLengthForm,
+      {
+        'firstSentenceLength-value': 'requireSentenceLength|minWholeNumber:0',
+        'secondSentenceLength-value': 'minWholeNumber:0',
+        'thirdSentenceLength-value': 'minWholeNumber:0',
+        'fourthSentenceLength-value': 'minWholeNumber:0',
+      },
+      {
+        'requireSentenceLength.firstSentenceLength-value': 'You must enter the overall sentence length',
+        'minWholeNumber.firstSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.fourthSentenceLength-value': 'The number must be a whole number, or 0',
+      },
+    )
+    if (errors.length === 0) {
+      const sentenceLength = courtCaseAlternativeSentenceLengthFormToSentenceLength(
+        courtCaseAlternativeSentenceLengthForm,
+      )
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.overallSentenceLength = sentenceLength
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   getNextHearingSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {

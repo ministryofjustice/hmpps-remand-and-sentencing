@@ -3,5 +3,7 @@ export default function validate(value: string): boolean {
     return true
   }
   const form = this.validator.input
-  return false
+  return Object.entries(form)
+    .filter(([key]) => key.endsWith('-value'))
+    .some(([_, formValue]) => formValue)
 }

@@ -1,6 +1,5 @@
 import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
-import type { CourtCaseAlternativeSentenceLengthForm } from 'forms'
 import {
   APISentence,
   Charge,

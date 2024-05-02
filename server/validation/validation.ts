@@ -5,6 +5,7 @@ import isPastDate from './isPastDate'
 import isValidDate from './isValidDate'
 import requiredFieldWith from './requiredFieldWith'
 import requireSentenceLength from './requireSentenceLength'
+import requireAlternativeSentenceLength from './requireAlternativeSentenceLength'
 
 export default function validate<T>(
   form: T,
@@ -31,4 +32,9 @@ Validator.register('minWholeNumber', minWholeNumberValidate, 'must be greater th
 Validator.register('isValidDate', isValidDate, 'This date does not exist.')
 Validator.registerImplicit('requiredFieldWith', requiredFieldWith, 'This field is required.')
 Validator.register('isPastDate', isPastDate, 'date must be in the past')
+Validator.registerImplicit(
+  'requireAlternativeSentenceLength',
+  requireAlternativeSentenceLength,
+  'You must enter the sentence length',
+)
 Validator.registerImplicit('requireSentenceLength', requireSentenceLength, 'You must enter the sentence length')

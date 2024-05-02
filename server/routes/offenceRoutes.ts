@@ -25,7 +25,11 @@ import validate from '../validation/validation'
 import OffencePersistType from '../@types/models/OffencePersistType'
 import CaseOutcomeService from '../services/caseOutcomeService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
-import { chargeToOffence, sentenceLengthToAlternativeSentenceLengthForm } from '../utils/mappingUtils'
+import {
+  chargeToOffence,
+  sentenceLengthToAlternativeSentenceLengthForm,
+  sentenceLengthToOffenceSentenceLengthForm,
+} from '../utils/mappingUtils'
 import logger from '../../logger'
 
 export default class OffenceRoutes {
@@ -444,9 +448,13 @@ export default class OffenceRoutes {
   public getSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
-    const custodialSentenceLength =
-      this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)?.sentence
-        ?.custodialSentenceLength ?? {}
+    let offenceSentenceLengthForm = (req.flash('offenceSentenceLengthForm')[0] || {}) as OffenceSentenceLengthForm
+    if (Object.keys(offenceSentenceLengthForm).length === 0) {
+      offenceSentenceLengthForm = sentenceLengthToOffenceSentenceLengthForm(
+        this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)?.sentence
+          ?.custodialSentenceLength,
+      )
+    }
     return res.render('pages/offence/sentence-length', {
       nomsId,
       courtCaseReference,
@@ -454,34 +462,30 @@ export default class OffenceRoutes {
       appearanceReference,
       addOrEditCourtCase,
       submitToEditOffence,
-      custodialSentenceLength,
+      offenceSentenceLengthForm,
+      errors: req.flash('errors') || [],
+      backLink: submitToEditOffence
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/edit-offence`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
     })
   }
 
   public submitSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const offenceSentenceLengthForm = trimForm<OffenceSentenceLengthForm>(req.body)
-    const sentenceLength = {
-      ...(offenceSentenceLengthForm['sentenceLength-years']
-        ? { years: offenceSentenceLengthForm['sentenceLength-years'] }
-        : {}),
-      ...(offenceSentenceLengthForm['sentenceLength-months']
-        ? { months: offenceSentenceLengthForm['sentenceLength-months'] }
-        : {}),
-      ...(offenceSentenceLengthForm['sentenceLength-weeks']
-        ? { weeks: offenceSentenceLengthForm['sentenceLength-weeks'] }
-        : {}),
-      ...(offenceSentenceLengthForm['sentenceLength-days']
-        ? { days: offenceSentenceLengthForm['sentenceLength-days'] }
-        : {}),
-      periodOrder: [
-        ...(offenceSentenceLengthForm['sentenceLength-years'] ? ['years'] : []),
-        ...(offenceSentenceLengthForm['sentenceLength-months'] ? ['months'] : []),
-        ...(offenceSentenceLengthForm['sentenceLength-weeks'] ? ['weeks'] : []),
-        ...(offenceSentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
-      ],
+    const errors = this.offenceService.setCustodialSentenceLength(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceSentenceLengthForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceSentenceLengthForm', { ...offenceSentenceLengthForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+      )
     }
-    this.offenceService.setCustodialSentenceLength(req.session, nomsId, courtCaseReference, sentenceLength)
     const { submitToEditOffence } = req.query
     if (submitToEditOffence) {
       return res.redirect(

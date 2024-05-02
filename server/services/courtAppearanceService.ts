@@ -198,13 +198,13 @@ export default class CourtAppearanceService {
     const errors = validate(
       courtCaseAlternativeSentenceLengthForm,
       {
-        'firstSentenceLength-value': 'requireSentenceLength|minWholeNumber:0',
+        'firstSentenceLength-value': 'requireAlternativeSentenceLength|minWholeNumber:0',
         'secondSentenceLength-value': 'minWholeNumber:0',
         'thirdSentenceLength-value': 'minWholeNumber:0',
         'fourthSentenceLength-value': 'minWholeNumber:0',
       },
       {
-        'requireSentenceLength.firstSentenceLength-value': 'You must enter the overall sentence length',
+        'requireAlternativeSentenceLength.firstSentenceLength-value': 'You must enter the overall sentence length',
         'minWholeNumber.firstSentenceLength-value': 'The number must be a whole number, or 0',
         'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
         'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',

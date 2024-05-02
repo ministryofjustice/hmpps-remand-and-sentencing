@@ -1,9 +1,12 @@
-import type { OffenceAlternativeSentenceLengthForm, OffenceOffenceDateForm } from 'forms'
-import type { Offence, SentenceLength } from 'models'
+import type { OffenceAlternativeSentenceLengthForm, OffenceOffenceDateForm, OffenceSentenceLengthForm } from 'forms'
+import type { Offence } from 'models'
 import dayjs from 'dayjs'
 import validate from '../validation/validation'
 import { toDateString } from '../utils/utils'
-import { alternativeSentenceLengthFormToSentenceLength } from '../utils/mappingUtils'
+import {
+  alternativeSentenceLengthFormToSentenceLength,
+  offenceSentenceLengthFormToSentenceLength,
+} from '../utils/mappingUtils'
 
 export default class OffenceService {
   setOffenceDates(
@@ -180,15 +183,35 @@ export default class OffenceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    sentenceLength: SentenceLength,
+    offenceSentenceLengthForm: OffenceSentenceLengthForm,
   ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    const sentence = offence.sentence ?? {}
-    sentence.custodialSentenceLength = sentenceLength
-    offence.sentence = sentence
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
+    const errors = validate(
+      offenceSentenceLengthForm,
+      {
+        'sentenceLength-years': 'requireSentenceLength|minWholeNumber:0',
+        'sentenceLength-months': 'minWholeNumber:0',
+        'sentenceLength-weeks': 'minWholeNumber:0',
+        'sentenceLength-days': 'minWholeNumber:0',
+      },
+      {
+        'requireSentenceLength.sentenceLength-years': 'You must enter the sentence length',
+        'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      const sentenceLength = offenceSentenceLengthFormToSentenceLength(offenceSentenceLengthForm)
+      sentence.custodialSentenceLength = sentenceLength
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
   }
 
   setAlternativeSentenceLength(
@@ -200,13 +223,13 @@ export default class OffenceService {
     const errors = validate(
       offenceAlternativeSentenceLengthForm,
       {
-        'firstSentenceLength-value': 'requireSentenceLength|minWholeNumber:0',
+        'firstSentenceLength-value': 'requireAlternativeSentenceLength|minWholeNumber:0',
         'secondSentenceLength-value': 'minWholeNumber:0',
         'thirdSentenceLength-value': 'minWholeNumber:0',
         'fourthSentenceLength-value': 'minWholeNumber:0',
       },
       {
-        'requireSentenceLength.firstSentenceLength-value': 'You must enter the overall sentence length',
+        'requireAlternativeSentenceLength.firstSentenceLength-value': 'You must enter the overall sentence length',
         'minWholeNumber.firstSentenceLength-value': 'The number must be a whole number, or 0',
         'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
         'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',
@@ -217,7 +240,13 @@ export default class OffenceService {
       const sentenceLength = alternativeSentenceLengthFormToSentenceLength<OffenceAlternativeSentenceLengthForm>(
         offenceAlternativeSentenceLengthForm,
       )
-      this.setCustodialSentenceLength(session, nomsId, courtCaseReference, sentenceLength)
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.custodialSentenceLength = sentenceLength
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
     }
     return errors
   }

@@ -5,7 +5,7 @@ export default class OffenceSentenceLengthPage extends Page {
     super('Enter the sentence length')
   }
 
-  monthsInput = (): PageElement => cy.get('#sentence-length-months')
+  monthsInput = (): PageElement => cy.get('#sentenceLength-months')
 
-  yearsInput = (): PageElement => cy.get('#sentence-length-years')
+  yearsInput = (): PageElement => cy.get('#sentenceLength-years')
 }

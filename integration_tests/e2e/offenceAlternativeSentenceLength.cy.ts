@@ -27,4 +27,23 @@ context('Add Offence Alternative Sentence Length Page', () => {
   it('button to continue is displayed', () => {
     offenceAlternativeSentenceLengthPage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without entering anything in the inputs results in an error', () => {
+    offenceAlternativeSentenceLengthPage.button().click()
+    offenceAlternativeSentenceLengthPage = Page.verifyOnPage(OffenceAlternativeSentenceLengthPage)
+    offenceAlternativeSentenceLengthPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter the overall sentence length')
+  })
+
+  it('submitting a decimal number results in an error', () => {
+    offenceAlternativeSentenceLengthPage.sentenceLengthInput('first').type('2.5')
+    offenceAlternativeSentenceLengthPage.button().click()
+    offenceAlternativeSentenceLengthPage = Page.verifyOnPage(OffenceAlternativeSentenceLengthPage)
+    offenceAlternativeSentenceLengthPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The number must be a whole number, or 0')
+  })
 })

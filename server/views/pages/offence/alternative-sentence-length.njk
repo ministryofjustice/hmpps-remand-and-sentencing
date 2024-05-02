@@ -17,39 +17,44 @@
                     }
                 }) %}
 
+                
                 {{
                     alternativeSentenceLength({
-                        id: "sentenceLengths[0]",
-                        name: "sentenceLengths[0]",
-                        selectedItem: custodialSentenceLength.periodOrder[0],
-                        value: custodialSentenceLength[custodialSentenceLength.periodOrder[0]]
+                        id: "firstSentenceLength",
+                        name: "firstSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('firstSentenceLength'),
+                        selectedItem: offenceAlternativeSentenceLengthForm['firstSentenceLength-period'],
+                        value: offenceAlternativeSentenceLengthForm['firstSentenceLength-value']
                     })
                 }}
 
                 {{
                     alternativeSentenceLength({
-                        id: "sentenceLengths[1]",
-                        name: "sentenceLengths[1]",
-                        selectedItem: custodialSentenceLength.periodOrder[1],
-                        value: custodialSentenceLength[custodialSentenceLength.periodOrder[1]]
+                        id: "secondSentenceLength",
+                        name: "secondSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('secondSentenceLength'),
+                        selectedItem: offenceAlternativeSentenceLengthForm['secondSentenceLength-period'],
+                        value: offenceAlternativeSentenceLengthForm['secondSentenceLength-value']
                     })
                 }}
 
                 {{
                     alternativeSentenceLength({
-                        id: "sentenceLengths[2]",
-                        name: "sentenceLengths[2]",
-                        selectedItem: custodialSentenceLength.periodOrder[2],
-                        value: custodialSentenceLength[custodialSentenceLength.periodOrder[2]]
+                        id: "thirdSentenceLength",
+                        name: "thirdSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('thirdSentenceLength'),
+                        selectedItem: offenceAlternativeSentenceLengthForm['thirdSentenceLength-period'],
+                        value: offenceAlternativeSentenceLengthForm['thirdSentenceLength-value']
                     })
                 }}
 
                 {{
                     alternativeSentenceLength({
-                        id: "sentenceLengths[3]",
-                        name: "sentenceLengths[3]",
-                        selectedItem: custodialSentenceLength.periodOrder[3],
-                        value: custodialSentenceLength[custodialSentenceLength.periodOrder[3]]
+                        id: "fourthSentenceLength",
+                        name: "fourthSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('fourthSentenceLength'),
+                        selectedItem: offenceAlternativeSentenceLengthForm['fourthSentenceLength-period'],
+                        value: offenceAlternativeSentenceLengthForm['fourthSentenceLength-value']
                     })
                 }}
 

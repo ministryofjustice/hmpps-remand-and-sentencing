@@ -119,10 +119,14 @@ declare module 'forms' {
   }
 
   export interface OffenceAlternativeSentenceLengthForm {
-    sentenceLengths: {
-      value: string
-      period: string
-    }[]
+    'firstSentenceLength-value'?: string
+    'firstSentenceLength-period'?: string
+    'secondSentenceLength-value'?: string
+    'secondSentenceLength-period'?: string
+    'thirdSentenceLength-value'?: string
+    'thirdSentenceLength-period'?: string
+    'fourthSentenceLength-value'?: string
+    'fourthSentenceLength-period'?: string
   }
 
   export interface OffenceSentenceServeTypeForm {

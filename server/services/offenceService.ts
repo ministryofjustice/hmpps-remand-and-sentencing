@@ -1,8 +1,9 @@
-import type { OffenceOffenceDateForm } from 'forms'
+import type { OffenceAlternativeSentenceLengthForm, OffenceOffenceDateForm } from 'forms'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import validate from '../validation/validation'
 import { toDateString } from '../utils/utils'
+import { alternativeSentenceLengthFormToSentenceLength } from '../utils/mappingUtils'
 
 export default class OffenceService {
   setOffenceDates(
@@ -188,6 +189,37 @@ export default class OffenceService {
     offence.sentence = sentence
     // eslint-disable-next-line no-param-reassign
     session.offences[id] = offence
+  }
+
+  setAlternativeSentenceLength(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceAlternativeSentenceLengthForm: OffenceAlternativeSentenceLengthForm,
+  ) {
+    const errors = validate(
+      offenceAlternativeSentenceLengthForm,
+      {
+        'firstSentenceLength-value': 'requireSentenceLength|minWholeNumber:0',
+        'secondSentenceLength-value': 'minWholeNumber:0',
+        'thirdSentenceLength-value': 'minWholeNumber:0',
+        'fourthSentenceLength-value': 'minWholeNumber:0',
+      },
+      {
+        'requireSentenceLength.firstSentenceLength-value': 'You must enter the overall sentence length',
+        'minWholeNumber.firstSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.fourthSentenceLength-value': 'The number must be a whole number, or 0',
+      },
+    )
+    if (errors.length === 0) {
+      const sentenceLength = alternativeSentenceLengthFormToSentenceLength<OffenceAlternativeSentenceLengthForm>(
+        offenceAlternativeSentenceLengthForm,
+      )
+      this.setCustodialSentenceLength(session, nomsId, courtCaseReference, sentenceLength)
+    }
+    return errors
   }
 
   setSentenceServeType(

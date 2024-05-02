@@ -2,9 +2,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 
-
-
-
 {% set pageTitle = applicationName + " - Add sentence length" %}
 
 {% block pageContent %}
@@ -13,8 +10,9 @@
                 {% include "../../partials/offenceCaption.njk" %}
 
                 {{ govukDateInput({
-                    id: "sentence-length",
+                    id: "sentenceLength",
                     namePrefix: "sentenceLength",
+                    errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
                     fieldset: {
                         legend: {
                         text: "Enter the sentence length",
@@ -24,25 +22,25 @@
                     },
                     items: [
                     {
-                        classes: "govuk-input--width-2",
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
                         label: "Years",
                         name:"years",
                         value: custodialSentenceLength.years
                     },
                     {
-                        classes: "govuk-input--width-2",
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
                         label: "Months",
                         name:"months",
                         value: custodialSentenceLength.months
                     },
                     {
-                        classes: "govuk-input--width-2",
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
                         label: "Weeks",
                         name:"weeks",
                         value: custodialSentenceLength.weeks
                     },
                     {
-                        classes: "govuk-input--width-2",
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
                         label: "Days",
                         name:"days",
                         value: custodialSentenceLength.days

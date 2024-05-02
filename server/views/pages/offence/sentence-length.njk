@@ -25,25 +25,25 @@
                         classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
                         label: "Years",
                         name:"years",
-                        value: custodialSentenceLength.years
+                        value: offenceSentenceLengthForm["sentenceLength-years"]
                     },
                     {
                         classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
                         label: "Months",
                         name:"months",
-                        value: custodialSentenceLength.months
+                        value: offenceSentenceLengthForm["sentenceLength-months"]
                     },
                     {
                         classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
                         label: "Weeks",
                         name:"weeks",
-                        value: custodialSentenceLength.weeks
+                        value: offenceSentenceLengthForm["sentenceLength-weeks"]
                     },
                     {
                         classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
                         label: "Days",
                         name:"days",
-                        value: custodialSentenceLength.days
+                        value: offenceSentenceLengthForm["sentenceLength-days"]
                     }
                     ]
                 }) }}

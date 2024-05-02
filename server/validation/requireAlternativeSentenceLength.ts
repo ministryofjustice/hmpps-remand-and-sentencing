@@ -4,6 +4,6 @@ export default function validate(value: string): boolean {
   }
   const form = this.validator.input
   return Object.entries(form)
-    .filter(([key]) => key.startsWith('sentenceLength-'))
+    .filter(([key]) => key.endsWith('-value'))
     .some(([_, formValue]) => formValue)
 }

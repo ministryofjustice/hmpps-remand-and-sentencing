@@ -1,5 +1,6 @@
 import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
+import type { OffenceSentenceLengthForm } from 'forms'
 import {
   APISentence,
   Charge,
@@ -168,4 +169,40 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(alternativeSent
     sentenceLength.periodOrder.push(alternativeSentenceLengthForm['fourthSentenceLength-period'])
   }
   return sentenceLength
+}
+
+export function sentenceLengthToOffenceSentenceLengthForm(sentenceLength: SentenceLength): OffenceSentenceLengthForm {
+  return sentenceLength
+    ? {
+        'sentenceLength-years': sentenceLength.years,
+        'sentenceLength-months': sentenceLength.months,
+        'sentenceLength-weeks': sentenceLength.weeks,
+        'sentenceLength-days': sentenceLength.days,
+      }
+    : ({} as OffenceSentenceLengthForm)
+}
+
+export function offenceSentenceLengthFormToSentenceLength(
+  offenceSentenceLengthForm: OffenceSentenceLengthForm,
+): SentenceLength {
+  return {
+    ...(offenceSentenceLengthForm['sentenceLength-years']
+      ? { years: offenceSentenceLengthForm['sentenceLength-years'] }
+      : {}),
+    ...(offenceSentenceLengthForm['sentenceLength-months']
+      ? { months: offenceSentenceLengthForm['sentenceLength-months'] }
+      : {}),
+    ...(offenceSentenceLengthForm['sentenceLength-weeks']
+      ? { weeks: offenceSentenceLengthForm['sentenceLength-weeks'] }
+      : {}),
+    ...(offenceSentenceLengthForm['sentenceLength-days']
+      ? { days: offenceSentenceLengthForm['sentenceLength-days'] }
+      : {}),
+    periodOrder: [
+      ...(offenceSentenceLengthForm['sentenceLength-years'] ? ['years'] : []),
+      ...(offenceSentenceLengthForm['sentenceLength-months'] ? ['months'] : []),
+      ...(offenceSentenceLengthForm['sentenceLength-weeks'] ? ['weeks'] : []),
+      ...(offenceSentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
+    ],
+  } as SentenceLength
 }

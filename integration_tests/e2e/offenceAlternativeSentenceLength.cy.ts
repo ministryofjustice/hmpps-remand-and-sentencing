@@ -34,7 +34,7 @@ context('Add Offence Alternative Sentence Length Page', () => {
     offenceAlternativeSentenceLengthPage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem You must enter the overall sentence length')
+      .should('equal', 'There is a problem You must enter the sentence length')
   })
 
   it('submitting a decimal number results in an error', () => {

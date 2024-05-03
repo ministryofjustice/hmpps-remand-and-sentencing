@@ -229,7 +229,7 @@ export default class OffenceService {
         'fourthSentenceLength-value': 'minWholeNumber:0',
       },
       {
-        'requireAlternativeSentenceLength.firstSentenceLength-value': 'You must enter the overall sentence length',
+        'requireAlternativeSentenceLength.firstSentenceLength-value': 'You must enter the sentence length',
         'minWholeNumber.firstSentenceLength-value': 'The number must be a whole number, or 0',
         'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
         'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',

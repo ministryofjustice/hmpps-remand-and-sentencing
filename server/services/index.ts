@@ -17,9 +17,9 @@ export const services = () => {
 
   const prisonerService = new PrisonerService()
 
-  const offenceService = new OffenceService()
-
   const manageOffencesService = new ManageOffencesService()
+
+  const offenceService = new OffenceService(manageOffencesService)
 
   const feComponentsService = new FeComponentsService(feComponentsClient)
 

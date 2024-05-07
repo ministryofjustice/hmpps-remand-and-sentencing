@@ -30,7 +30,6 @@ import {
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToOffenceSentenceLengthForm,
 } from '../utils/mappingUtils'
-import logger from '../../logger'
 
 export default class OffenceRoutes {
   constructor(
@@ -267,9 +266,16 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
     const offenceCodeForm = (req.flash('offenceCodeForm')[0] || {}) as OffenceOffenceCodeForm
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const offenceCode =
       offenceCodeForm.offenceCode ||
       this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)?.offenceCode
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`
+    if (submitToEditOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/edit-offence`
+    } else if (courtAppearance.warrantType === 'SENTENCING') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/count-number`
+    }
     return res.render('pages/offence/offence-code', {
       nomsId,
       courtCaseReference,
@@ -280,32 +286,20 @@ export default class OffenceRoutes {
       unknownCode: offenceCodeForm.unknownCode,
       addOrEditCourtCase,
       submitToEditOffence,
+      backLink,
     })
   }
 
   public submitOffenceCode: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const offenceCodeForm = trimForm<OffenceOffenceCodeForm>(req.body)
-    const errors = validate(
+    const errors = await this.offenceService.setOffenceCode(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      req.user.token,
       offenceCodeForm,
-      {
-        offenceCode: `required_without:unknownCode|onlyOne:${offenceCodeForm.unknownCode ?? ''}`,
-        unknownCode: `onlyOne:${offenceCodeForm.offenceCode ?? ''}`,
-      },
-      {
-        'onlyOne.offenceCode': 'Either code or unknown must be submitted',
-        'onlyOne.unknownCode': 'Either code or unknown must be submitted',
-        'required_without.offenceCode': 'You must enter the offence code',
-      },
     )
-    if (offenceCodeForm.offenceCode && !offenceCodeForm.unknownCode) {
-      try {
-        await this.manageOffencesService.getOffenceByCode(offenceCodeForm.offenceCode, req.user.token)
-      } catch (error) {
-        logger.error(error)
-        errors.push({ text: 'You must enter a valid offence code.', href: '#offenceCode' })
-      }
-    }
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('offenceCodeForm', { ...offenceCodeForm })
@@ -319,7 +313,6 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
-    this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, offenceCodeForm.offenceCode)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
     )
@@ -335,17 +328,14 @@ export default class OffenceRoutes {
       appearanceReference,
       addOrEditCourtCase,
       submitToEditOffence,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     })
   }
 
   public submitOffenceName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const offenceNameForm = trimForm<OffenceOffenceNameForm>(req.body)
-    const [offenceCode, ...offenceNames] = offenceNameForm.offenceName.split(' ')
-    const offenceName = offenceNames.join(' ')
-
-    this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, offenceCode)
-    this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, offenceName)
+    this.offenceService.setOffenceCodeFromLookup(req.session, nomsId, courtCaseReference, offenceNameForm)
     const { submitToEditOffence } = req.query
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (courtAppearance.warrantType === 'SENTENCING') {
@@ -386,8 +376,7 @@ export default class OffenceRoutes {
   public submitConfirmOffenceCode: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const confirmOffenceForm = trimForm<OffenceConfirmOffenceForm>(req.body)
-    this.offenceService.setOffenceCode(req.session, nomsId, courtCaseReference, confirmOffenceForm.offenceCode)
-    this.offenceService.setOffenceName(req.session, nomsId, courtCaseReference, confirmOffenceForm.offenceName)
+    this.offenceService.setOffenceCodeFromConfirm(req.session, nomsId, courtCaseReference, confirmOffenceForm)
     const { submitToEditOffence } = req.query
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 

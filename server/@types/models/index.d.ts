@@ -27,7 +27,6 @@ declare module 'models' {
     offenceStartDate?: Date
     offenceEndDate?: Date
     offenceCode?: string
-    offenceName?: string
     outcome?: string
     chargeUuid?: string
     sentence?: Sentence

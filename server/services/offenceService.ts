@@ -1,4 +1,11 @@
-import type { OffenceAlternativeSentenceLengthForm, OffenceOffenceDateForm, OffenceSentenceLengthForm } from 'forms'
+import type {
+  OffenceAlternativeSentenceLengthForm,
+  OffenceConfirmOffenceForm,
+  OffenceOffenceCodeForm,
+  OffenceOffenceDateForm,
+  OffenceOffenceNameForm,
+  OffenceSentenceLengthForm,
+} from 'forms'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
 import validate from '../validation/validation'
@@ -7,8 +14,12 @@ import {
   alternativeSentenceLengthFormToSentenceLength,
   offenceSentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
+import ManageOffencesService from './manageOffencesService'
+import logger from '../../logger'
 
 export default class OffenceService {
+  constructor(private readonly manageOffencesService: ManageOffencesService) {}
+
   setOffenceDates(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
@@ -88,12 +99,50 @@ export default class OffenceService {
     return errors
   }
 
-  setOffenceCode(
+  async setOffenceCode(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    offenceCode: string,
+    authToken: string,
+    offenceCodeForm: OffenceOffenceCodeForm,
   ) {
+    const errors = validate(
+      offenceCodeForm,
+      {
+        offenceCode: `required_without:unknownCode|onlyOne:${offenceCodeForm.unknownCode ?? ''}`,
+        unknownCode: `onlyOne:${offenceCodeForm.offenceCode ?? ''}`,
+      },
+      {
+        'onlyOne.offenceCode': 'Either code or unknown must be submitted',
+        'onlyOne.unknownCode': 'Either code or unknown must be submitted',
+        'required_without.offenceCode': 'You must enter the offence code',
+      },
+    )
+    if (offenceCodeForm.offenceCode && !offenceCodeForm.unknownCode) {
+      try {
+        await this.manageOffencesService.getOffenceByCode(offenceCodeForm.offenceCode, authToken)
+      } catch (error) {
+        logger.error(error)
+        errors.push({ text: 'You must enter a valid offence code.', href: '#offenceCode' })
+      }
+    }
+    if (errors.length === 0 && offenceCodeForm.offenceCode) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      offence.offenceCode = offenceCodeForm.offenceCode
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
+  setOffenceCodeFromLookup(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceNameForm: OffenceOffenceNameForm,
+  ) {
+    const [offenceCode] = offenceNameForm.offenceName.split(' ')
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
     offence.offenceCode = offenceCode
@@ -101,15 +150,15 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
-  setOffenceName(
+  setOffenceCodeFromConfirm(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    offenceName: string,
+    confirmOffenceForm: OffenceConfirmOffenceForm,
   ) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
-    offence.offenceName = offenceName
+    offence.offenceCode = confirmOffenceForm.offenceCode
     // eslint-disable-next-line no-param-reassign
     session.offences[id] = offence
   }

@@ -97,7 +97,7 @@
     ]
   },
   "dependencies": {
-    "@microsoft/applicationinsights-clickanalytics-js": "^2.8.18",
+    "@microsoft/applicationinsights-clickanalytics-js": "^3.2.0",
     "@microsoft/applicationinsights-web": "^2.8.18",
     "@ministryofjustice/frontend": "^2.1.2",
     "accessible-autocomplete": "3.0.0",

@@ -2,6 +2,7 @@ import type { CourtAppearance, Offence, SentenceLength } from 'models'
 import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseNextHearingDateForm,
+  CourtCaseReferenceForm,
   CourtCaseWarrantDateForm,
   SentenceLengthForm,
 } from 'forms'
@@ -17,6 +18,25 @@ export default class CourtAppearanceService {
   constructor() {}
 
   setCaseReferenceNumber(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReferenceForm: CourtCaseReferenceForm,
+  ) {
+    const errors = validate(
+      courtCaseReferenceForm,
+      { referenceNumber: 'required' },
+      { 'required.referenceNumber': 'You must enter the case reference' },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.caseReferenceNumber = courtCaseReferenceForm.referenceNumber
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  setCaseReferenceNumberFromLatestAppearance(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     caseReferenceNumber: string,

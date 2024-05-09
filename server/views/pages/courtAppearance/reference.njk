@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
@@ -21,7 +21,7 @@
                     id: "reference-number",
                     name: "referenceNumber",
                     errorMessage: errors | findError('referenceNumber'),
-                    value: caseReferenceNumber
+                    value: courtCaseReferenceForm.referenceNumber
                 }) }}
 
                 {{ govukButton({

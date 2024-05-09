@@ -171,7 +171,7 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(alternativeSent
   return sentenceLength
 }
 
-export function sentenceLengthToSentenceLengthForm<T>(sentenceLength: SentenceLength): SentenceLengthForm {
+export function sentenceLengthToSentenceLengthForm(sentenceLength: SentenceLength): SentenceLengthForm {
   return sentenceLength
     ? {
         'sentenceLength-years': sentenceLength.years,

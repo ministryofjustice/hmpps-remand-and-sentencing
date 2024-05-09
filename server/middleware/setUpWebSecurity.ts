@@ -25,7 +25,7 @@ export default function setUpWebSecurity(): Router {
   const fontSrc = ["'self'"]
   const imgSrc = ["'self'", 'data:']
   const formAction = [`'self' ${config.apis.hmppsAuth.externalUrl} ${config.digitalPrisonServices.ui_url}`]
-  const connectSrc = ["'self' https://northeurope-0.in.applicationinsights.azure.com"]
+  const connectSrc = ["'self' https://northeurope-0.in.applicationinsights.azure.com https://js.monitor.azure.com"]
 
   if (config.apis.frontendComponents.url) {
     scriptSrc.push(config.apis.frontendComponents.url)

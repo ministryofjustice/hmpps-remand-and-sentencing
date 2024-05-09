@@ -10,10 +10,10 @@ import type {
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
-  OffenceSentenceLengthForm,
   OffenceSentenceServeTypeForm,
   OffenceTerrorRelatedForm,
   ReviewOffencesForm,
+  SentenceLengthForm,
 } from 'forms'
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
@@ -28,7 +28,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import {
   chargeToOffence,
   sentenceLengthToAlternativeSentenceLengthForm,
-  sentenceLengthToOffenceSentenceLengthForm,
+  sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
 
 export default class OffenceRoutes {
@@ -437,9 +437,9 @@ export default class OffenceRoutes {
   public getSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
-    let offenceSentenceLengthForm = (req.flash('offenceSentenceLengthForm')[0] || {}) as OffenceSentenceLengthForm
+    let offenceSentenceLengthForm = (req.flash('offenceSentenceLengthForm')[0] || {}) as SentenceLengthForm
     if (Object.keys(offenceSentenceLengthForm).length === 0) {
-      offenceSentenceLengthForm = sentenceLengthToOffenceSentenceLengthForm(
+      offenceSentenceLengthForm = sentenceLengthToSentenceLengthForm(
         this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)?.sentence
           ?.custodialSentenceLength,
       )
@@ -461,7 +461,7 @@ export default class OffenceRoutes {
 
   public submitSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
-    const offenceSentenceLengthForm = trimForm<OffenceSentenceLengthForm>(req.body)
+    const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
     const errors = this.offenceService.setCustodialSentenceLength(
       req.session,
       nomsId,

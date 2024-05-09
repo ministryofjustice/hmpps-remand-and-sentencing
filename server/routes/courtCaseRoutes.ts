@@ -16,6 +16,7 @@ import type {
   CourtCaseWarrantTypeForm,
   CourtCaseTaggedBailForm,
   CourtCaseAlternativeSentenceLengthForm,
+  SentenceLengthForm,
 } from 'forms'
 import type { CourtAppearance, CourtCase } from 'models'
 import trimForm from '../utils/trim'
@@ -27,7 +28,10 @@ import { getAsStringOrDefault } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import CaseOutcomeService from '../services/caseOutcomeService'
 import validate from '../validation/validation'
-import { sentenceLengthToAlternativeSentenceLengthForm } from '../utils/mappingUtils'
+import {
+  sentenceLengthToAlternativeSentenceLengthForm,
+  sentenceLengthToSentenceLengthForm,
+} from '../utils/mappingUtils'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -601,7 +605,56 @@ export default class CourtCaseRoutes {
       )
     }
     this.courtAppearanceService.setTaggedBail(req.session, nomsId, taggedBailForm.taggedBail)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/overall-sentence-length`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
+    )
+  }
 
+  public getOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { submitToCheckAnswers } = req.query
+    let courtCaseOverallSentenceLengthForm = (req.flash('courtCaseOverallSentenceLengthForm')[0] ||
+      {}) as SentenceLengthForm
+    if (Object.keys(courtCaseOverallSentenceLengthForm).length === 0) {
+      courtCaseOverallSentenceLengthForm = sentenceLengthToSentenceLengthForm(
+        this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
+      )
+    }
+    return res.render('pages/courtAppearance/overall-sentence-length', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      submitToCheckAnswers,
+      courtCaseOverallSentenceLengthForm,
+      errors: req.flash('errors') || [],
+      backLink: submitToCheckAnswers
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/tagged-bail`,
+    })
+  }
+
+  public submitOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const courtCaseOverallSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
+    const errors = this.courtAppearanceService.setOverallSentenceLength(
+      req.session,
+      nomsId,
+      courtCaseOverallSentenceLengthForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('courtCaseOverallSentenceLengthForm', { ...courtCaseOverallSentenceLengthForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/overall-sentence-length`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
     )

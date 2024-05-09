@@ -1,6 +1,6 @@
 import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
-import type { OffenceSentenceLengthForm } from 'forms'
+import type { SentenceLengthForm } from 'forms'
 import {
   APISentence,
   Charge,
@@ -171,7 +171,7 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(alternativeSent
   return sentenceLength
 }
 
-export function sentenceLengthToOffenceSentenceLengthForm(sentenceLength: SentenceLength): OffenceSentenceLengthForm {
+export function sentenceLengthToSentenceLengthForm<T>(sentenceLength: SentenceLength): SentenceLengthForm {
   return sentenceLength
     ? {
         'sentenceLength-years': sentenceLength.years,
@@ -179,30 +179,20 @@ export function sentenceLengthToOffenceSentenceLengthForm(sentenceLength: Senten
         'sentenceLength-weeks': sentenceLength.weeks,
         'sentenceLength-days': sentenceLength.days,
       }
-    : ({} as OffenceSentenceLengthForm)
+    : ({} as SentenceLengthForm)
 }
 
-export function offenceSentenceLengthFormToSentenceLength(
-  offenceSentenceLengthForm: OffenceSentenceLengthForm,
-): SentenceLength {
+export function sentenceLengthFormToSentenceLength(sentenceLengthForm: SentenceLengthForm): SentenceLength {
   return {
-    ...(offenceSentenceLengthForm['sentenceLength-years']
-      ? { years: offenceSentenceLengthForm['sentenceLength-years'] }
-      : {}),
-    ...(offenceSentenceLengthForm['sentenceLength-months']
-      ? { months: offenceSentenceLengthForm['sentenceLength-months'] }
-      : {}),
-    ...(offenceSentenceLengthForm['sentenceLength-weeks']
-      ? { weeks: offenceSentenceLengthForm['sentenceLength-weeks'] }
-      : {}),
-    ...(offenceSentenceLengthForm['sentenceLength-days']
-      ? { days: offenceSentenceLengthForm['sentenceLength-days'] }
-      : {}),
+    ...(sentenceLengthForm['sentenceLength-years'] ? { years: sentenceLengthForm['sentenceLength-years'] } : {}),
+    ...(sentenceLengthForm['sentenceLength-months'] ? { months: sentenceLengthForm['sentenceLength-months'] } : {}),
+    ...(sentenceLengthForm['sentenceLength-weeks'] ? { weeks: sentenceLengthForm['sentenceLength-weeks'] } : {}),
+    ...(sentenceLengthForm['sentenceLength-days'] ? { days: sentenceLengthForm['sentenceLength-days'] } : {}),
     periodOrder: [
-      ...(offenceSentenceLengthForm['sentenceLength-years'] ? ['years'] : []),
-      ...(offenceSentenceLengthForm['sentenceLength-months'] ? ['months'] : []),
-      ...(offenceSentenceLengthForm['sentenceLength-weeks'] ? ['weeks'] : []),
-      ...(offenceSentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
+      ...(sentenceLengthForm['sentenceLength-years'] ? ['years'] : []),
+      ...(sentenceLengthForm['sentenceLength-months'] ? ['months'] : []),
+      ...(sentenceLengthForm['sentenceLength-weeks'] ? ['weeks'] : []),
+      ...(sentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
     ],
   } as SentenceLength
 }

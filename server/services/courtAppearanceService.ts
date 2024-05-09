@@ -3,11 +3,15 @@ import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseNextHearingDateForm,
   CourtCaseWarrantDateForm,
+  SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import OffencePersistType from '../@types/models/OffencePersistType'
 import validate from '../validation/validation'
-import { alternativeSentenceLengthFormToSentenceLength } from '../utils/mappingUtils'
+import {
+  alternativeSentenceLengthFormToSentenceLength,
+  sentenceLengthFormToSentenceLength,
+} from '../utils/mappingUtils'
 
 export default class CourtAppearanceService {
   constructor() {}
@@ -188,6 +192,37 @@ export default class CourtAppearanceService {
     nomsId: string,
   ): SentenceLength {
     return this.getCourtAppearance(session, nomsId).overallSentenceLength
+  }
+
+  setOverallSentenceLength(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseOverallSentenceLengthForm: SentenceLengthForm,
+  ) {
+    const errors = validate(
+      courtCaseOverallSentenceLengthForm,
+      {
+        'sentenceLength-years': 'requireSentenceLength|minWholeNumber:0',
+        'sentenceLength-months': 'minWholeNumber:0',
+        'sentenceLength-weeks': 'minWholeNumber:0',
+        'sentenceLength-days': 'minWholeNumber:0',
+      },
+      {
+        'requireSentenceLength.sentenceLength-years': 'You must enter the overall sentence length',
+        'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
+      },
+    )
+    if (errors.length === 0) {
+      const sentenceLength = sentenceLengthFormToSentenceLength(courtCaseOverallSentenceLengthForm)
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.overallSentenceLength = sentenceLength
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   setOverallAlternativeSentenceLength(

@@ -1,0 +1,68 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% set pageTitle = applicationName + " - Add overall sentence length" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/appearanceCaption.njk" %}
+
+                {{ govukDateInput({
+                    id: "sentenceLength",
+                    namePrefix: "sentenceLength",
+                    errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
+                    fieldset: {
+                        legend: {
+                        text: "Enter the overall sentence length",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    hint: {
+                        text: "This must be entered exactly as it is written on the warrant."
+                    },
+                    items: [
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
+                        label: "Years",
+                        name:"years",
+                        value: courtCaseOverallSentenceLengthForm["sentenceLength-years"]
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
+                        label: "Months",
+                        name:"months",
+                        value: courtCaseOverallSentenceLengthForm["sentenceLength-months"]
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
+                        label: "Weeks",
+                        name:"weeks",
+                        value: courtCaseOverallSentenceLengthForm["sentenceLength-weeks"]
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
+                        label: "Days",
+                        name:"days",
+                        value: courtCaseOverallSentenceLengthForm["sentenceLength-days"]
+                    }
+                    ]
+                }) }}
+
+                <p class="govuk-body">
+                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/alternative-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">The sentence length is formatted differently</a>
+                </p>
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

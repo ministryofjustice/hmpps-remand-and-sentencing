@@ -161,6 +161,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/overall-sentence-length',
+    courtCaseRoutes.getOverallSentenceLength,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-overall-sentence-length',
+    courtCaseRoutes.submitOverallSentenceLength,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/alternative-overall-sentence-length',
     courtCaseRoutes.getAlternativeSentenceLength,
   )

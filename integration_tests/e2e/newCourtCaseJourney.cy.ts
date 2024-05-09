@@ -15,6 +15,9 @@ import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
+import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
+import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
+import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -190,10 +193,10 @@ context('New Court Case journey', () => {
     courtCaseTaggedBailPage.input().type('5')
     courtCaseTaggedBailPage.button().click()
 
-    // const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
-    // courtCaseOverallSentenceLengthPage.yearsInput().type('4')
-    // courtCaseOverallSentenceLengthPage.monthsInput().type('5')
-    // courtCaseOverallSentenceLengthPage.button().click()
+    const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    courtCaseOverallSentenceLengthPage.yearsInput().type('4')
+    courtCaseOverallSentenceLengthPage.monthsInput().type('5')
+    courtCaseOverallSentenceLengthPage.button().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
@@ -201,7 +204,7 @@ context('New Court Case journey', () => {
       'Warrant date': '12 05 2023',
       'Court name': 'Bradford Crown Court',
       'Tagged bail': '5 days',
-      // 'Overall sentence length': '4 years 5 months',
+      'Overall sentence length': '4 years 5 months',
     })
     courtCaseCheckAnswersPage.button().click()
 
@@ -225,7 +228,7 @@ context('New Court Case journey', () => {
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.sentencesLink().click()
 
-    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, '1234', 'sentences')
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, '1234', 'sentences')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
@@ -253,19 +256,19 @@ context('New Court Case journey', () => {
     // offenceSentenceTypePage.radioLabelSelector('SDS (Standard Determinate Sentence)').click()
     // offenceSentenceTypePage.button().click()
 
-    // const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
-    // offenceSentenceLengthPage.yearsInput().type('4')
-    // offenceSentenceLengthPage.monthsInput().type('5')
-    // offenceSentenceLengthPage.button().click()
+    const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
+    offenceSentenceLengthPage.yearsInput().type('4')
+    offenceSentenceLengthPage.monthsInput().type('5')
+    offenceSentenceLengthPage.button().click()
 
-    // const offenceConsecutiveConcurrentPage = Page.verifyOnPage(OffenceConsecutiveConcurrentPage)
-    // offenceConsecutiveConcurrentPage.radioLabelSelector('Forthwith').click()
-    // offenceConsecutiveConcurrentPage.button().click()
+    const cffenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
+    cffenceSentenceServeTypePage.button().click()
 
-    // const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234', 'sentences')
-    // offenceCheckOffenceAnswersPage.finishAddingButton().click()
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234', 'sentences')
+    offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
+    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
     // courtCaseTaskListPage.button().click()
 
     // cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)

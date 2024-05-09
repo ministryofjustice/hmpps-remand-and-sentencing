@@ -111,13 +111,6 @@ declare module 'forms' {
     terrorRelated?: string
   }
 
-  export interface OffenceSentenceLengthForm {
-    'sentenceLength-years'?: string
-    'sentenceLength-months'?: string
-    'sentenceLength-weeks'?: string
-    'sentenceLength-days'?: string
-  }
-
   export interface OffenceAlternativeSentenceLengthForm {
     'firstSentenceLength-value'?: string
     'firstSentenceLength-period'?: string
@@ -146,5 +139,12 @@ declare module 'forms' {
     'thirdSentenceLength-period'?: string
     'fourthSentenceLength-value'?: string
     'fourthSentenceLength-period'?: string
+  }
+
+  export interface SentenceLengthForm {
+    'sentenceLength-years'?: string
+    'sentenceLength-months'?: string
+    'sentenceLength-weeks'?: string
+    'sentenceLength-days'?: string
   }
 }

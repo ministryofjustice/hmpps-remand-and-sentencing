@@ -4,7 +4,7 @@ import type {
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
-  OffenceSentenceLengthForm,
+  SentenceLengthForm,
 } from 'forms'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
@@ -12,7 +12,7 @@ import validate from '../validation/validation'
 import { toDateString } from '../utils/utils'
 import {
   alternativeSentenceLengthFormToSentenceLength,
-  offenceSentenceLengthFormToSentenceLength,
+  sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import ManageOffencesService from './manageOffencesService'
 import logger from '../../logger'
@@ -232,7 +232,7 @@ export default class OffenceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    offenceSentenceLengthForm: OffenceSentenceLengthForm,
+    offenceSentenceLengthForm: SentenceLengthForm,
   ) {
     const errors = validate(
       offenceSentenceLengthForm,
@@ -254,7 +254,7 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
-      const sentenceLength = offenceSentenceLengthFormToSentenceLength(offenceSentenceLengthForm)
+      const sentenceLength = sentenceLengthFormToSentenceLength(offenceSentenceLengthForm)
       sentence.custodialSentenceLength = sentenceLength
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign

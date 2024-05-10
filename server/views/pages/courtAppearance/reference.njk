@@ -2,6 +2,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
 
 {% set pageTitle = applicationName + " - Add a case reference" %}
 
@@ -18,11 +20,23 @@
                         classes: "govuk-label--l",
                         isPageHeading: true
                     },
-                    id: "reference-number",
+                    id: "referenceNumber",
                     name: "referenceNumber",
                     errorMessage: errors | findError('referenceNumber'),
                     value: courtCaseReferenceForm.referenceNumber
                 }) }}
+
+                {{ govukCheckboxes({
+                    id: "noCaseReference",
+                    name: "noCaseReference",
+                    errorMessage: errors | findError('noCaseReference'),
+                    items: [
+                        {
+                        value: "true",
+                        text: "There is no case reference"
+                        }
+                    ]
+                    }) }}
 
                 {{ govukButton({
                     text: "Continue"
@@ -32,4 +46,8 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/assets/js/caseReference.js"></script>
 {% endblock %}

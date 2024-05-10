@@ -1,6 +1,7 @@
 declare module 'forms' {
   export interface CourtCaseReferenceForm {
     referenceNumber?: string
+    noCaseReference?: string
   }
 
   export interface CourtCaseSelectReferenceForm {

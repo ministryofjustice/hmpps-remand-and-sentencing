@@ -24,12 +24,28 @@ export default class CourtAppearanceService {
   ) {
     const errors = validate(
       courtCaseReferenceForm,
-      { referenceNumber: 'required' },
-      { 'required.referenceNumber': 'You must enter the case reference' },
+      {
+        referenceNumber: [
+          'required_without:noCaseReference',
+          `onlyOne:${courtCaseReferenceForm.noCaseReference ?? ''}`,
+          'regex:/^[T]{1}\\d{8}$/',
+        ],
+        noCaseReference: `onlyOne:${courtCaseReferenceForm.referenceNumber ?? ''}`,
+      },
+      {
+        'required_without.referenceNumber': 'You must enter the case reference',
+        'onlyOne.referenceNumber': 'Either reference number or no reference number must be submitted',
+        'onlyOne.noCaseReference': 'Either reference number or no reference number must be submitted',
+        'regex.referenceNumber': 'You must enter a valid court case reference number.',
+      },
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.caseReferenceNumber = courtCaseReferenceForm.referenceNumber
+      if (courtCaseReferenceForm.referenceNumber) {
+        courtAppearance.caseReferenceNumber = courtCaseReferenceForm.referenceNumber
+      } else {
+        delete courtAppearance.caseReferenceNumber
+      }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

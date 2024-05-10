@@ -71,37 +71,45 @@ export default class CourtCaseRoutes {
   public getReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToCheckAnswers } = req.query
-    let caseReferenceNumber: string
+    let courtCaseReferenceForm = (req.flash('courtCaseReferenceForm')[0] || {}) as CourtCaseReferenceForm
+    if (Object.keys(courtCaseReferenceForm).length === 0) {
+      const referenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId)
+      const noCaseReference = submitToCheckAnswers ? 'true' : ''
+      courtCaseReferenceForm = {
+        referenceNumber,
+        noCaseReference: referenceNumber ? '' : noCaseReference,
+      }
+    }
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`
     if (submitToCheckAnswers) {
-      caseReferenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId)
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`
+    } else if (addOrEditCourtCase === 'edit-court-case') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/select-reference`
     }
 
     return res.render('pages/courtAppearance/reference', {
       nomsId,
       submitToCheckAnswers,
-      caseReferenceNumber,
+      courtCaseReferenceForm,
       courtCaseReference,
       appearanceReference,
       errors: req.flash('errors') || [],
       addOrEditCourtCase,
+      backLink,
     })
   }
 
   public submitReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const referenceForm = trimForm<CourtCaseReferenceForm>(req.body)
-    const errors = validate(
-      referenceForm,
-      { referenceNumber: 'required' },
-      { 'required.referenceNumber': 'You must enter the case reference' },
-    )
+    const courtCaseReferenceForm = trimForm<CourtCaseReferenceForm>(req.body)
+    const errors = this.courtAppearanceService.setCaseReferenceNumber(req.session, nomsId, courtCaseReferenceForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
+      req.flash('courtCaseReferenceForm', { ...courtCaseReferenceForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/reference`,
       )
     }
-    this.courtAppearanceService.setCaseReferenceNumber(req.session, nomsId, referenceForm.referenceNumber)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -138,7 +146,11 @@ export default class CourtCaseRoutes {
         req.user.token,
         courtCaseReference,
       )
-      this.courtAppearanceService.setCaseReferenceNumber(req.session, nomsId, latestCourtAppearance.courtCaseReference)
+      this.courtAppearanceService.setCaseReferenceNumberFromLatestAppearance(
+        req.session,
+        nomsId,
+        latestCourtAppearance.courtCaseReference,
+      )
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
       )

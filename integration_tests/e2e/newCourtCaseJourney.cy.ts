@@ -44,7 +44,7 @@ context('New Court Case journey', () => {
     courtCaseTaskListPage.appearanceInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
-    courtCaseReferencePage.input().type('1234')
+    courtCaseReferencePage.input().type('T12345678')
     courtCaseReferencePage.button().click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
@@ -71,7 +71,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Court case reference': '1234',
+      'Court case reference': 'T12345678',
       'Warrant date': '12 05 2023',
       'Court name': 'Bradford Crown Court',
       'Overall case outcome': 'Remanded in custody',
@@ -176,7 +176,7 @@ context('New Court Case journey', () => {
     courtCaseTaskListPage.appearanceInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
-    courtCaseReferencePage.input().type('1234')
+    courtCaseReferencePage.input().type('T12345678')
     courtCaseReferencePage.button().click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
@@ -200,7 +200,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Court case reference': '1234',
+      'Court case reference': 'T12345678',
       'Warrant date': '12 05 2023',
       'Court name': 'Bradford Crown Court',
       'Tagged bail': '5 days',
@@ -228,7 +228,7 @@ context('New Court Case journey', () => {
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.sentencesLink().click()
 
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, '1234', 'sentences')
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'sentences')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
@@ -265,7 +265,7 @@ context('New Court Case journey', () => {
     cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     cffenceSentenceServeTypePage.button().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234', 'sentences')
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'sentences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)

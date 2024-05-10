@@ -30,10 +30,12 @@
                     id: "noCaseReference",
                     name: "noCaseReference",
                     errorMessage: errors | findError('noCaseReference'),
+
                     items: [
                         {
-                        value: "true",
-                        text: "There is no case reference"
+                            value: "true",
+                            text: "There is no case reference",
+                            checked: courtCaseReferenceForm.noCaseReference === 'true'
                         }
                     ]
                     }) }}

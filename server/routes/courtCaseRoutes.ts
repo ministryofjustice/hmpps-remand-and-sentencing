@@ -74,9 +74,10 @@ export default class CourtCaseRoutes {
     let courtCaseReferenceForm = (req.flash('courtCaseReferenceForm')[0] || {}) as CourtCaseReferenceForm
     if (Object.keys(courtCaseReferenceForm).length === 0) {
       const referenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId)
+      const noCaseReference = submitToCheckAnswers ? 'true' : ''
       courtCaseReferenceForm = {
         referenceNumber,
-        noCaseReference: referenceNumber ? '' : 'true',
+        noCaseReference: referenceNumber ? '' : noCaseReference,
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`

@@ -583,9 +583,10 @@ export default class CourtCaseRoutes {
     let taggedBailForm = (req.flash('taggedBailForm')[0] || {}) as CourtCaseTaggedBailForm
     if (Object.keys(taggedBailForm).length === 0) {
       const taggedBail = this.courtAppearanceService.getTaggedBail(req.session, nomsId)
+      const hasTaggedBail = taggedBail ? 'true' : 'false'
       taggedBailForm = {
         taggedBail,
-        hasTaggedBail: taggedBail ? 'true' : 'false',
+        hasTaggedBail: submitToCheckAnswers ? hasTaggedBail : '',
       }
     }
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)

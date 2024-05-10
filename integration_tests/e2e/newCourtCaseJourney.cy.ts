@@ -44,7 +44,7 @@ context('New Court Case journey', () => {
     courtCaseTaskListPage.appearanceInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
-    courtCaseReferencePage.input().type('1234')
+    courtCaseReferencePage.input().type('T12345678')
     courtCaseReferencePage.button().click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
@@ -176,7 +176,7 @@ context('New Court Case journey', () => {
     courtCaseTaskListPage.appearanceInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
-    courtCaseReferencePage.input().type('1234')
+    courtCaseReferencePage.input().type('T12345678')
     courtCaseReferencePage.button().click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')

@@ -400,29 +400,41 @@ export default class OffenceRoutes {
   public getTerrorRelated: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
-    const terrorRelated = this.getSessionOffenceOrAppearanceOffence(
-      req,
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-    )?.terrorRelated
+    let terrorRelatedForm = (req.flash('terrorRelatedForm')[0] || {}) as OffenceTerrorRelatedForm
+    if (Object.keys(terrorRelatedForm).length === 0) {
+      terrorRelatedForm = {
+        terrorRelated: String(
+          this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)?.terrorRelated,
+        ).toLowerCase(),
+      }
+    }
 
     return res.render('pages/offence/terror-related', {
       nomsId,
       courtCaseReference,
-      terrorRelated,
+      terrorRelatedForm,
       offenceReference,
       appearanceReference,
       addOrEditCourtCase,
       submitToEditOffence,
+      errors: req.flash('errors') || [],
+      backLink: submitToEditOffence
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/edit-offence`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`,
     })
   }
 
   public submitTerrorRelated: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const terrorRelatedForm = trimForm<OffenceTerrorRelatedForm>(req.body)
-    const terrorRelated = terrorRelatedForm.terrorRelated === 'true'
-    this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, terrorRelated)
+    const errors = this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, terrorRelatedForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('terrorRelatedForm', { ...terrorRelatedForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/terror-related`,
+      )
+    }
     const { submitToEditOffence } = req.query
     if (submitToEditOffence) {
       return res.redirect(

@@ -4,6 +4,7 @@ import type {
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
+  OffenceTerrorRelatedForm,
   SentenceLengthForm,
 } from 'forms'
 import type { Offence } from 'models'
@@ -197,13 +198,25 @@ export default class OffenceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    terrorRelated: boolean,
+    terrorRelatedForm: OffenceTerrorRelatedForm,
   ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    offence.terrorRelated = terrorRelated
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
+    const errors = validate(
+      terrorRelatedForm,
+      {
+        terrorRelated: 'required',
+      },
+      {
+        'required.terrorRelated': 'You must select Yes or No.',
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      offence.terrorRelated = terrorRelatedForm.terrorRelated === 'true'
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
   }
 
   setOffenceOutcome(

@@ -27,4 +27,12 @@ context('Add Offence Terror related Page', () => {
   it('button to continue is displayed', () => {
     offenceTerrorRelatedPage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without selecting an option results in error', () => {
+    offenceTerrorRelatedPage.button().click()
+    offenceTerrorRelatedPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must select Yes or No.')
+  })
 })

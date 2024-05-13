@@ -232,25 +232,45 @@ export default class OffenceRoutes {
 
   public getCountNumber: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
-    const countNumber = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-      ?.sentence?.countNumber
     const { submitToEditOffence } = req.query
+    let countNumberForm = (req.flash('countNumberForm')[0] || {}) as OffenceCountNumberForm
+    if (Object.keys(countNumberForm).length === 0) {
+      countNumberForm = {
+        countNumber: this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+          ?.sentence?.countNumber,
+      }
+    }
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`
+    if (submitToEditOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/edit-offence`
+    } else if (addOrEditCourtCase === 'edit-court-case') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/review-offences`
+    }
+
     return res.render('pages/offence/count-number', {
       nomsId,
       courtCaseReference,
       offenceReference,
       appearanceReference,
       addOrEditCourtCase,
-      countNumber,
+      countNumberForm,
       submitToEditOffence,
+      errors: req.flash('errors') || [],
+      backLink,
     })
   }
 
   public submitCountNumber: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const countNumberForm = trimForm<OffenceCountNumberForm>(req.body)
-    this.offenceService.setCountNumber(req.session, nomsId, courtCaseReference, countNumberForm.countNumber)
-
+    const errors = this.offenceService.setCountNumber(req.session, nomsId, courtCaseReference, countNumberForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('countNumberForm', { ...countNumberForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/count-number`,
+      )
+    }
     const { submitToEditOffence } = req.query
     if (submitToEditOffence) {
       return res.redirect(

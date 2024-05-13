@@ -1,6 +1,7 @@
 import type {
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
+  OffenceCountNumberForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
@@ -178,15 +179,29 @@ export default class OffenceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    countNumber: string,
+    countNumberForm: OffenceCountNumberForm,
   ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    const sentence = offence.sentence ?? {}
-    sentence.countNumber = countNumber
-    offence.sentence = sentence
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
+    const errors = validate(
+      countNumberForm,
+      {
+        countNumber: 'required|min:1|wholeNumber',
+      },
+      {
+        'required.countNumber': 'You must enter a count number.',
+        'min.countNumber': 'You must enter a number greater than zero.',
+        'wholeNumber.countNumber': 'Enter a whole number for the count number.',
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.countNumber = countNumberForm.countNumber
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
   }
 
   getTerrorRelated(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtCaseReference: string) {

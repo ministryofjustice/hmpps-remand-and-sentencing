@@ -27,4 +27,35 @@ context('Add Offence Count number Page', () => {
   it('button to continue is displayed', () => {
     offenceCountNumberPage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without selecting entering anything results in error', () => {
+    offenceCountNumberPage.button().click()
+    offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter a count number.')
+  })
+
+  it('submitting 0 results in error', () => {
+    offenceCountNumberPage.input().clear()
+    offenceCountNumberPage.input().type('0')
+    offenceCountNumberPage.button().click()
+    offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter a number greater than zero.')
+  })
+
+  it('submitting a decimal results in error', () => {
+    offenceCountNumberPage.input().clear()
+    offenceCountNumberPage.input().type('6.5')
+    offenceCountNumberPage.button().click()
+    offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Enter a whole number for the count number.')
+  })
 })

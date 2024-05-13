@@ -184,11 +184,11 @@ export default class OffenceService {
     const errors = validate(
       countNumberForm,
       {
-        countNumber: 'required|min:1|wholeNumber',
+        countNumber: 'required|minNumber:1|wholeNumber',
       },
       {
         'required.countNumber': 'You must enter a count number.',
-        'min.countNumber': 'You must enter a number greater than zero.',
+        'minNumber.countNumber': 'You must enter a number greater than zero.',
         'wholeNumber.countNumber': 'Enter a whole number for the count number.',
       },
     )

@@ -12,6 +12,7 @@
                 {{ govukRadios({
                     name: "terrorRelated",
                     classes: "govuk-radios--inline",
+                    errorMessage: errors | findError('terrorRelated'),
                     fieldset: {
                         legend: {
                             text: "Was the offence terror related?",
@@ -23,12 +24,12 @@
                         {
                             value: "true",
                             text: "Yes",
-                            checked: terrorRelated === true
+                            checked: terrorRelatedForm.terrorRelated === 'true'
                         },
                         {
                             value: "false",
                             text: "No",
-                            checked: terrorRelated === false
+                            checked: terrorRelatedForm.terrorRelated === 'false'
                         }
                     ]
                 }) }}

@@ -12,25 +12,21 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 
-                {% call govukFieldset({
-                    legend: {
-                        text: "Enter the count number",
-                        classes: "govuk-fieldset__legend--l",
-                        isPageHeading: true
-                    }
-                }) %}
-
                    {{ govukInput({
+                        label: {
+                            text: "Enter the count number",
+                            classes: "govuk-label--l",
+                            isPageHeading: true
+                        },
                         hint: {
                             text: "You must enter it exactly as it is written on the warrant."
                         },
-                        id: "count-number",
+                        id: "countNumber",
                         name: "countNumber",
                         classes: "govuk-input--width-5",
-                        value: countNumber
+                        errorMessage: errors | findError('countNumber'),
+                        value: countNumberForm.countNumber
                     }) }} 
-
-                {% endcall %}
 
 
 

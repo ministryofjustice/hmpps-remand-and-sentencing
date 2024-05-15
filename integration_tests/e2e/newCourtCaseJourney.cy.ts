@@ -18,6 +18,7 @@ import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeApp
 import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
 import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
+import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -252,9 +253,9 @@ context('New Court Case journey', () => {
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
 
-    // const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
-    // offenceSentenceTypePage.radioLabelSelector('SDS (Standard Determinate Sentence)').click()
-    // offenceSentenceTypePage.button().click()
+    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+    offenceSentenceTypePage.radioLabelSelector('SDS (Standard Determinate Sentence)').click()
+    offenceSentenceTypePage.button().click()
 
     const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
     offenceSentenceLengthPage.yearsInput().type('4')

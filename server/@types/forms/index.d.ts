@@ -148,4 +148,8 @@ declare module 'forms' {
     'sentenceLength-weeks'?: string
     'sentenceLength-days'?: string
   }
+
+  export interface OffenceSentenceTypeForm {
+    sentenceType?: string
+  }
 }

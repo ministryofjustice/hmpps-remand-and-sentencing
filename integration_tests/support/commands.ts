@@ -10,6 +10,7 @@ import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
+import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
@@ -175,6 +176,10 @@ Cypress.Commands.add(
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
+
+    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+    offenceSentenceTypePage.radioLabelSelector('SDS (Standard Determinate Sentence)').click()
+    offenceSentenceTypePage.button().click()
 
     const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
     offenceSentenceLengthPage.yearsInput().clear()

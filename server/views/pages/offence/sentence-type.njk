@@ -1,0 +1,56 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Sentence type " %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-sentence-type{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {{ govukRadios({
+                    id: "sentenceType",
+                    name: "sentenceType",
+                    fieldset: {
+                        legend: {
+                            text: "Select the sentence type",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    errorMessage:  errors | findError('sentenceType'),
+                    items: [
+                    {
+                        value: "SDS (Standard Determinate Sentence)",
+                        text: "SDS (Standard Determinate Sentence)",
+                        checked: offenceSentenceTypeForm.sentenceType === 'SDS (Standard Determinate Sentence)'
+                    },
+                    {
+                        value: "EDS (Extended Determinate Sentence)",
+                        text: "EDS (Extended Determinate Sentence)",
+                        checked: offenceSentenceTypeForm.sentenceType === 'EDS (Extended Determinate Sentence)'
+                    },{
+                        value: "SOPC (Special Custodial Sentence for Certain Offenders of Particular Concern)",
+                        text: "SOPC (Special Custodial Sentence for Certain Offenders of Particular Concern)",
+                        checked: offenceSentenceTypeForm.sentenceType === 'SOPC (Special Custodial Sentence for Certain Offenders of Particular Concern)',
+                        hint: {
+                            text: "A mandatory licence period of 12 months will automatically be added to the sentence"
+                        }
+                    },{
+                        value: "DTO (Detention and Training Order)",
+                        text: "DTO (Detention and Training Order)",
+                        checked: offenceSentenceTypeForm.sentenceType === 'DTO (Detention and Training Order)'
+                    },{
+                        value: "A/FINE",
+                        text: "A/FINE",
+                        checked: offenceSentenceTypeForm.sentenceType === 'A/FINE'
+                    }]
+                }) }}
+
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+{% endblock %}

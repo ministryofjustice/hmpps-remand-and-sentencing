@@ -11,6 +11,7 @@ import type {
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
+  OffenceSentenceTypeForm,
   OffenceTerrorRelatedForm,
   ReviewOffencesForm,
   SentenceLengthForm,
@@ -111,7 +112,7 @@ export default class OffenceRoutes {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-type`,
         )
       }
       this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
@@ -498,6 +499,54 @@ export default class OffenceRoutes {
     )
   }
 
+  public getSentenceType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { submitToEditOffence } = req.query
+    let offenceSentenceTypeForm = (req.flash('offenceSentenceTypeForm')[0] || {}) as OffenceSentenceTypeForm
+    if (Object.keys(offenceSentenceTypeForm).length === 0) {
+      offenceSentenceTypeForm = {
+        sentenceType: this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+          ?.sentence?.sentenceType,
+      }
+    }
+    return res.render('pages/offence/sentence-type', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      submitToEditOffence,
+      offenceSentenceTypeForm,
+      errors: req.flash('errors') || [],
+      backLink: submitToEditOffence
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/edit-offence`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+    })
+  }
+
+  public submitSentenceType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { submitToEditOffence } = req.query
+    const offenceSentenceTypeForm = trimForm<OffenceSentenceTypeForm>(req.body)
+    const errors = this.offenceService.setSentenceType(req.session, nomsId, courtCaseReference, offenceSentenceTypeForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceSentenceTypeForm', { ...offenceSentenceTypeForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+
+    if (submitToEditOffence) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+    )
+  }
+
   public getSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
@@ -519,7 +568,7 @@ export default class OffenceRoutes {
       errors: req.flash('errors') || [],
       backLink: submitToEditOffence
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/edit-offence`
-        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-type`,
     })
   }
 

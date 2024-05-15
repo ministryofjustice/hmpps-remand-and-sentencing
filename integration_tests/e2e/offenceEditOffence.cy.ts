@@ -7,6 +7,7 @@ import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
+import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import Page from '../pages/page'
 
@@ -83,7 +84,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 5',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
-        'Sentence type': '',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Forthwith',
       })
@@ -103,7 +104,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '25 05 2023',
-        'Sentence type': '',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Forthwith',
       })
@@ -131,7 +132,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'AB11000 Another offence description',
         'Commited on': '12 05 2023',
-        'Sentence type': '',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Forthwith',
       })
@@ -152,7 +153,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
-        'Sentence type': '',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '6 years 6 months',
         'Consecutive or concurrent': 'Forthwith',
       })
@@ -169,9 +170,26 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
-        'Sentence type': '',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Concurrent',
+      })
+    })
+
+    it('can edit sentence type and return to edit page', () => {
+      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'sentence-type').click()
+      const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+      offenceSentenceTypePage.radioSelector('SDS (Standard Determinate Sentence)').should('be.checked')
+      offenceSentenceTypePage.radioLabelSelector('A/FINE').click()
+      offenceSentenceTypePage.button().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description Terror-related',
+        'Commited on': '12 05 2023',
+        'Sentence type': 'A/FINE',
+        'Sentence length': '4 years 5 months',
+        'Consecutive or concurrent': 'Forthwith',
       })
     })
   })

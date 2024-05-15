@@ -6,6 +6,7 @@ import type {
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
+  OffenceSentenceTypeForm,
   OffenceTerrorRelatedForm,
   SentenceLengthForm,
 } from 'forms'
@@ -276,6 +277,33 @@ export default class OffenceService {
   ): string {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     return this.getOffence(session.offences, id).outcome
+  }
+
+  setSentenceType(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceSentenceTypeForm: OffenceSentenceTypeForm,
+  ) {
+    const errors = validate(
+      offenceSentenceTypeForm,
+      {
+        sentenceType: 'required',
+      },
+      {
+        'required.sentenceType': 'You must select the sentence type',
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.sentenceType = offenceSentenceTypeForm.sentenceType
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
   }
 
   setCustodialSentenceLength(

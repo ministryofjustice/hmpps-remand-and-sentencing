@@ -139,18 +139,39 @@ export default class OffenceService {
     return errors
   }
 
-  setOffenceCodeFromLookup(
+  async setOffenceCodeFromLookup(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
+    authToken: string,
     offenceNameForm: OffenceOffenceNameForm,
   ) {
+    const errors = validate(
+      offenceNameForm,
+      {
+        offenceName: 'required',
+      },
+      {
+        'required.offenceName': 'You must enter the offence',
+      },
+    )
     const [offenceCode] = offenceNameForm.offenceName.split(' ')
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    offence.offenceCode = offenceCode
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
+    if (offenceCode) {
+      try {
+        await this.manageOffencesService.getOffenceByCode(offenceCode, authToken)
+      } catch (error) {
+        logger.error(error)
+        errors.push({ text: 'You must enter a valid offence.', href: '#offenceName' })
+      }
+    }
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      offence.offenceCode = offenceCode
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
   }
 
   setOffenceCodeFromConfirm(

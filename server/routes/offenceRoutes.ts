@@ -341,6 +341,22 @@ export default class OffenceRoutes {
   public getOffenceName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
+    let offenceNameForm = (req.flash('offenceNameForm')[0] || {}) as OffenceOffenceNameForm
+    if (Object.keys(offenceNameForm).length === 0) {
+      const { offenceCode } = this.getSessionOffenceOrAppearanceOffence(
+        req,
+        nomsId,
+        courtCaseReference,
+        offenceReference,
+      )
+      if (offenceCode) {
+        const offence = await this.manageOffencesService.getOffenceByCode(offenceCode, res.locals.user.token)
+
+        offenceNameForm = {
+          offenceName: `${offence.code} ${offence.description}`,
+        }
+      }
+    }
     return res.render('pages/offence/offence-name', {
       nomsId,
       courtCaseReference,
@@ -348,15 +364,31 @@ export default class OffenceRoutes {
       appearanceReference,
       addOrEditCourtCase,
       submitToEditOffence,
+      offenceNameForm,
+      errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     })
   }
 
   public submitOffenceName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
-    const offenceNameForm = trimForm<OffenceOffenceNameForm>(req.body)
-    this.offenceService.setOffenceCodeFromLookup(req.session, nomsId, courtCaseReference, offenceNameForm)
     const { submitToEditOffence } = req.query
+    const offenceNameForm = trimForm<OffenceOffenceNameForm>(req.body)
+    const errors = await this.offenceService.setOffenceCodeFromLookup(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      res.locals.user.token,
+      offenceNameForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceNameForm', { ...offenceNameForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (courtAppearance.warrantType === 'SENTENCING') {
       return res.redirect(

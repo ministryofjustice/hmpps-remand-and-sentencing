@@ -18,7 +18,7 @@ const request = new XMLHttpRequest()
 
 window.addEventListener('load', function () {
   accessibleAutocomplete.enhanceSelectElement({
-    defaultValue: '',
+    defaultValue: document.getElementById('autocomplete-script').dataset.offence,
     selectElement: document.querySelector('#offence-name'),
     confirmOnBlur: false,
     name: 'offenceName',

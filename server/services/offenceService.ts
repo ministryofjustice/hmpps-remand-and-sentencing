@@ -1,6 +1,7 @@
 import type {
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
+  OffenceConsecutiveToForm,
   OffenceCountNumberForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
@@ -347,15 +348,30 @@ export default class OffenceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    consecutiveTo: string,
+    offenceConsecutiveToForm: OffenceConsecutiveToForm,
   ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    const sentence = offence.sentence ?? {}
-    sentence.consecutiveTo = consecutiveTo
-    offence.sentence = sentence
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
+    const errors = validate(
+      offenceConsecutiveToForm,
+      {
+        consecutiveTo: 'required|minWholeNumber:1',
+      },
+      {
+        'required.consecutiveTo': `You must enter the consecutive to`,
+        'minWholeNumber.consecutiveTo': 'Enter a whole number for the count number.',
+      },
+    )
+
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.consecutiveTo = offenceConsecutiveToForm.consecutiveTo
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+
+    return errors
   }
 
   getSessionOffence(

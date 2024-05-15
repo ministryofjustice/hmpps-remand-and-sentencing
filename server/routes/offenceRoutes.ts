@@ -640,8 +640,13 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const { submitToEditOffence } = req.query
     const countNumber = this.offenceService.getCountNumber(req.session, nomsId, courtCaseReference)
-    const consecutiveTo = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-      ?.sentence?.consecutiveTo
+    let offenceConsecutiveToForm = (req.flash('offenceConsecutiveToForm')[0] || {}) as OffenceConsecutiveToForm
+    if (Object.keys(offenceConsecutiveToForm).length === 0) {
+      offenceConsecutiveToForm = {
+        consecutiveTo: this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+          ?.sentence?.consecutiveTo,
+      }
+    }
     return res.render('pages/offence/consecutive-to', {
       nomsId,
       courtCaseReference,
@@ -650,7 +655,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       errors: req.flash('errors') || [],
       countNumber,
-      consecutiveTo,
+      offenceConsecutiveToForm,
       submitToEditOffence,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     })
@@ -659,27 +664,20 @@ export default class OffenceRoutes {
   public submitConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     const offenceConsecutiveToForm = trimForm<OffenceConsecutiveToForm>(req.body)
-    const errors = validate(
+    const errors = this.offenceService.setConsecutiveTo(
+      req.session,
+      nomsId,
+      courtCaseReference,
       offenceConsecutiveToForm,
-      {
-        consecutiveTo: 'required',
-      },
-      {
-        'required.consecutiveTo': `You must enter the consecutive to`,
-      },
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
+      req.flash('offenceConsecutiveToForm', { ...offenceConsecutiveToForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/consecutive-to`,
       )
     }
-    this.offenceService.setConsecutiveTo(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      offenceConsecutiveToForm.consecutiveTo,
-    )
+
     const { submitToEditOffence } = req.query
     if (submitToEditOffence) {
       return res.redirect(

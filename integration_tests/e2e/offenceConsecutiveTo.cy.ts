@@ -32,9 +32,32 @@ context('Add Offence Consecutive to Page', () => {
 
   it('submitting without entering anything results in error', () => {
     offenceConsecutiveToPage.button().click()
+    offenceConsecutiveToPage = Page.verifyOnPageTitle(OffenceConsecutiveToPage, '1')
     offenceConsecutiveToPage
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem You must enter the consecutive to')
+  })
+
+  it('submitting a negative number results in error', () => {
+    offenceConsecutiveToPage.input().clear()
+    offenceConsecutiveToPage.input().type('-5')
+    offenceConsecutiveToPage.button().click()
+    offenceConsecutiveToPage = Page.verifyOnPageTitle(OffenceConsecutiveToPage, '1')
+    offenceConsecutiveToPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Enter a whole number for the count number.')
+  })
+
+  it('submitting a decimal number results in error', () => {
+    offenceConsecutiveToPage.input().clear()
+    offenceConsecutiveToPage.input().type('6.2')
+    offenceConsecutiveToPage.button().click()
+    offenceConsecutiveToPage = Page.verifyOnPageTitle(OffenceConsecutiveToPage, '1')
+    offenceConsecutiveToPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Enter a whole number for the count number.')
   })
 })

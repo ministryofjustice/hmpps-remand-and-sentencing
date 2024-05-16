@@ -21,6 +21,7 @@ declare module 'models' {
     warrantId?: string
     taggedBail?: string
     overallSentenceLength?: SentenceLength
+    referenceNumberSelect?: string
   }
 
   export interface Offence {

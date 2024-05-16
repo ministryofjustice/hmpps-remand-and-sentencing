@@ -3,6 +3,7 @@ import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseNextHearingDateForm,
   CourtCaseReferenceForm,
+  CourtCaseSelectReferenceForm,
   CourtCaseTaggedBailForm,
   CourtCaseWarrantDateForm,
   SentenceLengthForm,
@@ -14,9 +15,10 @@ import {
   alternativeSentenceLengthFormToSentenceLength,
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
+import RemandAndSentencingService from './remandAndSentencingService'
 
 export default class CourtAppearanceService {
-  constructor() {}
+  constructor(private readonly remandAndSentencingService: RemandAndSentencingService) {}
 
   setCaseReferenceNumber(
     session: CookieSessionInterfaces.CookieSessionObject,
@@ -53,15 +55,36 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setCaseReferenceNumberFromLatestAppearance(
+  async setCaseReferenceFromSelectCaseReference(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
-    caseReferenceNumber: string,
+    authToken: string,
+    courtCaseReference: string,
+    referenceForm: CourtCaseSelectReferenceForm,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.caseReferenceNumber = caseReferenceNumber
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+    const errors = validate(
+      referenceForm,
+      {
+        referenceNumberSelect: 'required',
+      },
+      {
+        'required.referenceNumberSelect': 'Select ‘Yes’ if this appearance uses the same case reference.',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      if (referenceForm.referenceNumberSelect === 'true') {
+        const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+          authToken,
+          courtCaseReference,
+        )
+        courtAppearance.caseReferenceNumber = latestCourtAppearance.courtCaseReference
+      }
+      courtAppearance.referenceNumberSelect = referenceForm.referenceNumberSelect
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   getCaseReferenceNumber(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {

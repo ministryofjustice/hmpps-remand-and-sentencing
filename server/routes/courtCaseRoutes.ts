@@ -128,6 +128,13 @@ export default class CourtCaseRoutes {
       req.user.token,
       courtCaseReference,
     )
+    let referenceForm = (req.flash('referenceForm')[0] || {}) as CourtCaseSelectReferenceForm
+    if (Object.keys(referenceForm).length === 0) {
+      referenceForm = {
+        referenceNumberSelect: this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+          .referenceNumberSelect,
+      }
+    }
     return res.render('pages/courtAppearance/select-reference', {
       nomsId,
       submitToCheckAnswers,
@@ -135,28 +142,45 @@ export default class CourtCaseRoutes {
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
+      referenceForm,
+      errors: req.flash('errors') || [],
+      backLink: submitToCheckAnswers
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     })
   }
 
   public submitSelectReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { submitToCheckAnswers } = req.query
+    const submitToCheckAnswersQuery = submitToCheckAnswers ? `?submitToCheckAnswers=${submitToCheckAnswers}` : ''
     const referenceForm = trimForm<CourtCaseSelectReferenceForm>(req.body)
+    const errors = await this.courtAppearanceService.setCaseReferenceFromSelectCaseReference(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      req.user.token,
+      referenceForm,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('referenceForm', { ...referenceForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/select-reference${submitToCheckAnswersQuery}`,
+      )
+    }
     if (referenceForm.referenceNumberSelect === 'true') {
-      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-        req.user.token,
-        courtCaseReference,
-      )
-      this.courtAppearanceService.setCaseReferenceNumberFromLatestAppearance(
-        req.session,
-        nomsId,
-        latestCourtAppearance.courtCaseReference,
-      )
+      if (submitToCheckAnswers) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`,
+        )
+      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
       )
     }
-    const { submitToCheckAnswers } = req.query
-    const submitToCheckAnswersQuery = submitToCheckAnswers ? `?submitToCheckAnswers=${submitToCheckAnswers}` : ''
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/reference${submitToCheckAnswersQuery}`,
     )

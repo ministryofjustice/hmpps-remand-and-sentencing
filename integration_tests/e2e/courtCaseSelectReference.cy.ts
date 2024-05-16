@@ -8,7 +8,7 @@ context('Select reference page', () => {
     cy.task('stubGetLatestCourtAppearance')
     cy.signIn()
     cy.visit('/person/A1234AB/edit-court-case/12345/appearance/1/select-reference')
-    courtCaseSelectReferencePage = Page.verifyOnPage(CourtCaseSelectReferencePage)
+    courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'F23325')
   })
 
   it('displays person details', () => {
@@ -22,5 +22,14 @@ context('Select reference page', () => {
 
   it('button to continue is displayed', () => {
     courtCaseSelectReferencePage.button().should('contain.text', 'Continue')
+  })
+
+  it('submitting without entering anything in the input results in an error', () => {
+    courtCaseSelectReferencePage.button().click()
+    courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'F23325')
+    courtCaseSelectReferencePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Select ‘Yes’ if this appearance uses the same case reference.')
   })
 })

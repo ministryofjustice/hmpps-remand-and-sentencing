@@ -25,7 +25,7 @@ export const services = () => {
 
   const remandAndSentencingService = new RemandAndSentencingService()
 
-  const courtAppearanceService = new CourtAppearanceService()
+  const courtAppearanceService = new CourtAppearanceService(remandAndSentencingService)
 
   const documentManagementService = new DocumentManagementService(hmppsAuthClient)
 

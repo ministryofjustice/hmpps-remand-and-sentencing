@@ -58,8 +58,8 @@ export default class CourtAppearanceService {
   async setCaseReferenceFromSelectCaseReference(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
-    authToken: string,
     courtCaseReference: string,
+    authToken: string,
     referenceForm: CourtCaseSelectReferenceForm,
   ) {
     const errors = validate(

@@ -16,6 +16,7 @@ import {
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import RemandAndSentencingService from './remandAndSentencingService'
+import { toDateString } from '../utils/utils'
 
 export default class CourtAppearanceService {
   constructor(private readonly remandAndSentencingService: RemandAndSentencingService) {}
@@ -99,16 +100,24 @@ export default class CourtAppearanceService {
     text: string
     href: string
   }[] {
-    const isValidDateRule =
+    let isValidWarrantDateRule = ''
+    if (
       courtCaseWarrantDateForm['warrantDate-day'] &&
       courtCaseWarrantDateForm['warrantDate-month'] &&
       courtCaseWarrantDateForm['warrantDate-year']
-        ? `|isValidDate:${courtCaseWarrantDateForm['warrantDate-year']}-${courtCaseWarrantDateForm['warrantDate-month'].padStart(2, '0')}-${courtCaseWarrantDateForm['warrantDate-day'].padStart(2, '0')}`
-        : ''
+    ) {
+      const warrantDateString = toDateString(
+        courtCaseWarrantDateForm['warrantDate-year'],
+        courtCaseWarrantDateForm['warrantDate-month'],
+        courtCaseWarrantDateForm['warrantDate-day'],
+      )
+      isValidWarrantDateRule = `|isValidDate:${warrantDateString}|isPastDate:${warrantDateString}`
+    }
+
     const errors = validate(
       courtCaseWarrantDateForm,
       {
-        'warrantDate-day': `required${isValidDateRule}`,
+        'warrantDate-day': `required${isValidWarrantDateRule}`,
         'warrantDate-month': `required`,
         'warrantDate-year': `required`,
       },
@@ -117,6 +126,7 @@ export default class CourtAppearanceService {
         'required.warrantDate-month': 'Warrant date must include month',
         'required.warrantDate-day': 'Warrant date must include day',
         'isValidDate.warrantDate-day': 'This date does not exist.',
+        'isPastDate.warrantDate-day': 'Warrant date must be in the past',
       },
     )
     if (errors.length === 0) {

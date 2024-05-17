@@ -37,7 +37,7 @@ context('Add Offence Offence Date Page', () => {
       )
   })
 
-  it('submitting an invalid start date results in an error', () => {
+  it('submitting a start date in the future results in an error', () => {
     const futureDate = dayjs().add(7, 'day')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type(futureDate.date().toString())
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type((futureDate.month() + 1).toString())
@@ -50,7 +50,7 @@ context('Add Offence Offence Date Page', () => {
       .should('equal', 'There is a problem Offence start date must use a date from the past')
   })
 
-  it('submitting a start date in the future results in an error', () => {
+  it('submitting an  invalid start date results in an error', () => {
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('35')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('1')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')

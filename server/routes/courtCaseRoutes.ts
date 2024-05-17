@@ -211,7 +211,9 @@ export default class CourtCaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       errors: req.flash('errors') || [],
-      backLink: req.get('Referrer'),
+      backLink: submitToCheckAnswers
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/reference`,
     })
   }
 

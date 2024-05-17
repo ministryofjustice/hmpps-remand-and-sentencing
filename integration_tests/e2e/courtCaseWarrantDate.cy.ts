@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import Page from '../pages/page'
 
@@ -25,6 +26,7 @@ context('Court Case Warrant Date Page', () => {
 
   it('submitting without entering anything in the inputs results in an error', () => {
     courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage
       .errorSummary()
       .trimTextContent()
@@ -39,9 +41,23 @@ context('Court Case Warrant Date Page', () => {
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('1')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2024')
     courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem This date does not exist.')
+  })
+
+  it('submitting a date in the future results in an error', () => {
+    const futureDate = dayjs().add(7, 'day')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type(futureDate.date().toString())
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type((futureDate.month() + 1).toString())
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type(futureDate.year().toString())
+    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Warrant date must use a date from the past')
   })
 })

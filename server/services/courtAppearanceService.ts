@@ -107,9 +107,9 @@ export default class CourtAppearanceService {
       courtCaseWarrantDateForm['warrantDate-year']
     ) {
       const warrantDateString = toDateString(
-        courtCaseWarrantDateForm['warrantDate-day'],
-        courtCaseWarrantDateForm['warrantDate-month'],
         courtCaseWarrantDateForm['warrantDate-year'],
+        courtCaseWarrantDateForm['warrantDate-month'],
+        courtCaseWarrantDateForm['warrantDate-day'],
       )
       isValidWarrantDateRule = `|isValidDate:${warrantDateString}|isPastDate:${warrantDateString}`
     }

@@ -58,6 +58,6 @@ context('Court Case Warrant Date Page', () => {
     courtCaseWarrantDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem Warrant date must use a date from the past')
+      .should('equal', 'There is a problem Warrant date must be in the past')
   })
 })

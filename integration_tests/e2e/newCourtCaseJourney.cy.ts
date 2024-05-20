@@ -42,6 +42,27 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.button().click()
 
     let courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Offences',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Next court appearance',
+          status: 'Ignore status',
+        },
+      ])
     courtCaseTaskListPage.appearanceInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
@@ -82,6 +103,27 @@ context('New Court Case journey', () => {
     courtCaseCheckAnswersPage.button().click()
 
     courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Offences',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Next court appearance',
+          status: 'Ignore status',
+        },
+      ])
     // courtCaseTaskListPage.courtDocumentsLink().click()
 
     // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
@@ -174,6 +216,23 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.button().click()
 
     let courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Sentences',
+          status: 'Ignore status',
+        },
+      ])
     courtCaseTaskListPage.appearanceInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
@@ -210,6 +269,23 @@ context('New Court Case journey', () => {
     courtCaseCheckAnswersPage.button().click()
 
     courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Sentences',
+          status: 'Ignore status',
+        },
+      ])
     // courtCaseTaskListPage.courtDocumentsLink().click()
 
     // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet

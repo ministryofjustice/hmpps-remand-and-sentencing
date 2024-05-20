@@ -64,6 +64,29 @@ const summaryListElementToObject = summaryListElement => {
   }, {})
 }
 
+const getTaskList = subject => {
+  if (subject.get().length > 1) {
+    throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
+  }
+
+  const taskListElement = subject.get()[0]
+
+  return [...taskListElement.querySelectorAll('.govuk-task-list__item')].map(item => {
+    const name = item
+      .querySelector('.govuk-task-list__name-and-hint')
+      .textContent.trim()
+      .replace(/\s{2,}/g, ' ')
+    const status = item
+      .querySelector('.govuk-task-list__status')
+      .textContent.trim()
+      .replace(/\s{2,}/g, ' ')
+    return {
+      name,
+      status,
+    }
+  })
+}
+
 const getOffenceCards = subject => {
   if (subject.get().length > 1) {
     throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
@@ -97,6 +120,7 @@ const trimTextContent = subject => {
 
 Cypress.Commands.add('getTable', { prevSubject: true }, getTable)
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
+Cypress.Commands.add('getTaskList', { prevSubject: true }, getTaskList)
 Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 Cypress.Commands.add('getOffenceCards', { prevSubject: true }, getOffenceCards)
 

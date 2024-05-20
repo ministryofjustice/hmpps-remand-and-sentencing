@@ -63,26 +63,37 @@ export default class TaskListModel {
   }
 
   private allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+    let typeSpecificInformationFilledOut = false
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      typeSpecificInformationFilledOut = courtAppearance.overallSentenceLength !== undefined
+    } else {
+      typeSpecificInformationFilledOut = courtAppearance.overallCaseOutcome && courtAppearance.caseOutcomeAppliedAll
+    }
     return (
       courtAppearance.caseReferenceNumber &&
       courtAppearance.warrantDate &&
       courtAppearance.courtName &&
-      courtAppearance.overallCaseOutcome &&
-      courtAppearance.caseOutcomeAppliedAll &&
       (courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined) &&
+      typeSpecificInformationFilledOut &&
       courtAppearance.appearanceInformationAccepted
     )
   }
 
   private someAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+    let typeSpecificInformationFilledOut = false
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      typeSpecificInformationFilledOut = courtAppearance.overallSentenceLength !== undefined
+    } else {
+      typeSpecificInformationFilledOut =
+        courtAppearance.overallCaseOutcome !== undefined || courtAppearance.caseOutcomeAppliedAll !== undefined
+    }
     return (
       courtAppearance.caseReferenceNumber !== undefined ||
       courtAppearance.warrantDate !== undefined ||
       courtAppearance.courtName !== undefined ||
-      courtAppearance.overallCaseOutcome !== undefined ||
-      courtAppearance.caseOutcomeAppliedAll !== undefined ||
       courtAppearance.taggedBail !== undefined ||
       courtAppearance.hasTaggedBail !== undefined ||
+      typeSpecificInformationFilledOut ||
       courtAppearance.appearanceInformationAccepted
     )
   }
@@ -90,7 +101,7 @@ export default class TaskListModel {
   private getCourtDocumentsItem(): TaskListItem {
     return {
       title: {
-        text: 'Court documents',
+        text: 'Upload court documents',
       },
       href: `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/document-type`,
       status: {

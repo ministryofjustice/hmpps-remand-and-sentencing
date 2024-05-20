@@ -32,6 +32,7 @@ import {
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
+import TaskListModel from './data/TaskListModel'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -439,8 +440,8 @@ export default class CourtCaseRoutes {
       warrantType,
       courtCaseReference,
       appearanceReference,
-      offenceReference: courtAppearance.offences.length,
       addOrEditCourtCase,
+      model: new TaskListModel(nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference, courtAppearance),
     })
   }
 

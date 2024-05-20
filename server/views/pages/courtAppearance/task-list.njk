@@ -1,49 +1,6 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/task-list/macro.njk" import govukTaskList %}
 
-{% set taskListItems = [
-{
-    title: {
-        text: "Appearance information"
-    },
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/"+ appearanceReference + "/reference",
-        status: {
-            text: "Ignore status"
-        }
-    }
-    ,
-    {
-    title: {
-        text: "Court documents"
-    },
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/"+ appearanceReference + "/document-type",
-        status: {
-            text: "Ignore status"
-        }
-},{
-        title: {
-            text: "Sentences" if warrantType === 'SENTENCING' else "Offences"
-        },
-            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/"+ appearanceReference + "/offences/check-offence-answers",
-            status: {
-                text: "Ignore status"
-            }
-    }
-]%}
-
-{% if warrantType === 'REMAND' %}
-    {% set taskListItems = (taskListItems.push({
-        title: {
-            text: "Next court appearance"
-        },
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/"+ appearanceReference + "/next-hearing-select",
-        status: {
-            text: "Ignore status"
-        }
-    }), taskListItems)%}
-{% endif %}
-
-
 {% set pageTitle = applicationName + " - task list page" %}
 {% block content %}
     {{ super() }}
@@ -66,7 +23,7 @@
                 <p class="govuk-body">You must enter information exactly as it is written on the warrant.</p>
                 {{ govukTaskList({
                     classes: "govuk-!-margin-top-7",
-                    items: taskListItems
+                    items: model.items
                 })
                 }}
                 <h2 class="govuk-heading-m">

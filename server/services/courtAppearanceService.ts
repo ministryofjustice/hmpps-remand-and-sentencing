@@ -144,7 +144,8 @@ export default class CourtAppearanceService {
   }
 
   getWarrantDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {
-    return new Date(this.getCourtAppearance(session, nomsId).warrantDate)
+    const { warrantDate } = this.getCourtAppearance(session, nomsId)
+    return warrantDate ? new Date(warrantDate) : undefined
   }
 
   setCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtName: string) {

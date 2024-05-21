@@ -12,4 +12,6 @@ export default class CourtCaseTaskListPage extends Page {
   taskList = (): PageElement => cy.get('.govuk-task-list')
 
   offencesLink = (): PageElement => cy.get('a:contains("Add Offences")')
+
+  nextCourtAppearanceLink = (): PageElement => cy.get('a:contains("Next court appearance")')
 }

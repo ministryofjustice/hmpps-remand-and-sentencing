@@ -359,7 +359,14 @@ export default class CourtAppearanceService {
 
   setOffenceSentenceAcceptedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.offenceSentenceAcceptedTrue = true
+    courtAppearance.offenceSentenceAccepted = true
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  setNextCourtAppearanceAcceptedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    courtAppearance.nextCourtAppearanceAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

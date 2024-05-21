@@ -113,15 +113,15 @@
             {% endfor %}
 
             <div class="govuk-button-group govuk-!-margin-top-8">
-                
-
-                {{ govukButton({
-                    text: "Accept and continue",
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/task-list",
-                    attributes: {
-                        "data-qa": "finishAddingButton"
-                    }
-                }) }}
+                <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-check-offence-answers">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    {{ govukButton({
+                        text: "Accept and continue",
+                        attributes: {
+                            "data-qa": "finishAddingButton"
+                        }
+                    }) }}
+            </form>
             </div>
 
         </div>

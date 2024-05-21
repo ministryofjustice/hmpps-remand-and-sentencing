@@ -55,8 +55,8 @@ context('New Court Case journey', () => {
           status: 'Ignore status',
         },
         {
-          name: 'Offences',
-          status: 'Ignore status',
+          name: 'Add Offences',
+          status: 'Cannot start yet',
         },
         {
           name: 'Next court appearance',
@@ -116,8 +116,8 @@ context('New Court Case journey', () => {
           status: 'Ignore status',
         },
         {
-          name: 'Offences',
-          status: 'Ignore status',
+          name: 'Add Offences',
+          status: 'Incomplete',
         },
         {
           name: 'Next court appearance',
@@ -141,33 +141,49 @@ context('New Court Case journey', () => {
     // courtCaseDocumentsPage.button().click()
 
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    // courtCaseTaskListPage.offencesLink().click()
+    courtCaseTaskListPage.offencesLink().click()
 
-    // let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234', 'offences')
-    // offenceCheckOffenceAnswersPage.AddAnOffenceButton().click()
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'offences')
+    offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
-    // const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-    // offenceOffenceCodePage.input().type('PS90037')
-    // offenceOffenceCodePage.button().click()
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.button().click()
 
-    // const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    // offenceOffenceCodeConfirmPage.button().click()
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.button().click()
 
-    // const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
-    // offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    // offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    // offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    // offenceOffenceDatePage.button().click()
+    const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.button().click()
 
-    // const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
-    // offenceOffenceOutcomePage.radioLabelSelector('Remand in Custody (Bail Refused)').click()
-    // offenceOffenceOutcomePage.button().click()
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
+    offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    // offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '1234', 'offences')
-    // offenceCheckOffenceAnswersPage.radioLabelSelector('Yes, I’ve finished adding offences').click()
-    // offenceCheckOffenceAnswersPage.button().click()
-
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
+    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Add Offences',
+          status: 'Completed',
+        },
+        {
+          name: 'Next court appearance',
+          status: 'Ignore status',
+        },
+      ])
     // courtCaseTaskListPage.nextCourtAppearanceLink().click()
 
     // const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
@@ -229,8 +245,8 @@ context('New Court Case journey', () => {
           status: 'Ignore status',
         },
         {
-          name: 'Sentences',
-          status: 'Ignore status',
+          name: 'Add Sentences',
+          status: 'Cannot start yet',
         },
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
@@ -282,8 +298,8 @@ context('New Court Case journey', () => {
           status: 'Ignore status',
         },
         {
-          name: 'Sentences',
-          status: 'Ignore status',
+          name: 'Add Sentences',
+          status: 'Incomplete',
         },
       ])
     // courtCaseTaskListPage.courtDocumentsLink().click()
@@ -346,6 +362,23 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Add Sentences',
+          status: 'Completed',
+        },
+      ])
     // courtCaseTaskListPage.button().click()
 
     // cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)

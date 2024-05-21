@@ -24,6 +24,7 @@ declare module 'models' {
     overallSentenceLength?: SentenceLength
     referenceNumberSelect?: string
     appearanceInformationAccepted?: boolean
+    offenceSentenceAcceptedTrue?: boolean
   }
 
   export interface Offence {

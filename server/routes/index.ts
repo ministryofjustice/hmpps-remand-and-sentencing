@@ -335,6 +335,11 @@ export default function routes(services: Services): Router {
     offenceRoutes.getCheckOffenceAnswers,
   )
 
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/submit-check-offence-answers',
+    offenceRoutes.submitCheckOffenceAnswers,
+  )
+
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences/:offenceReference/add-another-offence',
     offenceRoutes.addAnotherOffence,

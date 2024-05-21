@@ -187,7 +187,7 @@ export default class TaskListModel {
       title: {
         text: this.getNextCourtAppearanceTitleText(),
       },
-      href: `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/next-hearing-select`,
+      href: this.getNextCourtAppearanceHref(courtAppearance),
       status: this.getNextCourtAppearanceStatus(courtAppearance),
     }
   }
@@ -198,6 +198,14 @@ export default class TaskListModel {
       titleText = 'Next court appearance'
     }
     return titleText
+  }
+
+  private getNextCourtAppearanceHref(courtAppearance: CourtAppearance): string {
+    let href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/next-hearing-select`
+    if (courtAppearance.nextCourtAppearanceAccepted) {
+      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/check-next-hearing-answers`
+    }
+    return href
   }
 
   private getNextCourtAppearanceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {

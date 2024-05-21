@@ -149,18 +149,11 @@ export default class TaskListModel {
 
   private getOffenceSentenceStatus(courtAppearance: CourtAppearance) {
     let status
-    if (this.isAddCourtCase()) {
-      if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-        status = {
-          text: 'Incomplete',
-          classes: 'govuk-tag--blue',
-        }
-      } else {
-        status = {
-          text: 'Cannot start yet',
-        }
+    if (courtAppearance.offenceSentenceAcceptedTrue) {
+      status = {
+        text: 'Completed',
       }
-    } else if (courtAppearance.warrantType === 'REMAND') {
+    } else if (!this.isAddCourtCase() && courtAppearance.warrantType === 'REMAND') {
       status = {
         text: 'Optional',
         classes: 'govuk-tag--grey',

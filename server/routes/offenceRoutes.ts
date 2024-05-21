@@ -791,6 +791,14 @@ export default class OffenceRoutes {
     })
   }
 
+  public submitCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    this.courtAppearanceService.setOffenceSentenceAcceptedTrue(req.session, nomsId)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
+    )
+  }
+
   public addAnotherOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, offenceReference, appearanceReference, addOrEditCourtCase } = req.params
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)

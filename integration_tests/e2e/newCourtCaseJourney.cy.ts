@@ -163,6 +163,27 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Add Offences',
+          status: 'Completed',
+        },
+        {
+          name: 'Next court appearance',
+          status: 'Ignore status',
+        },
+      ])
     // courtCaseTaskListPage.nextCourtAppearanceLink().click()
 
     // const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
@@ -341,6 +362,23 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Ignore status',
+        },
+        {
+          name: 'Add Sentences',
+          status: 'Completed',
+        },
+      ])
     // courtCaseTaskListPage.button().click()
 
     // cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)

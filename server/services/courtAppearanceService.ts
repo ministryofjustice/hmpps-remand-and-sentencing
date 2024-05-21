@@ -268,6 +268,7 @@ export default class CourtAppearanceService {
       } else {
         delete courtAppearance.taggedBail
       }
+      courtAppearance.hasTaggedBail = taggedBailForm.hasTaggedBail
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -347,6 +348,13 @@ export default class CourtAppearanceService {
       session.courtAppearances[nomsId] = courtAppearance
     }
     return errors
+  }
+
+  setAppearanceInformationAcceptedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    courtAppearance.appearanceInformationAccepted = true
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
   }
 
   getNextHearingSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {

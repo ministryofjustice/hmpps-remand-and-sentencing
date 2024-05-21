@@ -32,6 +32,7 @@ import {
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
+import TaskListModel from './data/TaskListModel'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -439,8 +440,8 @@ export default class CourtCaseRoutes {
       warrantType,
       courtCaseReference,
       appearanceReference,
-      offenceReference: courtAppearance.offences.length,
       addOrEditCourtCase,
+      model: new TaskListModel(nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference, courtAppearance),
     })
   }
 
@@ -768,6 +769,7 @@ export default class CourtCaseRoutes {
 
   public submitCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    this.courtAppearanceService.setAppearanceInformationAcceptedTrue(req.session, nomsId)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     )

@@ -20,8 +20,10 @@ declare module 'models' {
     warrantType?: string
     warrantId?: string
     taggedBail?: string
+    hasTaggedBail?: string
     overallSentenceLength?: SentenceLength
     referenceNumberSelect?: string
+    appearanceInformationAccepted?: boolean
   }
 
   export interface Offence {
@@ -49,5 +51,13 @@ declare module 'models' {
     weeks?: string
     days?: string
     periodOrder: string[]
+  }
+  export interface TaskListItem {
+    title: { text: string }
+    href: string
+    status: {
+      text: string
+      classes?: string
+    }
   }
 }

@@ -798,6 +798,7 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-type`,
       )
     }
+    this.courtAppearanceService.setNextCourtAppearanceAcceptedTrue(req.session, nomsId)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     )

@@ -985,11 +985,10 @@ export default class CourtCaseRoutes {
   }
 
   public getConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, addOrEditCourtCase } = req.params
+    const { nomsId } = req.params
 
     return res.render('pages/courtAppearance/confirmation', {
       nomsId,
-      addOrEditCourtCase,
     })
   }
 }

@@ -24,6 +24,7 @@ import CourtCaseNextHearingSetPage from '../pages/courtCaseNextHearingSetPage'
 import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
+import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -237,16 +238,7 @@ context('New Court Case journey', () => {
     courtCaseTaskListPage.button().click()
 
     cy.task('verifyCreateCourtCaseRequest').should('equal', 1)
-    // once confirmation page is implemented it will go to that page
-
-    // prototype still being updated, assume this will be somewhere
-    // const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
-    // courtCaseOverallCaseOutcomePage.radioLabelSelector('Remand in Custody (Bail Refused)').click()
-    // courtCaseOverallCaseOutcomePage.button().click()
-
-    // const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    // courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    // courtCaseCaseOutcomeAppliedAllPage.button().click()
+    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 
   it('fill in sentencing journey', () => {
@@ -408,6 +400,6 @@ context('New Court Case journey', () => {
     courtCaseTaskListPage.button().click()
 
     cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
-    // once confirmation page is implemented it will go to that page
+    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 })

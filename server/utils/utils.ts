@@ -45,3 +45,10 @@ export const getAsStringOrDefault = (value: unknown, defaultValue: string): stri
 export const toDateString = (year: string, month: string, day: string): string => {
   return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
 }
+
+export const pluraliseName = (name: string) => {
+  if (name.endsWith('s')) {
+    return `${name}'`
+  }
+  return `${name}'s`
+}

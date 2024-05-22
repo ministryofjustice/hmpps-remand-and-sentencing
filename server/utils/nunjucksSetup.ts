@@ -9,7 +9,7 @@ import {
   firstNameSpaceLastName,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { SentenceLength } from 'models'
-import { formatDate, formatDateTime, initialiseName } from './utils'
+import { formatDate, formatDateTime, initialiseName, pluraliseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 
@@ -31,6 +31,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.appInsightsConnectionString = config.appInsightsConnectionString
   app.locals.appInsightsApplicationName = applicationInfo.applicationName
   app.locals.buildNumber = config.buildNumber
+  app.locals.adjustmentServiceUrl = config.adjustmentService.ui_url
 
   if (config.environmentName === 'LOCAL') {
     app.locals.environment = 'local'
@@ -101,6 +102,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('personDateOfBirth', personDateOfBirth)
   njkEnv.addFilter('personStatus', personStatus)
   njkEnv.addFilter('firstNameSpaceLastName', firstNameSpaceLastName)
+  njkEnv.addFilter('pluraliseName', pluraliseName)
 
   njkEnv.addFilter('formatLengths', (lengths: SentenceLength) => {
     if (lengths) {

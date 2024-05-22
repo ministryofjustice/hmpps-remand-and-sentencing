@@ -983,4 +983,12 @@ export default class CourtCaseRoutes {
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     )
   }
+
+  public getConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+
+    return res.render('pages/courtAppearance/confirmation', {
+      nomsId,
+    })
+  }
 }

@@ -234,9 +234,9 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
       ])
-    // courtCaseTaskListPage.finishAndSave().click()
+    courtCaseTaskListPage.button().click()
 
-    // cy.task('verifyCreateCourtCaseRequest').should('equal', 1)
+    cy.task('verifyCreateCourtCaseRequest').should('equal', 1)
     // once confirmation page is implemented it will go to that page
 
     // prototype still being updated, assume this will be somewhere
@@ -405,9 +405,9 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
       ])
-    // courtCaseTaskListPage.button().click()
+    courtCaseTaskListPage.button().click()
 
-    // cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
+    cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
     // once confirmation page is implemented it will go to that page
   })
 })

@@ -18,7 +18,7 @@ import type {
   CourtCaseAlternativeSentenceLengthForm,
   SentenceLengthForm,
 } from 'forms'
-import type { CourtAppearance, CourtCase } from 'models'
+import type { CourtCase } from 'models'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -443,6 +443,22 @@ export default class CourtCaseRoutes {
       addOrEditCourtCase,
       model: new TaskListModel(nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference, courtAppearance),
     })
+  }
+
+  public submitTaskList: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { token } = res.locals.user
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    if (addOrEditCourtCase === 'add-court-case') {
+      const courtCase = { appearances: [courtAppearance] } as CourtCase
+      await this.remandAndSentencingService.createCourtCase(nomsId, token, courtCase)
+    } else {
+      await this.remandAndSentencingService.createCourtAppearance(token, courtCaseReference, courtAppearance)
+    }
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
+    )
   }
 
   public getWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
@@ -966,23 +982,5 @@ export default class CourtCaseRoutes {
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     )
-  }
-
-  private async saveAppearance(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    token: string,
-    addOrEditCourtCase: string,
-  ): Promise<CourtAppearance> {
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(session, nomsId)
-    if (addOrEditCourtCase === 'add-court-case') {
-      const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createCourtCase(nomsId, token, courtCase)
-    } else {
-      await this.remandAndSentencingService.createCourtAppearance(token, courtCaseReference, courtAppearance)
-    }
-    this.courtAppearanceService.clearSessionCourtAppearance(session, nomsId)
-    return courtAppearance
   }
 }

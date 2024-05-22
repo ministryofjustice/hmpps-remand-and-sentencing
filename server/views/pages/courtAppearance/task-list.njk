@@ -1,5 +1,6 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = applicationName + " - task list page" %}
 {% block content %}
@@ -33,7 +34,15 @@
                         Finish adding an appearance
                     {% endif %}
                 </h2>
-                <p class="govuk-body">Once every task has been completed, you must  save the information. You will not be able to return to this page, but can edit the details in the Court cases tab.</p>
+                <p class="govuk-body">Once every task has been completed, you must save the information. You will not be able to return to this page, but can edit the details in the Court cases tab.</p>
+                {% if model.isAllMandatoryItemsComplete() %}
+                    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-task-list">
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                        {{ govukButton({
+                            text: "Finish and save"
+                        }) }}
+                    </form>
+                {% endif %}
         </div>
     </div>
 {% endblock %}

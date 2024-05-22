@@ -233,4 +233,11 @@ export default class TaskListModel {
   private isAddCourtCase(): boolean {
     return this.addOrEditCourtCase === 'add-court-case'
   }
+
+  isAllMandatoryItemsComplete(): boolean {
+    return this.items
+      .map(item => item.status.text ?? item.status.tag.text)
+      .filter(status => status !== 'Optional')
+      .every(status => status === 'Completed')
+  }
 }

@@ -11,7 +11,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remand in Custody (Bail Refused)", "courtCode": "Bradford Crown Court", "courtCaseReference": "1234", "appearanceDate": "2023-05-12", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remand in Custody (Bail Refused)"}], "warrantType": "REMAND", "WarrantId":"${json-unit.any-string}"}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remanded in custody", "courtCode": "Bradford Crown Court", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remanded in custody"}], "warrantType": "REMAND"}]}',
           },
         ],
       },
@@ -34,7 +34,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Sentencing outcome 1", "courtCode": "Bradford Crown Court", "courtCaseReference": "1234", "appearanceDate": "2023-05-12", "warrantType": "SENTENCING", "warrantId": "${json-unit.any-string}", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{ "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Sentencing outcome 1", "terrorRelated": true, "sentence":{ "chargeNumber": "1", "custodialPeriodLength": { "months" : 5, "years" : 4, "periodOrder" : "years,months"} } }]}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Imprisonment", "courtCode": "Bradford Crown Court", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "warrantType": "SENTENCING", "taggedBail": 5, "charges": [{ "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence":{ "chargeNumber": "1", "custodialPeriodLength": { "months" : 5, "years" : 4, "periodOrder" : "years,months"} } }]}]}',
           },
         ],
       },
@@ -205,21 +205,18 @@ export default {
         prisonerId: 'A1234AB',
         appearances: [
           {
-            outcome: 'Remand in Custody (Bail Refused)',
+            outcome: 'Remanded in custody',
             courtCode: 'Bradford Crown Court',
-            courtCaseReference: '1234',
+            courtCaseReference: 'T12345678',
             appearanceDate: '2023-05-12',
             warrantType: 'REMAND',
-            // eslint-disable-next-line no-template-curly-in-string
-            warrantId: '${json-unit.any-string}',
+            taggedBail: 5,
             nextCourtAppearance: {
               appearanceDate: '2023-10-18',
               courtCode: 'Bradford Crown Court',
               appearanceType: 'Court appearance',
             },
-            charges: [
-              { offenceCode: 'PS90037', offenceStartDate: '2023-05-12', outcome: 'Remand in Custody (Bail Refused)' },
-            ],
+            charges: [{ offenceCode: 'PS90037', offenceStartDate: '2023-05-12', outcome: 'Remanded in custody' }],
           },
         ],
       },
@@ -234,24 +231,17 @@ export default {
         prisonerId: 'A1234AB',
         appearances: [
           {
-            outcome: 'Sentencing outcome 1',
+            outcome: 'Imprisonment',
             courtCode: 'Bradford Crown Court',
-            courtCaseReference: '1234',
+            courtCaseReference: 'T12345678',
             appearanceDate: '2023-05-12',
             warrantType: 'SENTENCING',
-            // eslint-disable-next-line no-template-curly-in-string
-            warrantId: '${json-unit.any-string}',
             taggedBail: 5,
-            nextCourtAppearance: {
-              appearanceDate: '2023-10-18',
-              courtCode: 'Bradford Crown Court',
-              appearanceType: 'Court appearance',
-            },
             charges: [
               {
                 offenceCode: 'PS90037',
                 offenceStartDate: '2023-05-12',
-                outcome: 'Sentencing outcome 1',
+                outcome: 'Imprisonment',
                 terrorRelated: true,
                 sentence: {
                   chargeNumber: '1',

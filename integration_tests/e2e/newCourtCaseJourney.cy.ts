@@ -19,6 +19,11 @@ import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenc
 import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
+import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
+import CourtCaseNextHearingSetPage from '../pages/courtCaseNextHearingSetPage'
+import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
+import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
+import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -52,7 +57,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Upload court documents',
-          status: 'Ignore status',
+          status: 'Optional',
         },
         {
           name: 'Add Offences',
@@ -60,7 +65,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Next court appearance',
-          status: 'Ignore status',
+          status: 'Incomplete',
         },
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
@@ -113,7 +118,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Upload court documents',
-          status: 'Ignore status',
+          status: 'Optional',
         },
         {
           name: 'Add Offences',
@@ -121,7 +126,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Next court appearance',
-          status: 'Ignore status',
+          status: 'Incomplete',
         },
       ])
     // courtCaseTaskListPage.courtDocumentsLink().click()
@@ -173,7 +178,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Upload court documents',
-          status: 'Ignore status',
+          status: 'Optional',
         },
         {
           name: 'Add Offences',
@@ -181,33 +186,54 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Next court appearance',
-          status: 'Ignore status',
+          status: 'Incomplete',
         },
       ])
-    // courtCaseTaskListPage.nextCourtAppearanceLink().click()
+    courtCaseTaskListPage.nextCourtAppearanceLink().click()
 
-    // const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
-    // courtCaseNextHearingSetPage.radioLabelSelector('true').click()
-    // courtCaseNextHearingSetPage.button().click()
+    const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
+    courtCaseNextHearingSetPage.radioLabelSelector('true').click()
+    courtCaseNextHearingSetPage.button().click()
 
-    // const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    // courtCaseNextHearingTypePage.radioLabelSelector('Court appearance').click()
-    // courtCaseNextHearingTypePage.button().click()
+    const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
+    courtCaseNextHearingTypePage.radioLabelSelector('Court appearance').click()
+    courtCaseNextHearingTypePage.button().click()
 
-    // const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
-    // courtCaseNextHearingDatePage.dayDateInput('next-hearing-date').type('18')
-    // courtCaseNextHearingDatePage.monthDateInput('next-hearing-date').type('10')
-    // courtCaseNextHearingDatePage.yearDateInput('next-hearing-date').type('2023')
-    // courtCaseNextHearingDatePage.button().click()
+    const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
+    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type('18')
+    courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type('10')
+    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type('2023')
+    courtCaseNextHearingDatePage.button().click()
 
-    // const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    // courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
-    // courtCaseNextHearingCourtSetPage.button().click()
+    const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
+    courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
+    courtCaseNextHearingCourtSetPage.button().click()
 
-    // const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
-    // courtCaseNextHearingAnswersPage.button().click()
+    const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
+    courtCaseNextHearingAnswersPage.button().click()
 
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
+    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+        {
+          name: 'Add Offences',
+          status: 'Completed',
+        },
+        {
+          name: 'Next court appearance',
+          status: 'Completed',
+        },
+      ])
     // courtCaseTaskListPage.finishAndSave().click()
 
     // cy.task('verifyCreateCourtCaseRequest').should('equal', 1)
@@ -242,7 +268,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Upload court documents',
-          status: 'Ignore status',
+          status: 'Optional',
         },
         {
           name: 'Add Sentences',
@@ -295,7 +321,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Upload court documents',
-          status: 'Ignore status',
+          status: 'Optional',
         },
         {
           name: 'Add Sentences',
@@ -372,7 +398,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Upload court documents',
-          status: 'Ignore status',
+          status: 'Optional',
         },
         {
           name: 'Add Sentences',

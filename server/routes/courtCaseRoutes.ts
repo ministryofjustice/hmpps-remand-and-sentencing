@@ -798,11 +798,9 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-type`,
       )
     }
-    const { token } = res.locals.user
-    // this would be where we save which we don't currently have and then redirect to all court cases page
-    await this.saveAppearance(req.session, nomsId, courtCaseReference, token, addOrEditCourtCase)
+    this.courtAppearanceService.setNextCourtAppearanceAcceptedTrue(req.session, nomsId)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     )
   }
 
@@ -964,11 +962,9 @@ export default class CourtCaseRoutes {
 
   public submiCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const { token } = res.locals.user
-    // save appearance here
-    await this.saveAppearance(req.session, nomsId, courtCaseReference, token, addOrEditCourtCase)
+    this.courtAppearanceService.setNextCourtAppearanceAcceptedTrue(req.session, nomsId)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/confirmation`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     )
   }
 

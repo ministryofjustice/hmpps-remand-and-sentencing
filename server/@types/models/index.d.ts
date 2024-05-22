@@ -24,7 +24,8 @@ declare module 'models' {
     overallSentenceLength?: SentenceLength
     referenceNumberSelect?: string
     appearanceInformationAccepted?: boolean
-    offenceSentenceAcceptedTrue?: boolean
+    offenceSentenceAccepted?: boolean
+    nextCourtAppearanceAccepted?: boolean
   }
 
   export interface Offence {
@@ -56,7 +57,13 @@ declare module 'models' {
   export interface TaskListItem {
     title: { text: string }
     href: string
-    status: {
+    status: TaskListItemStatus
+  }
+
+  export interface TaskListItemStatus {
+    text?: string
+    classes?: string
+    tag?: {
       text: string
       classes?: string
     }

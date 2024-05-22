@@ -32,6 +32,7 @@ export default defineConfig({
             prisonerSearchApi.stubGetPrisonerDetails(),
             components.stubComponents(),
             prisonApi.stubGetPrisonerImage(),
+            prisonApi.stubGetUserCaseload(),
           ])
         },
         ...auth,

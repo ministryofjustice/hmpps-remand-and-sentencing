@@ -13,9 +13,9 @@ import PrisonerSearchService from './prisonerSearchService'
 export const services = () => {
   const { applicationInfo, manageUsersApiClient, feComponentsClient, hmppsAuthClient } = dataAccess()
 
-  const userService = new UserService(manageUsersApiClient)
-
   const prisonerService = new PrisonerService()
+
+  const userService = new UserService(manageUsersApiClient, prisonerService)
 
   const manageOffencesService = new ManageOffencesService()
 

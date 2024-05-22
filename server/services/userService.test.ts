@@ -1,17 +1,23 @@
 import UserService from './userService'
 import ManageUsersApiClient, { type User } from '../data/manageUsersApiClient'
 import createUserToken from '../testutils/createUserToken'
+import PrisonerService from './prisonerService'
+import { PrisonApiUserCaseloads } from '../@types/prisonApi/types'
 
 jest.mock('../data/manageUsersApiClient')
+jest.mock('./prisonerService')
 
 describe('User service', () => {
   let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
+  let prisonerService: jest.Mocked<PrisonerService>
   let userService: UserService
 
   describe('getUser', () => {
     beforeEach(() => {
       manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
-      userService = new UserService(manageUsersApiClient)
+      prisonerService = new PrisonerService() as jest.Mocked<PrisonerService>
+      prisonerService.getUsersCaseloads.mockResolvedValue([{ caseLoadId: 'MDI' } as PrisonApiUserCaseloads])
+      userService = new UserService(manageUsersApiClient, prisonerService)
     })
 
     it('Retrieves and formats user name', async () => {

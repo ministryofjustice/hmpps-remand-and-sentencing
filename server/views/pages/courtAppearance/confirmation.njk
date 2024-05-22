@@ -1,0 +1,36 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set pageTitle = applicationName + " - Successfully saved" %}
+
+{% block subNavigation %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({
+                titleText: ("Court case" if isAddCourtCase else "Appearance") + " successfully saved",
+                classes: "govuk-!-margin-bottom-6"
+            }) }}
+            <div class="govuk-!-margin-top-6">
+                <h2 class="govuk-heading-l">What you can do next</h2>
+                {% if user.hasAdjustmentsAccess %}
+                    <a href="{{ adjustmentServiceUrl }}/{{ nomsId }}">Add adjustments</a>
+                {% endif %}
+                    <div class="govuk-body govuk-!-margin-top-6">
+                        <span>You can {{'also' if user.hasAdjustmentsAccess else ''}} go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
+                        <ul class="govuk-list govuk-!-margin-top-2">
+                            <li><a href="/person/{{ nomsId }}">Court case information</a></li>
+                            <li><a href="{{digitalPrisonServicesUrl}}/prisoner/{{ nomsId }}">Prisoner profile</a></li>
+                        </ul>
+                    </div>
+                    <div class="govuk-!-margin-top-6">
+                <p class="govuk-body">Or, go to the <a href="{{digitalPrisonServicesUrl}}"> DPS homepage</a>.</p>
+            </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -430,5 +430,10 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.submiCheckNextHearingAnswers,
   )
 
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/confirmation',
+    courtCaseRoutes.getConfirmationPage,
+  )
+
   return router
 }

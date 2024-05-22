@@ -9,7 +9,7 @@ generic-service:
     INGRESS_URL: "https://remand-and-sentencing.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
-    PRISON_API_URL: "https://api.prison.service.justice.gov.uk"
+    PRISON_API_URL: "https://prison-api.prison.service.justice.gov.uk"
     COURT_REGISTER_API_URL: "https://court-register.hmpps.service.justice.gov.uk"
     MANAGE_OFFENCES_API_URL: "https://manage-offences-api.hmpps.service.justice.gov.uk"
     MANAGE_USERS_API_URL: "https://manage-users-api.hmpps.service.justice.gov.uk"

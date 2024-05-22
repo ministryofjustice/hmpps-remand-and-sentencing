@@ -924,8 +924,9 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/offences/check-offence-answers`,
       )
     }
+    this.courtAppearanceService.setOffenceSentenceAcceptedTrue(req.session, nomsId)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/next-hearing-select`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/task-list`,
     )
   }
 

@@ -159,6 +159,10 @@ context('New Court Case journey', () => {
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.button().click()
 
+    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
+    offenceTerrorRelatedPage.radioLabelSelector('true').click()
+    offenceTerrorRelatedPage.button().click()
+
     const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')

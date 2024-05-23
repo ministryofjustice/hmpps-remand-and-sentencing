@@ -11,7 +11,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remanded in custody", "courtCode": "Bradford Crown Court", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remanded in custody"}], "warrantType": "REMAND"}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remanded in custody", "courtCode": "Bradford Crown Court", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Bradford Crown Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remanded in custody", "terrorRelated": true}], "warrantType": "REMAND"}]}',
           },
         ],
       },
@@ -216,7 +216,14 @@ export default {
               courtCode: 'Bradford Crown Court',
               appearanceType: 'Court appearance',
             },
-            charges: [{ offenceCode: 'PS90037', offenceStartDate: '2023-05-12', outcome: 'Remanded in custody' }],
+            charges: [
+              {
+                offenceCode: 'PS90037',
+                offenceStartDate: '2023-05-12',
+                outcome: 'Remanded in custody',
+                terrorRelated: true,
+              },
+            ],
           },
         ],
       },

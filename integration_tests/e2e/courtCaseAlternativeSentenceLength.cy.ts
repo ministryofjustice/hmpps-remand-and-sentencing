@@ -46,4 +46,15 @@ context('Court Case Alternative Sentence Length Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem The number must be a whole number, or 0')
   })
+
+  it('submitting all zeros results in an error', () => {
+    courtCaseAlternativeSentenceLengthPage.sentenceLengthInput('first').type('0')
+    courtCaseAlternativeSentenceLengthPage.sentenceLengthInput('second').type('0')
+    courtCaseAlternativeSentenceLengthPage.button().click()
+    courtCaseAlternativeSentenceLengthPage = Page.verifyOnPage(CourtCaseAlternativeSentenceLengthPage)
+    courtCaseAlternativeSentenceLengthPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The sentence length cannot be 0')
+  })
 })

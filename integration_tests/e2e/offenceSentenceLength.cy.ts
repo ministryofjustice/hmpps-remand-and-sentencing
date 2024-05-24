@@ -46,4 +46,15 @@ context('Add Offence Sentence Length Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem The number must be a whole number, or 0')
   })
+
+  it('submitting all zeros results in an error', () => {
+    offenceSentenceLengthPage.yearsInput().type('0')
+    offenceSentenceLengthPage.monthsInput().type('0')
+    offenceSentenceLengthPage.button().click()
+    offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
+    offenceSentenceLengthPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The sentence length cannot be 0')
+  })
 })

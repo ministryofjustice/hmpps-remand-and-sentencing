@@ -315,7 +315,7 @@ export default class OffenceService {
     const errors = validate(
       offenceSentenceLengthForm,
       {
-        'sentenceLength-years': 'requireSentenceLength|minWholeNumber:0',
+        'sentenceLength-years': 'requireSentenceLength|minWholeNumber:0|requireOneNonZeroSentenceLength',
         'sentenceLength-months': 'minWholeNumber:0',
         'sentenceLength-weeks': 'minWholeNumber:0',
         'sentenceLength-days': 'minWholeNumber:0',
@@ -326,6 +326,7 @@ export default class OffenceService {
         'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
+        'requireOneNonZeroSentenceLength.sentenceLength-years': 'The sentence length cannot be 0',
       },
     )
     if (errors.length === 0) {
@@ -350,7 +351,8 @@ export default class OffenceService {
     const errors = validate(
       offenceAlternativeSentenceLengthForm,
       {
-        'firstSentenceLength-value': 'requireAlternativeSentenceLength|minWholeNumber:0',
+        'firstSentenceLength-value':
+          'requireAlternativeSentenceLength|minWholeNumber:0|requireOneNonZeroAlternativeSentenceLength',
         'secondSentenceLength-value': 'minWholeNumber:0',
         'thirdSentenceLength-value': 'minWholeNumber:0',
         'fourthSentenceLength-value': 'minWholeNumber:0',
@@ -361,6 +363,7 @@ export default class OffenceService {
         'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
         'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',
         'minWholeNumber.fourthSentenceLength-value': 'The number must be a whole number, or 0',
+        'requireOneNonZeroAlternativeSentenceLength.firstSentenceLength-value': 'The sentence length cannot be 0',
       },
     )
     if (errors.length === 0) {

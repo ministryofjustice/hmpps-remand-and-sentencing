@@ -46,4 +46,15 @@ context('Add Offence Alternative Sentence Length Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem The number must be a whole number, or 0')
   })
+
+  it('submitting all zeros results in an error', () => {
+    offenceAlternativeSentenceLengthPage.sentenceLengthInput('first').type('0')
+    offenceAlternativeSentenceLengthPage.sentenceLengthInput('second').type('0')
+    offenceAlternativeSentenceLengthPage.button().click()
+    offenceAlternativeSentenceLengthPage = Page.verifyOnPage(OffenceAlternativeSentenceLengthPage)
+    offenceAlternativeSentenceLengthPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The sentence length cannot be 0')
+  })
 })

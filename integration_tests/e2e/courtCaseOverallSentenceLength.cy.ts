@@ -46,4 +46,15 @@ context('Add Court Case Sentence Length Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem The number must be a whole number, or 0')
   })
+
+  it('submitting all zeros results in an error', () => {
+    courtCaseOverallSentenceLengthPage.yearsInput().type('0')
+    courtCaseOverallSentenceLengthPage.monthsInput().type('0')
+    courtCaseOverallSentenceLengthPage.button().click()
+    courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    courtCaseOverallSentenceLengthPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The sentence length cannot be 0')
+  })
 })

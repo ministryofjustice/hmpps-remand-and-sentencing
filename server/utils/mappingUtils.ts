@@ -29,6 +29,9 @@ const sentenceToCreateSentence = (sentence: Sentence): CreateSentence | undefine
     createSentence = {
       chargeNumber: sentence.countNumber,
       custodialPeriodLength: sentenceLengthToCreatePeriodLength(sentence.custodialSentenceLength),
+      sentenceServeType: sentence.sentenceServeType,
+      sentenceType: sentence.sentenceType,
+      consecutiveToChargeNumber: sentence.consecutiveTo,
     } as CreateSentence
   }
   return createSentence
@@ -39,10 +42,12 @@ const courtAppearanceToCreateNextCourtAppearance = (
 ): CreateNextCourtAppearance | undefined => {
   let nextCourtAppearance
   if (courtAppearance.nextHearingCourtSelect) {
+    const appearanceDate = dayjs(courtAppearance.nextHearingDate)
     nextCourtAppearance = {
-      appearanceDate: dayjs(courtAppearance.nextHearingDate).format('YYYY-MM-DD'),
+      appearanceDate: appearanceDate.format('YYYY-MM-DD'),
       courtCode: courtAppearance.nextHearingCourtName,
       appearanceType: courtAppearance.nextHearingType,
+      ...(courtAppearance.nextHearingTimeSet ? { appearanceTime: appearanceDate.format('HH:mm:[00].[000000]') } : {}),
     } as CreateNextCourtAppearance
   }
   return nextCourtAppearance
@@ -76,6 +81,9 @@ export const courtAppearanceToCreateCourtAppearance = (
     warrantId: courtAppearance.warrantId,
     ...(courtAppearance.taggedBail && { taggedBail: parseInt(courtAppearance.taggedBail, 10) }),
     ...(nextCourtAppearance && { nextCourtAppearance }),
+    ...(courtAppearance.overallSentenceLength && {
+      overallSentenceLength: sentenceLengthToCreatePeriodLength(courtAppearance.overallSentenceLength),
+    }),
   } as CreateCourtAppearance
 }
 
@@ -105,6 +113,9 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     sentenceUuid: apiSentence.sentenceUuid,
     countNumber: apiSentence.chargeNumber,
     custodialSentenceLength: periodLengthToSentenceLength(apiSentence.custodialPeriodLength),
+    sentenceServeType: apiSentence.sentenceServeType,
+    sentenceType: apiSentence.sentenceType,
+    consecutiveTo: apiSentence.consecutiveToChargeNumber,
   } as Sentence
 }
 

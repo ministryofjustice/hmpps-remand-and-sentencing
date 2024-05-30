@@ -247,6 +247,6 @@ context('Repeat Court Case journey', () => {
     courtCaseTaskListPage.button().click()
 
     cy.task('verifyCreateCourtAppearanceRequest').should('equal', 1)
-    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
+    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
   })
 })

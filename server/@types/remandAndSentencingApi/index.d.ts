@@ -94,13 +94,14 @@ export interface components {
       appearanceUuid?: string
       outcome: string
       courtCode: string
-      courtCaseReference: string
+      courtCaseReference?: string
       /** Format: date */
       appearanceDate: string
       warrantId?: string
       warrantType: string
       /** Format: int32 */
       taggedBail?: number
+      overallSentenceLength?: components['schemas']['CreatePeriodLength']
       nextCourtAppearance?: components['schemas']['CreateNextCourtAppearance']
       charges: components['schemas']['CreateCharge'][]
     }
@@ -111,13 +112,19 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
+      /** @example 16:56:58.187162 */
+      appearanceTime?: string
       courtCode: string
       appearanceType: string
     }
     CreatePeriodLength: {
+      /** Format: int32 */
       years?: number
+      /** Format: int32 */
       months?: number
+      /** Format: int32 */
       weeks?: number
+      /** Format: int32 */
       days?: number
       periodOrder: string
     }
@@ -127,6 +134,9 @@ export interface components {
       chargeNumber: string
       custodialPeriodLength: components['schemas']['CreatePeriodLength']
       extendedLicensePeriodLength?: components['schemas']['CreatePeriodLength']
+      sentenceServeType: string
+      consecutiveToChargeNumber?: string
+      sentenceType: string
     }
     CreateCourtCaseResponse: {
       courtCaseUuid: string
@@ -163,7 +173,7 @@ export interface components {
       appearanceUuid: string
       outcome: string
       courtCode: string
-      courtCaseReference: string
+      courtCaseReference?: string
       /** Format: date */
       appearanceDate: string
       warrantId?: string
@@ -172,6 +182,7 @@ export interface components {
       taggedBail?: number
       nextCourtAppearance?: components['schemas']['NextCourtAppearance']
       charges: components['schemas']['Charge'][]
+      overallSentenceLength?: components['schemas']['PeriodLength']
     }
     CourtCase: {
       prisonerId: string
@@ -182,13 +193,19 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
+      /** @example 16:56:58.187162 */
+      appearanceTime?: string
       courtCode: string
       appearanceType: string
     }
     PeriodLength: {
+      /** Format: int32 */
       years?: number
+      /** Format: int32 */
       months?: number
+      /** Format: int32 */
       weeks?: number
+      /** Format: int32 */
       days?: number
       periodOrder: string
     }
@@ -198,6 +215,9 @@ export interface components {
       chargeNumber: string
       custodialPeriodLength: components['schemas']['PeriodLength']
       extendedLicensePeriodLength?: components['schemas']['PeriodLength']
+      sentenceServeType: string
+      consecutiveToChargeNumber?: string
+      sentenceType: string
     }
     Pageable: {
       /** Format: int32 */
@@ -211,35 +231,36 @@ export interface components {
       totalPages?: number
       /** Format: int64 */
       totalElements?: number
-      /** Format: int32 */
-      size?: number
-      content?: components['schemas']['CourtCase'][]
-      /** Format: int32 */
-      number?: number
       first?: boolean
       last?: boolean
-      sort?: components['schemas']['SortObject']
       pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
+      sort?: components['schemas']['SortObject'][]
+      /** Format: int32 */
+      number?: number
+      /** Format: int32 */
+      size?: number
+      content?: components['schemas']['CourtCase'][]
       empty?: boolean
     }
     PageableObject: {
-      /** Format: int64 */
-      offset?: number
-      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageNumber?: number
       /** Format: int32 */
       pageSize?: number
       paged?: boolean
       unpaged?: boolean
+      sort?: components['schemas']['SortObject'][]
+      /** Format: int64 */
+      offset?: number
     }
     SortObject: {
-      empty?: boolean
-      unsorted?: boolean
-      sorted?: boolean
+      direction?: string
+      nullHandling?: string
+      ascending?: boolean
+      property?: string
+      ignoreCase?: boolean
     }
   }
   responses: never

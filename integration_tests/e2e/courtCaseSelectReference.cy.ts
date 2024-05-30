@@ -7,8 +7,8 @@ context('Select reference page', () => {
     cy.task('happyPathStubs')
     cy.task('stubGetLatestCourtAppearance')
     cy.signIn()
-    cy.visit('/person/A1234AB/edit-court-case/12345/appearance/1/select-reference')
-    courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'F23325')
+    cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/appearance/1/select-reference')
+    courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
   })
 
   it('displays person details', () => {
@@ -26,7 +26,7 @@ context('Select reference page', () => {
 
   it('submitting without entering anything in the input results in an error', () => {
     courtCaseSelectReferencePage.button().click()
-    courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'F23325')
+    courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
     courtCaseSelectReferencePage
       .errorSummary()
       .trimTextContent()

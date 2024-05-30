@@ -16,4 +16,9 @@ export default class StartPage extends Page {
   actionListLink = (): PageElement => cy.get('.actions-list a')
 
   sortLink = (sortBy: string): PageElement => cy.get(`a[href="/person/A1234AB?sortBy=${sortBy}"]`)
+
+  addAppearanceLink = (courtCaseReference: string, appearanceReference: string): PageElement =>
+    cy.get(
+      `a[href="/person/A1234AB/edit-court-case/${courtCaseReference}/appearance/${appearanceReference}/warrant-type"]`,
+    )
 }

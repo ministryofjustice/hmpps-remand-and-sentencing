@@ -7,20 +7,14 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
+                {% include "../../partials/appearanceCaption.njk" %}
                 <h1 class="govuk-heading-l">
-                    {% if isAddCourtCase %}
-                        Add a court case
-                    {% else %}
-                        Add an appearance
-                    {% endif %}
-                </h1>
-                <h2 class="govuk-heading-m">
                     {% if warrantType === 'SENTENCING'%}
                         Enter information from a sentencing warrant
                     {% else %}
                         Enter information from a remand warrant
                     {% endif %}
-                </h2>
+                </h1>
                 <p class="govuk-body">You must enter information exactly as it is written on the warrant.</p>
                 {{ govukTaskList({
                     classes: "govuk-!-margin-top-7",

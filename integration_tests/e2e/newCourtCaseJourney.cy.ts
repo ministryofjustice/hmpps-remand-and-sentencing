@@ -47,7 +47,7 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
 
-    let courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -108,7 +108,7 @@ context('New Court Case journey', () => {
     })
     courtCaseCheckAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -172,7 +172,7 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -217,7 +217,7 @@ context('New Court Case journey', () => {
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -253,7 +253,7 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
 
-    let courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -306,7 +306,7 @@ context('New Court Case journey', () => {
     })
     courtCaseCheckAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -383,7 +383,7 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'sentences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage)
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()

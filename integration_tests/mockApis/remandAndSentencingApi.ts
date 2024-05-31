@@ -329,4 +329,71 @@ export default {
       },
     })
   },
+
+  stubCreateSentenceCourtAppearance: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: '/remand-and-sentencing-api/court-appearance',
+        bodyPatterns: [
+          {
+            equalToJson:
+              // eslint-disable-next-line no-template-curly-in-string
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Imprisonment", "courtCode": "Birmingham Crown Court", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)"}, {"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence": {"chargeNumber": "1", "custodialPeriodLength": {"months": 5, "years": 4, "periodOrder": "years,months"}, "sentenceServeType": "FORTHWITH", "sentenceType": "SDS (Standard Determinate Sentence)"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months"}}',
+          },
+        ],
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
+        },
+      },
+    })
+  },
+
+  verifyCreateSentenceCourtAppearanceRequest: (): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/court-appearance',
+      method: 'POST',
+      body: {
+        courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        outcome: 'Imprisonment',
+        courtCode: 'Birmingham Crown Court',
+        courtCaseReference: 'C894623',
+        appearanceDate: '2023-05-12',
+        charges: [
+          {
+            offenceCode: 'PS90037',
+            offenceStartDate: '2023-12-15',
+            outcome: 'Remand in Custody (Bail Refused)',
+          },
+          {
+            offenceCode: 'PS90037',
+            offenceStartDate: '2023-05-12',
+            outcome: 'Imprisonment',
+            terrorRelated: true,
+            sentence: {
+              chargeNumber: '1',
+              custodialPeriodLength: {
+                months: 5,
+                years: 4,
+                periodOrder: 'years,months',
+              },
+              sentenceServeType: 'FORTHWITH',
+              sentenceType: 'SDS (Standard Determinate Sentence)',
+            },
+          },
+        ],
+        warrantType: 'SENTENCING',
+        taggedBail: 5,
+        overallSentenceLength: {
+          months: 5,
+          years: 4,
+          periodOrder: 'years,months',
+        },
+      },
+    })
+  },
 }

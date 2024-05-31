@@ -80,6 +80,8 @@ export default class CourtAppearanceService {
           courtCaseReference,
         )
         courtAppearance.caseReferenceNumber = latestCourtAppearance.courtCaseReference
+      } else {
+        delete courtAppearance.caseReferenceNumber
       }
       courtAppearance.referenceNumberSelect = referenceForm.referenceNumberSelect
       // eslint-disable-next-line no-param-reassign

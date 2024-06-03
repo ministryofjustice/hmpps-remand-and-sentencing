@@ -1,37 +1,20 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 
 
-{% set pageTitle = applicationName + " - Check offence answers" %}
+{% set pageTitle = applicationName + " - Check next hearing answers" %}
 
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
                 {% include "../../partials/appearanceCaption.njk" %}
                 <h1 class="govuk-heading-l">Check your answers</h1>
-                <h2 class="govuk-heading-m">Next hearing details</h2>
 
                 {{ govukSummaryList({
                     rows: [
-                        {
-                            key: {
-                            text: "Next hearing date"
-                        },
-                            value: {
-                            text: courtAppearance.nextHearingDate | formatDateTime(courtAppearance.nextHearingTimeSet)
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-date?submitToCheckAnswers=true",
-                                    text: "Change",
-                                    visuallyHiddenText: "next hearing date"
-                                }
-                            ]
-                        }
-                        },
                         {
                             key: {
                             text: "Next hearing type"
@@ -45,6 +28,23 @@
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-type?submitToCheckAnswers=true",
                                     text: "Change",
                                     visuallyHiddenText: "next hearing type"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Next hearing date"
+                        },
+                            value: {
+                            text: courtAppearance.nextHearingDate | formatDateTime(courtAppearance.nextHearingTimeSet)
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-date?submitToCheckAnswers=true",
+                                    text: "Change",
+                                    visuallyHiddenText: "next hearing date"
                                 }
                             ]
                         }
@@ -69,13 +69,10 @@
                     ]
                 }) }}
 
-            <h2 class="govuk-heading-m">Now save this court case</h2>
-            <p class="govuk-body">By saving this court case, you are confirming that the details you are providing match the details on the warrant.</p>
-
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-check-next-hearing-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
-                    text: "Save and continue"
+                    text: "Accept and continue"
                 }) }}
             </form>
 

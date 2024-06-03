@@ -24,7 +24,7 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseCheckOffenceAnswersPage.button().should('contain.text', 'Save and continue')
+    courtCaseCheckOffenceAnswersPage.button().should('contain.text', 'Accept and continue')
   })
 
   it('clicking next hearing type and submitting goes back to check answers page', () => {

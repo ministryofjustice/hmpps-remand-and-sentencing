@@ -49,4 +49,10 @@ export default class RemandAndSentencingApiClient {
       path: `/court-case/${courtCaseUuid}/latest-appearance`,
     })) as unknown as Promise<PageCourtCaseAppearance>
   }
+
+  async getCourtAppearanceByAppearanceUuid(appearanceUuid: string): Promise<PageCourtCaseAppearance> {
+    return (await this.restClient.get({
+      path: `/court-appearance/${appearanceUuid}`,
+    })) as unknown as Promise<PageCourtCaseAppearance>
+  }
 }

@@ -10,6 +10,8 @@ import {
   CreateNextCourtAppearance,
   CreatePeriodLength,
   CreateSentence,
+  NextCourtAppearance,
+  PageCourtCaseAppearance,
   PeriodLength,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
@@ -206,4 +208,40 @@ export function sentenceLengthFormToSentenceLength(sentenceLengthForm: SentenceL
       ...(sentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
     ],
   } as SentenceLength
+}
+
+export function pageCourtCaseAppearanceToCourtAppearance(
+  pageCourtCaseAppearance: PageCourtCaseAppearance,
+): CourtAppearance {
+  return {
+    caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
+    warrantDate: dayjs(pageCourtCaseAppearance.appearanceDate).toDate(),
+    courtName: pageCourtCaseAppearance.courtCode,
+    overallCaseOutcome: pageCourtCaseAppearance.outcome,
+    warrantType: pageCourtCaseAppearance.warrantType,
+    warrantId: pageCourtCaseAppearance.warrantId,
+    taggedBail: pageCourtCaseAppearance.taggedBail?.toLocaleString(),
+    hasTaggedBail: pageCourtCaseAppearance.taggedBail ? 'true' : 'false',
+    ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
+    offences: pageCourtCaseAppearance.charges.map(chargeToOffence),
+    ...(pageCourtCaseAppearance.overallSentenceLength && {
+      overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),
+    }),
+  } as CourtAppearance
+}
+
+function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppearance): CourtAppearance {
+  let nextHearingDate
+  if (nextCourtAppearance?.appearanceDate !== undefined) {
+    nextHearingDate = dayjs(
+      `${nextCourtAppearance.appearanceDate}${nextCourtAppearance.appearanceTime ? `T${nextCourtAppearance.appearanceTime}` : ''}`,
+    )
+  }
+  return {
+    nextHearingSelect: nextCourtAppearance !== undefined,
+    nextHearingCourtName: nextCourtAppearance?.courtCode,
+    nextHearingType: nextCourtAppearance?.appearanceType,
+    nextHearingTimeSet: nextCourtAppearance.appearanceTime !== undefined,
+    nextHearingDate,
+  }
 }

@@ -46,6 +46,11 @@ export default function routes(services: Services): Router {
   get('/person/:nomsId', courtCaseRoutes.start)
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/details',
+    courtCaseRoutes.getAppearanceDetails,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/warrant-type',
     courtCaseRoutes.getWarrantType,
   )

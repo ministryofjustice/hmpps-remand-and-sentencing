@@ -457,6 +457,19 @@ export default class CourtAppearanceService {
     return errors
   }
 
+  sessionCourtAppearanceExists(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    return session.courtAppearances[nomsId] !== undefined
+  }
+
+  setSessionCourtAppearance(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtAppearance: CourtAppearance,
+  ) {
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   getSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
     return this.getCourtAppearance(session, nomsId)
   }

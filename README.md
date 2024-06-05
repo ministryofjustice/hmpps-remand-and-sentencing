@@ -56,7 +56,7 @@ And then, to build the assets and start the app with nodemon:
 
 For local running, start a test db and wiremock instance by:
 
-`docker compose -f docker-compose-test.yml up`
+`docker compose -f docker-compose-test.yml up -d`
 
 Then run the server in test mode by:
 

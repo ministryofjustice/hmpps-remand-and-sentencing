@@ -29,6 +29,7 @@ import DocumentManagementService from '../services/documentManagementService'
 import CaseOutcomeService from '../services/caseOutcomeService'
 import validate from '../validation/validation'
 import {
+  pageCourtCaseAppearanceToCourtAppearance,
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
@@ -66,6 +67,36 @@ export default class CourtCaseRoutes {
       offenceMap,
       sortBy,
       courtCaseTotal: courtCaseDetailModels.length,
+    })
+  }
+
+  public getAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { token } = res.locals.user
+    if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId)) {
+      const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+        appearanceReference,
+        token,
+      )
+      this.courtAppearanceService.setSessionCourtAppearance(
+        req.session,
+        nomsId,
+        pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
+      )
+    }
+
+    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const chargeCodes = appearance.offences.map(offences => offences.offenceCode)
+    const offenceMap = await this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token)
+
+    return res.render('pages/courtAppearance/details', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      appearance,
+      offenceMap,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }
 

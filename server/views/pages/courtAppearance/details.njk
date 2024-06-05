@@ -1,0 +1,217 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "../../components/offenceCard/macro.njk" import offenceCard %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% set pageTitle = applicationName + " - Appearance details" %}
+
+{% set appearanceSummaryRows = [
+                        {
+                            key: {
+                            text: "Case reference"
+                        },
+                            value: {
+                            text: appearance.caseReferenceNumber
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/reference",
+                                    text: "Edit",
+                                    visuallyHiddenText: "case reference number"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Warrant date"
+                        },
+                            value: {
+                            text: appearance.warrantDate | formatDate
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/warrant-date",
+                                    text: "Edit",
+                                    visuallyHiddenText: "warrant date"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Location"
+                        },
+                            value: {
+                            text: appearance.courtName
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/court-name",
+                                    text: "Edit",
+                                    visuallyHiddenText: "location"
+                                }
+                            ]
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Overall case outcome"
+                        },
+                            value: {
+                            text: appearance.overallCaseOutcome
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/overall-case-outcome",
+                                    text: "Edit",
+                                    visuallyHiddenText: "overall case outcome"
+                                }
+                            ]
+                        }
+                        }
+                    ] %}
+
+{% set nextHearingSummaryRows = [{
+                            key: {
+                            text: "Next hearing set"
+                        },
+                            value: {
+                            text: "Yes" if appearance.nextHearingSelect else "No, date to be fixed"
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-select",
+                                    text: "Edit",
+                                    visuallyHiddenText: "Next hearing set"
+                                }
+                            ]
+                        }
+                        }] %}
+
+{% if appearance.nextHearingSelect %}
+    {% set nextHearingSummaryRows = nextHearingSummaryRows.concat([
+        {
+            key: {
+            text: "Location"
+            },
+                value: {
+                text: appearance.nextHearingCourtName
+            },
+                actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-court-name",
+                        text: "Edit",
+                        visuallyHiddenText: "Next hearing court name"
+                    }
+                ]
+            }
+        },
+        {
+            key: {
+            text: "Hearing type"
+            },
+                value: {
+                text: appearance.nextHearingType
+            },
+                actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-type",
+                        text: "Edit",
+                        visuallyHiddenText: "Next hearing type"
+                    }
+                ]
+            }
+        },
+        {
+            key: {
+            text: "Date"
+            },
+                value: {
+                text: appearance.nextHearingDate | formatDateTime(appearance.nextHearingTimeSet)
+            },
+                actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/next-hearing-date",
+                        text: "Edit",
+                        visuallyHiddenText: "next hearing date"
+                    }
+                ]
+            }
+        }
+    ]) %}
+
+{% endif %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Edit appearance {{ appearance.caseReferenceNumber }} at {{ appearance.courtName }} on {{ appearance.warrantDate | formatDate }}</h1>
+
+            {{ govukSummaryList({
+                    rows: appearanceSummaryRows
+                }) }}
+
+            <h2 class="govuk-heading-m">Next hearing</h2>
+
+            {{ govukSummaryList({
+                rows: nextHearingSummaryRows
+            }) }}
+
+            <h2 class="govuk-heading-m">Offences <span class="govuk-body">({{ appearance.offences | length }})</span></h2>
+
+            {% for offence in appearance.offences %}
+                {{
+                    offenceCard({
+                        offenceCode: offence.offenceCode,
+                        offenceName: offenceMap[offence.offenceCode],
+                        offenceStartDate: offence.offenceStartDate,
+                        offenceEndDate: offence.offenceEndDate,
+                        outcome: offence.outcome,
+                        countNumber: offence.sentence.countNumber,
+                        terrorRelated: offence.terrorRelated,
+                        isSentenced: offence.sentence,
+                        custodialSentenceLength: offence.sentence.custodialSentenceLength,
+                        licencePeriodLength: offence.sentence.licencePeriodLength,
+                        sentenceServeType: offence.sentence.sentenceServeType,
+                        consecutiveTo: offence.sentence.consecutiveTo,
+                        sentenceType: offence.sentence.sentenceType,
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/edit-offence",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit"
+                                },
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
+                                    text: "Delete",
+                                    visuallyHiddenText: "delete"
+                                }
+                            ]
+                        }
+                    })
+                }}
+            {% endfor %}
+
+            <div class="govuk-button-group">
+                {{ govukButton({
+                    text: "Confirm changes"
+                }) }}
+
+                <a class="govuk-link" href="#">Cancel changes</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

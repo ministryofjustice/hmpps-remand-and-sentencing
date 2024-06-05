@@ -33,4 +33,8 @@ export default class RemandAndSentencingService {
   ): Promise<PageCourtCaseAppearance> {
     return new RemandAndSentencingApiClient(token).getLatestAppearanceByCourtCaseUuid(courtCaseUuid)
   }
+
+  async getCourtAppearanceByAppearanceUuid(appearanceUuid: string, token: string): Promise<PageCourtCaseAppearance> {
+    return new RemandAndSentencingApiClient(token).getCourtAppearanceByAppearanceUuid(appearanceUuid)
+  }
 }

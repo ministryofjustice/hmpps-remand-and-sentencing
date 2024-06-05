@@ -293,8 +293,10 @@ export default class CourtCaseRoutes {
     let selectCourtNameForm = (req.flash('selectCourtNameForm')[0] || {}) as CourtCaseSelectCourtNameForm
     if (Object.keys(selectCourtNameForm).length === 0) {
       const court = this.courtAppearanceService.getCourtName(req.session, nomsId)
-      selectCourtNameForm = {
-        courtNameSelect: court === latestCourtAppearance.nextCourtAppearance?.courtCode ? 'true' : 'false',
+      if (court) {
+        selectCourtNameForm = {
+          courtNameSelect: court === latestCourtAppearance.nextCourtAppearance?.courtCode ? 'true' : 'false',
+        }
       }
     }
     return res.render('pages/courtAppearance/select-court-name', {

@@ -414,6 +414,7 @@ export default {
           appearanceDate: '2023-12-15',
           nextCourtAppearance: {
             appearanceDate: '2024-12-15',
+            appearanceTime: '13:55:00.000000000',
             courtCode: 'Birmingham Crown Court',
             appearanceType: 'Court appearance',
           },

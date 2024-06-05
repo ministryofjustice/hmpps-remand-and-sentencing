@@ -34,7 +34,7 @@ context('Court Case Appearance details Page', () => {
     courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'C894623',
       'Warrant date': '15 12 2023',
-      Location: 'Birmingham Crown Court',
+      'Court name': 'Birmingham Crown Court',
       'Overall case outcome': 'Remand in Custody (Bail Refused)',
     })
   })
@@ -42,9 +42,9 @@ context('Court Case Appearance details Page', () => {
   it('next hearing summary shows correct data', () => {
     courtCaseAppearanceDetailsPage.nextHearingSummaryList().getSummaryList().should('deep.equal', {
       'Next hearing set': 'Yes',
-      Location: 'Birmingham Crown Court',
+      'Court name': 'Birmingham Crown Court',
       'Hearing type': 'Court appearance',
-      Date: '15 12 2024',
+      Date: '15 12 2024 13:55',
     })
   })
 })

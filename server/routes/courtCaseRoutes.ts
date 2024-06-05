@@ -290,6 +290,13 @@ export default class CourtCaseRoutes {
       req.user.token,
       courtCaseReference,
     )
+    let selectCourtNameForm = (req.flash('selectCourtNameForm')[0] || {}) as CourtCaseSelectCourtNameForm
+    if (Object.keys(selectCourtNameForm).length === 0) {
+      const court = this.courtAppearanceService.getCourtName(req.session, nomsId)
+      selectCourtNameForm = {
+        courtNameSelect: court === latestCourtAppearance.nextCourtAppearance?.courtCode ? 'true' : 'false',
+      }
+    }
     return res.render('pages/courtAppearance/select-court-name', {
       nomsId,
       submitToCheckAnswers,
@@ -298,6 +305,7 @@ export default class CourtCaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       errors: req.flash('errors') || [],
+      selectCourtNameForm,
       backLink: submitToCheckAnswers
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/check-answers`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/warrant-date`,
@@ -317,6 +325,7 @@ export default class CourtCaseRoutes {
 
     if (errors.length > 0) {
       req.flash('errors', errors)
+      req.flash('selectCourtNameForm', { ...selectCourtNameForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/select-court-name`,
       )

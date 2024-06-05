@@ -159,13 +159,19 @@
             <h1 class="govuk-heading-l">Edit appearance {{ appearance.caseReferenceNumber }} at {{ appearance.courtName }} on {{ appearance.warrantDate | formatDate }}</h1>
 
             {{ govukSummaryList({
-                    rows: appearanceSummaryRows
+                    rows: appearanceSummaryRows,
+                    attributes: {
+                        "data-qa": "appearanceSummaryList"
+                    }
                 }) }}
 
             <h2 class="govuk-heading-m">Next hearing</h2>
 
             {{ govukSummaryList({
-                rows: nextHearingSummaryRows
+                rows: nextHearingSummaryRows,
+                    attributes: {
+                        "data-qa": "nextHearingSummaryList"
+                    }
             }) }}
 
             <h2 class="govuk-heading-m">Offences <span class="govuk-body">({{ appearance.offences | length }})</span></h2>

@@ -100,5 +100,5 @@
 
 {% block javascripts %}
     <script src="/assets/accessible-autocomplete.min.js"></script>
-    <script id="autocomplete-script" src="/assets/js/autoCompleteCourtName.js" data-court-name="{{ courtName if courtName else '' }}"></script>
+    <script id="autocomplete-script" src="/assets/js/autoCompleteCourtName.js" data-court="{{ courtNameForm.courtName if courtNameForm.courtName else '' }}"></script>
 {% endblock %}

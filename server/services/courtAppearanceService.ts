@@ -1,8 +1,10 @@
 import type { CourtAppearance, Offence, SentenceLength } from 'models'
 import type {
   CourtCaseAlternativeSentenceLengthForm,
+  CourtCaseCourtNameForm,
   CourtCaseNextHearingDateForm,
   CourtCaseReferenceForm,
+  CourtCaseSelectCourtNameForm,
   CourtCaseSelectReferenceForm,
   CourtCaseTaggedBailForm,
   CourtCaseWarrantDateForm,
@@ -150,11 +152,48 @@ export default class CourtAppearanceService {
     return warrantDate ? new Date(warrantDate) : undefined
   }
 
-  setCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtName: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.courtName = courtName
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+  setCourtName(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtNameForm: CourtCaseCourtNameForm,
+  ) {
+    const errors = validate(
+      courtNameForm,
+      { courtName: 'required' },
+      { 'required.courtName': 'You must enter the court name' },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.courtName = courtNameForm.courtName
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  async setCourtNameFromSelect(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    token: string,
+    selectCourtNameForm: CourtCaseSelectCourtNameForm,
+  ) {
+    const errors = validate(
+      selectCourtNameForm,
+      { courtNameSelect: 'required' },
+      { 'required.courtNameSelect': "Select 'Yes' if the appearance was at this court." },
+    )
+    if (errors.length === 0 && selectCourtNameForm.courtNameSelect === 'true') {
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        token,
+        courtCaseReference,
+      )
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.courtName = latestCourtAppearance.nextCourtAppearance?.courtCode
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   getCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {

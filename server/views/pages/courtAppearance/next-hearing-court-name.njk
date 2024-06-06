@@ -9,7 +9,7 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-next-hearing-court-name">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-court-name">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukSelect({

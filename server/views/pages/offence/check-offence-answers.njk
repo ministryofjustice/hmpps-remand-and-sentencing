@@ -72,7 +72,7 @@
             {{ govukButton({
                     text: "Add a sentence" if courtAppearance.warrantType === 'SENTENCING' else "Add an offence" ,
                     classes: "govuk-button--secondary",
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
                     attributes: {
                         "data-qa": "addAnotherOffence"
                     }
@@ -97,12 +97,12 @@
                         actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/edit-offence",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/edit-offence",
                                     text: "Edit",
                                     visuallyHiddenText: "edit " + offenceSentence
                                 },
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
                                     text: "Delete",
                                     visuallyHiddenText: "delete " + offenceSentence
                                 }
@@ -113,7 +113,7 @@
             {% endfor %}
 
             <div class="govuk-button-group govuk-!-margin-top-8">
-                <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-check-offence-answers">
+                <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-offence-answers">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                     {{ govukButton({
                         text: "Accept and continue",

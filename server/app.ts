@@ -45,7 +45,7 @@ export default function createApp(services: Services): express.Application {
   app.use('/person/:nomsId', populateCurrentPrisoner(services.prisonerSearchService))
   app.use('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference', setupCurrentCourtCase())
   app.use(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance/:appearanceReference/offences',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences',
     setupCurrentCourtAppearance(services.courtAppearanceService),
     setupCurrentOffence(services.offenceService),
   )

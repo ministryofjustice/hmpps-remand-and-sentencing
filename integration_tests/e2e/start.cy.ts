@@ -27,7 +27,7 @@ context('Start Page', () => {
     startPage
       .actionListLink()
       .should('contain', 'Add a new court case')
-      .and('have.attr', 'href', '/person/A1234AB/add-court-case/1/appearance/0/warrant-type')
+      .and('have.attr', 'href', '/person/A1234AB/add-court-case/1/add-court-appearance/0/warrant-type')
   })
 
   it('displays court case summary', () => {

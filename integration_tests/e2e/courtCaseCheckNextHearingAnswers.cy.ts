@@ -10,7 +10,7 @@ context('Check Next Hearing Answers page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/check-next-hearing-answers')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-hearing-answers')
     courtCaseCheckOffenceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
 

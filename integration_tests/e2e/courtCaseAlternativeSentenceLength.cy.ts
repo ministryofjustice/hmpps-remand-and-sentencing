@@ -7,11 +7,11 @@ context('Court Case Alternative Sentence Length Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
-    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/alternative-overall-sentence-length')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/alternative-overall-sentence-length')
     courtCaseAlternativeSentenceLengthPage = Page.verifyOnPage(CourtCaseAlternativeSentenceLengthPage)
   })
 

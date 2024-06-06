@@ -125,7 +125,9 @@ Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 Cypress.Commands.add('getOffenceCards', { prevSubject: true }, getOffenceCards)
 
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
-  cy.visit(`/person/${personId}/add-court-case/${courtCaseNumber}/appearance/${appearanceReference}/check-answers`)
+  cy.visit(
+    `/person/${personId}/add-court-case/${courtCaseNumber}/add-court-appearance/${appearanceReference}/check-answers`,
+  )
   const courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
   courtCaseCheckAnswersPage.changeLink(personId, courtCaseNumber, appearanceReference, 'reference').click()
   const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
@@ -137,13 +139,15 @@ Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: stri
 Cypress.Commands.add(
   'createOffence',
   (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
-    cy.visit(`/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`)
+    cy.visit(
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/warrant-type`,
+    )
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
 
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
     )
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().clear()
@@ -171,13 +175,15 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'createSentencedOffence',
   (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
-    cy.visit(`/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/warrant-type`)
+    cy.visit(
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/warrant-type`,
+    )
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
 
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/count-number`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/count-number`,
     )
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.input().clear()

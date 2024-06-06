@@ -13,7 +13,7 @@ context('Check Offence Answers Page', () => {
     cy.task('stubGetOffencesByCodes', {})
     cy.signIn()
     cy.createCourtCase('A1234AB', 'T12345678', '0')
-    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/check-offence-answers')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'offences')
   })
 
@@ -32,11 +32,11 @@ context('Check Offence Answers Page', () => {
 
   context('remand', () => {
     beforeEach(() => {
-      cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
       courtCaseWarrantTypePage.button().click()
-      cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/check-offence-answers')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'offences')
     })
     it('deleting offence removes from list and goes back to check answers page', () => {
@@ -83,11 +83,11 @@ context('Check Offence Answers Page', () => {
 
   context('sentencing', () => {
     beforeEach(() => {
-      cy.visit('/person/A1234AB/add-court-case/0/appearance/0/warrant-type')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.button().click()
-      cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/check-offence-answers')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'sentences')
     })
 

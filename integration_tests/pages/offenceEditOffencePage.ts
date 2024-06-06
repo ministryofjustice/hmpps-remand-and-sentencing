@@ -13,6 +13,6 @@ export default class OffenceDeleteOffencePage extends Page {
     page: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/add-court-case/${courtCaseReference}/appearance/${appearanceReference}/offences/${offenceReference}/${page}?submitToEditOffence=true"]`,
+      `a[href="/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/${page}?submitToEditOffence=true"]`,
     )
 }

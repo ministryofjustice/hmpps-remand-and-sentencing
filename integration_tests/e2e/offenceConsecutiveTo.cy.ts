@@ -8,12 +8,12 @@ context('Add Offence Consecutive to Page', () => {
     cy.task('happyPathStubs')
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
-    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/0/count-number')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/count-number')
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()
 
-    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/0/consecutive-to')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/consecutive-to')
     offenceConsecutiveToPage = Page.verifyOnPageTitle(OffenceConsecutiveToPage, '1')
   })
 

@@ -70,10 +70,12 @@ const offenceToCreateCharge = (offence: Offence): CreateCharge => {
 export const courtAppearanceToCreateCourtAppearance = (
   courtAppearance: CourtAppearance,
   courtCaseUuid?: string,
+  appearanceUuid?: string,
 ): CreateCourtAppearance => {
   const nextCourtAppearance = courtAppearanceToCreateNextCourtAppearance(courtAppearance)
   return {
     courtCaseUuid,
+    appearanceUuid,
     outcome: courtAppearance.overallCaseOutcome,
     courtCode: courtAppearance.courtName,
     courtCaseReference: courtAppearance.caseReferenceNumber,

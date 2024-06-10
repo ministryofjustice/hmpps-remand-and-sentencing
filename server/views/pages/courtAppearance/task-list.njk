@@ -30,7 +30,7 @@
                 </h2>
                 <p class="govuk-body">Once every task has been completed, you must save the information. You will not be able to return to this page, but can edit the details in the Court cases tab.</p>
                 {% if model.isAllMandatoryItemsComplete() %}
-                    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-task-list">
+                    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-task-list">
                         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                         {{ govukButton({
                             text: "Finish and save"

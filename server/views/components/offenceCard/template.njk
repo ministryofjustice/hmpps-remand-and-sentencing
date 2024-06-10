@@ -10,7 +10,7 @@
                     },
                     actions: {
                         items: ([{
-                            href: "/person/" +  params.nomsId + "/" + params.addOrEditCourtCase + "/" + params.courtCaseReference + "/appearance/" + params.appearanceReference + "/offences/" + params.offenceReference + "/offence-date?submitToEditOffence=true",
+                            href: "/person/" +  params.nomsId + "/" + params.addOrEditCourtCase + "/" + params.courtCaseReference  + "/" + params.addOrEditCourtAppearance + "/" + params.appearanceReference + "/offences/" + params.offenceReference + "/offence-date?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "commited on"
                         }] if params.canEdit else [])
@@ -25,7 +25,7 @@
                 },
                     actions: {
                         items: ([{
-                            href: "/person/" +  params.nomsId + "/" + params.addOrEditCourtCase + "/" + params.courtCaseReference + "/appearance/" + params.appearanceReference + "/offences/" + params.offenceReference + "/offence-outcome?submitToEditOffence=true",
+                            href: "/person/" +  params.nomsId + "/" + params.addOrEditCourtCase + "/" + params.courtCaseReference  + "/" + params.addOrEditCourtAppearance + "/" + params.appearanceReference + "/offences/" + params.offenceReference + "/offence-outcome?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "outcome"
                         }] if params.canEdit else [])
@@ -100,7 +100,7 @@
             {% endif %}
         </h4>
         {% if params.canEdit %}   
-            <div class="offence-name-edit"><a class="govuk-link" href="/person/{{ params.nomsId }}/{{ params.addOrEditCourtCase}}/{{ params.courtCaseReference}}/appearance/{{ params.appearanceReference}}/offences/{{ params.offenceReference}}/offence-code?submitToEditOffence=true">Edit<span class="govuk-visually-hidden"> offence name</span></a></div>
+            <div class="offence-name-edit"><a class="govuk-link" href="/person/{{ params.nomsId }}/{{ params.addOrEditCourtCase }}/{{ params.courtCaseReference}}/{{ params.addOrEditCourtAppearance }}/{{ params.appearanceReference}}/offences/{{ params.offenceReference}}/offence-code?submitToEditOffence=true">Edit<span class="govuk-visually-hidden"> offence name</span></a></div>
         {% endif %} 
 
         {{ govukSummaryList({

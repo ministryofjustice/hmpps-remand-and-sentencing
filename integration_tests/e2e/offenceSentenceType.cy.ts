@@ -7,7 +7,7 @@ context('Add Offence Sentence Type Page', () => {
     cy.task('happyPathStubs')
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
-    cy.visit('/person/A1234AB/add-court-case/0/appearance/0/offences/0/sentence-type')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/sentence-type')
     offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
   })
 

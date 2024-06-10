@@ -13,7 +13,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/reference?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "court case reference number"
                                 }
@@ -30,7 +30,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "warrant date"
                                 }
@@ -47,7 +47,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/court-name?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/court-name?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "court name"
                                 }
@@ -67,7 +67,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/overall-case-outcome?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-case-outcome?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "overall case outcome"
                                 }
@@ -84,7 +84,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/appearance/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "edit outcome applies to all offences"
                                 }
@@ -103,7 +103,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/tagged-bail?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/tagged-bail?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "edit tagged bail"
                                 }
@@ -123,7 +123,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference + "/appearance/" + appearanceReference + "/overall-sentence-length?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-sentence-length?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "edit overall sentence length"
                                 }
@@ -145,7 +145,7 @@
                     rows: checkAnswersRows
                 }) }}
 
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/submit-check-answers">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
                     text: "Accept and continue"

@@ -7,6 +7,8 @@ export default class TaskListModel {
 
   addOrEditCourtCase: string
 
+  addOrEditCourtAppearance: string
+
   courtCaseReference: string
 
   appearanceReference: string
@@ -14,12 +16,14 @@ export default class TaskListModel {
   constructor(
     nomsId: string,
     addOrEditCourtCase: string,
+    addOrEditCourtAppearance: string,
     courtCaseReference: string,
     appearanceReference: string,
     courtAppearance: CourtAppearance,
   ) {
     this.nomsId = nomsId
     this.addOrEditCourtCase = addOrEditCourtCase
+    this.addOrEditCourtAppearance = addOrEditCourtAppearance
     this.courtCaseReference = courtCaseReference
     this.appearanceReference = appearanceReference
     this.items = [
@@ -38,8 +42,8 @@ export default class TaskListModel {
         text: 'Add appearance information',
       },
       href: this.isAddCourtCase()
-        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/reference`
-        : `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/select-reference`,
+        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/reference`
+        : `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/select-reference`,
       status: this.getAppearanceInformationStatus(courtAppearance),
     }
   }
@@ -107,7 +111,7 @@ export default class TaskListModel {
       title: {
         text: 'Upload court documents',
       },
-      href: `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/document-type`,
+      href: `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/document-type`,
       status: {
         tag: {
           text: 'Optional',
@@ -145,10 +149,10 @@ export default class TaskListModel {
     let href
     if (this.isAddCourtCase()) {
       if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/offences/check-offence-answers`
+        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
       }
     } else if (courtAppearance.warrantType === 'REMAND' || this.allAppearanceInformationFilledOut(courtAppearance)) {
-      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/review-offences`
+      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
     }
 
     return href
@@ -201,9 +205,9 @@ export default class TaskListModel {
   }
 
   private getNextCourtAppearanceHref(courtAppearance: CourtAppearance): string {
-    let href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/next-hearing-select`
+    let href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/next-hearing-select`
     if (courtAppearance.nextCourtAppearanceAccepted) {
-      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/appearance/${this.appearanceReference}/check-next-hearing-answers`
+      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/check-next-hearing-answers`
     }
     return href
   }

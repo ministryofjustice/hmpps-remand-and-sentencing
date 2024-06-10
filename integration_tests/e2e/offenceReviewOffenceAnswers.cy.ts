@@ -8,7 +8,9 @@ context('Review Offences Page', () => {
     cy.task('stubGetLatestCourtAppearance')
     cy.task('stubGetOffencesByCodes', {})
     cy.signIn()
-    cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/appearance/1/review-offences')
+    cy.visit(
+      '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/1/review-offences',
+    )
     offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
   })
 

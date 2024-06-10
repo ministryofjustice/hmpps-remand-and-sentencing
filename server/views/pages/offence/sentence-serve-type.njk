@@ -32,7 +32,7 @@
 {% endif %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-sentence-serve-type{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-sentence-serve-type{{ "?submitToEditOffence=true" if submitToEditOffence }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 

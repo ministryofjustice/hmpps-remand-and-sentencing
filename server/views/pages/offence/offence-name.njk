@@ -5,7 +5,7 @@
 {% set pageTitle = applicationName + " - Look up offence by name" %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/appearance/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-name{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-name{{ "?submitToEditOffence=true" if submitToEditOffence }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 

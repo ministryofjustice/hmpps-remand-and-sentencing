@@ -1048,6 +1048,11 @@ export default class OffenceRoutes {
 
       req.flash('infoBanner', `${sentenceOffence} deleted`)
     }
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
     )
@@ -1089,6 +1094,11 @@ export default class OffenceRoutes {
     } = req.params
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
     )

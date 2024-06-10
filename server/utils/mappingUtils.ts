@@ -243,5 +243,6 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextHearingType: nextCourtAppearance?.appearanceType,
     nextHearingTimeSet: nextCourtAppearance.appearanceTime !== undefined,
     nextHearingDate,
+    nextCourtAppearanceAccepted: nextCourtAppearance !== undefined,
   }
 }

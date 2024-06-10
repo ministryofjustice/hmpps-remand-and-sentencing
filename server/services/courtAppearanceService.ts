@@ -415,6 +415,11 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
+  isNextCourtAppearanceAccepted(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    return courtAppearance.nextCourtAppearanceAccepted
+  }
+
   getNextHearingSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
     return this.getCourtAppearance(session, nomsId).nextHearingSelect
   }

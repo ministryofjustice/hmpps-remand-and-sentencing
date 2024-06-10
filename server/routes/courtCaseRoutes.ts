@@ -114,7 +114,9 @@ export default class CourtCaseRoutes {
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
-    if (submitToCheckAnswers) {
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`
+    } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
     } else if (addOrEditCourtCase === 'edit-court-case') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-reference`
@@ -142,6 +144,11 @@ export default class CourtCaseRoutes {
       req.flash('courtCaseReferenceForm', { ...courtCaseReferenceForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/reference`,
+      )
+    }
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
       )
     }
     const { submitToCheckAnswers } = req.query

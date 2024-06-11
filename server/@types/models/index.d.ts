@@ -5,6 +5,7 @@ declare module 'models' {
   } // at some point this needs to change to appearance model
 
   export interface CourtAppearance {
+    appearanceReference?: string
     caseReferenceNumber?: string
     warrantDate?: Date
     courtName?: string

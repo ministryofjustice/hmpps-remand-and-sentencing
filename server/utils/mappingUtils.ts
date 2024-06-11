@@ -217,6 +217,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
   pageCourtCaseAppearance: PageCourtCaseAppearance,
 ): CourtAppearance {
   return {
+    appearanceReference: pageCourtCaseAppearance.appearanceUuid,
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
     warrantDate: dayjs(pageCourtCaseAppearance.appearanceDate).toDate(),
     courtName: pageCourtCaseAppearance.courtCode,

@@ -73,7 +73,7 @@ export default class CourtCaseRoutes {
   public getAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { token } = res.locals.user
-    if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId)) {
+    if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId, appearanceReference)) {
       const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
         appearanceReference,
         token,

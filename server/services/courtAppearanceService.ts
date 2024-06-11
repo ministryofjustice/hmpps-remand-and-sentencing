@@ -501,8 +501,15 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  sessionCourtAppearanceExists(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
-    return session.courtAppearances[nomsId] !== undefined
+  sessionCourtAppearanceExists(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    appearanceReference: string,
+  ): boolean {
+    return (
+      session.courtAppearances[nomsId] !== undefined &&
+      session.courtAppearances[nomsId].appearanceReference === appearanceReference
+    )
   }
 
   setSessionCourtAppearance(

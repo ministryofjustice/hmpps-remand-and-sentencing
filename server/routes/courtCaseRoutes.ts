@@ -101,6 +101,20 @@ export default class CourtCaseRoutes {
     })
   }
 
+  public submitAppearanceDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { token } = res.locals.user
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    await this.remandAndSentencingService.updateCourtAppearance(
+      token,
+      courtCaseReference,
+      appearanceReference,
+      courtAppearance,
+    )
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+  }
+
   public getReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query

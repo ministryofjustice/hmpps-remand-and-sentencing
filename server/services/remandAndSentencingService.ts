@@ -27,6 +27,16 @@ export default class RemandAndSentencingService {
     return new RemandAndSentencingApiClient(token).createCourtAppearance(createCourtAppearance)
   }
 
+  async updateCourtAppearance(
+    token: string,
+    courtCaseUuid: string,
+    appearanceUuid: string,
+    courtAppearance: CourtAppearance,
+  ): Promise<CreateCourtAppearanceResponse> {
+    const updateCourtAppearance = courtAppearanceToCreateCourtAppearance(courtAppearance, courtCaseUuid, appearanceUuid)
+    return new RemandAndSentencingApiClient(token).putCourtAppearance(appearanceUuid, updateCourtAppearance)
+  }
+
   async getLatestCourtAppearanceByCourtCaseUuid(
     token: string,
     courtCaseUuid: string,

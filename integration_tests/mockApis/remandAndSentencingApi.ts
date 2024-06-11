@@ -282,7 +282,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Remanded in custody", "courtCode": "Birmingham Crown Court", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)"}, {"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remanded in custody", "terrorRelated": true}], "warrantType": "REMAND", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Birmingham Crown Court", "appearanceType": "Court appearance"}}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Remanded in custody", "courtCode": "Birmingham Crown Court", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remanded in custody", "terrorRelated": true}], "warrantType": "REMAND", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Birmingham Crown Court", "appearanceType": "Court appearance"}}',
           },
         ],
       },
@@ -311,6 +311,7 @@ export default {
             offenceCode: 'PS90037',
             offenceStartDate: '2023-12-15',
             outcome: 'Remand in Custody (Bail Refused)',
+            chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
           },
           {
             offenceCode: 'PS90037',
@@ -339,7 +340,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Imprisonment", "courtCode": "Birmingham Crown Court", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)"}, {"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence": {"chargeNumber": "1", "custodialPeriodLength": {"months": 5, "years": 4, "periodOrder": "years,months"}, "sentenceServeType": "FORTHWITH", "sentenceType": "SDS (Standard Determinate Sentence)"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months"}}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Imprisonment", "courtCode": "Birmingham Crown Court", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence": {"chargeNumber": "1", "custodialPeriodLength": {"months": 5, "years": 4, "periodOrder": "years,months"}, "sentenceServeType": "FORTHWITH", "sentenceType": "SDS (Standard Determinate Sentence)"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months"}}',
           },
         ],
       },
@@ -368,6 +369,7 @@ export default {
             offenceCode: 'PS90037',
             offenceStartDate: '2023-12-15',
             outcome: 'Remand in Custody (Bail Refused)',
+            chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
           },
           {
             offenceCode: 'PS90037',
@@ -427,6 +429,58 @@ export default {
             },
           ],
         },
+      },
+    })
+  },
+
+  stubUpdateCourtAppearance: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        bodyPatterns: [
+          {
+            equalToJson:
+              // eslint-disable-next-line no-template-curly-in-string
+              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Remand in Custody (Bail Refused)", "courtCode": "Birmingham Crown Court", "courtCaseReference": "T12345678", "appearanceDate": "2023-12-15", "nextCourtAppearance": {"appearanceDate": "2024-12-15", "appearanceTime": "13:55:00.000000", "courtCode": "Birmingham Crown Court", "appearanceType": "Court appearance"}, "charges": [{"chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)"}]}',
+          },
+        ],
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
+        },
+      },
+    })
+  },
+
+  verifyUpdateCourtAppearanceRequest: (): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      method: 'PUT',
+      body: {
+        courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa',
+        appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        outcome: 'Remand in Custody (Bail Refused)',
+        courtCode: 'Birmingham Crown Court',
+        courtCaseReference: 'T12345678',
+        appearanceDate: '2023-12-15',
+        nextCourtAppearance: {
+          appearanceDate: '2024-12-15',
+          appearanceTime: '13:55:00.000000',
+          courtCode: 'Birmingham Crown Court',
+          appearanceType: 'Court appearance',
+        },
+        charges: [
+          {
+            chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+            offenceCode: 'PS90037',
+            offenceStartDate: '2023-12-15',
+            outcome: 'Remand in Custody (Bail Refused)',
+          },
+        ],
       },
     })
   },

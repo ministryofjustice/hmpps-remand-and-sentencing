@@ -49,7 +49,7 @@ context('Court Case Appearance details Page', () => {
     })
   })
 
-  it('can edit fields', () => {
+  it('can edit fields and return back to details page', () => {
     courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'C894623',
       'Warrant date': '15 12 2023',
@@ -79,5 +79,27 @@ context('Court Case Appearance details Page', () => {
       'Court name': 'Birmingham Crown Court',
       'Overall case outcome': 'Remand in Custody (Bail Refused)',
     })
+  })
+
+  it('edit fields and submit stores in RAS API', () => {
+    cy.task('stubUpdateCourtAppearance')
+    courtCaseAppearanceDetailsPage
+      .editFieldLink(
+        'A1234AB',
+        '83517113-5c14-4628-9133-1e3cb12e31fa',
+        '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        'reference',
+      )
+      .click()
+
+    const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+    courtCaseReferencePage.input().clear().type('T12345678')
+    courtCaseReferencePage.button().click()
+    courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
+      CourtCaseAppearanceDetailsPage,
+      'Edit appearance T12345678 at Birmingham Crown Court on 15 12 2023',
+    )
+    courtCaseAppearanceDetailsPage.button().click()
+    cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
   })
 })

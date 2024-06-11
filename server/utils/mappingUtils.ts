@@ -43,7 +43,7 @@ const courtAppearanceToCreateNextCourtAppearance = (
   courtAppearance: CourtAppearance,
 ): CreateNextCourtAppearance | undefined => {
   let nextCourtAppearance
-  if (courtAppearance.nextHearingCourtSelect) {
+  if (courtAppearance.nextHearingSelect) {
     const appearanceDate = dayjs(courtAppearance.nextHearingDate)
     nextCourtAppearance = {
       appearanceDate: appearanceDate.format('YYYY-MM-DD'),
@@ -63,6 +63,7 @@ const offenceToCreateCharge = (offence: Offence): CreateCharge => {
     outcome: offence.outcome,
     ...(offence.terrorRelated !== undefined && { terrorRelated: offence.terrorRelated }),
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
+    ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),
     ...(sentence && { sentence }),
   } as CreateCharge
 }

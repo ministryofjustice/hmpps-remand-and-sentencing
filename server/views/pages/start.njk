@@ -94,7 +94,7 @@
                                 text: appearance.outcome
                             },
                             {
-                                html: '<a href="/person/' + nomsId + '/view-appearance/' + appearance.appearanceUuid + '">View and edit</a>'
+                                html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">View and edit</a>'
                             }
                         ]-%}
                     {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}

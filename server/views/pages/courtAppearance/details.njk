@@ -209,14 +209,16 @@
                     })
                 }}
             {% endfor %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-details-edit">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Confirm changes"
+                    }) }}
 
-            <div class="govuk-button-group">
-                {{ govukButton({
-                    text: "Confirm changes"
-                }) }}
-
-                <a class="govuk-link" href="#">Cancel changes</a>
-            </div>
+                    <a class="govuk-link" href="#">Cancel changes</a>
+                </div>
+            </form>
         </div>
     </div>
 

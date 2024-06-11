@@ -48,7 +48,7 @@ export default class RemandAndSentencingApiClient {
     appearanceUuid: string,
     createCourtAppearance: CreateCourtAppearance,
   ): Promise<CreateCourtAppearanceResponse> {
-    return (await this.restClient.post({
+    return (await this.restClient.put({
       data: createCourtAppearance,
       path: `/court-appearance/${appearanceUuid}`,
     })) as unknown as Promise<CreateCourtAppearanceResponse>

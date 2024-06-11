@@ -31,7 +31,7 @@ context('Court Case Check Answers Page', () => {
   })
 
   it('button to Save court case is displayed', () => {
-    courtCaseCheckAnswersPage.button().should('contain.text', 'Accept and continue')
+    courtCaseCheckAnswersPage.button().should('contain.text', 'Confirm and continue')
   })
 
   it('clicking court case reference number change and submitting goes back to check answers page', () => {

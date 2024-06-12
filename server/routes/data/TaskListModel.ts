@@ -75,7 +75,8 @@ export default class TaskListModel {
     if (courtAppearance.warrantType === 'SENTENCING') {
       typeSpecificInformationFilledOut = courtAppearance.overallSentenceLength !== undefined
     } else {
-      typeSpecificInformationFilledOut = courtAppearance.overallCaseOutcome && courtAppearance.caseOutcomeAppliedAll
+      typeSpecificInformationFilledOut =
+        courtAppearance.overallCaseOutcome && courtAppearance.caseOutcomeAppliedAll !== undefined
     }
     return (
       courtAppearance.caseReferenceNumber &&

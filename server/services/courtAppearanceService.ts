@@ -1,6 +1,7 @@
 import type { CourtAppearance, Offence, SentenceLength } from 'models'
 import type {
   CourtCaseAlternativeSentenceLengthForm,
+  CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
   CourtCaseNextHearingDateForm,
   CourtCaseReferenceForm,
@@ -269,22 +270,34 @@ export default class CourtAppearanceService {
   setCaseOutcomeAppliedAll(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
-    caseOutcomeAppliedAll: boolean,
+    caseOutcomeAppliedAllForm: CourtCaseCaseOutcomeAppliedAllForm,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.caseOutcomeAppliedAll = caseOutcomeAppliedAll
-    if (caseOutcomeAppliedAll) {
-      courtAppearance.offences = courtAppearance.offences.map(offence => {
-        // eslint-disable-next-line no-param-reassign
-        offence.outcome = courtAppearance.overallCaseOutcome
-        return offence
-      })
+    const errors = validate(
+      caseOutcomeAppliedAllForm,
+      {
+        caseOutcomeAppliedAll: 'required',
+      },
+      {
+        'required.caseOutcomeAppliedAll': 'Select ‘Yes’ if this outcome applies to all offences on the warrant.',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.caseOutcomeAppliedAll = caseOutcomeAppliedAllForm.caseOutcomeAppliedAll
+      if (caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true') {
+        courtAppearance.offences = courtAppearance.offences.map(offence => {
+          // eslint-disable-next-line no-param-reassign
+          offence.outcome = courtAppearance.overallCaseOutcome
+          return offence
+        })
+      }
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
     }
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+    return errors
   }
 
-  getCaseOutcomeAppliedAll(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+  getCaseOutcomeAppliedAll(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).caseOutcomeAppliedAll
   }
 

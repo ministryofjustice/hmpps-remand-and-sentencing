@@ -497,7 +497,7 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setWarrantType(req.session, nomsId, warrantTypeForm.warrantType)
     if (warrantTypeForm.warrantType === 'SENTENCING') {
       this.courtAppearanceService.setOverallCaseOutcome(req.session, nomsId, 'Imprisonment')
-      this.courtAppearanceService.setCaseOutcomeAppliedAll(req.session, nomsId, true)
+      this.courtAppearanceService.setCaseOutcomeAppliedAll(req.session, nomsId, { caseOutcomeAppliedAll: 'true' })
     }
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
@@ -683,30 +683,46 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
-    const caseOutcomeAppliedAll: boolean = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
+    let caseOutcomeAppliedAllForm = (req.flash('caseOutcomeAppliedAllForm')[0] ||
+      {}) as CourtCaseCaseOutcomeAppliedAllForm
+    if (
+      Object.keys(caseOutcomeAppliedAllForm).length === 0 &&
+      this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId) !== undefined
+    ) {
+      caseOutcomeAppliedAllForm = {
+        caseOutcomeAppliedAll: this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId),
+      }
+    }
 
     return res.render('pages/courtAppearance/case-outcome-applied-all', {
       nomsId,
       submitToCheckAnswers,
       overallCaseOutcome,
-      caseOutcomeAppliedAll,
+      caseOutcomeAppliedAllForm,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink: submitToCheckAnswers
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome`,
     })
   }
 
   public submitCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const caseOutcomeAppliedAllForm = trimForm<CourtCaseCaseOutcomeAppliedAllForm>(req.body)
-
-    this.courtAppearanceService.setCaseOutcomeAppliedAll(
-      req.session,
-      nomsId,
-      caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true',
-    )
     const { submitToCheckAnswers } = req.query
+    const errors = this.courtAppearanceService.setCaseOutcomeAppliedAll(req.session, nomsId, caseOutcomeAppliedAllForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('caseOutcomeAppliedAllForm', { ...caseOutcomeAppliedAllForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
+      )
+    }
+
     if (submitToCheckAnswers) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,

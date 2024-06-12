@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
@@ -8,6 +8,7 @@
     <p class="govuk-body-l">{{ overallCaseOutcome }}</p>
 {% endset %}
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-case-outcome-applied-all{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
@@ -25,14 +26,15 @@
                         {
                             value: "true",
                             text: "Yes",
-                            checked: caseOutcomeAppliedAll === true
+                            checked: caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true'
                         },
                         {
                             value: "false",
                             text: "No",
-                            checked: caseOutcomeAppliedAll === false
+                            checked: caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'false'
                         }
-                    ]
+                    ],
+                    errorMessage:  errors | findError('caseOutcomeAppliedAll'),
                 }) }}
 
                 {{ govukButton({

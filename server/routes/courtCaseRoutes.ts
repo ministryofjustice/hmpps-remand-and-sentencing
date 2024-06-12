@@ -685,10 +685,7 @@ export default class CourtCaseRoutes {
     const overallCaseOutcome: string = this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId)
     let caseOutcomeAppliedAllForm = (req.flash('caseOutcomeAppliedAllForm')[0] ||
       {}) as CourtCaseCaseOutcomeAppliedAllForm
-    if (
-      Object.keys(caseOutcomeAppliedAllForm).length === 0 &&
-      this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId) !== undefined
-    ) {
+    if (Object.keys(caseOutcomeAppliedAllForm).length === 0) {
       caseOutcomeAppliedAllForm = {
         caseOutcomeAppliedAll: this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId),
       }
@@ -719,7 +716,7 @@ export default class CourtCaseRoutes {
       req.flash('errors', errors)
       req.flash('caseOutcomeAppliedAllForm', { ...caseOutcomeAppliedAllForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/case-outcome-applied-all${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
       )
     }
 

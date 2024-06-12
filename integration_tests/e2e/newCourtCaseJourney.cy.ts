@@ -99,7 +99,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Court case reference': 'T12345678',
+      'Case reference': 'T12345678',
       'Warrant date': '12 05 2023',
       'Court name': 'Bradford Crown Court',
       'Overall case outcome': 'Remanded in custody',
@@ -298,7 +298,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Court case reference': 'T12345678',
+      'Case reference': 'T12345678',
       'Warrant date': '12 05 2023',
       'Court name': 'Bradford Crown Court',
       'Tagged bail': '5 days',

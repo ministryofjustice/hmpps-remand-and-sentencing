@@ -5,7 +5,7 @@
 {% set checkAnswersRows = [
                         {
                             key: {
-                            text: "Court case reference"
+                            text: "Case reference"
                         },
                             value: {
                             text: courtAppearance.caseReferenceNumber
@@ -15,7 +15,7 @@
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference?submitToCheckAnswers=true",
                                     text: "Edit",
-                                    visuallyHiddenText: "court case reference number"
+                                    visuallyHiddenText: "case reference number"
                                 }
                             ]
                         }
@@ -148,7 +148,7 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
-                    text: "Accept and continue"
+                    text: "Confirm and continue"
                 }) }}
             </form>
 

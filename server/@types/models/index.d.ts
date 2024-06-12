@@ -12,7 +12,7 @@ declare module 'models' {
     nextHearingCourtSelect?: boolean
     nextHearingCourtName?: string
     overallCaseOutcome?: string
-    caseOutcomeAppliedAll?: boolean
+    caseOutcomeAppliedAll?: string
     nextHearingSelect?: boolean
     nextHearingType?: string
     nextHearingDate?: Date

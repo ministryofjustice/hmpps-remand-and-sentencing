@@ -22,4 +22,12 @@ context('Court Case Case Outcome applied all Page', () => {
   it('button to continue is displayed', () => {
     courtCaseCaseOutcomeAppliedAllPage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without selecting anything results in error', () => {
+    courtCaseCaseOutcomeAppliedAllPage.button().click()
+    courtCaseCaseOutcomeAppliedAllPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Select ‘Yes’ if this outcome applies to all offences on the warrant.')
+  })
 })

@@ -34,6 +34,7 @@ import {
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
 import TaskListModel from './data/TaskListModel'
+import { PrisonUser } from '../interfaces/hmppsUser'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -566,7 +567,7 @@ export default class CourtCaseRoutes {
   public submitWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const { username, activeCaseLoadId } = res.locals.user
+    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
 
     if (req.file) {
       const warrantId = await this.documentManagementService.uploadWarrant(nomsId, req.file, username, activeCaseLoadId)

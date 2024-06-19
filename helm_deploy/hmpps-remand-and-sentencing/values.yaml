@@ -3,6 +3,9 @@ generic-service:
   productId: "DPS014" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
 
 
+  # the IRSA service account name for accessing AWS resources
+  # serviceAccountName: "hmpps-template-typescript"
+
   replicaCount: 4
 
   image:
@@ -23,12 +26,6 @@ generic-service:
     httpGet:
       path: /ping
 
-  custommetrics:
-    enabled: true
-    scrapeInterval: 15s
-    metricsPath: /metrics
-    metricsPort: 3001
-
   # Environment variables to load into the deployment
   env:
     NODE_ENV: "production"
@@ -36,6 +33,8 @@ generic-service:
     REDIS_TLS_ENABLED: "true"
     TOKEN_VERIFICATION_ENABLED: "true"
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/"
+    AUDIT_SQS_REGION: "eu-west-2"
+    AUDIT_SERVICE_NAME: "UNASSIGNED" # Your audit service name
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -53,6 +52,9 @@ generic-service:
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"
+    #sqs-hmpps-audit-secret:
+    #  AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
+    #  AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
 
   allowlist:
     ark-dom1-farnborough: 194.33.192.0/24

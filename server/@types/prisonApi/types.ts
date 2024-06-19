@@ -1,3 +1,3 @@
 import { components } from './index'
 
-export type PrisonApiUserCaseloads = components['schemas']['CaseLoad']
+export type CaseLoad = components['schemas']['CaseLoad']

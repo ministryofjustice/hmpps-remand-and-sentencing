@@ -1,6 +1,6 @@
 import express, { Express } from 'express'
-import cookieSession from 'cookie-session'
 import { NotFound } from 'http-errors'
+import { v4 as uuidv4 } from 'uuid'
 
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
@@ -9,6 +9,11 @@ import * as auth from '../../authentication/auth'
 import type { Services } from '../../services'
 import type { ApplicationInfo } from '../../applicationInfo'
 import { PrisonerSearchApiPrisoner } from '../../@types/prisonerSearchApi/prisonerSearchTypes'
+import AuditService from '../../services/auditService'
+import { HmppsUser } from '../../interfaces/hmppsUser'
+import setUpWebSession from '../../middleware/setUpWebSession'
+
+jest.mock('../../services/auditService')
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
@@ -18,15 +23,25 @@ const testAppInfo: ApplicationInfo = {
   branchName: 'main',
 }
 
-export const user: Express.User = {
+export const user: HmppsUser = {
   name: 'FIRST LAST',
   userId: 'id',
   token: 'token',
   username: 'user1',
   displayName: 'First Last',
-  active: true,
+  authSource: 'nomis',
+  staffId: 1234,
+  userRoles: [],
+  caseLoads: [
+    {
+      caseLoadId: 'MDI',
+      description: 'mdi prison',
+      type: 'INST',
+      currentlyActive: true,
+    },
+  ],
   activeCaseLoadId: 'MDI',
-  authSource: 'NOMIS',
+  hasAdjustmentsAccess: false,
 }
 
 const defaultPrisoner: PrisonerSearchApiPrisoner = {
@@ -43,7 +58,7 @@ export const flashProvider = jest.fn()
 function appSetup(
   services: Services,
   production: boolean,
-  userSupplier: () => Express.User,
+  userSupplier: () => HmppsUser,
   prisoner: PrisonerSearchApiPrisoner,
 ): Express {
   const app = express()
@@ -51,14 +66,18 @@ function appSetup(
   app.set('view engine', 'njk')
 
   nunjucksSetup(app, testAppInfo)
-  app.use(cookieSession({ keys: [''] }))
+  app.use(setUpWebSession())
   app.use((req, res, next) => {
-    req.user = userSupplier()
+    req.user = userSupplier() as Express.User
     req.flash = flashProvider
     res.locals = {
-      user: { ...req.user },
+      user: { ...req.user } as HmppsUser,
       prisoner,
     }
+    next()
+  })
+  app.use((req, res, next) => {
+    req.id = uuidv4()
     next()
   })
   app.use(express.json())
@@ -72,13 +91,15 @@ function appSetup(
 
 export function appWithAllRoutes({
   production = false,
-  services = {},
+  services = {
+    auditService: new AuditService(null) as jest.Mocked<AuditService>,
+  },
   userSupplier = () => user,
   prisoner = defaultPrisoner,
 }: {
   production?: boolean
   services?: Partial<Services>
-  userSupplier?: () => Express.User
+  userSupplier?: () => HmppsUser
   prisoner?: PrisonerSearchApiPrisoner
 }): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()

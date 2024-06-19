@@ -3,9 +3,10 @@ import multer from 'multer'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import CourtCaseRoutes from './courtCaseRoutes'
-import { Services } from '../services'
 import ApiRoutes from './apiRoutes'
 import OffenceRoutes from './offenceRoutes'
+import type { Services } from '../services'
+import { Page } from '../services/auditService'
 
 const upload = multer({ dest: 'uploads/' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,7 +36,8 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
   )
 
-  get('/', (req, res, next) => {
+  get('/', async (req, res, next) => {
+    await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
     res.render('pages/index')
   })
   get('/api/person/:nomsId/image', apiRoutes.personImage)

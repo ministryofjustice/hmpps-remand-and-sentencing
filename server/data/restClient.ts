@@ -7,7 +7,6 @@ import logger from '../../logger'
 import sanitiseError from '../sanitisedError'
 import type { ApiConfig } from '../config'
 import type { UnsanitisedError } from '../sanitisedError'
-import { restClientMetricsMiddleware } from './restClientMetricsMiddleware'
 
 interface Request {
   path: string
@@ -66,7 +65,6 @@ export default class RestClient {
         .get(`${this.apiUrl()}${path}`)
         .query(query)
         .agent(this.agent)
-        .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
@@ -94,7 +92,6 @@ export default class RestClient {
         .query(query)
         .send(data)
         .agent(this.agent)
-        .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (retry === false) {
             return false
@@ -145,7 +142,6 @@ export default class RestClient {
         .attach('file', fileToUpload.path, { filename: fileToUpload.originalname, contentType: fileToUpload.mimetype })
         .field('metadata', JSON.stringify(metadata))
         .agent(this.agent)
-        .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (retry === false) {
             return false
@@ -179,7 +175,6 @@ export default class RestClient {
         .delete(`${this.apiUrl()}${path}`)
         .query(query)
         .agent(this.agent)
-        .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
@@ -204,7 +199,6 @@ export default class RestClient {
         .get(`${this.apiUrl()}${path}`)
         .agent(this.agent)
         .auth(this.token, { type: 'bearer' })
-        .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic

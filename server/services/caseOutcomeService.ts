@@ -1,5 +1,5 @@
 import { CaseOutcome } from '../routes/data/caseOutcome'
-import data from '../resources/caseOutcomes.json'
+import data from './caseOutcomes.json'
 
 export default class CaseOutcomeService {
   caseOutcomes: CaseOutcome[]

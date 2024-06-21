@@ -69,7 +69,10 @@ context('Sign In', () => {
     cy.request('/').its('body').should('contain', 'Sign in')
 
     cy.task('stubVerifyToken', true)
-    cy.task('stubSignIn', { name: 'bobby brown' })
+    cy.task('stubSignIn', {
+      name: 'bobby brown',
+      roles: ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR', 'ROLE_ADJUSTMENTS_MAINTAINER'],
+    })
 
     cy.signIn()
 
@@ -77,13 +80,13 @@ context('Sign In', () => {
   })
 
   it('User without both roles is shown auth error page', () => {
-    cy.task('stubToken', { roles: ['ROLE_REMAND_AND_SENTENCING'] })
+    cy.task('stubSignIn', { roles: ['ROLE_REMAND_AND_SENTENCING'] })
     cy.signIn({ failOnStatusCode: false })
     Page.verifyOnPage(AuthErrorPage)
   })
 
   it('User with no roles is shown auth error page', () => {
-    cy.task('stubToken', { roles: [] })
+    cy.task('stubSignIn', { roles: [] })
     cy.signIn({ failOnStatusCode: false })
     Page.verifyOnPage(AuthErrorPage)
   })

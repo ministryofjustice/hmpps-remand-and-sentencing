@@ -33,7 +33,13 @@ const buildAssets = buildConfig => {
       }),
       sassPlugin({
         quietDeps: true,
-        loadPaths: [process.cwd(), path.join(process.cwd(), 'node_modules')],
+        loadPaths: [
+          process.cwd(),
+          path.join(process.cwd(), 'node_modules/govuk-frontend/dist'),
+          path.join(process.cwd(), 'node_modules/@ministryofjustice/frontend'),
+          path.join(process.cwd(), 'node_modules/accessible-autocomplete'),
+          path.join(process.cwd(), 'node_modules/hmpps-court-cases-release-dates-design'),
+        ],
       }),
     ],
   })
@@ -44,6 +50,7 @@ module.exports = buildConfig => {
 
   Promise.all([buildAssets(buildConfig), buildAdditionalAssets(buildConfig)]).catch(e => {
     console.log(e)
+
     process.exit(1)
   })
 }

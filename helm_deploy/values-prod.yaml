@@ -12,7 +12,6 @@ generic-service:
     PRISON_API_URL: "https://prison-api.prison.service.justice.gov.uk"
     COURT_REGISTER_API_URL: "https://court-register.hmpps.service.justice.gov.uk"
     MANAGE_OFFENCES_API_URL: "https://manage-offences-api.hmpps.service.justice.gov.uk"
-    MANAGE_USERS_API_URL: "https://manage-users-api.hmpps.service.justice.gov.uk"
     DIGITAL_PRISON_SERVICES_URL: "https://digital.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
     COMMON_COMPONENTS_ENABLED: 'false'

@@ -5,7 +5,6 @@
 {% block head %}
   <link href="/assets/css/app.css?{{ version }}" rel="stylesheet"/>
 
-  <script src="/assets/js/jquery.min.js"></script>
   {% if feComponents.cssIncludes %}
     {% for css in feComponents.cssIncludes %}
       <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />

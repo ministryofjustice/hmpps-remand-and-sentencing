@@ -14,7 +14,6 @@ generic-service:
     PRISON_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
     COURT_REGISTER_API_URL: "https://court-register-dev.hmpps.service.justice.gov.uk"
     MANAGE_OFFENCES_API_URL: "https://manage-offences-api-dev.hmpps.service.justice.gov.uk"
-    MANAGE_USERS_API_URL: "https://manage-users-api-dev.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: DEV
     DIGITAL_PRISON_SERVICES_URL: "https://digital-dev.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
@@ -23,6 +22,7 @@ generic-service:
     DOCUMENT_MANAGEMENT_API_URL: "https://document-api-dev.hmpps.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
     ADJUSTMENTS_UI_URL: "https://adjust-release-dates-dev.hmpps.service.justice.gov.uk"
+    AUDIT_ENABLED: "false"
 
 generic-prometheus-alerts:
   businessHoursOnly: true

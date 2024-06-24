@@ -4,6 +4,7 @@ import passport from 'passport'
 import flash from 'connect-flash'
 import config from '../config'
 import auth from '../authentication/auth'
+import { HmppsUser } from '../interfaces/hmppsUser'
 
 const router = express.Router()
 
@@ -29,9 +30,10 @@ export default function setUpAuth(): Router {
   )
 
   const authUrl = config.apis.hmppsAuth.externalUrl
-  const authSignOutUrl = `${authUrl}/sign-out?client_id=${config.apis.hmppsAuth.apiClientId}&redirect_uri=${config.domain}`
+  const authParameters = `client_id=${config.apis.hmppsAuth.apiClientId}&redirect_uri=${config.domain}`
 
   router.use('/sign-out', (req, res, next) => {
+    const authSignOutUrl = `${authUrl}/sign-out?${authParameters}`
     if (req.user) {
       req.logout(err => {
         if (err) return next(err)
@@ -41,11 +43,11 @@ export default function setUpAuth(): Router {
   })
 
   router.use('/account-details', (req, res) => {
-    res.redirect(`${authUrl}/account-details`)
+    res.redirect(`${authUrl}/account-details?${authParameters}`)
   })
 
   router.use((req, res, next) => {
-    res.locals.user = req.user
+    res.locals.user = req.user as HmppsUser
     next()
   })
 

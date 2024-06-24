@@ -1,5 +1,4 @@
 import { dataAccess } from '../data'
-import UserService from './userService'
 import PrisonerService from './prisonerService'
 import OffenceService from './offenceService'
 import ManageOffencesService from './manageOffencesService'
@@ -9,13 +8,15 @@ import CourtAppearanceService from './courtAppearanceService'
 import DocumentManagementService from './documentManagementService'
 import CaseOutcomeService from './caseOutcomeService'
 import PrisonerSearchService from './prisonerSearchService'
+import AuditService from './auditService'
+import UserService from './userService'
 
 export const services = () => {
-  const { applicationInfo, manageUsersApiClient, feComponentsClient, hmppsAuthClient } = dataAccess()
+  const { applicationInfo, feComponentsClient, hmppsAuthClient, hmppsAuditClient } = dataAccess()
 
   const prisonerService = new PrisonerService()
 
-  const userService = new UserService(manageUsersApiClient, prisonerService)
+  const userService = new UserService(prisonerService)
 
   const manageOffencesService = new ManageOffencesService()
 
@@ -32,6 +33,7 @@ export const services = () => {
   const caseOutcomeService = new CaseOutcomeService()
 
   const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient)
+  const auditService = new AuditService(hmppsAuditClient)
 
   return {
     applicationInfo,
@@ -45,9 +47,8 @@ export const services = () => {
     documentManagementService,
     caseOutcomeService,
     prisonerSearchService,
+    auditService,
   }
 }
 
 export type Services = ReturnType<typeof services>
-
-export { UserService }

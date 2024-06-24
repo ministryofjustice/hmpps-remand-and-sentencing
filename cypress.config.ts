@@ -3,7 +3,6 @@ import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import manageOffencesApi from './integration_tests/mockApis/manageOffencesApi'
-import manageUsersApi from './integration_tests/mockApis/manageUsersApi'
 import components from './integration_tests/mockApis/components'
 import remandAndSentencingApi from './integration_tests/mockApis/remandAndSentencingApi'
 import documentManagementApi from './integration_tests/mockApis/documentManagementApi'
@@ -28,7 +27,6 @@ export default defineConfig({
           await resetStubs()
           return Promise.all([
             auth.stubSignIn(),
-            manageUsersApi.stubManageUser(),
             prisonerSearchApi.stubGetPrisonerDetails(),
             components.stubComponents(),
             prisonApi.stubGetPrisonerImage(),
@@ -38,7 +36,6 @@ export default defineConfig({
         ...auth,
         ...tokenVerification,
         ...manageOffencesApi,
-        ...manageUsersApi,
         ...components,
         ...remandAndSentencingApi,
         ...documentManagementApi,

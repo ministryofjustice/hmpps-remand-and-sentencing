@@ -7,7 +7,7 @@ import timezone from 'dayjs/plugin/timezone'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 
-import { app, metricsApp } from './server/index'
+import app from './server/index'
 import logger from './logger'
 
 dayjs.extend(isSameOrBefore)
@@ -19,8 +19,4 @@ dayjs.tz.setDefault('Europe/London')
 
 app.listen(app.get('port'), () => {
   logger.info(`Server listening on port ${app.get('port')}`)
-})
-
-metricsApp.listen(metricsApp.get('port'), () => {
-  logger.info(`Metrics server listening on port ${metricsApp.get('port')}`)
 })

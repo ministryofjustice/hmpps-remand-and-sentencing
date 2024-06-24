@@ -14,14 +14,13 @@ export default function setUpStaticResources(): Router {
   const cacheControl = { maxAge: config.staticResourceCacheDuration }
 
   Array.of(
-    '/assets',
-    '/assets/stylesheets',
-    '/assets/js',
+    '/dist/assets',
+    '/dist/assets/stylesheets',
+    '/dist/assets/js',
     '/node_modules/govuk-frontend/dist/govuk/assets',
     '/node_modules/govuk-frontend/dist',
     '/node_modules/@ministryofjustice/frontend/moj/assets',
     '/node_modules/@ministryofjustice/frontend',
-    '/node_modules/jquery/dist',
     '/node_modules/accessible-autocomplete/dist',
     '/node_modules/hmpps-court-cases-release-dates-design/hmpps/assets',
     '/node_modules/hmpps-court-cases-release-dates-design',
@@ -29,14 +28,6 @@ export default function setUpStaticResources(): Router {
     '/node_modules/@microsoft/applicationinsights-clickanalytics-js/dist/es5',
   ).forEach(dir => {
     router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
-  })
-
-  Array.of('/node_modules/govuk-frontend/dist/govuk/assets/images').forEach(dir => {
-    router.use('/assets/images/icons', express.static(path.join(process.cwd(), dir), cacheControl))
-  })
-
-  Array.of('/node_modules/jquery/dist/jquery.min.js').forEach(dir => {
-    router.use('/assets/js/jquery.min.js', express.static(path.join(process.cwd(), dir), cacheControl))
   })
 
   // Don't cache dynamic resources

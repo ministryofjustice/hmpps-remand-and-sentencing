@@ -34,6 +34,20 @@ export interface ApiConfig {
   agent: AgentConfig
 }
 
+const auditConfig = () => {
+  const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
+  return {
+    enabled: auditEnabled,
+    queueUrl: get(
+      'AUDIT_SQS_QUEUE_URL',
+      'http://localhost:4566/000000000000/mainQueue',
+      auditEnabled && requiredInProduction,
+    ),
+    serviceName: get('AUDIT_SERVICE_NAME', 'UNASSIGNED', auditEnabled && requiredInProduction),
+    region: get('AUDIT_SQS_REGION', 'eu-west-2'),
+  }
+}
+
 export default {
   buildNumber: get('BUILD_NUMBER', '1_0_0', requiredInProduction),
   productId: get('PRODUCT_ID', 'UNASSIGNED', requiredInProduction),
@@ -151,6 +165,10 @@ export default {
     ui_url: get('ADJUSTMENTS_UI_URL', 'http://127.0.0.1:3000/adjustments', requiredInProduction),
   },
   domain: get('INGRESS_URL', 'http://127.0.0.1:3000', requiredInProduction),
+  sqs: {
+    audit: auditConfig(),
+  },
+
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
 }

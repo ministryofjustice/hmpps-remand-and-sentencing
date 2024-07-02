@@ -4,7 +4,7 @@ import PrisonerService from '../services/prisonerService'
 import ManageOffencesService from '../services/manageOffencesService'
 import CaseOutcomeService from '../services/caseOutcomeService'
 
-const placeHolderImage = path.join(process.cwd(), '/assets/images/prisoner-profile-image.png')
+const placeHolderImage = path.join(process.cwd(), '/dist/assets/images/prisoner-profile-image.png')
 export default class ApiRoutes {
   constructor(
     private readonly prisonerService: PrisonerService,

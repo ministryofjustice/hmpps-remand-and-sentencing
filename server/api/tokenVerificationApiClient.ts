@@ -13,7 +13,7 @@ export default class TokenVerificationApiClient {
 
   async verifyToken(): Promise<boolean> {
     try {
-      const response = (await this.restClient.post({ path: `/token/verify`, retry: true })) as TokenDto
+      const response = (await this.restClient.post({ path: `/token/verify`, retry: true, data: null })) as TokenDto
       return response?.active || false
     } catch (error) {
       logger.error(getSanitisedError(error), 'Error calling tokenVerificationApi')

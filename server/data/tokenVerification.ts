@@ -9,6 +9,10 @@ function getApiClientToken(token: string) {
     .post(`${config.apis.tokenVerification.url}/token/verify`)
     .auth(token, { type: 'bearer' })
     .timeout(config.apis.tokenVerification.timeout)
+    .retry(2, (err, _) => {
+      if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
+      return undefined // retry handler only for logging retries, not to influence retry logic
+    })
     .then(response => Boolean(response.body && response.body.active))
     .catch(error => {
       logger.error(getSanitisedError(error), 'Error calling tokenVerificationApi')

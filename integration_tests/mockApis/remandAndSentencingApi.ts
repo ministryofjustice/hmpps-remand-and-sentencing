@@ -399,7 +399,7 @@ export default {
     })
   },
 
-  stubGetAppearanceDetails: (): SuperAgentRequest => {
+  stubGetRemandAppearanceDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -411,6 +411,7 @@ export default {
         jsonBody: {
           appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
           outcome: 'Remand in Custody (Bail Refused)',
+          warrantType: 'REMAND',
           courtCode: 'Birmingham Crown Court',
           courtCaseReference: 'C894623',
           appearanceDate: '2023-12-15',
@@ -433,6 +434,49 @@ export default {
     })
   },
 
+  stubGetSentenceAppearanceDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          outcome: 'Imprisonment',
+          warrantType: 'SENTENCING',
+          courtCode: 'Birmingham Crown Court',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: 'Imprisonment',
+              sentence: {
+                sentenceUuid: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',
+                chargeNumber: '1',
+                custodialPeriodLength: {
+                  years: 4,
+                  periodOrder: 'years',
+                },
+                sentenceServeType: 'FORTHWITH',
+                sentenceType: 'SDS (Standard Determinate Sentence)',
+              },
+            },
+          ],
+          overallSentenceLength: {
+            years: 4,
+            periodOrder: 'years',
+          },
+        },
+      },
+    })
+  },
+
   stubUpdateCourtAppearance: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -442,7 +486,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Remand in Custody (Bail Refused)", "courtCode": "Birmingham Crown Court", "courtCaseReference": "T12345678", "appearanceDate": "2023-12-15", "nextCourtAppearance": {"appearanceDate": "2024-12-15", "appearanceTime": "13:55:00.000000", "courtCode": "Birmingham Crown Court", "appearanceType": "Court appearance"}, "charges": [{"chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)"}]}',
+              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Remand in Custody (Bail Refused)", "warrantType": "REMAND", "courtCode": "Birmingham Crown Court", "courtCaseReference": "T12345678", "appearanceDate": "2023-12-15", "nextCourtAppearance": {"appearanceDate": "2024-12-15", "appearanceTime": "13:55:00.000000", "courtCode": "Birmingham Crown Court", "appearanceType": "Court appearance"}, "charges": [{"chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)"}]}',
           },
         ],
       },
@@ -464,6 +508,7 @@ export default {
         courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa',
         appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
         outcome: 'Remand in Custody (Bail Refused)',
+        warrantType: 'REMAND',
         courtCode: 'Birmingham Crown Court',
         courtCaseReference: 'T12345678',
         appearanceDate: '2023-12-15',

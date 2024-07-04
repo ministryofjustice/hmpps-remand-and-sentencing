@@ -226,7 +226,8 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     warrantId: pageCourtCaseAppearance.warrantId,
     taggedBail: pageCourtCaseAppearance.taggedBail?.toLocaleString(),
     hasTaggedBail: pageCourtCaseAppearance.taggedBail ? 'true' : 'false',
-    ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
+    ...(pageCourtCaseAppearance.nextCourtAppearance &&
+      nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance)),
     offences: pageCourtCaseAppearance.charges.map(chargeToOffence),
     ...(pageCourtCaseAppearance.overallSentenceLength && {
       overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),

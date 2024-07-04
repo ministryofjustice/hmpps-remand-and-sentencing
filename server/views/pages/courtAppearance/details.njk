@@ -77,6 +77,26 @@
                         }
                     ] %}
 
+{% if appearance.overallSentenceLength %}
+    {% set appearanceSummaryRows = (appearanceSummaryRows.concat({
+                            key: {
+                            text: "Overall sentence length"
+                        },
+                            value: {
+                            text: appearance.overallSentenceLength | formatLengths
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-sentence-length",
+                                    text: "Edit",
+                                    visuallyHiddenText: "overall sentence length"
+                                }
+                            ]
+                        }
+                        }))%}
+{% endif %}
+
 {% set nextHearingSummaryRows = [{
                             key: {
                             text: "Next hearing set"
@@ -165,14 +185,16 @@
                     }
                 }) }}
 
-            <h2 class="govuk-heading-m">Next hearing</h2>
+            {% if appearance.warrantType === 'REMAND' %}
+                <h2 class="govuk-heading-m">Next hearing</h2>
 
-            {{ govukSummaryList({
-                rows: nextHearingSummaryRows,
-                    attributes: {
-                        "data-qa": "nextHearingSummaryList"
-                    }
-            }) }}
+                {{ govukSummaryList({
+                    rows: nextHearingSummaryRows,
+                        attributes: {
+                            "data-qa": "nextHearingSummaryList"
+                        }
+                }) }}
+            {% endif %}
 
             <h2 class="govuk-heading-m">Offences <span class="govuk-body">({{ appearance.offences | length }})</span></h2>
 

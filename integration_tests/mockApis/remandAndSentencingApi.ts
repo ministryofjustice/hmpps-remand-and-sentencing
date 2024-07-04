@@ -470,6 +470,9 @@ export default {
           ],
           overallSentenceLength: {
             years: 4,
+            months: null,
+            weeks: null,
+            days: null,
             periodOrder: 'years',
           },
         },

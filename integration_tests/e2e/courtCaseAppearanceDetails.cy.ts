@@ -50,7 +50,7 @@ context('Court Case Appearance details Page', () => {
         'Next hearing set': 'Yes',
         'Court name': 'Birmingham Crown Court',
         'Hearing type': 'Court appearance',
-        Date: '15 12 2024 13:55',
+        Date: '15 12 2024',
       })
     })
 

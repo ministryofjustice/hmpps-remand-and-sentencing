@@ -246,7 +246,7 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextHearingSelect: nextCourtAppearance !== undefined,
     nextHearingCourtName: nextCourtAppearance?.courtCode,
     nextHearingType: nextCourtAppearance?.appearanceType,
-    nextHearingTimeSet: nextCourtAppearance.appearanceTime !== undefined,
+    nextHearingTimeSet: typeof nextCourtAppearance.appearanceTime === 'string',
     nextHearingDate,
     nextCourtAppearanceAccepted: nextCourtAppearance !== undefined,
   }

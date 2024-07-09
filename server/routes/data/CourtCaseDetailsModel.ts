@@ -1,74 +1,45 @@
 import dayjs from 'dayjs'
-import type { Offence } from 'models'
 import {
   PageCourtCaseAppearance,
   PageCourtCaseContent,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
-import { chargeToOffence } from '../../utils/mappingUtils'
 
 export default class CourtCaseDetailsModel {
   courtCaseUuid: string
+
+  latestCaseReference: string
+
+  latestCourtName: string
 
   caseReferences: string
 
   overallCaseOutcome: string
 
-  nextHearing: string[]
+  nextHearingDate: string
 
   appearanceTotal: number
 
-  showingAppearanceTotal?: number
-
-  latestAppearances: PageCourtCaseAppearance[]
-
-  chargeTotal: number
-
-  showingChargeTotal?: number
-
-  offences: Offence[]
-
-  latestCourtName: string
-
-  latestAppearanceDate: string
+  appearances: PageCourtCaseAppearance[]
 
   constructor(pageCourtCaseContent: PageCourtCaseContent) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
+    this.latestCaseReference = pageCourtCaseContent.latestAppearance.courtCaseReference
+    this.latestCourtName = pageCourtCaseContent.latestAppearance.courtCode
     this.caseReferences = Array.from(
       new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
     ).join(', ')
     this.overallCaseOutcome = pageCourtCaseContent.latestAppearance.outcome
 
     if (pageCourtCaseContent.latestAppearance.nextCourtAppearance) {
-      const appearanceDate = dayjs(pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate)
+      const appearanceDate = dayjs(
+        `${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate}${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime ? `T${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime}` : ''}`,
+      )
       let appearanceDateFormatted = appearanceDate.format(config.dateFormat)
-      if (appearanceDate.hour() || appearanceDate.minute()) {
+      if (pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime) {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)
       }
-      this.nextHearing = [
-        pageCourtCaseContent.latestAppearance.nextCourtAppearance.courtCode,
-        pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceType,
-        appearanceDateFormatted,
-      ]
-    } else {
-      this.nextHearing = ['Date to be fixed']
+      this.nextHearingDate = appearanceDateFormatted
     }
-    this.appearanceTotal = pageCourtCaseContent.appearances.length
-    if (this.appearanceTotal > 5) {
-      this.showingAppearanceTotal = 5
-    }
-    this.latestAppearances = pageCourtCaseContent.appearances
-      .sort((a, b) => (dayjs(a.appearanceDate).isBefore(dayjs(b.appearanceDate)) ? 1 : -1))
-      .slice(0, 5)
-    this.chargeTotal = pageCourtCaseContent.latestAppearance.charges.length
-    if (this.chargeTotal > 5) {
-      this.showingChargeTotal = 5
-    }
-    this.offences = pageCourtCaseContent.latestAppearance.charges
-      .sort((a, b) => (dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1))
-      .map(charge => chargeToOffence(charge))
-      .slice(0, 5)
-    this.latestCourtName = pageCourtCaseContent.latestAppearance.courtCode
-    this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance.appearanceDate).format(config.dateFormat)
   }
 }

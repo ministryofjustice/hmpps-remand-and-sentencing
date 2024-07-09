@@ -1,0 +1,55 @@
+{% extends "../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "../components/offenceCard/macro.njk" import offenceCard %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% set pageTitle = applicationName + " - Court case details" %}
+
+{% set appearancesSummaryRows = [
+                        {
+                            key: {
+                            text: "Case references"
+                        },
+                            value: {
+                            text: courtCaseDetails.caseReferences
+                        }
+                        },
+                        {
+                            key: {
+                                text: "Overall case outcome"
+                            },
+                            value: {
+                                text: courtCaseDetails.overallCaseOutcome
+                            }
+                        }
+                    ] %}
+
+{% if courtCaseDetails.nextHearingDate %}
+    {% set appearancesSummaryRows = (appearancesSummaryRows.concat({
+                            key: {
+                                text: "Next hearing date"
+                            },
+                            value: {
+                                text: courtCaseDetails.nextHearingDate
+                            }
+                        }))%}
+{% endif %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Appearances for {{ courtCaseDetails.latestCaseReference }} at {{ courtCaseDetails.latestCourtName }}</h1>
+
+            {{ govukSummaryList({
+                    rows: appearancesSummaryRows,
+                    attributes: {
+                        "data-qa": "appearancesSummaryList"
+                    }
+                }) }}
+
+        </div>
+    </div>
+
+{% endblock %}

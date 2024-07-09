@@ -4,6 +4,7 @@ import type {
   CreateCourtCaseResponse,
   PageCourtCase,
   PageCourtCaseAppearance,
+  PageCourtCaseContent,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
 import { courtAppearanceToCreateCourtAppearance, courtCaseToCreateCourtCase } from '../utils/mappingUtils'
@@ -46,5 +47,9 @@ export default class RemandAndSentencingService {
 
   async getCourtAppearanceByAppearanceUuid(appearanceUuid: string, token: string): Promise<PageCourtCaseAppearance> {
     return new RemandAndSentencingApiClient(token).getCourtAppearanceByAppearanceUuid(appearanceUuid)
+  }
+
+  async getCourtCaseDetails(courtCaseUuid: string, token: string): Promise<PageCourtCaseContent> {
+    return new RemandAndSentencingApiClient(token).getCourtCaseByUuid(courtCaseUuid)
   }
 }

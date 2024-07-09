@@ -47,6 +47,8 @@ export default function routes(services: Services): Router {
 
   get('/person/:nomsId', courtCaseRoutes.start)
 
+  get('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/details', courtCaseRoutes.getCourtCaseDetails)
+
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/details',
     courtCaseRoutes.getAppearanceDetails,

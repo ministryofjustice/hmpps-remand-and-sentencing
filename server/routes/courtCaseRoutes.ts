@@ -22,6 +22,7 @@ import type { CourtCase } from 'models'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
+import CourtCasesDetailsModel from './data/CourtCasesDetailsModel'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
 import { getAsStringOrDefault } from '../utils/utils'
@@ -52,7 +53,7 @@ export default class CourtCaseRoutes {
 
     const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy)
     const courtCaseDetailModels = courtCases.content.map(
-      pageCourtCaseContent => new CourtCaseDetailsModel(pageCourtCaseContent),
+      pageCourtCaseContent => new CourtCasesDetailsModel(pageCourtCaseContent),
     )
     const chargeCodes = courtCases.content
       .map(courtCase => courtCase.appearances.map(appearance => appearance.charges.map(charge => charge.offenceCode)))
@@ -68,6 +69,26 @@ export default class CourtCaseRoutes {
       offenceMap,
       sortBy,
       courtCaseTotal: courtCaseDetailModels.length,
+    })
+  }
+
+  public getCourtCaseDetails: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { token } = res.locals.user
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
+
+    const chargeCodes = courtCaseDetails.appearances
+      .map(appearance => appearance.charges.map(charge => charge.offenceCode))
+      .flat()
+
+    const offenceMap = await this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token)
+    return res.render('pages/courtCaseDetails', {
+      nomsId,
+      courtCaseReference,
+      addOrEditCourtCase,
+      courtCaseDetails: new CourtCaseDetailsModel(courtCaseDetails),
+      offenceMap,
+      backLink: `/person/${nomsId}`,
     })
   }
 

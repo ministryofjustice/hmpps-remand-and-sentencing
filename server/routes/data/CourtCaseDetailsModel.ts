@@ -4,6 +4,8 @@ import {
   PageCourtCaseContent,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
+import { formatLengths } from '../../utils/utils'
+import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
 
 export default class CourtCaseDetailsModel {
   courtCaseUuid: string
@@ -17,6 +19,8 @@ export default class CourtCaseDetailsModel {
   overallCaseOutcome: string
 
   nextHearingDate: string
+
+  overallSentenceLength: string
 
   appearanceTotal: number
 
@@ -40,6 +44,12 @@ export default class CourtCaseDetailsModel {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)
       }
       this.nextHearingDate = appearanceDateFormatted
+    }
+
+    if (pageCourtCaseContent.latestAppearance.overallSentenceLength) {
+      this.overallSentenceLength = formatLengths(
+        periodLengthToSentenceLength(pageCourtCaseContent.latestAppearance.overallSentenceLength),
+      )
     }
   }
 }

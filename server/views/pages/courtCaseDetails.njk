@@ -36,6 +36,17 @@
                         }))%}
 {% endif %}
 
+{% if courtCaseDetails.overallSentenceLength %}
+    {% set appearancesSummaryRows = (appearancesSummaryRows.concat({
+                            key: {
+                                text: "Overall sentence length"
+                            },
+                            value: {
+                                text: courtCaseDetails.overallSentenceLength
+                            }
+                        }))%}
+{% endif %}
+
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">

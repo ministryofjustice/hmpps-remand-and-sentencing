@@ -37,4 +37,24 @@ context('Court Case details Page', () => {
       })
     })
   })
+
+  context('Latest sentence appearance', () => {
+    beforeEach(() => {
+      cy.task('stubGetCourtCaseSentenceLatest')
+      cy.signIn()
+      cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/details')
+      courtCaseDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseDetailsPage,
+        'Appearances for C894623 at Birmingham Crown Court',
+      )
+    })
+
+    it('appearances summary shows correct data', () => {
+      courtCaseDetailsPage.appearancesSummaryList().getSummaryList().should('deep.equal', {
+        'Case references': 'C894623, F23325',
+        'Overall case outcome': 'Imprisonment',
+        'Overall sentence length': '4 years 5 months',
+      })
+    })
+  })
 })

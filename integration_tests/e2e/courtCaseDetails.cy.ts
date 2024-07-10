@@ -36,6 +36,28 @@ context('Court Case details Page', () => {
         'Next hearing date': '15 12 2024',
       })
     })
+
+    it('appearances table shows correct data', () => {
+      courtCaseDetailsPage
+        .appearancesTable()
+        .getTable()
+        .should('deep.equal', [
+          {
+            'Case reference': 'C894623',
+            Location: 'Birmingham Crown Court',
+            'Warrant date': '15 12 2023',
+            Outcome: 'Remand in Custody (Bail Refused)',
+            '': 'Edit',
+          },
+          {
+            'Case reference': 'F23325',
+            Location: 'Birmingham Crown Court',
+            'Warrant date': '15 10 2022',
+            Outcome: 'Sentence Postponed',
+            '': 'Edit',
+          },
+        ])
+    })
   })
 
   context('Latest sentence appearance', () => {

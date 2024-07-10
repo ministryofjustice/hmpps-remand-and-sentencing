@@ -610,4 +610,105 @@ export default {
       },
     })
   },
+
+  stubGetCourtCaseSentenceLatest: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          prisonerId: 'A1234AB',
+          courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          latestAppearance: {
+            appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
+            outcome: 'Imprisonment',
+            courtCode: 'Birmingham Crown Court',
+            courtCaseReference: 'C894623',
+            warrantType: 'SENTENCING',
+            appearanceDate: '2023-12-15',
+            taggedBail: 5,
+            overallSentenceLength: {
+              months: 5,
+              years: 4,
+              periodOrder: 'years,months',
+            },
+            charges: [
+              {
+                chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                offenceCode: 'PS90037',
+                offenceStartDate: '2023-12-15',
+                outcome: 'Imprisonment',
+                sentence: {
+                  chargeNumber: '1',
+                  custodialPeriodLength: {
+                    months: 5,
+                    years: 4,
+                    periodOrder: 'years,months',
+                  },
+                  sentenceServeType: 'FORTHWITH',
+                  sentenceType: 'SDS (Standard Determinate Sentence)',
+                },
+              },
+            ],
+          },
+          appearances: [
+            {
+              appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
+              outcome: 'Imprisonment',
+              courtCode: 'Birmingham Crown Court',
+              courtCaseReference: 'C894623',
+              appearanceDate: '2023-12-15',
+              overallSentenceLength: {
+                months: 5,
+                years: 4,
+                periodOrder: 'years,months',
+              },
+              charges: [
+                {
+                  chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                  offenceCode: 'PS90037',
+                  offenceStartDate: '2023-12-15',
+                  outcome: 'Imprisonment',
+                  sentence: {
+                    chargeNumber: '1',
+                    custodialPeriodLength: {
+                      months: 5,
+                      years: 4,
+                      periodOrder: 'years,months',
+                    },
+                    sentenceServeType: 'FORTHWITH',
+                    sentenceType: 'SDS (Standard Determinate Sentence)',
+                  },
+                },
+              ],
+            },
+            {
+              appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
+              outcome: 'Sentence Postponed',
+              courtCode: 'Birmingham Crown Court',
+              courtCaseReference: 'F23325',
+              appearanceDate: '2022-10-15',
+              nextCourtAppearance: {
+                appearanceDate: '2023-12-15',
+                courtCode: 'Birmingham Crown Court',
+                appearanceType: 'Court appearance',
+              },
+              charges: [
+                {
+                  chargeUuid: '9056c1f3-b090-4d1e-bc6e-4f66ebed2ed5',
+                  offenceCode: 'PS90037',
+                  offenceStartDate: '2023-12-15',
+                  outcome: 'Remand in Custody (Bail Refused)',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    })
+  },
 }

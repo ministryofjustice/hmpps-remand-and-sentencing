@@ -9,7 +9,7 @@ import {
   firstNameSpaceLastName,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { SentenceLength } from 'models'
-import { formatDate, formatDateTime, initialiseName, pluraliseName } from './utils'
+import { formatDate, formatDateTime, formatLengths, initialiseName, pluraliseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 
@@ -102,10 +102,5 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('firstNameSpaceLastName', firstNameSpaceLastName)
   njkEnv.addFilter('pluraliseName', pluraliseName)
 
-  njkEnv.addFilter('formatLengths', (lengths: SentenceLength) => {
-    if (lengths) {
-      return lengths.periodOrder.reduce((prev, current) => `${prev} ${lengths[current]} ${current}`, '')
-    }
-    return null
-  })
+  njkEnv.addFilter('formatLengths', formatLengths)
 }

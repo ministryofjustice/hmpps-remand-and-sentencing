@@ -6,4 +6,6 @@ export default class CourtCaseDetailsPage extends Page {
   }
 
   appearancesSummaryList = (): PageElement => cy.get('[data-qa=appearancesSummaryList]')
+
+  appearancesTable = (): PageElement => cy.get('[data-qa=appearancesTable]')
 }

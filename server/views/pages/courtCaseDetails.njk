@@ -2,6 +2,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "../components/offenceCard/macro.njk" import offenceCard %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 
 {% set pageTitle = applicationName + " - Court case details" %}
@@ -47,6 +48,18 @@
                         }))%}
 {% endif %}
 
+{% set appearanceRows = [] %}
+
+{% for appearance in courtCaseDetails.appearances %}
+    {% set appearanceRows = (appearanceRows.concat([[
+        { text: appearance.courtCaseReference },
+        { text: appearance.courtCode },
+        { text: appearance.appearanceDate | formatDate },
+        { text: appearance.outcome },
+        { html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">Edit</a>' }
+    ]]))%}
+{% endfor %}
+
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
@@ -59,6 +72,33 @@
                         "data-qa": "appearancesSummaryList"
                     }
                 }) }}
+
+            <h2 class="govuk-heading-m govuk-!-margin-top-8">
+                Appearances <span class="govuk-body">({{ courtCaseDetails.appearanceTotal }})</span>
+            </h2>
+
+            {{ govukTable({
+                head: [
+                {
+                    text: "Case reference"
+                }, 
+                {
+                    text: "Location"
+                },
+                {
+                    text: "Warrant date"
+                },
+                {
+                    text: "Outcome"
+                },
+                {
+                    text: ""
+                }],
+                rows: appearanceRows,
+                attributes: {
+                    "data-qa": "appearancesTable"
+                }
+            })}}
 
         </div>
     </div>

@@ -51,5 +51,7 @@ export default class CourtCaseDetailsModel {
         periodLengthToSentenceLength(pageCourtCaseContent.latestAppearance.overallSentenceLength),
       )
     }
+    this.appearanceTotal = pageCourtCaseContent.appearances.length
+    this.appearances = pageCourtCaseContent.appearances
   }
 }

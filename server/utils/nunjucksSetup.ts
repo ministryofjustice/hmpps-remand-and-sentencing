@@ -8,7 +8,6 @@ import {
   personStatus,
   firstNameSpaceLastName,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
-import type { SentenceLength } from 'models'
 import { formatDate, formatDateTime, formatLengths, initialiseName, pluraliseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'

@@ -3,6 +3,8 @@
 {% from "../components/offenceCard/macro.njk" import offenceCard %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+
 
 
 {% set pageTitle = applicationName + " - Court case details" %}
@@ -51,13 +53,43 @@
 {% set appearanceRows = [] %}
 
 {% for appearance in courtCaseDetails.appearances %}
+
+    {% set offenceDetailsHtml %}
+                {% for charge in appearance.charges %}
+                    {{
+                                offenceCard({
+                                    offenceCode: charge.offenceCode,
+                                    offenceName: offenceMap[charge.offenceCode],
+                                    offenceStartDate: charge.offenceStartDate,
+                                    offenceEndDate: charge.offenceEndDate,
+                                    outcome: charge.outcome,
+                                    countNumber: charge.sentence.countNumber,
+                                    terrorRelated: charge.terrorRelated,
+                                    isSentenced: charge.sentence,
+                                    custodialSentenceLength: charge.sentence.custodialPeriodLength | periodLengthToSentenceLength,
+                                    licencePeriodLength: charge.sentence.extendedLicensePeriodLength | periodLengthToSentenceLength,
+                                    sentenceServeType: charge.sentence.sentenceServeType,
+                                    consecutiveTo: charge.sentence.consecutiveToChargeNumber,
+                                    sentenceType: charge.sentence.sentenceType
+                                })
+                            }}
+                {% endfor %}
+                {% endset %}
+
     {% set appearanceRows = (appearanceRows.concat([[
-        { text: appearance.courtCaseReference },
-        { text: appearance.courtCode },
-        { text: appearance.appearanceDate | formatDate },
-        { text: appearance.outcome },
-        { html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">Edit</a>' }
-    ]]))%}
+        { text: appearance.courtCaseReference, classes: "no-bottom-border" },
+        { text: appearance.courtCode, classes: "no-bottom-border" },
+        { text: appearance.appearanceDate | formatDate, classes: "no-bottom-border" },
+        { text: appearance.outcome, classes: "no-bottom-border" },
+        { html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">Edit</a>', classes: "no-bottom-border" }
+    ],[
+    {
+        html: govukDetails({
+            summaryText: 'Offences (' + appearance.charges | length  + ')',
+            html: offenceDetailsHtml
+        }), 
+        colspan: 5
+    }]]))%}
 {% endfor %}
 
 {% block content %}

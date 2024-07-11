@@ -11,6 +11,7 @@ import {
 import { formatDate, formatDateTime, formatLengths, initialiseName, pluraliseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
+import { periodLengthToSentenceLength } from './mappingUtils'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -102,4 +103,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('pluraliseName', pluraliseName)
 
   njkEnv.addFilter('formatLengths', formatLengths)
+
+  njkEnv.addFilter('periodLengthToSentenceLength', periodLengthToSentenceLength)
 }

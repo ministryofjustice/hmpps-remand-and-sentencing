@@ -69,7 +69,6 @@ const getOffenceDetails = detailsElement => {
     .textContent.replace(/\r?\n|\r|\n/g, '')
     .trim()
   const offences = offenceCardContainerToOffenceCard(detailsElement.querySelector('.govuk-details__text'))
-  console.log(offences)
   return { [summary]: offences }
 }
 

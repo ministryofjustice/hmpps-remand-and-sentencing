@@ -40,7 +40,7 @@ context('Court Case details Page', () => {
     it('appearances table shows correct data', () => {
       courtCaseDetailsPage
         .appearancesTable()
-        .getTable()
+        .getTableAndOffences()
         .should('deep.equal', [
           {
             'Case reference': 'C894623',
@@ -50,11 +50,29 @@ context('Court Case details Page', () => {
             '': 'Edit',
           },
           {
+            'Offences (1)': [
+              {
+                offenceCardHeader: 'PS90037 An offence description',
+                'Committed on': '15 12 2023',
+                Outcome: 'Remand in Custody (Bail Refused)',
+              },
+            ],
+          },
+          {
             'Case reference': 'F23325',
             Location: 'Birmingham Crown Court',
             'Warrant date': '15 10 2022',
             Outcome: 'Sentence Postponed',
             '': 'Edit',
+          },
+          {
+            'Offences (1)': [
+              {
+                offenceCardHeader: 'PS90037 An offence description',
+                'Committed on': '15 12 2023',
+                Outcome: 'Remand in Custody (Bail Refused)',
+              },
+            ],
           },
         ])
     })

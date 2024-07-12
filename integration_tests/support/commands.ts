@@ -36,6 +36,42 @@ const getTable = subject => {
   )
 }
 
+const getTableAndOffences = subject => {
+  if (subject.get().length > 1) {
+    throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
+  }
+
+  const tableElement = subject.get()[0]
+  const headers = [...tableElement.querySelectorAll('thead th')].map(e => e.textContent.replace(/\s/g, ' '))
+
+  const rows = [...tableElement.querySelectorAll('tbody tr')].map(row => {
+    return [...row.querySelectorAll('td, th')].map(e => {
+      if (e.firstElementChild && e.firstElementChild.tagName === 'DETAILS') {
+        return getOffenceDetails(e.querySelector('details'))
+      }
+      return e.textContent.replace(/\r?\n|\r|\n/g, '').trim()
+    })
+  })
+
+  return rows.map(row =>
+    row.reduce((acc, curr, index) => {
+      if (typeof curr === 'string') {
+        return { ...acc, [headers[index]]: curr }
+      }
+      return { ...acc, ...curr }
+    }, {}),
+  )
+}
+
+const getOffenceDetails = detailsElement => {
+  const summary = detailsElement
+    .querySelector('summary')
+    .textContent.replace(/\r?\n|\r|\n/g, '')
+    .trim()
+  const offences = offenceCardContainerToOffenceCard(detailsElement.querySelector('.govuk-details__text'))
+  return { [summary]: offences }
+}
+
 const getSummaryList = subject => {
   if (subject.get().length > 1) {
     throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
@@ -94,6 +130,10 @@ const getOffenceCards = subject => {
 
   const offenceCardContainer = subject.get()[0]
 
+  return offenceCardContainerToOffenceCard(offenceCardContainer)
+}
+
+const offenceCardContainerToOffenceCard = offenceCardContainer => {
   return [...offenceCardContainer.querySelectorAll('.offence-card-offence-details')].map(offenceCardElement => {
     const offenceCardHeader = offenceCardElement
       .querySelector('.govuk-heading-s')
@@ -123,6 +163,7 @@ Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
 Cypress.Commands.add('getTaskList', { prevSubject: true }, getTaskList)
 Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 Cypress.Commands.add('getOffenceCards', { prevSubject: true }, getOffenceCards)
+Cypress.Commands.add('getTableAndOffences', { prevSubject: true }, getTableAndOffences)
 
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
   cy.visit(

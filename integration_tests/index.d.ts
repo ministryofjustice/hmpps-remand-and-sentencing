@@ -10,6 +10,7 @@ declare namespace Cypress {
     getTaskList()
     getOffenceCards()
     trimTextContent()
+    getTableAndOffences()
 
     createCourtCase(personId: string, courtCaseNumber: string, appearanceReference: string): Chainable<AUTWindow>
     setupComponentsStubs(): Chainable<AUTWindow>

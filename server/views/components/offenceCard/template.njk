@@ -85,8 +85,8 @@
 
 
 
-<div class="offence-card {% if params.isSentenced %} sentence-card {% endif %} {% if params.canEdit %} offence-card-edit {% endif %}">
-    <div class="offence-card-offence-details">
+<div class="offence-card{% if params.isSentenced %} sentence-card {% endif %}{% if params.canEdit %} offence-card-edit {% endif %}">
+    <div class="offence-card-offence-details{% if params.detailsClasses %} {{ params.detailsClasses }} {% endif %}">
         {% if params.countNumber %}
             <span class="govuk-body-s">Count {{ params.countNumber }}</span>
         {% endif %}

@@ -55,26 +55,27 @@
 {% for appearance in courtCaseDetails.appearances %}
 
     {% set offenceDetailsHtml %}
-                {% for charge in appearance.charges %}
-                    {{
-                                offenceCard({
-                                    offenceCode: charge.offenceCode,
-                                    offenceName: offenceMap[charge.offenceCode],
-                                    offenceStartDate: charge.offenceStartDate,
-                                    offenceEndDate: charge.offenceEndDate,
-                                    outcome: charge.outcome,
-                                    countNumber: charge.sentence.countNumber,
-                                    terrorRelated: charge.terrorRelated,
-                                    isSentenced: charge.sentence,
-                                    custodialSentenceLength: charge.sentence.custodialPeriodLength | periodLengthToSentenceLength,
-                                    licencePeriodLength: charge.sentence.extendedLicensePeriodLength | periodLengthToSentenceLength,
-                                    sentenceServeType: charge.sentence.sentenceServeType,
-                                    consecutiveTo: charge.sentence.consecutiveToChargeNumber,
-                                    sentenceType: charge.sentence.sentenceType
-                                })
-                            }}
-                {% endfor %}
-                {% endset %}
+        {% for charge in appearance.charges %}
+            {{
+                        offenceCard({
+                            offenceCode: charge.offenceCode,
+                            offenceName: offenceMap[charge.offenceCode],
+                            offenceStartDate: charge.offenceStartDate,
+                            offenceEndDate: charge.offenceEndDate,
+                            outcome: charge.outcome,
+                            countNumber: charge.sentence.countNumber,
+                            terrorRelated: charge.terrorRelated,
+                            isSentenced: charge.sentence,
+                            custodialSentenceLength: charge.sentence.custodialPeriodLength | periodLengthToSentenceLength,
+                            licencePeriodLength: charge.sentence.extendedLicensePeriodLength | periodLengthToSentenceLength,
+                            sentenceServeType: charge.sentence.sentenceServeType,
+                            consecutiveTo: charge.sentence.consecutiveToChargeNumber,
+                            sentenceType: charge.sentence.sentenceType,
+                            detailsClasses: 'govuk-!-padding-4'
+                        })
+                    }}
+        {% endfor %}
+    {% endset %}
 
     {% set appearanceRows = (appearanceRows.concat([[
         { text: appearance.courtCaseReference, classes: "no-bottom-border" },
@@ -112,19 +113,24 @@
             {{ govukTable({
                 head: [
                 {
-                    text: "Case reference"
+                    text: "Case reference",
+                    classes: "govuk-!-width-one-quarter"
                 }, 
                 {
-                    text: "Location"
+                    text: "Location",
+                    classes: "govuk-!-width-one-quarter"
                 },
                 {
-                    text: "Warrant date"
+                    text: "Warrant date",
+                    classes: "govuk-!-width-one-quarter"
                 },
                 {
-                    text: "Outcome"
+                    text: "Outcome",
+                    classes: "govuk-!-width-one-quarter"
                 },
                 {
-                    text: ""
+                    text: "",
+                    classes: "govuk-!-width-one-quarter"
                 }],
                 rows: appearanceRows,
                 attributes: {

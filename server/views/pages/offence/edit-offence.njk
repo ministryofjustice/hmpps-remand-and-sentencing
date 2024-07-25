@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
+{% set offenceSentence = 'sentence' if offence.sentence else 'offence' %}
 
 {% set pageTitle = applicationName + " - Edit an " + offenceSentence %}
 {% block content %}

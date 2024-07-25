@@ -60,7 +60,7 @@ context('Check Offence Answers Page', () => {
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
       offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'offence-outcome').click()
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'offence-outcome').click()
       const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
       offenceOffenceOutcomePage.radioLabelSelector('Remanded in custody').click()
       offenceOffenceOutcomePage.button().click()

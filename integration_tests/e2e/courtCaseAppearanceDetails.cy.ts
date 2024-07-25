@@ -1,5 +1,7 @@
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseAppearanceDetailsPage'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
+import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
+import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import Page from '../pages/page'
 
 context('Court Case Appearance details Page', () => {
@@ -130,6 +132,44 @@ context('Court Case Appearance details Page', () => {
         'Overall case outcome': 'Imprisonment',
         'Overall sentence length': '4 years',
       })
+    })
+
+    it('can edit sentence information', () => {
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
+        .click()
+      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage
+        .editFieldLink(
+          'A1234AB',
+          'edit',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '0',
+          'offence-date',
+        )
+        .click()
+      const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '15')
+      offenceOffenceDatePage.monthDateInput('offenceStartDate').should('have.value', '12')
+      offenceOffenceDatePage.yearDateInput('offenceStartDate').should('have.value', '2023')
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').type('25')
+      offenceOffenceDatePage.button().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        'Commited on': '25 12 2023',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '4 years',
+        'Consecutive or concurrent': 'Forthwith',
+      })
+      offenceEditOffencePage.button().click()
+      Page.verifyOnPageTitle(
+        CourtCaseAppearanceDetailsPage,
+        'Edit appearance C894623 at Birmingham Crown Court on 15 12 2023',
+      )
     })
   })
 })

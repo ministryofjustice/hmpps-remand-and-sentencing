@@ -73,7 +73,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit count number and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'count-number').click()
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'count-number').click()
       const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
       offenceCountNumberPage.input().should('have.value', '1')
       offenceCountNumberPage.input().clear()
@@ -91,7 +91,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit offence date and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'offence-date').click()
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'offence-date').click()
       const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
       offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '12')
       offenceOffenceDatePage.monthDateInput('offenceStartDate').should('have.value', '5')
@@ -111,7 +111,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit offence and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'offence-code').click()
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'offence-code').click()
       cy.task('stubGetOffenceByCode', { offenceCode: 'AB11000', offenceDescription: 'Another offence description' })
       cy.task('stubGetOffencesByCodes', { offenceCode: 'AB11000', offenceDescription: 'Another offence description' })
       const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
@@ -139,7 +139,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit sentence length and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'sentence-length').click()
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'sentence-length').click()
       const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
       offenceSentenceLengthPage.yearsInput().should('have.value', '4')
       offenceSentenceLengthPage.yearsInput().clear()
@@ -160,7 +160,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit sentence serve type and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'sentence-serve-type').click()
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'sentence-serve-type').click()
       const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
       offenceSentenceServeTypePage.radioSelector('FORTHWITH').should('be.checked')
       offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
@@ -177,7 +177,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit sentence type and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('A1234AB', '0', '0', '0', 'sentence-type').click()
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
       offenceSentenceTypePage.radioSelector('SDS (Standard Determinate Sentence)').should('be.checked')
       offenceSentenceTypePage.radioLabelSelector('A/FINE').click()

@@ -1079,7 +1079,9 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       offenceMap,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      backLink: res.locals.isAddCourtAppearance
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
     })
   }
 

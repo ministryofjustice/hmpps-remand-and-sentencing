@@ -1,7 +1,9 @@
 <span class="govuk-caption-l">
     {% if isAddCourtCase %}
         Add a court case
-        {% else %}
+    {% elif isAddCourtAppearance %}
         Add an appearance
+    {% else %}
+        Appearance {{ courtAppearance.caseReferenceNumber }} at {{ courtAppearance.courtName }} on {{ courtAppearance.warrantDate | formatDate }}
     {% endif %}
 </span>

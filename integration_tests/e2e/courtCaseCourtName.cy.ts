@@ -7,7 +7,7 @@ context('Court Case Court Name Page', () => {
     cy.task('happyPathStubs')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
-    courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
+    courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
   })
 
   it('displays person details', () => {

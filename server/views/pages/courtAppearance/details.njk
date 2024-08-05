@@ -203,8 +203,8 @@
                     offenceCard({
                         offenceCode: offence.offenceCode,
                         offenceName: offenceMap[offence.offenceCode],
-                        offenceStartDate: offence.offenceStartDate,
-                        offenceEndDate: offence.offenceEndDate,
+                        offenceStartDate: offence.offenceStartDate | formatDate,
+                        offenceEndDate: offence.offenceEndDate | formatDate,
                         outcome: offence.outcome,
                         countNumber: offence.sentence.countNumber,
                         terrorRelated: offence.terrorRelated,

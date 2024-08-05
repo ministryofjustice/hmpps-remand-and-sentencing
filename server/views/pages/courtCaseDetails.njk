@@ -60,8 +60,8 @@
                         offenceCard({
                             offenceCode: charge.offenceCode,
                             offenceName: offenceMap[charge.offenceCode],
-                            offenceStartDate: charge.offenceStartDate,
-                            offenceEndDate: charge.offenceEndDate,
+                            offenceStartDate: charge.offenceStartDate | formatDate,
+                            offenceEndDate: charge.offenceEndDate | formatDate,
                             outcome: charge.outcome,
                             countNumber: charge.sentence.chargeNumber,
                             terrorRelated: charge.terrorRelated,

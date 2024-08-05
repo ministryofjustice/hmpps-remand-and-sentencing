@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import type { SentenceLength } from 'models'
 import config from '../config'
 
 const properCase = (word: string): string =>
@@ -52,11 +51,4 @@ export const pluraliseName = (name: string) => {
     return `${name}'`
   }
   return `${name}'s`
-}
-
-export const formatLengths = (lengths: SentenceLength) => {
-  if (lengths) {
-    return lengths.periodOrder.reduce((prev, current) => `${prev} ${lengths[current]} ${current}`, '')
-  }
-  return null
 }

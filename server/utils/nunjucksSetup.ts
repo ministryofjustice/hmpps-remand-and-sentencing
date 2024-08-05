@@ -7,8 +7,9 @@ import {
   personDateOfBirth,
   personStatus,
   firstNameSpaceLastName,
+  formatLengths,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
-import { formatDate, formatDateTime, formatLengths, initialiseName, pluraliseName } from './utils'
+import { formatDate, formatDateTime, initialiseName, pluraliseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import { periodLengthToSentenceLength } from './mappingUtils'

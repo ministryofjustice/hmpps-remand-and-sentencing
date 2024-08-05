@@ -1,7 +1,7 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% from "../../components/offenceCard/macro.njk" import offenceCard %}
+{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 
 {% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
 

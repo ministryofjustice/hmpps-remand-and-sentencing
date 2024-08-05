@@ -1,10 +1,10 @@
 import dayjs from 'dayjs'
+import { formatLengths } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import {
   PageCourtCaseAppearance,
   PageCourtCaseContent,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
-import { formatLengths } from '../../utils/utils'
 import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
 
 export default class CourtCaseDetailsModel {

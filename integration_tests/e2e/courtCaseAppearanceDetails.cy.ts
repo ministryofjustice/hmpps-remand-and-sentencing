@@ -1,4 +1,5 @@
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseAppearanceDetailsPage'
+import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
@@ -84,6 +85,41 @@ context('Court Case Appearance details Page', () => {
         'Case reference': 'T12345678',
         'Warrant date': '15 12 2023',
         'Court name': 'Birmingham Crown Court',
+        'Overall case outcome': 'Remand in Custody (Bail Refused)',
+      })
+    })
+
+    it('can edit court name and return back to details page', () => {
+      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'C894623',
+        'Warrant date': '15 12 2023',
+        'Court name': 'Birmingham Crown Court',
+        'Overall case outcome': 'Remand in Custody (Bail Refused)',
+      })
+
+      courtCaseAppearanceDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'court-name',
+        )
+        .click()
+
+      const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'Edit the court name')
+      courtCaseCourtNamePage.autoCompleteInput().clear()
+      courtCaseCourtNamePage.autoCompleteInput().type('cou')
+      courtCaseCourtNamePage.firstAutoCompleteOption().click()
+      courtCaseCourtNamePage.button().click()
+
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseAppearanceDetailsPage,
+        'Edit appearance C894623 at Bradford Crown Court on 15 12 2023',
+      )
+      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'C894623',
+        'Warrant date': '15 12 2023',
+        'Court name': 'Bradford Crown Court',
         'Overall case outcome': 'Remand in Custody (Bail Refused)',
       })
     })

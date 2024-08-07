@@ -15,7 +15,7 @@
                 {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukSelect({
                     label: {
-                        text: "What is the court name?",
+                        text: "What is the court name?" if isAddCourtAppearance else "Edit the court name",
                         classes: "govuk-label--l",
                         isPageHeading: true
                     },

@@ -54,7 +54,7 @@ context('Court Case Check Answers Page', () => {
 
   it('clicking court name change and submitting goes back to check answers page', () => {
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'court-name').click()
-    const courtCaseCourtNamePage = Page.verifyOnPage(CourtCaseCourtNamePage)
+    const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()

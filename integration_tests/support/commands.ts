@@ -199,7 +199,7 @@ Cypress.Commands.add(
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
-    const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('15')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
@@ -242,7 +242,7 @@ Cypress.Commands.add(
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
 
-    const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()

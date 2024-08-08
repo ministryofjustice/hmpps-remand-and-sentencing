@@ -185,7 +185,7 @@ context('Court Case Appearance details Page', () => {
           'offence-date',
         )
         .click()
-      const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Edit the offence dates')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '15')
       offenceOffenceDatePage.monthDateInput('offenceStartDate').should('have.value', '12')
       offenceOffenceDatePage.yearDateInput('offenceStartDate').should('have.value', '2023')

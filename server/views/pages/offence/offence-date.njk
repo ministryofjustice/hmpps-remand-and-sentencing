@@ -12,7 +12,7 @@
 
                 {% call govukFieldset({
                     legend: {
-                        text: "Enter the offence date",
+                        text: "Enter the offence date" if isAddCourtAppearance else "Edit the offence dates",
                         classes: "govuk-fieldset__legend--l",
                         isPageHeading: true
                     }

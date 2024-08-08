@@ -92,7 +92,7 @@ context('Add Offence Edit offence Page', () => {
 
     it('can edit offence date and return to edit page', () => {
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'offence-date').click()
-      const offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '12')
       offenceOffenceDatePage.monthDateInput('offenceStartDate').should('have.value', '5')
       offenceOffenceDatePage.yearDateInput('offenceStartDate').should('have.value', '2023')

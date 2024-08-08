@@ -9,7 +9,7 @@ context('Add Offence Offence Date Page', () => {
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
-    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
   })
 
   it('displays person details', () => {
@@ -27,7 +27,7 @@ context('Add Offence Offence Date Page', () => {
 
   it('submitting without entering anything in the inputs results in an error', () => {
     offenceOffenceDatePage.button().click()
-    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
@@ -43,7 +43,7 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type((futureDate.month() + 1).toString())
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type(futureDate.year().toString())
     offenceOffenceDatePage.button().click()
-    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
@@ -55,7 +55,7 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('1')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
     offenceOffenceDatePage.button().click()
-    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
@@ -68,7 +68,7 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
     offenceOffenceDatePage.dayDateInput('offenceEndDate').type('18')
     offenceOffenceDatePage.button().click()
-    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
@@ -83,7 +83,7 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage.monthDateInput('offenceEndDate').type('1')
     offenceOffenceDatePage.yearDateInput('offenceEndDate').type('2024')
     offenceOffenceDatePage.button().click()
-    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
@@ -99,7 +99,7 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage.monthDateInput('offenceEndDate').type((futureDate.month() + 1).toString())
     offenceOffenceDatePage.yearDateInput('offenceEndDate').type(futureDate.year().toString())
     offenceOffenceDatePage.button().click()
-    offenceOffenceDatePage = Page.verifyOnPage(OffenceOffenceDatePage)
+    offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()

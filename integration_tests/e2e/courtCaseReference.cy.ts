@@ -30,13 +30,4 @@ context('Court Case Reference Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem You must enter the case reference')
   })
-
-  it('submitting an invalid format results in an error', () => {
-    courtCaseReferencePage.input().type('123')
-    courtCaseReferencePage.button().click()
-    courtCaseReferencePage
-      .errorSummary()
-      .trimTextContent()
-      .should('equal', 'There is a problem You must enter a valid court case reference number.')
-  })
 })

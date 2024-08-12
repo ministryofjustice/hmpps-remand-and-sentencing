@@ -36,7 +36,7 @@ context('Court Case Check Answers Page', () => {
 
   it('clicking court case reference number change and submitting goes back to check answers page', () => {
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'reference').click()
-    const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type('T12345678')
     courtCaseReferencePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)

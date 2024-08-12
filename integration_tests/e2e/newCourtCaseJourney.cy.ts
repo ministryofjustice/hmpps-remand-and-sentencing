@@ -71,7 +71,7 @@ context('New Court Case journey', () => {
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
 
-    const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type('T12345678')
     courtCaseReferencePage.button().click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
@@ -273,7 +273,7 @@ context('New Court Case journey', () => {
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
 
-    const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type('T12345678')
     courtCaseReferencePage.button().click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)

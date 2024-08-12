@@ -16,7 +16,7 @@
 
                 {% call govukFieldset({
                     legend: {
-                        text: "Enter the date of the next court appearance",
+                        text: "Enter the date of the next court appearance" if isAddCourtAppearance else "Edit the date of the next court appearance",
                         classes: "govuk-fieldset__legend--l",
                         isPageHeading: true
                     }

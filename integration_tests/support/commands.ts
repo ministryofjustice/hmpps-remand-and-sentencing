@@ -171,7 +171,7 @@ Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: stri
   )
   const courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
   courtCaseCheckAnswersPage.changeLink(personId, courtCaseNumber, appearanceReference, 'reference').click()
-  const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+  const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
   courtCaseReferencePage.input().type(courtCaseNumber)
   courtCaseReferencePage.button().click()
   courtCaseCheckAnswersPage.button().click()

@@ -74,7 +74,7 @@ context('Court Case Appearance details Page', () => {
         )
         .click()
 
-      const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+      const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
       courtCaseReferencePage.input().clear().type('T12345678')
       courtCaseReferencePage.button().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
@@ -135,7 +135,7 @@ context('Court Case Appearance details Page', () => {
         )
         .click()
 
-      const courtCaseReferencePage = Page.verifyOnPage(CourtCaseReferencePage)
+      const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
       courtCaseReferencePage.input().clear().type('T12345678')
       courtCaseReferencePage.button().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(

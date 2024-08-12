@@ -16,7 +16,7 @@
                 {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukInput({
                     label: {
-                        text: "Enter the case reference",
+                        text: "Enter the case reference" if isAddCourtAppearance else "Edit case reference",
                         classes: "govuk-label--l",
                         isPageHeading: true
                     },

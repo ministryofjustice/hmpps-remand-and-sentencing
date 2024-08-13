@@ -1020,7 +1020,7 @@ export default class CourtCaseRoutes {
     let nextHearingDateMonth: number | string = nextHearingDateForm['nextHearingDate-month']
     let nextHearingDateYear: number | string = nextHearingDateForm['nextHearingDate-year']
     let { nextHearingTime } = nextHearingDateForm
-    if (nextHearingDateValue && !nextHearingDateForm) {
+    if (nextHearingDateValue && Object.keys(nextHearingDateForm).length === 0) {
       const nextHearingDate = new Date(nextHearingDateValue)
       nextHearingDateDay = nextHearingDate.getDate()
       nextHearingDateMonth = nextHearingDate.getMonth() + 1
@@ -1042,7 +1042,9 @@ export default class CourtCaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-type`,
+      backLink: res.locals.isAddCourtAppearance
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-type`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
     })
   }
 

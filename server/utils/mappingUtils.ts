@@ -88,6 +88,9 @@ export const courtAppearanceToCreateCourtAppearance = (
     ...(nextCourtAppearance && { nextCourtAppearance }),
     ...(courtAppearance.overallSentenceLength && {
       overallSentenceLength: sentenceLengthToCreatePeriodLength(courtAppearance.overallSentenceLength),
+      ...(courtAppearance.overallConvictionDate && {
+        overallConvictionDate: dayjs(courtAppearance.overallConvictionDate).format('YYYY-MM-DD'),
+      }),
     }),
   } as CreateCourtAppearance
 }
@@ -234,6 +237,9 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     offences: pageCourtCaseAppearance.charges.map(chargeToOffence),
     ...(pageCourtCaseAppearance.overallSentenceLength && {
       overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),
+    }),
+    ...(pageCourtCaseAppearance.overallConvictionDate && {
+      overallConvictionDate: dayjs(pageCourtCaseAppearance.overallConvictionDate).toDate(),
     }),
   } as CourtAppearance
 }

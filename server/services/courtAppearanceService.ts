@@ -4,6 +4,7 @@ import type {
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
   CourtCaseNextHearingDateForm,
+  CourtCaseOverallConvictionDateForm,
   CourtCaseReferenceForm,
   CourtCaseSelectCourtNameForm,
   CourtCaseSelectReferenceForm,
@@ -510,6 +511,62 @@ export default class CourtAppearanceService {
       session.courtAppearances[nomsId] = courtAppearance
     }
     return errors
+  }
+
+  setOverallConvictionDate(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    overallConvictionDateForm: CourtCaseOverallConvictionDateForm,
+  ): {
+    text: string
+    href: string
+  }[] {
+    let isValidOverallConvictionDateRule = ''
+    if (
+      overallConvictionDateForm['overallConvictionDate-day'] &&
+      overallConvictionDateForm['overallConvictionDate-month'] &&
+      overallConvictionDateForm['overallConvictionDate-year']
+    ) {
+      const overallConvictionDateString = toDateString(
+        overallConvictionDateForm['overallConvictionDate-year'],
+        overallConvictionDateForm['overallConvictionDate-month'],
+        overallConvictionDateForm['overallConvictionDate-day'],
+      )
+      isValidOverallConvictionDateRule = `|isValidDate:${overallConvictionDateString}|isPastDate:${overallConvictionDateString}`
+    }
+
+    const errors = validate(
+      overallConvictionDateForm,
+      {
+        'overallConvictionDate-day': `required${isValidOverallConvictionDateRule}`,
+        'overallConvictionDate-month': `required`,
+        'overallConvictionDate-year': `required`,
+      },
+      {
+        'required.overallConvictionDate-year': 'Overall conviction date must include year',
+        'required.overallConvictionDate-month': 'Overall conviction date must include month',
+        'required.overallConvictionDate-day': 'Overall conviction date must include day',
+        'isValidDate.overallConvictionDate-day': 'This date does not exist.',
+        'isPastDate.overallConvictionDate-day': 'Overall conviction date must be in the past',
+      },
+    )
+    if (errors.length === 0) {
+      const overallConvictionDate = dayjs({
+        year: overallConvictionDateForm['overallConvictionDate-year'],
+        month: parseInt(overallConvictionDateForm['overallConvictionDate-month'], 10) - 1,
+        day: overallConvictionDateForm['overallConvictionDate-day'],
+      })
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.overallConvictionDate = overallConvictionDate.toDate()
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  getOverallConvictionDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {
+    const { overallConvictionDate } = this.getCourtAppearance(session, nomsId)
+    return overallConvictionDate ? new Date(overallConvictionDate) : undefined
   }
 
   sessionCourtAppearanceExists(

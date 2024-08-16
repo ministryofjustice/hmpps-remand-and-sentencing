@@ -4,7 +4,37 @@
  */
 
 export interface paths {
+  '/recall/{recallUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve a recall
+     * @description This endpoint will retrieve the details of a recall
+     */
+    get: operations['getRecall']
+    /**
+     * Update a recall (or create one with the passed in details)
+     * @description This endpoint will update a recall (or create one with the passed in details)
+     */
+    put: operations['updateRecall']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/court-case/{courtCaseUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Retrieve court case details
      * @description This endpoint will retrieve court case details
@@ -15,8 +45,20 @@ export interface paths {
      * @description This endpoint will create a court case
      */
     put: operations['putCourtCase']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-appearance/{appearanceUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Retrieve court appearance details
      * @description This endpoint will retrieve court appearance details
@@ -27,55 +69,195 @@ export interface paths {
      * @description This endpoint will create a court appearance in a given court case
      */
     put: operations['updateCourtAppearance']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/recall': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create a recall
+     * @description This endpoint will create a recall
+     */
+    post: operations['createRecall']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-case': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Create Court case
      * @description This endpoint will create a court case
      */
     post: operations['createCourtCase']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-appearance': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Create Court appearance
      * @description This endpoint will create a court appearance in a given court case
      */
     post: operations['createCourtAppearance']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/recall/person/{prisonerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve all recalls for a person
+     * @description This endpoint will retrieve  all recalls for a person
+     */
+    get: operations['getRecallsByPrisonerId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/person/{prisonerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Retrieve person details
      * @description This endpoint will retrieve person details
      */
     get: operations['getPersonDetails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-case/{courtCaseUuid}/latest-appearance': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Retrieve latest court appearance of court case
      * @description This endpoint will retrieve latest court appearance of court case
      */
     get: operations['getLatestAppearanceDetails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-case/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Retrieve all court cases for person
      * @description This endpoint will retrieve all court cases for a person
      */
     get: operations['searchCourtCases']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/charge/{chargeUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Retrieve charge details
      * @description This endpoint will retrieve charge details
      */
     get: operations['getChargeDetails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
+    CreateRecall: {
+      prisonerId: string
+      /** Format: date */
+      recallDate: string
+      /** Format: date */
+      returnToCustodyDate: string
+      /** @enum {string} */
+      recallType:
+        | 'FOURTEEN_DAY_FIXED_TERM_RECALL'
+        | 'TWENTY_EIGHT_DAY_FIXED_TERM_RECALL'
+        | 'STANDARD_RECALL'
+        | 'HDC_RECALL'
+      createdByUsername: string
+    }
+    SaveRecallResponse: {
+      /** Format: uuid */
+      recallUuid: string
+    }
     CreateCharge: {
       /** Format: uuid */
       chargeUuid?: string
@@ -104,6 +286,8 @@ export interface components {
       overallSentenceLength?: components['schemas']['CreatePeriodLength']
       nextCourtAppearance?: components['schemas']['CreateNextCourtAppearance']
       charges: components['schemas']['CreateCharge'][]
+      /** Format: date */
+      overallConvictionDate?: string
     }
     CreateCourtCase: {
       prisonerId: string
@@ -112,7 +296,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 16:56:58.187162 */
+      /** @example 11:15:39.165374728 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -137,6 +321,8 @@ export interface components {
       sentenceServeType: string
       consecutiveToChargeNumber?: string
       sentenceType: string
+      /** Format: date */
+      convictionDate?: string
     }
     CreateCourtCaseResponse: {
       courtCaseUuid: string
@@ -144,6 +330,24 @@ export interface components {
     CreateCourtAppearanceResponse: {
       /** Format: uuid */
       appearanceUuid: string
+    }
+    Recall: {
+      /** Format: uuid */
+      recallUniqueIdentifier: string
+      prisonerId: string
+      /** Format: date */
+      recallDate: string
+      /** Format: date */
+      returnToCustodyDate: string
+      /** @enum {string} */
+      recallType:
+        | 'FOURTEEN_DAY_FIXED_TERM_RECALL'
+        | 'TWENTY_EIGHT_DAY_FIXED_TERM_RECALL'
+        | 'STANDARD_RECALL'
+        | 'HDC_RECALL'
+      /** Format: date-time */
+      createdAt: string
+      createdByUsername: string
     }
     PersonDetails: {
       personId: string
@@ -183,6 +387,8 @@ export interface components {
       nextCourtAppearance?: components['schemas']['NextCourtAppearance']
       charges: components['schemas']['Charge'][]
       overallSentenceLength?: components['schemas']['PeriodLength']
+      /** Format: date */
+      overallConvictionDate?: string
     }
     CourtCase: {
       prisonerId: string
@@ -193,7 +399,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 16:56:58.187162 */
+      /** @example 11:15:39.165374728 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -218,6 +424,8 @@ export interface components {
       sentenceServeType: string
       consecutiveToChargeNumber?: string
       sentenceType: string
+      /** Format: date */
+      convictionDate?: string
     }
     Pageable: {
       /** Format: int32 */
@@ -227,33 +435,33 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       last?: boolean
-      pageable?: components['schemas']['PageableObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      sort?: components['schemas']['SortObject'][]
-      /** Format: int32 */
-      number?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
+      /** Format: int32 */
+      number?: number
+      sort?: components['schemas']['SortObject'][]
+      /** Format: int32 */
+      numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
-      /** Format: int32 */
-      pageNumber?: number
-      /** Format: int32 */
-      pageSize?: number
-      paged?: boolean
-      unpaged?: boolean
-      sort?: components['schemas']['SortObject'][]
       /** Format: int64 */
       offset?: number
+      sort?: components['schemas']['SortObject'][]
+      /** Format: int32 */
+      pageSize?: number
+      /** Format: int32 */
+      pageNumber?: number
+      paged?: boolean
+      unpaged?: boolean
     }
     SortObject: {
       direction?: string
@@ -269,58 +477,158 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
-export type external = Record<string, never>
-
 export interface operations {
-  /**
-   * Retrieve court case details
-   * @description This endpoint will retrieve court case details
-   */
-  getCourtCaseDetails: {
+  getRecall: {
     parameters: {
+      query?: never
+      header?: never
       path: {
-        courtCaseUuid: string
+        recallUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns recall details */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Recall']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Recall']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Recall']
+        }
+      }
+      /** @description Not found if no recall uuid */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Recall']
+        }
+      }
+    }
+  }
+  updateRecall: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        recallUuid: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateRecall']
       }
     }
     responses: {
+      /** @description Returns court case UUID */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SaveRecallResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SaveRecallResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SaveRecallResponse']
+        }
+      }
+    }
+  }
+  getCourtCaseDetails: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        courtCaseUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
       /** @description Returns court case details */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtCase']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtCase']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtCase']
         }
       }
       /** @description Not found if no court case at uuid */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtCase']
         }
       }
     }
   }
-  /**
-   * Create Court case
-   * @description This endpoint will create a court case
-   */
   putCourtCase: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         courtCaseUuid: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -330,76 +638,99 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtCaseResponse']
         }
       }
       /** @description Returns court case UUID */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtCaseResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtCaseResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtCaseResponse']
         }
       }
     }
   }
-  /**
-   * Retrieve court appearance details
-   * @description This endpoint will retrieve court appearance details
-   */
   getCourtAppearanceDetails: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         appearanceUuid: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns court appearance details */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtAppearance']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtAppearance']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtAppearance']
         }
       }
       /** @description Not found if no court appearance at uuid */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtAppearance']
         }
       }
     }
   }
-  /**
-   * Create Court appearance
-   * @description This endpoint will create a court appearance in a given court case
-   */
   updateCourtAppearance: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         appearanceUuid: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -409,35 +740,91 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtAppearanceResponse']
         }
       }
       /** @description Returns court case UUID */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtAppearanceResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtAppearanceResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtAppearanceResponse']
         }
       }
     }
   }
-  /**
-   * Create Court case
-   * @description This endpoint will create a court case
-   */
+  createRecall: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateRecall']
+      }
+    }
+    responses: {
+      /** @description Returns recall UUID */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SaveRecallResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SaveRecallResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SaveRecallResponse']
+        }
+      }
+    }
+  }
   createCourtCase: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CreateCourtCase']
@@ -446,29 +833,40 @@ export interface operations {
     responses: {
       /** @description Returns court case UUID */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtCaseResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtCaseResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtCaseResponse']
         }
       }
     }
   }
-  /**
-   * Create Court appearance
-   * @description This endpoint will create a court appearance in a given court case
-   */
   createCourtAppearance: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CreateCourtAppearance']
@@ -477,155 +875,246 @@ export interface operations {
     responses: {
       /** @description Returns court case UUID */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtAppearanceResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtAppearanceResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CreateCourtAppearanceResponse']
         }
       }
     }
   }
-  /**
-   * Retrieve person details
-   * @description This endpoint will retrieve person details
-   */
-  getPersonDetails: {
+  getRecallsByPrisonerId: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         prisonerId: string
       }
+      cookie?: never
     }
+    requestBody?: never
+    responses: {
+      /** @description Returns all recalls for person */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Recall'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Recall'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Recall'][]
+        }
+      }
+    }
+  }
+  getPersonDetails: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Returns person details */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PersonDetails']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PersonDetails']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PersonDetails']
         }
       }
     }
   }
-  /**
-   * Retrieve latest court appearance of court case
-   * @description This endpoint will retrieve latest court appearance of court case
-   */
   getLatestAppearanceDetails: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         courtCaseUuid: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns latest appearance details */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtAppearance']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtAppearance']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtAppearance']
         }
       }
       /** @description Not found if no court case at uuid */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtAppearance']
         }
       }
     }
   }
-  /**
-   * Retrieve all court cases for person
-   * @description This endpoint will retrieve all court cases for a person
-   */
   searchCourtCases: {
     parameters: {
       query: {
         prisonerId: string
         pageable: components['schemas']['Pageable']
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns court cases */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PageCourtCase']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PageCourtCase']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['PageCourtCase']
         }
       }
     }
   }
-  /**
-   * Retrieve charge details
-   * @description This endpoint will retrieve charge details
-   */
   getChargeDetails: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         chargeUuid: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Returns charge details */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Charge']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Charge']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Charge']
         }
       }
       /** @description Not found if no charge at uuid */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Charge']
         }

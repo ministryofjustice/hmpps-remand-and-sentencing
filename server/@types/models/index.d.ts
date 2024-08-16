@@ -27,6 +27,7 @@ declare module 'models' {
     appearanceInformationAccepted?: boolean
     offenceSentenceAccepted?: boolean
     nextCourtAppearanceAccepted?: boolean
+    overallConvictionDate?: Date
   }
 
   export interface Offence {

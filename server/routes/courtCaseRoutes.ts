@@ -17,6 +17,7 @@ import type {
   CourtCaseTaggedBailForm,
   CourtCaseAlternativeSentenceLengthForm,
   SentenceLengthForm,
+  CourtCaseOverallConvictionDateForm,
 } from 'forms'
 import type { CourtCase } from 'models'
 import trimForm from '../utils/trim'
@@ -908,6 +909,71 @@ export default class CourtCaseRoutes {
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
+    )
+  }
+
+  public getOverallConvictionDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query
+    const overallConvictionDateForm = (req.flash('overallConvictionDateForm')[0] ||
+      {}) as CourtCaseOverallConvictionDateForm
+    let overallConvictionDateDay: number | string = overallConvictionDateForm['overallConvictionDate-day']
+    let overallConvictionDateMonth: number | string = overallConvictionDateForm['overallConvictionDate-month']
+    let overallConvictionDateYear: number | string = overallConvictionDateForm['overallConvictionDate-year']
+    const overallConvictionDateValue = this.courtAppearanceService.getOverallConvictionDate(req.session, nomsId)
+    if (overallConvictionDateValue && Object.keys(overallConvictionDateForm).length === 0) {
+      const overallConvictionDate = new Date(overallConvictionDateValue)
+      overallConvictionDateDay = overallConvictionDate.getDate()
+      overallConvictionDateMonth = overallConvictionDate.getMonth() + 1
+      overallConvictionDateYear = overallConvictionDate.getFullYear()
+    }
+
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length`
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`
+    } else if (submitToCheckAnswers) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
+    }
+
+    return res.render('pages/courtAppearance/overall-conviction-date', {
+      nomsId,
+      submitToCheckAnswers,
+      overallConvictionDateDay,
+      overallConvictionDateMonth,
+      overallConvictionDateYear,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink,
+    })
+  }
+
+  public submitOverallConvictionDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const overallConvictionDateForm = trimForm<CourtCaseOverallConvictionDateForm>(req.body)
+    const errors = this.courtAppearanceService.setOverallConvictionDate(req.session, nomsId, overallConvictionDateForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('overallConvictionDateForm', { ...overallConvictionDateForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date`,
+      )
+    }
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
+      )
+    }
+    const { submitToCheckAnswers } = req.query
+    if (submitToCheckAnswers) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date-applied-all`,
     )
   }
 

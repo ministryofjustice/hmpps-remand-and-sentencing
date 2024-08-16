@@ -1,0 +1,56 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+
+{% set pageTitle = applicationName + " - Add a court case Overall conviction Date" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-overall-conviction-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/appearanceCaption.njk" %}
+                {{ govukDateInput({
+                    id: "overall-conviction-date",
+                    namePrefix: "overallConvictionDate",
+                    errorMessage: errors | findErrorsBeginningWith('overallConvictionDate'),
+                    fieldset: {
+                        legend: {
+                            text: "Enter the Overall conviction date",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                        {
+                            id: 'overallConvictionDate-day',
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('overallConvictionDate-day') else ''),
+                            name:"day",
+                            value: overallConvictionDateDay
+                        },
+                        {
+                            id: 'overallConvictionDate-month',
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('overallConvictionDate-month') else ''),
+                            name:"month",
+                            value: overallConvictionDateMonth
+                        },
+                        {
+                            id: 'overallConvictionDate-year',
+                            classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('overallConvictionDate-year') else ''),
+                            name:"year",
+                            value: overallConvictionDateYear
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

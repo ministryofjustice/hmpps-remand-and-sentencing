@@ -551,13 +551,13 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const warrantDate = dayjs({
+      const overallConvictionDate = dayjs({
         year: overallConvictionDateForm['overallConvictionDate-year'],
         month: parseInt(overallConvictionDateForm['overallConvictionDate-month'], 10) - 1,
         day: overallConvictionDateForm['overallConvictionDate-day'],
       })
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.overallConvictionDate = warrantDate.toDate()
+      courtAppearance.overallConvictionDate = overallConvictionDate.toDate()
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

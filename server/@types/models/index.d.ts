@@ -28,6 +28,7 @@ declare module 'models' {
     offenceSentenceAccepted?: boolean
     nextCourtAppearanceAccepted?: boolean
     overallConvictionDate?: Date
+    overallConvictionDateAppliedAll?: string
   }
 
   export interface Offence {
@@ -47,6 +48,7 @@ declare module 'models' {
     sentenceServeType?: string
     consecutiveTo?: string
     sentenceType?: string
+    convctionDate?: Date
   }
 
   export interface SentenceLength {

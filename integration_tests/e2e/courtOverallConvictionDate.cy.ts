@@ -32,7 +32,7 @@ context('Court Case Overall Conviction Date Page', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem Overall conviction date must include day Overall conviction date must include month Overall conviction date must include year',
+        'There is a problem Conviction date must include day Conviction date must include month Conviction date must include year',
       )
   })
 
@@ -58,6 +58,6 @@ context('Court Case Overall Conviction Date Page', () => {
     courtCaseOverallConvictionDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem Overall conviction date must be in the past')
+      .should('equal', 'There is a problem Conviction date must be in the past')
   })
 })

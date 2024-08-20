@@ -544,11 +544,11 @@ export default class CourtAppearanceService {
         'overallConvictionDate-year': `required`,
       },
       {
-        'required.overallConvictionDate-year': 'Overall conviction date must include year',
-        'required.overallConvictionDate-month': 'Overall conviction date must include month',
-        'required.overallConvictionDate-day': 'Overall conviction date must include day',
+        'required.overallConvictionDate-year': 'Conviction date must include year',
+        'required.overallConvictionDate-month': 'Conviction date must include month',
+        'required.overallConvictionDate-day': 'Conviction date must include day',
         'isValidDate.overallConvictionDate-day': 'This date does not exist.',
-        'isPastDate.overallConvictionDate-day': 'Overall conviction date must be in the past',
+        'isPastDate.overallConvictionDate-day': 'Conviction date must be in the past',
       },
     )
     if (errors.length === 0) {

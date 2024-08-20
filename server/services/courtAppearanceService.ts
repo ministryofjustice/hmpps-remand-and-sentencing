@@ -4,6 +4,7 @@ import type {
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
   CourtCaseNextHearingDateForm,
+  CourtCaseOverallConvictionDateAppliedAllForm,
   CourtCaseOverallConvictionDateForm,
   CourtCaseReferenceForm,
   CourtCaseSelectCourtNameForm,
@@ -567,6 +568,44 @@ export default class CourtAppearanceService {
   getOverallConvictionDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {
     const { overallConvictionDate } = this.getCourtAppearance(session, nomsId)
     return overallConvictionDate ? new Date(overallConvictionDate) : undefined
+  }
+
+  setOverallConvictionDateAppliedAll(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    overallConvictionDateAppliedAllForm: CourtCaseOverallConvictionDateAppliedAllForm,
+  ) {
+    const errors = validate(
+      overallConvictionDateAppliedAllForm,
+      {
+        overallConvictionDateAppliedAll: 'required',
+      },
+      {
+        'required.overallConvictionDateAppliedAll':
+          'Select ‘Yes’ if this conviction date applies to all offences on the warrant.',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.caseOutcomeAppliedAll = overallConvictionDateAppliedAllForm.overallConvictionDateAppliedAll
+      if (overallConvictionDateAppliedAllForm.overallConvictionDateAppliedAll === 'true') {
+        courtAppearance.offences = courtAppearance.offences.map(offence => {
+          // eslint-disable-next-line no-param-reassign
+          const sentence = offence.sentence ?? {}
+          sentence.convctionDate = courtAppearance.overallConvictionDate
+          // eslint-disable-next-line no-param-reassign
+          offence.sentence = sentence
+          return offence
+        })
+      }
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  getOverallConvictionDateAppliedAll(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtAppearance(session, nomsId).overallConvictionDateAppliedAll
   }
 
   sessionCourtAppearanceExists(

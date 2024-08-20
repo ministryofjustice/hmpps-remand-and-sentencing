@@ -18,6 +18,7 @@ import type {
   CourtCaseAlternativeSentenceLengthForm,
   SentenceLengthForm,
   CourtCaseOverallConvictionDateForm,
+  CourtCaseOverallConvictionDateAppliedAllForm,
 } from 'forms'
 import type { CourtCase } from 'models'
 import trimForm from '../utils/trim'
@@ -974,6 +975,74 @@ export default class CourtCaseRoutes {
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date-applied-all`,
+    )
+  }
+
+  public getOverallConvictionDateAppliedAll: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query
+    const overallConvictionDate: Date = this.courtAppearanceService.getOverallConvictionDate(req.session, nomsId)
+    let overallConvictionDateAppliedAllForm = (req.flash('overallConvictionDateAppliedAllForm')[0] ||
+      {}) as CourtCaseOverallConvictionDateAppliedAllForm
+    if (Object.keys(overallConvictionDateAppliedAllForm).length === 0) {
+      overallConvictionDateAppliedAllForm = {
+        overallConvictionDateAppliedAll: this.courtAppearanceService.getOverallConvictionDateAppliedAll(
+          req.session,
+          nomsId,
+        ),
+      }
+    }
+
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date`
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`
+    } else if (submitToCheckAnswers) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
+    }
+
+    return res.render('pages/courtAppearance/overall-conviction-date-applied-all', {
+      nomsId,
+      submitToCheckAnswers,
+      overallConvictionDate,
+      overallConvictionDateAppliedAllForm,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink,
+    })
+  }
+
+  public submitOverallConvictionDateAppliedAll: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const overallConvictionDateAppliedAllForm = trimForm<CourtCaseOverallConvictionDateAppliedAllForm>(req.body)
+    const { submitToCheckAnswers } = req.query
+    const errors = this.courtAppearanceService.setOverallConvictionDateAppliedAll(
+      req.session,
+      nomsId,
+      overallConvictionDateAppliedAllForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('overallConvictionDateAppliedAllForm', { ...overallConvictionDateAppliedAllForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/overall-conviction-date-applied-all${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
+      )
+    }
+
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
+      )
+    }
+    if (submitToCheckAnswers) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
     )
   }
 

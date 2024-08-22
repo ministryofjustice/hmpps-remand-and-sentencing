@@ -9,6 +9,7 @@ declare module 'models' {
     caseReferenceNumber?: string
     warrantDate?: Date
     courtName?: string
+    courtCode?: string
     nextHearingCourtSelect?: boolean
     nextHearingCourtName?: string
     overallCaseOutcome?: string

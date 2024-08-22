@@ -12,6 +12,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <input type="hidden" name="courtCode" id="court-code" value="">
                 {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukSelect({
                     label: {
@@ -25,67 +26,7 @@
                     id: "court-name",
                     name: "courtName",
                     errorMessage: errors | findError('courtName'),
-                    items: [
-                        {
-                            text: "",
-                            selected: not courtNameForm.courtName
-                        },
-                        {
-                            value:"Bedford Magistrates Court",
-                            text: "Bedford Magistrates Court",
-                            selected: courtNameForm.courtName === "Bedford Magistrates Court"
-                        },
-                        {
-                            value: "Birmingham Crown Court",
-                            text: "Birmingham Crown Court",
-                            selected: courtNameForm.courtName === "Birmingham Crown Court"
-                        },
-                        {
-                            value: "Birmingham Magistrates Court",
-                            text: "Birmingham Magistrates Court",
-                            selected: courtNameForm.courtName === "Birmingham Magistrates Court"
-                        },
-                        {
-                            value: "Bradford Magistrates Court",
-                            text: "Bradford Magistrates Court",
-                            selected: courtNameForm.courtName === "Bradford Magistrates Court"
-                        },
-                        {
-                            value: "Bradford Crown Court",
-                            text: "Bradford Crown Court",
-                            selected: courtNameForm.courtName === "Bradford Crown Court"
-                        },
-                        {
-                            value: "Carlisle Magistrates Court",
-                            text: "Carlisle Magistrates Court",
-                            selected: courtNameForm.courtName === "Carlisle Magistrates Court"
-                        },
-                        {
-                            value: "Chester Combined Court Centre",
-                            text: "Chester Combined Court Centre",
-                            selected: courtNameForm.courtName === "Chester Combined Court Centre"
-                        },
-                        {
-                            value: "Doncaster Magistrates Court",
-                            text: "Doncaster Magistrates Court",
-                            selected: courtNameForm.courtName === "Doncaster Magistrates Court"
-                        },
-                        {
-                            value: "Leeds Combined Court Centre",
-                            text: "Leeds Combined Court Centre",
-                            selected: courtNameForm.courtName === "Leeds Combined Court Centre"
-                        },
-                        {
-                            value: "Luton Crown Court",
-                            text: "Luton Crown Court",
-                            selected: courtNameForm.courtName === "Luton Crown Court"
-                        },
-                        {
-                            value: "Luton Magistrates Court",
-                            text: "Luton Magistrates Court",
-                            selected: courtNameForm.courtName === "Luton Magistrates Court"
-                        }
-                    ]
+                    items: []
                 }) }}
 
                 {{ govukButton({

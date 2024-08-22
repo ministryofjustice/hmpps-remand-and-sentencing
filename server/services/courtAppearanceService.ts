@@ -166,6 +166,7 @@ export default class CourtAppearanceService {
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.courtName = courtNameForm.courtName
+      courtAppearance.courtCode = courtNameForm.courtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -191,6 +192,7 @@ export default class CourtAppearanceService {
       )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.courtName = latestCourtAppearance.nextCourtAppearance?.courtCode
+      courtAppearance.courtCode = latestCourtAppearance.nextCourtAppearance?.courtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -199,6 +201,10 @@ export default class CourtAppearanceService {
 
   getCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).courtName
+  }
+
+  getCourtCode(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtAppearance(session, nomsId).courtCode
   }
 
   setWarrantType(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, warrantType: string) {

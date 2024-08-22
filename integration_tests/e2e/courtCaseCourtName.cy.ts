@@ -5,6 +5,7 @@ context('Court Case Court Name Page', () => {
   let courtCaseCourtNamePage: CourtCaseCourtNamePage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubSearchCourt')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
     courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')

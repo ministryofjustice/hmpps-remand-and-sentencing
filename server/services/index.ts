@@ -10,6 +10,7 @@ import CaseOutcomeService from './caseOutcomeService'
 import PrisonerSearchService from './prisonerSearchService'
 import AuditService from './auditService'
 import UserService from './userService'
+import CourtRegisterService from './courtRegisterService'
 
 export const services = () => {
   const { applicationInfo, feComponentsClient, hmppsAuthClient, hmppsAuditClient } = dataAccess()
@@ -34,6 +35,7 @@ export const services = () => {
 
   const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient)
   const auditService = new AuditService(hmppsAuditClient)
+  const courtRegisterService = new CourtRegisterService(hmppsAuthClient)
 
   return {
     applicationInfo,
@@ -48,6 +50,7 @@ export const services = () => {
     caseOutcomeService,
     prisonerSearchService,
     auditService,
+    courtRegisterService,
   }
 }
 

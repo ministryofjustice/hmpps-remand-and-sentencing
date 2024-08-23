@@ -12,7 +12,7 @@ generic-service:
     HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
     PRISON_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
-    COURT_REGISTER_API_URL: "https://court-register-dev.hmpps.service.justice.gov.uk"
+    COURT_REGISTER_API_URL: "https://court-register-api-dev.hmpps.service.justice.gov.uk"
     MANAGE_OFFENCES_API_URL: "https://manage-offences-api-dev.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: DEV
     DIGITAL_PRISON_SERVICES_URL: "https://digital-dev.prison.service.justice.gov.uk"

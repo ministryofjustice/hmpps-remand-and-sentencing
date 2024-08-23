@@ -109,17 +109,18 @@ context('Court Case Appearance details Page', () => {
       const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'Edit the court name')
       courtCaseCourtNamePage.autoCompleteInput().clear()
       courtCaseCourtNamePage.autoCompleteInput().type('cou')
+      courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
       courtCaseCourtNamePage.firstAutoCompleteOption().click()
       courtCaseCourtNamePage.button().click()
 
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Bradford Crown Court on 15 12 2023',
+        'Edit appearance C894623 at Accrington Youth Court on 15 12 2023',
       )
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
-        'Court name': 'Bradford Crown Court',
+        'Court name': 'Accrington Youth Court',
         'Overall case outcome': 'Remand in Custody (Bail Refused)',
       })
     })

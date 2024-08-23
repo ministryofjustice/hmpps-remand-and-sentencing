@@ -81,6 +81,7 @@ context('New Court Case journey', () => {
     courtCaseWarrantDatePage.button().click()
     const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()
 
@@ -101,7 +102,7 @@ context('New Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
       'Warrant date': '12 05 2023',
-      'Court name': 'Bradford Crown Court',
+      'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
@@ -283,6 +284,7 @@ context('New Court Case journey', () => {
     courtCaseWarrantDatePage.button().click()
     const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()
 
@@ -300,7 +302,7 @@ context('New Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
       'Warrant date': '12 05 2023',
-      'Court name': 'Bradford Crown Court',
+      'Court name': 'Accrington Youth Court',
       'Tagged bail': '5 days',
       'Overall sentence length': '4 years 5 months',
     })

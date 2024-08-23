@@ -350,7 +350,7 @@ export default class CourtCaseRoutes {
     )
     let selectCourtNameForm = (req.flash('selectCourtNameForm')[0] || {}) as CourtCaseSelectCourtNameForm
     if (Object.keys(selectCourtNameForm).length === 0) {
-      const court = this.courtAppearanceService.getCourtName(req.session, nomsId)
+      const court = this.courtAppearanceService.getCourtCode(req.session, nomsId)
       if (court) {
         selectCourtNameForm = {
           courtNameSelect: court === latestCourtAppearance.nextCourtAppearance?.courtCode ? 'true' : 'false',
@@ -416,6 +416,7 @@ export default class CourtCaseRoutes {
     if (Object.keys(courtNameForm).length === 0) {
       courtNameForm = {
         courtName: this.courtAppearanceService.getCourtName(req.session, nomsId),
+        courtCode: this.courtAppearanceService.getCourtCode(req.session, nomsId),
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`

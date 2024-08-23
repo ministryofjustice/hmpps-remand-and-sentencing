@@ -98,4 +98,50 @@ export default {
       },
     })
   },
+
+  stubGetCourtById: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/court-register-api/courts/id/ACCRYC',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          courtId: 'ACCRYC',
+          courtName: 'Accrington Youth Court',
+          courtDescription: 'Accrington Youth Court',
+          type: {
+            courtType: 'COU',
+            courtName: 'County Court/County Divorce Ct',
+          },
+          active: true,
+          buildings: [
+            {
+              id: 10000,
+              courtId: 'ACCRYC',
+              subCode: 'AAABBB',
+              addressLine1: 'Crown House',
+              addressLine2: '452 West Street',
+              addressLine3: 'Swansea',
+              addressLine4: 'West Cross',
+              addressLine5: 'South Glamorgan',
+              postcode: 'SA3 4HT',
+              contacts: [
+                {
+                  id: 10000,
+                  courtId: 'ACCRYC',
+                  buildingId: 12312,
+                  type: 'TEL',
+                  detail: '555 55555',
+                },
+              ],
+              active: true,
+            },
+          ],
+        },
+      },
+    })
+  },
 }

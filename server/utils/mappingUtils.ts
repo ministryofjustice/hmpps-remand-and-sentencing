@@ -47,7 +47,7 @@ const courtAppearanceToCreateNextCourtAppearance = (
     const appearanceDate = dayjs(courtAppearance.nextHearingDate)
     nextCourtAppearance = {
       appearanceDate: appearanceDate.format('YYYY-MM-DD'),
-      courtCode: courtAppearance.nextHearingCourtName,
+      courtCode: courtAppearance.nextHearingCourtCode,
       appearanceType: courtAppearance.nextHearingType,
       ...(courtAppearance.nextHearingTimeSet ? { appearanceTime: appearanceDate.format('HH:mm:[00].[000000]') } : {}),
     } as CreateNextCourtAppearance

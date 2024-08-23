@@ -4,154 +4,334 @@
  */
 
 export interface paths {
-  '/queue-admin/retry-dlq/{dlqName}': {
-    put: operations['retryDlq']
-  }
-  '/queue-admin/retry-all-dlqs': {
-    put: operations['retryAllDlqs']
-  }
-  '/queue-admin/purge-queue/{queueName}': {
-    put: operations['purgeQueue']
-  }
   '/court-maintenance/id/{courtId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update specified court details
-     * @description Updates court information, role required is MAINTAIN_REF_DATA
+     * @description Updates court information, role required is ROLE_COURT_REGISTER__COURT_DETAILS__RW
      */
     put: operations['updateCourt']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-maintenance/id/{courtId}/buildings/{buildingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update specified building details
-     * @description Updates building information, role required is MAINTAIN_REF_DATA
+     * @description Updates building information, role required is ROLE_COURT_REGISTER__COURT_DETAILS__RW
      */
     put: operations['updateBuilding']
+    post?: never
     /**
      * Delete specified building
-     * @description Deletes building information, role required is MAINTAIN_REF_DATA
+     * @description Deletes building information, role required is ROLE_COURT_REGISTER__COURT_DETAILS__RW
      */
     delete: operations['deleteBuilding']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-maintenance/id/{courtId}/buildings/{buildingId}/contacts/{contactId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
     /**
      * Update specified building contact details
-     * @description Updates contact information, role required is MAINTAIN_REF_DATA
+     * @description Updates contact information, role required is ROLE_COURT_REGISTER__COURT_DETAILS__RW
      */
     put: operations['updateContact']
+    post?: never
     /**
      * Delete specified building contact details
-     * @description Deletes contact information, role required is MAINTAIN_REF_DATA
+     * @description Deletes contact information, role required is ROLE_COURT_REGISTER__COURT_DETAILS__RW
      */
     delete: operations['deleteContact']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-maintenance': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Add a new court
-     * @description Adds a new court information, role required is MAINTAIN_REF_DATA
+     * @description Adds a new court information, role required is ROLE_COURT_REGISTER__COURT_DETAILS__RW
      */
     post: operations['insertCourt']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-maintenance/id/{courtId}/buildings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Add a new building to a court
-     * @description Adds a new building to court, role required is MAINTAIN_REF_DATA
+     * @description Adds a new building to court, role required is ROLE_COURT_REGISTER__COURT_DETAILS__RW
      */
     post: operations['insertBuilding']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/court-maintenance/id/{courtId}/buildings/{buildingId}/contacts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * Add a new contact to a building
-     * @description Adds a new contact to building, role required is MAINTAIN_REF_DATA
+     * @description Adds a new contact to building, role required is ROLE_COURT_REGISTER__COURT_DETAILS__RW
      */
     post: operations['insertContact']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
-  '/queue-admin/get-dlq-messages/{dlqName}': {
-    get: operations['getDlqMessages']
+  '/admin/refresh-data': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['refreshData']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get all active courts
      * @description All courts (active only)
      */
     get: operations['getActiveCourts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/types': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get all types of court
      * @description All court types
      */
     get: operations['getCourtTypes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/paged': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get page of courts
      * @description Page of courts
      */
     get: operations['getPageOfCourts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/id/{courtId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get specified court
      * @description Information on a specific court
      */
     get: operations['getCourtFromId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/id/{courtId}/buildings/main': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get the main building by court ID
      * @description Information on the main building by court ID
      */
     get: operations['findMainBuilding']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/id/{courtId}/buildings/id/{buildingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get specified building
      * @description Information on a specific building
      */
     get: operations['getBuildingFromId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/id/{courtId}/buildings/id/{buildingId}/contacts/id/{contactId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get specified contact
      * @description Information on a specific contact
      */
     get: operations['getContactFromId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/buildings/sub-code/{subCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get specified building by sub-code
      * @description Information on a specific building by sub-code
      */
     get: operations['getBuildingFromSubCode']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/all': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * Get all active and inactive courts
      * @description All active/inactive courts
      */
     get: operations['getAllCourts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
-    DlqMessage: {
-      body: {
-        [key: string]: Record<string, never>
-      }
-      messageId: string
-    }
-    RetryDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      messages: components['schemas']['DlqMessage'][]
-    }
-    PurgeQueueResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
     /** @description Court Update Record */
     UpdateCourtDto: {
       /**
@@ -175,7 +355,7 @@ export interface components {
     /** @description Building */
     BuildingDto: {
       /**
-       * Format: int64
+       * Format: int32
        * @description Unique ID of the building
        * @example 10000
        */
@@ -191,40 +371,35 @@ export interface components {
        */
       subCode?: string
       /**
-       * @description Building Name
+       * @description Address line 1
        * @example Crown House
        */
-      buildingName?: string
+      addressLine1?: string
       /**
-       * @description Street Number and Name
+       * @description Address Line 2
        * @example 452 West Street
        */
-      street?: string
+      addressLine2?: string
       /**
-       * @description Locality
-       * @example West Cross
-       */
-      locality?: string
-      /**
-       * @description Town/City
+       * @description Address Line 3
        * @example Swansea
        */
-      town?: string
+      addressLine3?: string
       /**
-       * @description County
+       * @description Address Line 4
+       * @example West Cross
+       */
+      addressLine4?: string
+      /**
+       * @description Address Line 5
        * @example South Glamorgan
        */
-      county?: string
+      addressLine5?: string
       /**
        * @description Postcode
        * @example SA3 4HT
        */
       postcode?: string
-      /**
-       * @description Country
-       * @example UK
-       */
-      country?: string
       /** @description List of contacts for this building by type */
       contacts?: components['schemas']['ContactDto'][]
       /** @description Whether the building is active */
@@ -233,7 +408,7 @@ export interface components {
     /** @description Contact */
     ContactDto: {
       /**
-       * Format: int64
+       * Format: int32
        * @description Unique ID of the contact
        * @example 10000
        */
@@ -244,7 +419,7 @@ export interface components {
        */
       courtId: string
       /**
-       * Format: int64
+       * Format: int32
        * @description Building Id for this contact
        * @example 12312
        */
@@ -310,40 +485,35 @@ export interface components {
     /** @description Building Update Record */
     UpdateBuildingDto: {
       /**
-       * @description Building Name
+       * @description Address Line 1
        * @example Crown House
        */
-      buildingName?: string
+      addressLine1?: string
       /**
-       * @description Street Number and Name
+       * @description Address Line 2
        * @example 452 West Street
        */
-      street?: string
+      addressLine2?: string
       /**
-       * @description Locality
-       * @example West Cross
-       */
-      locality?: string
-      /**
-       * @description Town/City
+       * @description Address Line 3
        * @example Swansea
        */
-      town?: string
+      addressLine3?: string
       /**
-       * @description County
+       * @description Address Line 4
+       * @example West Cross
+       */
+      addressLine4?: string
+      /**
+       * @description Address Line 5
        * @example South Glamorgan
        */
-      county?: string
+      addressLine5?: string
       /**
        * @description Postcode
        * @example SA3 4HT
        */
       postcode?: string
-      /**
-       * @description Country
-       * @example UK
-       */
-      country?: string
       /**
        * @description Sub location code for referencing building
        * @example AAABBB
@@ -399,27 +569,20 @@ export interface components {
       /** @description List of buildings for this court */
       buildings: components['schemas']['UpdateBuildingDto'][]
     }
-    GetDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      /** Format: int32 */
-      messagesReturnedCount: number
-      messages: components['schemas']['DlqMessage'][]
-    }
     CourtDtoPage: {
       content?: components['schemas']['CourtDto'][]
       pageable?: components['schemas']['PageableObject']
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
+      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
-      sort?: components['schemas']['SortObject']
-      first?: boolean
+      sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -427,18 +590,20 @@ export interface components {
     PageableObject: {
       /** Format: int64 */
       offset?: number
-      sort?: components['schemas']['SortObject']
+      sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       pageSize?: number
-      paged?: boolean
       unpaged?: boolean
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
     }
     SortObject: {
-      empty?: boolean
-      sorted?: boolean
-      unsorted?: boolean
+      direction?: string
+      nullHandling?: string
+      ascending?: boolean
+      property?: string
+      ignoreCase?: boolean
     }
     Pageable: {
       /** Format: int32 */
@@ -454,58 +619,12 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
-export type external = Record<string, never>
-
 export interface operations {
-  retryDlq: {
-    parameters: {
-      path: {
-        dlqName: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['RetryDlqResult']
-        }
-      }
-    }
-  }
-  retryAllDlqs: {
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['RetryDlqResult'][]
-        }
-      }
-    }
-  }
-  purgeQueue: {
-    parameters: {
-      path: {
-        queueName: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['PurgeQueueResult']
-        }
-      }
-    }
-  }
-  /**
-   * Update specified court details
-   * @description Updates court information, role required is MAINTAIN_REF_DATA
-   */
   updateCourt: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -513,6 +632,7 @@ export interface operations {
          */
         courtId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -522,42 +642,55 @@ export interface operations {
     responses: {
       /** @description Court Information Updated */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtDto']
         }
       }
       /** @description Information request to update court */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorized to access this endpoint */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Incorrect permissions to make court update */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Court ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update specified building details
-   * @description Updates building information, role required is MAINTAIN_REF_DATA
-   */
   updateBuilding: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -570,6 +703,7 @@ export interface operations {
          */
         buildingId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -579,42 +713,55 @@ export interface operations {
     responses: {
       /** @description Building Information Updated */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BuildingDto']
         }
       }
       /** @description Information request to update building */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorized to access this endpoint */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Incorrect permissions to make building update */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Building ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Delete specified building
-   * @description Deletes building information, role required is MAINTAIN_REF_DATA
-   */
   deleteBuilding: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -627,40 +774,52 @@ export interface operations {
          */
         buildingId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Building Information Deleted */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BuildingDto']
         }
       }
       /** @description Unauthorized to access this endpoint */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Incorrect permissions to delete building */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Building ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Update specified building contact details
-   * @description Updates contact information, role required is MAINTAIN_REF_DATA
-   */
   updateContact: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -678,6 +837,7 @@ export interface operations {
          */
         contactId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -687,42 +847,55 @@ export interface operations {
     responses: {
       /** @description Building Contact Information Updated */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ContactDto']
         }
       }
       /** @description Information request to update contact */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorized to access this endpoint */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Incorrect permissions to make contact update */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Contact ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Delete specified building contact details
-   * @description Deletes contact information, role required is MAINTAIN_REF_DATA
-   */
   deleteContact: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -740,39 +913,55 @@ export interface operations {
          */
         contactId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Building Contact Information Deleted */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ContactDto']
         }
       }
       /** @description Unauthorized to access this endpoint */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Incorrect permissions to delete contact */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Contact ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Add a new court
-   * @description Adds a new court information, role required is MAINTAIN_REF_DATA
-   */
   insertCourt: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['InsertCourtDto']
@@ -781,36 +970,46 @@ export interface operations {
     responses: {
       /** @description Court Information Inserted */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtDto']
         }
       }
       /** @description Information request to add a court */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorized to access this endpoint */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Incorrect permissions to make court insert */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Add a new building to a court
-   * @description Adds a new building to court, role required is MAINTAIN_REF_DATA
-   */
   insertBuilding: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -818,6 +1017,7 @@ export interface operations {
          */
         courtId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -827,36 +1027,46 @@ export interface operations {
     responses: {
       /** @description Building Information Inserted */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BuildingDto']
         }
       }
       /** @description Invalid request to add a building */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorized to access this endpoint */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Incorrect permissions to make building insert */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Add a new contact to a building
-   * @description Adds a new contact to building, role required is MAINTAIN_REF_DATA
-   */
   insertContact: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -869,6 +1079,7 @@ export interface operations {
          */
         buildingId: string
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -878,80 +1089,100 @@ export interface operations {
     responses: {
       /** @description Contact Information Inserted */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ContactDto']
         }
       }
       /** @description Invalid request to add a contact */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorized to access this endpoint */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Incorrect permissions to add contact insert */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  getDlqMessages: {
+  refreshData: {
     parameters: {
-      query?: {
-        maxMessages?: number
-      }
-      path: {
-        dlqName: string
-      }
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['GetDlqResult']
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
         }
+        content?: never
       }
     }
   }
-  /**
-   * Get all active courts
-   * @description All courts (active only)
-   */
   getActiveCourts: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description All Active Court Information Returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtDto'][]
         }
       }
     }
   }
-  /**
-   * Get all types of court
-   * @description All court types
-   */
   getCourtTypes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description All Types of courts returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtTypeDto'][]
         }
       }
     }
   }
-  /**
-   * Get page of courts
-   * @description Page of courts
-   */
   getPageOfCourts: {
     parameters: {
       query?: {
@@ -972,22 +1203,27 @@ export interface operations {
         textSearch?: string
         pageable?: components['schemas']['Pageable']
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description All Court Information Returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtDtoPage'][]
         }
       }
     }
   }
-  /**
-   * Get specified court
-   * @description Information on a specific court
-   */
   getCourtFromId: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -995,34 +1231,43 @@ export interface operations {
          */
         courtId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Court Information Returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtDto']
         }
       }
       /** @description Incorrect request to get court information */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Court ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get the main building by court ID
-   * @description Information on the main building by court ID
-   */
   findMainBuilding: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court Id
@@ -1030,34 +1275,43 @@ export interface operations {
          */
         courtId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Building Information Returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BuildingDto']
         }
       }
       /** @description Incorrect request to get building information */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Building SubCode not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get specified building
-   * @description Information on a specific building
-   */
   getBuildingFromId: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -1070,34 +1324,43 @@ export interface operations {
          */
         buildingId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Building Information Returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BuildingDto']
         }
       }
       /** @description Incorrect request to get building information */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Building ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get specified contact
-   * @description Information on a specific contact
-   */
   getContactFromId: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Court ID
@@ -1115,34 +1378,43 @@ export interface operations {
          */
         contactId: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Contact Information Returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ContactDto']
         }
       }
       /** @description Incorrect request to get contact information */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Contact ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get specified building by sub-code
-   * @description Information on a specific building by sub-code
-   */
   getBuildingFromSubCode: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /**
          * @description Building Sub Code
@@ -1150,36 +1422,53 @@ export interface operations {
          */
         subCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Building Information Returned */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BuildingDto']
         }
       }
       /** @description Incorrect request to get building information */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Building SubCode not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /**
-   * Get all active and inactive courts
-   * @description All active/inactive courts
-   */
   getAllCourts: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description All Court Information Returned (Active only) */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['CourtDto'][]
         }

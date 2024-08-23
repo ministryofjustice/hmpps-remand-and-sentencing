@@ -8,6 +8,7 @@ import remandAndSentencingApi from './integration_tests/mockApis/remandAndSenten
 import documentManagementApi from './integration_tests/mockApis/documentManagementApi'
 import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
 import prisonApi from './integration_tests/mockApis/prisonApi'
+import courtRegisterApi from './integration_tests/mockApis/courtRegisterApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -31,6 +32,7 @@ export default defineConfig({
             components.stubComponents(),
             prisonApi.stubGetPrisonerImage(),
             prisonApi.stubGetUserCaseload(),
+            courtRegisterApi.stubSearchCourt(),
           ])
         },
         ...auth,
@@ -41,6 +43,7 @@ export default defineConfig({
         ...documentManagementApi,
         ...prisonerSearchApi,
         ...prisonApi,
+        ...courtRegisterApi,
       })
     },
     baseUrl: 'http://localhost:3007',

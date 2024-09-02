@@ -56,6 +56,7 @@ declare module 'forms' {
 
   export interface CourtCaseNextHearingCourtNameForm {
     nextHearingCourtName?: string
+    courtCode?: string
   }
 
   export interface OffenceOffenceDateForm {

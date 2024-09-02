@@ -12,6 +12,10 @@ export default class CourtRegisterService {
     return pageResult.content
   }
 
+  async findCourtById(courtCode: string, username: string): Promise<CourtDto> {
+    return new CourtRegisterApiClient(await this.getSystemClientToken(username)).findCourtById(courtCode)
+  }
+
   private async getSystemClientToken(username: string): Promise<string> {
     return this.hmppsAuthClient.getSystemClientToken(username)
   }

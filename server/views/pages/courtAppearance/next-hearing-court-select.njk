@@ -1,16 +1,17 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Next hearing been set" %}
+{% set pageTitle = applicationName + " - Add a court case Next court select" %}
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading">Is the next appearance at the same court?</h1>
     <p class="govuk-body-l">{{ courtName }}</p>
 {% endset %}
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-court-select">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-court-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukRadios({
@@ -25,12 +26,12 @@
                         {
                             value: "true",
                             text: "Yes",
-                            checked: nextHearingCourtSelect === true
+                            checked: nextHearingCourtSelectForm.nextHearingCourtSelect === true
                         },
                         {
                             value: "false",
                             text: "No",
-                            checked: nextHearingCourtSelect === false
+                            checked: nextHearingCourtSelectForm.nextHearingCourtSelect === false
                         }
                     ]
                 }) }}

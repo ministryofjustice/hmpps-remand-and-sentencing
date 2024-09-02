@@ -3,6 +3,7 @@ import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
+  CourtCaseNextHearingCourtSelectForm,
   CourtCaseNextHearingDateForm,
   CourtCaseOverallConvictionDateAppliedAllForm,
   CourtCaseOverallConvictionDateForm,
@@ -225,22 +226,30 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getNextHearingCourtSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+  getNextHearingCourtSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).nextHearingCourtSelect
   }
 
   setNextHearingCourtSelect(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
-    nextHearingCourtSelect: boolean,
+    nextHearingCourtSelectForm: CourtCaseNextHearingCourtSelectForm,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.nextHearingCourtSelect = nextHearingCourtSelect
-    if (nextHearingCourtSelect) {
-      courtAppearance.nextHearingCourtName = courtAppearance.courtName
+    const errors = validate(
+      nextHearingCourtSelectForm,
+      { nextHearingCourtSelect: 'required' },
+      { 'required.nextHearingCourtSelect': "Select 'Yes' if the next hearing will be at this same court." },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect
+      if (nextHearingCourtSelectForm.nextHearingCourtSelect === 'true') {
+        courtAppearance.nextHearingCourtCode = courtAppearance.courtCode
+      }
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
     }
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+    return errors
   }
 
   getNextHearingCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {

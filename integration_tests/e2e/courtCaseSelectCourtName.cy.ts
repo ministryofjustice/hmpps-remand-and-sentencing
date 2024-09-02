@@ -10,10 +10,7 @@ context('Select court name page', () => {
     cy.visit(
       '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/1/select-court-name',
     )
-    courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
-      CourtCaseSelectCourtNamePage,
-      'Was the appearance at Birmingham Crown Court?',
-    )
+    courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the appearance at ACCRYC?')
   })
 
   it('displays person details', () => {

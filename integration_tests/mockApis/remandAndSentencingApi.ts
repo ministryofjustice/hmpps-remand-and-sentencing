@@ -11,7 +11,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remanded in custody", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Accrington Youth Court", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remanded in custody", "terrorRelated": true}], "warrantType": "REMAND"}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Remanded in custody", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remanded in custody", "terrorRelated": true}], "warrantType": "REMAND"}]}',
           },
         ],
       },
@@ -136,6 +136,11 @@ export default {
                 },
               ],
             },
+            {
+              prisonerId: 'A1234AB',
+              courtCaseUuid: 'd316d5b7-022f-40e5-98ab-aebe8ac4abf4',
+              appearances: [],
+            },
           ],
           number: 0,
           sort: {
@@ -176,12 +181,12 @@ export default {
         jsonBody: {
           appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
           outcome: 'Remand in Custody (Bail Refused)',
-          courtCode: 'Birmingham Crown Court',
+          courtCode: 'ACCRYC',
           courtCaseReference: 'C894623',
           appearanceDate: '2023-12-15',
           nextCourtAppearance: {
             appearanceDate: '2024-12-15',
-            courtCode: 'Birmingham Crown Court',
+            courtCode: 'ACCRYC',
             appearanceType: 'Court appearance',
           },
           charges: [
@@ -213,7 +218,7 @@ export default {
             taggedBail: 5,
             nextCourtAppearance: {
               appearanceDate: '2023-10-18',
-              courtCode: 'Accrington Youth Court',
+              courtCode: 'ACCRYC',
               appearanceType: 'Court appearance',
             },
             charges: [
@@ -282,7 +287,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Remanded in custody", "courtCode": "Birmingham Crown Court", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remanded in custody", "terrorRelated": true}], "warrantType": "REMAND", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "Birmingham Crown Court", "appearanceType": "Court appearance"}}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Remanded in custody", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Remanded in custody", "terrorRelated": true}], "warrantType": "REMAND", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceType": "Court appearance"}}',
           },
         ],
       },
@@ -303,7 +308,7 @@ export default {
       body: {
         courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
         outcome: 'Remanded in custody',
-        courtCode: 'Birmingham Crown Court',
+        courtCode: 'ACCRYC',
         courtCaseReference: 'C894623',
         appearanceDate: '2023-05-12',
         charges: [
@@ -324,7 +329,7 @@ export default {
         taggedBail: 5,
         nextCourtAppearance: {
           appearanceDate: '2023-10-18',
-          courtCode: 'Birmingham Crown Court',
+          courtCode: 'ACCRYC',
           appearanceType: 'Court appearance',
         },
       },
@@ -340,7 +345,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Imprisonment", "courtCode": "Birmingham Crown Court", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence": {"chargeNumber": "1", "custodialPeriodLength": {"months": 5, "years": 4, "periodOrder": "years,months"}, "sentenceServeType": "FORTHWITH", "sentenceType": "SDS (Standard Determinate Sentence)"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months"}}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Imprisonment", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence": {"chargeNumber": "1", "custodialPeriodLength": {"months": 5, "years": 4, "periodOrder": "years,months"}, "sentenceServeType": "FORTHWITH", "sentenceType": "SDS (Standard Determinate Sentence)"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months"}}',
           },
         ],
       },
@@ -361,7 +366,7 @@ export default {
       body: {
         courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
         outcome: 'Imprisonment',
-        courtCode: 'Birmingham Crown Court',
+        courtCode: 'ACCRYC',
         courtCaseReference: 'C894623',
         appearanceDate: '2023-05-12',
         charges: [

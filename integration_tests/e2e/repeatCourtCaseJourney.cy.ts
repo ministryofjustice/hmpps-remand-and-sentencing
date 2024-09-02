@@ -36,6 +36,7 @@ context('Repeat Court Case journey', () => {
     cy.task('stubGetLatestCourtAppearance')
     cy.task('stubCreateCourtAppearance')
     cy.task('stubCreateSentenceCourtAppearance')
+    cy.task('stubGetCourtById')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -84,7 +85,7 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
       CourtCaseSelectCourtNamePage,
-      'Was the appearance at Birmingham Crown Court?',
+      'Was the appearance at ACCRYC?',
     )
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
     courtCaseSelectCourtNamePage.button().click()
@@ -106,7 +107,7 @@ context('Repeat Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'C894623',
       'Warrant date': '12 05 2023',
-      'Court name': 'Birmingham Crown Court',
+      'Court name': 'ACCRYC',
       'Overall case outcome': 'Remanded in custody',
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
@@ -296,7 +297,7 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
       CourtCaseSelectCourtNamePage,
-      'Was the appearance at Birmingham Crown Court?',
+      'Was the appearance at ACCRYC?',
     )
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
     courtCaseSelectCourtNamePage.button().click()
@@ -315,7 +316,7 @@ context('Repeat Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'C894623',
       'Warrant date': '12 05 2023',
-      'Court name': 'Birmingham Crown Court',
+      'Court name': 'ACCRYC',
       'Tagged bail': '5 days',
       'Overall sentence length': '4 years 5 months',
     })

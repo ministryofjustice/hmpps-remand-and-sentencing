@@ -4,6 +4,7 @@ import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourt
 import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
 import Page from '../pages/page'
+import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 
 context('Check Next Hearing Answers page', () => {
   let courtCaseCheckOffenceAnswersPage: CourtCaseCheckNextHearingAnswersPage
@@ -36,6 +37,14 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('clicking next hearing location and submitting goes back to check answers page', () => {
+    cy.task('stubGetCourtById')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
+    const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
+    courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
+    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.button().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-hearing-answers')
     courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-court-select').click()
     const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
     courtCaseNextHearingCourtSetPage.radioLabelSelector('false').click()

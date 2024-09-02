@@ -1,7 +1,7 @@
 import CourtCaseNextHearingCourtNamePage from '../pages/courtCaseNextHearingCourtNamePage'
 import Page from '../pages/page'
 
-context('Next hearing been set page', () => {
+context('Next hearing court name page', () => {
   let courtCaseNextHearingCourtNamePage: CourtCaseNextHearingCourtNamePage
   beforeEach(() => {
     cy.task('happyPathStubs')
@@ -22,5 +22,13 @@ context('Next hearing been set page', () => {
 
   it('button to continue is displayed', () => {
     courtCaseNextHearingCourtNamePage.button().should('contain.text', 'Continue')
+  })
+
+  it('submitting without entering anything in the input results in an error', () => {
+    courtCaseNextHearingCourtNamePage.button().click()
+    courtCaseNextHearingCourtNamePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must enter the court name')
   })
 })

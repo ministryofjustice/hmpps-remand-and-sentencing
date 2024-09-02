@@ -12,7 +12,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <input type="hidden" name="courtCode" id="court-code" value="">
+                <input type="hidden" name="courtCode" id="court-code" value="{{courtNameForm.courtCode}}">
                 {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukSelect({
                     label: {

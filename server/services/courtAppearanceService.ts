@@ -3,6 +3,7 @@ import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
+  CourtCaseNextHearingCourtNameForm,
   CourtCaseNextHearingCourtSelectForm,
   CourtCaseNextHearingDateForm,
   CourtCaseOverallConvictionDateAppliedAllForm,
@@ -256,15 +257,29 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).nextHearingCourtName
   }
 
+  getNextHearingCourtCode(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtAppearance(session, nomsId).nextHearingCourtCode
+  }
+
   setNextHearingCourtName(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
-    nextHearingCourtName: string,
+    nextHearingCourtNameForm: CourtCaseNextHearingCourtNameForm,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.nextHearingCourtName = nextHearingCourtName
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+    const errors = validate(
+      nextHearingCourtNameForm,
+      { nextHearingCourtName: 'required' },
+      { 'required.nextHearingCourtName': 'You must enter the court name' },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.nextHearingCourtName = nextHearingCourtNameForm.nextHearingCourtName
+      courtAppearance.nextHearingCourtCode = nextHearingCourtNameForm.courtCode
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+
+    return errors
   }
 
   setOverallCaseOutcome(

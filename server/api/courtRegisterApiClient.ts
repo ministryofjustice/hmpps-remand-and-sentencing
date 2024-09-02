@@ -1,7 +1,7 @@
 import RestClient from '../data/restClient'
 import config, { ApiConfig } from '../config'
 import { Court } from '../@types/courtRegisterApi/courtRegisterClientTypes'
-import { CourtDtoPage } from '../@types/courtRegisterApi/types'
+import { CourtDto, CourtDtoPage } from '../@types/courtRegisterApi/types'
 
 export default class CourtRegisterApiClient {
   restClient: RestClient
@@ -19,5 +19,11 @@ export default class CourtRegisterApiClient {
       path: '/courts/paged',
       query: { page: 0, size: 50, sort: 'courtName', textSearch },
     })) as unknown as Promise<CourtDtoPage>
+  }
+
+  async findCourtById(courtCode: string): Promise<CourtDto> {
+    return (await this.restClient.get({
+      path: `/courts/id/${courtCode}`,
+    })) as unknown as Promise<CourtDto>
   }
 }

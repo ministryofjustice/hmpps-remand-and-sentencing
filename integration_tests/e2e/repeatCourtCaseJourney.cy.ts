@@ -85,7 +85,7 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
       CourtCaseSelectCourtNamePage,
-      'Was the appearance at ACCRYC?',
+      'Was the appearance at Accrington Youth Court?',
     )
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
     courtCaseSelectCourtNamePage.button().click()
@@ -297,7 +297,7 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
       CourtCaseSelectCourtNamePage,
-      'Was the appearance at ACCRYC?',
+      'Was the appearance at Accrington Youth Court?',
     )
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
     courtCaseSelectCourtNamePage.button().click()

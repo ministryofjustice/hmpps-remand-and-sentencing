@@ -16,7 +16,7 @@ window.addEventListener('load', function () {
   accessibleAutocomplete.enhanceSelectElement({
     defaultValue: document.getElementById('autocomplete-script').dataset.court,
     selectElement: document.querySelector('#court-name'),
-    confirmOnBlur: false,
+    confirmOnBlur: true,
     name: 'courtName',
     menuClasses: 'govuk-body',
     templates: {

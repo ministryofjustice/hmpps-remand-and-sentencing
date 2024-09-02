@@ -1,3 +1,4 @@
+import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import Page from '../pages/page'
 
@@ -5,8 +6,14 @@ context('Next hearing been set page', () => {
   let courtCaseNextHearingCourtSetPage: CourtCaseNextHearingCourtSetPage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetCourtById')
     cy.signIn()
-    cy.createCourtCase('A1234AB', '0', '0')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
+    const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
+    courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
+    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-court-select')
     courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
   })
@@ -22,5 +29,13 @@ context('Next hearing been set page', () => {
 
   it('button to continue is displayed', () => {
     courtCaseNextHearingCourtSetPage.button().should('contain.text', 'Continue')
+  })
+
+  it('submitting without selecting anything results in error', () => {
+    courtCaseNextHearingCourtSetPage.button().click()
+    courtCaseNextHearingCourtSetPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', "There is a problem Select 'Yes' if the next hearing will be at this same court.")
   })
 })

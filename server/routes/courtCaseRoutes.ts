@@ -38,6 +38,7 @@ import {
 } from '../utils/mappingUtils'
 import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -46,6 +47,7 @@ export default class CourtCaseRoutes {
     private readonly manageOffencesService: ManageOffencesService,
     private readonly documentManagementService: DocumentManagementService,
     private readonly caseOutcomeService: CaseOutcomeService,
+    private readonly courtRegisterService: CourtRegisterService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -1217,26 +1219,53 @@ export default class CourtCaseRoutes {
 
   public getNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const nextHearingCourtSelect = this.courtAppearanceService.getNextHearingCourtSelect(req.session, nomsId)
-    const courtName = this.courtAppearanceService.getCourtName(req.session, nomsId)
-
+    const { submitToCheckAnswers } = req.query
+    let nextHearingCourtSelectForm = (req.flash('nextHearingCourtSelectForm')[0] ||
+      {}) as CourtCaseNextHearingCourtSelectForm
+    if (Object.keys(nextHearingCourtSelectForm).length === 0) {
+      nextHearingCourtSelectForm = {
+        nextHearingCourtSelect: this.courtAppearanceService.getNextHearingCourtSelect(req.session, nomsId),
+      }
+    }
+    const courtCode = this.courtAppearanceService.getCourtCode(req.session, nomsId)
+    const court = await this.courtRegisterService.findCourtById(courtCode, res.locals.user.username)
+    let backLink
+    if (submitToCheckAnswers) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
+    } else if (res.locals.isAddCourtAppearance) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-date`
+    } else {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`
+    }
     return res.render('pages/courtAppearance/next-hearing-court-select', {
       nomsId,
-      nextHearingCourtSelect,
-      courtName,
+      nextHearingCourtSelectForm,
+      courtName: court.courtName,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink,
     })
   }
 
   public submitNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const nextHearingCourtSelectForm = trimForm<CourtCaseNextHearingCourtSelectForm>(req.body)
-    const nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect === 'true'
-    this.courtAppearanceService.setNextHearingCourtSelect(req.session, nomsId, nextHearingCourtSelect)
-    if (nextHearingCourtSelect) {
+    const errors = this.courtAppearanceService.setNextHearingCourtSelect(
+      req.session,
+      nomsId,
+      nextHearingCourtSelectForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('nextHearingCourtSelectForm', { ...nextHearingCourtSelectForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-court-select`,
+      )
+    }
+    if (nextHearingCourtSelectForm.nextHearingCourtSelect === 'true') {
       if (
         addOrEditCourtAppearance === 'edit-court-appearance' &&
         this.courtAppearanceService.isNextCourtAppearanceAccepted(req.session, nomsId)

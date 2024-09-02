@@ -39,6 +39,7 @@ import {
 import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import CourtRegisterService from '../services/courtRegisterService'
+import logger from '../../logger'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -359,10 +360,22 @@ export default class CourtCaseRoutes {
         }
       }
     }
+
+    let lastCourtName = latestCourtAppearance.nextCourtAppearance?.courtCode
+    try {
+      lastCourtName = (
+        await this.courtRegisterService.findCourtById(
+          latestCourtAppearance.nextCourtAppearance?.courtCode,
+          req.user.username,
+        )
+      ).courtDescription
+    } catch (e) {
+      logger.error(e)
+    }
     return res.render('pages/courtAppearance/select-court-name', {
       nomsId,
       submitToCheckAnswers,
-      lastCourtName: latestCourtAppearance.nextCourtAppearance?.courtCode,
+      lastCourtName,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,

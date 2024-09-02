@@ -136,6 +136,11 @@ export default {
                 },
               ],
             },
+            {
+              prisonerId: 'A1234AB',
+              courtCaseUuid: 'd316d5b7-022f-40e5-98ab-aebe8ac4abf4',
+              appearances: [],
+            },
           ],
           number: 0,
           sort: {

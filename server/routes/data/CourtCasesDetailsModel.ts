@@ -37,9 +37,9 @@ export default class CourtCasesDetailsModel {
     this.caseReferences = Array.from(
       new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
     ).join(', ')
-    this.overallCaseOutcome = pageCourtCaseContent.latestAppearance.outcome
+    this.overallCaseOutcome = pageCourtCaseContent.latestAppearance?.outcome
 
-    if (pageCourtCaseContent.latestAppearance.nextCourtAppearance) {
+    if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance) {
       const appearanceDate = dayjs(pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate)
       let appearanceDateFormatted = appearanceDate.format(config.dateFormat)
       if (pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime) {
@@ -60,15 +60,15 @@ export default class CourtCasesDetailsModel {
     this.latestAppearances = pageCourtCaseContent.appearances
       .sort((a, b) => (dayjs(a.appearanceDate).isBefore(dayjs(b.appearanceDate)) ? 1 : -1))
       .slice(0, 5)
-    this.chargeTotal = pageCourtCaseContent.latestAppearance.charges.length
+    this.chargeTotal = pageCourtCaseContent.latestAppearance?.charges.length
     if (this.chargeTotal > 5) {
       this.showingChargeTotal = 5
     }
-    this.offences = pageCourtCaseContent.latestAppearance.charges
+    this.offences = pageCourtCaseContent.latestAppearance?.charges
       .sort((a, b) => (dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1))
       .map(charge => chargeToOffence(charge))
       .slice(0, 5)
-    this.latestCourtName = pageCourtCaseContent.latestAppearance.courtCode
-    this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance.appearanceDate).format(config.dateFormat)
+    this.latestCourtName = pageCourtCaseContent.latestAppearance?.courtCode
+    this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance?.appearanceDate).format(config.dateFormat)
   }
 }

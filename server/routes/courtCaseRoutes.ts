@@ -140,7 +140,13 @@ export default class CourtCaseRoutes {
 
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const chargeCodes = appearance.offences.map(offences => offences.offenceCode)
-    const offenceMap = await this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token)
+    const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode].filter(
+      courtId => courtId !== undefined && courtId !== null,
+    )
+    const [offenceMap, courtMap] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
+      this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
+    ])
 
     return res.render('pages/courtAppearance/details', {
       nomsId,
@@ -150,6 +156,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       appearance,
       offenceMap,
+      courtMap,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

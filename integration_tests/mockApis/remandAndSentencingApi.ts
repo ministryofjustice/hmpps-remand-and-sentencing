@@ -552,12 +552,12 @@ export default {
           latestAppearance: {
             appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
             outcome: 'Remand in Custody (Bail Refused)',
-            courtCode: 'Birmingham Crown Court',
+            courtCode: 'ACCRYC',
             courtCaseReference: 'C894623',
             appearanceDate: '2023-12-15',
             nextCourtAppearance: {
               appearanceDate: '2024-12-15',
-              courtCode: 'Birmingham Crown Court',
+              courtCode: 'ACCRYC',
               appearanceType: 'Court appearance',
             },
             charges: [
@@ -573,12 +573,12 @@ export default {
             {
               appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
               outcome: 'Remand in Custody (Bail Refused)',
-              courtCode: 'Birmingham Crown Court',
+              courtCode: 'ACCRYC',
               courtCaseReference: 'C894623',
               appearanceDate: '2023-12-15',
               nextCourtAppearance: {
                 appearanceDate: '2024-12-15',
-                courtCode: 'Birmingham Crown Court',
+                courtCode: 'ACCRYC',
                 appearanceType: 'Court appearance',
               },
               charges: [
@@ -631,7 +631,7 @@ export default {
           latestAppearance: {
             appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
             outcome: 'Imprisonment',
-            courtCode: 'Birmingham Crown Court',
+            courtCode: 'ACCRYC',
             courtCaseReference: 'C894623',
             warrantType: 'SENTENCING',
             appearanceDate: '2023-12-15',
@@ -664,7 +664,7 @@ export default {
             {
               appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
               outcome: 'Imprisonment',
-              courtCode: 'Birmingham Crown Court',
+              courtCode: 'ACCRYC',
               courtCaseReference: 'C894623',
               appearanceDate: '2023-12-15',
               overallSentenceLength: {

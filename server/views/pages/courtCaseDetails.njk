@@ -79,7 +79,7 @@
 
     {% set appearanceRows = (appearanceRows.concat([[
         { text: appearance.courtCaseReference, classes: "no-bottom-border" },
-        { text: appearance.courtCode, classes: "no-bottom-border" },
+        { text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode, classes: "no-bottom-border" },
         { text: appearance.appearanceDate | formatDate, classes: "no-bottom-border" },
         { text: appearance.outcome, classes: "no-bottom-border" },
         { html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">Edit</a>', classes: "no-bottom-border" }
@@ -97,7 +97,7 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">Appearances for {{ courtCaseDetails.latestCaseReference }} at {{ courtCaseDetails.latestCourtName }}</h1>
+            <h1 class="govuk-heading-l">Appearances for {{ courtCaseDetails.latestCaseReference }} at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }}</h1>
 
             {{ govukSummaryList({
                     rows: appearancesSummaryRows,

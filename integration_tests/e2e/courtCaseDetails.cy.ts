@@ -12,11 +12,12 @@ context('Court Case details Page', () => {
   context('Latest remand appearance', () => {
     beforeEach(() => {
       cy.task('stubGetCourtCaseRemandLatest')
+      cy.task('stubGetCourtsByIds')
       cy.signIn()
       cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/details')
       courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Birmingham Crown Court',
+        'Appearances for C894623 at Accrington Youth Court',
       )
     })
 
@@ -44,7 +45,7 @@ context('Court Case details Page', () => {
         .should('deep.equal', [
           {
             'Case reference': 'C894623',
-            Location: 'Birmingham Crown Court',
+            Location: 'Accrington Youth Court',
             'Warrant date': '15 12 2023',
             Outcome: 'Remand in Custody (Bail Refused)',
             '': 'Edit',
@@ -81,11 +82,12 @@ context('Court Case details Page', () => {
   context('Latest sentence appearance', () => {
     beforeEach(() => {
       cy.task('stubGetCourtCaseSentenceLatest')
+      cy.task('stubGetCourtsByIds')
       cy.signIn()
       cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/details')
       courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Birmingham Crown Court',
+        'Appearances for C894623 at Accrington Youth Court',
       )
     })
 

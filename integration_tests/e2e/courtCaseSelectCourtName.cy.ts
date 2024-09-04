@@ -6,7 +6,7 @@ context('Select court name page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetLatestCourtAppearance')
-    cy.task('stubGetCourtById')
+    cy.task('stubGetCourtById', {})
     cy.signIn()
     cy.visit(
       '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/1/select-court-name',

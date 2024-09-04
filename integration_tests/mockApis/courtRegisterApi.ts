@@ -99,18 +99,24 @@ export default {
     })
   },
 
-  stubGetCourtById: (): SuperAgentRequest => {
+  stubGetCourtById: ({
+    courtId = 'ACCRYC',
+    courtName = 'Accrington Youth Court',
+  }: {
+    courtId: string
+    courtName: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/court-register-api/courts/id/ACCRYC',
+        urlPath: `/court-register-api/courts/id/${courtId}`,
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
-          courtId: 'ACCRYC',
-          courtName: 'Accrington Youth Court',
+          courtId,
+          courtName,
           courtDescription: 'Accrington Youth Court',
           type: {
             courtType: 'COU',

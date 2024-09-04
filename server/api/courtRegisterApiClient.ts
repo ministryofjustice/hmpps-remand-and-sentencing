@@ -26,4 +26,11 @@ export default class CourtRegisterApiClient {
       path: `/courts/id/${courtCode}`,
     })) as unknown as Promise<CourtDto>
   }
+
+  async findCourtsByIds(courtIds: string[]): Promise<CourtDto[]> {
+    return (await this.restClient.get({
+      path: `/courts/id/multiple`,
+      query: { courtIds },
+    })) as unknown as Promise<CourtDto[]>
+  }
 }

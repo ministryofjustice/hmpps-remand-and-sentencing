@@ -16,6 +16,17 @@ export default class CourtRegisterService {
     return new CourtRegisterApiClient(await this.getSystemClientToken(username)).findCourtById(courtCode)
   }
 
+  async getCourtMap(courtIds: string[], username: string): Promise<{ [key: string]: string }> {
+    let courtMap = {}
+    if (courtIds.length) {
+      const courts = await new CourtRegisterApiClient(await this.getSystemClientToken(username)).findCourtsByIds(
+        courtIds,
+      )
+      courtMap = Object.fromEntries(courts.map(court => [court.courtId, court.courtName]))
+    }
+    return courtMap
+  }
+
   private async getSystemClientToken(username: string): Promise<string> {
     return this.hmppsAuthClient.getSystemClientToken(username)
   }

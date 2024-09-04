@@ -7,6 +7,7 @@ context('Start Page', () => {
     cy.task('happyPathStubs')
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
+    cy.task('stubGetCourtsByIds')
     cy.signIn()
     cy.visit('/person/A1234AB')
     startPage = Page.verifyOnPage(StartPage)
@@ -45,14 +46,14 @@ context('Start Page', () => {
       .should('deep.equal', [
         {
           'Case reference': 'C894623',
-          Location: 'Birmingham Crown Court',
+          Location: 'Accrington Youth Court',
           'Warrant date': '15 12 2023',
           Outcome: 'Remand in Custody (Bail Refused)',
           '': 'View and edit',
         },
         {
           'Case reference': 'F23325',
-          Location: 'Birmingham Crown Court',
+          Location: 'Accrington Youth Court',
           'Warrant date': '15 10 2022',
           Outcome: 'Sentence Postponed',
           '': 'View and edit',

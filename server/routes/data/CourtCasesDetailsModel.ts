@@ -28,11 +28,11 @@ export default class CourtCasesDetailsModel {
 
   offences: Offence[]
 
-  latestCourtName: string
+  latestCourtCode: string
 
   latestAppearanceDate: string
 
-  constructor(pageCourtCaseContent: PageCourtCaseContent) {
+  constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     this.caseReferences = Array.from(
       new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
@@ -46,7 +46,8 @@ export default class CourtCasesDetailsModel {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)
       }
       this.nextHearing = [
-        pageCourtCaseContent.latestAppearance.nextCourtAppearance.courtCode,
+        courtMap[pageCourtCaseContent.latestAppearance.nextCourtAppearance.courtCode] ??
+          pageCourtCaseContent.latestAppearance.nextCourtAppearance.courtCode,
         pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceType,
         appearanceDateFormatted,
       ]
@@ -68,7 +69,7 @@ export default class CourtCasesDetailsModel {
       .sort((a, b) => (dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1))
       .map(charge => chargeToOffence(charge))
       .slice(0, 5)
-    this.latestCourtName = pageCourtCaseContent.latestAppearance?.courtCode
+    this.latestCourtCode = pageCourtCaseContent.latestAppearance?.courtCode
     this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance?.appearanceDate).format(config.dateFormat)
   }
 }

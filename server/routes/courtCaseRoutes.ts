@@ -57,14 +57,28 @@ export default class CourtCaseRoutes {
     const sortBy = getAsStringOrDefault(req.query.sortBy, 'desc')
 
     const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy)
-    const courtCaseDetailModels = courtCases.content.map(
-      pageCourtCaseContent => new CourtCasesDetailsModel(pageCourtCaseContent),
-    )
+
     const chargeCodes = courtCases.content
       .map(courtCase => courtCase.appearances.map(appearance => appearance.charges.map(charge => charge.offenceCode)))
       .flat()
       .flat()
-    const offenceMap = await this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token)
+    const courtIds = courtCases.content
+      .map(courtCase =>
+        courtCase.appearances.map(appearance =>
+          [appearance.courtCode, appearance.nextCourtAppearance?.courtCode].filter(
+            courtCode => courtCode !== undefined && courtCode !== null,
+          ),
+        ),
+      )
+      .flat()
+      .flat()
+    const [offenceMap, courtMap] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
+      this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
+    ])
+    const courtCaseDetailModels = courtCases.content.map(
+      pageCourtCaseContent => new CourtCasesDetailsModel(pageCourtCaseContent, courtMap),
+    )
 
     const newCourtCaseId = courtCases.totalElements
     return res.render('pages/start', {
@@ -72,6 +86,7 @@ export default class CourtCaseRoutes {
       newCourtCaseId,
       courtCaseDetailModels,
       offenceMap,
+      courtMap,
       sortBy,
       courtCaseTotal: courtCaseDetailModels.length,
     })

@@ -85,7 +85,7 @@
                                 text: appearance.courtCaseReference
                             },
                             {
-                                text: appearance.courtCode
+                                text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode
                             },
                             {
                                 text: appearance.appearanceDate | formatDate
@@ -137,7 +137,7 @@
 
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-two-thirds">
-                        <p class="govuk-hint">These offences come from the most recent appearance at {{ courtCaseDetails.latestCourtName }} on {{ courtCaseDetails.latestAppearanceDate }}.</p>
+                        <p class="govuk-hint">These offences come from the most recent appearance at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }} on {{ courtCaseDetails.latestAppearanceDate }}.</p>
                     </div>
                 </div>
 

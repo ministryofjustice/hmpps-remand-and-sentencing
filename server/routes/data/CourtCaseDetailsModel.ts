@@ -12,7 +12,7 @@ export default class CourtCaseDetailsModel {
 
   latestCaseReference: string
 
-  latestCourtName: string
+  latestCourtCode: string
 
   caseReferences: string
 
@@ -29,7 +29,7 @@ export default class CourtCaseDetailsModel {
   constructor(pageCourtCaseContent: PageCourtCaseContent) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     this.latestCaseReference = pageCourtCaseContent.latestAppearance.courtCaseReference
-    this.latestCourtName = pageCourtCaseContent.latestAppearance.courtCode
+    this.latestCourtCode = pageCourtCaseContent.latestAppearance.courtCode
     this.caseReferences = Array.from(
       new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
     ).join(', ')

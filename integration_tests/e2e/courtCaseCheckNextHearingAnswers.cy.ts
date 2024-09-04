@@ -37,7 +37,7 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('clicking next hearing location and submitting goes back to check answers page', () => {
-    cy.task('stubGetCourtById')
+    cy.task('stubGetCourtById', {})
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
     const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
     courtCaseCourtNamePage.autoCompleteInput().type('cou')

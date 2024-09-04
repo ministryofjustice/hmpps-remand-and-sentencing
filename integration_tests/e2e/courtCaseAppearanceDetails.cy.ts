@@ -17,6 +17,10 @@ context('Court Case Appearance details Page', () => {
     beforeEach(() => {
       cy.task('stubGetRemandAppearanceDetails')
       cy.task('stubGetCourtsByIds')
+      cy.task('stubGetCourtById', {
+        courtId: 'STHHPM',
+        courtName: 'Southampton Magistrate Court',
+      })
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
@@ -76,6 +80,7 @@ context('Court Case Appearance details Page', () => {
         .click()
 
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
+      courtCaseReferencePage.captionText().contains('Appearance C894623 at Southampton Magistrate Court on 15 12 2023')
       courtCaseReferencePage.input().clear().type('T12345678')
       courtCaseReferencePage.button().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(

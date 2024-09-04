@@ -65,9 +65,12 @@ export default class CourtCaseRoutes {
     const courtIds = courtCases.content
       .map(courtCase =>
         courtCase.appearances.map(appearance =>
-          [appearance.courtCode, appearance.nextCourtAppearance?.courtCode].filter(
-            courtCode => courtCode !== undefined && courtCode !== null,
-          ),
+          [
+            appearance.courtCode,
+            appearance.nextCourtAppearance?.courtCode,
+            courtCase.latestAppearance?.courtCode,
+            courtCase.latestAppearance?.nextCourtAppearance?.courtCode,
+          ].filter(courtCode => courtCode !== undefined && courtCode !== null),
         ),
       )
       .flat()

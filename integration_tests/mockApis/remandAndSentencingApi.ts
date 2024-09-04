@@ -76,7 +76,7 @@ export default {
               latestAppearance: {
                 appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
                 outcome: 'Remand in Custody (Bail Refused)',
-                courtCode: 'Birmingham Crown Court',
+                courtCode: 'ACCRYC',
                 courtCaseReference: 'C894623',
                 appearanceDate: '2023-12-15',
                 nextCourtAppearance: {
@@ -97,7 +97,7 @@ export default {
                 {
                   appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
                   outcome: 'Remand in Custody (Bail Refused)',
-                  courtCode: 'Birmingham Crown Court',
+                  courtCode: 'ACCRYC',
                   courtCaseReference: 'C894623',
                   appearanceDate: '2023-12-15',
                   nextCourtAppearance: {
@@ -117,7 +117,7 @@ export default {
                 {
                   appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
                   outcome: 'Sentence Postponed',
-                  courtCode: 'Birmingham Crown Court',
+                  courtCode: 'ACCRYC',
                   courtCaseReference: 'F23325',
                   appearanceDate: '2022-10-15',
                   nextCourtAppearance: {

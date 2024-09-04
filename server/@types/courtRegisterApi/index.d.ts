@@ -132,6 +132,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/admin/refresh-nomis-data': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['refreshNomisData']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/admin/refresh-data': {
     parameters: {
       query?: never
@@ -280,6 +296,26 @@ export interface paths {
      * @description Information on a specific contact
      */
     get: operations['getContactFromId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/courts/id/multiple': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get court by ids
+     * @description Information on multiple courts
+     */
+    get: operations['getCourtsByIds']
     put?: never
     post?: never
     delete?: never
@@ -593,10 +629,10 @@ export interface components {
       sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       pageSize?: number
-      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      unpaged?: boolean
     }
     SortObject: {
       direction?: string
@@ -1125,6 +1161,24 @@ export interface operations {
       }
     }
   }
+  refreshNomisData: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   refreshData: {
     parameters: {
       query?: never
@@ -1402,6 +1456,41 @@ export interface operations {
       }
       /** @description Contact ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getCourtsByIds: {
+    parameters: {
+      query: {
+        /**
+         * @description CourtIDs
+         * @example ACCRYC
+         */
+        courtIds: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Court Information Returned */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtDto'][]
+        }
+      }
+      /** @description Incorrect request to get court information */
+      400: {
         headers: {
           [name: string]: unknown
         }

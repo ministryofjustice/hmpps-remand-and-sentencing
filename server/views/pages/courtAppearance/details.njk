@@ -46,7 +46,7 @@
                             text: "Court name"
                         },
                             value: {
-                            text: appearance.courtName
+                            text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode
                         },
                             actions: {
                             items: [
@@ -122,7 +122,7 @@
             text: "Court name"
             },
                 value: {
-                text: appearance.nextHearingCourtName
+                text: courtMap[appearance.nextHearingCourtCode] if courtMap[appearance.nextHearingCourtCode] else appearance.nextHearingCourtCode
             },
                 actions: {
                 items: [
@@ -176,7 +176,7 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">Edit appearance {{ appearance.caseReferenceNumber }} at {{ appearance.courtName }} on {{ appearance.warrantDate | formatDate }}</h1>
+            <h1 class="govuk-heading-l">Edit appearance {{ appearance.caseReferenceNumber }} at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }} on {{ appearance.warrantDate | formatDate }}</h1>
 
             {{ govukSummaryList({
                     rows: appearanceSummaryRows,

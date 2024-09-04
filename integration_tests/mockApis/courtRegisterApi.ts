@@ -159,6 +159,9 @@ export default {
               {
                 equalTo: 'Birmingham Crown Court',
               },
+              {
+                equalTo: 'STHHPM',
+              },
             ],
           },
         },
@@ -199,6 +202,17 @@ export default {
                 active: true,
               },
             ],
+          },
+          {
+            courtId: 'STHHPM',
+            courtName: 'Southampton Magistrate Court',
+            courtDescription: 'Southampton Magistrate Court',
+            type: {
+              courtType: 'MAG',
+              courtName: 'Magistrate',
+            },
+            active: true,
+            buildings: [],
           },
         ],
       },

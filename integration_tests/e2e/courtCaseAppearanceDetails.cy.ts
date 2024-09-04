@@ -16,13 +16,14 @@ context('Court Case Appearance details Page', () => {
   context('remand appearance', () => {
     beforeEach(() => {
       cy.task('stubGetRemandAppearanceDetails')
+      cy.task('stubGetCourtsByIds')
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
       )
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Birmingham Crown Court on 15 12 2023',
+        'Edit appearance C894623 at Southampton Magistrate Court on 15 12 2023',
       )
     })
 
@@ -43,7 +44,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
-        'Court name': 'Birmingham Crown Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remand in Custody (Bail Refused)',
       })
     })
@@ -61,7 +62,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
-        'Court name': 'Birmingham Crown Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remand in Custody (Bail Refused)',
       })
 
@@ -79,12 +80,12 @@ context('Court Case Appearance details Page', () => {
       courtCaseReferencePage.button().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
-        'Edit appearance T12345678 at Birmingham Crown Court on 15 12 2023',
+        'Edit appearance T12345678 at Southampton Magistrate Court on 15 12 2023',
       )
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'T12345678',
         'Warrant date': '15 12 2023',
-        'Court name': 'Birmingham Crown Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remand in Custody (Bail Refused)',
       })
     })
@@ -93,7 +94,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
-        'Court name': 'Birmingham Crown Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remand in Custody (Bail Refused)',
       })
 
@@ -141,7 +142,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseReferencePage.button().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
-        'Edit appearance T12345678 at Birmingham Crown Court on 15 12 2023',
+        'Edit appearance T12345678 at Southampton Magistrate Court on 15 12 2023',
       )
       courtCaseAppearanceDetailsPage.button().click()
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
@@ -151,13 +152,14 @@ context('Court Case Appearance details Page', () => {
   context('sentence appearance', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceAppearanceDetails')
+      cy.task('stubGetCourtsByIds')
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
       )
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Birmingham Crown Court on 15 12 2023',
+        'Edit appearance C894623 at Southampton Magistrate Court on 15 12 2023',
       )
     })
 
@@ -165,7 +167,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
-        'Court name': 'Birmingham Crown Court',
+        'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Imprisonment',
         'Overall sentence length': '4 years',
       })
@@ -205,7 +207,7 @@ context('Court Case Appearance details Page', () => {
       offenceEditOffencePage.button().click()
       Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Birmingham Crown Court on 15 12 2023',
+        'Edit appearance C894623 at Southampton Magistrate Court on 15 12 2023',
       )
     })
   })

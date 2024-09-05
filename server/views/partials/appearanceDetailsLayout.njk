@@ -48,7 +48,7 @@
                             text: "Court name"
                         },
                             value: {
-                            text: courtAppearance.courtName
+                            text: courtAppearanceCourtName
                         },
                             classes: "offences-summary-card-court-details-row"
                         },
@@ -61,7 +61,10 @@
                         },
                             classes: "offences-summary-card-court-details-row"
                         }
-                    ]
+                    ],
+                    attributes: {
+                        'data-qa': 'appearanceDetails'
+                    }
                 }) }}
                 {% if courtAppearance.warrantType === 'REMAND' or offences | length %}
                     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">

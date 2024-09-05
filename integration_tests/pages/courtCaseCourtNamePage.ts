@@ -5,5 +5,5 @@ export default class CourtCaseCourtNamePage extends Page {
     super(title)
   }
 
-  firstAutoCompleteOption = (): PageElement => cy.get('ul[id="court-name__listbox"]:first')
+  firstAutoCompleteOption = (): PageElement => cy.get('[id="court-name__option--0"]')
 }

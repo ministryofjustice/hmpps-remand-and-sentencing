@@ -7,5 +7,5 @@ export default class CourtCaseNextHearingSetPage extends Page {
 
   autoCompleteInput = (): PageElement => cy.get('.autocomplete__input')
 
-  firstAutoCompleteOption = (): PageElement => cy.get('ul[id="next-hearing-court-name__listbox"]:first')
+  firstAutoCompleteOption = (): PageElement => cy.get('[id="next-hearing-court-name__option--0"]')
 }

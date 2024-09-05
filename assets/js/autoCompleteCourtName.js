@@ -16,14 +16,16 @@ window.addEventListener('load', function () {
   accessibleAutocomplete.enhanceSelectElement({
     defaultValue: document.getElementById('autocomplete-script').dataset.court,
     selectElement: document.querySelector('#court-name'),
-    confirmOnBlur: true,
+    confirmOnBlur: false,
     name: 'courtName',
     menuClasses: 'govuk-body',
+    onConfirm: function (confirmed) {
+      if (confirmed && confirmed.courtId) {
+        document.getElementById('court-code').value = confirmed.courtId
+      }
+    },
     templates: {
       inputValue: function (result) {
-        if (result && result.courtId) {
-          document.getElementById('court-code').value = result.courtId
-        }
         return (result && result.courtDescription) ?? ''
       },
       suggestion: function (result) {

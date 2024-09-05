@@ -12,6 +12,7 @@ context('Court Case Check Answers Page', () => {
   let courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetCourtById', {})
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
@@ -56,6 +57,7 @@ context('Court Case Check Answers Page', () => {
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'court-name').click()
     const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)

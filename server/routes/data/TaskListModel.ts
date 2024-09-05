@@ -81,7 +81,7 @@ export default class TaskListModel {
     return (
       courtAppearance.caseReferenceNumber &&
       courtAppearance.warrantDate &&
-      courtAppearance.courtName &&
+      courtAppearance.courtCode &&
       (courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined) &&
       typeSpecificInformationFilledOut &&
       courtAppearance.appearanceInformationAccepted
@@ -99,7 +99,7 @@ export default class TaskListModel {
     return (
       courtAppearance.caseReferenceNumber !== undefined ||
       courtAppearance.warrantDate !== undefined ||
-      courtAppearance.courtName !== undefined ||
+      courtAppearance.courtCode !== undefined ||
       courtAppearance.taggedBail !== undefined ||
       courtAppearance.hasTaggedBail !== undefined ||
       typeSpecificInformationFilledOut ||

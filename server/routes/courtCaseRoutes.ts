@@ -1098,10 +1098,20 @@ export default class CourtCaseRoutes {
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-
+    let courtName
+    if (courtAppearance.courtCode) {
+      try {
+        const court = await this.courtRegisterService.findCourtById(courtAppearance.courtCode, req.user.username)
+        courtName = court.courtName
+      } catch (e) {
+        logger.error(e)
+        courtName = courtAppearance.courtCode
+      }
+    }
     return res.render('pages/courtAppearance/check-answers', {
       nomsId,
       courtAppearance,
+      courtName,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,

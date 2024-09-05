@@ -31,6 +31,8 @@ import {
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
+import CourtRegisterService from '../services/courtRegisterService'
+import logger from '../../logger'
 
 export default class OffenceRoutes {
   constructor(
@@ -39,6 +41,7 @@ export default class OffenceRoutes {
     private readonly courtAppearanceService: CourtAppearanceService,
     private readonly caseOutcomeService: CaseOutcomeService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
+    private readonly courtRegisterService: CourtRegisterService,
   ) {}
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -949,6 +952,7 @@ export default class OffenceRoutes {
       Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode))),
       req.user.token,
     )
+
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,

@@ -223,6 +223,11 @@ context('New Court Case journey', () => {
     courtCaseNextHearingCourtSetPage.button().click()
 
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
+    courtCaseNextHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Next hearing date': '18 10 2023',
+      'Next hearing location': 'Accrington Youth Court',
+      'Next hearing type': 'Court appearance',
+    })
     courtCaseNextHearingAnswersPage.button().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')

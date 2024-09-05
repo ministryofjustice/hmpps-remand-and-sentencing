@@ -156,6 +156,11 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
+      'Case reference number': 'T12345678',
+      'Court name': 'Accrington Youth Court',
+      'Warrant date': '12 05 2023',
+    })
     offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.button().click()
 

@@ -4,6 +4,6 @@
     {% elif isAddCourtAppearance %}
         Add an appearance
     {% else %}
-        Appearance {{ courtAppearance.caseReferenceNumber }} at {{ courtAppearance.courtName }} on {{ courtAppearance.warrantDate | formatDate }}
+        Appearance {{ courtAppearance.caseReferenceNumber }} at {{ courtAppearanceCourtName }} on {{ courtAppearance.warrantDate | formatDate }}
     {% endif %}
 </span>

@@ -60,6 +60,17 @@ export default {
                 },
               ],
             },
+            {
+              courtId: 'STHHPM',
+              courtName: 'Southampton Magistrate Court',
+              courtDescription: 'Southampton Magistrate Court',
+              type: {
+                courtType: 'MAG',
+                courtName: 'Magistrate',
+              },
+              active: true,
+              buildings: [],
+            },
           ],
           pageable: {
             offset: 0,

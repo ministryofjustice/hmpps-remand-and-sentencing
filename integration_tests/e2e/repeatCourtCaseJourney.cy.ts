@@ -108,7 +108,7 @@ context('Repeat Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'C894623',
       'Warrant date': '12 05 2023',
-      'Court name': 'ACCRYC',
+      'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
@@ -317,7 +317,7 @@ context('Repeat Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'C894623',
       'Warrant date': '12 05 2023',
-      'Court name': 'ACCRYC',
+      'Court name': 'Accrington Youth Court',
       'Tagged bail': '5 days',
       'Overall sentence length': '4 years 5 months',
     })

@@ -255,7 +255,6 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
   return {
     nextHearingSelect: nextCourtAppearance !== undefined,
     nextHearingCourtCode: nextCourtAppearance?.courtCode,
-    nextHearingCourtName: nextCourtAppearance?.courtCode,
     nextHearingType: nextCourtAppearance?.appearanceType,
     nextHearingTimeSet: typeof nextCourtAppearance.appearanceTime === 'string',
     nextHearingDate,

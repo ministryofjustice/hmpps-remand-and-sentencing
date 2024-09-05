@@ -1345,7 +1345,6 @@ export default class CourtCaseRoutes {
     let nextHearingCourtNameForm = (req.flash('nextHearingCourtNameForm')[0] || {}) as CourtCaseNextHearingCourtNameForm
     if (Object.keys(nextHearingCourtNameForm).length === 0) {
       nextHearingCourtNameForm = {
-        nextHearingCourtName: this.courtAppearanceService.getNextHearingCourtName(req.session, nomsId),
         courtCode: this.courtAppearanceService.getNextHearingCourtCode(req.session, nomsId),
       }
     }
@@ -1398,10 +1397,23 @@ export default class CourtCaseRoutes {
   public getCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-
+    let nextHearingCourtName
+    if (courtAppearance.nextHearingCourtCode) {
+      try {
+        const court = await this.courtRegisterService.findCourtById(
+          courtAppearance.nextHearingCourtCode,
+          req.user.username,
+        )
+        nextHearingCourtName = court.courtName
+      } catch (e) {
+        logger.error(e)
+        nextHearingCourtName = courtAppearance.courtCode
+      }
+    }
     return res.render('pages/courtAppearance/check-next-hearing-answers', {
       nomsId,
       courtAppearance,
+      nextHearingCourtName,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,

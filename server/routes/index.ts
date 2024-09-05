@@ -40,7 +40,6 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.caseOutcomeService,
     services.remandAndSentencingService,
-    services.courtRegisterService,
   )
 
   get('/', async (req, res, next) => {

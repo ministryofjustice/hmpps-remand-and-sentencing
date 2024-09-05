@@ -31,8 +31,6 @@ import {
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
-import CourtRegisterService from '../services/courtRegisterService'
-import logger from '../../logger'
 
 export default class OffenceRoutes {
   constructor(
@@ -41,7 +39,6 @@ export default class OffenceRoutes {
     private readonly courtAppearanceService: CourtAppearanceService,
     private readonly caseOutcomeService: CaseOutcomeService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
-    private readonly courtRegisterService: CourtRegisterService,
   ) {}
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {

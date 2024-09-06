@@ -463,8 +463,15 @@ export default class CourtCaseRoutes {
     let courtNameForm = (req.flash('courtNameForm')[0] || {}) as CourtCaseCourtNameForm
     if (Object.keys(courtNameForm).length === 0) {
       courtNameForm = {
-        courtName: this.courtAppearanceService.getCourtName(req.session, nomsId),
         courtCode: this.courtAppearanceService.getCourtCode(req.session, nomsId),
+      }
+    }
+    if (courtNameForm.courtCode && courtNameForm.courtName === undefined) {
+      try {
+        const court = await this.courtRegisterService.findCourtById(courtNameForm.courtCode, req.user.username)
+        courtNameForm.courtName = court.courtDescription
+      } catch (e) {
+        logger.error(e)
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`

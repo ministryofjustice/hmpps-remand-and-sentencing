@@ -8,7 +8,6 @@ declare module 'models' {
     appearanceReference?: string
     caseReferenceNumber?: string
     warrantDate?: Date
-    courtName?: string
     courtCode?: string
     nextHearingCourtSelect?: string
     nextHearingCourtCode?: string

@@ -162,8 +162,8 @@ export default class CourtAppearanceService {
   ) {
     const errors = validate(
       courtNameForm,
-      { courtName: 'required' },
-      { 'required.courtName': 'You must enter the court name' },
+      { courtCode: 'required' },
+      { 'required.courtCode': 'You must enter the court name' },
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
@@ -192,16 +192,11 @@ export default class CourtAppearanceService {
         courtCaseReference,
       )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.courtName = latestCourtAppearance.nextCourtAppearance?.courtCode
       courtAppearance.courtCode = latestCourtAppearance.nextCourtAppearance?.courtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
     return errors
-  }
-
-  getCourtName(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).courtName
   }
 
   getCourtCode(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {

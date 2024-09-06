@@ -227,7 +227,6 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
     warrantDate: dayjs(pageCourtCaseAppearance.appearanceDate).toDate(),
     courtCode: pageCourtCaseAppearance.courtCode,
-    courtName: pageCourtCaseAppearance.courtCode,
     overallCaseOutcome: pageCourtCaseAppearance.outcome,
     warrantType: pageCourtCaseAppearance.warrantType,
     warrantId: pageCourtCaseAppearance.warrantId,

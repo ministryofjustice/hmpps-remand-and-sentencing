@@ -258,8 +258,8 @@ export default class CourtAppearanceService {
   ) {
     const errors = validate(
       nextHearingCourtNameForm,
-      { nextHearingCourtName: 'required' },
-      { 'required.nextHearingCourtName': 'You must enter the court name' },
+      { courtCode: 'required' },
+      { 'required.courtCode': 'You must enter the court name' },
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)

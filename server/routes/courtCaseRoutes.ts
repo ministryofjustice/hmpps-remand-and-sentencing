@@ -1355,6 +1355,17 @@ export default class CourtCaseRoutes {
         courtCode: this.courtAppearanceService.getNextHearingCourtCode(req.session, nomsId),
       }
     }
+    if (nextHearingCourtNameForm.courtCode && nextHearingCourtNameForm.nextHearingCourtName === undefined) {
+      try {
+        const court = await this.courtRegisterService.findCourtById(
+          nextHearingCourtNameForm.courtCode,
+          req.user.username,
+        )
+        nextHearingCourtNameForm.nextHearingCourtName = court.courtDescription
+      } catch (e) {
+        logger.error(e)
+      }
+    }
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-court-select`
 

@@ -949,6 +949,7 @@ export default class OffenceRoutes {
       Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode))),
       req.user.token,
     )
+
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,

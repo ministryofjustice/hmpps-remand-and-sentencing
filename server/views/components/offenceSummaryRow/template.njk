@@ -1,6 +1,6 @@
 <div class="offences-summary-card-row">
     <dt class="offences-summary-card-key govuk-!-font-weight-bold">
-        {{ offence.offenceCode + ' ' + offence.offenceName }}
+        {{ offence.offenceCode + ' ' + offenceNameMap[offence.offenceCode] }}
     </dt>
     <dd class="offences-summary-card-value govuk-body-s">Committed on {{ offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '') }}</dd>
 </div>

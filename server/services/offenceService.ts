@@ -2,6 +2,7 @@ import type {
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConsecutiveToForm,
+  OffenceConvictionDateForm,
   OffenceCountNumberForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
@@ -423,6 +424,71 @@ export default class OffenceService {
       session.offences[id] = offence
     }
 
+    return errors
+  }
+
+  getConvictionDate(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ): Date {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const sentence = this.getOffence(session.offences, id).sentence ?? {}
+    return sentence.convictionDate
+  }
+
+  setConvictionDate(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceConvictionDateForm: OffenceConvictionDateForm,
+  ): {
+    text: string
+    href: string
+  }[] {
+    let isValidConvictionDateRule = ''
+    if (
+      offenceConvictionDateForm['convictionDate-day'] &&
+      offenceConvictionDateForm['convictionDate-month'] &&
+      offenceConvictionDateForm['convictionDate-year']
+    ) {
+      const convictionDateString = toDateString(
+        offenceConvictionDateForm['convictionDate-year'],
+        offenceConvictionDateForm['convictionDate-month'],
+        offenceConvictionDateForm['convictionDate-day'],
+      )
+      isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastDate:${convictionDateString}`
+    }
+
+    const errors = validate(
+      offenceConvictionDateForm,
+      {
+        'convictionDate-day': `required${isValidConvictionDateRule}`,
+        'convictionDate-month': `required`,
+        'convictionDate-year': `required`,
+      },
+      {
+        'required.convictionDate-year': 'Conviction date must include year',
+        'required.convictionDate-month': 'Conviction date must include month',
+        'required.convictionDate-day': 'Conviction date must include day',
+        'isValidDate.convictionDate-day': 'This date does not exist.',
+        'isPastDate.convictionDate-day': 'Conviction date must be in the past',
+      },
+    )
+    if (errors.length === 0) {
+      const convictionDate = dayjs({
+        year: offenceConvictionDateForm['convictionDate-year'],
+        month: parseInt(offenceConvictionDateForm['convictionDate-month'], 10) - 1,
+        day: offenceConvictionDateForm['convictionDate-day'],
+      })
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.convictionDate = convictionDate.toDate()
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
     return errors
   }
 

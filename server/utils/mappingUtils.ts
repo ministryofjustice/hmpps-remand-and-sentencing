@@ -34,6 +34,7 @@ const sentenceToCreateSentence = (sentence: Sentence): CreateSentence | undefine
       sentenceServeType: sentence.sentenceServeType,
       sentenceType: sentence.sentenceType,
       consecutiveToChargeNumber: sentence.consecutiveTo,
+      convictionDate: dayjs(sentence.convictionDate).format('YYY-MM-DD'),
     } as CreateSentence
   }
   return createSentence
@@ -127,6 +128,7 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     sentenceServeType: apiSentence.sentenceServeType,
     sentenceType: apiSentence.sentenceType,
     consecutiveTo: apiSentence.consecutiveToChargeNumber,
+    convictionDate: dayjs(apiSentence.convictionDate).toDate(),
   } as Sentence
 }
 

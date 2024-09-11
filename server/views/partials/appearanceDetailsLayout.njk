@@ -7,7 +7,7 @@
 {% set offenceDetailHtml %}
     <dl class="offences-summary-card-content">
         {% for offence in offences %}
-            {{ offenceSummaryRow(offence) }}
+            {{ offenceSummaryRow(offence, offenceNameMap) }}
         {% endfor %}
     </dl>
 {% endset %}
@@ -15,7 +15,7 @@
 {% set SentenceDetailHtml %}
     <dl class="offences-summary-card-content">
         {% for sentence in sentences %}
-            {{ offenceSummaryRow(sentence) }}
+            {{ offenceSummaryRow(sentence, offenceNameMap) }}
         {% endfor %}
     </dl>
 {% endset %}

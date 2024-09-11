@@ -339,8 +339,20 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    if (courtAppearance.overallConvictionDateAppliedAll === 'true') {
+      this.offenceService.setConvictionDate(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        courtAppearance.overallConvictionDate,
+      )
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      )
+    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date`,
     )
   }
 
@@ -992,7 +1004,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const offenceConvictionDateForm = trimForm<OffenceConvictionDateForm>(req.body)
-    const errors = this.offenceService.setConvictionDate(
+    const errors = this.offenceService.setConvictionDateForm(
       req.session,
       nomsId,
       courtCaseReference,
@@ -1012,7 +1024,7 @@ export default class OffenceRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
     )
   }
 

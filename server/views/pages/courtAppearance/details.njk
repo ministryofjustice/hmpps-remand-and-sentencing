@@ -40,8 +40,31 @@
                                 }
                             ]
                         }
+                        }
+                    ] %}
+
+{% if appearance.warrantType === 'SENTENCING' %}
+    {% set appearanceSummaryRows = (appearanceSummaryRows.concat({
+                            key: {
+                            text: "Conviction date"
                         },
-                        {
+                            value: {
+                            text: appearance.overallConvictionDate | formatDate
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-conviction-date",
+                                    text: "Edit",
+                                    visuallyHiddenText: "conviction date edit"
+                                }
+                            ]
+                        }
+                        }))%}  
+{% endif %}
+
+
+ {% set appearanceSummaryRows = (appearanceSummaryRows.concat([{
                             key: {
                             text: "Court name"
                         },
@@ -74,8 +97,7 @@
                                 }
                             ]
                         }
-                        }
-                    ] %}
+                        }]))%}                   
 
 {% if appearance.overallSentenceLength %}
     {% set appearanceSummaryRows = (appearanceSummaryRows.concat({
@@ -207,6 +229,7 @@
                         offenceEndDate: offence.offenceEndDate | formatDate,
                         outcome: offence.outcome,
                         countNumber: offence.sentence.countNumber,
+                        convictionDate: offence.sentence.convictionDate | formatDate,
                         terrorRelated: offence.terrorRelated,
                         isSentenced: offence.sentence,
                         custodialSentenceLength: offence.sentence.custodialSentenceLength,

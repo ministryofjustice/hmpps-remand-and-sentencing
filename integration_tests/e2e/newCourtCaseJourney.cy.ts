@@ -25,6 +25,7 @@ import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
+import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -363,6 +364,15 @@ context('New Court Case journey', () => {
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()
+
+    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear()
+    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
+    offenceConvictionDatePage.monthDateInput('convictionDate').clear()
+    offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
+    offenceConvictionDatePage.yearDateInput('convictionDate').clear()
+    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
+    offenceConvictionDatePage.button().click()
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')

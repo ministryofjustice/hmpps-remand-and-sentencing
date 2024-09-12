@@ -34,7 +34,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Imprisonment", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence": {"chargeNumber": "1", "custodialPeriodLength": {"months": 5, "years": 4, "periodOrder": "years,months"}, "sentenceServeType": "FORTHWITH", "sentenceType": "SDS (Standard Determinate Sentence)"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months"}}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcome": "Imprisonment", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence": {"chargeNumber": "1", "custodialPeriodLength": {"months": 5, "years": 4, "periodOrder": "years,months"}, "sentenceServeType": "FORTHWITH", "sentenceType": "SDS (Standard Determinate Sentence)", "convictionDate": "2023-05-12"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months"}}]}',
           },
         ],
       },
@@ -262,6 +262,7 @@ export default {
                   },
                   sentenceServeType: 'FORTHWITH',
                   sentenceType: 'SDS (Standard Determinate Sentence)',
+                  convictionDate: '2023-05-12',
                 },
               },
             ],
@@ -345,7 +346,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Imprisonment", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence": {"chargeNumber": "1", "custodialPeriodLength": {"months": 5, "years": 4, "periodOrder": "years,months"}, "sentenceServeType": "FORTHWITH", "sentenceType": "SDS (Standard Determinate Sentence)"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months"}}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcome": "Imprisonment", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcome": "Remand in Custody (Bail Refused)", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcome": "Imprisonment", "terrorRelated": true, "sentence": {"chargeNumber": "1", "custodialPeriodLength": {"months": 5, "years": 4, "periodOrder": "years,months"}, "sentenceServeType": "FORTHWITH", "sentenceType": "SDS (Standard Determinate Sentence)", "convictionDate": "2023-05-12"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months"}}',
           },
         ],
       },
@@ -390,6 +391,7 @@ export default {
               },
               sentenceServeType: 'FORTHWITH',
               sentenceType: 'SDS (Standard Determinate Sentence)',
+              convictionDate: '2023-05-12',
             },
           },
         ],

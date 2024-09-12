@@ -611,7 +611,7 @@ export default class CourtAppearanceService {
         courtAppearance.offences = courtAppearance.offences.map(offence => {
           // eslint-disable-next-line no-param-reassign
           const sentence = offence.sentence ?? {}
-          sentence.convctionDate = courtAppearance.overallConvictionDate
+          sentence.convictionDate = courtAppearance.overallConvictionDate
           // eslint-disable-next-line no-param-reassign
           offence.sentence = sentence
           return offence

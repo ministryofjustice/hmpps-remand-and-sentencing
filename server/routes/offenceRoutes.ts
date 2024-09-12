@@ -3,6 +3,7 @@ import type {
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConsecutiveToForm,
+  OffenceConvictionDateForm,
   OffenceCountNumberForm,
   OffenceDeleteOffenceForm,
   OffenceLookupOffenceOutcomeForm,
@@ -338,8 +339,20 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    if (courtAppearance.overallConvictionDateAppliedAll === 'true') {
+      this.offenceService.setConvictionDate(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        courtAppearance.overallConvictionDate,
+      )
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      )
+    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date`,
     )
   }
 
@@ -938,6 +951,80 @@ export default class OffenceRoutes {
     this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+    )
+  }
+
+  public getConvictionDate: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence } = req.query
+    const offenceConvictionDateForm = (req.flash('offenceConvictionDateForm')[0] || {}) as OffenceConvictionDateForm
+    let convictionDateDay: number | string = offenceConvictionDateForm['convictionDate-day']
+    let convictionDateMonth: number | string = offenceConvictionDateForm['convictionDate-month']
+    let convictionDateYear: number | string = offenceConvictionDateForm['convictionDate-year']
+    const convictionDateValue = this.offenceService.getConvictionDate(req.session, nomsId, courtCaseReference)
+    if (convictionDateValue && Object.keys(offenceConvictionDateForm).length === 0) {
+      const convictionDate = new Date(convictionDateValue)
+      convictionDateDay = convictionDate.getDate()
+      convictionDateMonth = convictionDate.getMonth() + 1
+      convictionDateYear = convictionDate.getFullYear()
+    }
+
+    return res.render('pages/offence/offence-conviction-date', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      submitToEditOffence,
+      convictionDateDay,
+      convictionDateMonth,
+      convictionDateYear,
+      errors: req.flash('errors') || [],
+      backLink: submitToEditOffence
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
+    })
+  }
+
+  public submitConvictionDate: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const offenceConvictionDateForm = trimForm<OffenceConvictionDateForm>(req.body)
+    const errors = this.offenceService.setConvictionDateForm(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceConvictionDateForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceConvictionDateForm', { ...offenceConvictionDateForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date`,
+      )
+    }
+    const { submitToEditOffence } = req.query
+    if (submitToEditOffence) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
     )
   }
 

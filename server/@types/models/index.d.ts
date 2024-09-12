@@ -48,7 +48,7 @@ declare module 'models' {
     sentenceServeType?: string
     consecutiveTo?: string
     sentenceType?: string
-    convctionDate?: Date
+    convictionDate?: Date
   }
 
   export interface SentenceLength {

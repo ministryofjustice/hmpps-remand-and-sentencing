@@ -64,6 +64,7 @@
                             offenceEndDate: charge.offenceEndDate | formatDate,
                             outcome: charge.outcome,
                             countNumber: charge.sentence.chargeNumber,
+                            convictionDate: charge.sentence.convictionDate | formatDate,
                             terrorRelated: charge.terrorRelated,
                             isSentenced: charge.sentence,
                             custodialSentenceLength: charge.sentence.custodialPeriodLength | periodLengthToSentenceLength,

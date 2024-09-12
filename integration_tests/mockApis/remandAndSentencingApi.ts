@@ -457,6 +457,7 @@ export default {
           courtCode: 'STHHPM',
           courtCaseReference: 'C894623',
           appearanceDate: '2023-12-15',
+          overallConvictionDate: '2024-09-12',
           charges: [
             {
               chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',

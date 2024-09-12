@@ -18,7 +18,7 @@
                     errorMessage: errors | findErrorsBeginningWith('overallConvictionDate'),
                     fieldset: {
                         legend: {
-                            text: "Enter the conviction date",
+                            text: "Enter the conviction date" if isAddCourtAppearance else "Edit the conviction date",
                             isPageHeading: true,
                             classes: "govuk-fieldset__legend--l"
                         }

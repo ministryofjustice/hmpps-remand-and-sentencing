@@ -172,6 +172,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
+        'Conviction date': '12 09 2024',
         'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Imprisonment',
         'Overall sentence length': '4 years',

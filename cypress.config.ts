@@ -33,6 +33,7 @@ export default defineConfig({
             prisonApi.stubGetPrisonerImage(),
             prisonApi.stubGetUserCaseload(),
             courtRegisterApi.stubSearchCourt(),
+            remandAndSentencingApi.stubSearchSentenceTypes(),
           ])
         },
         ...auth,

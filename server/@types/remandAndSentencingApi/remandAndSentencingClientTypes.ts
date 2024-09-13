@@ -29,3 +29,5 @@ export type CreatePeriodLength = components['schemas']['CreatePeriodLength']
 export type APISentence = components['schemas']['Sentence']
 
 export type PeriodLength = components['schemas']['PeriodLength']
+
+export type SentenceType = components['schemas']['SentenceType']

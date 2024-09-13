@@ -719,4 +719,36 @@ export default {
       },
     })
   },
+  stubSearchSentenceTypes: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/sentence-type/search',
+        queryParameters: {
+          age: {
+            equalTo: '58',
+          },
+          convictionDate: {
+            equalTo: '2023-05-12',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+            description: 'SDS (Standard Determinate Sentence)',
+            classification: 'STANDARD',
+          },
+          {
+            sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
+            description: 'EDS (Extended Determinate Sentence)',
+            classification: 'EXTENDED',
+          },
+        ],
+      },
+    })
+  },
 }

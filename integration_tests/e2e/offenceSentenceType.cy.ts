@@ -1,3 +1,4 @@
+import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import Page from '../pages/page'
 
@@ -5,8 +6,18 @@ context('Add Offence Sentence Type Page', () => {
   let offenceSentenceTypePage: OffenceSentenceTypePage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubSearchSentenceTypes')
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/conviction-date')
+    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear()
+    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
+    offenceConvictionDatePage.monthDateInput('convictionDate').clear()
+    offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
+    offenceConvictionDatePage.yearDateInput('convictionDate').clear()
+    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
+    offenceConvictionDatePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/sentence-type')
     offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
   })

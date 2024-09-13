@@ -25,7 +25,7 @@ export const services = () => {
 
   const feComponentsService = new FeComponentsService(feComponentsClient)
 
-  const remandAndSentencingService = new RemandAndSentencingService()
+  const remandAndSentencingService = new RemandAndSentencingService(hmppsAuthClient)
 
   const courtAppearanceService = new CourtAppearanceService(remandAndSentencingService)
 

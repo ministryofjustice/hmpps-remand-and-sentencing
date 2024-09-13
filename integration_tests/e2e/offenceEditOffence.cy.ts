@@ -177,17 +177,18 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit sentence type and return to edit page', () => {
+      cy.pause()
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
       offenceSentenceTypePage.radioSelector('SDS (Standard Determinate Sentence)').should('be.checked')
-      offenceSentenceTypePage.radioLabelSelector('A/FINE').click()
+      offenceSentenceTypePage.radioLabelSelector('EDS (Extended Determinate Sentence)').click()
       offenceSentenceTypePage.button().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
-        'Sentence type': 'A/FINE',
+        'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Forthwith',
       })

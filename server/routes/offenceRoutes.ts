@@ -619,13 +619,13 @@ export default class OffenceRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     let offenceSentenceTypeForm = (req.flash('offenceSentenceTypeForm')[0] || {}) as OffenceSentenceTypeForm
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     if (Object.keys(offenceSentenceTypeForm).length === 0) {
       offenceSentenceTypeForm = {
-        sentenceType: this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-          ?.sentence?.sentenceType,
+        sentenceType: offence?.sentence?.sentenceType,
       }
     }
-    const convictionDate = dayjs(this.offenceService.getConvictionDate(req.session, nomsId, courtCaseReference))
+    const convictionDate = dayjs(offence?.sentence?.convictionDate)
     const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
     const sentenceTypes = await this.remandAndSentencingService.getSentenceTypes(

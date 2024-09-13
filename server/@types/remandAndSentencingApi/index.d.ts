@@ -136,6 +136,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sentence-type/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Search all sentence types
+     * @description This endpoint will search all sentence types
+     */
+    get: operations['searchSentenceTypes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/recall/person/{prisonerId}': {
     parameters: {
       query?: never
@@ -296,7 +316,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:15:39.165374728 */
+      /** @example 13:37:50.495708209 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -330,6 +350,23 @@ export interface components {
     CreateCourtAppearanceResponse: {
       /** Format: uuid */
       appearanceUuid: string
+    }
+    SentenceType: {
+      /** Format: uuid */
+      sentenceTypeUuid: string
+      description: string
+      /** @enum {string} */
+      classification:
+        | 'STANDARD'
+        | 'EXTENDED'
+        | 'SOPC'
+        | 'INDETERMINATE'
+        | 'BOTUS'
+        | 'CIVIL'
+        | 'DTO'
+        | 'FINE'
+        | 'LEGACY'
+        | 'NON_CUSTODIAL'
     }
     Recall: {
       /** Format: uuid */
@@ -393,13 +430,13 @@ export interface components {
     CourtCase: {
       prisonerId: string
       courtCaseUuid: string
-      latestAppearance: components['schemas']['CourtAppearance']
+      latestAppearance?: components['schemas']['CourtAppearance']
       appearances: components['schemas']['CourtAppearance'][]
     }
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:15:39.165374728 */
+      /** @example 13:37:50.495708209 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -439,14 +476,14 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -898,6 +935,47 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['CreateCourtAppearanceResponse']
+        }
+      }
+    }
+  }
+  searchSentenceTypes: {
+    parameters: {
+      query: {
+        age: number
+        convictionDate: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns sentence types */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType'][]
         }
       }
     }

@@ -1,15 +1,20 @@
 import type { CourtAppearance, CourtCase } from 'models'
+import { Dayjs } from 'dayjs'
 import type {
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
 import { courtAppearanceToCreateCourtAppearance, courtCaseToCreateCourtCase } from '../utils/mappingUtils'
+import { HmppsAuthClient } from '../data'
 
 export default class RemandAndSentencingService {
+  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+
   async createCourtCase(prisonerId: string, token: string, courtCase: CourtCase): Promise<CreateCourtCaseResponse> {
     const createCourtCase = courtCaseToCreateCourtCase(prisonerId, courtCase)
     return new RemandAndSentencingApiClient(token).createCourtCase(createCourtCase)
@@ -51,5 +56,16 @@ export default class RemandAndSentencingService {
 
   async getCourtCaseDetails(courtCaseUuid: string, token: string): Promise<PageCourtCaseContent> {
     return new RemandAndSentencingApiClient(token).getCourtCaseByUuid(courtCaseUuid)
+  }
+
+  async getSentenceTypes(age: number, convictionDate: Dayjs, username: string): Promise<SentenceType[]> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).searchSentenceTypes(
+      age,
+      convictionDate.format('YYYY-MM-DD'),
+    )
+  }
+
+  private async getSystemClientToken(username: string): Promise<string> {
+    return this.hmppsAuthClient.getSystemClientToken(username)
   }
 }

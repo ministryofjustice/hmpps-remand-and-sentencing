@@ -19,6 +19,7 @@ import type {
 } from 'forms'
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
+import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -624,6 +625,14 @@ export default class OffenceRoutes {
           ?.sentence?.sentenceType,
       }
     }
+    const convictionDate = dayjs(this.offenceService.getConvictionDate(req.session, nomsId, courtCaseReference))
+    const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
+    const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
+    const sentenceTypes = await this.remandAndSentencingService.getSentenceTypes(
+      ageAtConviction,
+      convictionDate,
+      req.user.username,
+    )
     return res.render('pages/offence/sentence-type', {
       nomsId,
       courtCaseReference,
@@ -633,6 +642,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       submitToEditOffence,
       offenceSentenceTypeForm,
+      sentenceTypes,
       errors: req.flash('errors') || [],
       backLink: submitToEditOffence
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`

@@ -136,6 +136,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sentence-type/{sentenceTypeUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Sentence type by UUID
+     * @description This endpoint will retrieve sentence type by UUID
+     */
+    get: operations['getSentenceTypeByUuid']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sentence-type/search': {
     parameters: {
       query?: never
@@ -316,7 +336,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:02:23.520025 */
+      /** @example 14:59:22.177062 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -437,7 +457,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:02:23.520025 */
+      /** @example 14:59:22.177062 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -480,11 +500,11 @@ export interface components {
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
+      sort?: components['schemas']['SortObject'][]
       first?: boolean
       last?: boolean
       /** Format: int32 */
       size?: number
-      sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -494,12 +514,12 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject'][]
+      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
       /** Format: int32 */
       pageSize?: number
-      unpaged?: boolean
     }
     SortObject: {
       direction?: string
@@ -936,6 +956,55 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['CreateCourtAppearanceResponse']
+        }
+      }
+    }
+  }
+  getSentenceTypeByUuid: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        sentenceTypeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns sentence */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType']
+        }
+      }
+      /** @description Not found if no sentence type at uuid */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType']
         }
       }
     }

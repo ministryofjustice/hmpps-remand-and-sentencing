@@ -1167,6 +1167,12 @@ export default class OffenceRoutes {
     } = req.params
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
+    let sentenceType
+    if (offence.sentence?.sentenceTypeId) {
+      sentenceType = (
+        await this.remandAndSentencingService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
+      ).description
+    }
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,
@@ -1177,6 +1183,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       offenceMap,
+      sentenceType,
       backLink: res.locals.isAddCourtAppearance
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,

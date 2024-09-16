@@ -49,6 +49,7 @@ context('Add Offence Edit offence Page', () => {
 
   context('sentence', () => {
     beforeEach(() => {
+      cy.task('stubGetSentenceTypeById', {})
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
@@ -84,7 +85,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 5',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
-        'Sentence type': '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Forthwith',
       })
@@ -104,7 +105,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '25 05 2023',
-        'Sentence type': '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Forthwith',
       })
@@ -132,7 +133,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'AB11000 Another offence description',
         'Commited on': '12 05 2023',
-        'Sentence type': '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Forthwith',
       })
@@ -153,7 +154,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
-        'Sentence type': '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '6 years 6 months',
         'Consecutive or concurrent': 'Forthwith',
       })
@@ -170,13 +171,17 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
-        'Sentence type': '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Concurrent',
       })
     })
 
     it('can edit sentence type and return to edit page', () => {
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
+        description: 'EDS (Extended Determinate Sentence)',
+      })
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
       offenceSentenceTypePage.radioSelector('467e2fa8-fce1-41a4-8110-b378c727eed3').should('be.checked')
@@ -187,7 +192,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
-        'Sentence type': 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
+        'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Sentence length': '4 years 5 months',
         'Consecutive or concurrent': 'Forthwith',
       })

@@ -751,4 +751,27 @@ export default {
       },
     })
   },
+  stubGetSentenceTypeById: ({
+    sentenceTypeUuid = '467e2fa8-fce1-41a4-8110-b378c727eed3',
+    description = 'SDS (Standard Determinate Sentence)',
+  }: {
+    sentenceTypeUuid: string
+    description: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/sentence-type/${sentenceTypeUuid}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          sentenceTypeUuid,
+          description,
+          classification: 'STANDARD',
+        },
+      },
+    })
+  },
 }

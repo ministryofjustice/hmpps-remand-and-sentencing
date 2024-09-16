@@ -32,7 +32,7 @@ const sentenceToCreateSentence = (sentence: Sentence): CreateSentence | undefine
       chargeNumber: sentence.countNumber,
       custodialPeriodLength: sentenceLengthToCreatePeriodLength(sentence.custodialSentenceLength),
       sentenceServeType: sentence.sentenceServeType,
-      sentenceType: sentence.sentenceType,
+      sentenceTypeId: sentence.sentenceTypeId,
       consecutiveToChargeNumber: sentence.consecutiveTo,
       ...(sentence.convictionDate && { convictionDate: dayjs(sentence.convictionDate).format('YYYY-MM-DD') }),
     } as CreateSentence

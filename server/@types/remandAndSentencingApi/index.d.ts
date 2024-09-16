@@ -316,7 +316,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:37:50.495708209 */
+      /** @example 10:02:23.520025 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -340,7 +340,8 @@ export interface components {
       extendedLicensePeriodLength?: components['schemas']['CreatePeriodLength']
       sentenceServeType: string
       consecutiveToChargeNumber?: string
-      sentenceType: string
+      /** Format: uuid */
+      sentenceTypeId: string
       /** Format: date */
       convictionDate?: string
     }
@@ -436,7 +437,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:37:50.495708209 */
+      /** @example 10:02:23.520025 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -476,14 +477,14 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      /** Format: int32 */
-      size?: number
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
-      sort?: components['schemas']['SortObject'][]
       first?: boolean
       last?: boolean
+      /** Format: int32 */
+      size?: number
+      sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -493,11 +494,11 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject'][]
-      /** Format: int32 */
-      pageSize?: number
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      paged?: boolean
+      /** Format: int32 */
+      pageSize?: number
       unpaged?: boolean
     }
     SortObject: {

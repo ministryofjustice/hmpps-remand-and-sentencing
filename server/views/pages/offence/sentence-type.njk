@@ -8,9 +8,9 @@
 
 {% for sentenceType in sentenceTypes %}
     {% set sentenceTypeItems = sentenceTypeItems.concat({
-        value: sentenceType.description,
+        value: sentenceType.sentenceTypeUuid,
         text: sentenceType.description,
-        checked: offenceSentenceTypeForm.sentenceType === sentenceType.description
+        checked: offenceSentenceTypeForm.sentenceType === sentenceType.sentenceTypeUuid
     })%}
 {% endfor %}
 

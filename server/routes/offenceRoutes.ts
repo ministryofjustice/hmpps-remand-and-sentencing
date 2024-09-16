@@ -622,7 +622,7 @@ export default class OffenceRoutes {
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     if (Object.keys(offenceSentenceTypeForm).length === 0) {
       offenceSentenceTypeForm = {
-        sentenceType: offence?.sentence?.sentenceType,
+        sentenceType: offence?.sentence?.sentenceTypeId,
       }
     }
     const convictionDate = dayjs(offence?.sentence?.convictionDate)

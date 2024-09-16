@@ -262,7 +262,7 @@ Cypress.Commands.add(
     offenceOffenceDatePage.button().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
-    offenceSentenceTypePage.radioLabelSelector('SDS (Standard Determinate Sentence)').click()
+    offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
     offenceSentenceTypePage.button().click()
 
     const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)

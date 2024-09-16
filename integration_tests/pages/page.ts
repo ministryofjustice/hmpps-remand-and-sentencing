@@ -50,6 +50,8 @@ export default abstract class Page {
       .invoke('attr', 'id')
       .then(id => cy.get(`label[for="${id}"]`))
 
+  radioLabelContains = (value: string): PageElement => cy.get(`label:contains("${value}")`)
+
   radioSelector = (value: string): PageElement => cy.get(`:radio[value="${value}"]`)
 
   autoCompleteInput = (): PageElement => cy.get('.autocomplete__input')

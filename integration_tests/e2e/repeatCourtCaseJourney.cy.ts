@@ -260,6 +260,7 @@ context('Repeat Court Case journey', () => {
   })
 
   it('remand to sentencing journey', () => {
+    cy.task('stubGetSentenceTypesByIds')
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
 

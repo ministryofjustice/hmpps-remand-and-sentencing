@@ -28,6 +28,8 @@ export default class CourtCasesDetailsModel {
 
   offences: Offence[]
 
+  sentenceTypeMap: { [key: string]: string }
+
   latestCourtCode: string
 
   latestAppearanceDate: string
@@ -65,10 +67,15 @@ export default class CourtCasesDetailsModel {
     if (this.chargeTotal > 5) {
       this.showingChargeTotal = 5
     }
-    this.offences = pageCourtCaseContent.latestAppearance?.charges
+    const charges = pageCourtCaseContent.latestAppearance?.charges
       .sort((a, b) => (dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1))
-      .map(charge => chargeToOffence(charge))
       .slice(0, 5)
+    this.offences = charges.map(charge => chargeToOffence(charge))
+    this.sentenceTypeMap = Object.fromEntries(
+      charges
+        .filter(charge => charge.sentence)
+        .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]),
+    )
     this.latestCourtCode = pageCourtCaseContent.latestAppearance?.courtCode
     this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance?.appearanceDate).format(config.dateFormat)
   }

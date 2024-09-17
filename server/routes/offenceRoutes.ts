@@ -1042,10 +1042,19 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
-    const offenceMap = await this.manageOffencesService.getOffenceMap(
-      Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode))),
-      req.user.token,
+    const sentenceTypeIds = Array.from(
+      new Set(
+        courtAppearance.offences
+          .filter(offence => offence.sentence?.sentenceTypeId)
+          .map(offence => offence.sentence?.sentenceTypeId),
+      ),
     )
+    const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
+
+    const [offenceMap, sentenceTypeMap] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
+      this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+    ])
 
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
@@ -1056,6 +1065,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       offenceMap,
+      sentenceTypeMap,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
@@ -1100,6 +1110,13 @@ export default class OffenceRoutes {
     } = req.params
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10))
     const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
+    let sentenceType
+    if (offence.sentence?.sentenceTypeId) {
+      sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
+        offence.sentence?.sentenceTypeId,
+        req.user.username,
+      )
+    }
     return res.render('pages/offence/delete-offence', {
       nomsId,
       courtCaseReference,
@@ -1110,6 +1127,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       offenceMap,
+      sentenceType,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
     })
   }
@@ -1217,6 +1235,11 @@ export default class OffenceRoutes {
       req.user.token,
       courtCaseReference,
     )
+    const sentenceTypeMap = Object.entries(
+      latestCourtAppearance.charges
+        .filter(charge => charge.sentence?.sentenceType.sentenceTypeUuid)
+        .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]),
+    )
     const offenceMap = await this.manageOffencesService.getOffenceMap(
       Array.from(new Set(latestCourtAppearance.charges.map(offence => offence.offenceCode))),
       req.user.token,
@@ -1230,6 +1253,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       offenceMap,
+      sentenceTypeMap,
       offences,
     })
   }

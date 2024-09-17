@@ -155,7 +155,7 @@
                                     terrorRelated: offence.terrorRelated,
                                     isSentenced: offence.sentence,
                                     custodialSentenceLength: offence.sentence.custodialSentenceLength,
-                                    sentenceType: offence.sentence.sentenceType
+                                    sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId]
                                 })
                             }}
                 {% endfor %}

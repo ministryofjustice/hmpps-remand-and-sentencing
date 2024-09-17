@@ -336,7 +336,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:59:22.177062 */
+      /** @example 10:04:04.872153742 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -457,7 +457,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:59:22.177062 */
+      /** @example 10:04:04.872153742 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -481,7 +481,7 @@ export interface components {
       extendedLicensePeriodLength?: components['schemas']['PeriodLength']
       sentenceServeType: string
       consecutiveToChargeNumber?: string
-      sentenceType: string
+      sentenceType: components['schemas']['SentenceType']
       /** Format: date */
       convictionDate?: string
     }
@@ -493,18 +493,18 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      content?: components['schemas']['CourtCase'][]
-      /** Format: int32 */
-      number?: number
-      sort?: components['schemas']['SortObject'][]
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
       size?: number
+      content?: components['schemas']['CourtCase'][]
+      /** Format: int32 */
+      number?: number
+      sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -514,12 +514,12 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject'][]
-      unpaged?: boolean
+      /** Format: int32 */
+      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      /** Format: int32 */
-      pageSize?: number
+      unpaged?: boolean
     }
     SortObject: {
       direction?: string

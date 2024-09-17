@@ -89,4 +89,13 @@ export default class RemandAndSentencingApiClient {
       path: `/sentence-type/${sentenceTypeId}`,
     })) as unknown as Promise<SentenceType>
   }
+
+  async getSentenceTypesByIds(sentenceTypeIds: string[]): Promise<SentenceType[]> {
+    return (await this.restClient.get({
+      path: `/sentence-type/uuid/multiple`,
+      query: {
+        uuids: sentenceTypeIds.join(','),
+      },
+    })) as unknown as Promise<SentenceType[]>
+  }
 }

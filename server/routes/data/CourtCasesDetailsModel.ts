@@ -70,11 +70,11 @@ export default class CourtCasesDetailsModel {
     const charges = pageCourtCaseContent.latestAppearance?.charges
       .sort((a, b) => (dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1))
       .slice(0, 5)
-    this.offences = charges.map(charge => chargeToOffence(charge))
+    this.offences = charges?.map(charge => chargeToOffence(charge))
     this.sentenceTypeMap = Object.fromEntries(
       charges
-        .filter(charge => charge.sentence)
-        .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]),
+        ?.filter(charge => charge.sentence)
+        .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]) ?? [],
     )
     this.latestCourtCode = pageCourtCaseContent.latestAppearance?.courtCode
     this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance?.appearanceDate).format(config.dateFormat)

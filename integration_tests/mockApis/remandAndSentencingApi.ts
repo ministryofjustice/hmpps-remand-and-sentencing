@@ -786,4 +786,28 @@ export default {
       },
     })
   },
+  stubGetSentenceTypesByIds: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/sentence-type/uuid/multiple',
+        queryParameters: {
+          uuids: {
+            equalTo: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+            description: 'SDS (Standard Determinate Sentence)',
+            classification: 'STANDARD',
+          },
+        ],
+      },
+    })
+  },
 }

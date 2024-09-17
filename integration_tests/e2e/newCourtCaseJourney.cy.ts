@@ -260,6 +260,7 @@ context('New Court Case journey', () => {
   })
 
   it('fill in sentencing journey', () => {
+    cy.task('stubGetSentenceTypesByIds')
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 

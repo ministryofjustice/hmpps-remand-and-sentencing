@@ -50,6 +50,7 @@ context('Add Offence Edit offence Page', () => {
   context('sentence', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceTypeById', {})
+      cy.task('stubGetSentenceTypesByIds')
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()

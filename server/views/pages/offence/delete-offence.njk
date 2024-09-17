@@ -26,7 +26,7 @@
             licencePeriodLength: offence.sentence.licencePeriodLength,
             sentenceServeType: offence.sentence.sentenceServeType,
             consecutiveTo: offence.sentence.consecutiveTo,
-            sentenceType: offence.sentence.sentenceType
+            sentenceType: sentenceType.description if sentenceType
         })
     }}
 {% endset %}

@@ -12,6 +12,7 @@ context('Check Offence Answers Page', () => {
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtById', {})
+    cy.task('stubGetSentenceTypesByIds')
     cy.signIn()
     cy.createCourtCase('A1234AB', 'T12345678', '0')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
@@ -84,6 +85,7 @@ context('Check Offence Answers Page', () => {
 
   context('sentencing', () => {
     beforeEach(() => {
+      cy.task('stubGetSentenceTypeById', {})
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()

@@ -65,6 +65,25 @@ export default class RemandAndSentencingService {
     )
   }
 
+  async getSentenceTypeById(sentenceTypeId: string, username: string): Promise<SentenceType> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getSentenceTypeById(
+      sentenceTypeId,
+    )
+  }
+
+  async getSentenceTypeMap(sentenceTypeIds: string[], username: string): Promise<{ [key: string]: string }> {
+    let sentenceTypeMap = {}
+    if (sentenceTypeIds.length) {
+      const sentenceTypes = await new RemandAndSentencingApiClient(
+        await this.getSystemClientToken(username),
+      ).getSentenceTypesByIds(sentenceTypeIds)
+      sentenceTypeMap = Object.fromEntries(
+        sentenceTypes.map(sentenceType => [sentenceType.sentenceTypeUuid, sentenceType.description]),
+      )
+    }
+    return sentenceTypeMap
+  }
+
   private async getSystemClientToken(username: string): Promise<string> {
     return this.hmppsAuthClient.getSystemClientToken(username)
   }

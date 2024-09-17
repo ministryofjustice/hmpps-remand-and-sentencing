@@ -143,9 +143,13 @@ export default class CourtCaseRoutes {
     const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode].filter(
       courtId => courtId !== undefined && courtId !== null,
     )
-    const [offenceMap, courtMap] = await Promise.all([
+    const sentenceTypeIds = appearance.offences
+      .filter(offence => offence.sentence?.sentenceTypeId)
+      .map(offence => offence.sentence?.sentenceTypeId)
+    const [offenceMap, courtMap, sentenceTypeMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
+      this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
     ])
 
     return res.render('pages/courtAppearance/details', {
@@ -157,6 +161,7 @@ export default class CourtCaseRoutes {
       appearance,
       offenceMap,
       courtMap,
+      sentenceTypeMap,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }
@@ -1115,6 +1120,7 @@ export default class CourtCaseRoutes {
         courtName = courtAppearance.courtCode
       }
     }
+
     return res.render('pages/courtAppearance/check-answers', {
       nomsId,
       courtAppearance,

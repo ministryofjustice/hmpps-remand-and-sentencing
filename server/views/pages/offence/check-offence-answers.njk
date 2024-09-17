@@ -94,7 +94,7 @@
                         licencePeriodLength: offence.sentence.licencePeriodLength,
                         sentenceServeType: offence.sentence.sentenceServeType,
                         consecutiveTo: offence.sentence.consecutiveTo,
-                        sentenceType: offence.sentence.sentenceTypeId,
+                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
                         actions: {
                             items: [
                                 {

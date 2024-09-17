@@ -126,7 +126,7 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     countNumber: apiSentence.chargeNumber,
     custodialSentenceLength: periodLengthToSentenceLength(apiSentence.custodialPeriodLength),
     sentenceServeType: apiSentence.sentenceServeType,
-    sentenceTypeId: apiSentence.sentenceType,
+    sentenceTypeId: apiSentence.sentenceType.sentenceTypeUuid,
     consecutiveTo: apiSentence.consecutiveToChargeNumber,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
   } as Sentence

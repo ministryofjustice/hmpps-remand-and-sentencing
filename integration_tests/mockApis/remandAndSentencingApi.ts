@@ -472,7 +472,11 @@ export default {
                   periodOrder: 'years',
                 },
                 sentenceServeType: 'FORTHWITH',
-                sentenceType: 'SDS (Standard Determinate Sentence)',
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
               },
             },
           ],
@@ -658,7 +662,11 @@ export default {
                     periodOrder: 'years,months',
                   },
                   sentenceServeType: 'FORTHWITH',
-                  sentenceType: 'SDS (Standard Determinate Sentence)',
+                  sentenceType: {
+                    sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                    description: 'SDS (Standard Determinate Sentence)',
+                    classification: 'STANDARD',
+                  },
                 },
               },
             ],
@@ -689,7 +697,11 @@ export default {
                       periodOrder: 'years,months',
                     },
                     sentenceServeType: 'FORTHWITH',
-                    sentenceType: 'SDS (Standard Determinate Sentence)',
+                    sentenceType: {
+                      sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                      description: 'SDS (Standard Determinate Sentence)',
+                      classification: 'STANDARD',
+                    },
                   },
                 },
               ],
@@ -746,6 +758,53 @@ export default {
             sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
             description: 'EDS (Extended Determinate Sentence)',
             classification: 'EXTENDED',
+          },
+        ],
+      },
+    })
+  },
+  stubGetSentenceTypeById: ({
+    sentenceTypeUuid = '467e2fa8-fce1-41a4-8110-b378c727eed3',
+    description = 'SDS (Standard Determinate Sentence)',
+  }: {
+    sentenceTypeUuid: string
+    description: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/sentence-type/${sentenceTypeUuid}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          sentenceTypeUuid,
+          description,
+          classification: 'STANDARD',
+        },
+      },
+    })
+  },
+  stubGetSentenceTypesByIds: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/sentence-type/uuid/multiple',
+        queryParameters: {
+          uuids: {
+            equalTo: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+            description: 'SDS (Standard Determinate Sentence)',
+            classification: 'STANDARD',
           },
         ],
       },

@@ -158,6 +158,7 @@ context('Court Case Appearance details Page', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceAppearanceDetails')
       cy.task('stubGetCourtsByIds')
+      cy.task('stubGetSentenceTypesByIds')
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
@@ -180,6 +181,7 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('can edit sentence information', () => {
+      cy.task('stubGetSentenceTypeById', {})
       courtCaseAppearanceDetailsPage
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
         .click()

@@ -334,7 +334,7 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
-      const sentenceLength = sentenceLengthFormToSentenceLength(offenceSentenceLengthForm)
+      const sentenceLength = sentenceLengthFormToSentenceLength(offenceSentenceLengthForm, 'SENTENCE_LENGTH')
       sentence.custodialSentenceLength = sentenceLength
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
@@ -370,6 +370,7 @@ export default class OffenceService {
     if (errors.length === 0) {
       const sentenceLength = alternativeSentenceLengthFormToSentenceLength<OffenceAlternativeSentenceLengthForm>(
         offenceAlternativeSentenceLengthForm,
+        'SENTENCE_LENGTH',
       )
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)

@@ -382,7 +382,10 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const sentenceLength = sentenceLengthFormToSentenceLength(courtCaseOverallSentenceLengthForm)
+      const sentenceLength = sentenceLengthFormToSentenceLength(
+        courtCaseOverallSentenceLengthForm,
+        'OVERALL_SENTENCE_LENGTH',
+      )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.overallSentenceLength = sentenceLength
       // eslint-disable-next-line no-param-reassign
@@ -417,6 +420,7 @@ export default class CourtAppearanceService {
     if (errors.length === 0) {
       const sentenceLength = alternativeSentenceLengthFormToSentenceLength<CourtCaseAlternativeSentenceLengthForm>(
         courtCaseAlternativeSentenceLengthForm,
+        'OVERALL_SENTENCE_LENGTH',
       )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.overallSentenceLength = sentenceLength

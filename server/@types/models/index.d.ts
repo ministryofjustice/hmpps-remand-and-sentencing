@@ -57,6 +57,13 @@ declare module 'models' {
     weeks?: string
     days?: string
     periodOrder: string[]
+    periodLengthType:
+      | 'SENTENCE_LENGTH'
+      | 'CUSTODIAL_TERM'
+      | 'LICENCE_PERIOD'
+      | 'TARIFF_LENGTH'
+      | 'TERM_LENGTH'
+      | 'OVERALL_SENTENCE_LENGTH'
   }
   export interface TaskListItem {
     title: { text: string }

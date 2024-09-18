@@ -28,9 +28,13 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): Cre
 const sentenceToCreateSentence = (sentence: Sentence): CreateSentence | undefined => {
   let createSentence
   if (sentence) {
+    let periodLengths = []
+    if (sentence.custodialSentenceLength) {
+      periodLengths = [sentenceLengthToCreatePeriodLength(sentence.custodialSentenceLength)]
+    }
     createSentence = {
       chargeNumber: sentence.countNumber,
-      custodialPeriodLength: sentenceLengthToCreatePeriodLength(sentence.custodialSentenceLength),
+      periodLengths,
       sentenceServeType: sentence.sentenceServeType,
       sentenceTypeId: sentence.sentenceTypeId,
       consecutiveToChargeNumber: sentence.consecutiveTo,
@@ -124,7 +128,9 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
     countNumber: apiSentence.chargeNumber,
-    custodialSentenceLength: periodLengthToSentenceLength(apiSentence.custodialPeriodLength),
+    custodialSentenceLength: periodLengthToSentenceLength(
+      apiSentence.periodLengths.find(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH'),
+    ),
     sentenceServeType: apiSentence.sentenceServeType,
     sentenceTypeId: apiSentence.sentenceType.sentenceTypeUuid,
     consecutiveTo: apiSentence.consecutiveToChargeNumber,
@@ -170,8 +176,17 @@ export function sentenceLengthToAlternativeSentenceLengthForm<T>(sentenceLength:
   return alternativeSentenceLengthForm
 }
 
-export function alternativeSentenceLengthFormToSentenceLength<T>(alternativeSentenceLengthForm: T): SentenceLength {
-  const sentenceLength = { periodOrder: [] }
+export function alternativeSentenceLengthFormToSentenceLength<T>(
+  alternativeSentenceLengthForm: T,
+  periodLengthType:
+    | 'SENTENCE_LENGTH'
+    | 'CUSTODIAL_TERM'
+    | 'LICENCE_PERIOD'
+    | 'TARIFF_LENGTH'
+    | 'TERM_LENGTH'
+    | 'OVERALL_SENTENCE_LENGTH',
+): SentenceLength {
+  const sentenceLength = { periodOrder: [], periodLengthType }
   if (alternativeSentenceLengthForm['firstSentenceLength-value']) {
     sentenceLength[alternativeSentenceLengthForm['firstSentenceLength-period']] =
       alternativeSentenceLengthForm['firstSentenceLength-value']
@@ -206,7 +221,16 @@ export function sentenceLengthToSentenceLengthForm(sentenceLength: SentenceLengt
     : ({} as SentenceLengthForm)
 }
 
-export function sentenceLengthFormToSentenceLength(sentenceLengthForm: SentenceLengthForm): SentenceLength {
+export function sentenceLengthFormToSentenceLength(
+  sentenceLengthForm: SentenceLengthForm,
+  periodLengthType:
+    | 'SENTENCE_LENGTH'
+    | 'CUSTODIAL_TERM'
+    | 'LICENCE_PERIOD'
+    | 'TARIFF_LENGTH'
+    | 'TERM_LENGTH'
+    | 'OVERALL_SENTENCE_LENGTH',
+): SentenceLength {
   return {
     ...(sentenceLengthForm['sentenceLength-years'] ? { years: sentenceLengthForm['sentenceLength-years'] } : {}),
     ...(sentenceLengthForm['sentenceLength-months'] ? { months: sentenceLengthForm['sentenceLength-months'] } : {}),
@@ -218,6 +242,7 @@ export function sentenceLengthFormToSentenceLength(sentenceLengthForm: SentenceL
       ...(sentenceLengthForm['sentenceLength-weeks'] ? ['weeks'] : []),
       ...(sentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
     ],
+    periodLengthType,
   } as SentenceLength
 }
 

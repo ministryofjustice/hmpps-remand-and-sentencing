@@ -156,6 +156,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sentence-type/uuid/multiple': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * get all sentence types by uuids
+     * @description This endpoint will get all sentence types by uuids
+     */
+    get: operations['getSentenceTypesByIds']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sentence-type/search': {
     parameters: {
       query?: never
@@ -336,7 +356,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:04:04.872153742 */
+      /** @example 12:05:35.173097 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -351,13 +371,20 @@ export interface components {
       /** Format: int32 */
       days?: number
       periodOrder: string
+      /** @enum {string} */
+      type:
+        | 'SENTENCE_LENGTH'
+        | 'CUSTODIAL_TERM'
+        | 'LICENCE_PERIOD'
+        | 'TARIFF_LENGTH'
+        | 'TERM_LENGTH'
+        | 'OVERALL_SENTENCE_LENGTH'
     }
     CreateSentence: {
       /** Format: uuid */
       sentenceUuid?: string
       chargeNumber: string
-      custodialPeriodLength: components['schemas']['CreatePeriodLength']
-      extendedLicensePeriodLength?: components['schemas']['CreatePeriodLength']
+      periodLengths: components['schemas']['CreatePeriodLength'][]
       sentenceServeType: string
       consecutiveToChargeNumber?: string
       /** Format: uuid */
@@ -457,7 +484,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:04:04.872153742 */
+      /** @example 12:05:35.173097 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -472,13 +499,20 @@ export interface components {
       /** Format: int32 */
       days?: number
       periodOrder: string
+      /** @enum {string} */
+      periodLengthType:
+        | 'SENTENCE_LENGTH'
+        | 'CUSTODIAL_TERM'
+        | 'LICENCE_PERIOD'
+        | 'TARIFF_LENGTH'
+        | 'TERM_LENGTH'
+        | 'OVERALL_SENTENCE_LENGTH'
     }
     Sentence: {
       /** Format: uuid */
       sentenceUuid: string
       chargeNumber: string
-      custodialPeriodLength: components['schemas']['PeriodLength']
-      extendedLicensePeriodLength?: components['schemas']['PeriodLength']
+      periodLengths: components['schemas']['PeriodLength'][]
       sentenceServeType: string
       consecutiveToChargeNumber?: string
       sentenceType: components['schemas']['SentenceType']
@@ -493,32 +527,32 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
       size?: number
-      content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
+      content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
+      sort?: components['schemas']['SortObject'][]
       /** Format: int64 */
       offset?: number
-      sort?: components['schemas']['SortObject'][]
-      /** Format: int32 */
-      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      /** Format: int32 */
+      pageSize?: number
       unpaged?: boolean
     }
     SortObject: {
@@ -1005,6 +1039,46 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['SentenceType']
+        }
+      }
+    }
+  }
+  getSentenceTypesByIds: {
+    parameters: {
+      query: {
+        uuids: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns sentence types */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType'][]
         }
       }
     }

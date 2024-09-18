@@ -22,6 +22,7 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): Cre
     ...(sentenceLength.months ? { months: Number(sentenceLength.months) } : {}),
     ...(sentenceLength.years ? { years: Number(sentenceLength.years) } : {}),
     periodOrder: sentenceLength.periodOrder.join(','),
+    type: sentenceLength.periodLengthType,
   } as CreatePeriodLength
 }
 
@@ -119,6 +120,7 @@ export const periodLengthToSentenceLength = (periodLength: PeriodLength): Senten
       ...(typeof periodLength.months === 'number' ? { months: String(periodLength.months) } : {}),
       ...(typeof periodLength.years === 'number' ? { years: String(periodLength.years) } : {}),
       periodOrder: periodLength.periodOrder.split(','),
+      periodLengthType: periodLength.periodLengthType,
     } as SentenceLength
   }
   return null

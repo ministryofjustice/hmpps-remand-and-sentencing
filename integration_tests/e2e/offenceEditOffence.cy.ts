@@ -5,7 +5,7 @@ import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
-import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
+import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
@@ -142,14 +142,14 @@ context('Add Offence Edit offence Page', () => {
 
     it('can edit sentence length and return to edit page', () => {
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'sentence-length').click()
-      const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
-      offenceSentenceLengthPage.yearsInput().should('have.value', '4')
-      offenceSentenceLengthPage.yearsInput().clear()
-      offenceSentenceLengthPage.yearsInput().type('6')
-      offenceSentenceLengthPage.monthsInput().should('have.value', '5')
-      offenceSentenceLengthPage.monthsInput().clear()
-      offenceSentenceLengthPage.monthsInput().type('6')
-      offenceSentenceLengthPage.button().click()
+      const offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+      offencePeriodLengthPage.yearsInput().should('have.value', '4')
+      offencePeriodLengthPage.yearsInput().clear()
+      offencePeriodLengthPage.yearsInput().type('6')
+      offencePeriodLengthPage.monthsInput().should('have.value', '5')
+      offencePeriodLengthPage.monthsInput().clear()
+      offencePeriodLengthPage.monthsInput().type('6')
+      offencePeriodLengthPage.button().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',

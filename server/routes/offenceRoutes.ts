@@ -206,7 +206,7 @@ export default class OffenceRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=SENTENCE_LENGTH`,
       )
     }
     this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
@@ -269,7 +269,7 @@ export default class OffenceRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=SENTENCE_LENGTH`,
       )
     }
 
@@ -677,78 +677,7 @@ export default class OffenceRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-length`,
-    )
-  }
-
-  public getSentenceLength: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const { submitToEditOffence } = req.query
-    let offenceSentenceLengthForm = (req.flash('offenceSentenceLengthForm')[0] || {}) as SentenceLengthForm
-    if (Object.keys(offenceSentenceLengthForm).length === 0) {
-      offenceSentenceLengthForm = sentenceLengthToSentenceLengthForm(
-        this.getSessionOffenceOrAppearanceOffence(
-          req,
-          nomsId,
-          courtCaseReference,
-          offenceReference,
-        )?.sentence?.periodLengths?.find(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH'),
-      )
-    }
-    return res.render('pages/offence/sentence-length', {
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      submitToEditOffence,
-      offenceSentenceLengthForm,
-      errors: req.flash('errors') || [],
-      backLink: submitToEditOffence
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
-    })
-  }
-
-  public submitSentenceLength: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
-    const errors = this.offenceService.setCustodialSentenceLength(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      offenceSentenceLengthForm,
-    )
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      req.flash('offenceSentenceLengthForm', { ...offenceSentenceLengthForm })
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-length`,
-      )
-    }
-    const { submitToEditOffence } = req.query
-    if (submitToEditOffence) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
-      )
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=SENTENCE_LENGTH`,
     )
   }
 
@@ -861,7 +790,7 @@ export default class OffenceRoutes {
       submitToEditOffence,
       offenceAlternativeSentenceLengthForm,
       errors: req.flash('errors') || [],
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=SENTENCE_LENGTH`,
     })
   }
 
@@ -927,7 +856,7 @@ export default class OffenceRoutes {
       showForthwith: sentenceServeType === 'FORTHWITH' || !forthwithAlreadySelected,
       sentenceServeType,
       submitToEditOffence,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-length`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=SENTENCE_LENGTH`,
     })
   }
 

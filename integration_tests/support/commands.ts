@@ -7,11 +7,11 @@ import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
-import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
+import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
@@ -265,12 +265,12 @@ Cypress.Commands.add(
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
     offenceSentenceTypePage.button().click()
 
-    const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
-    offenceSentenceLengthPage.yearsInput().clear()
-    offenceSentenceLengthPage.yearsInput().type('4')
-    offenceSentenceLengthPage.monthsInput().clear()
-    offenceSentenceLengthPage.monthsInput().type('5')
-    offenceSentenceLengthPage.button().click()
+    const offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage.yearsInput().clear()
+    offencePeriodLengthPage.yearsInput().type('4')
+    offencePeriodLengthPage.monthsInput().clear()
+    offencePeriodLengthPage.monthsInput().type('5')
+    offencePeriodLengthPage.button().click()
 
     const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()

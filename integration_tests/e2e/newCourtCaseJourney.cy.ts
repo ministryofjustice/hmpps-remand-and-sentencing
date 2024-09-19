@@ -16,7 +16,6 @@ import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersP
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
-import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
@@ -26,6 +25,7 @@ import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourt
 import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
 import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
+import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -396,10 +396,10 @@ context('New Court Case journey', () => {
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
     offenceSentenceTypePage.button().click()
 
-    const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
-    offenceSentenceLengthPage.yearsInput().type('4')
-    offenceSentenceLengthPage.monthsInput().type('5')
-    offenceSentenceLengthPage.button().click()
+    const offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage.yearsInput().type('4')
+    offencePeriodLengthPage.monthsInput().type('5')
+    offencePeriodLengthPage.button().click()
 
     const cffenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()

@@ -94,7 +94,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.650.0",
+    "@aws-sdk/client-sqs": "^3.651.1",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.2",
     "@microsoft/applicationinsights-web": "^3.3.2",
     "@ministryofjustice/frontend": "^2.2.0",

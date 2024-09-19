@@ -33,6 +33,7 @@ import {
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
+import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 
 export default class OffenceRoutes {
   constructor(

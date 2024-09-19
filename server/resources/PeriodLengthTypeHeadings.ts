@@ -6,3 +6,5 @@ const periodLengthTypeHeadings = {
   TERM_LENGTH: 'Term length',
   OVERALL_SENTENCE_LENGTH: 'Overall sentence length',
 }
+
+export default periodLengthTypeHeadings

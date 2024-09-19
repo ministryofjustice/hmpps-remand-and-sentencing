@@ -1,6 +1,6 @@
 import Page, { PageElement } from './page'
 
-export default class OffenceSentenceLengthPage extends Page {
+export default class OffencePeriodLengthPage extends Page {
   constructor() {
     super('Enter the sentence length')
   }

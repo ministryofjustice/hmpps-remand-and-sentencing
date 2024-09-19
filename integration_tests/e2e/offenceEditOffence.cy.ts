@@ -141,7 +141,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit sentence length and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'sentence-length').click()
+      offenceEditOffencePage.editPeriodLengthLink('A1234AB', 'add', '0', '0', '0', 'SENTENCE_LENGTH').click()
       const offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
       offencePeriodLengthPage.yearsInput().should('have.value', '4')
       offencePeriodLengthPage.yearsInput().clear()

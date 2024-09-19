@@ -694,8 +694,12 @@ export default class OffenceRoutes {
     let offenceSentenceLengthForm = (req.flash('offenceSentenceLengthForm')[0] || {}) as SentenceLengthForm
     if (Object.keys(offenceSentenceLengthForm).length === 0) {
       offenceSentenceLengthForm = sentenceLengthToSentenceLengthForm(
-        this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)?.sentence
-          ?.custodialSentenceLength,
+        this.getSessionOffenceOrAppearanceOffence(
+          req,
+          nomsId,
+          courtCaseReference,
+          offenceReference,
+        )?.sentence?.periodLengths?.find(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH'),
       )
     }
     return res.render('pages/offence/sentence-length', {
@@ -838,8 +842,12 @@ export default class OffenceRoutes {
       {}) as OffenceAlternativeSentenceLengthForm
     if (Object.keys(offenceAlternativeSentenceLengthForm).length === 0) {
       offenceAlternativeSentenceLengthForm = sentenceLengthToAlternativeSentenceLengthForm(
-        this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)?.sentence
-          ?.custodialSentenceLength,
+        this.getSessionOffenceOrAppearanceOffence(
+          req,
+          nomsId,
+          courtCaseReference,
+          offenceReference,
+        )?.sentence?.periodLengths?.find(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH'),
       )
     }
 

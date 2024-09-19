@@ -45,7 +45,6 @@ declare module 'models' {
     sentenceUuid?: string
     countNumber?: string
     periodLengths?: SentenceLength[]
-    custodialSentenceLength?: SentenceLength
     sentenceServeType?: string
     consecutiveTo?: string
     sentenceTypeId?: string

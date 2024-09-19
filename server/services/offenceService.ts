@@ -334,8 +334,16 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
+      const periodLengths = sentence.periodLengths ?? []
       const sentenceLength = sentenceLengthFormToSentenceLength(offenceSentenceLengthForm, 'SENTENCE_LENGTH')
-      sentence.custodialSentenceLength = sentenceLength
+      const index = periodLengths.findIndex(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH')
+      if (index !== -1) {
+        periodLengths[index] = sentenceLength
+      } else {
+        periodLengths.push(sentenceLength)
+      }
+      sentence.periodLengths = periodLengths
+      sentence.periodLengths = periodLengths
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
@@ -419,7 +427,14 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
-      sentence.custodialSentenceLength = sentenceLength
+      const periodLengths = sentence.periodLengths ?? []
+      const index = periodLengths.findIndex(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH')
+      if (index !== -1) {
+        periodLengths[index] = sentenceLength
+      } else {
+        periodLengths.push(sentenceLength)
+      }
+      sentence.periodLengths = periodLengths
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

@@ -29,10 +29,8 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): Cre
 const sentenceToCreateSentence = (sentence: Sentence): CreateSentence | undefined => {
   let createSentence
   if (sentence) {
-    let periodLengths = []
-    if (sentence.custodialSentenceLength) {
-      periodLengths = [sentenceLengthToCreatePeriodLength(sentence.custodialSentenceLength)]
-    }
+    const periodLengths =
+      sentence.periodLengths?.map(sentenceLength => sentenceLengthToCreatePeriodLength(sentenceLength)) ?? []
     createSentence = {
       chargeNumber: sentence.countNumber,
       periodLengths,
@@ -133,6 +131,7 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     custodialSentenceLength: periodLengthToSentenceLength(
       apiSentence.periodLengths.find(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH'),
     ),
+    periodLengths: apiSentence.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
     sentenceServeType: apiSentence.sentenceServeType,
     sentenceTypeId: apiSentence.sentenceType.sentenceTypeUuid,
     consecutiveTo: apiSentence.consecutiveToChargeNumber,

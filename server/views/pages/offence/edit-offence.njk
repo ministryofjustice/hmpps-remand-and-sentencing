@@ -77,7 +77,7 @@
                     text: "Sentence length"
                 },
                     value: {
-                    text: offence.sentence.custodialSentenceLength | formatLengths
+                    text: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH") | formatLengths
                 },
                     actions: {
                         items: [{

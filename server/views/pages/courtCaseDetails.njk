@@ -67,7 +67,7 @@
                             convictionDate: charge.sentence.convictionDate | formatDate,
                             terrorRelated: charge.terrorRelated,
                             isSentenced: charge.sentence,
-                            custodialSentenceLength: charge.sentence.custodialPeriodLength | periodLengthToSentenceLength,
+                            custodialSentenceLength: charge.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH") | periodLengthToSentenceLength,
                             licencePeriodLength: charge.sentence.extendedLicensePeriodLength | periodLengthToSentenceLength,
                             sentenceServeType: charge.sentence.sentenceServeType,
                             consecutiveTo: charge.sentence.consecutiveToChargeNumber,

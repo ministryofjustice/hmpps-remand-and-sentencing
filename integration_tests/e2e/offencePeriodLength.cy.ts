@@ -2,7 +2,7 @@ import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import Page from '../pages/page'
 
-context('Add Offence Sentence Length Page', () => {
+context('Add Offence Period Length Page', () => {
   let offencePeriodLengthPage: OffencePeriodLengthPage
   beforeEach(() => {
     cy.task('happyPathStubs')
@@ -12,7 +12,7 @@ context('Add Offence Sentence Length Page', () => {
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
     cy.visit(
-      '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/period-length?periodLengthType=SENTENCE_TYPE',
+      '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/period-length?periodLengthType=SENTENCE_LENGTH',
     )
     offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
   })

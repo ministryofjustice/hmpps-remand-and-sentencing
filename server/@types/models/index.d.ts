@@ -44,6 +44,7 @@ declare module 'models' {
   export interface Sentence {
     sentenceUuid?: string
     countNumber?: string
+    periodLengths?: SentenceLength[]
     custodialSentenceLength?: SentenceLength
     sentenceServeType?: string
     consecutiveTo?: string

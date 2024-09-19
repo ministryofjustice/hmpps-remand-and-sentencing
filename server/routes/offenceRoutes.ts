@@ -747,6 +747,82 @@ export default class OffenceRoutes {
     )
   }
 
+  public getPeriodLength: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence, periodLengthType } = req.query
+    let periodLengthForm = (req.flash('periodLengthForm')[0] || {}) as SentenceLengthForm
+    if (Object.keys(periodLengthForm).length === 0) {
+      periodLengthForm = sentenceLengthToSentenceLengthForm(
+        this.getSessionOffenceOrAppearanceOffence(
+          req,
+          nomsId,
+          courtCaseReference,
+          offenceReference,
+        ).sentence?.periodLengths?.find(periodLength => periodLength.periodLengthType === periodLengthType),
+      )
+    }
+    const periodLengthHeader = periodLengthTypeHeadings[periodLengthType as string]
+    return res.render('pages/offence/period-length', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      submitToEditOffence,
+      periodLengthType,
+      periodLengthForm,
+      periodLengthHeader,
+      errors: req.flash('errors') || [],
+      backLink: submitToEditOffence
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
+    })
+  }
+
+  public submitPeriodLength: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence, periodLengthType } = req.query
+    const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
+    const errors = this.offenceService.setPeriodLength(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceSentenceLengthForm,
+      periodLengthType as string,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceSentenceLengthForm', { ...offenceSentenceLengthForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${periodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+      )
+    }
+
+    if (submitToEditOffence) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+    )
+  }
+
   public getAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,

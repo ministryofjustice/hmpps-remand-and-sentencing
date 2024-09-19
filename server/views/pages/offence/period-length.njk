@@ -1,0 +1,60 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% set pageTitle = applicationName + " - Add " + periodLengthHeader %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-period-length?periodLengthType={{periodLengthType}}{{ "&submitToEditOffence=true" if submitToEditOffence }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {{ govukDateInput({
+                    id: "sentenceLength",
+                    namePrefix: "sentenceLength",
+                    errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
+                    fieldset: {
+                        legend: {
+                        text: "Enter the " + periodLengthHeader,
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
+                        label: "Years",
+                        name:"years",
+                        value: periodLengthForm["sentenceLength-years"]
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
+                        label: "Months",
+                        name:"months",
+                        value: periodLengthForm["sentenceLength-months"]
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
+                        label: "Weeks",
+                        name:"weeks",
+                        value: periodLengthForm["sentenceLength-weeks"]
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
+                        label: "Days",
+                        name:"days",
+                        value: periodLengthForm["sentenceLength-days"]
+                    }
+                    ]
+                }) }}
+
+                <p class="govuk-body">
+                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/alternative-period-length?periodLengthType={{periodLengthType}}{{ "&submitToEditOffence=true" if submitToEditOffence }}">The {{ periodLengthHeader }} is formatted differently</a>
+                </p>
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </form>
+
+{% endblock %}

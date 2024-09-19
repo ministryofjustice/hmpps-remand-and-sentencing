@@ -225,13 +225,7 @@ export function sentenceLengthToSentenceLengthForm(sentenceLength: SentenceLengt
 
 export function sentenceLengthFormToSentenceLength(
   sentenceLengthForm: SentenceLengthForm,
-  periodLengthType:
-    | 'SENTENCE_LENGTH'
-    | 'CUSTODIAL_TERM'
-    | 'LICENCE_PERIOD'
-    | 'TARIFF_LENGTH'
-    | 'TERM_LENGTH'
-    | 'OVERALL_SENTENCE_LENGTH',
+  periodLengthType: string,
 ): SentenceLength {
   return {
     ...(sentenceLengthForm['sentenceLength-years'] ? { years: sentenceLengthForm['sentenceLength-years'] } : {}),

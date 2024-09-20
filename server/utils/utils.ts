@@ -55,13 +55,10 @@ export const pluraliseName = (name: string) => {
   return `${name}'s`
 }
 
-export const getNextPeriodLengthType = (sentence: Sentence) => {
-  const currentPeriodLengthTypes = (sentence.periodLengths ?? []).map(periodLength => periodLength.periodLengthType)
+export const getNextPeriodLengthType = (sentence: Sentence, currentPeriodLengthType: string | undefined) => {
   const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths.map(
     periodLength => periodLength.type,
   )
-  const remainingPeriodLengthTypes = expectedPeriodLengthTypes.filter(
-    expectedPeriodLengthType => !currentPeriodLengthTypes.includes(expectedPeriodLengthType),
-  )
-  return remainingPeriodLengthTypes[0]
+  const nextIndex = expectedPeriodLengthTypes.indexOf(currentPeriodLengthType) + 1
+  return expectedPeriodLengthTypes[nextIndex]
 }

@@ -675,6 +675,7 @@ export default class OffenceRoutes {
 
     const nextPeriodLengthType = getNextPeriodLengthType(
       this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
+      null,
     )
     if (nextPeriodLengthType) {
       return res.redirect(
@@ -710,9 +711,9 @@ export default class OffenceRoutes {
         sentence.periodLengths?.find(periodLength => periodLength.periodLengthType === periodLengthType),
       )
     }
-    const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[
-      sentence?.sentenceTypeClassification
-    ].periodLengths.indexOf(periodLengthType as string)
+    const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths
+      .map(periodLength => periodLength.type)
+      .indexOf(periodLengthType as string)
     const periodLengthHeader = periodLengthTypeHeadings[periodLengthType as string]
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
     if (submitToEditOffence) {
@@ -720,6 +721,7 @@ export default class OffenceRoutes {
     } else if (expectedPeriodLengthTypeIndex >= 1) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${
         sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths[expectedPeriodLengthTypeIndex - 1]
+          .type
       }`
     }
     return res.render('pages/offence/period-length', {
@@ -766,6 +768,7 @@ export default class OffenceRoutes {
 
     const nextPeriodLengthType = getNextPeriodLengthType(
       this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
+      periodLengthType as string,
     )
     if (nextPeriodLengthType) {
       return res.redirect(
@@ -880,7 +883,7 @@ export default class OffenceRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     } else if (expectedPeriodLengthsSize) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${
-        sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths[expectedPeriodLengthsSize - 1]
+        sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths[expectedPeriodLengthsSize - 1].type
       }`
     }
     return res.render('pages/offence/sentence-serve-type', {

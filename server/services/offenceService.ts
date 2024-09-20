@@ -21,6 +21,7 @@ import {
 } from '../utils/mappingUtils'
 import ManageOffencesService from './manageOffencesService'
 import logger from '../../logger'
+import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 
 export default class OffenceService {
   constructor(private readonly manageOffencesService: ManageOffencesService) {}
@@ -299,12 +300,30 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
-      sentence.sentenceTypeId = offenceSentenceTypeForm.sentenceType
+      const [sentenceTypeId, sentenceTypeClassification] = offenceSentenceTypeForm.sentenceType.split('|')
+      sentence.sentenceTypeId = sentenceTypeId
+      sentence.sentenceTypeClassification = sentenceTypeClassification
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
     return errors
+  }
+
+  getNextPeriodLengthType(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ): string {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = offence.sentence ?? {}
+    const currentPeriodLengthTypes = (sentence.periodLengths ?? []).map(periodLength => periodLength.periodLengthType)
+    const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths
+    const remainingPeriodLengthTypes = expectedPeriodLengthTypes.filter(
+      expectedPeriodLengthType => !currentPeriodLengthTypes.includes(expectedPeriodLengthType),
+    )
+    return remainingPeriodLengthTypes[0]
   }
 
   setCustodialSentenceLength(

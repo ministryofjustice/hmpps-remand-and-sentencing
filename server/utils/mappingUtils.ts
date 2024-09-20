@@ -134,6 +134,7 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     periodLengths: apiSentence.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
     sentenceServeType: apiSentence.sentenceServeType,
     sentenceTypeId: apiSentence.sentenceType.sentenceTypeUuid,
+    sentenceTypeClassification: apiSentence.sentenceType.classification,
     consecutiveTo: apiSentence.consecutiveToChargeNumber,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
   } as Sentence

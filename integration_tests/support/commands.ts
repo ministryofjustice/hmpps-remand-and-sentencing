@@ -265,7 +265,7 @@ Cypress.Commands.add(
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
     offenceSentenceTypePage.button().click()
 
-    const offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage.yearsInput().clear()
     offencePeriodLengthPage.yearsInput().type('4')
     offencePeriodLengthPage.monthsInput().clear()

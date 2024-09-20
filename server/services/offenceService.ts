@@ -21,6 +21,7 @@ import {
 } from '../utils/mappingUtils'
 import ManageOffencesService from './manageOffencesService'
 import logger from '../../logger'
+import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 
 export default class OffenceService {
   constructor(private readonly manageOffencesService: ManageOffencesService) {}
@@ -299,7 +300,16 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
-      sentence.sentenceTypeId = offenceSentenceTypeForm.sentenceType
+      const previousSentenceTypeClassification = sentence.sentenceTypeClassification
+      const [sentenceTypeId, sentenceTypeClassification] = offenceSentenceTypeForm.sentenceType.split('|')
+      sentence.sentenceTypeId = sentenceTypeId
+      sentence.sentenceTypeClassification = sentenceTypeClassification
+      if (previousSentenceTypeClassification !== sentenceTypeClassification) {
+        const autoAddPeriodLengths = sentenceTypePeriodLengths[sentenceTypeClassification].periodLengths
+          .filter(periodLengthConfig => periodLengthConfig.auto)
+          .map(periodLengthConfig => periodLengthConfig.periodLength)
+        sentence.periodLengths = autoAddPeriodLengths
+      }
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

@@ -142,7 +142,7 @@ context('Add Offence Edit offence Page', () => {
 
     it('can edit sentence length and return to edit page', () => {
       offenceEditOffencePage.editPeriodLengthLink('A1234AB', 'add', '0', '0', '0', 'SENTENCE_LENGTH').click()
-      const offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+      const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
       offencePeriodLengthPage.yearsInput().should('have.value', '4')
       offencePeriodLengthPage.yearsInput().clear()
       offencePeriodLengthPage.yearsInput().type('6')
@@ -185,16 +185,28 @@ context('Add Offence Edit offence Page', () => {
       })
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
-      offenceSentenceTypePage.radioSelector('467e2fa8-fce1-41a4-8110-b378c727eed3').should('be.checked')
+      offenceSentenceTypePage.radioSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').should('be.checked')
       offenceSentenceTypePage.radioLabelContains('EDS (Extended Determinate Sentence)').click()
       offenceSentenceTypePage.button().click()
+      let offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'overall sentence length')
+      offencePeriodLengthPage.yearsInput().type('6')
+      offencePeriodLengthPage.monthsInput().type('6')
+      offencePeriodLengthPage.button().click()
+      offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'custodial term')
+      offencePeriodLengthPage.yearsInput().type('4')
+      offencePeriodLengthPage.monthsInput().type('4')
+      offencePeriodLengthPage.button().click()
+      offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'licence period')
+      offencePeriodLengthPage.yearsInput().type('2')
+      offencePeriodLengthPage.monthsInput().type('2')
+      offencePeriodLengthPage.button().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
         'Commited on': '12 05 2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
-        'Sentence length': '4 years 5 months',
+        'Sentence length': '',
         'Consecutive or concurrent': 'Forthwith',
       })
     })

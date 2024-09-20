@@ -1,5 +1,7 @@
 import dayjs from 'dayjs'
+import type { Sentence } from 'models'
 import config from '../config'
+import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -51,4 +53,15 @@ export const pluraliseName = (name: string) => {
     return `${name}'`
   }
   return `${name}'s`
+}
+
+export const getNextPeriodLengthType = (sentence: Sentence) => {
+  const currentPeriodLengthTypes = (sentence.periodLengths ?? []).map(periodLength => periodLength.periodLengthType)
+  const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths.map(
+    periodLength => periodLength.type,
+  )
+  const remainingPeriodLengthTypes = expectedPeriodLengthTypes.filter(
+    expectedPeriodLengthType => !currentPeriodLengthTypes.includes(expectedPeriodLengthType),
+  )
+  return remainingPeriodLengthTypes[0]
 }

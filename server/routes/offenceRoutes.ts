@@ -865,12 +865,24 @@ export default class OffenceRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const forthwithAlreadySelected = this.courtAppearanceService.isForwithAlreadySelected(req.session, nomsId)
-    const sentenceServeType = this.getSessionOffenceOrAppearanceOffence(
+    const sentence = this.getSessionOffenceOrAppearanceOffence(
       req,
       nomsId,
       courtCaseReference,
       offenceReference,
-    )?.sentence?.sentenceServeType
+    )?.sentence
+    const sentenceServeType = sentence?.sentenceServeType
+    const expectedPeriodLengthsSize =
+      sentenceTypePeriodLengths[sentence.sentenceTypeClassification]?.periodLengths.length
+
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
+    if (submitToEditOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+    } else if (expectedPeriodLengthsSize) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${
+        sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths[expectedPeriodLengthsSize - 1]
+      }`
+    }
     return res.render('pages/offence/sentence-serve-type', {
       nomsId,
       courtCaseReference,
@@ -882,7 +894,7 @@ export default class OffenceRoutes {
       showForthwith: sentenceServeType === 'FORTHWITH' || !forthwithAlreadySelected,
       sentenceServeType,
       submitToEditOffence,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=SENTENCE_LENGTH`,
+      backLink,
     })
   }
 

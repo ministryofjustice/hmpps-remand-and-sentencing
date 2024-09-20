@@ -303,6 +303,10 @@ export default class OffenceService {
       const [sentenceTypeId, sentenceTypeClassification] = offenceSentenceTypeForm.sentenceType.split('|')
       sentence.sentenceTypeId = sentenceTypeId
       sentence.sentenceTypeClassification = sentenceTypeClassification
+      const autoAddPeriodLengths = sentenceTypePeriodLengths[sentenceTypeClassification].periodLengths
+        .filter(periodLengthConfig => periodLengthConfig.auto)
+        .map(periodLengthConfig => periodLengthConfig.periodLength)
+      sentence.periodLengths = autoAddPeriodLengths
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

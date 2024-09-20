@@ -16,4 +16,16 @@ export default class OffenceDeleteOffencePage extends Page {
     cy.get(
       `a[href="/person/${personId}/${addOrEdit}-court-case/${courtCaseReference}/${addOrEdit}-court-appearance/${appearanceReference}/offences/${offenceReference}/${page}?submitToEditOffence=true"]`,
     )
+
+  editPeriodLengthLink = (
+    personId: string,
+    addOrEdit: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+    offenceReference: string,
+    periodLengthType: string,
+  ): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/${addOrEdit}-court-case/${courtCaseReference}/${addOrEdit}-court-appearance/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${periodLengthType}&submitToEditOffence=true"]`,
+    )
 }

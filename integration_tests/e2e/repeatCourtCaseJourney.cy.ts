@@ -21,7 +21,7 @@ import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPag
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceReviewOffencesPage from '../pages/offenceReviewOffencesPage'
-import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
+import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
@@ -403,10 +403,10 @@ context('Repeat Court Case journey', () => {
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
     offenceSentenceTypePage.button().click()
 
-    const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
-    offenceSentenceLengthPage.yearsInput().type('4')
-    offenceSentenceLengthPage.monthsInput().type('5')
-    offenceSentenceLengthPage.button().click()
+    const offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage.yearsInput().type('4')
+    offencePeriodLengthPage.monthsInput().type('5')
+    offencePeriodLengthPage.button().click()
 
     const cffenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()

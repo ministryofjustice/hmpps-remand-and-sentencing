@@ -9,6 +9,7 @@ import {
   firstNameSpaceLastName,
   formatLengths,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
+import type { SentenceLength } from 'models'
 import { formatDate, formatDateTime, initialiseName, pluraliseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -93,6 +94,13 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       return {
         text: allMessages,
       }
+    }
+    return null
+  })
+
+  njkEnv.addFilter('findPeriodLengthByType', (periodLengths: SentenceLength[], type: string) => {
+    if (periodLengths) {
+      return periodLengths.find(periodLength => periodLength.periodLengthType === type)
     }
     return null
   })

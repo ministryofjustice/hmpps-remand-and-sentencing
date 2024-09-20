@@ -300,36 +300,21 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
+      const previousSentenceTypeClassification = sentence.sentenceTypeClassification
       const [sentenceTypeId, sentenceTypeClassification] = offenceSentenceTypeForm.sentenceType.split('|')
       sentence.sentenceTypeId = sentenceTypeId
       sentence.sentenceTypeClassification = sentenceTypeClassification
-      const autoAddPeriodLengths = sentenceTypePeriodLengths[sentenceTypeClassification].periodLengths
-        .filter(periodLengthConfig => periodLengthConfig.auto)
-        .map(periodLengthConfig => periodLengthConfig.periodLength)
-      sentence.periodLengths = autoAddPeriodLengths
+      if (previousSentenceTypeClassification !== sentenceTypeClassification) {
+        const autoAddPeriodLengths = sentenceTypePeriodLengths[sentenceTypeClassification].periodLengths
+          .filter(periodLengthConfig => periodLengthConfig.auto)
+          .map(periodLengthConfig => periodLengthConfig.periodLength)
+        sentence.periodLengths = autoAddPeriodLengths
+      }
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
     return errors
-  }
-
-  getNextPeriodLengthType(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-  ): string {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    const sentence = offence.sentence ?? {}
-    const currentPeriodLengthTypes = (sentence.periodLengths ?? []).map(periodLength => periodLength.periodLengthType)
-    const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths.map(
-      periodLength => periodLength.type,
-    )
-    const remainingPeriodLengthTypes = expectedPeriodLengthTypes.filter(
-      expectedPeriodLengthType => !currentPeriodLengthTypes.includes(expectedPeriodLengthType),
-    )
-    return remainingPeriodLengthTypes[0]
   }
 
   setCustodialSentenceLength(

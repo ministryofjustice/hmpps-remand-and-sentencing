@@ -24,7 +24,7 @@ context('Add Offence Period Length Page', () => {
     cy.visit(
       '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/period-length?periodLengthType=SENTENCE_LENGTH',
     )
-    offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
   })
 
   it('displays person details', () => {
@@ -42,7 +42,7 @@ context('Add Offence Period Length Page', () => {
 
   it('submitting without entering anything in the inputs results in an error', () => {
     offencePeriodLengthPage.button().click()
-    offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage
       .errorSummary()
       .trimTextContent()
@@ -52,7 +52,7 @@ context('Add Offence Period Length Page', () => {
   it('submitting a decimal number results in an error', () => {
     offencePeriodLengthPage.yearsInput().type('1.5')
     offencePeriodLengthPage.button().click()
-    offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage
       .errorSummary()
       .trimTextContent()
@@ -63,7 +63,7 @@ context('Add Offence Period Length Page', () => {
     offencePeriodLengthPage.yearsInput().type('0')
     offencePeriodLengthPage.monthsInput().type('0')
     offencePeriodLengthPage.button().click()
-    offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage
       .errorSummary()
       .trimTextContent()

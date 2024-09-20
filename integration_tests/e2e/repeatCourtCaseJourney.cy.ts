@@ -403,7 +403,7 @@ context('Repeat Court Case journey', () => {
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
     offenceSentenceTypePage.button().click()
 
-    const offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage.yearsInput().type('4')
     offencePeriodLengthPage.monthsInput().type('5')
     offencePeriodLengthPage.button().click()

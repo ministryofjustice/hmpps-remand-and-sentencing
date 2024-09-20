@@ -873,7 +873,7 @@ export default class OffenceRoutes {
     )?.sentence
     const sentenceServeType = sentence?.sentenceServeType
     const expectedPeriodLengthsSize =
-      sentenceTypePeriodLengths[sentence.sentenceTypeClassification]?.periodLengths.length
+      sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths?.length
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
     if (submitToEditOffence) {

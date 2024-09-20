@@ -319,7 +319,9 @@ export default class OffenceService {
     const offence = this.getOffence(session.offences, id)
     const sentence = offence.sentence ?? {}
     const currentPeriodLengthTypes = (sentence.periodLengths ?? []).map(periodLength => periodLength.periodLengthType)
-    const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths
+    const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths.map(
+      periodLength => periodLength.type,
+    )
     const remainingPeriodLengthTypes = expectedPeriodLengthTypes.filter(
       expectedPeriodLengthType => !currentPeriodLengthTypes.includes(expectedPeriodLengthType),
     )

@@ -987,8 +987,19 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    let offenceConvictionDateForm: OffenceConvictionDateForm
+    if (offence.sentence?.convictionDate) {
+      offenceConvictionDateForm = {
+        'convictionDate-day': `${offence.sentence.convictionDate.getDate()}`,
+        'convictionDate-month': `${offence.sentence.convictionDate.getMonth()}`,
+        'convictionDate-year': `${offence.sentence.convictionDate.getFullYear()}`,
+      }
+    } else {
+      offenceConvictionDateForm = (req.flash('offenceConvictionDateForm')[0] || {}) as OffenceConvictionDateForm
+    }
+
     const { submitToEditOffence } = req.query
-    const offenceConvictionDateForm = (req.flash('offenceConvictionDateForm')[0] || {}) as OffenceConvictionDateForm
     let convictionDateDay: number | string = offenceConvictionDateForm['convictionDate-day']
     let convictionDateMonth: number | string = offenceConvictionDateForm['convictionDate-month']
     let convictionDateYear: number | string = offenceConvictionDateForm['convictionDate-year']

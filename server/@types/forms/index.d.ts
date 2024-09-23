@@ -157,7 +157,7 @@ declare module 'forms' {
 
   export interface CourtCaseOverallConvictionDateForm {
     'overallConvictionDate-day'?: string
-    'overallConvictionDate-month'?: strin
+    'overallConvictionDate-month'?: string
     'overallConvictionDate-year'?: string
   }
 
@@ -167,7 +167,7 @@ declare module 'forms' {
 
   export interface OffenceConvictionDateForm {
     'convictionDate-day'?: string
-    'convictionDate-month'?: strin
+    'convictionDate-month'?: string
     'convictionDate-year'?: string
   }
 }

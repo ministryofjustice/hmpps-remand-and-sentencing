@@ -34,6 +34,8 @@ import {
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
+import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
+import { getNextPeriodLengthType } from '../utils/utils'
 
 export default class OffenceRoutes {
   constructor(
@@ -670,14 +672,27 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    this.offenceService.updatePeriodLengths(req.session, nomsId, courtCaseReference, offence)
+
+    const nextPeriodLengthType = getNextPeriodLengthType(
+      this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
+      null,
+    )
+    if (nextPeriodLengthType) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${nextPeriodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+      )
+    }
 
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
+
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=SENTENCE_LENGTH`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     )
   }
 
@@ -691,18 +706,26 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { submitToEditOffence, periodLengthType } = req.query
+    const { sentence } = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     let periodLengthForm = (req.flash('periodLengthForm')[0] || {}) as SentenceLengthForm
     if (Object.keys(periodLengthForm).length === 0) {
       periodLengthForm = sentenceLengthToSentenceLengthForm(
-        this.getSessionOffenceOrAppearanceOffence(
-          req,
-          nomsId,
-          courtCaseReference,
-          offenceReference,
-        ).sentence?.periodLengths?.find(periodLength => periodLength.periodLengthType === periodLengthType),
+        sentence.periodLengths?.find(periodLength => periodLength.periodLengthType === periodLengthType),
       )
     }
+    const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths
+      .map(periodLength => periodLength.type)
+      .indexOf(periodLengthType as string)
     const periodLengthHeader = periodLengthTypeHeadings[periodLengthType as string]
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
+    if (submitToEditOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+    } else if (expectedPeriodLengthTypeIndex >= 1) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${
+        sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths[expectedPeriodLengthTypeIndex - 1]
+          .type
+      }`
+    }
     return res.render('pages/offence/period-length', {
       nomsId,
       courtCaseReference,
@@ -715,9 +738,7 @@ export default class OffenceRoutes {
       periodLengthForm,
       periodLengthHeader,
       errors: req.flash('errors') || [],
-      backLink: submitToEditOffence
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
+      backLink,
     })
   }
 
@@ -744,6 +765,16 @@ export default class OffenceRoutes {
       req.flash('offenceSentenceLengthForm', { ...offenceSentenceLengthForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${periodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+      )
+    }
+
+    const nextPeriodLengthType = getNextPeriodLengthType(
+      this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
+      periodLengthType as string,
+    )
+    if (nextPeriodLengthType) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${nextPeriodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
       )
     }
 
@@ -839,12 +870,24 @@ export default class OffenceRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const forthwithAlreadySelected = this.courtAppearanceService.isForwithAlreadySelected(req.session, nomsId)
-    const sentenceServeType = this.getSessionOffenceOrAppearanceOffence(
+    const sentence = this.getSessionOffenceOrAppearanceOffence(
       req,
       nomsId,
       courtCaseReference,
       offenceReference,
-    )?.sentence?.sentenceServeType
+    )?.sentence
+    const sentenceServeType = sentence?.sentenceServeType
+    const expectedPeriodLengthsSize =
+      sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths?.length
+
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
+    if (submitToEditOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+    } else if (expectedPeriodLengthsSize) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${
+        sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths[expectedPeriodLengthsSize - 1].type
+      }`
+    }
     return res.render('pages/offence/sentence-serve-type', {
       nomsId,
       courtCaseReference,
@@ -856,7 +899,7 @@ export default class OffenceRoutes {
       showForthwith: sentenceServeType === 'FORTHWITH' || !forthwithAlreadySelected,
       sentenceServeType,
       submitToEditOffence,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=SENTENCE_LENGTH`,
+      backLink,
     })
   }
 

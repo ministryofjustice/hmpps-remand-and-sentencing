@@ -73,10 +73,11 @@ export default class RemandAndSentencingService {
 
   async getSentenceTypeMap(sentenceTypeIds: string[], username: string): Promise<{ [key: string]: string }> {
     let sentenceTypeMap = {}
-    if (sentenceTypeIds.length) {
+    const sentenceTypeIdsToSearch = sentenceTypeIds.filter(sentenceTypeId => sentenceTypeId)
+    if (sentenceTypeIdsToSearch.length) {
       const sentenceTypes = await new RemandAndSentencingApiClient(
         await this.getSystemClientToken(username),
-      ).getSentenceTypesByIds(sentenceTypeIds)
+      ).getSentenceTypesByIds(sentenceTypeIdsToSearch)
       sentenceTypeMap = Object.fromEntries(
         sentenceTypes.map(sentenceType => [sentenceType.sentenceTypeUuid, sentenceType.description]),
       )

@@ -48,6 +48,7 @@ declare module 'models' {
     sentenceServeType?: string
     consecutiveTo?: string
     sentenceTypeId?: string
+    sentenceTypeClassification?: string
     convictionDate?: Date
   }
 

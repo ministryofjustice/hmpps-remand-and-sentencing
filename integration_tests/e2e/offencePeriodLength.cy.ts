@@ -1,5 +1,6 @@
-import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
+import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
+import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import Page from '../pages/page'
 
 context('Add Offence Period Length Page', () => {
@@ -7,14 +8,23 @@ context('Add Offence Period Length Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.button().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/conviction-date')
+    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear()
+    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
+    offenceConvictionDatePage.monthDateInput('convictionDate').clear()
+    offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
+    offenceConvictionDatePage.yearDateInput('convictionDate').clear()
+    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
+    offenceConvictionDatePage.button().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/sentence-type')
+    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+    offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
+    offenceSentenceTypePage.button().click()
     cy.visit(
       '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/period-length?periodLengthType=SENTENCE_LENGTH',
     )
-    offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
   })
 
   it('displays person details', () => {
@@ -32,7 +42,7 @@ context('Add Offence Period Length Page', () => {
 
   it('submitting without entering anything in the inputs results in an error', () => {
     offencePeriodLengthPage.button().click()
-    offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage
       .errorSummary()
       .trimTextContent()
@@ -42,7 +52,7 @@ context('Add Offence Period Length Page', () => {
   it('submitting a decimal number results in an error', () => {
     offencePeriodLengthPage.yearsInput().type('1.5')
     offencePeriodLengthPage.button().click()
-    offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage
       .errorSummary()
       .trimTextContent()
@@ -53,7 +63,7 @@ context('Add Offence Period Length Page', () => {
     offencePeriodLengthPage.yearsInput().type('0')
     offencePeriodLengthPage.monthsInput().type('0')
     offencePeriodLengthPage.button().click()
-    offencePeriodLengthPage = Page.verifyOnPage(OffencePeriodLengthPage)
+    offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage
       .errorSummary()
       .trimTextContent()

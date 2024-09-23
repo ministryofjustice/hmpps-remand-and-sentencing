@@ -672,6 +672,8 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    this.offenceService.updatePeriodLengths(req.session, nomsId, courtCaseReference, offence)
 
     const nextPeriodLengthType = getNextPeriodLengthType(
       this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},

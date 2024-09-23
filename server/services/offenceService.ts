@@ -300,21 +300,41 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
-      const previousSentenceTypeClassification = sentence.sentenceTypeClassification
       const [sentenceTypeId, sentenceTypeClassification] = offenceSentenceTypeForm.sentenceType.split('|')
       sentence.sentenceTypeId = sentenceTypeId
       sentence.sentenceTypeClassification = sentenceTypeClassification
-      if (previousSentenceTypeClassification !== sentenceTypeClassification) {
-        const autoAddPeriodLengths = sentenceTypePeriodLengths[sentenceTypeClassification].periodLengths
-          .filter(periodLengthConfig => periodLengthConfig.auto)
-          .map(periodLengthConfig => periodLengthConfig.periodLength)
-        sentence.periodLengths = autoAddPeriodLengths
-      }
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
     return errors
+  }
+
+  updatePeriodLengths(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    currentOffence: Offence,
+  ) {
+    const expectedPeriodLengthTypes = sentenceTypePeriodLengths[
+      currentOffence.sentence.sentenceTypeClassification
+    ].periodLengths.map(periodLength => periodLength.type)
+    const currentPeriodLengths =
+      currentOffence.sentence?.periodLengths?.map(periodLength => periodLength.periodLengthType) ?? []
+    if (!expectedPeriodLengthTypes.every(type => currentPeriodLengths.includes(type))) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      const autoAddPeriodLengths = sentenceTypePeriodLengths[
+        currentOffence.sentence.sentenceTypeClassification
+      ].periodLengths
+        .filter(periodLengthConfig => periodLengthConfig.auto)
+        .map(periodLengthConfig => periodLengthConfig.periodLength)
+      sentence.periodLengths = autoAddPeriodLengths
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
   }
 
   setCustodialSentenceLength(

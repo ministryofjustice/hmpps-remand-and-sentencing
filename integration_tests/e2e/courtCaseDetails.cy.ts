@@ -95,7 +95,7 @@ context('Court Case details Page', () => {
       courtCaseDetailsPage.appearancesSummaryList().getSummaryList().should('deep.equal', {
         'Case references': 'C894623, F23325',
         'Overall case outcome': 'Imprisonment',
-        'Overall sentence length': '4 years 5 months',
+        'Overall sentence length': '4 years 5 months 0 weeks 0 days',
       })
     })
   })

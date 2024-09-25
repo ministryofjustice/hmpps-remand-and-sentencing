@@ -318,7 +318,7 @@ context('New Court Case journey', () => {
       'Warrant date': '12 05 2023',
       'Court name': 'Accrington Youth Court',
       'Tagged bail': '5 days',
-      'Overall sentence length': '4 years 5 months',
+      'Overall sentence length': '4 years 5 months 0 weeks 0 days',
     })
     courtCaseCheckAnswersPage.button().click()
 

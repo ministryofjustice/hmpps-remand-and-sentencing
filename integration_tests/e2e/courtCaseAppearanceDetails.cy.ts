@@ -176,7 +176,7 @@ context('Court Case Appearance details Page', () => {
         'Conviction date': '12 09 2024',
         'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Imprisonment',
-        'Overall sentence length': '4 years',
+        'Overall sentence length': '4 years 0 months 0 weeks 0 days',
       })
     })
 
@@ -209,7 +209,7 @@ context('Court Case Appearance details Page', () => {
         Offence: 'PS90037 An offence description',
         'Commited on': '25 12 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
-        'Sentence length': '4 years',
+        'Sentence length': '4 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
       offenceEditOffencePage.button().click()

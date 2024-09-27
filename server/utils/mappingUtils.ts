@@ -274,11 +274,11 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     )
   }
   return {
-    nextHearingSelect: nextCourtAppearance !== undefined,
+    nextHearingSelect: !!nextCourtAppearance,
     nextHearingCourtCode: nextCourtAppearance?.courtCode,
     nextHearingType: nextCourtAppearance?.appearanceType,
     nextHearingTimeSet: typeof nextCourtAppearance?.appearanceTime === 'string',
     nextHearingDate,
-    nextCourtAppearanceAccepted: nextCourtAppearance !== undefined,
+    nextCourtAppearanceAccepted: !!nextCourtAppearance,
   }
 }

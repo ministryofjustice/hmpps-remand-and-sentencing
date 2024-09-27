@@ -7,6 +7,7 @@ import type {
   CourtCaseNextHearingCourtSelectForm,
   CourtCaseNextHearingDateForm,
   CourtCaseNextHearingSelectForm,
+  CourtCaseNextHearingTypeForm,
   CourtCaseOverallConvictionDateAppliedAllForm,
   CourtCaseOverallConvictionDateForm,
   CourtCaseReferenceForm,
@@ -498,11 +499,27 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).nextHearingType
   }
 
-  setNextHearingType(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, nextHearingType: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.nextHearingType = nextHearingType
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+  setNextHearingType(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    nextHearingTypeForm: CourtCaseNextHearingTypeForm,
+  ) {
+    const errors = validate(
+      nextHearingTypeForm,
+      {
+        nextHearingType: 'required',
+      },
+      {
+        'required.nextHearingType': 'You must select the next hearing type',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.nextHearingType = nextHearingTypeForm.nextHearingType
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   getNextHearingDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {

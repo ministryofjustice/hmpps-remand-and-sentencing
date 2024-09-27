@@ -23,4 +23,12 @@ context('Next hearing type page', () => {
   it('button to continue is displayed', () => {
     courtCaseNextHearingTypePage.button().should('contain.text', 'Continue')
   })
+
+  it('submitting without selecting anything results in an error', () => {
+    courtCaseNextHearingTypePage.button().click()
+    courtCaseNextHearingTypePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must select the next hearing type')
+  })
 })

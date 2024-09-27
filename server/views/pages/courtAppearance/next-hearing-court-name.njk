@@ -16,7 +16,7 @@
                 {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukSelect({
                     label: {
-                        text: "What court is the next hearing at?",
+                        text: "What court is the next hearing at?"  if isAddCourtAppearance else "Edit next court hearing location",
                         classes: "govuk-label--l",
                         isPageHeading: true
                     },

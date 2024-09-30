@@ -1,4 +1,5 @@
 import {
+  AppearanceOutcome,
   CreateCourtAppearance,
   CreateCourtAppearanceResponse,
   CreateCourtCase,
@@ -97,5 +98,11 @@ export default class RemandAndSentencingApiClient {
         uuids: sentenceTypeIds.join(','),
       },
     })) as unknown as Promise<SentenceType[]>
+  }
+
+  async getAllAppearanceOutcomes(): Promise<AppearanceOutcome[]> {
+    return (await this.restClient.get({
+      path: `/appearance-outcome/all`,
+    })) as unknown as Promise<AppearanceOutcome[]>
   }
 }

@@ -33,7 +33,7 @@ export default class CourtCaseDetailsModel {
     this.caseReferences = Array.from(
       new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
     ).join(', ')
-    this.overallCaseOutcome = pageCourtCaseContent.latestAppearance.outcome
+    this.overallCaseOutcome = pageCourtCaseContent.latestAppearance.outcome?.outcomeName
 
     if (pageCourtCaseContent.latestAppearance.nextCourtAppearance) {
       const appearanceDate = dayjs(

@@ -2,8 +2,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-
-
 {% set pageTitle = applicationName + " - Add a court case outcome" %}
 
 {% set radiosData = {
@@ -20,23 +18,25 @@
                     items: []
     } %}
 
-{% for caseOutcome in topCaseOutcomes %}
+{% for caseOutcome in warrantTypeOutcomes %}
     {%- set caseOutcomeRow = {
-        value: caseOutcome.description,
-        text: caseOutcome.description,
-        checked: caseOutcome.description === overallCaseOutcome
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
     } -%}
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
 
 {{ radiosData.items.push({ divider: "or"}) }}
-{{ 
-    radiosData.items.push({
-                        value: "LOOKUPDIFFERENT",
-                        text: "Lookup a different outcome",
-                        checked: overallCaseOutcome === "LOOKUPDIFFERENT"
-                        }) 
-}}
+
+{% for caseOutcome in otherOutcomes %}
+{%- set caseOutcomeRow = {
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
+    } -%}
+    {{ radiosData.items.push(caseOutcomeRow) }}
+{% endfor %}
 
 
 {% block content %}

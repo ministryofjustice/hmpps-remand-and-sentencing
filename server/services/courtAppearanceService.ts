@@ -8,6 +8,7 @@ import type {
   CourtCaseNextHearingDateForm,
   CourtCaseNextHearingSelectForm,
   CourtCaseNextHearingTypeForm,
+  CourtCaseOverallCaseOutcomeForm,
   CourtCaseOverallConvictionDateAppliedAllForm,
   CourtCaseOverallConvictionDateForm,
   CourtCaseReferenceForm,
@@ -273,19 +274,27 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setOverallCaseOutcome(
+  setAppearanceOutcomeUuid(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
-    overallCaseOutcome: string,
+    overallCaseOutcomeForm: CourtCaseOverallCaseOutcomeForm,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.overallCaseOutcome = overallCaseOutcome
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+    const errors = validate(
+      overallCaseOutcomeForm,
+      { overallCaseOutcome: 'required' },
+      { 'required.overallCaseOutcome': 'You must select the overall case outcome' },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.appearanceOutcomeUuid = overallCaseOutcomeForm.overallCaseOutcome
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
-  getOverallCaseOutcome(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).overallCaseOutcome
+  getAppearanceOutcomeUuid(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtAppearance(session, nomsId).appearanceOutcomeUuid
   }
 
   setCaseOutcomeAppliedAll(
@@ -308,7 +317,7 @@ export default class CourtAppearanceService {
       if (caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true') {
         courtAppearance.offences = courtAppearance.offences.map(offence => {
           // eslint-disable-next-line no-param-reassign
-          offence.outcome = courtAppearance.overallCaseOutcome
+          offence.outcome = courtAppearance.appearanceOutcomeUuid
           return offence
         })
       }

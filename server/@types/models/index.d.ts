@@ -11,7 +11,7 @@ declare module 'models' {
     courtCode?: string
     nextHearingCourtSelect?: string
     nextHearingCourtCode?: string
-    overallCaseOutcome?: string
+    appearanceOutcomeUuid?: string
     caseOutcomeAppliedAll?: string
     nextHearingSelect?: boolean
     nextHearingType?: string

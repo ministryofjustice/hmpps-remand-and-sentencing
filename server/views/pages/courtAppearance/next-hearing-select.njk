@@ -1,12 +1,13 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitle = applicationName + " - Next hearing been set" %}
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-select">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/appearanceCaption.njk" %}
                 {{ govukRadios({
@@ -22,12 +23,12 @@
                         {
                             value: "true",
                             text: "Yes, it has been set",
-                            checked: nextHearingSelect === true
+                            checked: nextHearingSelectForm.nextHearingSelect === 'true'
                         },
                         {
                             value: "false",
                             text: "No, date to be fixed",
-                            checked: nextHearingSelect === false
+                            checked: nextHearingSelectForm.nextHearingSelect === 'false'
                         }
                     ]
                 }) }}

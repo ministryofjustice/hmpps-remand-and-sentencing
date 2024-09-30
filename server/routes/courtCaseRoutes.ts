@@ -1146,59 +1146,100 @@ export default class CourtCaseRoutes {
 
   public getNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const nextHearingSelect = this.courtAppearanceService.getNextHearingSelect(req.session, nomsId)
+    const { submitToCheckAnswers } = req.query
+    let nextHearingSelectForm = (req.flash('nextHearingSelectForm')[0] || {}) as CourtCaseNextHearingSelectForm
+    if (Object.keys(nextHearingSelectForm).length === 0) {
+      nextHearingSelectForm = {
+        nextHearingSelect: this.courtAppearanceService.getNextHearingSelect(req.session, nomsId)?.toString(),
+      }
+    }
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`
+    } else if (submitToCheckAnswers) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
+    }
 
     return res.render('pages/courtAppearance/next-hearing-select', {
       nomsId,
-      nextHearingSelect,
+      nextHearingSelectForm,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink,
     })
   }
 
   public submitNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query
     const nextHearingSelectForm = trimForm<CourtCaseNextHearingSelectForm>(req.body)
-    const nextHearingSelect = nextHearingSelectForm.nextHearingSelect === 'true'
-    this.courtAppearanceService.setNextHearingSelect(req.session, nomsId, nextHearingSelect)
-    if (nextHearingSelect) {
+    const errors = this.courtAppearanceService.setNextHearingSelect(req.session, nomsId, nextHearingSelectForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('nextHearingSelectForm', { ...nextHearingSelectForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-type`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-select${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
       )
     }
-    this.courtAppearanceService.setNextCourtAppearanceAcceptedTrue(req.session, nomsId)
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+    if (this.courtAppearanceService.isNextCourtAppearanceAccepted(req.session, nomsId)) {
+      if (addOrEditCourtAppearance === 'edit-court-appearance') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
+        )
+      }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-type`,
     )
   }
 
   public getNextHearingType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const nextHearingType = this.courtAppearanceService.getNextHearingType(req.session, nomsId)
+    let nextHearingTypeForm = (req.flash('nextHearingTypeForm')[0] || {}) as CourtCaseNextHearingTypeForm
+    if (Object.keys(nextHearingTypeForm).length === 0) {
+      nextHearingTypeForm = {
+        nextHearingType: this.courtAppearanceService.getNextHearingType(req.session, nomsId),
+      }
+    }
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-select`
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`
+    } else if (submitToCheckAnswers) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
+    }
 
     return res.render('pages/courtAppearance/next-hearing-type', {
       nomsId,
-      nextHearingType,
+      nextHearingTypeForm,
       courtCaseReference,
       appearanceReference,
       submitToCheckAnswers,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink,
     })
   }
 
   public submitNextHearingType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query
     const nextHearingTypeForm = trimForm<CourtCaseNextHearingTypeForm>(req.body)
-    this.courtAppearanceService.setNextHearingType(req.session, nomsId, nextHearingTypeForm.nextHearingType)
+    const errors = this.courtAppearanceService.setNextHearingType(req.session, nomsId, nextHearingTypeForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('nextHearingTypeForm', { ...nextHearingTypeForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-type${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
+      )
+    }
     if (
       addOrEditCourtAppearance === 'edit-court-appearance' &&
       this.courtAppearanceService.isNextCourtAppearanceAccepted(req.session, nomsId)
@@ -1207,7 +1248,7 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
       )
     }
-    const { submitToCheckAnswers } = req.query
+
     if (submitToCheckAnswers) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`,

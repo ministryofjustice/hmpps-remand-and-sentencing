@@ -1,9 +1,10 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Next hearing been set" %}
+{% set pageTitle = applicationName + " - Next hearing type" %}
 {% block content %}
+    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
@@ -13,7 +14,7 @@
                     name: "nextHearingType",
                     fieldset: {
                         legend: {
-                        text: "Select the next hearing type",
+                        text: "Select the next hearing type" if isAddCourtAppearance else "Edit the next hearing type",
                         isPageHeading: true,
                         classes: "govuk-fieldset__legend--l"
                         }
@@ -22,12 +23,12 @@
                         {
                             value: "Court appearance",
                             text: "Court appearance",
-                            checked: nextHearingType === "Court appearance"
+                            checked: nextHearingTypeForm.nextHearingType === "Court appearance"
                         },
                         {
                             value: "Video link",
                             text: "Video link",
-                            checked: nextHearingType === "Video link"
+                            checked: nextHearingTypeForm.nextHearingType === "Video link"
                         }
                     ]
                 }) }}

@@ -255,8 +255,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     warrantId: pageCourtCaseAppearance.warrantId,
     taggedBail: pageCourtCaseAppearance.taggedBail?.toLocaleString(),
     hasTaggedBail: pageCourtCaseAppearance.taggedBail ? 'true' : 'false',
-    ...(pageCourtCaseAppearance.nextCourtAppearance &&
-      nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance)),
+    ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
     offences: pageCourtCaseAppearance.charges.map(chargeToOffence),
     ...(pageCourtCaseAppearance.overallSentenceLength && {
       overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),
@@ -275,11 +274,11 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     )
   }
   return {
-    nextHearingSelect: nextCourtAppearance !== undefined,
+    nextHearingSelect: !!nextCourtAppearance,
     nextHearingCourtCode: nextCourtAppearance?.courtCode,
     nextHearingType: nextCourtAppearance?.appearanceType,
-    nextHearingTimeSet: typeof nextCourtAppearance.appearanceTime === 'string',
+    nextHearingTimeSet: typeof nextCourtAppearance?.appearanceTime === 'string',
     nextHearingDate,
-    nextCourtAppearanceAccepted: nextCourtAppearance !== undefined,
+    nextCourtAppearanceAccepted: !!nextCourtAppearance,
   }
 }

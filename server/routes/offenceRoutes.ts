@@ -20,6 +20,7 @@ import type {
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
+import { formatLengths } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -1259,6 +1260,13 @@ export default class OffenceRoutes {
         await this.remandAndSentencingService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
       ).description
     }
+
+    const sentenceLengthType =
+      offence.sentence.sentenceTypeClassification === 'EXTENDED' ? 'OVERALL_SENTENCE_LENGTH' : 'SENTENCE_LENGTH'
+    const sentenceLength = formatLengths(
+      offence.sentence.periodLengths.find(x => x.periodLengthType === sentenceLengthType),
+    )
+
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,
@@ -1270,6 +1278,8 @@ export default class OffenceRoutes {
       errors: req.flash('errors') || [],
       offenceMap,
       sentenceType,
+      sentenceLength,
+      sentenceLengthType,
       backLink: res.locals.isAddCourtAppearance
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,

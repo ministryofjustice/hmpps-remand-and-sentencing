@@ -25,13 +25,12 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.manageOffencesService,
     services.documentManagementService,
-    services.caseOutcomeService,
     services.courtRegisterService,
+    services.appearanceOutcomeService,
   )
   const apiRoutes = new ApiRoutes(
     services.prisonerService,
     services.manageOffencesService,
-    services.caseOutcomeService,
     services.courtRegisterService,
   )
   const offenceRoutes = new OffenceRoutes(
@@ -49,7 +48,6 @@ export default function routes(services: Services): Router {
   get('/api/person/:nomsId/image', apiRoutes.personImage)
 
   get('/api/search-offence', apiRoutes.searchOffence)
-  get('/api/search-case-outcome', apiRoutes.searchCaseOutcome)
   get('/api/search-court', apiRoutes.searchCourts)
 
   get('/person/:nomsId', courtCaseRoutes.start)
@@ -154,16 +152,6 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-overall-case-outcome',
     courtCaseRoutes.submitOverallCaseOutcome,
-  )
-
-  get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/lookup-case-outcome',
-    courtCaseRoutes.getLookupCaseOutcome,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-lookup-case-outcome',
-    courtCaseRoutes.submitLookupCaseOutcome,
   )
 
   get(

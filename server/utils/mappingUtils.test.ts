@@ -6,7 +6,13 @@ describe('mapping util tests', () => {
     const appearance = {
       appearanceUuid: '020cdc11-b45e-433a-ad86-305b5be6a6c5',
       lifetimeUuid: 'a36bf43e-0fc2-48c6-a8f4-1e42638ac2ac',
-      outcome: 'Remanded in custody',
+      outcome: {
+        outcomeUuid: 'ca76bb03-c598-41c9-871e-6fc02b09d92c',
+        outcomeName: 'Remanded in custody',
+        nomisCode: '1057',
+        outcomeType: 'REMAND',
+        displayOrder: 10,
+      },
       courtCode: 'LEEDYC',
       courtCaseReference: 'T12345678',
       appearanceDate: '2024-08-29',

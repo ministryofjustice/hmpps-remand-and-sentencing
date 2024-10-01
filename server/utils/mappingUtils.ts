@@ -81,7 +81,7 @@ export const courtAppearanceToCreateCourtAppearance = (
   return {
     courtCaseUuid,
     appearanceUuid,
-    outcome: courtAppearance.overallCaseOutcome,
+    outcomeUuid: courtAppearance.appearanceOutcomeUuid,
     courtCode: courtAppearance.courtCode,
     courtCaseReference: courtAppearance.caseReferenceNumber,
     appearanceDate: dayjs(courtAppearance.warrantDate).format('YYYY-MM-DD'),
@@ -250,7 +250,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
     warrantDate: dayjs(pageCourtCaseAppearance.appearanceDate).toDate(),
     courtCode: pageCourtCaseAppearance.courtCode,
-    overallCaseOutcome: pageCourtCaseAppearance.outcome,
+    appearanceOutcomeUuid: pageCourtCaseAppearance.outcome?.outcomeUuid,
     warrantType: pageCourtCaseAppearance.warrantType,
     warrantId: pageCourtCaseAppearance.warrantId,
     taggedBail: pageCourtCaseAppearance.taggedBail?.toLocaleString(),

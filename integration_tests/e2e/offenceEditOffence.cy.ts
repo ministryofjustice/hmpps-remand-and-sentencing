@@ -88,7 +88,7 @@ context('Add Offence Edit offence Page', () => {
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
-        'Sentence length': '4 years 5 months',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
     })
@@ -109,7 +109,7 @@ context('Add Offence Edit offence Page', () => {
         'Committed on': '25 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
-        'Sentence length': '4 years 5 months',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
     })
@@ -138,7 +138,7 @@ context('Add Offence Edit offence Page', () => {
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
-        'Sentence length': '4 years 5 months',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
     })
@@ -160,7 +160,7 @@ context('Add Offence Edit offence Page', () => {
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
-        'Sentence length': '6 years 6 months',
+        'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
     })
@@ -178,7 +178,7 @@ context('Add Offence Edit offence Page', () => {
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
-        'Sentence length': '4 years 5 months',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
       })
     })
@@ -212,7 +212,7 @@ context('Add Offence Edit offence Page', () => {
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
-        'Sentence length': '6 years 6 months',
+        'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
     })

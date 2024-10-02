@@ -208,8 +208,9 @@ context('Court Case Appearance details Page', () => {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
         'Commited on': '25 12 2023',
+        'Conviction date': 'N/A',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
-        'Sentence length': '4 years 0 months 0 weeks 0 days',
+        'Sentence length': '4 years',
         'Consecutive or concurrent': 'Forthwith',
       })
       offenceEditOffencePage.button().click()

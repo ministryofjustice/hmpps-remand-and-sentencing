@@ -1254,18 +1254,26 @@ export default class OffenceRoutes {
     } = req.params
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
-    let sentenceType
-    if (offence.sentence?.sentenceTypeId) {
+    let sentenceType: string
+    let sentenceLengthType:
+      | 'SENTENCE_LENGTH'
+      | 'CUSTODIAL_TERM'
+      | 'LICENCE_PERIOD'
+      | 'TARIFF_LENGTH'
+      | 'TERM_LENGTH'
+      | 'OVERALL_SENTENCE_LENGTH'
+    let sentenceLength: string
+    if (offence.sentence) {
       sentenceType = (
         await this.remandAndSentencingService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
       ).description
-    }
 
-    const sentenceLengthType =
-      offence.sentence.sentenceTypeClassification === 'EXTENDED' ? 'OVERALL_SENTENCE_LENGTH' : 'SENTENCE_LENGTH'
-    const sentenceLength = formatLengths(
-      offence.sentence.periodLengths.find(x => x.periodLengthType === sentenceLengthType),
-    )
+      sentenceLengthType =
+        offence.sentence?.sentenceTypeClassification === 'EXTENDED' ? 'OVERALL_SENTENCE_LENGTH' : 'SENTENCE_LENGTH'
+      sentenceLength = formatLengths(
+        offence.sentence.periodLengths.find(x => x.periodLengthType === sentenceLengthType),
+      )
+    }
 
     return res.render('pages/offence/edit-offence', {
       nomsId,

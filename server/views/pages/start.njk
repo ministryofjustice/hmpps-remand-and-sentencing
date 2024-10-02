@@ -91,7 +91,7 @@
                                 text: appearance.appearanceDate | formatDate
                             },
                             {
-                                text: appearance.outcome
+                                text: appearance.outcome.outcomeName if appearance.outcome else ''
                             },
                             {
                                 html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">View and edit</a>'

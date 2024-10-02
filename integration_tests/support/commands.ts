@@ -261,6 +261,10 @@ Cypress.Commands.add(
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
 
+    const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+    offenceOffenceOutcomePage.radioLabelSelector('Sentencing outcome 1').click()
+    offenceOffenceOutcomePage.button().click()
+
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
     offenceSentenceTypePage.button().click()

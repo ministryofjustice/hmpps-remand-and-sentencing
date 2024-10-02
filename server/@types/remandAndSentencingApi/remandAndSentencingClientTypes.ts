@@ -31,3 +31,5 @@ export type APISentence = components['schemas']['Sentence']
 export type PeriodLength = components['schemas']['PeriodLength']
 
 export type SentenceType = components['schemas']['SentenceType']
+
+export type AppearanceOutcome = components['schemas']['CourtAppearanceOutcome']

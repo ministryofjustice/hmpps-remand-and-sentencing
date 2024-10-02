@@ -38,6 +38,7 @@ context('New Court Case journey', () => {
     cy.task('stubUploadWarrant')
     cy.task('stubGetCourtById', {})
     cy.task('stubGetCourtsByIds')
+    cy.task('stubGetAllAppearanceOutcomes')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -89,7 +90,7 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.button().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
-    courtCaseOverallCaseOutcomePage.radioLabelSelector('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
@@ -106,7 +107,7 @@ context('New Court Case journey', () => {
       'Case reference': 'T12345678',
       'Warrant date': '12 05 2023',
       'Court name': 'Accrington Youth Court',
-      'Overall case outcome': 'Remanded in custody',
+      'Overall case outcome': '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
     })
@@ -301,6 +302,14 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()
+
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
+    courtCaseOverallCaseOutcomePage.button().click()
+
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.button().click()
 
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
     courtCaseTaggedBailPage.radioLabelSelector('true').click()

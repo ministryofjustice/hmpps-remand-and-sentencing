@@ -76,7 +76,7 @@ export default class TaskListModel {
       typeSpecificInformationFilledOut = courtAppearance.overallSentenceLength !== undefined
     } else {
       typeSpecificInformationFilledOut =
-        courtAppearance.overallCaseOutcome && courtAppearance.caseOutcomeAppliedAll !== undefined
+        courtAppearance.appearanceOutcomeUuid && courtAppearance.caseOutcomeAppliedAll !== undefined
     }
     return (
       courtAppearance.caseReferenceNumber &&
@@ -94,7 +94,7 @@ export default class TaskListModel {
       typeSpecificInformationFilledOut = courtAppearance.overallSentenceLength !== undefined
     } else {
       typeSpecificInformationFilledOut =
-        courtAppearance.overallCaseOutcome !== undefined || courtAppearance.caseOutcomeAppliedAll !== undefined
+        courtAppearance.appearanceOutcomeUuid !== undefined || courtAppearance.caseOutcomeAppliedAll !== undefined
     }
     return (
       courtAppearance.caseReferenceNumber !== undefined ||

@@ -122,7 +122,7 @@ export default class OffenceRoutes {
         req.session,
         nomsId,
         courtCaseReference,
-        this.courtAppearanceService.getOverallCaseOutcome(req.session, nomsId),
+        this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId),
       )
 
       if (submitToEditOffence) {
@@ -209,7 +209,7 @@ export default class OffenceRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=SENTENCE_LENGTH`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
       )
     }
     this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)

@@ -1031,23 +1031,17 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     let offenceConvictionDateForm: OffenceConvictionDateForm
-    if (offence.sentence?.convictionDate) {
-      offenceConvictionDateForm = {
-        'convictionDate-day': `${offence.sentence.convictionDate.getDate()}`,
-        'convictionDate-month': `${offence.sentence.convictionDate.getMonth()}`,
-        'convictionDate-year': `${offence.sentence.convictionDate.getFullYear()}`,
-      }
-    } else {
-      offenceConvictionDateForm = (req.flash('offenceConvictionDateForm')[0] || {}) as OffenceConvictionDateForm
-    }
-
     const { submitToEditOffence } = req.query
     let convictionDateDay: number | string = offenceConvictionDateForm['convictionDate-day']
     let convictionDateMonth: number | string = offenceConvictionDateForm['convictionDate-month']
     let convictionDateYear: number | string = offenceConvictionDateForm['convictionDate-year']
-    const convictionDateValue = this.offenceService.getConvictionDate(req.session, nomsId, courtCaseReference)
+    const convictionDateValue = this.getSessionOffenceOrAppearanceOffence(
+      req,
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+    ).sentence?.convictionDate
     if (convictionDateValue && Object.keys(offenceConvictionDateForm).length === 0) {
       const convictionDate = new Date(convictionDateValue)
       convictionDateDay = convictionDate.getDate()

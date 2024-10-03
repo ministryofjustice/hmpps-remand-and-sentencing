@@ -316,6 +316,66 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/charge-outcome/{outcomeUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get charge outcome by UUID
+     * @description This endpoint will retrieve charge outcome by UUID
+     */
+    get: operations['getChargeOutcomeByUuid']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/charge-outcome/all': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get all charge outcomes
+     * @description This endpoint will get all charge outcomes
+     */
+    get: operations['getAllChargeOutcomes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/appearance-outcome/{outcomeUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get appearance outcome by UUID
+     * @description This endpoint will retrieve appearance outcome by UUID
+     */
+    get: operations['getAppearanceOutcomeByUuid']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/appearance-outcome/all': {
     parameters: {
       query?: never
@@ -358,6 +418,18 @@ export interface components {
       /** Format: uuid */
       recallUuid: string
     }
+    ChargeLegacyData: {
+      outcomeReason?: string
+      otherFields?: {
+        [key: string]: Record<string, never>
+      }
+    }
+    CourtAppearanceLegacyData: {
+      outcomeReason?: string
+      otherFields?: {
+        [key: string]: Record<string, never>
+      }
+    }
     CreateCharge: {
       /** Format: uuid */
       chargeUuid?: string
@@ -366,9 +438,11 @@ export interface components {
       offenceStartDate: string
       /** Format: date */
       offenceEndDate?: string
-      outcome: string
+      /** Format: uuid */
+      outcomeUuid?: string
       terrorRelated?: boolean
       sentence?: components['schemas']['CreateSentence']
+      legacyData?: components['schemas']['ChargeLegacyData']
     }
     CreateCourtAppearance: {
       courtCaseUuid?: string
@@ -389,6 +463,7 @@ export interface components {
       charges: components['schemas']['CreateCharge'][]
       /** Format: date */
       overallConvictionDate?: string
+      legacyData?: components['schemas']['CourtAppearanceLegacyData']
     }
     CreateCourtCase: {
       prisonerId: string
@@ -397,7 +472,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:58:19.936863 */
+      /** @example 09:11:36.2242825 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -526,9 +601,20 @@ export interface components {
       offenceStartDate: string
       /** Format: date */
       offenceEndDate?: string
-      outcome: string
+      outcome?: components['schemas']['ChargeOutcome']
       terrorRelated?: boolean
       sentence?: components['schemas']['Sentence']
+      legacyData?: components['schemas']['JsonNode']
+    }
+    ChargeOutcome: {
+      /** Format: uuid */
+      outcomeUuid: string
+      outcomeName: string
+      nomisCode: string
+      outcomeType: string
+      /** Format: int32 */
+      displayOrder: number
+      isSubList: boolean
     }
     CourtAppearance: {
       /** Format: uuid */
@@ -549,6 +635,7 @@ export interface components {
       overallSentenceLength?: components['schemas']['PeriodLength']
       /** Format: date */
       overallConvictionDate?: string
+      legacyData?: components['schemas']['JsonNode']
     }
     CourtAppearanceOutcome: {
       /** Format: uuid */
@@ -558,6 +645,9 @@ export interface components {
       outcomeType: string
       /** Format: int32 */
       displayOrder: number
+      /** Format: uuid */
+      relatedChargeOutcomeUuid: string
+      isSubList: boolean
     }
     CourtCase: {
       prisonerId: string
@@ -565,10 +655,11 @@ export interface components {
       latestAppearance?: components['schemas']['CourtAppearance']
       appearances: components['schemas']['CourtAppearance'][]
     }
+    JsonNode: Record<string, never>
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:58:19.936863 */
+      /** @example 09:11:36.2242825 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -585,28 +676,28 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      sort?: components['schemas']['SortObject'][]
-      content?: components['schemas']['CourtCase'][]
-      /** Format: int32 */
-      size?: number
-      /** Format: int32 */
-      number?: number
       first?: boolean
       last?: boolean
+      /** Format: int32 */
+      size?: number
+      content?: components['schemas']['CourtCase'][]
+      /** Format: int32 */
+      number?: number
+      sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
-      sort?: components['schemas']['SortObject'][]
       /** Format: int64 */
       offset?: number
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
+      sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       pageSize?: number
+      /** Format: int32 */
+      pageNumber?: number
+      paged?: boolean
       unpaged?: boolean
     }
     SortObject: {
@@ -1442,6 +1533,142 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['Charge']
+        }
+      }
+    }
+  }
+  getChargeOutcomeByUuid: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        outcomeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns charge outcome */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome']
+        }
+      }
+      /** @description Not found if no charge outcome at uuid */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome']
+        }
+      }
+    }
+  }
+  getAllChargeOutcomes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns charge outcomes */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome'][]
+        }
+      }
+    }
+  }
+  getAppearanceOutcomeByUuid: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        outcomeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns appearance outcome */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtAppearanceOutcome']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtAppearanceOutcome']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtAppearanceOutcome']
+        }
+      }
+      /** @description Not found if no appearance outcome at uuid */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtAppearanceOutcome']
         }
       }
     }

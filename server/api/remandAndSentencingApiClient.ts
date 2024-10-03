@@ -4,6 +4,7 @@ import {
   CreateCourtAppearanceResponse,
   CreateCourtCase,
   CreateCourtCaseResponse,
+  OffenceOutcome,
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
@@ -104,5 +105,11 @@ export default class RemandAndSentencingApiClient {
     return (await this.restClient.get({
       path: `/appearance-outcome/all`,
     })) as unknown as Promise<AppearanceOutcome[]>
+  }
+
+  async getAllChargeOutcomes(): Promise<OffenceOutcome[]> {
+    return (await this.restClient.get({
+      path: `/charge-outcome/all`,
+    })) as unknown as Promise<OffenceOutcome[]>
   }
 }

@@ -6,6 +6,7 @@ context('Add Offence Outcome Page', () => {
   let offenceOffenceOutcomePage: OffenceOffenceOutcomePage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetAllChargeOutcomes')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
@@ -26,5 +27,13 @@ context('Add Offence Outcome Page', () => {
 
   it('button to continue is displayed', () => {
     offenceOffenceOutcomePage.button().should('contain.text', 'Continue')
+  })
+
+  it('submitting without selecting anything results in an error', () => {
+    offenceOffenceOutcomePage.button().click()
+    offenceOffenceOutcomePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must select the offence outcome')
   })
 })

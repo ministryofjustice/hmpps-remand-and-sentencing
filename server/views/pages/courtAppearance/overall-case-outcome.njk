@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
@@ -18,7 +18,7 @@
                     items: []
     } %}
 
-{% for caseOutcome in warrantTypeOutcomes %}
+{% for caseOutcome in mainOutcomes %}
     {%- set caseOutcomeRow = {
         value: caseOutcome.outcomeUuid,
         text: caseOutcome.outcomeName,
@@ -27,16 +27,20 @@
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
 
-{{ radiosData.items.push({ divider: "or"}) }}
+{% if subListOutcomes.length %}
+    {{ radiosData.items.push({ divider: "or"}) }}
 
-{% for caseOutcome in otherOutcomes %}
-{%- set caseOutcomeRow = {
-        value: caseOutcome.outcomeUuid,
-        text: caseOutcome.outcomeName,
-        checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
-    } -%}
-    {{ radiosData.items.push(caseOutcomeRow) }}
-{% endfor %}
+    {% for caseOutcome in subListOutcomes %}
+    {%- set caseOutcomeRow = {
+            value: caseOutcome.outcomeUuid,
+            text: caseOutcome.outcomeName,
+            checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
+        } -%}
+        {{ radiosData.items.push(caseOutcomeRow) }}
+    {% endfor %}
+{% endif %}
+
+
 
 
 {% block content %}

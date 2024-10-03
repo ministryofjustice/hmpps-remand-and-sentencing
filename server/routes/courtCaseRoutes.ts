@@ -662,12 +662,25 @@ export default class CourtCaseRoutes {
     }
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const caseOutcomes = await this.appearanceOutcomeService.getAllOutcomes(req.user.username)
-    const warrantTypeOutcomes = caseOutcomes
+    const [subListOutcomes, mainOutcomes] = caseOutcomes
       .filter(caseOutcome => caseOutcome.outcomeType === warrantType)
       .sort((a, b) => a.displayOrder - b.displayOrder)
-    const otherOutcomes = caseOutcomes
-      .filter(caseOutcome => caseOutcome.outcomeType !== warrantType)
-      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .reduce(
+        ([subList, mainList], caseOutcome) => {
+          return caseOutcome.isSubList ? [[...subList, caseOutcome], mainList] : [subList, [...mainList, caseOutcome]]
+        },
+        [[], []],
+      )
+
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
+
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`
+    } else if (submitToCheckAnswers) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
+    } else if (addOrEditCourtCase === 'edit-court-case') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-court-name`
+    }
 
     return res.render('pages/courtAppearance/overall-case-outcome', {
       nomsId,
@@ -678,8 +691,9 @@ export default class CourtCaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
-      warrantTypeOutcomes,
-      otherOutcomes,
+      backLink,
+      mainOutcomes,
+      subListOutcomes,
     })
   }
 

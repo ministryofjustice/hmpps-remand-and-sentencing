@@ -30,7 +30,7 @@
                 },
                 {
                     key: {
-                        text: "Commited on"
+                        text: "Committed on"
                     }, value: {
                         text: offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
                     },
@@ -38,7 +38,7 @@
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-date?submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: "commited on"
+                            visuallyHiddenText: "committed on"
                         }]
                     }
                 }] %}
@@ -60,6 +60,20 @@
                     }
                 }].concat(summaryRows,[{
                     key: {
+                        text: "Conviction date"
+                    }, value: {
+                        text: (offence.sentence.convictionDate | formatDate if offence.sentence.convictionDate else 'N/A')
+                    },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/conviction-date",
+                            text: "Edit",
+                            visuallyHiddenText: "conviction date"
+                        }]
+                    }
+                },
+                {
+                    key: {
                     text: "Sentence type"
                 },
                     value: {
@@ -77,11 +91,11 @@
                     text: "Sentence length"
                 },
                     value: {
-                    text: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH") | formatLengths
+                    text: sentenceLength
                 },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/period-length?periodLengthType=SENTENCE_LENGTH&submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/period-length?periodLengthType=" + sentenceLengthType + "&submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "sentence length"
                         }]

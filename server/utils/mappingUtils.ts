@@ -144,7 +144,7 @@ export const chargeToOffence = (charge: Charge): Offence => {
   return {
     offenceStartDate: dayjs(charge.offenceStartDate).toDate(),
     offenceCode: charge.offenceCode,
-    outcomeUuid: charge.outcome.outcomeUuid,
+    outcomeUuid: charge.outcome?.outcomeUuid,
     chargeUuid: charge.chargeUuid,
     terrorRelated: charge.terrorRelated,
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),

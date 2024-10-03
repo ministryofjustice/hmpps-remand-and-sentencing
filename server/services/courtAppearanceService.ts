@@ -323,7 +323,7 @@ export default class CourtAppearanceService {
       if (caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true') {
         courtAppearance.offences = courtAppearance.offences.map(offence => {
           // eslint-disable-next-line no-param-reassign
-          offence.outcomeUuid = courtAppearance.appearanceOutcomeUuid
+          offence.outcomeUuid = courtAppearance.relatedOffenceOutcomeUuid
           return offence
         })
       }

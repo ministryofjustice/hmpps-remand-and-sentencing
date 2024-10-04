@@ -116,7 +116,7 @@ export default class OffenceRoutes {
     }
     const { submitToEditOffence } = req.query
     const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
-    if (caseOutcomeAppliedAll) {
+    if (caseOutcomeAppliedAll === 'true') {
       this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, {
         offenceOutcome: this.courtAppearanceService.getRelatedOffenceOutcomeUuid(req.session, nomsId),
       })

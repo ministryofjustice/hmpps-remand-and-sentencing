@@ -26,6 +26,7 @@ import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
 import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
+import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -94,7 +95,7 @@ context('New Court Case journey', () => {
     courtCaseOverallCaseOutcomePage.button().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
 
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
@@ -178,6 +179,10 @@ context('New Court Case journey', () => {
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
+
+    const offenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+    offenceOutcomePage.radioLabelContains('Remanded in custody').click()
+    offenceOutcomePage.button().click()
 
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()

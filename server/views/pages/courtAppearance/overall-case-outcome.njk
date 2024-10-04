@@ -19,10 +19,11 @@
     } %}
 
 {% for caseOutcome in warrantTypeOutcomes %}
+    {% set caseOutcomeValue = caseOutcome.outcomeUuid + '|' + caseOutcome.relatedChargeOutcomeUuid %}
     {%- set caseOutcomeRow = {
-        value: caseOutcome.outcomeUuid,
+        value: caseOutcomeValue,
         text: caseOutcome.outcomeName,
-        checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
+        checked: caseOutcomeValue === overallCaseOutcomeForm.overallCaseOutcome
     } -%}
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
@@ -30,10 +31,11 @@
 {{ radiosData.items.push({ divider: "or"}) }}
 
 {% for caseOutcome in otherOutcomes %}
+ {% set caseOutcomeValue = caseOutcome.outcomeUuid + '|' + caseOutcome.relatedChargeOutcomeUuid %}
 {%- set caseOutcomeRow = {
-        value: caseOutcome.outcomeUuid,
+        value: caseOutcomeValue,
         text: caseOutcome.outcomeName,
-        checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
+        checked: caseOutcomeValue === overallCaseOutcomeForm.overallCaseOutcome
     } -%}
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}

@@ -209,7 +209,7 @@ Cypress.Commands.add(
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
     const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
-    offenceOffenceOutcomePage.radioLabelSelector('Recall to Prison').click()
+    offenceOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
     offenceOffenceOutcomePage.button().click()
   },
 )
@@ -262,7 +262,7 @@ Cypress.Commands.add(
     offenceOffenceDatePage.button().click()
 
     const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
-    offenceOffenceOutcomePage.radioLabelSelector('Sentencing outcome 1').click()
+    offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
     offenceOffenceOutcomePage.button().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)

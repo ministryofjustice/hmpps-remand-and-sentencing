@@ -16,23 +16,27 @@
                     items: []
     } %}
 
-{% for caseOutcome in topCaseOutcomes %}
+{% for caseOutcome in mainOutcomes %}
     {%- set caseOutcomeRow = {
-        value: caseOutcome.description,
-        text: caseOutcome.description,
-        checked: caseOutcome.description === offenceOutcome
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
     } -%}
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
 
-{{ radiosData.items.push({ divider: "or"}) }}
-{{ 
-    radiosData.items.push({
-                        value: "LOOKUPDIFFERENT",
-                        text: "Lookup a different outcome",
-                        checked: offenceOutcome === "LOOKUPDIFFERENT"
-                        }) 
-}}
+{% if subListOutcomes.length %}
+    {{ radiosData.items.push({ divider: "or"}) }}
+
+    {% for caseOutcome in subListOutcomes %}
+    {%- set caseOutcomeRow = {
+            value: caseOutcome.outcomeUuid,
+            text: caseOutcome.outcomeName,
+            checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
+        } -%}
+        {{ radiosData.items.push(caseOutcomeRow) }}
+    {% endfor %}
+{% endif %}
 
 {% block pageContent %}
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-outcome{{ "?submitToEditOffence=true" if submitToEditOffence }}">

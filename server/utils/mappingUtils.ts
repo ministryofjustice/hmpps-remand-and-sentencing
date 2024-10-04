@@ -64,7 +64,7 @@ const offenceToCreateCharge = (offence: Offence): CreateCharge => {
   return {
     offenceCode: offence.offenceCode,
     offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),
-    outcome: offence.outcome,
+    outcomeUuid: offence.outcomeUuid,
     ...(offence.terrorRelated !== undefined && { terrorRelated: offence.terrorRelated }),
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
     ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),
@@ -144,7 +144,7 @@ export const chargeToOffence = (charge: Charge): Offence => {
   return {
     offenceStartDate: dayjs(charge.offenceStartDate).toDate(),
     offenceCode: charge.offenceCode,
-    outcome: charge.outcome,
+    outcomeUuid: charge.outcome?.outcomeUuid,
     chargeUuid: charge.chargeUuid,
     terrorRelated: charge.terrorRelated,
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
@@ -251,6 +251,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     warrantDate: dayjs(pageCourtCaseAppearance.appearanceDate).toDate(),
     courtCode: pageCourtCaseAppearance.courtCode,
     appearanceOutcomeUuid: pageCourtCaseAppearance.outcome?.outcomeUuid,
+    relatedOffenceOutcomeUuid: pageCourtCaseAppearance.outcome?.relatedChargeOutcomeUuid,
     warrantType: pageCourtCaseAppearance.warrantType,
     warrantId: pageCourtCaseAppearance.warrantId,
     taggedBail: pageCourtCaseAppearance.taggedBail?.toLocaleString(),

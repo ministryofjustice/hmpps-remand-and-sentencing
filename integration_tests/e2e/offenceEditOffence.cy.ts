@@ -17,6 +17,7 @@ context('Add Offence Edit offence Page', () => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
+    cy.task('stubGetAllChargeOutcomes')
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
   })

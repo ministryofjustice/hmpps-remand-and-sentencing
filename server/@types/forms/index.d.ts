@@ -27,10 +27,6 @@ declare module 'forms' {
     overallCaseOutcome?: string
   }
 
-  export interface CourtCaseLookupCaseOutcomeForm {
-    caseOutcome?: string
-  }
-
   export interface CourtCaseCaseOutcomeAppliedAllForm {
     caseOutcomeAppliedAll?: string
   }
@@ -86,9 +82,6 @@ declare module 'forms' {
     offenceOutcome?: string
   }
 
-  export interface OffenceLookupOffenceOutcomeForm {
-    offenceOutcome?: string
-  }
   export interface OffenceDeleteOffenceForm {
     deleteOffence?: string
   }

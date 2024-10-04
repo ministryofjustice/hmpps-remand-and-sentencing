@@ -285,8 +285,10 @@ export default class CourtAppearanceService {
       { 'required.overallCaseOutcome': 'You must select the overall case outcome' },
     )
     if (errors.length === 0) {
+      const [appearanceOutcomeUuid, relatedOffenceOutcomeUuid] = overallCaseOutcomeForm.overallCaseOutcome.split('|')
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.appearanceOutcomeUuid = overallCaseOutcomeForm.overallCaseOutcome
+      courtAppearance.appearanceOutcomeUuid = appearanceOutcomeUuid
+      courtAppearance.relatedOffenceOutcomeUuid = relatedOffenceOutcomeUuid
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -295,6 +297,10 @@ export default class CourtAppearanceService {
 
   getAppearanceOutcomeUuid(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).appearanceOutcomeUuid
+  }
+
+  getRelatedOffenceOutcomeUuid(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtAppearance(session, nomsId).relatedOffenceOutcomeUuid
   }
 
   setCaseOutcomeAppliedAll(
@@ -317,7 +323,7 @@ export default class CourtAppearanceService {
       if (caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true') {
         courtAppearance.offences = courtAppearance.offences.map(offence => {
           // eslint-disable-next-line no-param-reassign
-          offence.outcome = courtAppearance.appearanceOutcomeUuid
+          offence.outcomeUuid = courtAppearance.relatedOffenceOutcomeUuid
           return offence
         })
       }

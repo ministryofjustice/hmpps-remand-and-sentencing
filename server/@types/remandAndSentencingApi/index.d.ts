@@ -472,7 +472,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:11:40.403436027 */
+      /** @example 09:11:36.2242825 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -614,6 +614,7 @@ export interface components {
       outcomeType: string
       /** Format: int32 */
       displayOrder: number
+      isSubList: boolean
     }
     CourtAppearance: {
       /** Format: uuid */
@@ -658,7 +659,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:11:40.403436027 */
+      /** @example 09:11:36.2242825 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -683,9 +684,9 @@ export interface components {
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
-      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {

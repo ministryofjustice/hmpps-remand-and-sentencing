@@ -27,10 +27,6 @@ declare module 'forms' {
     overallCaseOutcome?: string
   }
 
-  export interface CourtCaseLookupCaseOutcomeForm {
-    caseOutcome?: string
-  }
-
   export interface CourtCaseCaseOutcomeAppliedAllForm {
     caseOutcomeAppliedAll?: string
   }
@@ -86,9 +82,6 @@ declare module 'forms' {
     offenceOutcome?: string
   }
 
-  export interface OffenceLookupOffenceOutcomeForm {
-    offenceOutcome?: string
-  }
   export interface OffenceDeleteOffenceForm {
     deleteOffence?: string
   }
@@ -157,7 +150,7 @@ declare module 'forms' {
 
   export interface CourtCaseOverallConvictionDateForm {
     'overallConvictionDate-day'?: string
-    'overallConvictionDate-month'?: strin
+    'overallConvictionDate-month'?: string
     'overallConvictionDate-year'?: string
   }
 
@@ -167,7 +160,7 @@ declare module 'forms' {
 
   export interface OffenceConvictionDateForm {
     'convictionDate-day'?: string
-    'convictionDate-month'?: strin
+    'convictionDate-month'?: string
     'convictionDate-year'?: string
   }
 }

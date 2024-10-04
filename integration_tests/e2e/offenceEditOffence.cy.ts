@@ -17,6 +17,7 @@ context('Add Offence Edit offence Page', () => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
+    cy.task('stubGetAllChargeOutcomes')
     cy.signIn()
     cy.createCourtCase('A1234AB', '0', '0')
   })
@@ -85,7 +86,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 5',
         Offence: 'PS90037 An offence description Terror-related',
-        'Commited on': '12 05 2023',
+        'Committed on': '12 05 2023',
+        'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -105,7 +107,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
-        'Commited on': '25 05 2023',
+        'Committed on': '25 05 2023',
+        'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -133,7 +136,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'AB11000 Another offence description',
-        'Commited on': '12 05 2023',
+        'Committed on': '12 05 2023',
+        'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -154,7 +158,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
-        'Commited on': '12 05 2023',
+        'Committed on': '12 05 2023',
+        'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -171,7 +176,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
-        'Commited on': '12 05 2023',
+        'Committed on': '12 05 2023',
+        'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
@@ -204,9 +210,10 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description Terror-related',
-        'Commited on': '12 05 2023',
+        'Committed on': '12 05 2023',
+        'Conviction date': '12 05 2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
-        'Sentence length': '',
+        'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
     })

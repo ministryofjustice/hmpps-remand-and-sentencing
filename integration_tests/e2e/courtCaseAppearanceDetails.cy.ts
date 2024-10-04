@@ -207,7 +207,8 @@ context('Court Case Appearance details Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
-        'Commited on': '25 12 2023',
+        'Committed on': '25 12 2023',
+        'Conviction date': 'N/A',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',

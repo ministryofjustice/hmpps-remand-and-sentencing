@@ -657,7 +657,7 @@ export default class CourtCaseRoutes {
     let overallCaseOutcomeForm = (req.flash('overallCaseOutcomeForm')[0] || {}) as CourtCaseOverallCaseOutcomeForm
     if (Object.keys(overallCaseOutcomeForm).length === 0) {
       overallCaseOutcomeForm = {
-        overallCaseOutcome: this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId),
+        overallCaseOutcome: `${this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)}|${this.courtAppearanceService.getRelatedOffenceOutcomeUuid(req.session, nomsId)}`,
       }
     }
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)

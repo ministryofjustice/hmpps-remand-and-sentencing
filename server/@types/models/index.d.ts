@@ -12,6 +12,7 @@ declare module 'models' {
     nextHearingCourtSelect?: string
     nextHearingCourtCode?: string
     appearanceOutcomeUuid?: string
+    relatedOffenceOutcomeUuid?: string
     caseOutcomeAppliedAll?: string
     nextHearingSelect?: boolean
     nextHearingType?: string
@@ -35,7 +36,7 @@ declare module 'models' {
     offenceStartDate?: Date
     offenceEndDate?: Date
     offenceCode?: string
-    outcome?: string
+    outcomeUuid?: string
     chargeUuid?: string
     sentence?: Sentence
     terrorRelated?: boolean

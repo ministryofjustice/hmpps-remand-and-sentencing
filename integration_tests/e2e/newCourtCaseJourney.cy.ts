@@ -40,6 +40,7 @@ context('New Court Case journey', () => {
     cy.task('stubGetCourtById', {})
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetAllChargeOutcomes')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })

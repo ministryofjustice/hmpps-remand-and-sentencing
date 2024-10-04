@@ -20,7 +20,7 @@
     {%- set caseOutcomeRow = {
         value: caseOutcome.outcomeUuid,
         text: caseOutcome.outcomeName,
-        checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
+        checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
     } -%}
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
@@ -32,7 +32,7 @@
     {%- set caseOutcomeRow = {
             value: caseOutcome.outcomeUuid,
             text: caseOutcome.outcomeName,
-            checked: caseOutcome.outcomeUuid === overallCaseOutcomeForm.overallCaseOutcome
+            checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
         } -%}
         {{ radiosData.items.push(caseOutcomeRow) }}
     {% endfor %}

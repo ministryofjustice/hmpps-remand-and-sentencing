@@ -69,6 +69,7 @@ const offenceToCreateCharge = (offence: Offence): CreateCharge => {
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
     ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),
     ...(sentence && { sentence }),
+    ...(offence.legacyData && { legacyData: { ...offence.legacyData } }),
   } as CreateCharge
 }
 
@@ -150,6 +151,7 @@ export const chargeToOffence = (charge: Charge): Offence => {
     terrorRelated: charge.terrorRelated,
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
+    ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
   } as Offence
 }
 

@@ -41,6 +41,7 @@ declare module 'models' {
     chargeUuid?: string
     sentence?: Sentence
     terrorRelated?: boolean
+    legacyData: Record<string, never>
   }
 
   export interface Sentence {

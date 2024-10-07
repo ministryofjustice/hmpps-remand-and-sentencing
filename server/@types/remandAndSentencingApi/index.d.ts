@@ -425,10 +425,11 @@ export interface components {
       }
     }
     CourtAppearanceLegacyData: {
-      outcomeReason?: string
-      otherFields?: {
-        [key: string]: Record<string, never>
-      }
+      eventId?: string
+      caseId?: string
+      postedDate?: string
+      nomisOutcomeCode?: string
+      outcomeDescription?: string
     }
     CreateCharge: {
       /** Format: uuid */
@@ -472,7 +473,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:11:36.2242825 */
+      /** @example 12:01:49.975779632 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -659,7 +660,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:11:36.2242825 */
+      /** @example 12:01:49.975779632 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string

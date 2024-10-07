@@ -95,6 +95,7 @@ export const courtAppearanceToCreateCourtAppearance = (
       ...(courtAppearance.overallConvictionDate && {
         overallConvictionDate: dayjs(courtAppearance.overallConvictionDate).format('YYYY-MM-DD'),
       }),
+      ...(courtAppearance.legacyData && { legacyData: { ...courtAppearance.legacyData } }),
     }),
   } as CreateCourtAppearance
 }
@@ -264,6 +265,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     ...(pageCourtCaseAppearance.overallConvictionDate && {
       overallConvictionDate: dayjs(pageCourtCaseAppearance.overallConvictionDate).toDate(),
     }),
+    ...(pageCourtCaseAppearance.legacyData && { legacyData: { ...pageCourtCaseAppearance.legacyData } }),
   } as CourtAppearance
 }
 
@@ -281,5 +283,5 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextHearingTimeSet: typeof nextCourtAppearance?.appearanceTime === 'string',
     nextHearingDate,
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
-  }
+  } as CourtAppearance
 }

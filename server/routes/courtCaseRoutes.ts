@@ -728,7 +728,11 @@ export default class CourtCaseRoutes {
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const overallCaseOutcome: string = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
+    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
+
+    const overallCaseOutcome: string = (
+      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+    ).outcomeName
     let caseOutcomeAppliedAllForm = (req.flash('caseOutcomeAppliedAllForm')[0] ||
       {}) as CourtCaseCaseOutcomeAppliedAllForm
     if (Object.keys(caseOutcomeAppliedAllForm).length === 0) {
@@ -1071,6 +1075,9 @@ export default class CourtCaseRoutes {
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const overallCaseOutcome: string = (
+      await this.appearanceOutcomeService.getOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username)
+    ).outcomeName
     let courtName
     if (courtAppearance.courtCode) {
       try {
@@ -1086,6 +1093,7 @@ export default class CourtCaseRoutes {
       nomsId,
       courtAppearance,
       courtName,
+      overallCaseOutcome,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,

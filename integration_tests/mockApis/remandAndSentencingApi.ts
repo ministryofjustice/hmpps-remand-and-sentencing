@@ -1061,4 +1061,33 @@ export default {
       },
     })
   },
+
+  stubGetChargeOutcomeById: ({
+    outcomeUuid = '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+    outcomeName = 'Remanded in custody',
+    outcomeType = 'REMAND',
+  }: {
+    outcomeUuid: string
+    outcomeName: string
+    outcomeType: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/charge-outcome/${outcomeUuid}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          outcomeUuid,
+          outcomeName,
+          nomisCode: '3452',
+          outcomeType,
+          displayOrder: 10,
+          isSubList: false,
+        },
+      },
+    })
+  },
 }

@@ -127,4 +127,10 @@ export default class RemandAndSentencingApiClient {
       },
     })) as unknown as Promise<OffenceOutcome[]>
   }
+
+  async getChargeOutcomeById(outcomeId: string): Promise<OffenceOutcome> {
+    return (await this.restClient.get({
+      path: `/charge-outcome/${outcomeId}`,
+    })) as unknown as Promise<OffenceOutcome>
+  }
 }

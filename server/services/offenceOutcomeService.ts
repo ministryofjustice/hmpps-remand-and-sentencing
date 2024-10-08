@@ -21,6 +21,10 @@ export default class OffenceOutcomeService {
     return outcomeMap
   }
 
+  async getOutcomeById(outcomeId: string, username: string): Promise<OffenceOutcome> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getChargeOutcomeById(outcomeId)
+  }
+
   private async getSystemClientToken(username: string): Promise<string> {
     return this.hmppsAuthClient.getSystemClientToken(username)
   }

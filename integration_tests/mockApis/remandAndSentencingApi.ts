@@ -842,13 +842,6 @@ export default {
             },
             {
               appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
-              outcome: {
-                outcomeUuid: '7fd9efee-200e-4579-a766-e6bf9a499096',
-                outcomeName: 'Lie on file',
-                nomisCode: '7863',
-                outcomeType: 'REMAND',
-                displayOrder: 20,
-              },
               courtCode: 'Birmingham Crown Court',
               courtCaseReference: 'F23325',
               appearanceDate: '2022-10-15',
@@ -865,6 +858,13 @@ export default {
                   outcome: 'Remand in Custody (Bail Refused)',
                 },
               ],
+              legacyData: {
+                eventId: '1',
+                caseId: '1',
+                postedDate: '10-10-2015',
+                nomisOutcomeCode: '3567',
+                outcomeDescription: 'A Nomis Outcome',
+              },
             },
           ],
         },

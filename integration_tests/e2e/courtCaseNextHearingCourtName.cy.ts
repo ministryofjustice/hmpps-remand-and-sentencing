@@ -6,7 +6,6 @@ context('Next hearing court name page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
-    cy.createCourtCase('A1234AB', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-court-name')
     courtCaseNextHearingCourtNamePage = Page.verifyOnPage(CourtCaseNextHearingCourtNamePage)
   })

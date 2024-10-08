@@ -19,7 +19,6 @@ context('Add Offence Edit offence Page', () => {
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetAllChargeOutcomes')
     cy.signIn()
-    cy.createCourtCase('A1234AB', '0', '0')
   })
 
   context('remand', () => {

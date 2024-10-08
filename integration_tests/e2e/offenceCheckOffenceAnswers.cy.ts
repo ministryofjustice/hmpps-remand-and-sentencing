@@ -1,3 +1,4 @@
+import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
@@ -15,6 +16,11 @@ context('Check Offence Answers Page', () => {
     cy.task('stubGetSentenceTypesByIds')
     cy.task('stubGetAllChargeOutcomes')
     cy.signIn()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/reference')
+
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+    courtCaseReferencePage.input().type('T12345678')
+    courtCaseReferencePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'offences')
   })

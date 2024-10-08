@@ -1,12 +1,23 @@
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
+import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import Page from '../pages/page'
 
 context('Court Case Case Outcome applied all Page', () => {
   let courtCaseCaseOutcomeAppliedAllPage: CourtCaseCaseOutcomeAppliedAllPage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetAppearanceOutcomeById', {})
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/case-outcome-applied-all')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
+    courtCaseWarrantTypePage.button().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage.button().click()
     courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
   })
 

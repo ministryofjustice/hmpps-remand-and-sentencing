@@ -46,6 +46,7 @@ context('New Court Case journey', () => {
   })
 
   it('fill in remand journey', () => {
+    cy.task('stubGetAppearanceOutcomeById', {})
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
@@ -109,7 +110,7 @@ context('New Court Case journey', () => {
       'Case reference': 'T12345678',
       'Warrant date': '12 05 2023',
       'Court name': 'Accrington Youth Court',
-      'Overall case outcome': '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+      'Overall case outcome': 'Remanded in custody',
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
     })
@@ -268,6 +269,11 @@ context('New Court Case journey', () => {
 
   it('fill in sentencing journey', () => {
     cy.task('stubGetSentenceTypesByIds')
+    cy.task('stubGetAppearanceOutcomeById', {
+      outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+      outcomeName: 'Imprisonment',
+      outcomeType: 'SENTENCING',
+    })
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
@@ -332,6 +338,8 @@ context('New Court Case journey', () => {
       'Case reference': 'T12345678',
       'Warrant date': '12 05 2023',
       'Court name': 'Accrington Youth Court',
+      'Overall case outcome': 'Imprisonment',
+      'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
       'Overall sentence length': '4 years 5 months 0 weeks 0 days',
     })

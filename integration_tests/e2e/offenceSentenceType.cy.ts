@@ -10,7 +10,6 @@ context('Add Offence Sentence Type Page', () => {
     cy.task('stubGetSentenceTypesByIds')
     cy.task('stubGetSentenceTypeById', {})
     cy.signIn()
-    cy.createCourtCase('A1234AB', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/conviction-date')
     const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage.dayDateInput('convictionDate').clear()

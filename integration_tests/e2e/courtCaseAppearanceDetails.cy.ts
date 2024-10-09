@@ -22,7 +22,13 @@ context('Court Case Appearance details Page', () => {
         courtName: 'Southampton Magistrate Court',
       })
       cy.task('stubGetAppearanceOutcomeById', {})
-      cy.task('stubGetChargeOutcomesByIds', {})
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
@@ -170,7 +176,13 @@ context('Court Case Appearance details Page', () => {
         outcomeName: 'Imprisonment',
         outcomeType: 'SENTENCING',
       })
-      cy.task('stubGetChargeOutcomesByIds', {})
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',

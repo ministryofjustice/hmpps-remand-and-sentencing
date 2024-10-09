@@ -15,6 +15,7 @@ context('Check Offence Answers Page', () => {
     cy.task('stubGetCourtById', {})
     cy.task('stubGetSentenceTypesByIds')
     cy.task('stubGetAllChargeOutcomes')
+    cy.task('stubGetChargeOutcomesByIds', {})
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/reference')
 

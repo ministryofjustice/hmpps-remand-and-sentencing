@@ -22,6 +22,7 @@ context('Court Case Appearance details Page', () => {
         courtName: 'Southampton Magistrate Court',
       })
       cy.task('stubGetAppearanceOutcomeById', {})
+      cy.task('stubGetChargeOutcomesByIds', {})
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
@@ -159,12 +160,17 @@ context('Court Case Appearance details Page', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceAppearanceDetails')
       cy.task('stubGetCourtsByIds')
+      cy.task('stubGetCourtById', {
+        courtId: 'STHHPM',
+        courtName: 'Southampton Magistrate Court',
+      })
       cy.task('stubGetSentenceTypesByIds')
       cy.task('stubGetAppearanceOutcomeById', {
         outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
         outcomeName: 'Imprisonment',
         outcomeType: 'SENTENCING',
       })
+      cy.task('stubGetChargeOutcomesByIds', {})
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
@@ -188,6 +194,7 @@ context('Court Case Appearance details Page', () => {
 
     it('can edit sentence information', () => {
       cy.task('stubGetSentenceTypeById', {})
+      cy.task('stubGetChargeOutcomeById', {})
       courtCaseAppearanceDetailsPage
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
         .click()

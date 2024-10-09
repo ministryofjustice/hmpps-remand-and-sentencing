@@ -485,7 +485,7 @@ export default {
             nomisCode: '3452',
             outcomeType: 'REMAND',
             displayOrder: 10,
-            relatedChargeOutcomeUuid: '3b009f06-2e48-4f79-a0f3-6e277a31fafc',
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
             isSubList: false,
           },
           warrantType: 'REMAND',
@@ -504,7 +504,7 @@ export default {
               offenceCode: 'PS90037',
               offenceStartDate: '2023-12-15',
               outcome: {
-                outcomeUuid: '3b009f06-2e48-4f79-a0f3-6e277a31fafc',
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 outcomeName: 'Remanded in custody',
                 nomisCode: '3452',
                 outcomeType: 'REMAND',
@@ -1063,7 +1063,7 @@ export default {
   },
 
   stubGetChargeOutcomeById: ({
-    outcomeUuid = '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+    outcomeUuid = '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
     outcomeName = 'Remanded in custody',
     outcomeType = 'REMAND',
   }: {
@@ -1087,6 +1087,41 @@ export default {
           displayOrder: 10,
           isSubList: false,
         },
+      },
+    })
+  },
+  stubGetChargeOutcomesByIds: ({
+    outcomeUuid = '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+    outcomeName = 'Remanded in custody',
+    outcomeType = 'REMAND',
+  }: {
+    outcomeUuid: string
+    outcomeName: string
+    outcomeType: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/charge-outcome/uuid/multiple',
+        queryParameters: {
+          uuids: {
+            equalTo: outcomeUuid,
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            outcomeUuid,
+            outcomeName,
+            nomisCode: '09753',
+            outcomeType,
+            displayOrder: 10,
+            isSubList: false,
+          },
+        ],
       },
     })
   },

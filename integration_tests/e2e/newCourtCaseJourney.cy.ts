@@ -47,6 +47,7 @@ context('New Court Case journey', () => {
 
   it('fill in remand journey', () => {
     cy.task('stubGetAppearanceOutcomeById', {})
+    cy.task('stubGetChargeOutcomesByIds', {})
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
@@ -271,6 +272,11 @@ context('New Court Case journey', () => {
     cy.task('stubGetSentenceTypesByIds')
     cy.task('stubGetAppearanceOutcomeById', {
       outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+      outcomeName: 'Imprisonment',
+      outcomeType: 'SENTENCING',
+    })
+    cy.task('stubGetChargeOutcomesByIds', {
+      outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })

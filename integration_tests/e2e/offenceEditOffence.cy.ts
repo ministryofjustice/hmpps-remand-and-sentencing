@@ -18,12 +18,13 @@ context('Add Offence Edit offence Page', () => {
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetAllChargeOutcomes')
-    cy.task('stubGetChargeOutcomeById', {})
     cy.signIn()
   })
 
   context('remand', () => {
     beforeEach(() => {
+      cy.task('stubGetChargeOutcomesByIds', {})
+      cy.task('stubGetChargeOutcomeById', {})
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
@@ -52,6 +53,16 @@ context('Add Offence Edit offence Page', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceTypeById', {})
       cy.task('stubGetSentenceTypesByIds')
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      })
+      cy.task('stubGetChargeOutcomesByIds', {
+        outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      })
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()

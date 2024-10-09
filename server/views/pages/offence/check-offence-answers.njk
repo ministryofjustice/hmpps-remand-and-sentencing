@@ -85,7 +85,7 @@
                         offenceName: offenceMap[offence.offenceCode],
                         offenceStartDate: offence.offenceStartDate | formatDate,
                         offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: offence.outcome,
+                        outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
                         countNumber: offence.sentence.countNumber,
                         convictionDate: offence.sentence.convictionDate | formatDate,
                         terrorRelated: offence.terrorRelated,

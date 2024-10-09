@@ -1070,10 +1070,12 @@ export default class OffenceRoutes {
       ),
     )
     const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
+    const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
 
-    const [offenceMap, sentenceTypeMap] = await Promise.all([
+    const [offenceMap, sentenceTypeMap, outcomeMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
     ])
 
     return res.render('pages/offence/check-offence-answers', {
@@ -1086,6 +1088,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       offenceMap,
       sentenceTypeMap,
+      outcomeMap,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
@@ -1137,6 +1140,10 @@ export default class OffenceRoutes {
         req.user.username,
       )
     }
+    let outcome
+    if (offence.outcomeUuid) {
+      outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.token)).outcomeName
+    }
     return res.render('pages/offence/delete-offence', {
       nomsId,
       courtCaseReference,
@@ -1148,6 +1155,7 @@ export default class OffenceRoutes {
       errors: req.flash('errors') || [],
       offenceMap,
       sentenceType,
+      outcome,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
     })
   }
@@ -1225,6 +1233,10 @@ export default class OffenceRoutes {
         offence.sentence.periodLengths.find(x => x.periodLengthType === sentenceLengthType),
       )
     }
+    let outcome
+    if (offence.outcomeUuid) {
+      outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.token)).outcomeName
+    }
 
     return res.render('pages/offence/edit-offence', {
       nomsId,
@@ -1239,6 +1251,7 @@ export default class OffenceRoutes {
       sentenceType,
       sentenceLength,
       sentenceLengthType,
+      outcome,
       backLink: res.locals.isAddCourtAppearance
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
@@ -1282,6 +1295,11 @@ export default class OffenceRoutes {
       req.user.token,
     )
     const offences = latestCourtAppearance.charges.map(charge => chargeToOffence(charge))
+    const offenceOutcomeMap = Object.fromEntries(
+      latestCourtAppearance.charges
+        ?.filter(charge => charge.outcome)
+        .map(charge => [charge.outcome.outcomeUuid, charge.outcome.outcomeName]) ?? [],
+    )
     return res.render('pages/offence/review-offences', {
       nomsId,
       courtCaseReference,
@@ -1292,6 +1310,7 @@ export default class OffenceRoutes {
       offenceMap,
       sentenceTypeMap,
       offences,
+      offenceOutcomeMap,
     })
   }
 

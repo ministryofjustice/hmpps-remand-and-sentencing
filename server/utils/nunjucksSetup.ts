@@ -14,7 +14,7 @@ import { formatDate, formatDateTime, initialiseName, pluraliseName } from './uti
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import { periodLengthToSentenceLength } from './mappingUtils'
-import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import type { AppearanceOutcome, OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -118,6 +118,26 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       return ''
     },
   )
+
+  njkEnv.addFilter('chargeOutcomeOrLegacy', (offenceOutcome: OffenceOutcome, legacyData: Record<string, never>) => {
+    if (offenceOutcome) {
+      return offenceOutcome.outcomeName
+    }
+    if (legacyData) {
+      return legacyData.outcomeDescription
+    }
+    return ''
+  })
+
+  njkEnv.addFilter('outcomeValueOrLegacy', (outcomeValue: string, legacyData: Record<string, never>) => {
+    if (outcomeValue) {
+      return outcomeValue
+    }
+    if (legacyData) {
+      return legacyData.outcomeDescription
+    }
+    return ''
+  })
 
   njkEnv.addFilter('personProfileName', personProfileName)
   njkEnv.addFilter('personDateOfBirth', personDateOfBirth)

@@ -47,6 +47,13 @@ context('Repeat Court Case journey', () => {
 
   it('repeat remand journey', () => {
     cy.task('stubGetAppearanceOutcomeById', {})
+    cy.task('stubGetChargeOutcomesByIds', [
+      {
+        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+        outcomeName: 'Remanded in custody',
+        outcomeType: 'REMAND',
+      },
+    ])
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
 
@@ -269,6 +276,26 @@ context('Repeat Court Case journey', () => {
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })
+    cy.task('stubGetChargeOutcomesByIds', [
+      {
+        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      },
+    ])
+
+    cy.task('stubGetChargeOutcomesByIds', [
+      {
+        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      },
+      {
+        outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+        outcomeName: 'Imprisonment by default',
+        outcomeType: 'SENTENCING',
+      },
+    ])
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
 

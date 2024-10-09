@@ -118,4 +118,19 @@ export default class RemandAndSentencingApiClient {
       path: `/charge-outcome/all`,
     })) as unknown as Promise<OffenceOutcome[]>
   }
+
+  async getChargeOutcomesByIds(outcomeIds: string[]): Promise<OffenceOutcome[]> {
+    return (await this.restClient.get({
+      path: `/charge-outcome/uuid/multiple`,
+      query: {
+        uuids: outcomeIds.join(','),
+      },
+    })) as unknown as Promise<OffenceOutcome[]>
+  }
+
+  async getChargeOutcomeById(outcomeId: string): Promise<OffenceOutcome> {
+    return (await this.restClient.get({
+      path: `/charge-outcome/${outcomeId}`,
+    })) as unknown as Promise<OffenceOutcome>
+  }
 }

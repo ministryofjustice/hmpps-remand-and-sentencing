@@ -62,7 +62,7 @@
                             offenceName: offenceMap[charge.offenceCode],
                             offenceStartDate: charge.offenceStartDate | formatDate,
                             offenceEndDate: charge.offenceEndDate | formatDate,
-                            outcome: charge.outcome,
+                            outcome: charge.outcome | chargeOutcomeOrLegacy(charge.legacyData),
                             countNumber: charge.sentence.chargeNumber,
                             convictionDate: charge.sentence.convictionDate | formatDate,
                             terrorRelated: charge.terrorRelated,

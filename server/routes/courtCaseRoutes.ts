@@ -39,6 +39,7 @@ import { PrisonUser } from '../interfaces/hmppsUser'
 import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
+import OffenceOutcomeService from '../services/offenceOutcomeService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -48,6 +49,7 @@ export default class CourtCaseRoutes {
     private readonly documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
+    private readonly offenceOutcomeService: OffenceOutcomeService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -145,16 +147,18 @@ export default class CourtCaseRoutes {
     const sentenceTypeIds = appearance.offences
       .filter(offence => offence.sentence?.sentenceTypeId)
       .map(offence => offence.sentence?.sentenceTypeId)
+    const offenceOutcomeIds = appearance.offences.map(offence => offence.outcomeUuid)
     const outcomePromise = appearance.appearanceOutcomeUuid
       ? this.appearanceOutcomeService
           .getOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
           .then(outcome => outcome.outcomeName)
       : Promise.resolve(appearance.legacyData.outcomeDescription ?? '')
-    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome] = await Promise.all([
+    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
       this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
       outcomePromise,
+      this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
     ])
 
     return res.render('pages/courtAppearance/details', {
@@ -168,6 +172,7 @@ export default class CourtCaseRoutes {
       courtMap,
       sentenceTypeMap,
       overallCaseOutcome,
+      outcomeMap,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

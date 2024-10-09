@@ -30,6 +30,8 @@ export default class CourtCasesDetailsModel {
 
   sentenceTypeMap: { [key: string]: string }
 
+  offenceOutcomeMap: { [key: string]: string }
+
   latestCourtCode: string
 
   latestAppearanceDate: string
@@ -75,6 +77,11 @@ export default class CourtCasesDetailsModel {
       charges
         ?.filter(charge => charge.sentence)
         .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]) ?? [],
+    )
+    this.offenceOutcomeMap = Object.fromEntries(
+      charges
+        ?.filter(charge => charge.outcome)
+        .map(charge => [charge.outcome.outcomeUuid, charge.outcome.outcomeName]) ?? [],
     )
     this.latestCourtCode = pageCourtCaseContent.latestAppearance?.courtCode
     this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance?.appearanceDate).format(config.dateFormat)

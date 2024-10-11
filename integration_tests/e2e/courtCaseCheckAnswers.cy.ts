@@ -38,7 +38,7 @@ context('Court Case Check Answers Page', () => {
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
-      'Enter the overall case outcome',
+      'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()
@@ -100,7 +100,7 @@ context('Court Case Check Answers Page', () => {
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'overall-case-outcome').click()
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
-      'Enter the overall case outcome',
+      'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()

@@ -104,7 +104,7 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
-      'Enter the overall case outcome',
+      'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()
@@ -345,7 +345,7 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
-      'Enter the overall case outcome',
+      'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
     courtCaseOverallCaseOutcomePage.button().click()

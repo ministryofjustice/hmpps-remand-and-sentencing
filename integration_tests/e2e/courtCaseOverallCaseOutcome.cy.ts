@@ -15,7 +15,7 @@ context('Court Case Overall Case Outcome Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
     courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
-      'Enter the overall case outcome',
+      'Select the overall case outcome',
     )
   })
 

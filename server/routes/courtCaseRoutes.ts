@@ -26,7 +26,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtCasesDetailsModel from './data/CourtCasesDetailsModel'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
-import { getAsStringOrDefault } from '../utils/utils'
+import { getAsStringOrDefault, outcomeValueOrLegacy } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
 import {
@@ -667,12 +667,13 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     let overallCaseOutcomeForm = (req.flash('overallCaseOutcomeForm')[0] || {}) as CourtCaseOverallCaseOutcomeForm
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (Object.keys(overallCaseOutcomeForm).length === 0) {
       overallCaseOutcomeForm = {
-        overallCaseOutcome: `${this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)}|${this.courtAppearanceService.getRelatedOffenceOutcomeUuid(req.session, nomsId)}`,
+        overallCaseOutcome: `${courtAppearance.appearanceOutcomeUuid}|${courtAppearance.relatedOffenceOutcomeUuid}`,
       }
     }
-    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    const { warrantType } = courtAppearance
     const caseOutcomes = await this.appearanceOutcomeService.getAllOutcomes(req.user.username)
     const [subListOutcomes, mainOutcomes] = caseOutcomes
       .filter(caseOutcome => caseOutcome.outcomeType === warrantType)
@@ -683,7 +684,10 @@ export default class CourtCaseRoutes {
         },
         [[], []],
       )
-
+    let legacyCaseOutcome
+    if (!courtAppearance.appearanceOutcomeUuid && !res.locals.isAddCourtAppearance) {
+      legacyCaseOutcome = outcomeValueOrLegacy(undefined, courtAppearance.legacyData)
+    }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
 
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
@@ -706,6 +710,7 @@ export default class CourtCaseRoutes {
       backLink,
       mainOutcomes,
       subListOutcomes,
+      legacyCaseOutcome,
     })
   }
 

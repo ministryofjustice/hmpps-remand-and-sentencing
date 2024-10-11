@@ -62,3 +62,13 @@ export const getNextPeriodLengthType = (sentence: Sentence, currentPeriodLengthT
   const nextIndex = expectedPeriodLengthTypes.indexOf(currentPeriodLengthType) + 1
   return expectedPeriodLengthTypes[nextIndex]
 }
+
+export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: Record<string, never>) => {
+  if (outcomeValue) {
+    return outcomeValue
+  }
+  if (legacyData) {
+    return legacyData.outcomeDescription
+  }
+  return ''
+}

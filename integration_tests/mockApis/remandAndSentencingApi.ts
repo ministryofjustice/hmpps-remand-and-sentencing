@@ -518,6 +518,53 @@ export default {
     })
   },
 
+  stubGetLegacyAppearanceDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          legacyData: {
+            eventId: '1',
+            caseId: '1',
+            postedDate: '10-10-2015',
+            nomisOutcomeCode: 'NOMISCODE',
+            outcomeDescription: 'A Nomis description',
+          },
+          warrantType: 'REMAND',
+          courtCode: 'STHHPM',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          nextCourtAppearance: {
+            appearanceDate: '2024-12-15',
+            appearanceTime: null,
+            courtCode: 'Birmingham Crown Court',
+            appearanceType: 'Court appearance',
+          },
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              legacyData: {
+                offenderChargeId: '1',
+                bookingId: '1',
+                postedDate: '10-10-2015',
+                nomisOutcomeCode: 'NOMISCODE',
+                outcomeDescription: 'A Nomis description',
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
+
   stubGetSentenceAppearanceDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {

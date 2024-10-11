@@ -99,7 +99,10 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()
 
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()
 
@@ -329,7 +332,10 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()
 
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
     courtCaseOverallCaseOutcomePage.button().click()
 

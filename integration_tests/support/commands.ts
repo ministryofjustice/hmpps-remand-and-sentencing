@@ -208,7 +208,10 @@ Cypress.Commands.add(
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
-    const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+    const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+      OffenceOffenceOutcomePage,
+      'Select the outcome for this offence',
+    )
     offenceOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
     offenceOffenceOutcomePage.button().click()
   },
@@ -261,7 +264,10 @@ Cypress.Commands.add(
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
 
-    const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+    const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+      OffenceOffenceOutcomePage,
+      'Select the outcome for this offence',
+    )
     offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
     offenceOffenceOutcomePage.button().click()
 

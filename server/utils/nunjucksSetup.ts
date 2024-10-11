@@ -10,7 +10,7 @@ import {
   formatLengths,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { SentenceLength } from 'models'
-import { formatDate, formatDateTime, initialiseName, pluraliseName } from './utils'
+import { formatDate, formatDateTime, initialiseName, outcomeValueOrLegacy, pluraliseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import { periodLengthToSentenceLength } from './mappingUtils'
@@ -129,15 +129,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     return ''
   })
 
-  njkEnv.addFilter('outcomeValueOrLegacy', (outcomeValue: string, legacyData: Record<string, never>) => {
-    if (outcomeValue) {
-      return outcomeValue
-    }
-    if (legacyData) {
-      return legacyData.outcomeDescription
-    }
-    return ''
-  })
+  njkEnv.addFilter('outcomeValueOrLegacy', outcomeValueOrLegacy)
 
   njkEnv.addFilter('personProfileName', personProfileName)
   njkEnv.addFilter('personDateOfBirth', personDateOfBirth)

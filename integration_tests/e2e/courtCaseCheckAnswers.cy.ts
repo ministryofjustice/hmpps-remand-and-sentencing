@@ -36,7 +36,10 @@ context('Court Case Check Answers Page', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.button().click()
 
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Enter the overall case outcome',
+    )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()
 
@@ -95,7 +98,10 @@ context('Court Case Check Answers Page', () => {
   it('clicking Overall case outcome and submitting goes back to check answers page', () => {
     cy.task('stubGetAllAppearanceOutcomes')
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'overall-case-outcome').click()
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Enter the overall case outcome',
+    )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)

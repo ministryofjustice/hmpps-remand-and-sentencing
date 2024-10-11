@@ -102,7 +102,10 @@ context('Repeat Court Case journey', () => {
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
     courtCaseSelectCourtNamePage.button().click()
 
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Enter the overall case outcome',
+    )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()
 
@@ -340,7 +343,10 @@ context('Repeat Court Case journey', () => {
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
     courtCaseSelectCourtNamePage.button().click()
 
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Enter the overall case outcome',
+    )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
     courtCaseOverallCaseOutcomePage.button().click()
 

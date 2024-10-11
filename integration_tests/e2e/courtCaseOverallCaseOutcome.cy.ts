@@ -13,7 +13,10 @@ context('Court Case Overall Case Outcome Page', () => {
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
-    courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Enter the overall case outcome',
+    )
   })
 
   it('displays person details', () => {

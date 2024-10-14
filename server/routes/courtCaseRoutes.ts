@@ -26,7 +26,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtCasesDetailsModel from './data/CourtCasesDetailsModel'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
-import { getAsStringOrDefault } from '../utils/utils'
+import { getAsStringOrDefault, outcomeValueOrLegacy } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
 import {
@@ -39,6 +39,7 @@ import { PrisonUser } from '../interfaces/hmppsUser'
 import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
+import OffenceOutcomeService from '../services/offenceOutcomeService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -48,6 +49,7 @@ export default class CourtCaseRoutes {
     private readonly documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
+    private readonly offenceOutcomeService: OffenceOutcomeService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -145,10 +147,18 @@ export default class CourtCaseRoutes {
     const sentenceTypeIds = appearance.offences
       .filter(offence => offence.sentence?.sentenceTypeId)
       .map(offence => offence.sentence?.sentenceTypeId)
-    const [offenceMap, courtMap, sentenceTypeMap] = await Promise.all([
+    const offenceOutcomeIds = appearance.offences.map(offence => offence.outcomeUuid)
+    const outcomePromise = appearance.appearanceOutcomeUuid
+      ? this.appearanceOutcomeService
+          .getOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
+          .then(outcome => outcome.outcomeName)
+      : Promise.resolve(appearance.legacyData.outcomeDescription ?? '')
+    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
       this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
+      outcomePromise,
+      this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
     ])
 
     return res.render('pages/courtAppearance/details', {
@@ -161,6 +171,8 @@ export default class CourtCaseRoutes {
       offenceMap,
       courtMap,
       sentenceTypeMap,
+      overallCaseOutcome,
+      outcomeMap,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }
@@ -655,12 +667,13 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     let overallCaseOutcomeForm = (req.flash('overallCaseOutcomeForm')[0] || {}) as CourtCaseOverallCaseOutcomeForm
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (Object.keys(overallCaseOutcomeForm).length === 0) {
       overallCaseOutcomeForm = {
-        overallCaseOutcome: `${this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)}|${this.courtAppearanceService.getRelatedOffenceOutcomeUuid(req.session, nomsId)}`,
+        overallCaseOutcome: `${courtAppearance.appearanceOutcomeUuid}|${courtAppearance.relatedOffenceOutcomeUuid}`,
       }
     }
-    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    const { warrantType } = courtAppearance
     const caseOutcomes = await this.appearanceOutcomeService.getAllOutcomes(req.user.username)
     const [subListOutcomes, mainOutcomes] = caseOutcomes
       .filter(caseOutcome => caseOutcome.outcomeType === warrantType)
@@ -671,7 +684,10 @@ export default class CourtCaseRoutes {
         },
         [[], []],
       )
-
+    let legacyCaseOutcome
+    if (!courtAppearance.appearanceOutcomeUuid && !res.locals.isAddCourtAppearance) {
+      legacyCaseOutcome = outcomeValueOrLegacy(undefined, courtAppearance.legacyData)
+    }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
 
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
@@ -694,6 +710,7 @@ export default class CourtCaseRoutes {
       backLink,
       mainOutcomes,
       subListOutcomes,
+      legacyCaseOutcome,
     })
   }
 
@@ -728,7 +745,11 @@ export default class CourtCaseRoutes {
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const overallCaseOutcome: string = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
+    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
+
+    const overallCaseOutcome: string = (
+      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+    ).outcomeName
     let caseOutcomeAppliedAllForm = (req.flash('caseOutcomeAppliedAllForm')[0] ||
       {}) as CourtCaseCaseOutcomeAppliedAllForm
     if (Object.keys(caseOutcomeAppliedAllForm).length === 0) {
@@ -1071,6 +1092,9 @@ export default class CourtCaseRoutes {
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const overallCaseOutcome: string = (
+      await this.appearanceOutcomeService.getOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username)
+    ).outcomeName
     let courtName
     if (courtAppearance.courtCode) {
       try {
@@ -1086,6 +1110,7 @@ export default class CourtCaseRoutes {
       nomsId,
       courtAppearance,
       courtName,
+      overallCaseOutcome,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,

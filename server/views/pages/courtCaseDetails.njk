@@ -62,7 +62,7 @@
                             offenceName: offenceMap[charge.offenceCode],
                             offenceStartDate: charge.offenceStartDate | formatDate,
                             offenceEndDate: charge.offenceEndDate | formatDate,
-                            outcome: charge.outcome,
+                            outcome: charge.outcome | chargeOutcomeOrLegacy(charge.legacyData),
                             countNumber: charge.sentence.chargeNumber,
                             convictionDate: charge.sentence.convictionDate | formatDate,
                             terrorRelated: charge.terrorRelated,
@@ -82,7 +82,7 @@
         { text: appearance.courtCaseReference, classes: "no-bottom-border" },
         { text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode, classes: "no-bottom-border" },
         { text: appearance.appearanceDate | formatDate, classes: "no-bottom-border" },
-        { text: appearance.outcome.outcomeName if appearance.outcome else '', classes: "no-bottom-border" },
+        { text: appearance.outcome | appearanceOutcomeOrLegacy(appearance.legacyData), classes: "no-bottom-border" },
         { html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">Edit</a>', classes: "no-bottom-border" }
     ],[
     {

@@ -1,5 +1,6 @@
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseAppearanceDetailsPage'
 import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
+import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
@@ -21,6 +22,14 @@ context('Court Case Appearance details Page', () => {
         courtId: 'STHHPM',
         courtName: 'Southampton Magistrate Court',
       })
+      cy.task('stubGetAppearanceOutcomeById', {})
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
@@ -49,7 +58,7 @@ context('Court Case Appearance details Page', () => {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
         'Court name': 'Southampton Magistrate Court',
-        'Overall case outcome': '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+        'Overall case outcome': 'Remanded in custody',
       })
     })
 
@@ -67,7 +76,7 @@ context('Court Case Appearance details Page', () => {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
         'Court name': 'Southampton Magistrate Court',
-        'Overall case outcome': '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+        'Overall case outcome': 'Remanded in custody',
       })
 
       courtCaseAppearanceDetailsPage
@@ -91,7 +100,7 @@ context('Court Case Appearance details Page', () => {
         'Case reference': 'T12345678',
         'Warrant date': '15 12 2023',
         'Court name': 'Southampton Magistrate Court',
-        'Overall case outcome': '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+        'Overall case outcome': 'Remanded in custody',
       })
     })
 
@@ -100,7 +109,7 @@ context('Court Case Appearance details Page', () => {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
         'Court name': 'Southampton Magistrate Court',
-        'Overall case outcome': '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+        'Overall case outcome': 'Remanded in custody',
       })
 
       courtCaseAppearanceDetailsPage
@@ -127,7 +136,7 @@ context('Court Case Appearance details Page', () => {
         'Case reference': 'C894623',
         'Warrant date': '15 12 2023',
         'Court name': 'Accrington Youth Court',
-        'Overall case outcome': '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+        'Overall case outcome': 'Remanded in custody',
       })
     })
 
@@ -158,7 +167,23 @@ context('Court Case Appearance details Page', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceAppearanceDetails')
       cy.task('stubGetCourtsByIds')
+      cy.task('stubGetCourtById', {
+        courtId: 'STHHPM',
+        courtName: 'Southampton Magistrate Court',
+      })
       cy.task('stubGetSentenceTypesByIds')
+      cy.task('stubGetAppearanceOutcomeById', {
+        outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      })
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
@@ -175,13 +200,14 @@ context('Court Case Appearance details Page', () => {
         'Warrant date': '15 12 2023',
         'Conviction date': '12 09 2024',
         'Court name': 'Southampton Magistrate Court',
-        'Overall case outcome': '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+        'Overall case outcome': 'Imprisonment',
         'Overall sentence length': '4 years 0 months 0 weeks 0 days',
       })
     })
 
     it('can edit sentence information', () => {
       cy.task('stubGetSentenceTypeById', {})
+      cy.task('stubGetChargeOutcomeById', {})
       courtCaseAppearanceDetailsPage
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
         .click()
@@ -218,6 +244,69 @@ context('Court Case Appearance details Page', () => {
         CourtCaseAppearanceDetailsPage,
         'Edit appearance C894623 at Southampton Magistrate Court on 15 12 2023',
       )
+    })
+  })
+
+  context('legacy appearance', () => {
+    beforeEach(() => {
+      cy.task('stubGetLegacyAppearanceDetails')
+      cy.task('stubGetCourtsByIds')
+      cy.task('stubGetCourtById', {
+        courtId: 'STHHPM',
+        courtName: 'Southampton Magistrate Court',
+      })
+      cy.task('stubGetAppearanceOutcomeById', {})
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
+      cy.signIn()
+      cy.visit(
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
+      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseAppearanceDetailsPage,
+        'Edit appearance C894623 at Southampton Magistrate Court on 15 12 2023',
+      )
+    })
+
+    it('can edit overall outcome and return back to details page', () => {
+      cy.task('stubGetAllAppearanceOutcomes')
+      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'C894623',
+        'Warrant date': '15 12 2023',
+        'Court name': 'Southampton Magistrate Court',
+        'Overall case outcome': 'A Nomis description',
+      })
+
+      courtCaseAppearanceDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'overall-case-outcome',
+        )
+        .click()
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Edit the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.legendParagraph().should('contain', 'A Nomis description')
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+      courtCaseOverallCaseOutcomePage.button().click()
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseAppearanceDetailsPage,
+        'Edit appearance C894623 at Southampton Magistrate Court on 15 12 2023',
+      )
+      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'C894623',
+        'Warrant date': '15 12 2023',
+        'Court name': 'Southampton Magistrate Court',
+        'Overall case outcome': 'Remanded in custody',
+      })
     })
   })
 })

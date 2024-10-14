@@ -86,7 +86,7 @@
                             text: "Overall case outcome"
                         },
                             value: {
-                            text: appearance.appearanceOutcomeUuid
+                            text: overallCaseOutcome
                         },
                             actions: {
                             items: [
@@ -227,7 +227,7 @@
                         offenceName: offenceMap[offence.offenceCode],
                         offenceStartDate: offence.offenceStartDate | formatDate,
                         offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: offence.outcomeUuid,
+                        outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
                         countNumber: offence.sentence.countNumber,
                         convictionDate: offence.sentence.convictionDate | formatDate,
                         terrorRelated: offence.terrorRelated,

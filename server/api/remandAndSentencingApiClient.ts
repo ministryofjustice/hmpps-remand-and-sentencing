@@ -107,9 +107,30 @@ export default class RemandAndSentencingApiClient {
     })) as unknown as Promise<AppearanceOutcome[]>
   }
 
+  async getAppearanceOutcomeByUuid(uuid: string): Promise<AppearanceOutcome> {
+    return (await this.restClient.get({
+      path: `/appearance-outcome/${uuid}`,
+    })) as unknown as Promise<AppearanceOutcome>
+  }
+
   async getAllChargeOutcomes(): Promise<OffenceOutcome[]> {
     return (await this.restClient.get({
       path: `/charge-outcome/all`,
     })) as unknown as Promise<OffenceOutcome[]>
+  }
+
+  async getChargeOutcomesByIds(outcomeIds: string[]): Promise<OffenceOutcome[]> {
+    return (await this.restClient.get({
+      path: `/charge-outcome/uuid/multiple`,
+      query: {
+        uuids: outcomeIds.join(','),
+      },
+    })) as unknown as Promise<OffenceOutcome[]>
+  }
+
+  async getChargeOutcomeById(outcomeId: string): Promise<OffenceOutcome> {
+    return (await this.restClient.get({
+      path: `/charge-outcome/${outcomeId}`,
+    })) as unknown as Promise<OffenceOutcome>
   }
 }

@@ -55,7 +55,7 @@ context('Court Case details Page', () => {
               {
                 offenceCardHeader: 'PS90037 An offence description',
                 'Committed on': '15 12 2023',
-                Outcome: 'Remand in Custody (Bail Refused)',
+                Outcome: 'Remanded in custody',
               },
             ],
           },
@@ -71,7 +71,7 @@ context('Court Case details Page', () => {
               {
                 offenceCardHeader: 'PS90037 An offence description',
                 'Committed on': '15 12 2023',
-                Outcome: 'Remand in Custody (Bail Refused)',
+                Outcome: 'A Nomis Outcome',
               },
             ],
           },

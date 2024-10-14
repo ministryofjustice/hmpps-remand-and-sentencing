@@ -12,13 +12,45 @@ context('Court Case Check Answers Page', () => {
   let courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetCourtById', {})
+    cy.task('stubGetAppearanceOutcomeById', {})
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-answers')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/reference')
+
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+    courtCaseReferencePage.input().type('T12345678')
+    courtCaseReferencePage.button().click()
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.button().click()
+    const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
+    courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
+    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.button().click()
+
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage.button().click()
+
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
+    courtCaseCaseOutcomeAppliedAllPage.button().click()
+
+    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
+    courtCaseTaggedBailPage.radioLabelSelector('true').click()
+    courtCaseTaggedBailPage.input().type('5')
+    courtCaseTaggedBailPage.button().click()
     courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 
@@ -46,9 +78,9 @@ context('Court Case Check Answers Page', () => {
   it('clicking warrant date change and submitting goes back to check answers page', () => {
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'warrant-date').click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
-    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
-    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2023')
     courtCaseWarrantDatePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
@@ -66,7 +98,10 @@ context('Court Case Check Answers Page', () => {
   it('clicking Overall case outcome and submitting goes back to check answers page', () => {
     cy.task('stubGetAllAppearanceOutcomes')
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'overall-case-outcome').click()
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPage(CourtCaseOverallCaseOutcomePage)
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)

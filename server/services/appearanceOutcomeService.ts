@@ -9,6 +9,12 @@ export default class AppearanceOutcomeService {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAllAppearanceOutcomes()
   }
 
+  async getOutcomeByUuid(appearanceOutcomeUuid: string, username: string): Promise<AppearanceOutcome> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAppearanceOutcomeByUuid(
+      appearanceOutcomeUuid,
+    )
+  }
+
   private async getSystemClientToken(username: string): Promise<string> {
     return this.hmppsAuthClient.getSystemClientToken(username)
   }

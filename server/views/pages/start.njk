@@ -91,7 +91,7 @@
                                 text: appearance.appearanceDate | formatDate
                             },
                             {
-                                text: appearance.outcome.outcomeName if appearance.outcome else ''
+                                text: appearance.outcome | appearanceOutcomeOrLegacy(appearance.legacyData)
                             },
                             {
                                 html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">View and edit</a>'
@@ -149,7 +149,7 @@
                                     offenceName: offenceMap[offence.offenceCode],
                                     offenceStartDate: offence.offenceStartDate | formatDate,
                                     offenceEndDate: offence.offenceEndDate | formatDate,
-                                    outcome: offence.outcome.outcomeName if offence.outcome else '',
+                                    outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
                                     countNumber: offence.sentence.countNumber,
                                     convictionDate: offence.sentence.convictionDate | formatDate,
                                     terrorRelated: offence.terrorRelated,

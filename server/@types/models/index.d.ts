@@ -30,6 +30,7 @@ declare module 'models' {
     nextCourtAppearanceAccepted?: boolean
     overallConvictionDate?: Date
     overallConvictionDateAppliedAll?: string
+    legacyData: Record<string, never>
   }
 
   export interface Offence {
@@ -40,6 +41,7 @@ declare module 'models' {
     chargeUuid?: string
     sentence?: Sentence
     terrorRelated?: boolean
+    legacyData: Record<string, never>
   }
 
   export interface Sentence {

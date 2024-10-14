@@ -1,3 +1,4 @@
+import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
@@ -14,8 +15,20 @@ context('Check Offence Answers Page', () => {
     cy.task('stubGetCourtById', {})
     cy.task('stubGetSentenceTypesByIds')
     cy.task('stubGetAllChargeOutcomes')
+    cy.task('stubGetChargeOutcomesByIds', [
+      {
+        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+        outcomeName: 'Remanded in custody',
+        outcomeType: 'REMAND',
+      },
+    ])
+    cy.task('stubGetChargeOutcomeById', {})
     cy.signIn()
-    cy.createCourtCase('A1234AB', 'T12345678', '0')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/reference')
+
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+    courtCaseReferencePage.input().type('T12345678')
+    courtCaseReferencePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'offences')
   })
@@ -59,6 +72,18 @@ context('Check Offence Answers Page', () => {
       offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'New offence added')
     })
     it('changing an existing offence results in changes successfully made info banner', () => {
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+          outcomeName: 'Lie on file',
+          outcomeType: 'REMAND',
+        },
+      ])
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+        outcomeName: 'Lie on file',
+        outcomeType: 'REMAND',
+      })
       cy.createOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
       offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
@@ -87,6 +112,18 @@ context('Check Offence Answers Page', () => {
   context('sentencing', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceTypeById', {})
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      })
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+          outcomeName: 'Imprisonment',
+          outcomeType: 'SENTENCING',
+        },
+      ])
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()

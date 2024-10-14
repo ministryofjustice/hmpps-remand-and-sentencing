@@ -485,7 +485,7 @@ export default {
             nomisCode: '3452',
             outcomeType: 'REMAND',
             displayOrder: 10,
-            relatedChargeOutcomeUuid: '3b009f06-2e48-4f79-a0f3-6e277a31fafc',
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
             isSubList: false,
           },
           warrantType: 'REMAND',
@@ -504,12 +504,59 @@ export default {
               offenceCode: 'PS90037',
               offenceStartDate: '2023-12-15',
               outcome: {
-                outcomeUuid: '3b009f06-2e48-4f79-a0f3-6e277a31fafc',
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 outcomeName: 'Remanded in custody',
                 nomisCode: '3452',
                 outcomeType: 'REMAND',
                 displayOrder: 10,
                 isSubList: false,
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
+
+  stubGetLegacyAppearanceDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          legacyData: {
+            eventId: '1',
+            caseId: '1',
+            postedDate: '10-10-2015',
+            nomisOutcomeCode: 'NOMISCODE',
+            outcomeDescription: 'A Nomis description',
+          },
+          warrantType: 'REMAND',
+          courtCode: 'STHHPM',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          nextCourtAppearance: {
+            appearanceDate: '2024-12-15',
+            appearanceTime: null,
+            courtCode: 'Birmingham Crown Court',
+            appearanceType: 'Court appearance',
+          },
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              legacyData: {
+                offenderChargeId: '1',
+                bookingId: '1',
+                postedDate: '10-10-2015',
+                nomisOutcomeCode: 'NOMISCODE',
+                outcomeDescription: 'A Nomis description',
               },
             },
           ],
@@ -597,7 +644,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "warrantType": "REMAND", "courtCode": "STHHPM", "courtCaseReference": "T12345678", "appearanceDate": "2023-12-15", "nextCourtAppearance": {"appearanceDate": "2024-12-15", "courtCode": "Birmingham Crown Court", "appearanceType": "Court appearance"}, "charges": [{"chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "3b009f06-2e48-4f79-a0f3-6e277a31fafc"}]}',
+              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "warrantType": "REMAND", "courtCode": "STHHPM", "courtCaseReference": "T12345678", "appearanceDate": "2023-12-15", "nextCourtAppearance": {"appearanceDate": "2024-12-15", "courtCode": "Birmingham Crown Court", "appearanceType": "Court appearance"}, "charges": [{"chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537"}]}',
           },
         ],
       },
@@ -633,7 +680,7 @@ export default {
             chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
             offenceCode: 'PS90037',
             offenceStartDate: '2023-12-15',
-            outcomeUuid: '3b009f06-2e48-4f79-a0f3-6e277a31fafc',
+            outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
           },
         ],
       },
@@ -674,7 +721,14 @@ export default {
                 chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
                 offenceCode: 'PS90037',
                 offenceStartDate: '2023-12-15',
-                outcome: 'Remand in Custody (Bail Refused)',
+                outcome: {
+                  outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                  outcomeName: 'Remanded in custody',
+                  nomisCode: '3452',
+                  outcomeType: 'REMAND',
+                  displayOrder: 10,
+                  isSubList: false,
+                },
               },
             ],
           },
@@ -701,7 +755,14 @@ export default {
                   chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
                   offenceCode: 'PS90037',
                   offenceStartDate: '2023-12-15',
-                  outcome: 'Remand in Custody (Bail Refused)',
+                  outcome: {
+                    outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                    outcomeName: 'Remanded in custody',
+                    nomisCode: '3452',
+                    outcomeType: 'REMAND',
+                    displayOrder: 10,
+                    isSubList: false,
+                  },
                 },
               ],
             },
@@ -727,7 +788,13 @@ export default {
                   chargeUuid: '9056c1f3-b090-4d1e-bc6e-4f66ebed2ed5',
                   offenceCode: 'PS90037',
                   offenceStartDate: '2023-12-15',
-                  outcome: 'Remand in Custody (Bail Refused)',
+                  legacyData: {
+                    offenderChargeId: '1',
+                    bookingId: '1',
+                    postedDate: '1-1-2010',
+                    nomisOutcomeCode: '678324',
+                    outcomeDescription: 'A Nomis Outcome',
+                  },
                 },
               ],
             },
@@ -842,13 +909,6 @@ export default {
             },
             {
               appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
-              outcome: {
-                outcomeUuid: '7fd9efee-200e-4579-a766-e6bf9a499096',
-                outcomeName: 'Lie on file',
-                nomisCode: '7863',
-                outcomeType: 'REMAND',
-                displayOrder: 20,
-              },
               courtCode: 'Birmingham Crown Court',
               courtCaseReference: 'F23325',
               appearanceDate: '2022-10-15',
@@ -865,6 +925,13 @@ export default {
                   outcome: 'Remand in Custody (Bail Refused)',
                 },
               ],
+              legacyData: {
+                eventId: '1',
+                caseId: '1',
+                postedDate: '10-10-2015',
+                nomisOutcomeCode: '3567',
+                outcomeDescription: 'A Nomis Outcome',
+              },
             },
           ],
         },
@@ -993,6 +1060,36 @@ export default {
     })
   },
 
+  stubGetAppearanceOutcomeById: ({
+    outcomeUuid = '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+    outcomeName = 'Remanded in custody',
+    outcomeType = 'REMAND',
+  }: {
+    outcomeUuid: string
+    outcomeName: string
+    outcomeType: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/appearance-outcome/${outcomeUuid}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          outcomeUuid,
+          outcomeName,
+          nomisCode: '3452',
+          outcomeType,
+          displayOrder: 10,
+          relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          isSubList: false,
+        },
+      },
+    })
+  },
+
   stubGetAllChargeOutcomes: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -1028,6 +1125,68 @@ export default {
             isSubList: false,
           },
         ],
+      },
+    })
+  },
+
+  stubGetChargeOutcomeById: ({
+    outcomeUuid = '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+    outcomeName = 'Remanded in custody',
+    outcomeType = 'REMAND',
+  }: {
+    outcomeUuid: string
+    outcomeName: string
+    outcomeType: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/charge-outcome/${outcomeUuid}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          outcomeUuid,
+          outcomeName,
+          nomisCode: '3452',
+          outcomeType,
+          displayOrder: 10,
+          isSubList: false,
+        },
+      },
+    })
+  },
+  stubGetChargeOutcomesByIds: (
+    outcomes: [
+      {
+        outcomeUuid: string
+        outcomeName: string
+        outcomeType: string
+      },
+    ],
+  ): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/charge-outcome/uuid/multiple',
+        queryParameters: {
+          uuids: {
+            equalTo: outcomes.map(outcome => outcome.outcomeUuid).join(','),
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: outcomes.map(outcome => {
+          return {
+            nomisCode: '09753',
+            displayOrder: 10,
+            isSubList: false,
+            ...outcome,
+          }
+        }),
       },
     })
   },

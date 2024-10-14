@@ -419,16 +419,18 @@ export interface components {
       recallUuid: string
     }
     ChargeLegacyData: {
-      outcomeReason?: string
-      otherFields?: {
-        [key: string]: Record<string, never>
-      }
+      offenderChargeId?: string
+      bookingId?: string
+      postedDate?: string
+      nomisOutcomeCode?: string
+      outcomeDescription?: string
     }
     CourtAppearanceLegacyData: {
-      outcomeReason?: string
-      otherFields?: {
-        [key: string]: Record<string, never>
-      }
+      eventId?: string
+      caseId?: string
+      postedDate?: string
+      nomisOutcomeCode?: string
+      outcomeDescription?: string
     }
     CreateCharge: {
       /** Format: uuid */
@@ -472,7 +474,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:11:36.2242825 */
+      /** @example 14:36:35.032360587 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -659,7 +661,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:11:36.2242825 */
+      /** @example 14:36:35.032360587 */
       appearanceTime?: string
       courtCode: string
       appearanceType: string
@@ -695,9 +697,9 @@ export interface components {
       sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       pageSize?: number
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      paged?: boolean
       unpaged?: boolean
     }
     SortObject: {

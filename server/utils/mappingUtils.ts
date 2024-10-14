@@ -69,6 +69,7 @@ const offenceToCreateCharge = (offence: Offence): CreateCharge => {
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
     ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),
     ...(sentence && { sentence }),
+    ...(offence.legacyData && { legacyData: { ...offence.legacyData } }),
   } as CreateCharge
 }
 
@@ -95,6 +96,7 @@ export const courtAppearanceToCreateCourtAppearance = (
       ...(courtAppearance.overallConvictionDate && {
         overallConvictionDate: dayjs(courtAppearance.overallConvictionDate).format('YYYY-MM-DD'),
       }),
+      ...(courtAppearance.legacyData && { legacyData: { ...courtAppearance.legacyData } }),
     }),
   } as CreateCourtAppearance
 }
@@ -149,6 +151,7 @@ export const chargeToOffence = (charge: Charge): Offence => {
     terrorRelated: charge.terrorRelated,
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
+    ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
   } as Offence
 }
 
@@ -264,6 +267,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     ...(pageCourtCaseAppearance.overallConvictionDate && {
       overallConvictionDate: dayjs(pageCourtCaseAppearance.overallConvictionDate).toDate(),
     }),
+    ...(pageCourtCaseAppearance.legacyData && { legacyData: { ...pageCourtCaseAppearance.legacyData } }),
   } as CourtAppearance
 }
 
@@ -281,5 +285,5 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextHearingTimeSet: typeof nextCourtAppearance?.appearanceTime === 'string',
     nextHearingDate,
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
-  }
+  } as CourtAppearance
 }

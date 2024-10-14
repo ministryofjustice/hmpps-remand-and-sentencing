@@ -69,7 +69,7 @@ context('Start Page', () => {
         {
           offenceCardHeader: 'PS90037 An offence description',
           'Committed on': '15 12 2023',
-          Outcome: '',
+          Outcome: 'Not entered',
         },
       ])
   })

@@ -192,7 +192,7 @@ context('New Court Case journey', () => {
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
 
-    const offenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+    const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Select the outcome for this offence')
     offenceOutcomePage.radioLabelContains('Remanded in custody').click()
     offenceOutcomePage.button().click()
 

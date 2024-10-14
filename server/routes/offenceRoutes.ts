@@ -34,7 +34,7 @@ import {
 } from '../utils/mappingUtils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
-import { getNextPeriodLengthType } from '../utils/utils'
+import { getNextPeriodLengthType, outcomeValueOrLegacy } from '../utils/utils'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 
 export default class OffenceRoutes {
@@ -158,10 +158,10 @@ export default class OffenceRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     let offenceOutcomeForm = (req.flash('offenceOutcomeForm')[0] || {}) as OffenceOffenceOutcomeForm
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     if (Object.keys(offenceOutcomeForm).length === 0) {
       offenceOutcomeForm = {
-        offenceOutcome: this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-          .outcomeUuid,
+        offenceOutcome: offence.outcomeUuid,
       }
     }
 
@@ -177,6 +177,11 @@ export default class OffenceRoutes {
         },
         [[], []],
       )
+
+    let legacyCaseOutcome
+    if (!offence.outcomeUuid && !res.locals.isAddCourtAppearance) {
+      legacyCaseOutcome = outcomeValueOrLegacy(undefined, offence.legacyData)
+    }
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date`
     if (submitToEditOffence) {
@@ -198,6 +203,7 @@ export default class OffenceRoutes {
       backLink,
       mainOutcomes,
       subListOutcomes,
+      legacyCaseOutcome,
     })
   }
 

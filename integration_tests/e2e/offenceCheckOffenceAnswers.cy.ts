@@ -89,7 +89,10 @@ context('Check Offence Answers Page', () => {
       offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'offence-outcome').click()
-      const offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+      const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+        OffenceOffenceOutcomePage,
+        'Select the outcome for this offence',
+      )
       offenceOffenceOutcomePage.radioLabelContains('Lie on file').click()
       offenceOffenceOutcomePage.button().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')

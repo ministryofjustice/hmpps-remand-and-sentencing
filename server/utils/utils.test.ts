@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName } from './utils'
+import { convertToTitleCase, initialiseName, outcomeValueOrLegacy } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -26,5 +26,15 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
+  })
+})
+
+describe('outcome value or legacy', () => {
+  it('return not entered when no outcome value and no legacy data', () => {
+    expect(outcomeValueOrLegacy(null, null)).toEqual('Not entered')
+  })
+
+  it('return not entered when no outcome value and legacy data with no outcome description', () => {
+    expect(outcomeValueOrLegacy(null, { foo: 'bar' } as unknown as Record<string, never>)).toEqual('Not entered')
   })
 })

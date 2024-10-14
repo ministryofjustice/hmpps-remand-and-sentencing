@@ -112,10 +112,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       if (appearanceOutcome) {
         return appearanceOutcome.outcomeName
       }
-      if (legacyData) {
+      if (legacyData?.outcomeDescription) {
         return legacyData.outcomeDescription
       }
-      return ''
+      return 'Not entered'
     },
   )
 
@@ -123,10 +123,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     if (offenceOutcome) {
       return offenceOutcome.outcomeName
     }
-    if (legacyData) {
+    if (legacyData?.outcomeDescription) {
       return legacyData.outcomeDescription
     }
-    return ''
+    return 'Not entered'
   })
 
   njkEnv.addFilter('outcomeValueOrLegacy', outcomeValueOrLegacy)

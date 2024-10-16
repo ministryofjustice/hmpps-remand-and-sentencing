@@ -541,7 +541,7 @@ export default class CourtCaseRoutes {
     )
   }
 
-  public newCourtCase: RequestHandler = async (req, res): Promise<void> => {
+  public newJourney: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.redirect(

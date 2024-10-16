@@ -155,6 +155,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/fine-amount',
+    courtCaseRoutes.getFineAmount,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/fine-amount',
+    courtCaseRoutes.submitFineAmount,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/case-outcome-applied-all',
     courtCaseRoutes.getCaseOutcomeAppliedAll,
   )

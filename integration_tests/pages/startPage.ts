@@ -19,6 +19,6 @@ export default class StartPage extends Page {
 
   addAppearanceLink = (courtCaseReference: string, appearanceReference: string): PageElement =>
     cy.get(
-      `a[href="/person/A1234AB/edit-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/warrant-type"]`,
+      `a[href="/person/A1234AB/edit-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/new-journey"]`,
     )
 }

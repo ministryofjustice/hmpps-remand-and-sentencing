@@ -180,6 +180,76 @@ export default {
               courtCaseUuid: 'd316d5b7-022f-40e5-98ab-aebe8ac4abf4',
               appearances: [],
             },
+            {
+              prisonerId: 'A1234AB',
+              courtCaseUuid: '84ab3dc4-7bd7-4b14-a1ae-6434f7e2cc8b',
+              latestAppearance: {
+                appearanceUuid: 'd48ce605-8f96-4ad7-93fe-5688986599e2',
+                legacyData: {
+                  eventId: '1',
+                  caseId: '1',
+                  postedDate: '10-10-2015',
+                  nomisOutcomeCode: '5789714',
+                  outcomeDescription: 'A Nomis outcome',
+                },
+                courtCode: 'ACCRYC',
+                courtCaseReference: 'C894623',
+                appearanceDate: '2023-12-15',
+                nextCourtAppearance: {
+                  appearanceDate: '2024-12-15',
+                  courtCode: 'Birmingham Crown Court',
+                  appearanceType: 'Court appearance',
+                },
+                charges: [
+                  {
+                    chargeUuid: 'b5fbb9be-5773-47f8-9091-dcc9c154a7d5',
+                    offenceCode: 'PS90037',
+                    offenceStartDate: '2023-12-15',
+                    legacyData: {
+                      offenderChargeId: '1',
+                      bookingId: '1',
+                      postedDate: '10-10-2015',
+                      nomisOutcomeCode: '5789714',
+                      outcomeDescription: 'A Nomis outcome',
+                    },
+                  },
+                ],
+              },
+              appearances: [
+                {
+                  appearanceUuid: 'd48ce605-8f96-4ad7-93fe-5688986599e2',
+                  legacyData: {
+                    eventId: '1',
+                    caseId: '1',
+                    postedDate: '10-10-2015',
+                    nomisOutcomeCode: '5789714',
+                    outcomeDescription: 'A Nomis outcome',
+                  },
+                  courtCode: 'ACCRYC',
+                  courtCaseReference: 'C894623',
+                  appearanceDate: '2023-12-15',
+                  nextCourtAppearance: {
+                    appearanceDate: '2024-12-15',
+                    courtCode: 'Birmingham Crown Court',
+                    appearanceType: 'Court appearance',
+                  },
+                  charges: [
+                    {
+                      chargeUuid: 'b5fbb9be-5773-47f8-9091-dcc9c154a7d5',
+                      offenceCode: 'PS90037',
+                      offenceStartDate: '2023-12-15',
+                      legacyData: {
+                        offenderChargeId: '1',
+                        bookingId: '1',
+                        postedDate: '10-10-2015',
+                        nomisOutcomeCode: '5789714',
+                        outcomeDescription: 'A Nomis outcome',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
           ],
           number: 0,
           sort: {

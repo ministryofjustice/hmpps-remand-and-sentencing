@@ -32,8 +32,27 @@
                             value: {
                             text: offence.description
                         }
+                        },
+                        {
+                            key: {
+                            text: "Home office code (CJA)"
+                        },
+                            value: {
+                            text: offence.homeOfficeStatsCode if offence.homeOfficeStatsCode else 'None'
                         }
-                    ]
+                        },
+                        {
+                            key: {
+                            text: "Legislation"
+                        },
+                            value: {
+                            text: offence.legislation if offence.legislation else 'Not entered'
+                        }
+                        }
+                    ],
+                    attributes: {
+                        "data-qa": "offenceSummaryList"
+                    }
                 }) }}
 
 

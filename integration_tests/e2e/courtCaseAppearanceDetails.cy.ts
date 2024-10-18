@@ -234,6 +234,7 @@ context('Court Case Appearance details Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
+        'Terror related': 'No',
         'Committed on': '25 12 2023',
         'Conviction date': 'N/A',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -334,6 +335,7 @@ context('Court Case Appearance details Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         Offence: 'PS90037 An offence description',
+        'Terror related': 'No',
         'Committed on': '15 12 2023',
         Outcome: 'Remanded in custody',
       })

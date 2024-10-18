@@ -172,7 +172,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
         'Terror related': 'No',
-        'Committed on': '25 05 2023',
+        'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',

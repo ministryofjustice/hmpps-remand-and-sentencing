@@ -121,7 +121,7 @@ context('New Court Case journey', () => {
       'Warrant date': '12 05 2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Outcome applies to all offences': 'Yes',
+      'Outcome applies to all offences': 'No',
       'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.button().click()

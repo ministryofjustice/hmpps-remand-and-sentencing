@@ -67,6 +67,17 @@ context('Court Case Check Answers Page', () => {
     courtCaseCheckAnswersPage.button().should('contain.text', 'Confirm and continue')
   })
 
+  it('displays court appearance details', () => {
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference': 'T12345678',
+      'Court name': 'Accrington Youth Court',
+      'Outcome applies to all offences': 'No',
+      'Overall case outcome': 'Remanded in custody',
+      'Tagged bail': '5 days',
+      'Warrant date': '12 05 2023',
+    })
+  })
+
   it('clicking court case reference number change and submitting goes back to check answers page', () => {
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'reference').click()
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')

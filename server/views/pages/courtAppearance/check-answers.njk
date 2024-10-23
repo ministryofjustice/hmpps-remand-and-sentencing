@@ -87,8 +87,11 @@
                                 }
                             ]
                         }
-                        },
-                        {
+                        }
+                    ] %}
+
+{% if courtAppearance.warrantType === 'SENTENCING' %}
+    {% set checkAnswersRows = (checkAnswersRows.push({
                             key: {
                             text: "Tagged bail"
                         },
@@ -104,8 +107,8 @@
                                 }
                             ]
                         }
-                        }
-                    ] %}
+                        }), checkAnswersRows)%}
+{% endif %}
 
 {% if courtAppearance.overallSentenceLength %}
 

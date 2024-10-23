@@ -11,7 +11,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"prisonerId": "A1234AB", "appearances": [{"outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND"}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND"}]}',
           },
         ],
       },
@@ -339,7 +339,6 @@ export default {
             courtCaseReference: 'T12345678',
             appearanceDate: '2023-05-12',
             warrantType: 'REMAND',
-            taggedBail: 5,
             nextCourtAppearance: {
               appearanceDate: '2023-10-18',
               courtCode: 'ACCRYC',
@@ -416,7 +415,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND", "taggedBail": 5, "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceType": "Court appearance"}}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceType": "Court appearance"}}',
           },
         ],
       },
@@ -455,7 +454,6 @@ export default {
           },
         ],
         warrantType: 'REMAND',
-        taggedBail: 5,
         nextCourtAppearance: {
           appearanceDate: '2023-10-18',
           courtCode: 'ACCRYC',

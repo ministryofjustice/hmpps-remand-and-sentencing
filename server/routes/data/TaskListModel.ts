@@ -73,7 +73,9 @@ export default class TaskListModel {
   private allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     let typeSpecificInformationFilledOut = false
     if (courtAppearance.warrantType === 'SENTENCING') {
-      typeSpecificInformationFilledOut = courtAppearance.overallSentenceLength !== undefined
+      typeSpecificInformationFilledOut =
+        courtAppearance.overallSentenceLength !== undefined &&
+        (courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined)
     } else {
       typeSpecificInformationFilledOut =
         courtAppearance.appearanceOutcomeUuid && courtAppearance.caseOutcomeAppliedAll !== undefined
@@ -82,7 +84,6 @@ export default class TaskListModel {
       courtAppearance.caseReferenceNumber &&
       courtAppearance.warrantDate &&
       courtAppearance.courtCode &&
-      (courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined) &&
       typeSpecificInformationFilledOut &&
       courtAppearance.appearanceInformationAccepted
     )
@@ -91,7 +92,10 @@ export default class TaskListModel {
   private someAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     let typeSpecificInformationFilledOut = false
     if (courtAppearance.warrantType === 'SENTENCING') {
-      typeSpecificInformationFilledOut = courtAppearance.overallSentenceLength !== undefined
+      typeSpecificInformationFilledOut =
+        courtAppearance.overallSentenceLength !== undefined ||
+        courtAppearance.taggedBail !== undefined ||
+        courtAppearance.hasTaggedBail !== undefined
     } else {
       typeSpecificInformationFilledOut =
         courtAppearance.appearanceOutcomeUuid !== undefined || courtAppearance.caseOutcomeAppliedAll !== undefined
@@ -100,8 +104,6 @@ export default class TaskListModel {
       courtAppearance.caseReferenceNumber !== undefined ||
       courtAppearance.warrantDate !== undefined ||
       courtAppearance.courtCode !== undefined ||
-      courtAppearance.taggedBail !== undefined ||
-      courtAppearance.hasTaggedBail !== undefined ||
       typeSpecificInformationFilledOut ||
       courtAppearance.appearanceInformationAccepted
     )

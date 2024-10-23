@@ -113,11 +113,6 @@ context('Repeat Court Case journey', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
 
-    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.button().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'C894623',
@@ -125,7 +120,6 @@ context('Repeat Court Case journey', () => {
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
       'Outcome applies to all offences': 'Yes',
-      'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.button().click()
 

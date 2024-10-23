@@ -800,8 +800,14 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
       )
     }
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    if (warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`,
+      )
+    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
     )
   }
 
@@ -817,16 +823,10 @@ export default class CourtCaseRoutes {
         hasTaggedBail: submitToCheckAnswers ? hasTaggedBail : '',
       }
     }
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all`
-    if (warrantType === 'SENTENCING') {
-      if (addOrEditCourtCase === 'add-court-case') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
-      } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-court-name`
-      }
-    } else if (addOrEditCourtCase === 'edit-court-case') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome`
+    if (submitToCheckAnswers) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
     }
 
     return res.render('pages/courtAppearance/tagged-bail', {
@@ -844,23 +844,25 @@ export default class CourtCaseRoutes {
 
   public submitTaggedBail: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query
     const taggedBailForm = trimForm<CourtCaseTaggedBailForm>(req.body)
     const errors = this.courtAppearanceService.setTaggedBail(req.session, nomsId, taggedBailForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('taggedBailForm', { ...taggedBailForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
       )
     }
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    if (courtAppearance.warrantType === 'SENTENCING') {
+
+    if (submitToCheckAnswers) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
       )
     }
+
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length`,
     )
   }
 
@@ -1126,7 +1128,7 @@ export default class CourtCaseRoutes {
       backLink:
         courtAppearance.warrantType === 'SENTENCING'
           ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length`
-          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`,
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all`,
     })
   }
 

@@ -6,7 +6,6 @@ import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
-import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
 
 context('Court Case Check Answers Page', () => {
   let courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage
@@ -47,10 +46,6 @@ context('Court Case Check Answers Page', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
 
-    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.button().click()
     courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 
@@ -73,7 +68,6 @@ context('Court Case Check Answers Page', () => {
       'Court name': 'Accrington Youth Court',
       'Outcome applies to all offences': 'No',
       'Overall case outcome': 'Remanded in custody',
-      'Tagged bail': '5 days',
       'Warrant date': '12 05 2023',
     })
   })
@@ -123,15 +117,6 @@ context('Court Case Check Answers Page', () => {
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
-    Page.verifyOnPage(CourtCaseCheckAnswersPage)
-  })
-
-  it('clicking tagged bail and submitting goes back to check answers page', () => {
-    courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'tagged-bail').click()
-    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 })

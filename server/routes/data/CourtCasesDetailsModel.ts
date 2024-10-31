@@ -48,7 +48,9 @@ export default class CourtCasesDetailsModel {
     )
 
     if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance) {
-      const appearanceDate = dayjs(pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate)
+      const appearanceDate = dayjs(
+        `${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate}${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime ? `T${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime}` : ''}`,
+      )
       let appearanceDateFormatted = appearanceDate.format(config.dateFormat)
       if (pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime) {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)

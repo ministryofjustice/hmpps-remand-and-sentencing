@@ -74,8 +74,7 @@ export default class TaskListModel {
     let typeSpecificInformationFilledOut = false
     if (courtAppearance.warrantType === 'SENTENCING') {
       typeSpecificInformationFilledOut =
-        courtAppearance.overallSentenceLength !== undefined &&
-        (courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined)
+        courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined
     } else {
       typeSpecificInformationFilledOut =
         courtAppearance.appearanceOutcomeUuid && courtAppearance.caseOutcomeAppliedAll !== undefined
@@ -93,9 +92,7 @@ export default class TaskListModel {
     let typeSpecificInformationFilledOut = false
     if (courtAppearance.warrantType === 'SENTENCING') {
       typeSpecificInformationFilledOut =
-        courtAppearance.overallSentenceLength !== undefined ||
-        courtAppearance.taggedBail !== undefined ||
-        courtAppearance.hasTaggedBail !== undefined
+        courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined
     } else {
       typeSpecificInformationFilledOut =
         courtAppearance.appearanceOutcomeUuid !== undefined || courtAppearance.caseOutcomeAppliedAll !== undefined
@@ -106,6 +103,14 @@ export default class TaskListModel {
       courtAppearance.courtCode !== undefined ||
       typeSpecificInformationFilledOut ||
       courtAppearance.appearanceInformationAccepted
+    )
+  }
+
+  private offenceOverallFieldsFilledOut(courtAppearance: CourtAppearance): boolean {
+    return (
+      courtAppearance.overallConvictionDate !== undefined &&
+      courtAppearance.overallConvictionDateAppliedAll !== undefined &&
+      courtAppearance.overallSentenceLength !== undefined
     )
   }
 
@@ -150,12 +155,16 @@ export default class TaskListModel {
 
   private getOffenceSentenceHref(courtAppearance: CourtAppearance): string {
     let href
-    if (this.isAddCourtCase()) {
-      if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+      if (courtAppearance.warrantType === 'REMAND' || this.offenceOverallFieldsFilledOut(courtAppearance)) {
+        if (this.isAddCourtCase()) {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+        } else {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
+        }
+      } else {
+        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/overall-sentence-length`
       }
-    } else if (courtAppearance.warrantType === 'REMAND' || this.allAppearanceInformationFilledOut(courtAppearance)) {
-      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
     }
 
     return href

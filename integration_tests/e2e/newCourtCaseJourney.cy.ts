@@ -24,9 +24,10 @@ import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
-import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
+import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
+import CourtCaseConvictionDateAppliedAllPage from '../pages/courtCaseConvictionDateAppliedAllPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -342,11 +343,6 @@ context('New Court Case journey', () => {
     courtCaseTaggedBailPage.input().type('5')
     courtCaseTaggedBailPage.button().click()
 
-    const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
-    courtCaseOverallSentenceLengthPage.yearsInput().type('4')
-    courtCaseOverallSentenceLengthPage.monthsInput().type('5')
-    courtCaseOverallSentenceLengthPage.button().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
@@ -355,7 +351,6 @@ context('New Court Case journey', () => {
       'Overall case outcome': 'Imprisonment',
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
-      'Overall sentence length': '4 years 5 months 0 weeks 0 days',
     })
     courtCaseCheckAnswersPage.button().click()
 
@@ -396,21 +391,27 @@ context('New Court Case journey', () => {
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.sentencesLink().click()
 
+    const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    courtCaseOverallSentenceLengthPage.yearsInput().type('4')
+    courtCaseOverallSentenceLengthPage.monthsInput().type('5')
+    courtCaseOverallSentenceLengthPage.button().click()
+
+    const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
+    courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
+    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
+    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
+    courtCaseOverallConvictionDatePage.button().click()
+
+    const courtCaseConvictionDateAppliedAllPage = Page.verifyOnPage(CourtCaseConvictionDateAppliedAllPage)
+    courtCaseConvictionDateAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseConvictionDateAppliedAllPage.button().click()
+
     let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'sentences')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()
-
-    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
-    offenceConvictionDatePage.dayDateInput('convictionDate').clear()
-    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
-    offenceConvictionDatePage.monthDateInput('convictionDate').clear()
-    offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
-    offenceConvictionDatePage.yearDateInput('convictionDate').clear()
-    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
-    offenceConvictionDatePage.button().click()
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')

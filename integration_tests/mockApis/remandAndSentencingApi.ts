@@ -34,7 +34,7 @@ export default {
           {
             equalToJson:
               // eslint-disable-next-line no-template-curly-in-string
-              '{"prisonerId": "A1234AB", "appearances": [{"outcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "terrorRelated": true, "sentence": {"chargeNumber": "1", "periodLengths":[{"months": 5, "years": 4, "periodOrder": "years,months", "type": "SENTENCE_LENGTH"}], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months", "type": "OVERALL_SENTENCE_LENGTH"}}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "terrorRelated": true, "sentence": {"chargeNumber": "1", "periodLengths":[{"months": 5, "years": 4, "periodOrder": "years,months", "type": "SENTENCE_LENGTH"}], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months", "type": "OVERALL_SENTENCE_LENGTH"}, "overallConvictionDate" : "2023-05-12"}]}',
           },
         ],
       },
@@ -402,6 +402,7 @@ export default {
               periodOrder: 'years,months',
               type: 'OVERALL_SENTENCE_LENGTH',
             },
+            overallConvictionDate: '2023-05-12',
           },
         ],
       },

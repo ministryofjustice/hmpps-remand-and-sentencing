@@ -665,7 +665,8 @@ export default class CourtAppearanceService {
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.caseOutcomeAppliedAll = overallConvictionDateAppliedAllForm.overallConvictionDateAppliedAll
+      courtAppearance.overallConvictionDateAppliedAll =
+        overallConvictionDateAppliedAllForm.overallConvictionDateAppliedAll
       if (overallConvictionDateAppliedAllForm.overallConvictionDateAppliedAll === 'true') {
         courtAppearance.offences = courtAppearance.offences.map(offence => {
           // eslint-disable-next-line no-param-reassign

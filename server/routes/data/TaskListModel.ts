@@ -157,7 +157,11 @@ export default class TaskListModel {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
       if (courtAppearance.warrantType === 'REMAND' || this.offenceOverallFieldsFilledOut(courtAppearance)) {
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+        if (this.isAddCourtCase()) {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+        } else {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
+        }
       } else {
         href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/overall-sentence-length`
       }

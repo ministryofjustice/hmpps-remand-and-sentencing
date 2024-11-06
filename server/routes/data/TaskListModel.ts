@@ -140,10 +140,10 @@ export default class TaskListModel {
   }
 
   private getOffenceSentenceTitleText(courtAppearance: CourtAppearance): string {
-    let titleText = 'Add Offences'
+    let titleText = 'Add offences'
     if (this.isAddCourtCase()) {
       if (courtAppearance.warrantType === 'SENTENCING') {
-        titleText = 'Add Sentences'
+        titleText = 'Add sentences'
       }
     } else if (courtAppearance.warrantType === 'SENTENCING') {
       titleText = 'Review offences and sentences'

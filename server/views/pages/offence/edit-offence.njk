@@ -4,27 +4,32 @@
 
 {% set offenceSentence = 'sentence' if offence.sentence else 'offence' %}
 
-{% set offenceHtml %}
-{{ offence.offenceCode }}
-{{ offenceMap[offence.offenceCode] }}
-{% if offence.terrorRelated %}
-    <br>
-    <strong class="govuk-tag govuk-!-margin-top-2">Terror-related</strong>
-{% endif %}
-{% endset %}
-
 {% set summaryRows=[{
                     key: {
                         text: "Offence"
                     },
                     value: {
-                        html: offenceHtml
+                        text: offence.offenceCode + " " +  offenceMap[offence.offenceCode]
                     },
                     actions: {
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-code?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "offence code"
+                        }]
+                    }
+                },
+                {
+                    key: {
+                        text: "Terror related"
+                    }, value: {
+                        text: 'Yes' if offence.terrorRelated else 'No'
+                    },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/terror-related?submitToEditOffence=true",
+                            text: "Edit",
+                            visuallyHiddenText: "terror related"
                         }]
                     }
                 },

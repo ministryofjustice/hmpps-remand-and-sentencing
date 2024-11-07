@@ -13,14 +13,6 @@
 
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            {% if infoBanner | length %}
-                {{ mojBanner({
-                type: 'success',
-                text: infoBanner | join(","),
-                iconFallbackText: 'Success'
-            }) }}
-            {% endif %}
-            
             {% include "../../partials/offenceCaption.njk" %}
             <h1 class="govuk-heading-l">
                 {% if isAddCourtCase %}
@@ -71,7 +63,7 @@
 
             {{ govukButton({
                     text: "Add a sentence" if courtAppearance.warrantType === 'SENTENCING' else "Add an offence" ,
-                    classes: "govuk-button--secondary",
+                    classes: "govuk-button--link",
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
                     attributes: {
                         "data-qa": "addAnotherOffence"

@@ -4,6 +4,7 @@ import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcom
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
+import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import Page from '../pages/page'
 
 context('Court Case Appearance details Page', () => {
@@ -233,6 +234,7 @@ context('Court Case Appearance details Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
+        'Terror related': 'No',
         'Committed on': '25 12 2023',
         'Conviction date': 'N/A',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -263,6 +265,7 @@ context('Court Case Appearance details Page', () => {
           outcomeType: 'REMAND',
         },
       ])
+      cy.task('stubGetChargeOutcomeById', {})
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
@@ -307,6 +310,40 @@ context('Court Case Appearance details Page', () => {
         'Court name': 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
+    })
+
+    it('can edit offence outcome and return back to details page', () => {
+      cy.task('stubGetAllChargeOutcomes')
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
+        .click()
+      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage
+        .editFieldLink(
+          'A1234AB',
+          'edit',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '0',
+          'offence-outcome',
+        )
+        .click()
+      const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Edit the outcome for this offence')
+      offenceOutcomePage.legendParagraph().should('contain', 'A Nomis description')
+      offenceOutcomePage.radioLabelContains('Remanded in custody').click()
+      offenceOutcomePage.button().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'No',
+        'Committed on': '15 12 2023',
+        Outcome: 'Remanded in custody',
+      })
+      offenceEditOffencePage.button().click()
+      Page.verifyOnPageTitle(
+        CourtCaseAppearanceDetailsPage,
+        'Edit appearance C894623 at Southampton Magistrate Court on 15 12 2023',
+      )
     })
   })
 })

@@ -6,3 +6,19 @@
 .no-bottom-border {
   border-bottom: none;
 }
+
+.autocomplete__input, .autocomplete__menu, .autocomplete__hint {
+  width:80% !important;
+}
+
+.govuk-summary-list__row:last-child {
+  border-bottom: 0;
+}
+
+.govuk-button--link {
+  background: #1d70b8
+}
+
+.govuk-button--link:hover {
+  background: #144e81
+}

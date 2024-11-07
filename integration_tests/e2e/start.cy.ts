@@ -28,14 +28,14 @@ context('Start Page', () => {
     startPage
       .actionListLink()
       .should('contain', 'Add a new court case')
-      .and('have.attr', 'href', '/person/A1234AB/add-court-case/1/add-court-appearance/0/warrant-type')
+      .and('have.attr', 'href', '/person/A1234AB/add-court-case/1/add-court-appearance/0/new-journey')
   })
 
   it('displays court case summary', () => {
     startPage.courtCaseSummaryList('3fa85f64-5717-4562-b3fc-2c963f66afa6').getSummaryList().should('deep.equal', {
       'Case references': 'C894623, F23325',
       'Overall case outcome': 'Remanded in custody',
-      'Next hearing': 'Birmingham Crown Court Court appearance 15 12 2024',
+      'Next hearing': 'Birmingham Crown Court Court appearance 15 12 2024 10:30',
     })
   })
 
@@ -69,7 +69,7 @@ context('Start Page', () => {
         {
           offenceCardHeader: 'PS90037 An offence description',
           'Committed on': '15 12 2023',
-          Outcome: '',
+          Outcome: 'Not entered',
         },
       ])
   })

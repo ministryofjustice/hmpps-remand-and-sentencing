@@ -67,8 +67,8 @@ export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: Record<st
   if (outcomeValue) {
     return outcomeValue
   }
-  if (legacyData) {
+  if (legacyData?.outcomeDescription) {
     return legacyData.outcomeDescription
   }
-  return ''
+  return 'Not entered'
 }

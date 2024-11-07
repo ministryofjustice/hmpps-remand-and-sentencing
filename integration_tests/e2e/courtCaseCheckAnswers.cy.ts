@@ -6,7 +6,6 @@ import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
-import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
 
 context('Court Case Check Answers Page', () => {
   let courtCaseCheckAnswersPage: CourtCaseCheckAnswersPage
@@ -47,10 +46,6 @@ context('Court Case Check Answers Page', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
 
-    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.button().click()
     courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 
@@ -65,6 +60,16 @@ context('Court Case Check Answers Page', () => {
 
   it('button to Save court case is displayed', () => {
     courtCaseCheckAnswersPage.button().should('contain.text', 'Confirm and continue')
+  })
+
+  it('displays court appearance details', () => {
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference': 'T12345678',
+      'Court name': 'Accrington Youth Court',
+      'Outcome applies to all offences': 'No',
+      'Overall case outcome': 'Remanded in custody',
+      'Warrant date': '12 05 2023',
+    })
   })
 
   it('clicking court case reference number change and submitting goes back to check answers page', () => {
@@ -112,15 +117,6 @@ context('Court Case Check Answers Page', () => {
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
-    Page.verifyOnPage(CourtCaseCheckAnswersPage)
-  })
-
-  it('clicking tagged bail and submitting goes back to check answers page', () => {
-    courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'tagged-bail').click()
-    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.button().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 })

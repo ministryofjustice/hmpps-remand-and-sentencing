@@ -104,7 +104,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 5',
-        Offence: 'PS90037 An offence description Terror-related',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -125,7 +126,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
-        Offence: 'PS90037 An offence description Terror-related',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
         'Committed on': '25 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -147,14 +149,29 @@ context('Add Offence Edit offence Page', () => {
       const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
       offenceOffenceCodeConfirmPage.button().click()
 
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'AB11000 Another offence description',
+        'Terror related': 'Yes',
+        'Committed on': '12 05 2023',
+        'Conviction date': '12 05 2023',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Forthwith',
+      })
+    })
+
+    it('can edit terror related and return to edit page', () => {
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'terror-related').click()
       const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-      offenceTerrorRelatedPage.radioSelector('true').should('be.checked')
       offenceTerrorRelatedPage.radioLabelSelector('false').click()
       offenceTerrorRelatedPage.button().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
-        Offence: 'AB11000 Another offence description',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'No',
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -176,7 +193,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
-        Offence: 'PS90037 An offence description Terror-related',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -194,7 +212,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
-        Offence: 'PS90037 An offence description Terror-related',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -228,7 +247,8 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
-        Offence: 'PS90037 An offence description Terror-related',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
         'Committed on': '12 05 2023',
         'Conviction date': '12 05 2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',

@@ -24,9 +24,10 @@ import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
-import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
+import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
+import CourtCaseConvictionDateAppliedAllPage from '../pages/courtCaseConvictionDateAppliedAllPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -61,7 +62,7 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
 
-    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -75,7 +76,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Offences',
+          name: 'Add offences',
           status: 'Cannot start yet',
         },
         {
@@ -110,23 +111,17 @@ context('New Court Case journey', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
     courtCaseCaseOutcomeAppliedAllPage.button().click()
 
-    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.button().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
       'Warrant date': '12 05 2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Outcome applies to all offences': 'Yes',
-      'Tagged bail': '5 days',
+      'Outcome applies to all offences': 'No',
     })
     courtCaseCheckAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -140,7 +135,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Offences',
+          name: 'Add offences',
           status: 'Incomplete',
         },
         {
@@ -192,14 +187,14 @@ context('New Court Case journey', () => {
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.button().click()
 
-    const offenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+    const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Select the outcome for this offence')
     offenceOutcomePage.radioLabelContains('Remanded in custody').click()
     offenceOutcomePage.button().click()
 
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -213,7 +208,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Offences',
+          name: 'Add offences',
           status: 'Completed',
         },
         {
@@ -249,7 +244,7 @@ context('New Court Case journey', () => {
     })
     courtCaseNextHearingAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -263,7 +258,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Offences',
+          name: 'Add offences',
           status: 'Completed',
         },
         {
@@ -298,7 +293,7 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
 
-    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -312,7 +307,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Sentences',
+          name: 'Add sentences',
           status: 'Cannot start yet',
         },
       ])
@@ -348,11 +343,6 @@ context('New Court Case journey', () => {
     courtCaseTaggedBailPage.input().type('5')
     courtCaseTaggedBailPage.button().click()
 
-    const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
-    courtCaseOverallSentenceLengthPage.yearsInput().type('4')
-    courtCaseOverallSentenceLengthPage.monthsInput().type('5')
-    courtCaseOverallSentenceLengthPage.button().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
@@ -361,11 +351,10 @@ context('New Court Case journey', () => {
       'Overall case outcome': 'Imprisonment',
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
-      'Overall sentence length': '4 years 5 months 0 weeks 0 days',
     })
     courtCaseCheckAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -379,7 +368,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Sentences',
+          name: 'Add sentences',
           status: 'Incomplete',
         },
       ])
@@ -402,21 +391,27 @@ context('New Court Case journey', () => {
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.sentencesLink().click()
 
+    const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    courtCaseOverallSentenceLengthPage.yearsInput().type('4')
+    courtCaseOverallSentenceLengthPage.monthsInput().type('5')
+    courtCaseOverallSentenceLengthPage.button().click()
+
+    const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
+    courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
+    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
+    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
+    courtCaseOverallConvictionDatePage.button().click()
+
+    const courtCaseConvictionDateAppliedAllPage = Page.verifyOnPage(CourtCaseConvictionDateAppliedAllPage)
+    courtCaseConvictionDateAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseConvictionDateAppliedAllPage.button().click()
+
     let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'sentences')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()
-
-    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
-    offenceConvictionDatePage.dayDateInput('convictionDate').clear()
-    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
-    offenceConvictionDatePage.monthDateInput('convictionDate').clear()
-    offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
-    offenceConvictionDatePage.yearDateInput('convictionDate').clear()
-    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
-    offenceConvictionDatePage.button().click()
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
@@ -451,7 +446,7 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'sentences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -465,7 +460,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Sentences',
+          name: 'Add sentences',
           status: 'Completed',
         },
       ])

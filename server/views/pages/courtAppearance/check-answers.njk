@@ -76,7 +76,7 @@
                             text: "Outcome applies to all offences"
                         },
                             value: {
-                            text: "Yes" if courtAppearance.caseOutcomeAppliedAll else "No"
+                            text: "Yes" if courtAppearance.caseOutcomeAppliedAll == 'true' else "No"
                         },
                             actions: {
                             items: [
@@ -87,8 +87,11 @@
                                 }
                             ]
                         }
-                        },
-                        {
+                        }
+                    ] %}
+
+{% if courtAppearance.warrantType === 'SENTENCING' %}
+    {% set checkAnswersRows = (checkAnswersRows.push({
                             key: {
                             text: "Tagged bail"
                         },
@@ -104,30 +107,8 @@
                                 }
                             ]
                         }
-                        }
-                    ] %}
-
-{% if courtAppearance.overallSentenceLength %}
-
-    {% set checkAnswersRows = (checkAnswersRows.push({
-                            key: {
-                            text: "Overall sentence length"
-                        },
-                            value: {
-                            text: courtAppearance.overallSentenceLength | formatLengths
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-sentence-length?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "edit overall sentence length"
-                                }
-                            ]
-                        }
                         }), checkAnswersRows)%}
 {% endif %}
-
 
 {% set pageTitle = applicationName + " - Check court appearance answers" %}
 

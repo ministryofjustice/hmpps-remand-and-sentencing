@@ -62,7 +62,7 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
 
-    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -76,7 +76,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Offences',
+          name: 'Add offences',
           status: 'Cannot start yet',
         },
         {
@@ -121,7 +121,7 @@ context('New Court Case journey', () => {
     })
     courtCaseCheckAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -135,7 +135,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Offences',
+          name: 'Add offences',
           status: 'Incomplete',
         },
         {
@@ -194,7 +194,7 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -208,7 +208,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Offences',
+          name: 'Add offences',
           status: 'Completed',
         },
         {
@@ -244,7 +244,7 @@ context('New Court Case journey', () => {
     })
     courtCaseNextHearingAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -258,7 +258,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Offences',
+          name: 'Add offences',
           status: 'Completed',
         },
         {
@@ -293,7 +293,7 @@ context('New Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
 
-    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -307,7 +307,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Sentences',
+          name: 'Add sentences',
           status: 'Cannot start yet',
         },
       ])
@@ -354,7 +354,7 @@ context('New Court Case journey', () => {
     })
     courtCaseCheckAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -368,7 +368,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Sentences',
+          name: 'Add sentences',
           status: 'Incomplete',
         },
       ])
@@ -446,7 +446,7 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'sentences')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -460,7 +460,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add Sentences',
+          name: 'Add sentences',
           status: 'Completed',
         },
       ])

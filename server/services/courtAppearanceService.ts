@@ -19,7 +19,6 @@ import type {
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
-import OffencePersistType from '../@types/models/OffencePersistType'
 import validate from '../validation/validation'
 import {
   alternativeSentenceLengthFormToSentenceLength,
@@ -721,20 +720,15 @@ export default class CourtAppearanceService {
     nomsId: string,
     offenceReference: number,
     offence: Offence,
-  ): OffencePersistType {
+  ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
-    let offencePersistType = OffencePersistType.CREATED
     if (courtAppearance.offences.length > offenceReference) {
-      const previousOffenceRecord = courtAppearance.offences[offenceReference]
-      const isSame = JSON.stringify(previousOffenceRecord) === JSON.stringify(offence)
       courtAppearance.offences[offenceReference] = offence
-      offencePersistType = isSame ? OffencePersistType.NO_CHANGE : OffencePersistType.EDITED
     } else {
       courtAppearance.offences.push(offence)
     }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
-    return offencePersistType
   }
 
   deleteOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number) {

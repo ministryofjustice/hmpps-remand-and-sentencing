@@ -25,7 +25,6 @@ import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import validate from '../validation/validation'
-import OffencePersistType from '../@types/models/OffencePersistType'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import {
   chargeToOffence,
@@ -1098,7 +1097,6 @@ export default class OffenceRoutes {
       courtCaseReference,
       courtAppearance,
       appearanceReference,
-      infoBanner: req.flash('infoBanner'),
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       offenceMap,
@@ -1204,8 +1202,6 @@ export default class OffenceRoutes {
     }
     if (deleteOffenceForm.deleteOffence === 'true') {
       this.courtAppearanceService.deleteOffence(req.session, nomsId, parseInt(offenceReference, 10))
-
-      req.flash('infoBanner', `${sentenceOffence} deleted`)
     }
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       return res.redirect(
@@ -1378,19 +1374,7 @@ export default class OffenceRoutes {
     offenceReference: string,
     offence: Offence,
   ) {
-    const offencePersistType = this.courtAppearanceService.addOffence(
-      req.session,
-      nomsId,
-      parseInt(offenceReference, 10),
-      offence,
-    )
+    this.courtAppearanceService.addOffence(req.session, nomsId, parseInt(offenceReference, 10), offence)
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    const sentenceOffence = warrantType === 'SENTENCING' ? 'sentence' : 'offence'
-    if (offencePersistType === OffencePersistType.CREATED) {
-      req.flash('infoBanner', `New ${sentenceOffence} added`)
-    } else if (offencePersistType === OffencePersistType.EDITED) {
-      req.flash('infoBanner', 'Changes successfully made')
-    }
   }
 }

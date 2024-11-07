@@ -63,15 +63,13 @@ context('Check Offence Answers Page', () => {
       offenceDeleteOffencePage.radioLabelSelector('true').click()
       offenceDeleteOffencePage.button().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'offences')
-      offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'Offence deleted')
     })
 
-    it('creating a new offence results in new offence added info banner', () => {
+    it('creating a new offence results in showing the offence', () => {
       cy.createOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
-      offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'New offence added')
     })
-    it('changing an existing offence results in changes successfully made info banner', () => {
+    it('changing an existing offence results in changes in the offence', () => {
       cy.task('stubGetChargeOutcomesByIds', [
         {
           outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
@@ -98,17 +96,6 @@ context('Check Offence Answers Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.button().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
-      offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'Changes successfully made')
-    })
-
-    it('going to edit offence page and making no change results in no info banner', () => {
-      cy.createOffence('A1234AB', '0', '0', '0')
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
-      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
-      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.button().click()
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'offences')
-      offenceCheckOffenceAnswersPage.infoBanner().should('not.exist')
     })
   })
 
@@ -143,13 +130,11 @@ context('Check Offence Answers Page', () => {
       offenceDeleteOffencePage.radioLabelSelector('true').click()
       offenceDeleteOffencePage.button().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(0, 'T12345678', 'sentences')
-      offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'Sentence deleted')
     })
 
-    it('creating a new sentenced offence results in new sentence added info banner', () => {
+    it('creating a new sentenced offence results in showing the sentenced offence', () => {
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, 'T12345678', 'sentences')
-      offenceCheckOffenceAnswersPage.infoBanner().should('contain.text', 'New sentence added')
     })
 
     it('deleting sentence and not selecting yes or no results in error', () => {

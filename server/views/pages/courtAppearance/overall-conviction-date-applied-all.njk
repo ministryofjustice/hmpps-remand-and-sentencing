@@ -4,8 +4,8 @@
 
 {% set pageTitle = applicationName + " - Add a court case conviction date applied to all" %}
 {% set fieldSetHtml %}
-    <h1 class="govuk-fieldset__heading">Is the conviction date the same for all offences on the warrant?</h1>
-    <p class="govuk-body-l">{{ overallConvictionDate | formatDate }}</p>
+    <h1 class="govuk-fieldset__heading govuk-!-static-margin-bottom-3">Is the conviction date the same for all offences on the warrant?</h1>
+    <p class="govuk-body-l govuk-!-static-margin-bottom-3">{{ overallConvictionDate | formatDate }}</p>
 {% endset %}
 {% block content %}
     {{ super() }}

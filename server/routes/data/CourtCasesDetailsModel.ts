@@ -40,7 +40,11 @@ export default class CourtCasesDetailsModel {
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     this.caseReferences = Array.from(
-      new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
+      new Set(
+        pageCourtCaseContent.appearances
+          .filter(appearance => !!appearance.courtCaseReference)
+          .map(appearance => appearance.courtCaseReference),
+      ),
     ).join(', ')
     this.overallCaseOutcome = outcomeValueOrLegacy(
       pageCourtCaseContent.latestAppearance?.outcome?.outcomeName,

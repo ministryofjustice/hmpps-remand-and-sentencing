@@ -20,6 +20,7 @@ export default class TaskListModel {
     courtCaseReference: string,
     appearanceReference: string,
     courtAppearance: CourtAppearance,
+    caseReferenceSet: boolean,
   ) {
     this.nomsId = nomsId
     this.addOrEditCourtCase = addOrEditCourtCase
@@ -27,7 +28,7 @@ export default class TaskListModel {
     this.courtCaseReference = courtCaseReference
     this.appearanceReference = appearanceReference
     this.items = [
-      this.getAppearanceInformationItem(courtAppearance),
+      this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getCourtDocumentsItem(),
       this.getOffenceSentencesItem(courtAppearance),
     ]
@@ -36,14 +37,22 @@ export default class TaskListModel {
     }
   }
 
-  private getAppearanceInformationItem(courtAppearance: CourtAppearance): TaskListItem {
+  private getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
+    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/check-answers`
+    }
+    if (this.isAddCourtCase() || !caseReferenceSet) {
+      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/reference`
+    }
+    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/select-reference`
+  }
+
+  private getAppearanceInformationItem(courtAppearance: CourtAppearance, caseReferenceSet: boolean): TaskListItem {
     return {
       title: {
         text: 'Add appearance information',
       },
-      href: this.isAddCourtCase()
-        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/reference`
-        : `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/select-reference`,
+      href: this.getAppearanceInformationHref(courtAppearance, caseReferenceSet),
       status: this.getAppearanceInformationStatus(courtAppearance),
     }
   }
@@ -80,7 +89,6 @@ export default class TaskListModel {
         courtAppearance.appearanceOutcomeUuid && courtAppearance.caseOutcomeAppliedAll !== undefined
     }
     return (
-      courtAppearance.caseReferenceNumber &&
       courtAppearance.warrantDate &&
       courtAppearance.courtCode &&
       typeSpecificInformationFilledOut &&

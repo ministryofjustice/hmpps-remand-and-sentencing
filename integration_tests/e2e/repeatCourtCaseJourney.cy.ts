@@ -172,6 +172,12 @@ context('Repeat Court Case journey', () => {
     let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'offence')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.button().click()
+
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.button().click()
@@ -182,12 +188,6 @@ context('Repeat Court Case journey', () => {
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
-
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
 
     offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'offence')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
@@ -429,6 +429,12 @@ context('Repeat Court Case journey', () => {
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()
 
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.button().click()
+
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.button().click()
@@ -439,12 +445,6 @@ context('Repeat Court Case journey', () => {
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
-
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()

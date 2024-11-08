@@ -189,8 +189,16 @@ Cypress.Commands.add(
     courtCaseWarrantTypePage.button().click()
 
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
     )
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('15')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('7')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.button().click()
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().clear()
     offenceOffenceCodePage.input().type('PS90037')
@@ -200,14 +208,6 @@ Cypress.Commands.add(
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('15')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('7')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
     const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
       OffenceOffenceOutcomePage,
       'Select the outcome for this offence',
@@ -244,6 +244,15 @@ Cypress.Commands.add(
     offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
     offenceConvictionDatePage.button().click()
 
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.button().click()
+
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().clear()
     offenceOffenceCodePage.input().type('PS90037')
@@ -254,15 +263,6 @@ Cypress.Commands.add(
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
-
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
 
     const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
       OffenceOffenceOutcomePage,

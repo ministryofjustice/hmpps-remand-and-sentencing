@@ -602,7 +602,14 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-
+    let caseReferenceSet = !!courtAppearance.caseReferenceNumber
+    if (!res.locals.isAddCourtCase && !caseReferenceSet) {
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        req.user.token,
+        courtCaseReference,
+      )
+      caseReferenceSet = !!latestCourtAppearance.courtCaseReference
+    }
     return res.render('pages/courtAppearance/task-list', {
       nomsId,
       warrantType,
@@ -617,6 +624,7 @@ export default class CourtCaseRoutes {
         courtCaseReference,
         appearanceReference,
         courtAppearance,
+        caseReferenceSet,
       ),
     })
   }

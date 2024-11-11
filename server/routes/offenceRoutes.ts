@@ -76,7 +76,7 @@ export default class OffenceRoutes {
       offenceEndDateMonth = offenceEndDate.getMonth() + 1
       offenceEndDateYear = offenceEndDate.getFullYear()
     }
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offences/check-offence-answers`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`

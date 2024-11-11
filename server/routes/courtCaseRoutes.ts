@@ -40,6 +40,7 @@ import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
+import PrisonerSearchService from '../services/prisonerSearchService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -50,12 +51,26 @@ export default class CourtCaseRoutes {
     private readonly courtRegisterService: CourtRegisterService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
+    private readonly prisonerSearchService: PrisonerSearchService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const { token } = res.locals.user
+    const { username, token, caseLoads } = res.locals.user as PrisonUser
     const sortBy = getAsStringOrDefault(req.query.sortBy, 'desc')
+
+    if (username && nomsId) {
+      try {
+        const prisoner = await this.prisonerSearchService.getPrisonerDetails(nomsId, username)
+        res.locals.prisoner = prisoner
+        if (!caseLoads.map(caseload => caseload.caseLoadId).includes(prisoner.prisonId)) {
+          return res.render('pages/personNotFoundError')
+        }
+      } catch (error) {
+        logger.error(error, `Failed to get prisoner with prisoner number: ${nomsId}`)
+        return error
+      }
+    }
 
     const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy)
 

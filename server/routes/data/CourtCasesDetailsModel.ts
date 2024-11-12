@@ -40,7 +40,11 @@ export default class CourtCasesDetailsModel {
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     this.caseReferences = Array.from(
-      new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
+      new Set(
+        pageCourtCaseContent.appearances
+          .filter(appearance => !!appearance.courtCaseReference)
+          .map(appearance => appearance.courtCaseReference),
+      ),
     ).join(', ')
     this.overallCaseOutcome = outcomeValueOrLegacy(
       pageCourtCaseContent.latestAppearance?.outcome?.outcomeName,
@@ -48,7 +52,9 @@ export default class CourtCasesDetailsModel {
     )
 
     if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance) {
-      const appearanceDate = dayjs(pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate)
+      const appearanceDate = dayjs(
+        `${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate}${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime ? `T${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime}` : ''}`,
+      )
       let appearanceDateFormatted = appearanceDate.format(config.dateFormat)
       if (pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime) {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)

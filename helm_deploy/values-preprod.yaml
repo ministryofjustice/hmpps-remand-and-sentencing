@@ -24,6 +24,13 @@ generic-service:
     ADJUSTMENTS_UI_URL: "https://adjust-release-dates-preprod.hmpps.service.justice.gov.uk"
     AUDIT_ENABLED: "false"
 
+  allowlist:
+    penetration-test-ip-1: 54.37.241.156/30
+    penetration-test-ip-2: 167.71.136.237/32
+    groups:
+      - internal
+      - circleci
+
 generic-prometheus-alerts:
   businessHoursOnly: true
   alertSeverity: legacy-replacement-alerts-non-prod

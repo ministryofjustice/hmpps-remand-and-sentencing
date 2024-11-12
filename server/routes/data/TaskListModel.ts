@@ -20,6 +20,7 @@ export default class TaskListModel {
     courtCaseReference: string,
     appearanceReference: string,
     courtAppearance: CourtAppearance,
+    caseReferenceSet: boolean,
   ) {
     this.nomsId = nomsId
     this.addOrEditCourtCase = addOrEditCourtCase
@@ -27,7 +28,7 @@ export default class TaskListModel {
     this.courtCaseReference = courtCaseReference
     this.appearanceReference = appearanceReference
     this.items = [
-      this.getAppearanceInformationItem(courtAppearance),
+      this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getCourtDocumentsItem(),
       this.getOffenceSentencesItem(courtAppearance),
     ]
@@ -36,14 +37,22 @@ export default class TaskListModel {
     }
   }
 
-  private getAppearanceInformationItem(courtAppearance: CourtAppearance): TaskListItem {
+  private getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
+    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/check-answers`
+    }
+    if (this.isAddCourtCase() || !caseReferenceSet) {
+      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/reference`
+    }
+    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/select-reference`
+  }
+
+  private getAppearanceInformationItem(courtAppearance: CourtAppearance, caseReferenceSet: boolean): TaskListItem {
     return {
       title: {
         text: 'Add appearance information',
       },
-      href: this.isAddCourtCase()
-        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/reference`
-        : `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/select-reference`,
+      href: this.getAppearanceInformationHref(courtAppearance, caseReferenceSet),
       status: this.getAppearanceInformationStatus(courtAppearance),
     }
   }
@@ -74,14 +83,12 @@ export default class TaskListModel {
     let typeSpecificInformationFilledOut = false
     if (courtAppearance.warrantType === 'SENTENCING') {
       typeSpecificInformationFilledOut =
-        courtAppearance.overallSentenceLength !== undefined &&
-        (courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined)
+        courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined
     } else {
       typeSpecificInformationFilledOut =
         courtAppearance.appearanceOutcomeUuid && courtAppearance.caseOutcomeAppliedAll !== undefined
     }
     return (
-      courtAppearance.caseReferenceNumber &&
       courtAppearance.warrantDate &&
       courtAppearance.courtCode &&
       typeSpecificInformationFilledOut &&
@@ -93,9 +100,7 @@ export default class TaskListModel {
     let typeSpecificInformationFilledOut = false
     if (courtAppearance.warrantType === 'SENTENCING') {
       typeSpecificInformationFilledOut =
-        courtAppearance.overallSentenceLength !== undefined ||
-        courtAppearance.taggedBail !== undefined ||
-        courtAppearance.hasTaggedBail !== undefined
+        courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined
     } else {
       typeSpecificInformationFilledOut =
         courtAppearance.appearanceOutcomeUuid !== undefined || courtAppearance.caseOutcomeAppliedAll !== undefined
@@ -106,6 +111,14 @@ export default class TaskListModel {
       courtAppearance.courtCode !== undefined ||
       typeSpecificInformationFilledOut ||
       courtAppearance.appearanceInformationAccepted
+    )
+  }
+
+  private offenceOverallFieldsFilledOut(courtAppearance: CourtAppearance): boolean {
+    return (
+      courtAppearance.overallConvictionDate !== undefined &&
+      courtAppearance.overallConvictionDateAppliedAll !== undefined &&
+      courtAppearance.overallSentenceLength !== undefined
     )
   }
 
@@ -135,10 +148,10 @@ export default class TaskListModel {
   }
 
   private getOffenceSentenceTitleText(courtAppearance: CourtAppearance): string {
-    let titleText = 'Add Offences'
+    let titleText = 'Add offences'
     if (this.isAddCourtCase()) {
       if (courtAppearance.warrantType === 'SENTENCING') {
-        titleText = 'Add Sentences'
+        titleText = 'Add sentences'
       }
     } else if (courtAppearance.warrantType === 'SENTENCING') {
       titleText = 'Review offences and sentences'
@@ -150,12 +163,16 @@ export default class TaskListModel {
 
   private getOffenceSentenceHref(courtAppearance: CourtAppearance): string {
     let href
-    if (this.isAddCourtCase()) {
-      if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+      if (courtAppearance.warrantType === 'REMAND' || this.offenceOverallFieldsFilledOut(courtAppearance)) {
+        if (this.isAddCourtCase()) {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+        } else {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
+        }
+      } else {
+        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/overall-sentence-length`
       }
-    } else if (courtAppearance.warrantType === 'REMAND' || this.allAppearanceInformationFilledOut(courtAppearance)) {
-      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
     }
 
     return href

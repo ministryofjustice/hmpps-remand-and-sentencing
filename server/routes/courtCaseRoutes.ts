@@ -617,7 +617,14 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-
+    let caseReferenceSet = !!courtAppearance.caseReferenceNumber
+    if (!res.locals.isAddCourtCase && !caseReferenceSet) {
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        req.user.token,
+        courtCaseReference,
+      )
+      caseReferenceSet = !!latestCourtAppearance.courtCaseReference
+    }
     return res.render('pages/courtAppearance/task-list', {
       nomsId,
       warrantType,
@@ -632,6 +639,7 @@ export default class CourtCaseRoutes {
         courtCaseReference,
         appearanceReference,
         courtAppearance,
+        caseReferenceSet,
       ),
     })
   }
@@ -870,14 +878,8 @@ export default class CourtCaseRoutes {
       )
     }
 
-    if (submitToCheckAnswers) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
-      )
-    }
-
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
     )
   }
 
@@ -901,8 +903,8 @@ export default class CourtCaseRoutes {
       courtCaseOverallSentenceLengthForm,
       errors: req.flash('errors') || [],
       backLink: submitToCheckAnswers
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`,
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
 
@@ -927,7 +929,7 @@ export default class CourtCaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date`,
     )
   }
 
@@ -1109,8 +1111,13 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
       )
     }
+    if (res.locals.isAddCourtCase) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      )
+    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
   }
 

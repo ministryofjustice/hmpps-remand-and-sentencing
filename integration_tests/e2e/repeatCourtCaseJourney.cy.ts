@@ -15,7 +15,6 @@ import CourtCaseTaskListPage from '../pages/courtCaseTaskListPage'
 import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPageEdit from '../pages/offenceCheckOffenceAnswersPageEdit'
-import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
@@ -27,6 +26,8 @@ import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import Page from '../pages/page'
 import StartPage from '../pages/startPage'
+import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
+import CourtCaseConvictionDateAppliedAllPage from '../pages/courtCaseConvictionDateAppliedAllPage'
 
 context('Repeat Court Case journey', () => {
   beforeEach(() => {
@@ -61,7 +62,7 @@ context('Repeat Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.button().click()
 
-    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -123,7 +124,7 @@ context('Repeat Court Case journey', () => {
     })
     courtCaseCheckAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -171,6 +172,12 @@ context('Repeat Court Case journey', () => {
     let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'offence')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.button().click()
+
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.button().click()
@@ -182,16 +189,10 @@ context('Repeat Court Case journey', () => {
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
 
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
-
     offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'offence')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -237,7 +238,7 @@ context('Repeat Court Case journey', () => {
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'remand')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -300,7 +301,7 @@ context('Repeat Court Case journey', () => {
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
 
-    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -353,11 +354,6 @@ context('Repeat Court Case journey', () => {
     courtCaseTaggedBailPage.input().type('5')
     courtCaseTaggedBailPage.button().click()
 
-    const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
-    courtCaseOverallSentenceLengthPage.yearsInput().type('4')
-    courtCaseOverallSentenceLengthPage.monthsInput().type('5')
-    courtCaseOverallSentenceLengthPage.button().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'C894623',
@@ -366,11 +362,10 @@ context('Repeat Court Case journey', () => {
       'Overall case outcome': 'Imprisonment',
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
-      'Overall sentence length': '4 years 5 months 0 weeks 0 days',
     })
     courtCaseCheckAnswersPage.button().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -407,6 +402,22 @@ context('Repeat Court Case journey', () => {
 
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.reviewOffencesLink().click()
+
+    const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    courtCaseOverallSentenceLengthPage.yearsInput().type('4')
+    courtCaseOverallSentenceLengthPage.monthsInput().type('5')
+    courtCaseOverallSentenceLengthPage.button().click()
+
+    const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
+    courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
+    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
+    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
+    courtCaseOverallConvictionDatePage.button().click()
+
+    const courtCaseConvictionDateAppliedAllPage = Page.verifyOnPage(CourtCaseConvictionDateAppliedAllPage)
+    courtCaseConvictionDateAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseConvictionDateAppliedAllPage.button().click()
+
     const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.radioLabelSelector('true').click()
     offenceReviewOffencesPage.button().click()
@@ -418,14 +429,11 @@ context('Repeat Court Case journey', () => {
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()
 
-    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
-    offenceConvictionDatePage.dayDateInput('convictionDate').clear()
-    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
-    offenceConvictionDatePage.monthDateInput('convictionDate').clear()
-    offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
-    offenceConvictionDatePage.yearDateInput('convictionDate').clear()
-    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
-    offenceConvictionDatePage.button().click()
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.button().click()
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
@@ -437,12 +445,6 @@ context('Repeat Court Case journey', () => {
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.button().click()
-
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
@@ -460,7 +462,7 @@ context('Repeat Court Case journey', () => {
     offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'sentencing')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()

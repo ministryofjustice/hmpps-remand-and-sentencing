@@ -68,7 +68,7 @@ context('Court Case Check Answers Page', () => {
       'Court name': 'Accrington Youth Court',
       'Outcome applies to all offences': 'No',
       'Overall case outcome': 'Remanded in custody',
-      'Warrant date': '12 05 2023',
+      'Warrant date': '12/05/2023',
     })
   })
 

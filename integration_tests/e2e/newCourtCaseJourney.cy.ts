@@ -114,7 +114,7 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
-      'Warrant date': '12 05 2023',
+      'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
       'Outcome applies to all offences': 'No',
@@ -175,7 +175,7 @@ context('New Court Case journey', () => {
     offenceOffenceCodePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'T12345678',
       'Court name': 'Accrington Youth Court',
-      'Warrant date': '12 05 2023',
+      'Warrant date': '12/05/2023',
     })
     offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.button().click()
@@ -238,7 +238,7 @@ context('New Court Case journey', () => {
 
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Next hearing date': '18 10 2023',
+      'Next hearing date': '18/10/2023',
       'Next hearing location': 'Accrington Youth Court',
       'Next hearing type': 'Court appearance',
     })
@@ -346,7 +346,7 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
-      'Warrant date': '12 05 2023',
+      'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Imprisonment',
       'Outcome applies to all offences': 'Yes',

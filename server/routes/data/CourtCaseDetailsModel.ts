@@ -31,7 +31,11 @@ export default class CourtCaseDetailsModel {
     this.latestCaseReference = pageCourtCaseContent.latestAppearance.courtCaseReference
     this.latestCourtCode = pageCourtCaseContent.latestAppearance.courtCode
     this.caseReferences = Array.from(
-      new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
+      new Set(
+        pageCourtCaseContent.appearances
+          .filter(appearance => !!appearance.courtCaseReference)
+          .map(appearance => appearance.courtCaseReference),
+      ),
     ).join(', ')
     this.overallCaseOutcome =
       pageCourtCaseContent.latestAppearance.outcome?.outcomeName ??

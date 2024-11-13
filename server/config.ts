@@ -56,8 +56,8 @@ export default {
   production,
   https: production,
   staticResourceCacheDuration: '1h',
-  dateFormat: 'DD MM YYYY',
-  dateTimeFormat: 'DD MM YYYY HH:mm',
+  dateFormat: 'DD/MM/YYYY',
+  dateTimeFormat: 'DD/MM/YYYY HH:mm',
   redis: {
     enabled: get('REDIS_ENABLED', 'false', requiredInProduction) === 'true',
     host: get('REDIS_HOST', '127.0.0.1', requiredInProduction),

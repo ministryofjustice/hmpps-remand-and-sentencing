@@ -63,7 +63,10 @@ export default class CourtCaseRoutes {
       try {
         const prisoner = await this.prisonerSearchService.getPrisonerDetails(nomsId, username)
         res.locals.prisoner = prisoner
-        if (!caseLoads.map(caseload => caseload.caseLoadId).includes(prisoner.prisonId)) {
+        if (
+          prisoner.prisonId === 'OUT' ||
+          !caseLoads.map(caseload => caseload.caseLoadId).includes(prisoner.prisonId)
+        ) {
           return res.render('pages/personNotFoundError')
         }
       } catch (error) {

@@ -2,6 +2,7 @@ const path = require('path')
 const { glob } = require('glob')
 const chokidar = require('chokidar')
 const { spawn } = require('child_process')
+require('dotenv').config()
 const buildAssets = require('./assets.config')
 const buildApp = require('./app.config')
 

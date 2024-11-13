@@ -35,7 +35,7 @@ context('Start Page', () => {
     startPage.courtCaseSummaryList('3fa85f64-5717-4562-b3fc-2c963f66afa6').getSummaryList().should('deep.equal', {
       'Case references': 'C894623, F23325',
       'Overall case outcome': 'Remanded in custody',
-      'Next hearing': 'Birmingham Crown Court Court appearance 15 12 2024 10:30',
+      'Next hearing': 'Birmingham Crown Court Court appearance 15/12/2024 10:30',
     })
   })
 
@@ -47,14 +47,14 @@ context('Start Page', () => {
         {
           'Case reference': 'C894623',
           Location: 'Accrington Youth Court',
-          'Warrant date': '15 12 2023',
+          'Warrant date': '15/12/2023',
           Outcome: 'Remanded in custody',
           '': 'View and edit',
         },
         {
           'Case reference': 'F23325',
           Location: 'Accrington Youth Court',
-          'Warrant date': '15 10 2022',
+          'Warrant date': '15/10/2022',
           Outcome: 'Lie on file',
           '': 'View and edit',
         },
@@ -68,7 +68,7 @@ context('Start Page', () => {
       .should('deep.equal', [
         {
           offenceCardHeader: 'PS90037 An offence description',
-          'Committed on': '15 12 2023',
+          'Committed on': '15/12/2023',
           Outcome: 'Not entered',
         },
       ])

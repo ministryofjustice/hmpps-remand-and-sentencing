@@ -72,16 +72,16 @@ context('New Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-        {
           name: 'Add offences',
           status: 'Cannot start yet',
         },
         {
           name: 'Next court appearance',
           status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
@@ -131,16 +131,16 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-        {
           name: 'Add offences',
           status: 'Incomplete',
         },
         {
           name: 'Next court appearance',
           status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
     // courtCaseTaskListPage.courtDocumentsLink().click()
@@ -204,16 +204,16 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-        {
           name: 'Add offences',
           status: 'Completed',
         },
         {
           name: 'Next court appearance',
           status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
     courtCaseTaskListPage.nextCourtAppearanceLink().click()
@@ -254,16 +254,16 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-        {
           name: 'Add offences',
           status: 'Completed',
         },
         {
           name: 'Next court appearance',
           status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
     courtCaseTaskListPage.button().click()
@@ -303,12 +303,12 @@ context('New Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
+          name: 'Add offences',
+          status: 'Cannot start yet',
         },
         {
-          name: 'Add sentences',
-          status: 'Cannot start yet',
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
@@ -364,12 +364,12 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
+          name: 'Add offences',
+          status: 'Incomplete',
         },
         {
-          name: 'Add sentences',
-          status: 'Incomplete',
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
     // courtCaseTaskListPage.courtDocumentsLink().click()
@@ -456,12 +456,12 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
+          name: 'Add offences',
+          status: 'Completed',
         },
         {
-          name: 'Add sentences',
-          status: 'Completed',
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
     courtCaseTaskListPage.button().click()

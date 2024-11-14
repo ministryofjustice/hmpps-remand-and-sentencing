@@ -72,15 +72,15 @@ context('Repeat Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-        {
           name: 'Review offences',
           status: 'Optional',
         },
         {
           name: 'Add next court appearance',
+          status: 'Optional',
+        },
+        {
+          name: 'Upload court documents',
           status: 'Optional',
         },
       ])
@@ -134,15 +134,15 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-        {
           name: 'Review offences',
           status: 'Optional',
         },
         {
           name: 'Add next court appearance',
+          status: 'Optional',
+        },
+        {
+          name: 'Upload court documents',
           status: 'Optional',
         },
       ])
@@ -202,15 +202,15 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-        {
           name: 'Review offences',
           status: 'Completed',
         },
         {
           name: 'Add next court appearance',
+          status: 'Optional',
+        },
+        {
+          name: 'Upload court documents',
           status: 'Optional',
         },
       ])
@@ -248,16 +248,16 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-        {
           name: 'Review offences',
           status: 'Completed',
         },
         {
           name: 'Add next court appearance',
           status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
 
@@ -311,12 +311,12 @@ context('Repeat Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
+          name: 'Review offences',
+          status: 'Cannot start yet',
         },
         {
-          name: 'Review offences and sentences',
-          status: 'Cannot start yet',
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
@@ -375,12 +375,12 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
+          name: 'Review offences',
+          status: 'Incomplete',
         },
         {
-          name: 'Review offences and sentences',
-          status: 'Incomplete',
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
 
@@ -472,12 +472,12 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
+          name: 'Review offences',
+          status: 'Completed',
         },
         {
-          name: 'Review offences and sentences',
-          status: 'Completed',
+          name: 'Upload court documents',
+          status: 'Optional',
         },
       ])
 

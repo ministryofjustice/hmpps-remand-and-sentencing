@@ -40,6 +40,7 @@ import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
+import PrisonerSearchService from '../services/prisonerSearchService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -50,6 +51,7 @@ export default class CourtCaseRoutes {
     private readonly courtRegisterService: CourtRegisterService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
+    private readonly prisonerSearchService: PrisonerSearchService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {

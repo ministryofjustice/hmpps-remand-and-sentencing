@@ -4,6 +4,7 @@ import logger from '../../logger'
 import { convertToTitleCase } from '../utils/utils'
 import type { CaseLoad } from '../@types/prisonApi/types'
 import UserService from '../services/userService'
+import { AuthSource, HmppsUser } from '../interfaces/hmppsUser'
 
 export function populateCurrentUser(): RequestHandler {
   return async (req, res, next) => {
@@ -12,10 +13,12 @@ export function populateCurrentUser(): RequestHandler {
         name,
         user_id: userId,
         authorities: roles = [],
+        auth_source: authSource,
       } = jwtDecode(res.locals.user.token) as {
         name?: string
         user_id?: string
         authorities?: string[]
+        auth_source?: string
       }
       const userRoles = roles.map(role => role.substring(role.indexOf('_') + 1))
       res.locals.user = {
@@ -24,7 +27,8 @@ export function populateCurrentUser(): RequestHandler {
         name,
         displayName: convertToTitleCase(name),
         userRoles,
-      }
+        authSource: authSource as AuthSource,
+      } as HmppsUser
 
       if (res.locals.user.authSource === 'nomis') {
         res.locals.user.staffId = parseInt(userId, 10) || undefined

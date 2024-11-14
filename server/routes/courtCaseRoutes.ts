@@ -56,24 +56,8 @@ export default class CourtCaseRoutes {
 
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const { username, token, caseLoads } = res.locals.user as PrisonUser
+    const { token } = res.locals.user
     const sortBy = getAsStringOrDefault(req.query.sortBy, 'desc')
-
-    if (username && nomsId) {
-      try {
-        const prisoner = await this.prisonerSearchService.getPrisonerDetails(nomsId, username)
-        res.locals.prisoner = prisoner
-        if (
-          prisoner.prisonId === 'OUT' ||
-          !caseLoads.map(caseload => caseload.caseLoadId).includes(prisoner.prisonId)
-        ) {
-          return res.render('pages/personNotFoundError')
-        }
-      } catch (error) {
-        logger.error(error, `Failed to get prisoner with prisoner number: ${nomsId}`)
-        return error
-      }
-    }
 
     const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy)
 

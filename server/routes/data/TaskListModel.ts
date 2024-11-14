@@ -29,12 +29,12 @@ export default class TaskListModel {
     this.appearanceReference = appearanceReference
     this.items = [
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
-      this.getCourtDocumentsItem(),
       this.getOffenceSentencesItem(courtAppearance),
     ]
     if (courtAppearance.warrantType === 'REMAND') {
       this.items.push(this.getNextCourtAppearanceItem(courtAppearance))
     }
+    this.items.push(this.getCourtDocumentsItem())
   }
 
   private getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
@@ -140,25 +140,19 @@ export default class TaskListModel {
   private getOffenceSentencesItem(courtAppearance: CourtAppearance): TaskListItem {
     return {
       title: {
-        text: this.getOffenceSentenceTitleText(courtAppearance),
+        text: this.getOffenceSentenceTitleText(),
       },
       href: this.getOffenceSentenceHref(courtAppearance),
       status: this.getOffenceSentenceStatus(courtAppearance),
     }
   }
 
-  private getOffenceSentenceTitleText(courtAppearance: CourtAppearance): string {
-    let titleText = 'Add offences'
+  private getOffenceSentenceTitleText(): string {
     if (this.isAddCourtCase()) {
-      if (courtAppearance.warrantType === 'SENTENCING') {
-        titleText = 'Add sentences'
-      }
-    } else if (courtAppearance.warrantType === 'SENTENCING') {
-      titleText = 'Review offences and sentences'
-    } else {
-      titleText = 'Review offences'
+      return 'Add offences'
     }
-    return titleText
+
+    return 'Review offences'
   }
 
   private getOffenceSentenceHref(courtAppearance: CourtAppearance): string {

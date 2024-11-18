@@ -91,11 +91,17 @@
                         items: [
                             {
                                 value: "true",
-                                text: "Yes, I've finished adding offences"
+                                text: "Yes, I've finished adding offences",
+                                attributes: {
+                                "data-qa": "finishAddingRadio"
+                                }
                             },
                             {
                                 value: "false",
-                                text: "No, I'll come back later"
+                                text: "No, I'll come back later",
+                                attributes: {
+                                "data-qa": "notFinishedRadio"
+                                }
                             }
                         ]
                     }) }}

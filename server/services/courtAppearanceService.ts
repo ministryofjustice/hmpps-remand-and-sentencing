@@ -380,32 +380,34 @@ export default class CourtAppearanceService {
     nomsId: string,
     courtCaseOverallSentenceLengthForm: SentenceLengthForm,
   ) {
-    const rules = courtCaseOverallSentenceLengthForm.hasOverallSentenceLength
-      ? {
-          'sentenceLength-years': 'requireSentenceLength|minWholeNumber:0|requireOneNonZeroSentenceLength',
-          'sentenceLength-months': 'minWholeNumber:0',
-          'sentenceLength-weeks': 'minWholeNumber:0',
-          'sentenceLength-days': 'minWholeNumber:0',
-        }
-      : {}
-    const customMessages = courtCaseOverallSentenceLengthForm.hasOverallSentenceLength
-      ? {
-          'requireSentenceLength.sentenceLength-years': 'You must enter the overall sentence length',
-          'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
-          'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
-          'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
-          'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
-          'requireOneNonZeroSentenceLength.sentenceLength-years': 'The sentence length cannot be 0',
-        }
-      : {}
+    const rules = {
+      hasOverallSentenceLength: 'required',
+      'sentenceLength-years':
+        'required_if:hasOverallSentenceLength,true|requireSentenceLength|minWholeNumber:0|requireOneNonZeroSentenceLength',
+      'sentenceLength-months': 'required_if:hasOverallSentenceLength,true|minWholeNumber:0',
+      'sentenceLength-weeks': 'required_if:hasOverallSentenceLength,true|minWholeNumber:0',
+      'sentenceLength-days': 'required_if:hasOverallSentenceLength,true|minWholeNumber:0',
+    }
+    const customMessages = {
+      'requireSentenceLength.sentenceLength-years': 'You must enter the overall sentence length',
+      'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
+      'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
+      'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
+      'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
+      'requireOneNonZeroSentenceLength.sentenceLength-years': 'The sentence length cannot be 0',
+    }
     const errors = validate(courtCaseOverallSentenceLengthForm, rules, customMessages)
     if (errors.length === 0) {
-      const sentenceLength = sentenceLengthFormToSentenceLength(
-        courtCaseOverallSentenceLengthForm,
-        'OVERALL_SENTENCE_LENGTH',
-      )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.overallSentenceLength = sentenceLength
+      if (courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true') {
+        courtAppearance.overallSentenceLength = sentenceLengthFormToSentenceLength(
+          courtCaseOverallSentenceLengthForm,
+          'OVERALL_SENTENCE_LENGTH',
+        )
+      } else {
+        delete courtAppearance.overallSentenceLength
+      }
+
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

@@ -392,6 +392,7 @@ context('New Court Case journey', () => {
     courtCaseTaskListPage.sentencesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('4')
     courtCaseOverallSentenceLengthPage.monthsInput().type('5')
     courtCaseOverallSentenceLengthPage.button().click()

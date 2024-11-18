@@ -48,6 +48,7 @@ context('Add Court Case Sentence Length Page', () => {
   })
 
   it('submitting all zeros results in an error', () => {
+    courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('0')
     courtCaseOverallSentenceLengthPage.monthsInput().type('0')
     courtCaseOverallSentenceLengthPage.button().click()

@@ -142,6 +142,7 @@ declare module 'forms' {
     'sentenceLength-months'?: string
     'sentenceLength-weeks'?: string
     'sentenceLength-days'?: string
+    hasOverallSentenceLength?: boolean
   }
 
   export interface OffenceSentenceTypeForm {

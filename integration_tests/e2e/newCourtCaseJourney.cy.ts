@@ -55,6 +55,7 @@ context('New Court Case journey', () => {
         outcomeType: 'REMAND',
       },
     ])
+    const caseRef = 'T12345678'
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
@@ -162,7 +163,7 @@ context('New Court Case journey', () => {
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.offencesLink().click()
 
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678', 'offences')
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
@@ -191,7 +192,7 @@ context('New Court Case journey', () => {
     offenceOutcomePage.radioLabelContains('Remanded in custody').click()
     offenceOutcomePage.button().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678', 'offences')
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
@@ -287,6 +288,8 @@ context('New Court Case journey', () => {
         outcomeType: 'SENTENCING',
       },
     ])
+    const caseRef = 'T12345678'
+
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
@@ -315,7 +318,7 @@ context('New Court Case journey', () => {
     courtCaseTaskListPage.appearanceInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
-    courtCaseReferencePage.input().type('T12345678')
+    courtCaseReferencePage.input().type(caseRef)
     courtCaseReferencePage.button().click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
@@ -346,7 +349,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Case reference': 'T12345678',
+      'Case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Imprisonment',
@@ -407,7 +410,7 @@ context('New Court Case journey', () => {
     courtCaseConvictionDateAppliedAllPage.radioLabelSelector('true').click()
     courtCaseConvictionDateAppliedAllPage.button().click()
 
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678', 'offences')
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
@@ -444,7 +447,7 @@ context('New Court Case journey', () => {
     offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     offenceSentenceServeTypePage.button().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678', 'offences')
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
 
     offenceCheckOffenceAnswersPage.notFinishedRadio().click()
 
@@ -471,7 +474,7 @@ context('New Court Case journey', () => {
 
     courtCaseTaskListPage.offencesLink().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678', 'offences')
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 

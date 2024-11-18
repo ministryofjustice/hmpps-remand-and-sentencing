@@ -87,7 +87,7 @@
                                 classes: "govuk-fieldset__legend--m"
                             }
                         },
-                        errorMessage:  errors,
+                        errorMessage: errors | findError('finishedAddingOffences'),
                         items: [
                             {
                                 value: "true",

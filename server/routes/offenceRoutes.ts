@@ -6,6 +6,7 @@ import type {
   OffenceConvictionDateForm,
   OffenceCountNumberForm,
   OffenceDeleteOffenceForm,
+  OffenceFinishedAddingForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
@@ -1114,15 +1115,34 @@ export default class OffenceRoutes {
       offenceMap,
       sentenceTypeMap,
       outcomeMap,
+      errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
 
   public submitCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { finishedAddingOffences } = req.body
-
-    this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, finishedAddingOffences === 'true')
+    const finishedAddingOffences = trimForm<OffenceFinishedAddingForm>(req.body)
+    const errors = validate(
+      finishedAddingOffences,
+      {
+        finishedAddingOffences: 'required',
+      },
+      {
+        'required.finishedAddingOffences': `You must select whether you have finished adding offences`,
+      },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      )
+    }
+    this.courtAppearanceService.setOffenceSentenceAccepted(
+      req.session,
+      nomsId,
+      finishedAddingOffences.finishedAddingOffences === 'true',
+    )
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )

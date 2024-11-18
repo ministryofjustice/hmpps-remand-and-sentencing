@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class OffenceCheckOffenceAnswersPage extends Page {
-  constructor(courtCaseReference: string, offenceSentence: string) {
-    super(`Add ${offenceSentence} to case ${courtCaseReference}`)
+  constructor(courtCaseReference: string) {
+    super(`Add offences to case ${courtCaseReference}`)
   }
 
   deleteOffenceLink = (

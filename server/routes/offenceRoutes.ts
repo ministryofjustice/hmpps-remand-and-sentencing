@@ -1120,7 +1120,12 @@ export default class OffenceRoutes {
 
   public submitCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    this.courtAppearanceService.setOffenceSentenceAcceptedTrue(req.session, nomsId)
+    const { finishedAddingOffences } = req.body
+
+    console.log(req.body)
+    console.log(finishedAddingOffences)
+    console.log(typeof finishedAddingOffences)
+    this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, finishedAddingOffences === 'true')
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
@@ -1353,7 +1358,7 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
     }
-    this.courtAppearanceService.setOffenceSentenceAcceptedTrue(req.session, nomsId)
+    this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, true)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )

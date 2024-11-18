@@ -3,6 +3,8 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/inset-text/macro.njk"          import govukInsetText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 
 {% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
@@ -16,59 +18,26 @@
             {% include "../../partials/offenceCaption.njk" %}
             <h1 class="govuk-heading-l">
                 {% if isAddCourtCase %}
-                    You have added {{ courtAppearance.offences | length }} {{ offenceSentence }}s to case {{ courtAppearance.caseReferenceNumber }} 
+                    Add offences to case {{ courtAppearance.caseReferenceNumber }}
                 {% else %}
                     Edit the {{ offenceSentence }} details for this appearance
                 {% endif %}
-                </h1>
-            {{ govukSummaryList({
-                    classes: "govuk-summary-list--no-border",
-                    rows: [
-                        {
-                            key: {
-                                text: "Case reference"
-                            },
-                            value: {
-                                text: courtAppearance.caseReferenceNumber
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Court name"
-                            },
-                            value: {
-                                text: courtAppearanceCourtName
-                            }
-                        },
-                        {
-                            key: {
-                            text: "Warrant date"
-                        },
-                            value: {
-                            text: courtAppearance.warrantDate | formatDate
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Warrant type"
-                        },
-                            value: {
-                            text: courtAppearance.warrantType | capitalize
-                        }
-                        }
-                    ]
-                }) 
-            }}
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">{{ offenceSentence | capitalize }}s ({{ courtAppearance.offences | length }})</h2>
+            </h1>
 
             {{ govukButton({
-                    text: "Add a sentence" if courtAppearance.warrantType === 'SENTENCING' else "Add an offence" ,
+                    text: "Add an offence" ,
                     classes: "govuk-button--link",
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
                     attributes: {
                         "data-qa": "addAnotherOffence"
                     }
             }) }}
+
+            {%  if courtAppearance.offences.length == 0 %}
+                {{ govukInsetText({
+                    text: "No offences have been added to this appearance."
+                }) }}
+            {%  endif %}
 
             {% for offence in courtAppearance.offences %}
                 {{
@@ -105,18 +74,77 @@
                 }}
             {% endfor %}
 
+            {% if courtAppearance.offences.length > 0 %}
             <div class="govuk-button-group govuk-!-margin-top-8">
                 <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-offence-answers">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    {{ govukRadios({
+                        id: "finishedAddingOffences",
+                        name: "finishedAddingOffences",
+                        fieldset: {
+                            legend: {
+                                text: "Have you finished adding offences?",
+                                classes: "govuk-fieldset__legend--m"
+                            }
+                        },
+                        errorMessage:  errors,
+                        items: [
+                            {
+                                value: "true",
+                                text: "Yes, I've finished adding offences"
+                            },
+                            {
+                                value: "false",
+                                text: "No, I'll come back later"
+                            }
+                        ]
+                    }) }}
+
                     {{ govukButton({
-                        text: "Accept and continue",
+                        text: "Continue",
                         attributes: {
                             "data-qa": "finishAddingButton"
                         }
                     }) }}
             </form>
             </div>
+            {% endif %}
 
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="offence-summary">
+                <h2 class="govuk-heading-m govuk-!-margin-top-4">Appearance details</h2>
+                {{ govukSummaryList({
+                    classes: "govuk-summary-list--no-border offences-summary-card-content",
+                    rows: [
+                        {
+                            key: {
+                            text: "Case reference"
+                        },
+                            value: {
+                            text: courtAppearance.caseReferenceNumber
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Court name"
+                        },
+                            value: {
+                            text: courtAppearanceCourtName
+                        }
+                        },
+                        {
+                            key: {
+                            text: "Warrant date"
+                        },
+                            value: {
+                            text: courtAppearance.warrantDate | formatDate
+                        }
+                        }
+                    ]
+                })
+                }}
+            </div>
         </div>
     </div>
 

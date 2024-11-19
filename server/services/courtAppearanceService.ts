@@ -402,7 +402,7 @@ export default class CourtAppearanceService {
     )
 
     if (errors.length === 0) {
-      let courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
       if (courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true') {
         courtAppearance.overallSentenceLength = sentenceLengthFormToSentenceLength(
           courtCaseOverallSentenceLengthForm,

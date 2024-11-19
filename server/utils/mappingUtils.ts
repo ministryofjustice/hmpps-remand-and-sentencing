@@ -215,14 +215,17 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(
   return sentenceLength
 }
 
-export function sentenceLengthToSentenceLengthForm(sentenceLength: SentenceLength): SentenceLengthForm {
+export function sentenceLengthToSentenceLengthForm(
+  sentenceLength: SentenceLength,
+  hasOverallSentenceLength?: string,
+): SentenceLengthForm {
   return sentenceLength
     ? {
         'sentenceLength-years': sentenceLength.years,
         'sentenceLength-months': sentenceLength.months,
         'sentenceLength-weeks': sentenceLength.weeks,
         'sentenceLength-days': sentenceLength.days,
-        hasOverallSentenceLength: sentenceLength.hasOverallSentenceLength ? 'true' : 'false',
+        hasOverallSentenceLength,
       }
     : ({} as SentenceLengthForm)
 }

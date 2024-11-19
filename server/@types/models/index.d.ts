@@ -31,6 +31,7 @@ declare module 'models' {
     overallConvictionDate?: Date
     overallConvictionDateAppliedAll?: string
     legacyData: Record<string, never>
+    hasOverallSentenceLength?: string
   }
 
   export interface Offence {
@@ -68,7 +69,6 @@ declare module 'models' {
       | 'TARIFF_LENGTH'
       | 'TERM_LENGTH'
       | 'OVERALL_SENTENCE_LENGTH'
-    hasOverallSentenceLength?: boolean
   }
   export interface TaskListItem {
     title: { text: string }

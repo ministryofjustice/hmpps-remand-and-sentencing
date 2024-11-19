@@ -410,18 +410,9 @@ export default class CourtAppearanceService {
         )
       } else {
         delete courtAppearance.overallSentenceLength
-        courtAppearance.overallSentenceLength = {
-          periodOrder: [
-            ...(courtCaseOverallSentenceLengthForm['sentenceLength-years'] ? ['years'] : []),
-            ...(courtCaseOverallSentenceLengthForm['sentenceLength-months'] ? ['months'] : []),
-            ...(courtCaseOverallSentenceLengthForm['sentenceLength-weeks'] ? ['weeks'] : []),
-            ...(courtCaseOverallSentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
-          ],
-          periodLengthType: 'OVERALL_SENTENCE_LENGTH',
-          hasOverallSentenceLength: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true',
-        }
       }
 
+      courtAppearance.hasOverallSentenceLength = courtCaseOverallSentenceLengthForm.hasOverallSentenceLength
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

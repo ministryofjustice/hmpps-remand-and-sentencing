@@ -242,6 +242,7 @@ export function sentenceLengthFormToSentenceLength(
       ...(sentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
     ],
     periodLengthType,
+    hasOverallSentenceLength: sentenceLengthForm.hasOverallSentenceLength === 'true',
   } as SentenceLength
 }
 

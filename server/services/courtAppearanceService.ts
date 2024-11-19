@@ -402,14 +402,23 @@ export default class CourtAppearanceService {
     )
 
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      let courtAppearance = this.getCourtAppearance(session, nomsId)
       if (courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true') {
         courtAppearance.overallSentenceLength = sentenceLengthFormToSentenceLength(
           courtCaseOverallSentenceLengthForm,
           'OVERALL_SENTENCE_LENGTH',
         )
       } else {
-        delete courtAppearance.overallSentenceLength
+        courtAppearance.overallSentenceLength = {
+          periodOrder: [
+            ...(courtCaseOverallSentenceLengthForm['sentenceLength-years'] ? ['years'] : []),
+            ...(courtCaseOverallSentenceLengthForm['sentenceLength-months'] ? ['months'] : []),
+            ...(courtCaseOverallSentenceLengthForm['sentenceLength-weeks'] ? ['weeks'] : []),
+            ...(courtCaseOverallSentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
+          ],
+          periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+          hasOverallSentenceLength: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true',
+        }
       }
 
       // eslint-disable-next-line no-param-reassign

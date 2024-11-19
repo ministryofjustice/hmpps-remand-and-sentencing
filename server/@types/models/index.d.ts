@@ -68,6 +68,7 @@ declare module 'models' {
       | 'TARIFF_LENGTH'
       | 'TERM_LENGTH'
       | 'OVERALL_SENTENCE_LENGTH'
+    hasOverallSentenceLength?: boolean
   }
   export interface TaskListItem {
     title: { text: string }

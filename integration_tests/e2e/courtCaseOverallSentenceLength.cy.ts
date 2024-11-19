@@ -25,10 +25,11 @@ context('Add Court Case Sentence Length Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseOverallSentenceLengthPage.button().should('contain.text', 'Continue')
+    courtCaseOverallSentenceLengthPage.button().should('contain.text', 'Save and continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {
+    courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.button().click()
     courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage
@@ -38,6 +39,7 @@ context('Add Court Case Sentence Length Page', () => {
   })
 
   it('submitting a decimal number results in an error', () => {
+    courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('1.5')
     courtCaseOverallSentenceLengthPage.button().click()
     courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)

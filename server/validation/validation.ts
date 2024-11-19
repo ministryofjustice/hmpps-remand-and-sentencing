@@ -10,6 +10,8 @@ import wholeNumberValidate from './wholeNumberRule'
 import minNumberValidate from './minNumberRule'
 import requireOneNonZeroSentenceLength from './requireOneNonZeroSentenceLength'
 import requireOneNonZeroAlternativeSentenceLength from './requireOneNonZeroAlternativeSentenceLength'
+import requireSentenceLengthIf from './requireSentenceLengthIf'
+import requireOneNonZeroSentenceLengthIf from './requireOneNonZeroSentenceLengthIf'
 
 export default function validate<T>(
   form: T,
@@ -42,9 +44,15 @@ Validator.registerImplicit(
   'You must enter the sentence length',
 )
 Validator.registerImplicit('requireSentenceLength', requireSentenceLength, 'You must enter the sentence length')
+Validator.registerImplicit('requireSentenceLength_if', requireSentenceLengthIf, 'You must enter the sentence length')
 Validator.register(
   'requireOneNonZeroSentenceLength',
   requireOneNonZeroSentenceLength,
+  'The sentence length cannot be 0',
+)
+Validator.register(
+  'requireOneNonZeroSentenceLength_if',
+  requireOneNonZeroSentenceLengthIf,
   'The sentence length cannot be 0',
 )
 Validator.register(

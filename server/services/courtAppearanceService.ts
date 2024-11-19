@@ -380,23 +380,26 @@ export default class CourtAppearanceService {
     nomsId: string,
     courtCaseOverallSentenceLengthForm: SentenceLengthForm,
   ) {
-    const rules = {
-      hasOverallSentenceLength: 'required',
-      'sentenceLength-years':
-        'required_if:hasOverallSentenceLength,true|requireSentenceLength|minWholeNumber:0|requireOneNonZeroSentenceLength',
-      'sentenceLength-months': 'required_if:hasOverallSentenceLength,true|minWholeNumber:0',
-      'sentenceLength-weeks': 'required_if:hasOverallSentenceLength,true|minWholeNumber:0',
-      'sentenceLength-days': 'required_if:hasOverallSentenceLength,true|minWholeNumber:0',
-    }
-    const customMessages = {
-      'requireSentenceLength.sentenceLength-years': 'You must enter the overall sentence length',
-      'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
-      'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
-      'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
-      'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
-      'requireOneNonZeroSentenceLength.sentenceLength-years': 'The sentence length cannot be 0',
-    }
-    const errors = validate(courtCaseOverallSentenceLengthForm, rules, customMessages)
+    const errors = validate(
+      courtCaseOverallSentenceLengthForm,
+      {
+        hasOverallSentenceLength: 'required',
+        'sentenceLength-years':
+          'requireSentenceLength_if:hasOverallSentenceLength,true|minWholeNumber:0|requireOneNonZeroSentenceLength_if:hasOverallSentenceLength,true',
+        'sentenceLength-months': 'minWholeNumber:0',
+        'sentenceLength-weeks': 'minWholeNumber:0',
+        'sentenceLength-days': 'minWholeNumber:0',
+      },
+      {
+        'required.hasOverallSentenceLength': 'You must select if there is an overall sentence length or not',
+        'requireSentenceLength_if.sentenceLength-years': 'You must enter the overall sentence length',
+        'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
+        'requireOneNonZeroSentenceLength_if.sentenceLength-years': 'The sentence length cannot be 0',
+      },
+    )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       if (courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true') {

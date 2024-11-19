@@ -222,6 +222,7 @@ export function sentenceLengthToSentenceLengthForm(sentenceLength: SentenceLengt
         'sentenceLength-months': sentenceLength.months,
         'sentenceLength-weeks': sentenceLength.weeks,
         'sentenceLength-days': sentenceLength.days,
+        hasOverallSentenceLength: sentenceLength.hasOverallSentenceLength ? 'true' : 'false',
       }
     : ({} as SentenceLengthForm)
 }

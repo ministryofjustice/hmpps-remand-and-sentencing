@@ -404,6 +404,7 @@ context('Repeat Court Case journey', () => {
     courtCaseTaskListPage.reviewOffencesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('4')
     courtCaseOverallSentenceLengthPage.monthsInput().type('5')
     courtCaseOverallSentenceLengthPage.button().click()

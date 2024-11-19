@@ -31,6 +31,7 @@ declare module 'models' {
     overallConvictionDate?: Date
     overallConvictionDateAppliedAll?: string
     legacyData: Record<string, never>
+    hasOverallSentenceLength?: string
   }
 
   export interface Offence {

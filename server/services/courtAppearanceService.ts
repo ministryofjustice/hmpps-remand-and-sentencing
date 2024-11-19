@@ -400,6 +400,7 @@ export default class CourtAppearanceService {
         'requireOneNonZeroSentenceLength_if.sentenceLength-years': 'The sentence length cannot be 0',
       },
     )
+
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       if (courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true') {

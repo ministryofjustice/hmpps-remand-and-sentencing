@@ -70,7 +70,7 @@ declare module 'models' {
       | 'OVERALL_SENTENCE_LENGTH'
   }
   export interface TaskListItem {
-    title: { text: string }
+    title: { text: string; classes?: string }
     href: string
     status: TaskListItemStatus
   }

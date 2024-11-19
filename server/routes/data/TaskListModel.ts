@@ -51,6 +51,7 @@ export default class TaskListModel {
     return {
       title: {
         text: 'Add appearance information',
+        classes: 'govuk-link--no-visited-state',
       },
       href: this.getAppearanceInformationHref(courtAppearance, caseReferenceSet),
       status: this.getAppearanceInformationStatus(courtAppearance),
@@ -142,6 +143,7 @@ export default class TaskListModel {
     return {
       title: {
         text: 'Upload court documents',
+        classes: 'govuk-link--no-visited-state',
       },
       href: this.allAppearanceInformationFilledOut(courtAppearance)
         ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/document-type`
@@ -154,6 +156,7 @@ export default class TaskListModel {
     return {
       title: {
         text: this.getOffenceSentenceTitleText(),
+        classes: 'govuk-link--no-visited-state',
       },
       href: this.getOffenceSentenceHref(courtAppearance),
       status: this.getOffenceSentenceStatus(courtAppearance),
@@ -220,6 +223,7 @@ export default class TaskListModel {
     return {
       title: {
         text: this.getNextCourtAppearanceTitleText(),
+        classes: 'govuk-link--no-visited-state',
       },
       href: this.allAppearanceInformationFilledOut(courtAppearance)
         ? this.getNextCourtAppearanceHref(courtAppearance)

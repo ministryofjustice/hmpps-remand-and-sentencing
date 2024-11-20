@@ -73,15 +73,15 @@ context('Repeat Court Case journey', () => {
         },
         {
           name: 'Review offences',
-          status: 'Optional',
+          status: 'Cannot start yet',
         },
         {
           name: 'Add next court appearance',
-          status: 'Optional',
+          status: 'Cannot start yet',
         },
         {
           name: 'Upload court documents',
-          status: 'Optional',
+          status: 'Cannot start yet',
         },
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
@@ -135,7 +135,7 @@ context('Repeat Court Case journey', () => {
         },
         {
           name: 'Review offences',
-          status: 'Optional',
+          status: 'Incomplete',
         },
         {
           name: 'Add next court appearance',
@@ -317,7 +317,7 @@ context('Repeat Court Case journey', () => {
         },
         {
           name: 'Upload court documents',
-          status: 'Optional',
+          status: 'Cannot start yet',
         },
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()

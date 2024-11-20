@@ -34,7 +34,7 @@ export default class TaskListModel {
     if (courtAppearance.warrantType === 'REMAND') {
       this.items.push(this.getNextCourtAppearanceItem(courtAppearance))
     }
-    this.items.push(this.getCourtDocumentsItem())
+    this.items.push(this.getCourtDocumentsItem(courtAppearance))
   }
 
   private getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
@@ -122,18 +122,29 @@ export default class TaskListModel {
     )
   }
 
-  private getCourtDocumentsItem(): TaskListItem {
+  private getCourtDocumentsItem(courtAppearance: CourtAppearance): TaskListItem {
+    let status
+    status = {
+      tag: {
+        text: 'Optional',
+        classes: 'govuk-tag--grey',
+      },
+    }
+
+    if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+      status = {
+        text: 'Cannot start yet',
+      }
+    }
+
     return {
       title: {
         text: 'Upload court documents',
       },
-      href: `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/document-type`,
-      status: {
-        tag: {
-          text: 'Optional',
-          classes: 'govuk-tag--grey',
-        },
-      },
+      href: this.allAppearanceInformationFilledOut(courtAppearance)
+        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/document-type`
+        : null,
+      status,
     }
   }
 
@@ -173,28 +184,29 @@ export default class TaskListModel {
   }
 
   private getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
+    const appearanceInfoComplete = this.allAppearanceInformationFilledOut(courtAppearance)
     let status
+    status = {
+      text: 'Cannot start yet',
+    }
     if (courtAppearance.offenceSentenceAccepted) {
       status = {
         text: 'Completed',
       }
-    } else if (!this.isAddCourtCase() && courtAppearance.warrantType === 'REMAND') {
-      status = {
-        tag: {
-          text: 'Optional',
-          classes: 'govuk-tag--grey',
-        },
+    } else if (appearanceInfoComplete) {
+      if (!this.isAddCourtCase() && courtAppearance.warrantType === 'REMAND') {
+        status = {
+          tag: {
+            text: 'Optional',
+            classes: 'govuk-tag--grey',
+          },
+        }
       }
-    } else if (this.allAppearanceInformationFilledOut(courtAppearance)) {
       status = {
         tag: {
           text: 'Incomplete',
           classes: 'govuk-tag--blue',
         },
-      }
-    } else {
-      status = {
-        text: 'Cannot start yet',
       }
     }
     return status
@@ -219,6 +231,9 @@ export default class TaskListModel {
   }
 
   private getNextCourtAppearanceHref(courtAppearance: CourtAppearance): string {
+    if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+      return null
+    }
     let href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/next-hearing-select`
     if (courtAppearance.nextCourtAppearanceAccepted) {
       href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/check-next-hearing-answers`
@@ -236,6 +251,10 @@ export default class TaskListModel {
     if (courtAppearance.nextCourtAppearanceAccepted) {
       status = {
         text: 'Completed',
+      }
+    } else if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+      status = {
+        text: 'Cannot start yet',
       }
     } else if (this.isAddCourtCase()) {
       status = {

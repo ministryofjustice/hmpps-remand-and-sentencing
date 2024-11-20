@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class OffenceCheckOffenceAnswersPage extends Page {
-  constructor(offenceCount: number, courtCaseReference: string, offenceSentence: string) {
-    super(`You have added ${offenceCount} ${offenceSentence} to case ${courtCaseReference}`)
+  constructor(courtCaseReference: string) {
+    super(`Add offences to case ${courtCaseReference}`)
   }
 
   deleteOffenceLink = (
@@ -26,6 +26,10 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
     )
 
   finishAddingButton = (): PageElement => cy.get('[data-qa="finishAddingButton"]')
+
+  finishedAddingRadio = (): PageElement => cy.get('[data-qa="finishAddingRadio"]')
+
+  notFinishedRadio = (): PageElement => cy.get('[data-qa="notFinishedRadio"]')
 
   addAnotherButton = (): PageElement => cy.get('[data-qa="addAnotherOffence"]')
 }

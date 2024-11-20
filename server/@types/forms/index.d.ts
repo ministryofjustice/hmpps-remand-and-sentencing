@@ -86,6 +86,10 @@ declare module 'forms' {
     deleteOffence?: string
   }
 
+  export interface OffenceFinishedAddingForm {
+    finishedAddingOffences?: string
+  }
+
   export interface ReviewOffencesForm {
     changeOffence?: string
   }

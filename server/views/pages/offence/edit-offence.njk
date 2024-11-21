@@ -2,8 +2,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set offenceSentence = 'sentence' if offence.sentence else 'offence' %}
-
 {% set summaryRows=[{
                     key: {
                         text: "Offence"
@@ -48,13 +46,19 @@
                     }
                 }] %}
 
+{% if offence.sentence.countNumber %}
+  {% set countNumber = "Count " + offence.sentence.countNumber %}
+{% else %}
+  {% set countNumber = "Not entered" %}
+{% endif %}
+
 {% if offence.sentence %}
     {% set summaryRows = ([{
                     key: {
                     text: "Count number"
                 },
                     value: {
-                    text: "Count " + offence.sentence.countNumber
+                    text: countNumber
                 },
                     actions: {
                         items: [{
@@ -137,7 +141,7 @@
                     })) %}
 {% endif %}
 
-{% set pageTitle = applicationName + " - Edit an " + offenceSentence %}
+{% set pageTitle = applicationName + " - Edit an offence" %}
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
@@ -145,7 +149,7 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-edit-offence">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
-                <h1 class="govuk-heading-l">Edit {{ offenceSentence }} details</h1>
+                <h1 class="govuk-heading-l">Edit offence details</h1>
                 
                 {{ govukSummaryList({
                     rows: summaryRows

@@ -563,6 +563,9 @@ export interface components {
         | 'FINE'
         | 'LEGACY'
         | 'NON_CUSTODIAL'
+      hint?: {
+        text: string
+      }
     }
     Recall: {
       /** Format: uuid */

@@ -1,12 +1,3 @@
-
 <span class="govuk-caption-l">
-    {% if not isAddCourtAppearance %}
-        Appearance {{ courtAppearance.caseReferenceNumber }} at {{ courtAppearance.courtName }} on {{ courtAppearance.warrantDate | formatDate }}
-    {% elif offence.sentence.countNumber and not isDeleteOffence %}
-        Add sentence information for count {{ offence.sentence.countNumber }}
-    {% elif isAddOffences %}
-        Add offences
-    {% else %}
-        Add a court case
-    {% endif %}
+    Add offences
 </span>

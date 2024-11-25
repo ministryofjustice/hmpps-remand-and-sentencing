@@ -9,6 +9,7 @@ context('Add Offence Consecutive to Page', () => {
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/count-number')
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()
 

@@ -78,11 +78,11 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Next court appearance',
-          status: 'Incomplete',
+          status: 'Cannot start yet',
         },
         {
           name: 'Upload court documents',
-          status: 'Optional',
+          status: 'Cannot start yet',
         },
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
@@ -312,7 +312,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Upload court documents',
-          status: 'Optional',
+          status: 'Cannot start yet',
         },
       ])
     courtCaseTaskListPage.appearanceInformationLink().click()
@@ -415,6 +415,7 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()
 

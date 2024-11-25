@@ -190,6 +190,16 @@ export default class TaskListModel {
 
   private getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
     let status
+
+    if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+      return {
+        tag: {
+          text: 'Cannot start yet',
+          classes: 'govuk-tag--grey',
+        },
+      }
+    }
+
     if (courtAppearance.offenceSentenceAccepted) {
       status = {
         text: 'Completed',
@@ -208,14 +218,8 @@ export default class TaskListModel {
           classes: 'govuk-tag--blue',
         },
       }
-    } else {
-      status = {
-        tag: {
-          text: 'Cannot start yet',
-          classes: 'govuk-tag--grey',
-        },
-      }
     }
+
     return status
   }
 

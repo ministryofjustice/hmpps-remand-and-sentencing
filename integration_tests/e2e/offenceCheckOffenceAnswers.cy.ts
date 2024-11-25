@@ -126,7 +126,7 @@ context('Check Offence Answers Page', () => {
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
-      const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'sentence')
+      const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
       offenceDeleteOffencePage.radioLabelSelector('true').click()
       offenceDeleteOffencePage.button().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
@@ -141,7 +141,7 @@ context('Check Offence Answers Page', () => {
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
-      const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'sentence')
+      const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
       offenceDeleteOffencePage.button().click()
       offenceDeleteOffencePage
         .errorSummary()

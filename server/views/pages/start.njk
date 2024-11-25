@@ -82,24 +82,24 @@
 
                 {%- for appearance in courtCaseDetails.latestAppearances -%}
                     {% if courtCaseDetails.overallCaseStatus != 'DELETED' %}
-                    {%- set tableRow= [
-                            {
-                                text: appearance.courtCaseReference
-                            },
-                            {
-                                text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode
-                            },
-                            {
-                                text: appearance.appearanceDate | formatDate
-                            },
-                            {
-                                text: appearance.outcome | appearanceOutcomeOrLegacy(appearance.legacyData)
-                            },
-                            {
-                                html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">View and edit</a>'
-                            }
-                        ]-%}
-                    {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
+                        {%- set tableRow= [
+                                {
+                                    text: appearance.courtCaseReference
+                                },
+                                {
+                                    text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode
+                                },
+                                {
+                                    text: appearance.appearanceDate | formatDate
+                                },
+                                {
+                                    text: appearance.outcome | appearanceOutcomeOrLegacy(appearance.legacyData)
+                                },
+                                {
+                                    html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">View and edit</a>'
+                                }
+                            ]-%}
+                        {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
                     {% endif %}
                 {%- endfor -%}
 

@@ -1,4 +1,3 @@
-import { c } from 'openapi-typescript'
 import Page from '../pages/page'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'

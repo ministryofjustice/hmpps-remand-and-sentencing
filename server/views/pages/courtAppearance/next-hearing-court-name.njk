@@ -13,7 +13,7 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <input type="hidden" name="courtCode" id="court-code" value="{{nextHearingCourtNameForm.courtCode}}">
-                {% include "../../partials/appearanceCaption.njk" %}
+                {% include "../../partials/nextAppearanceCaption.njk" %}
                 {{ govukSelect({
                     label: {
                         text: "What court is the next hearing at?"  if isAddCourtAppearance else "Edit next court hearing location",

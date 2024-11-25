@@ -39,6 +39,20 @@ context('Start Page', () => {
     })
   })
 
+  it('displays inactive tag on inactive case', () => {
+    startPage
+      .courtCaseCard('d316d5b7-022f-40e5-98ab-aebe8ac4abf4')
+      .getActions()
+      .should('equal', 'Inactive Inactive (Court Case d316d5b7-022f-40e5-98ab-aebe8ac4abf4)')
+  })
+
+  it('displays add appearance link on inactive case', () => {
+    startPage
+      .courtCaseCard('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+      .getActions()
+      .should('equal', 'Add an appearance Add an appearance (Court Case 3fa85f64-5717-4562-b3fc-2c963f66afa6)')
+  })
+
   it('displays court case appearances', () => {
     startPage
       .courtCaseAppearanceTable('3fa85f64-5717-4562-b3fc-2c963f66afa6')

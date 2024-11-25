@@ -103,6 +103,8 @@ export default class CourtCaseRoutes {
     const { token } = res.locals.user
     const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
 
+    console.log(courtCaseDetails)
+
     const chargeCodes = courtCaseDetails.appearances
       .map(appearance => appearance.charges.map(charge => charge.offenceCode))
       .flat()

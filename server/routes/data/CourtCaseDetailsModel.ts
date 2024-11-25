@@ -22,6 +22,8 @@ export default class CourtCaseDetailsModel {
 
   overallSentenceLength: string
 
+  overallCaseStatus: string
+
   appearanceTotal: number
 
   appearances: PageCourtCaseAppearance[]
@@ -57,6 +59,7 @@ export default class CourtCaseDetailsModel {
         periodLengthToSentenceLength(pageCourtCaseContent.latestAppearance.overallSentenceLength),
       )
     }
+    this.overallCaseStatus = pageCourtCaseContent.status
     this.appearanceTotal = pageCourtCaseContent.appearances.length
     this.appearances = pageCourtCaseContent.appearances
   }

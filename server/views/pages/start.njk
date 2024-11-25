@@ -81,6 +81,7 @@
                 {%- set appearanceTableRows = [] -%}
 
                 {%- for appearance in courtCaseDetails.latestAppearances -%}
+                    {% if courtCaseDetails.overallCaseStatus != 'DELETED' %}
                     {%- set tableRow= [
                             {
                                 text: appearance.courtCaseReference
@@ -99,6 +100,7 @@
                             }
                         ]-%}
                     {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
+                    {% endif %}
                 {%- endfor -%}
 
                 {{ govukTable({

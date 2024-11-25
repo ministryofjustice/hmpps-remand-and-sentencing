@@ -135,7 +135,7 @@ context('Repeat Court Case journey', () => {
         },
         {
           name: 'Review offences',
-          status: 'Optional',
+          status: 'Incomplete',
         },
         {
           name: 'Add next court appearance',

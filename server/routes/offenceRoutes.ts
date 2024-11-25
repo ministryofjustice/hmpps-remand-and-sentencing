@@ -106,6 +106,7 @@ export default class OffenceRoutes {
       offenceEndDateDay,
       offenceEndDateMonth,
       offenceEndDateYear,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       backLink,
     })
@@ -197,6 +198,7 @@ export default class OffenceRoutes {
       mainOutcomes,
       subListOutcomes,
       legacyCaseOutcome,
+      isAddOffences: true,
     })
   }
 
@@ -271,6 +273,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       countNumberForm,
       submitToEditOffence,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       backLink,
     })
@@ -340,6 +343,7 @@ export default class OffenceRoutes {
       courtCaseReference,
       offenceReference,
       appearanceReference,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       offenceCode,
       unknownCode: offenceCodeForm.unknownCode,
@@ -420,6 +424,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       submitToEditOffence,
       offenceNameForm,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
     })
@@ -484,6 +489,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       submitToEditOffence,
+      isAddOffences: true,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
     })
   }
@@ -538,6 +544,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       submitToEditOffence,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       backLink: submitToEditOffence
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
@@ -1124,6 +1131,7 @@ export default class OffenceRoutes {
       offenceMap,
       sentenceTypeMap,
       outcomeMap,
+      isReviewOffences: true,
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
@@ -1306,6 +1314,7 @@ export default class OffenceRoutes {
       sentenceLength,
       sentenceLengthType,
       outcome,
+      isAddOffences: true,
       backLink: res.locals.isAddCourtAppearance
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
@@ -1365,6 +1374,7 @@ export default class OffenceRoutes {
       sentenceTypeMap,
       offences,
       offenceOutcomeMap,
+      isReviewOffences: true,
     })
   }
 

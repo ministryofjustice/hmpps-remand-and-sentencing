@@ -83,6 +83,7 @@ export default {
                   displayOrder: 10,
                 },
                 courtCode: 'ACCRYC',
+                status: 'ACTIVE',
                 courtCaseReference: 'C894623',
                 appearanceDate: '2023-12-15',
                 nextCourtAppearance: {
@@ -181,10 +182,12 @@ export default {
               prisonerId: 'A1234AB',
               courtCaseUuid: 'd316d5b7-022f-40e5-98ab-aebe8ac4abf4',
               appearances: [],
+              status: 'INACTIVE',
             },
             {
               prisonerId: 'A1234AB',
               courtCaseUuid: '84ab3dc4-7bd7-4b14-a1ae-6434f7e2cc8b',
+              status: 'ACTIVE',
               latestAppearance: {
                 appearanceUuid: 'd48ce605-8f96-4ad7-93fe-5688986599e2',
                 legacyData: {

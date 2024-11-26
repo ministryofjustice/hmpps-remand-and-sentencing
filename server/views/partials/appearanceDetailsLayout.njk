@@ -12,14 +12,6 @@
     </dl>
 {% endset %}
 
-{% set SentenceDetailHtml %}
-    <dl class="offences-summary-card-content">
-        {% for sentence in sentences %}
-            {{ offenceSummaryRow(sentence, offenceNameMap) }}
-        {% endfor %}
-    </dl>
-{% endset %}
-
 {% block content %}
     {{ super() }}
     
@@ -67,53 +59,27 @@
                     }
                 }) }}
 
-                {% if courtAppearance.warrantType === 'REMAND' %}
-                    {% if offences | length %}
-                        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-                        <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Offences</h2>
-                        {{ govukSummaryList({
-                            classes: "govuk-summary-list--no-border offences-summary-card-content",
-                            rows: [
-                                {
-                                    key: {
-                                        text: "Offences added"
-                                    },
-                                    value: {
-                                        text: offences | length
-                                    },
-                                    classes: "offences-summary-card-offence-details-row"
-                                }
-                            ]
-                        }) }}
-                        {{ govukDetails({
-                            summaryText: "Show offences",
-                            html: offenceDetailHtml
-                        }) }}
-                    {% endif %}
-                {% endif %}
-                {% if courtAppearance.warrantType === 'SENTENCING'%}
-                    {% if sentences | length %}
-                        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-                        <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Offences</h2>
-                        {{ govukSummaryList({
-                            classes: "govuk-summary-list--no-border offences-summary-card-content",
-                            rows: [
-                                {
-                                    key: {
-                                        text: "Offences added"
-                                    },
-                                    value: {
-                                        text: sentences | length
-                                    },
-                                    classes: "offences-summary-card-offence-details-row"
-                                }
-                            ]
-                        }) }}
-                        {{ govukDetails({
-                            summaryText: "Show offences",
-                            html: SentenceDetailHtml
-                        }) }}
-                    {% endif %}
+                {% if offences | length %}
+                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                    <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Offences</h2>
+                    {{ govukSummaryList({
+                        classes: "govuk-summary-list--no-border offences-summary-card-content",
+                        rows: [
+                            {
+                                key: {
+                                    text: "Offences added"
+                                },
+                                value: {
+                                    text: offences | length
+                                },
+                                classes: "offences-summary-card-offence-details-row"
+                            }
+                        ]
+                    }) }}
+                    {{ govukDetails({
+                        summaryText: "Show offences",
+                        html: offenceDetailHtml
+                    }) }}
                 {% endif %}
             </div>
         </div>

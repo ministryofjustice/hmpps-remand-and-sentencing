@@ -46,13 +46,12 @@
                     }
                 }] %}
 
-{% if offence.sentence.countNumber %}
-  {% set countNumber = "Count " + offence.sentence.countNumber %}
-{% else %}
-  {% set countNumber = "Not entered" %}
-{% endif %}
-
 {% if offence.sentence %}
+    {% if offence.sentence.countNumber %}
+        {% set countNumber = "Count " + offence.sentence.countNumber %}
+    {% else %}
+        {% set countNumber = "Not entered" %}
+    {% endif %}
     {% set summaryRows = ([{
                     key: {
                     text: "Count number"

@@ -10,7 +10,11 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-warrant-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">
-                    Add a court case
+                    {% if addOrEditCourtCase === "add" %}
+                        Add a court case
+                    {% else %}
+                        Add an appearance
+                    {% endif %}
                 </span>
                 {{ govukRadios({
                     name: "warrantType",

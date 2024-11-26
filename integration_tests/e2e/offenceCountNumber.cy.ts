@@ -25,7 +25,7 @@ context('Add Offence Count number Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceCountNumberPage.button().should('contain.text', 'Continue')
+    offenceCountNumberPage.button().should('contain.text', 'Save and continue')
   })
 
   it('submitting without selecting entering anything results in error', () => {
@@ -38,6 +38,7 @@ context('Add Offence Count number Page', () => {
   })
 
   it('submitting 0 results in error', () => {
+    offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().clear()
     offenceCountNumberPage.input().type('0')
     offenceCountNumberPage.button().click()
@@ -49,6 +50,7 @@ context('Add Offence Count number Page', () => {
   })
 
   it('submitting a decimal results in error', () => {
+    offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().clear()
     offenceCountNumberPage.input().type('6.5')
     offenceCountNumberPage.button().click()

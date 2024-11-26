@@ -428,6 +428,7 @@ context('Repeat Court Case journey', () => {
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()
 

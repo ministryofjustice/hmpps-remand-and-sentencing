@@ -9,7 +9,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/appearanceCaption.njk" %}
+                {% include "../../partials/nextAppearanceCaption.njk" %}
                 {{ govukRadios({
                     name: "nextHearingType",
                     fieldset: {

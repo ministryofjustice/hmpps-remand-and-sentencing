@@ -210,19 +210,27 @@ export default class OffenceService {
     const errors = validate(
       countNumberForm,
       {
-        countNumber: 'required|minNumber:1|wholeNumber',
+        countNumber: 'required_if:hasCountNumber,true|minNumber:1|wholeNumber',
+        hasCountNumber: 'required',
       },
       {
-        'required.countNumber': 'You must enter a count number.',
+        'required_if.countNumber': 'You must enter a count number.',
         'minNumber.countNumber': 'You must enter a number greater than zero.',
         'wholeNumber.countNumber': 'Enter a whole number for the count number.',
+        'required.hasCountNumber': 'You must enter a count number.',
       },
     )
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
-      sentence.countNumber = countNumberForm.countNumber
+      sentence.hasCountNumber = countNumberForm.hasCountNumber
+      if (countNumberForm.hasCountNumber === 'true') {
+        sentence.countNumber = countNumberForm.countNumber
+      } else {
+        delete sentence.countNumber
+      }
+
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

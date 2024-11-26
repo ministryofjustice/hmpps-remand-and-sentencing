@@ -246,6 +246,7 @@ Cypress.Commands.add(
       `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/count-number`,
     )
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().clear()
     offenceCountNumberPage.input().type('1')
     offenceCountNumberPage.button().click()

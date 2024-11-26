@@ -90,7 +90,7 @@ context('Court Case Appearance details Page', () => {
         .click()
 
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
-      courtCaseReferencePage.captionText().contains('Appearance C894623 at Southampton Magistrate Court on 15/12/2023')
+      courtCaseReferencePage.captionText().contains('Add appearance information')
       courtCaseReferencePage.input().clear().type('T12345678')
       courtCaseReferencePage.button().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
@@ -212,7 +212,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseAppearanceDetailsPage
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
         .click()
-      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage
         .editFieldLink(
           'A1234AB',
@@ -230,7 +230,7 @@ context('Court Case Appearance details Page', () => {
       offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
       offenceOffenceDatePage.dayDateInput('offenceStartDate').type('25')
       offenceOffenceDatePage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',

@@ -51,6 +51,7 @@ export default class TaskListModel {
     return {
       title: {
         text: 'Add appearance information',
+        classes: 'govuk-link--no-visited-state',
       },
       href: this.getAppearanceInformationHref(courtAppearance, caseReferenceSet),
       status: this.getAppearanceInformationStatus(courtAppearance),
@@ -123,8 +124,7 @@ export default class TaskListModel {
   }
 
   private getCourtDocumentsItem(courtAppearance: CourtAppearance): TaskListItem {
-    let status
-    status = {
+    let status: TaskListItemStatus = {
       tag: {
         text: 'Optional',
         classes: 'govuk-tag--grey',
@@ -133,13 +133,17 @@ export default class TaskListModel {
 
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
       status = {
-        text: 'Cannot start yet',
+        tag: {
+          text: 'Cannot start yet',
+          classes: 'govuk-tag--grey',
+        },
       }
     }
 
     return {
       title: {
         text: 'Upload court documents',
+        classes: 'govuk-link--no-visited-state',
       },
       href: this.allAppearanceInformationFilledOut(courtAppearance)
         ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/document-type`
@@ -152,6 +156,7 @@ export default class TaskListModel {
     return {
       title: {
         text: this.getOffenceSentenceTitleText(),
+        classes: 'govuk-link--no-visited-state',
       },
       href: this.getOffenceSentenceHref(courtAppearance),
       status: this.getOffenceSentenceStatus(courtAppearance),
@@ -186,9 +191,16 @@ export default class TaskListModel {
   private getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
     const appearanceInfoComplete = this.allAppearanceInformationFilledOut(courtAppearance)
     let status
-    status = {
-      text: 'Cannot start yet',
+
+    if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+      return {
+        tag: {
+          text: 'Cannot start yet',
+          classes: 'govuk-tag--grey',
+        },
+      }
     }
+
     if (courtAppearance.offenceSentenceAccepted) {
       status = {
         text: 'Completed',
@@ -209,6 +221,7 @@ export default class TaskListModel {
         },
       }
     }
+
     return status
   }
 
@@ -216,8 +229,11 @@ export default class TaskListModel {
     return {
       title: {
         text: this.getNextCourtAppearanceTitleText(),
+        classes: 'govuk-link--no-visited-state',
       },
-      href: this.getNextCourtAppearanceHref(courtAppearance),
+      href: this.allAppearanceInformationFilledOut(courtAppearance)
+        ? this.getNextCourtAppearanceHref(courtAppearance)
+        : null,
       status: this.getNextCourtAppearanceStatus(courtAppearance),
     }
   }
@@ -248,13 +264,16 @@ export default class TaskListModel {
         classes: 'govuk-tag--grey',
       },
     }
-    if (courtAppearance.nextCourtAppearanceAccepted) {
+    if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+      status = {
+        tag: {
+          text: 'Cannot start yet',
+          classes: 'govuk-tag--grey',
+        },
+      }
+    } else if (courtAppearance.nextCourtAppearanceAccepted) {
       status = {
         text: 'Completed',
-      }
-    } else if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
-      status = {
-        text: 'Cannot start yet',
       }
     } else if (this.isAddCourtCase()) {
       status = {
@@ -264,6 +283,7 @@ export default class TaskListModel {
         },
       }
     }
+
     return status
   }
 

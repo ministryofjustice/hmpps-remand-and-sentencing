@@ -2,8 +2,22 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-
+{% set yesHtml %}
+  {{ govukInput({
+    label: {
+      text: "Count number"
+    },
+    id: "countNumber",
+    name: "countNumber",
+    classes: "govuk-input--width-2",
+    errorMessage: errors | findError('countNumber'),
+    value: countNumberForm.countNumber,
+    inputmode: "numeric"
+  }) }}
+{% endset %}
 
 {% set pageTitle = applicationName + " - Add a court case Count Number" %}
 
@@ -11,27 +25,33 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-count-number{{ "?submitToEditOffence=true" if submitToEditOffence }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
+                <h1 class="govuk-heading-l">Is there a count number for this offence?</h1>
+                {{ govukDetails({
+                  summaryText: "Why is this number important?",
+                  text: "Sometimes the offences are given a number on the warrant, which needs to be reflected in this service. These are called count or offence numbers. Identifying the sentences can impact the accuracy of the release dates."
+                }) }}
 
-                   {{ govukInput({
-                        label: {
-                            text: "Enter the count number",
-                            classes: "govuk-label--l",
-                            isPageHeading: true
-                        },
-                        hint: {
-                            text: "You must enter it exactly as it is written on the warrant."
-                        },
-                        id: "countNumber",
-                        name: "countNumber",
-                        classes: "govuk-input--width-5",
-                        errorMessage: errors | findError('countNumber'),
-                        value: countNumberForm.countNumber
-                    }) }} 
-
-
+                {{ govukRadios({
+                  name: "hasCountNumber",
+                  value: countNumberForm["hasCountNumber"],
+                  errorMessage: errors | findError('hasCountNumber'),
+                  items: [{
+                    value: "true",
+                    text: "Yes",
+                    checked: countNumberForm.hasCountNumber === 'true',
+                    conditional: {
+                      html: yesHtml
+                    }
+                  },
+                  {
+                    value: "false",
+                    checked: countNumberForm.hasCountNumber === 'false',
+                    text: "No"
+                  }]
+                }) }}
 
                 {{ govukButton({
-                    text: "Continue"
+                  text: "Save and continue"
                 }) }}
             </form>
 

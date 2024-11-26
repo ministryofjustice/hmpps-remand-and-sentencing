@@ -105,6 +105,7 @@ declare module 'forms' {
 
   export interface OffenceCountNumberForm {
     countNumber?: string
+    hasCountNumber?: string
   }
 
   export interface OffenceTerrorRelatedForm {

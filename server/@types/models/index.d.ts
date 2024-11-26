@@ -48,6 +48,7 @@ declare module 'models' {
   export interface Sentence {
     sentenceUuid?: string
     countNumber?: string
+    hasCountNumber?: string
     periodLengths?: SentenceLength[]
     sentenceServeType?: string
     consecutiveTo?: string
@@ -71,7 +72,7 @@ declare module 'models' {
       | 'OVERALL_SENTENCE_LENGTH'
   }
   export interface TaskListItem {
-    title: { text: string }
+    title: { text: string; classes?: string }
     href: string
     status: TaskListItemStatus
   }

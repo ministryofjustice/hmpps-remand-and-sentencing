@@ -628,6 +628,13 @@ export default class OffenceRoutes {
       convictionDate,
       req.user.username,
     )
+
+    if (sentenceTypes.find(sentenceType => sentenceType.description.includes('SOPC'))) {
+      sentenceTypes.find(sentenceType => sentenceType.description.includes('SOPC')).hint = {
+        text: 'A mandatory licence period of 12 months will be automatically added to the sentence',
+      }
+    }
+
     return res.render('pages/offence/sentence-type', {
       nomsId,
       courtCaseReference,
@@ -708,6 +715,7 @@ export default class OffenceRoutes {
     const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths
       .map(periodLength => periodLength.type)
       .indexOf(periodLengthType as string)
+    const sentenceTypeClassification = sentence?.sentenceTypeClassification
     const periodLengthHeader = periodLengthTypeHeadings[periodLengthType as string]
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
     if (submitToEditOffence) {
@@ -729,6 +737,7 @@ export default class OffenceRoutes {
       periodLengthType,
       periodLengthForm,
       periodLengthHeader,
+      sentenceTypeClassification,
       errors: req.flash('errors') || [],
       backLink,
     })

@@ -7,8 +7,12 @@
   border-bottom: none;
 }
 
-.autocomplete__input, .autocomplete__menu, .autocomplete__hint {
+.autocomplete__input, .autocomplete__hint {
   width:80% !important;
+}
+
+.autocomplete__menu {
+  width: calc(80% - 4px) !important;
 }
 
 .govuk-summary-list__row:last-child {

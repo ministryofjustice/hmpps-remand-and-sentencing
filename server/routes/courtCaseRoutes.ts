@@ -41,6 +41,7 @@ import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import PrisonerSearchService from '../services/prisonerSearchService'
+import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -707,8 +708,9 @@ export default class CourtCaseRoutes {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, courtAppearance.legacyData)
     }
 
-    if (mainOutcomes.length === 1) {
-      overallCaseOutcomeForm.overallCaseOutcome = mainOutcomes[0].outcomeUuid
+    if (mainOutcomes.length === 1 && subListOutcomes.length === 0) {
+      const outcome: AppearanceOutcome = mainOutcomes[0]
+      overallCaseOutcomeForm.overallCaseOutcome = `${outcome.outcomeUuid}|${outcome.relatedChargeOutcomeUuid}`
       req.body = overallCaseOutcomeForm
       return this.submitOverallCaseOutcome(req, res, null)
     }

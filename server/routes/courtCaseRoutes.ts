@@ -706,6 +706,13 @@ export default class CourtCaseRoutes {
     if (!courtAppearance.appearanceOutcomeUuid && !res.locals.isAddCourtAppearance) {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, courtAppearance.legacyData)
     }
+
+    if (mainOutcomes.length === 1) {
+      overallCaseOutcomeForm.overallCaseOutcome = mainOutcomes[0].outcomeUuid
+      req.body = overallCaseOutcomeForm
+      return this.submitOverallCaseOutcome(req, res, null)
+    }
+
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
 
     if (addOrEditCourtAppearance === 'edit-court-appearance') {

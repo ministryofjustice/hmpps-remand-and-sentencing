@@ -31,9 +31,8 @@ context('Add Offence Offence Code Page', () => {
   it('displays offence details', () => {
     offenceOffenceCodeConfirmPage.offenceSummaryList().getSummaryList().should('deep.equal', {
       'Offence code': 'PS90037',
-      Offence: 'An offence description',
+      Description: 'An offence description',
       'Home office code (CJA)': '099/96',
-      Legislation: 'Not entered',
     })
   })
 })

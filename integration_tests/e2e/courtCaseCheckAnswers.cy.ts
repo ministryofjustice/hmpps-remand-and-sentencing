@@ -59,7 +59,7 @@ context('Court Case Check Answers Page', () => {
   })
 
   it('button to Save court case is displayed', () => {
-    courtCaseCheckAnswersPage.button().should('contain.text', 'Confirm and continue')
+    courtCaseCheckAnswersPage.button().should('contain.text', 'Accept and continue')
   })
 
   it('displays court appearance details', () => {

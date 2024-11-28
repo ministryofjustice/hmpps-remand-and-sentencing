@@ -36,7 +36,7 @@ context('Add Offence Edit offence Page', () => {
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
       courtCaseWarrantTypePage.button().click()
       cy.createOffence('A1234AB', '0', '0', '0')
-      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '', 'offences')
+      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('')
       offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
@@ -76,9 +76,9 @@ context('Add Offence Edit offence Page', () => {
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.button().click()
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
-      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '', 'sentences')
+      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('')
       offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 
     it('displays person details', () => {
@@ -97,11 +97,12 @@ context('Add Offence Edit offence Page', () => {
     it('can edit count number and return to edit page', () => {
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'count-number').click()
       const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+      offenceCountNumberPage.radioLabelSelector('true').click()
       offenceCountNumberPage.input().should('have.value', '1')
       offenceCountNumberPage.input().clear()
       offenceCountNumberPage.input().type('5')
       offenceCountNumberPage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 5',
         Offence: 'PS90037 An offence description',
@@ -123,7 +124,7 @@ context('Add Offence Edit offence Page', () => {
       offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
       offenceOffenceDatePage.dayDateInput('offenceStartDate').type('25')
       offenceOffenceDatePage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
@@ -149,7 +150,7 @@ context('Add Offence Edit offence Page', () => {
       const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
       offenceOffenceCodeConfirmPage.button().click()
 
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'AB11000 Another offence description',
@@ -167,7 +168,7 @@ context('Add Offence Edit offence Page', () => {
       const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
       offenceTerrorRelatedPage.radioLabelSelector('false').click()
       offenceTerrorRelatedPage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
@@ -190,7 +191,7 @@ context('Add Offence Edit offence Page', () => {
       offencePeriodLengthPage.monthsInput().clear()
       offencePeriodLengthPage.monthsInput().type('6')
       offencePeriodLengthPage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
@@ -209,7 +210,7 @@ context('Add Offence Edit offence Page', () => {
       offenceSentenceServeTypePage.radioSelector('FORTHWITH').should('be.checked')
       offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
       offenceSentenceServeTypePage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
@@ -244,7 +245,7 @@ context('Add Offence Edit offence Page', () => {
       offencePeriodLengthPage.yearsInput().type('2')
       offencePeriodLengthPage.monthsInput().type('2')
       offencePeriodLengthPage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',

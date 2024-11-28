@@ -6,6 +6,7 @@ import type {
   OffenceConvictionDateForm,
   OffenceCountNumberForm,
   OffenceDeleteOffenceForm,
+  OffenceFinishedAddingForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
@@ -105,6 +106,7 @@ export default class OffenceRoutes {
       offenceEndDateDay,
       offenceEndDateMonth,
       offenceEndDateYear,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       backLink,
     })
@@ -196,6 +198,7 @@ export default class OffenceRoutes {
       mainOutcomes,
       subListOutcomes,
       legacyCaseOutcome,
+      isAddOffences: true,
     })
   }
 
@@ -270,6 +273,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       countNumberForm,
       submitToEditOffence,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       backLink,
     })
@@ -339,6 +343,7 @@ export default class OffenceRoutes {
       courtCaseReference,
       offenceReference,
       appearanceReference,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       offenceCode,
       unknownCode: offenceCodeForm.unknownCode,
@@ -419,6 +424,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       submitToEditOffence,
       offenceNameForm,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
     })
@@ -483,6 +489,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       submitToEditOffence,
+      isAddOffences: true,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
     })
   }
@@ -537,6 +544,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       submitToEditOffence,
+      isAddOffences: true,
       errors: req.flash('errors') || [],
       backLink: submitToEditOffence
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
@@ -620,6 +628,13 @@ export default class OffenceRoutes {
       convictionDate,
       req.user.username,
     )
+
+    if (sentenceTypes.find(sentenceType => sentenceType.description.includes('SOPC'))) {
+      sentenceTypes.find(sentenceType => sentenceType.description.includes('SOPC')).hint = {
+        text: 'A mandatory licence period of 12 months will be automatically added to the sentence',
+      }
+    }
+
     return res.render('pages/offence/sentence-type', {
       nomsId,
       courtCaseReference,
@@ -700,6 +715,7 @@ export default class OffenceRoutes {
     const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths
       .map(periodLength => periodLength.type)
       .indexOf(periodLengthType as string)
+    const sentenceTypeClassification = sentence?.sentenceTypeClassification
     const periodLengthHeader = periodLengthTypeHeadings[periodLengthType as string]
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
     if (submitToEditOffence) {
@@ -721,6 +737,7 @@ export default class OffenceRoutes {
       periodLengthType,
       periodLengthForm,
       periodLengthHeader,
+      sentenceTypeClassification,
       errors: req.flash('errors') || [],
       backLink,
     })
@@ -1114,13 +1131,35 @@ export default class OffenceRoutes {
       offenceMap,
       sentenceTypeMap,
       outcomeMap,
+      isReviewOffences: true,
+      errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
 
   public submitCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    this.courtAppearanceService.setOffenceSentenceAcceptedTrue(req.session, nomsId)
+    const finishedAddingOffences = trimForm<OffenceFinishedAddingForm>(req.body)
+    const errors = validate(
+      finishedAddingOffences,
+      {
+        finishedAddingOffences: 'required',
+      },
+      {
+        'required.finishedAddingOffences': `You must select whether you have finished adding offences`,
+      },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      )
+    }
+    this.courtAppearanceService.setOffenceSentenceAccepted(
+      req.session,
+      nomsId,
+      finishedAddingOffences.finishedAddingOffences === 'true',
+    )
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
@@ -1275,6 +1314,7 @@ export default class OffenceRoutes {
       sentenceLength,
       sentenceLengthType,
       outcome,
+      isAddOffences: true,
       backLink: res.locals.isAddCourtAppearance
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
@@ -1334,6 +1374,7 @@ export default class OffenceRoutes {
       sentenceTypeMap,
       offences,
       offenceOutcomeMap,
+      isReviewOffences: true,
     })
   }
 
@@ -1353,7 +1394,7 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
     }
-    this.courtAppearanceService.setOffenceSentenceAcceptedTrue(req.session, nomsId)
+    this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, true)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )

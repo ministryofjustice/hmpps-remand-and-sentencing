@@ -1,6 +1,48 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set yesHtml %}
+{{ govukDateInput({
+    id: "sentenceLength",
+    namePrefix: "sentenceLength",
+    errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
+    fieldset: {
+        legend: {
+            text: "Enter the overall sentence length",
+            classes: "govuk-fieldset__legend--m"
+        }
+    },
+    items: [{
+        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
+        label: "Years",
+        name:"years",
+        value: courtCaseOverallSentenceLengthForm["sentenceLength-years"]
+    },
+    {
+        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
+        label: "Months",
+        name:"months",
+        value: courtCaseOverallSentenceLengthForm["sentenceLength-months"]
+    },
+    {
+        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
+        label: "Weeks",
+        name:"weeks",
+        value: courtCaseOverallSentenceLengthForm["sentenceLength-weeks"]
+    },
+    {
+        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
+        label: "Days",
+        name:"days",
+        value: courtCaseOverallSentenceLengthForm["sentenceLength-days"]
+    }]
+}) }}
+<p class="govuk-body govuk-!-margin-top-2">
+    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/alternative-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">The sentence length is formatted differently</a>
+</p>
+{% endset %}
 
 {% set pageTitle = applicationName + " - Add overall sentence length" %}
 
@@ -12,54 +54,37 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/appearanceCaption.njk" %}
 
-                {{ govukDateInput({
-                    id: "sentenceLength",
-                    namePrefix: "sentenceLength",
-                    errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
+                {{ govukRadios({
+                    name: "hasOverallSentenceLength",
+                    value: courtCaseOverallSentenceLengthForm["hasOverallSentenceLength"],
+                    hint: {
+                        text: "Select one option."
+                    },
                     fieldset: {
                         legend: {
-                        text: "Enter the overall sentence length",
-                        isPageHeading: true,
-                        classes: "govuk-fieldset__legend--l"
+                            text: "Is there an overall sentence length on the warrant?",
+                            classes: "govuk-fieldset__legend--l",
+                            isPageHeading: true
                         }
                     },
-                    hint: {
-                        text: "This must be entered exactly as it is written on the warrant."
-                    },
-                    items: [
-                    {
-                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
-                        label: "Years",
-                        name:"years",
-                        value: courtCaseOverallSentenceLengthForm["sentenceLength-years"]
-                    },
-                    {
-                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
-                        label: "Months",
-                        name:"months",
-                        value: courtCaseOverallSentenceLengthForm["sentenceLength-months"]
+                    errorMessage: errors | findError('hasOverallSentenceLength'),
+                    items: [{
+                        value: "true",
+                        text: "Yes",
+                        checked: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true',
+                        conditional: {
+                        html: yesHtml
+                        }
                     },
                     {
-                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
-                        label: "Weeks",
-                        name:"weeks",
-                        value: courtCaseOverallSentenceLengthForm["sentenceLength-weeks"]
-                    },
-                    {
-                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
-                        label: "Days",
-                        name:"days",
-                        value: courtCaseOverallSentenceLengthForm["sentenceLength-days"]
-                    }
-                    ]
+                        value: "false",
+                        checked: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'false',
+                        text: "No"
+                    }]
                 }) }}
 
-                <p class="govuk-body">
-                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/alternative-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">The sentence length is formatted differently</a>
-                </p>
-
                 {{ govukButton({
-                    text: "Continue"
+                    text: "Save and continue"
                 }) }}
 
             </form>

@@ -383,27 +383,36 @@ export default class CourtAppearanceService {
     const errors = validate(
       courtCaseOverallSentenceLengthForm,
       {
-        'sentenceLength-years': 'requireSentenceLength|minWholeNumber:0|requireOneNonZeroSentenceLength',
+        hasOverallSentenceLength: 'required',
+        'sentenceLength-years':
+          'requireSentenceLength_if:hasOverallSentenceLength,true|minWholeNumber:0|requireOneNonZeroSentenceLength_if:hasOverallSentenceLength,true',
         'sentenceLength-months': 'minWholeNumber:0',
         'sentenceLength-weeks': 'minWholeNumber:0',
         'sentenceLength-days': 'minWholeNumber:0',
       },
       {
-        'requireSentenceLength.sentenceLength-years': 'You must enter the overall sentence length',
+        'required.hasOverallSentenceLength': 'You must select if there is an overall sentence length or not',
+        'requireSentenceLength_if.sentenceLength-years': 'You must enter the overall sentence length',
         'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
-        'requireOneNonZeroSentenceLength.sentenceLength-years': 'The sentence length cannot be 0',
+        'requireOneNonZeroSentenceLength_if.sentenceLength-years': 'The sentence length cannot be 0',
       },
     )
+
     if (errors.length === 0) {
-      const sentenceLength = sentenceLengthFormToSentenceLength(
-        courtCaseOverallSentenceLengthForm,
-        'OVERALL_SENTENCE_LENGTH',
-      )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.overallSentenceLength = sentenceLength
+      if (courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true') {
+        courtAppearance.overallSentenceLength = sentenceLengthFormToSentenceLength(
+          courtCaseOverallSentenceLengthForm,
+          'OVERALL_SENTENCE_LENGTH',
+        )
+      } else {
+        delete courtAppearance.overallSentenceLength
+      }
+
+      courtAppearance.hasOverallSentenceLength = courtCaseOverallSentenceLengthForm.hasOverallSentenceLength
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -453,9 +462,10 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  setOffenceSentenceAcceptedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+  setOffenceSentenceAccepted(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, completed: boolean) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.offenceSentenceAccepted = true
+
+    courtAppearance.offenceSentenceAccepted = completed
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

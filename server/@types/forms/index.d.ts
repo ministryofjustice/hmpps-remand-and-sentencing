@@ -86,6 +86,10 @@ declare module 'forms' {
     deleteOffence?: string
   }
 
+  export interface OffenceFinishedAddingForm {
+    finishedAddingOffences?: string
+  }
+
   export interface ReviewOffencesForm {
     changeOffence?: string
   }
@@ -101,6 +105,7 @@ declare module 'forms' {
 
   export interface OffenceCountNumberForm {
     countNumber?: string
+    hasCountNumber?: string
   }
 
   export interface OffenceTerrorRelatedForm {
@@ -142,6 +147,7 @@ declare module 'forms' {
     'sentenceLength-months'?: string
     'sentenceLength-weeks'?: string
     'sentenceLength-days'?: string
+    hasOverallSentenceLength?: string
   }
 
   export interface OffenceSentenceTypeForm {

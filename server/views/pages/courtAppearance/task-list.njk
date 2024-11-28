@@ -36,14 +36,13 @@
                 </h2>
                 <p class="govuk-body">To save a draft of the court case, you must first complete the appearance information.</p>
                 <p class="govuk-body">Once you have finished adding all the information, select ‘Finish and save’. You will not be able to return to this page, but can edit the details in the Court cases tab.</p>
-                {% if model.isAllMandatoryItemsComplete() %}
-                    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-task-list">
-                        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                        {{ govukButton({
-                            text: "Finish and save"
-                        }) }}
-                    </form>
-                {% endif %}
+                <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-task-list">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    {{ govukButton({
+                        text: "Finish and save",
+                        disabled: model.isAllMandatoryItemsComplete() == false
+                    }) }}
+                </form>
         </div>
     </div>
 {% endblock %}

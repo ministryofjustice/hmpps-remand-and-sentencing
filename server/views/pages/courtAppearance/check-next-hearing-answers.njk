@@ -10,7 +10,7 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-                {% include "../../partials/appearanceCaption.njk" %}
+                {% include "../../partials/nextAppearanceCaption.njk" %}
                 <h1 class="govuk-heading-l">Check your answers</h1>
 
                 {{ govukSummaryList({
@@ -26,7 +26,7 @@
                             items: [
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-type?submitToCheckAnswers=true",
-                                    text: "Change",
+                                    text: "Edit",
                                     visuallyHiddenText: "next hearing type"
                                 }
                             ]
@@ -43,7 +43,7 @@
                             items: [
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-date?submitToCheckAnswers=true",
-                                    text: "Change",
+                                    text: "Edit",
                                     visuallyHiddenText: "next hearing date"
                                 }
                             ]
@@ -60,7 +60,7 @@
                             items: [
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-court-select?submitToCheckAnswers=true",
-                                    text: "Change",
+                                    text: "Edit",
                                     visuallyHiddenText: "next hearing location"
                                 }
                             ]

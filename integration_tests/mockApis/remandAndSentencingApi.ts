@@ -83,6 +83,7 @@ export default {
                   displayOrder: 10,
                 },
                 courtCode: 'ACCRYC',
+                status: 'ACTIVE',
                 courtCaseReference: 'C894623',
                 appearanceDate: '2023-12-15',
                 nextCourtAppearance: {
@@ -181,10 +182,12 @@ export default {
               prisonerId: 'A1234AB',
               courtCaseUuid: 'd316d5b7-022f-40e5-98ab-aebe8ac4abf4',
               appearances: [],
+              status: 'INACTIVE',
             },
             {
               prisonerId: 'A1234AB',
               courtCaseUuid: '84ab3dc4-7bd7-4b14-a1ae-6434f7e2cc8b',
+              status: 'ACTIVE',
               latestAppearance: {
                 appearanceUuid: 'd48ce605-8f96-4ad7-93fe-5688986599e2',
                 legacyData: {
@@ -1091,6 +1094,65 @@ export default {
   },
 
   stubGetAllAppearanceOutcomes: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/appearance-outcome/all',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+            outcomeName: 'Remanded in custody',
+            nomisCode: '3452',
+            outcomeType: 'REMAND',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+            isSubList: false,
+          },
+          {
+            outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcc',
+            outcomeName: 'Another option',
+            nomisCode: '3454',
+            outcomeType: 'REMAND',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+            isSubList: false,
+          },
+          {
+            outcomeUuid: '7fd9efee-200e-4579-a766-e6bf9a499096',
+            outcomeName: 'Lie on file',
+            nomisCode: '7863',
+            outcomeType: 'REMAND',
+            displayOrder: 20,
+            relatedChargeOutcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+            isSubList: true,
+          },
+          {
+            outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+            outcomeName: 'Imprisonment',
+            nomisCode: '09753',
+            outcomeType: 'SENTENCING',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+            isSubList: false,
+          },
+          {
+            outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d11',
+            outcomeName: 'Another option',
+            nomisCode: '09753',
+            outcomeType: 'SENTENCING',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+            isSubList: false,
+          },
+        ],
+      },
+    })
+  },
+  stubGetAllAppearanceOutcomesWithSingleResults: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',

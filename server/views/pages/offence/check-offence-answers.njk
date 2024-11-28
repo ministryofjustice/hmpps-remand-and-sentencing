@@ -1,123 +1,115 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/inset-text/macro.njk"          import govukInsetText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 
 {% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
 
 {% set pageTitle = applicationName + " - Check "+ offenceSentence + "s" %}
 
-{% block content %}
+    {% block pageContent %}
+        {% include "../../partials/offenceCaption.njk" %}
+        <h1 class="govuk-heading-l">
+            {% if isAddCourtCase %}
+                Add offences to case {{ courtAppearance.caseReferenceNumber }}
+            {% else %}
+                Edit the {{ offenceSentence }} details for this appearance
+            {% endif %}
+        </h1>
 
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-            {% include "../../partials/offenceCaption.njk" %}
-            <h1 class="govuk-heading-l">
-                {% if isAddCourtCase %}
-                    You have added {{ courtAppearance.offences | length }} {{ offenceSentence }}s to case {{ courtAppearance.caseReferenceNumber }} 
-                {% else %}
-                    Edit the {{ offenceSentence }} details for this appearance
-                {% endif %}
-                </h1>
-            {{ govukSummaryList({
-                    classes: "govuk-summary-list--no-border",
-                    rows: [
+        {{ govukButton({
+            text: "Add an offence" ,
+            classes: "govuk-button--link",
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
+            attributes: {
+                "data-qa": "addAnotherOffence"
+            }
+        }) }}
+
+        {% if courtAppearance.offences.length == 0 %}
+            {{ govukInsetText({
+                text: "No offences have been added to this appearance."
+            }) }}
+        {% endif %}
+
+        {% for offence in courtAppearance.offences %}
+            {{ offenceCard({
+                offenceCode: offence.offenceCode,
+                offenceName: offenceMap[offence.offenceCode],
+                offenceStartDate: offence.offenceStartDate | formatDate,
+                offenceEndDate: offence.offenceEndDate | formatDate,
+                outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                countNumber: offence.sentence.countNumber,
+                convictionDate: offence.sentence.convictionDate | formatDate,
+                terrorRelated: offence.terrorRelated,
+                isSentenced: offence.sentence,
+                custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
+                licencePeriodLength: offence.sentence.licencePeriodLength,
+                sentenceServeType: offence.sentence.sentenceServeType,
+                consecutiveTo: offence.sentence.consecutiveTo,
+                sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+                actions: {
+                    items: [
                         {
-                            key: {
-                                text: "Case reference"
-                            },
-                            value: {
-                                text: courtAppearance.caseReferenceNumber
-                            }
+                            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/edit-offence",
+                            text: "Edit",
+                            visuallyHiddenText: "edit " + offenceSentence
                         },
                         {
-                            key: {
-                                text: "Court name"
-                            },
-                            value: {
-                                text: courtAppearanceCourtName
-                            }
-                        },
-                        {
-                            key: {
-                            text: "Warrant date"
-                        },
-                            value: {
-                            text: courtAppearance.warrantDate | formatDate
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Warrant type"
-                        },
-                            value: {
-                            text: courtAppearance.warrantType | capitalize
-                        }
+                            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
+                            text: "Delete",
+                            visuallyHiddenText: "delete " + offenceSentence
                         }
                     ]
-                }) 
-            }}
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">{{ offenceSentence | capitalize }}s ({{ courtAppearance.offences | length }})</h2>
-
-            {{ govukButton({
-                    text: "Add a sentence" if courtAppearance.warrantType === 'SENTENCING' else "Add an offence" ,
-                    classes: "govuk-button--link",
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
-                    attributes: {
-                        "data-qa": "addAnotherOffence"
-                    }
+                }
             }) }}
+        {% endfor %}
 
-            {% for offence in courtAppearance.offences %}
-                {{
-                    offenceCard({
-                        offenceCode: offence.offenceCode,
-                        offenceName: offenceMap[offence.offenceCode],
-                        offenceStartDate: offence.offenceStartDate | formatDate,
-                        offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
-                        countNumber: offence.sentence.countNumber,
-                        convictionDate: offence.sentence.convictionDate | formatDate,
-                        terrorRelated: offence.terrorRelated,
-                        isSentenced: offence.sentence,
-                        custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
-                        licencePeriodLength: offence.sentence.licencePeriodLength,
-                        sentenceServeType: offence.sentence.sentenceServeType,
-                        consecutiveTo: offence.sentence.consecutiveTo,
-                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                        actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/edit-offence",
-                                    text: "Edit",
-                                    visuallyHiddenText: "edit " + offenceSentence
-                                },
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
-                                    text: "Delete",
-                                    visuallyHiddenText: "delete " + offenceSentence
-                                }
-                            ]
-                        }
-                    })
-                }}
-            {% endfor %}
-
+        {% if courtAppearance.offences.length > 0 %}
             <div class="govuk-button-group govuk-!-margin-top-8">
-                <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-offence-answers">
+                <form method="post"
+                      action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-offence-answers">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    {{ govukRadios({
+                        id: "finishedAddingOffences",
+                        name: "finishedAddingOffences",
+                        fieldset: {
+                            legend: {
+                                text: "Have you finished adding offences?",
+                                classes: "govuk-fieldset__legend--m"
+                            }
+                        },
+                        errorMessage: errors | findError('finishedAddingOffences'),
+                        items: [
+                            {
+                                value: "true",
+                                text: "Yes, I've finished adding offences",
+                                attributes: {
+                                "data-qa": "finishAddingRadio"
+                            }
+                            },
+                            {
+                                value: "false",
+                                text: "No, I'll come back later",
+                                attributes: {
+                                "data-qa": "notFinishedRadio"
+                            }
+                            }
+                        ]
+                    }) }}
+
                     {{ govukButton({
-                        text: "Accept and continue",
+                        text: "Continue",
                         attributes: {
                             "data-qa": "finishAddingButton"
                         }
                     }) }}
-            </form>
+                </form>
             </div>
+        {% endif %}
 
-        </div>
-    </div>
-
-{% endblock %}
+    {% endblock %}

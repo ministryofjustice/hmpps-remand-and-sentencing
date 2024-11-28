@@ -15,6 +15,8 @@ export default class CourtCasesDetailsModel {
 
   overallCaseOutcome: string
 
+  overallCaseStatus: string
+
   nextHearing: string[]
 
   appearanceTotal: number
@@ -50,6 +52,8 @@ export default class CourtCasesDetailsModel {
       pageCourtCaseContent.latestAppearance?.outcome?.outcomeName,
       pageCourtCaseContent.latestAppearance?.legacyData,
     )
+
+    this.overallCaseStatus = pageCourtCaseContent.status
 
     if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance) {
       const appearanceDate = dayjs(

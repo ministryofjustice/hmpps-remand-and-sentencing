@@ -911,9 +911,7 @@ export interface components {
         | 'FINE'
         | 'LEGACY'
         | 'NON_CUSTODIAL'
-      hint?: {
-        text: string
-      }
+      hintText?: string
     }
     Recall: {
       /** Format: uuid */

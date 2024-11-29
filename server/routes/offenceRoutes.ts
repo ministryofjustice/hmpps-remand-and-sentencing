@@ -632,12 +632,6 @@ export default class OffenceRoutes {
       req.user.username,
     )
 
-    if (sentenceTypes.find(sentenceType => sentenceType.description.includes('SOPC'))) {
-      sentenceTypes.find(sentenceType => sentenceType.description.includes('SOPC')).hint = {
-        text: 'A mandatory licence period of 12 months will be automatically added to the sentence',
-      }
-    }
-
     return res.render('pages/offence/sentence-type', {
       nomsId,
       courtCaseReference,

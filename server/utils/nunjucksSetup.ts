@@ -10,7 +10,14 @@ import {
   formatLengths,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { SentenceLength } from 'models'
-import { formatDate, formatDateTime, initialiseName, outcomeValueOrLegacy, pluraliseName } from './utils'
+import {
+  formatDate,
+  formatDateTime,
+  formatLengthsWithoutPeriodOrder,
+  initialiseName,
+  outcomeValueOrLegacy,
+  pluraliseName,
+} from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import { periodLengthToSentenceLength } from './mappingUtils'
@@ -138,6 +145,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('pluraliseName', pluraliseName)
 
   njkEnv.addFilter('formatLengths', formatLengths)
+  njkEnv.addFilter('formatLengthsWithoutPeriodOrder', formatLengthsWithoutPeriodOrder)
 
   njkEnv.addFilter('periodLengthToSentenceLength', periodLengthToSentenceLength)
 }

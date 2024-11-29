@@ -1,0 +1,55 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+
+{% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
+
+{% set pageTitle = applicationName + " - Check "+ offenceSentence + "s" %}
+
+    {% block pageContent %}
+        {% include "../../partials/offenceCaption.njk" %}
+        <h1 class="govuk-heading-l">
+            Sentence length mismatch
+        </h1>
+        
+        <p class="govuk-body">The total sentence length of the offences added for this appearace do not match the overall sentence length entered from the warrant.</p>
+        
+        <form method="post"
+            action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/submit-sentence-length-mismatch">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+            {{ govukRadios({
+                id: "confirmMismatch",
+                name: "confirmMismatch",
+                fieldset: {
+                    legend: {
+                        text: "Do you want to continue?",
+                        isPageHeading: false,
+                        classes: "govuk-fieldset__legend--m"
+                    }
+                },
+                errorMessage:  errors | findError('confirmMismatch'),
+                items: [
+                    {
+                        text: 'Yes, continue with mismatching sentence lengths',
+                        value: 'yes'
+                    },
+                    {
+                        text: 'No, go back and review offences',
+                        value: 'no'
+                    }
+                ]
+            }) }}
+
+            {{ govukButton({
+                text: "Continue"
+            }) }}
+        </form>
+       
+
+    {% endblock %}

@@ -42,6 +42,7 @@ context('Repeat Court Case journey', () => {
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetAllChargeOutcomes')
+    cy.task('stubOverallSentenceLengthPass')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -463,6 +464,15 @@ context('Repeat Court Case journey', () => {
     cffenceSentenceServeTypePage.button().click()
 
     offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
+
+    offenceCheckOffenceAnswersPage
+      .overallSentenceLength()
+      .trimTextContent()
+      .should('contain', '4 years 5 months 0 weeks 0 days')
+    offenceCheckOffenceAnswersPage
+      .sentencesAdded()
+      .trimTextContent()
+      .should('contain', '4 years 5 months 0 weeks 0 days')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 

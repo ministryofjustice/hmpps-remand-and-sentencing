@@ -90,6 +90,10 @@ declare module 'forms' {
     finishedAddingOffences?: string
   }
 
+  export interface SentenceLengthMismatchForm {
+    confirmMismatch?: 'yes' | 'no'
+  }
+
   export interface ReviewOffencesForm {
     changeOffence?: string
   }

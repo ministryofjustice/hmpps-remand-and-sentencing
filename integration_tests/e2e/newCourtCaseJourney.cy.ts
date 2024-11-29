@@ -28,6 +28,7 @@ import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseConvictionDateAppliedAllPage from '../pages/courtCaseConvictionDateAppliedAllPage'
+import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -42,6 +43,7 @@ context('New Court Case journey', () => {
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetAllChargeOutcomes')
+    cy.task('stubOverallSentenceLengthFail')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -478,7 +480,21 @@ context('New Court Case journey', () => {
 
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
+    offenceCheckOffenceAnswersPage
+      .overallSentenceLength()
+      .trimTextContent()
+      .should('contain', '4 years 5 months 0 weeks 0 days')
+    offenceCheckOffenceAnswersPage
+      .sentencesAdded()
+      .trimTextContent()
+      .should('contain', '10 years 0 months 0 weeks 0 days')
+
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
+
+    const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
+
+    offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
+    offenceSentenceLengthMismatchPage.button().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage

@@ -723,6 +723,11 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
+    const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
+
+    offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
+    offenceSentenceLengthMismatchPage.button().click()
+
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()

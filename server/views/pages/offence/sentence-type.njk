@@ -11,7 +11,9 @@
         value: sentenceType.sentenceTypeUuid + "|" + sentenceType.classification,
         text: sentenceType.description,
         checked: offenceSentenceTypeForm.sentenceType === sentenceType.sentenceTypeUuid,
-        hint: sentenceType.hint
+        hint: {
+            text: sentenceType.hintText
+        }
     })%}
 {% endfor %}
 

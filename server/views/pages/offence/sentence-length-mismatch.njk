@@ -9,7 +9,7 @@
 
 {% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
 
-{% set pageTitle = applicationName + " - Check "+ offenceSentence + "s" %}
+{% set pageTitle = applicationName + " - sentence length mismatch" %}
 
     {% block pageContent %}
         {% include "../../partials/offenceCaption.njk" %}

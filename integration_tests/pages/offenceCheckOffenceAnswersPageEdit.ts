@@ -32,4 +32,8 @@ export default class OffenceCheckOffenceAnswersPageEdit extends Page {
   infoBanner = (): PageElement => cy.get('.moj-banner')
 
   addAnotherButton = (): PageElement => cy.get('[data-qa="addAnotherOffence"]')
+
+  overallSentenceLength = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"] > :nth-child(1)')
+
+  sentencesAdded = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"] > :nth-child(2)')
 }

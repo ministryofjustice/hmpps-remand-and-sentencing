@@ -41,6 +41,7 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.remandAndSentencingService,
     services.offenceOutcomeService,
+    services.calculateReleaseDatesService,
   )
 
   get('/', async (req, res, next) => {
@@ -379,6 +380,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-offence-answers',
     offenceRoutes.submitCheckOffenceAnswers,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/sentence-length-mismatch',
+    offenceRoutes.getSentenceLengthMismatch,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/submit-sentence-length-mismatch',
+    offenceRoutes.submitSentenceLengthMismatch,
   )
 
   get(

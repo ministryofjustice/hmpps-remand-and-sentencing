@@ -72,3 +72,12 @@ export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: Record<st
   }
   return 'Not entered'
 }
+
+export const formatLengthsWithoutPeriodOrder = (length: {
+  years: number
+  months: number
+  weeks: number
+  days: number
+}) => {
+  return `${length.years || 0} years ${length.months || 0} months ${length.weeks || 0} weeks ${length.days || 0} days`
+}

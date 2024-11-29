@@ -16,6 +16,7 @@ import type {
   OffenceTerrorRelatedForm,
   ReviewOffencesForm,
   SentenceLengthForm,
+  SentenceLengthMismatchForm,
 } from 'forms'
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
@@ -36,6 +37,7 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import { getNextPeriodLengthType, outcomeValueOrLegacy } from '../utils/utils'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
+import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 export default class OffenceRoutes {
   constructor(
@@ -44,6 +46,7 @@ export default class OffenceRoutes {
     private readonly courtAppearanceService: CourtAppearanceService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
+    private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
   ) {}
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -1115,10 +1118,11 @@ export default class OffenceRoutes {
     const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
     const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
 
-    const [offenceMap, sentenceTypeMap, outcomeMap] = await Promise.all([
+    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison] = await Promise.all([
       this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
+      this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
     ])
 
     return res.render('pages/offence/check-offence-answers', {
@@ -1131,6 +1135,7 @@ export default class OffenceRoutes {
       offenceMap,
       sentenceTypeMap,
       outcomeMap,
+      overallSentenceLengthComparison,
       isReviewOffences: true,
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
@@ -1155,6 +1160,21 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
     }
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    if (courtAppearance.warrantType === 'SENTENCING' && finishedAddingOffences.finishedAddingOffences === 'true') {
+      const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
+        courtAppearance,
+        req.user.username,
+      )
+      if (
+        overallSentenceComparison.custodialLengthMatches === false ||
+        overallSentenceComparison.licenseLengthMatches === false
+      ) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/sentence-length-mismatch`,
+        )
+      }
+    }
     this.courtAppearanceService.setOffenceSentenceAccepted(
       req.session,
       nomsId,
@@ -1162,6 +1182,62 @@ export default class OffenceRoutes {
     )
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+    )
+  }
+
+  public getSentenceLengthMismatch: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+
+    const overallSentenceLengthComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
+      courtAppearance,
+      req.user.username,
+    )
+
+    return res.render('pages/offence/sentence-length-mismatch', {
+      nomsId,
+      courtCaseReference,
+      courtAppearance,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      overallSentenceLengthComparison,
+      isReviewOffences: true,
+      errors: req.flash('errors') || [],
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+    })
+  }
+
+  public submitSentenceLengthMismatch: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+
+    const sentenceLengthMismatch = trimForm<SentenceLengthMismatchForm>(req.body)
+    const errors = validate(
+      sentenceLengthMismatch,
+      {
+        confirmMismatch: 'required',
+      },
+      {
+        'required.confirmMismatch': `You must select whether you want to continue.`,
+      },
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/sentence-length-mismatch`,
+      )
+    }
+
+    if (sentenceLengthMismatch.confirmMismatch === 'yes') {
+      this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, true)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      )
+    }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
     )
   }
 

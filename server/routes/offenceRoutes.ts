@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import type {
+  CourtCaseOverallCaseOutcomeForm,
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConsecutiveToForm,
@@ -661,6 +662,7 @@ export default class OffenceRoutes {
     const { submitToEditOffence } = req.query
     const offenceSentenceTypeForm = trimForm<OffenceSentenceTypeForm>(req.body)
     const errors = this.offenceService.setSentenceType(req.session, nomsId, courtCaseReference, offenceSentenceTypeForm)
+
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('offenceSentenceTypeForm', { ...offenceSentenceTypeForm })
@@ -668,6 +670,13 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
+
+    if (offenceSentenceTypeForm.sentenceType.includes('FINE')) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/fine-amount`,
+      )
+    }
+
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     this.offenceService.updatePeriodLengths(req.session, nomsId, courtCaseReference, offence)
 
@@ -675,6 +684,66 @@ export default class OffenceRoutes {
       this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
       null,
     )
+
+    if (nextPeriodLengthType) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${nextPeriodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+      )
+    }
+
+    if (submitToEditOffence) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+      )
+    }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+    )
+  }
+
+  public getFineAmount: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+
+    return res.render('pages/courtAppearance/fine-amount', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitFineAmount: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offenceReference,
+    } = req.params
+    const { submitToCheckAnswers } = req.query
+    const fineAmountForm = trimForm<FineAmountForm>(req.body)
+    const errors = this.courtAppearanceService.setAppearanceOutcomeUuid(req.session, nomsId, fineAmountForm)
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceSentenceTypeForm', { ...fineAmountForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/fine-amount`,
+      )
+    }
+
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    this.offenceService.updatePeriodLengths(req.session, nomsId, courtCaseReference, offence)
+
+    const nextPeriodLengthType = getNextPeriodLengthType(
+      this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
+      null,
+    )
+
     if (nextPeriodLengthType) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${nextPeriodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,

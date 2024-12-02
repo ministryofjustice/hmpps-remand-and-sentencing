@@ -6,6 +6,7 @@ import {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { chargeToOffence } from '../../utils/mappingUtils'
+import { outcomeValueOrLegacy } from '../../utils/utils'
 
 export default class CourtCasesDetailsModel {
   courtCaseUuid: string
@@ -13,6 +14,8 @@ export default class CourtCasesDetailsModel {
   caseReferences: string
 
   overallCaseOutcome: string
+
+  overallCaseStatus: string
 
   nextHearing: string[]
 
@@ -30,6 +33,8 @@ export default class CourtCasesDetailsModel {
 
   sentenceTypeMap: { [key: string]: string }
 
+  offenceOutcomeMap: { [key: string]: string }
+
   latestCourtCode: string
 
   latestAppearanceDate: string
@@ -37,12 +42,23 @@ export default class CourtCasesDetailsModel {
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     this.caseReferences = Array.from(
-      new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
+      new Set(
+        pageCourtCaseContent.appearances
+          .filter(appearance => !!appearance.courtCaseReference)
+          .map(appearance => appearance.courtCaseReference),
+      ),
     ).join(', ')
-    this.overallCaseOutcome = pageCourtCaseContent.latestAppearance?.outcome.outcomeName
+    this.overallCaseOutcome = outcomeValueOrLegacy(
+      pageCourtCaseContent.latestAppearance?.outcome?.outcomeName,
+      pageCourtCaseContent.latestAppearance?.legacyData,
+    )
+
+    this.overallCaseStatus = pageCourtCaseContent.status
 
     if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance) {
-      const appearanceDate = dayjs(pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate)
+      const appearanceDate = dayjs(
+        `${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate}${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime ? `T${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime}` : ''}`,
+      )
       let appearanceDateFormatted = appearanceDate.format(config.dateFormat)
       if (pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime) {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)
@@ -75,6 +91,11 @@ export default class CourtCasesDetailsModel {
       charges
         ?.filter(charge => charge.sentence)
         .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]) ?? [],
+    )
+    this.offenceOutcomeMap = Object.fromEntries(
+      charges
+        ?.filter(charge => charge.outcome)
+        .map(charge => [charge.outcome.outcomeUuid, charge.outcome.outcomeName]) ?? [],
     )
     this.latestCourtCode = pageCourtCaseContent.latestAppearance?.courtCode
     this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance?.appearanceDate).format(config.dateFormat)

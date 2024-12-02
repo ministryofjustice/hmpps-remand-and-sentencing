@@ -1,17 +1,17 @@
 import Page, { PageElement } from './page'
 
 export default class CourtCaseTaskListPage extends Page {
-  constructor(warrantType: string) {
-    super(`Enter information from a ${warrantType} warrant`)
+  constructor(title: string) {
+    super(title)
   }
 
   appearanceInformationLink = (): PageElement => cy.get('a:contains("Add appearance information")')
 
-  sentencesLink = (): PageElement => cy.get('a:contains("Add Sentences")')
+  sentencesLink = (): PageElement => cy.get('a:contains("Add offences")')
 
   taskList = (): PageElement => cy.get('.govuk-task-list')
 
-  offencesLink = (): PageElement => cy.get('a:contains("Add Offences")')
+  offencesLink = (): PageElement => cy.get('a:contains("Add offences")')
 
   reviewOffencesLink = (): PageElement => cy.get('a:contains("Review offences")')
 

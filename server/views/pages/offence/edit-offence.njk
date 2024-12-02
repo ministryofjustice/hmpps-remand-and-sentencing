@@ -2,29 +2,32 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set offenceSentence = 'sentence' if offence.sentence else 'offence' %}
-
-{% set offenceHtml %}
-{{ offence.offenceCode }}
-{{ offenceMap[offence.offenceCode] }}
-{% if offence.terrorRelated %}
-    <br>
-    <strong class="govuk-tag govuk-!-margin-top-2">Terror-related</strong>
-{% endif %}
-{% endset %}
-
 {% set summaryRows=[{
                     key: {
                         text: "Offence"
                     },
                     value: {
-                        html: offenceHtml
+                        text: offence.offenceCode + " " +  offenceMap[offence.offenceCode]
                     },
                     actions: {
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-code?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "offence code"
+                        }]
+                    }
+                },
+                {
+                    key: {
+                        text: "Terror related"
+                    }, value: {
+                        text: 'Yes' if offence.terrorRelated else 'No'
+                    },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/terror-related?submitToEditOffence=true",
+                            text: "Edit",
+                            visuallyHiddenText: "terror related"
                         }]
                     }
                 },
@@ -44,12 +47,17 @@
                 }] %}
 
 {% if offence.sentence %}
+    {% if offence.sentence.countNumber %}
+        {% set countNumber = "Count " + offence.sentence.countNumber %}
+    {% else %}
+        {% set countNumber = "Not entered" %}
+    {% endif %}
     {% set summaryRows = ([{
                     key: {
                     text: "Count number"
                 },
                     value: {
-                    text: "Count " + offence.sentence.countNumber
+                    text: countNumber
                 },
                     actions: {
                         items: [{
@@ -66,7 +74,7 @@
                     },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/conviction-date",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/conviction-date?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "conviction date"
                         }]
@@ -120,7 +128,7 @@
                     key: {
                         text: "Outcome"
                     }, value: {
-                        text: offence.outcome
+                        text: outcome | outcomeValueOrLegacy(offence.legacyData)
                     },
                     actions: {
                         items: [{
@@ -132,7 +140,7 @@
                     })) %}
 {% endif %}
 
-{% set pageTitle = applicationName + " - Edit an " + offenceSentence %}
+{% set pageTitle = applicationName + " - Edit an offence" %}
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
@@ -140,7 +148,7 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-edit-offence">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
-                <h1 class="govuk-heading-l">Edit {{ offenceSentence }} details</h1>
+                <h1 class="govuk-heading-l">Edit offence details</h1>
                 
                 {{ govukSummaryList({
                     rows: summaryRows

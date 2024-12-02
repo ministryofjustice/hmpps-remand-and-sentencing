@@ -4,15 +4,21 @@
 
 {% set pageTitle = applicationName + " - Add a court case outcome" %}
 
+{% set fieldSetHtml %}
+    <h1 class="govuk-fieldset__heading{% if legacyCaseOutcome %} govuk-!-static-margin-bottom-3{% endif %}">{% if isAddCourtAppearance%}Select the overall case outcome{%else%}Edit the overall case outcome{%endif%}</h1>
+    {% if legacyCaseOutcome%}
+    <p class="govuk-body-l govuk-!-static-margin-bottom-3" data-qa="legendParagraph">{{ legacyCaseOutcome }}</p>
+    {% endif %}
+{% endset %}
+
 {% set radiosData = {
                     id: "overallCaseOutcome",
                     errorMessage: errors | findError('overallCaseOutcome'),
                     name: "overallCaseOutcome",
                     fieldset: {
                         legend: {
-                        text: "Select the overall case outcome" if isAddCourtAppearance else "Edit the overall case outcome",
-                        isPageHeading: true,
-                        classes: "govuk-fieldset__legend--l"
+                            html: fieldSetHtml,
+                            classes: "govuk-fieldset__legend--l"
                         }
                     },
                     items: []

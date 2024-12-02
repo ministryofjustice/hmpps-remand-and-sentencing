@@ -10,11 +10,18 @@ import {
   formatLengths,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { SentenceLength } from 'models'
-import { formatDate, formatDateTime, initialiseName, pluraliseName } from './utils'
+import {
+  formatDate,
+  formatDateTime,
+  formatLengthsWithoutPeriodOrder,
+  initialiseName,
+  outcomeValueOrLegacy,
+  pluraliseName,
+} from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import { periodLengthToSentenceLength } from './mappingUtils'
-import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import type { AppearanceOutcome, OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -112,12 +119,24 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       if (appearanceOutcome) {
         return appearanceOutcome.outcomeName
       }
-      if (legacyData) {
+      if (legacyData?.outcomeDescription) {
         return legacyData.outcomeDescription
       }
-      return ''
+      return 'Not entered'
     },
   )
+
+  njkEnv.addFilter('chargeOutcomeOrLegacy', (offenceOutcome: OffenceOutcome, legacyData: Record<string, never>) => {
+    if (offenceOutcome) {
+      return offenceOutcome.outcomeName
+    }
+    if (legacyData?.outcomeDescription) {
+      return legacyData.outcomeDescription
+    }
+    return 'Not entered'
+  })
+
+  njkEnv.addFilter('outcomeValueOrLegacy', outcomeValueOrLegacy)
 
   njkEnv.addFilter('personProfileName', personProfileName)
   njkEnv.addFilter('personDateOfBirth', personDateOfBirth)
@@ -126,6 +145,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('pluraliseName', pluraliseName)
 
   njkEnv.addFilter('formatLengths', formatLengths)
+  njkEnv.addFilter('formatLengthsWithoutPeriodOrder', formatLengthsWithoutPeriodOrder)
 
   njkEnv.addFilter('periodLengthToSentenceLength', periodLengthToSentenceLength)
 }

@@ -1,6 +1,7 @@
 {% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - Add " + periodLengthHeader %}
 
@@ -51,6 +52,12 @@
                 <p class="govuk-body">
                     <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/alternative-period-length?periodLengthType={{periodLengthType}}{{ "&submitToEditOffence=true" if submitToEditOffence }}">The {{ periodLengthHeader }} is formatted differently</a>
                 </p>
+
+                {% if sentenceTypeClassification === 'SOPC' %}
+                    {{ govukInsetText({
+                    text: "For SOPC sentences a mandatory license period of 12 months is automatically added to the sentence."
+                    }) }}
+                {% endif %}
 
                 {{ govukButton({
                     text: "Continue"

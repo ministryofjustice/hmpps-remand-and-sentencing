@@ -56,8 +56,8 @@ export default {
   production,
   https: production,
   staticResourceCacheDuration: '1h',
-  dateFormat: 'DD MM YYYY',
-  dateTimeFormat: 'DD MM YYYY HH:mm',
+  dateFormat: 'DD/MM/YYYY',
+  dateTimeFormat: 'DD/MM/YYYY HH:mm',
   redis: {
     enabled: get('REDIS_ENABLED', 'false', requiredInProduction) === 'true',
     host: get('REDIS_HOST', '127.0.0.1', requiredInProduction),
@@ -148,6 +148,14 @@ export default {
         deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000))),
+    },
+    calculateReleaseDatesApi: {
+      url: get('CALCULATE_RELEASE_DATES_API_URL', 'http://localhost:8110', requiredInProduction),
+      timeout: {
+        response: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_RESPONSE', 10000))),
     },
   },
   digitalPrisonServices: {

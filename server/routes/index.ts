@@ -27,6 +27,8 @@ export default function routes(services: Services): Router {
     services.documentManagementService,
     services.courtRegisterService,
     services.appearanceOutcomeService,
+    services.offenceOutcomeService,
+    services.prisonerSearchService,
   )
   const apiRoutes = new ApiRoutes(
     services.prisonerService,
@@ -39,6 +41,7 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.remandAndSentencingService,
     services.offenceOutcomeService,
+    services.calculateReleaseDatesService,
   )
 
   get('/', async (req, res, next) => {
@@ -62,6 +65,11 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-details-edit',
     courtCaseRoutes.submitAppearanceDetailsEdit,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/new-journey',
+    courtCaseRoutes.newJourney,
   )
 
   get(
@@ -382,6 +390,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-offence-answers',
     offenceRoutes.submitCheckOffenceAnswers,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/sentence-length-mismatch',
+    offenceRoutes.getSentenceLengthMismatch,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/submit-sentence-length-mismatch',
+    offenceRoutes.submitSentenceLengthMismatch,
   )
 
   get(

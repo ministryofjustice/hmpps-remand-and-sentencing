@@ -4,6 +4,47 @@
 
 {% set pageTitle = applicationName + " - Add a court case Confirm Offence" %}
 
+{% set rows = [
+    {
+        key: {
+            text: "Offence code"
+        },
+        value: {
+            text: offence.code
+        }
+    },
+    {
+        key: {
+            text: "Description"
+        },
+        value: {
+            text: offence.description
+        }
+    },
+    {
+        key: {
+            text: "Home office code (CJA)"
+        },
+        value: {
+            text: offence.homeOfficeStatsCode if offence.homeOfficeStatsCode else 'None'
+        }
+    }
+]
+%}
+
+{% if offence.legislation %}
+    {% set rows = (rows.push(
+        {
+            key: {
+                text: "Legislation"
+            },
+            value: {
+                text: offence.legislation
+            }
+        }
+    ), rows) %}
+{% endif %}
+
 {% block pageContent %}
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-confirm-offence{{ "?submitToEditOffence=true" if submitToEditOffence }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -16,24 +57,10 @@
 
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
-                    rows: [
-                        {
-                            key: {
-                                text: "Offence code"
-                            },
-                            value: {
-                                text: offence.code
-                            }
-                        },
-                        {
-                            key: {
-                            text: "Offence"
-                        },
-                            value: {
-                            text: offence.description
-                        }
-                        }
-                    ]
+                    rows: rows,
+                    attributes: {
+                        "data-qa": "offenceSummaryList"
+                    }
                 }) }}
 
 
@@ -42,10 +69,10 @@
                 }) }}
             </form>
             <p class="govuk-body">
-                <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/offence-code">Enter a different offence code</a>
+                <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/offence-code" class="govuk-link--no-visited-state">Enter a different offence code</a>
             </p>
             <p class="govuk-body">
-                <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/offence-name">Look up an offence by name</a>
+                <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/offence-name" class="govuk-link--no-visited-state">Look up an offence by name</a>
             </p>
 
 {% endblock %}

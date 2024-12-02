@@ -23,12 +23,20 @@ context('Add Offence Edit offence Page', () => {
 
   context('remand', () => {
     beforeEach(() => {
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
+      cy.task('stubGetChargeOutcomeById', {})
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
       courtCaseWarrantTypePage.button().click()
       cy.createOffence('A1234AB', '0', '0', '0')
-      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '', 'offences')
+      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('')
       offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
@@ -51,14 +59,26 @@ context('Add Offence Edit offence Page', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceTypeById', {})
       cy.task('stubGetSentenceTypesByIds')
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      })
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+          outcomeName: 'Imprisonment',
+          outcomeType: 'SENTENCING',
+        },
+      ])
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.button().click()
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
-      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(1, '', 'sentences')
+      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('')
       offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 
     it('displays person details', () => {
@@ -77,16 +97,18 @@ context('Add Offence Edit offence Page', () => {
     it('can edit count number and return to edit page', () => {
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'count-number').click()
       const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+      offenceCountNumberPage.radioLabelSelector('true').click()
       offenceCountNumberPage.input().should('have.value', '1')
       offenceCountNumberPage.input().clear()
       offenceCountNumberPage.input().type('5')
       offenceCountNumberPage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 5',
-        Offence: 'PS90037 An offence description Terror-related',
-        'Committed on': '12 05 2023',
-        'Conviction date': '12 05 2023',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
+        'Committed on': '12/05/2023',
+        'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -102,12 +124,13 @@ context('Add Offence Edit offence Page', () => {
       offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
       offenceOffenceDatePage.dayDateInput('offenceStartDate').type('25')
       offenceOffenceDatePage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
-        Offence: 'PS90037 An offence description Terror-related',
-        'Committed on': '25 05 2023',
-        'Conviction date': '12 05 2023',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
+        'Committed on': '25/05/2023',
+        'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -127,16 +150,31 @@ context('Add Offence Edit offence Page', () => {
       const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
       offenceOffenceCodeConfirmPage.button().click()
 
-      const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-      offenceTerrorRelatedPage.radioSelector('true').should('be.checked')
-      offenceTerrorRelatedPage.radioLabelSelector('false').click()
-      offenceTerrorRelatedPage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'AB11000 Another offence description',
-        'Committed on': '12 05 2023',
-        'Conviction date': '12 05 2023',
+        'Terror related': 'Yes',
+        'Committed on': '12/05/2023',
+        'Conviction date': '12/05/2023',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Forthwith',
+      })
+    })
+
+    it('can edit terror related and return to edit page', () => {
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'terror-related').click()
+      const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
+      offenceTerrorRelatedPage.radioLabelSelector('false').click()
+      offenceTerrorRelatedPage.button().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'No',
+        'Committed on': '12/05/2023',
+        'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -153,12 +191,13 @@ context('Add Offence Edit offence Page', () => {
       offencePeriodLengthPage.monthsInput().clear()
       offencePeriodLengthPage.monthsInput().type('6')
       offencePeriodLengthPage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
-        Offence: 'PS90037 An offence description Terror-related',
-        'Committed on': '12 05 2023',
-        'Conviction date': '12 05 2023',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
+        'Committed on': '12/05/2023',
+        'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -171,12 +210,13 @@ context('Add Offence Edit offence Page', () => {
       offenceSentenceServeTypePage.radioSelector('FORTHWITH').should('be.checked')
       offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
       offenceSentenceServeTypePage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
-        Offence: 'PS90037 An offence description Terror-related',
-        'Committed on': '12 05 2023',
-        'Conviction date': '12 05 2023',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
+        'Committed on': '12/05/2023',
+        'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
@@ -205,12 +245,13 @@ context('Add Offence Edit offence Page', () => {
       offencePeriodLengthPage.yearsInput().type('2')
       offencePeriodLengthPage.monthsInput().type('2')
       offencePeriodLengthPage.button().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'sentence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
-        Offence: 'PS90037 An offence description Terror-related',
-        'Committed on': '12 05 2023',
-        'Conviction date': '12 05 2023',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Yes',
+        'Committed on': '12/05/2023',
+        'Conviction date': '12/05/2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',

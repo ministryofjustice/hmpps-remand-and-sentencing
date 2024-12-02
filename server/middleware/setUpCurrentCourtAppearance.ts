@@ -14,8 +14,7 @@ export default function setupCurrentCourtAppearance(
     const courtAppearance = courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
     res.locals.courtAppearance = courtAppearance
-    res.locals.offences = courtAppearance.offences.filter(offence => !offence.sentence)
-    res.locals.sentences = courtAppearance.offences.filter(offence => offence.sentence)
+    res.locals.offences = courtAppearance.offences
     res.locals.isAddCourtAppearance = addOrEditCourtAppearance === 'add-court-appearance'
     const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
     res.locals.offenceNameMap = await manageOffenceService.getOffenceMap(offenceCodes, req.user.token)

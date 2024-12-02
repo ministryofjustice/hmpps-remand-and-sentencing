@@ -57,4 +57,8 @@ export default abstract class Page {
   autoCompleteInput = (): PageElement => cy.get('.autocomplete__input')
 
   captionText = (): PageElement => cy.get('.govuk-caption-l')
+
+  bodyText = (): PageElement => cy.get('.govuk-body-l')
+
+  legendParagraph = (): PageElement => cy.get('[data-qa=legendParagraph]')
 }

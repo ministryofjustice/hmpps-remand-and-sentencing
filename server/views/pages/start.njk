@@ -1,14 +1,15 @@
 {% extends "../partials/prisonerBannerLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "govuk/components/details/macro.njk" import govukDetails %}
-{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set pageTitle = applicationName + " - Home" %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">Court cases </h1>
+    <h1 class="govuk-heading-l">Court cases</h1>
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
@@ -41,19 +42,20 @@
             </div>
 
             {% for courtCaseDetails in courtCaseDetailModels %}
+                {% if courtCaseDetails.overallCaseStatus != 'DELETED' %}
 
-                {% set courtCaseSummary %}
+                    {% set courtCaseSummary %}
 
-                {% set nextHearingHtml %}
-                <ul class="govuk-list">
-                    {% for nextHearingValue in courtCaseDetails.nextHearing %}
-                        <li>
-                            {{ nextHearingValue }}
-                        </li>
-                    {% endfor %}
-                </ul>
-                {% endset %}
-                {{
+                    {% set nextHearingHtml %}
+                    <ul class="govuk-list">
+                        {% for nextHearingValue in courtCaseDetails.nextHearing %}
+                            <li>
+                                {{ nextHearingValue }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% endset %}
+                    {{
                         govukSummaryList({
                             rows: [
                             {
@@ -75,12 +77,12 @@
                         })
                     }}
 
-                <hr class="govuk-section-break govuk-section-break--visible">
+                    <hr class="govuk-section-break govuk-section-break--visible">
 
-                {%- set appearanceTableRows = [] -%}
+                    {%- set appearanceTableRows = [] -%}
 
-                {%- for appearance in courtCaseDetails.latestAppearances -%}
-                    {%- set tableRow= [
+                    {%- for appearance in courtCaseDetails.latestAppearances -%}
+                        {%- set tableRow= [
                             {
                                 text: appearance.courtCaseReference
                             },
@@ -91,111 +93,123 @@
                                 text: appearance.appearanceDate | formatDate
                             },
                             {
-                                text: appearance.outcome.outcomeName if appearance.outcome else ''
+                                text: appearance.outcome | appearanceOutcomeOrLegacy(appearance.legacyData)
                             },
                             {
                                 html: '<a href="/person/' + nomsId + '/edit-court-case/' + courtCaseDetails.courtCaseUuid + '/edit-court-appearance/' + appearance.appearanceUuid + '/details">View and edit</a>'
                             }
                         ]-%}
-                    {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
-                {%- endfor -%}
+                        {% set appearanceTableRows = (appearanceTableRows.push(tableRow), appearanceTableRows)%}
+                    {%- endfor -%}
 
-                {{ govukTable({
-                        classes: 'govuk-!-margin-top-6',
-                        caption: 'Appearances (' + ('showing ' + courtCaseDetails.showingAppearanceTotal + ' of ' + courtCaseDetails.appearanceTotal if courtCaseDetails.showingAppearanceTotal else courtCaseDetails.appearanceTotal) + ')',
-                        captionClasses: "govuk-table__caption--m",
-                        head: [
-                            {
-                            text: "Case reference"
-                            },
-                            {
-                            text: "Location"
-                            },
-                            {
-                            text: "Warrant date"
-                            },
-                            {
-                            text: "Outcome"
-                            },
-                            {
-                            text: ""
-                            }
-                        ],
-                        rows: appearanceTableRows,
-                            attributes: {
-                                "data-qa": "courtCaseAppearanceTable-" + courtCaseDetails.courtCaseUuid
-                            }
-                    }) }}
-
-                <h2 class="govuk-heading-m govuk-!-margin-top-4">Offences <span class="govuk-body">(
-                        {% if courtCaseDetails.showingChargeTotal %}
-                            showing {{ courtCaseDetails.showingChargeTotal }} of {{ courtCaseDetails.chargeTotal }}
-                        {% else %}
-                            {{ courtCaseDetails.chargeTotal }}
-                        {% endif %}
-                        )</span></h2>
-
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds">
-                        <p class="govuk-hint">These offences come from the most recent appearance at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }} on {{ courtCaseDetails.latestAppearanceDate }}.</p>
-                    </div>
-                </div>
-
-                {% set offenceDetailsHtml %}
-                {% for offence in courtCaseDetails.offences %}
-                    {{
-                                offenceCard({
-                                    offenceCode: offence.offenceCode,
-                                    offenceName: offenceMap[offence.offenceCode],
-                                    offenceStartDate: offence.offenceStartDate | formatDate,
-                                    offenceEndDate: offence.offenceEndDate | formatDate,
-                                    outcome: offence.outcome.outcomeName if offence.outcome else '',
-                                    countNumber: offence.sentence.countNumber,
-                                    convictionDate: offence.sentence.convictionDate | formatDate,
-                                    terrorRelated: offence.terrorRelated,
-                                    isSentenced: offence.sentence,
-                                    custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
-                                    sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId]
-                                })
-                            }}
-                {% endfor %}
-                {% endset %}
-
-                {{ govukDetails({
-                        summaryText: "Show offences",
-                        html: offenceDetailsHtml,
-                            attributes: {
-                                "data-qa": "courtCaseDetailsComponent-" + courtCaseDetails.courtCaseUuid
-                            }
-                    }) }}
-
-                <a href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}/details">View details about this court case</a>
-
-                {% endset %}
-
-                {{
-                    govukSummaryList({
-                        card: {
-                            title: {
-                                text: "Court Case " + courtCaseDetails.courtCaseUuid
-                            },
-                            actions: {
-                                items: [
+                    {{ govukTable({
+                            classes: 'govuk-!-margin-top-6',
+                            caption: 'Appearances (' + ('showing ' + courtCaseDetails.showingAppearanceTotal + ' of ' + courtCaseDetails.appearanceTotal if courtCaseDetails.showingAppearanceTotal else courtCaseDetails.appearanceTotal) + ')',
+                            captionClasses: "govuk-table__caption--m",
+                            head: [
                                 {
-                                    href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + courtCaseDetails.appearanceTotal + "/warrant-type",
-                                    text: "Add an appearance",
-                                    visuallyHiddenText: "Add an appearance"
-                                }]
-                            }
-                        },
-                        rows: [
-                        {
-                            key: { text: "", classes: 'govuk-!-display-none' },
-                            value: { html: courtCaseSummary }
-                        }]
-                    })
-                }}
+                                text: "Case reference"
+                                },
+                                {
+                                text: "Location"
+                                },
+                                {
+                                text: "Warrant date"
+                                },
+                                {
+                                text: "Outcome"
+                                },
+                                {
+                                text: ""
+                                }
+                            ],
+                            rows: appearanceTableRows,
+                                attributes: {
+                                    "data-qa": "courtCaseAppearanceTable-" + courtCaseDetails.courtCaseUuid
+                                }
+                        }) }}
 
+                    <h2 class="govuk-heading-m govuk-!-margin-top-4">Offences <span class="govuk-body">(
+                            {% if courtCaseDetails.showingChargeTotal %}
+                                showing {{ courtCaseDetails.showingChargeTotal }} of {{ courtCaseDetails.chargeTotal }}
+                            {% else %}
+                                {{ courtCaseDetails.chargeTotal }}
+                            {% endif %}
+                            )</span></h2>
+
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-two-thirds">
+                            <p class="govuk-hint">These offences come from the most recent appearance at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }} on {{ courtCaseDetails.latestAppearanceDate }}.</p>
+                        </div>
+                    </div>
+
+                    {% set offenceDetailsHtml %}
+                    {% for offence in courtCaseDetails.offences %}
+                        {{
+                                    offenceCard({
+                                        offenceCode: offence.offenceCode,
+                                        offenceName: offenceMap[offence.offenceCode],
+                                        offenceStartDate: offence.offenceStartDate | formatDate,
+                                        offenceEndDate: offence.offenceEndDate | formatDate,
+                                        outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                                        countNumber: offence.sentence.countNumber,
+                                        convictionDate: offence.sentence.convictionDate | formatDate,
+                                        terrorRelated: offence.terrorRelated,
+                                        isSentenced: offence.sentence,
+                                        custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
+                                        sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId]
+                                    })
+                                }}
+                    {% endfor %}
+                    {% endset %}
+
+                    {{ govukDetails({
+                            summaryText: "Show offences",
+                            html: offenceDetailsHtml,
+                                attributes: {
+                                    "data-qa": "courtCaseDetailsComponent-" + courtCaseDetails.courtCaseUuid
+                                }
+                        }) }}
+
+                    <a href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}/details">View details about this court case</a>
+
+                    {% endset %}
+
+                    {{
+                        govukSummaryList({
+                            card: {
+                                title: {
+                                    text: "Court Case " + courtCaseDetails.courtCaseUuid
+                                },
+                                actions: {
+                                    items: [
+                                        {
+                                            href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + courtCaseDetails.appearanceTotal + "/new-journey",
+                                            text: "Add an appearance",
+                                            visuallyHiddenText: "Add an appearance"
+                                        }
+                                        if courtCaseDetails.overallCaseStatus != "INACTIVE" else
+                                        {
+                                            href: null,
+                                            html: govukTag({
+                                                text: "Inactive"
+                                            }),
+                                            visuallyHiddenText: "Inactive"
+                                        }
+                                    ]
+                                },
+                                attributes: {
+                                    "data-qa": "courtCaseCard-" + courtCaseDetails.courtCaseUuid
+                                }
+                            },
+                            rows: [
+                            {
+                                key: { text: "", classes: 'govuk-!-display-none' },
+                                value: { html: courtCaseSummary }
+                            }]
+                        })
+                    }}
+                {%  endif %}
             {% endfor %}
 
         </div>
@@ -205,7 +219,7 @@
             <div class="actions-list">
                 <ul class="govuk-list actions-list-list">
                     <span class="govuk-heading-m actions-list-header">Actions</span>
-                    <li><a href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/0/warrant-type">Add a new court case</a></li>
+                    <li><a href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/0/new-journey">Add a new court case</a></li>
                 </ul>
             </div>  
         </div>

@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class OffenceCheckOffenceAnswersPage extends Page {
-  constructor(offenceCount: number, courtCaseReference: string, offenceSentence: string) {
-    super(`You have added ${offenceCount} ${offenceSentence} to case ${courtCaseReference}`)
+  constructor(courtCaseReference: string) {
+    super(`Add offences to case ${courtCaseReference}`)
   }
 
   deleteOffenceLink = (
@@ -27,7 +27,13 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
 
   finishAddingButton = (): PageElement => cy.get('[data-qa="finishAddingButton"]')
 
-  infoBanner = (): PageElement => cy.get('.moj-banner')
+  finishedAddingRadio = (): PageElement => cy.get('[data-qa="finishAddingRadio"]')
+
+  notFinishedRadio = (): PageElement => cy.get('[data-qa="notFinishedRadio"]')
 
   addAnotherButton = (): PageElement => cy.get('[data-qa="addAnotherOffence"]')
+
+  overallSentenceLength = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"] > :nth-child(1)')
+
+  sentencesAdded = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"] > :nth-child(2)')
 }

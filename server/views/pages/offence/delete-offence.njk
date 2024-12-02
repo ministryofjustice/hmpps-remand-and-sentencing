@@ -3,11 +3,9 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 
-{% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
-
 {% set isDeleteOffence = true %}
 
-{% set pageTitle = applicationName + " - Delete an " + offenceSentence %}
+{% set pageTitle = applicationName + " - Delete an offence" %}
 
 
 {% set hintHtml %}
@@ -17,7 +15,7 @@
             offenceName: offenceMap[offence.offenceCode],
             offenceStartDate: offence.offenceStartDate | formatDate,
             offenceEndDate: offence.offenceEndDate | formatDate,
-            outcome: offence.outcome,
+            outcome: outcome | outcomeValueOrLegacy(offence.legacyData),
             countNumber: offence.sentence.countNumber,
             convictionDate: offence.sentence.convictionDate | formatDate,
             terrorRelated: offence.terrorRelated,
@@ -43,7 +41,7 @@
                     name: "deleteOffence",
                     fieldset: {
                         legend: {
-                            text: "Are you sure you want to delete this " + offenceSentence + "?",
+                            text: "Are you sure you want to delete this offence?",
                             isPageHeading: true,
                             classes: "govuk-fieldset__legend--l"
                         }

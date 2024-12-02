@@ -22,6 +22,8 @@ export default class CourtCaseDetailsModel {
 
   overallSentenceLength: string
 
+  overallCaseStatus: string
+
   appearanceTotal: number
 
   appearances: PageCourtCaseAppearance[]
@@ -31,7 +33,11 @@ export default class CourtCaseDetailsModel {
     this.latestCaseReference = pageCourtCaseContent.latestAppearance.courtCaseReference
     this.latestCourtCode = pageCourtCaseContent.latestAppearance.courtCode
     this.caseReferences = Array.from(
-      new Set(pageCourtCaseContent.appearances.map(appearance => appearance.courtCaseReference)),
+      new Set(
+        pageCourtCaseContent.appearances
+          .filter(appearance => !!appearance.courtCaseReference)
+          .map(appearance => appearance.courtCaseReference),
+      ),
     ).join(', ')
     this.overallCaseOutcome =
       pageCourtCaseContent.latestAppearance.outcome?.outcomeName ??
@@ -53,6 +59,7 @@ export default class CourtCaseDetailsModel {
         periodLengthToSentenceLength(pageCourtCaseContent.latestAppearance.overallSentenceLength),
       )
     }
+    this.overallCaseStatus = pageCourtCaseContent.status
     this.appearanceTotal = pageCourtCaseContent.appearances.length
     this.appearances = pageCourtCaseContent.appearances
   }

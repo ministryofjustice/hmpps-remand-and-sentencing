@@ -13,7 +13,7 @@ context('Add Offence Outcome Page', () => {
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.button().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
-    offenceOffenceOutcomePage = Page.verifyOnPage(OffenceOffenceOutcomePage)
+    offenceOffenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Select the outcome for this offence')
   })
 
   it('displays person details', () => {

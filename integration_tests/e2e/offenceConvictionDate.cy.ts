@@ -21,7 +21,7 @@ context('Add Offence Conviction Date Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceConvictionDatePage.button().should('contain.text', 'Continue')
+    offenceConvictionDatePage.button().should('contain.text', 'Save and continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {

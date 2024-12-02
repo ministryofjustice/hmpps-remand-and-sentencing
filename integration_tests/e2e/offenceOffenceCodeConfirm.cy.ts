@@ -27,4 +27,12 @@ context('Add Offence Offence Code Page', () => {
   it('button to continue is displayed', () => {
     offenceOffenceCodeConfirmPage.button().should('contain.text', 'Confirm and continue')
   })
+
+  it('displays offence details', () => {
+    offenceOffenceCodeConfirmPage.offenceSummaryList().getSummaryList().should('deep.equal', {
+      'Offence code': 'PS90037',
+      Description: 'An offence description',
+      'Home office code (CJA)': '099/96',
+    })
+  })
 })

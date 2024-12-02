@@ -1,7 +1,7 @@
 import Page from './page'
 
 export default class CourtCaseOverallCaseOutcomePage extends Page {
-  constructor() {
-    super('Select the overall case outcome')
+  constructor(title: string) {
+    super(title)
   }
 }

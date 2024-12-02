@@ -62,3 +62,22 @@ export const getNextPeriodLengthType = (sentence: Sentence, currentPeriodLengthT
   const nextIndex = expectedPeriodLengthTypes.indexOf(currentPeriodLengthType) + 1
   return expectedPeriodLengthTypes[nextIndex]
 }
+
+export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: Record<string, never>) => {
+  if (outcomeValue) {
+    return outcomeValue
+  }
+  if (legacyData?.outcomeDescription) {
+    return legacyData.outcomeDescription
+  }
+  return 'Not entered'
+}
+
+export const formatLengthsWithoutPeriodOrder = (length: {
+  years: number
+  months: number
+  weeks: number
+  days: number
+}) => {
+  return `${length.years || 0} years ${length.months || 0} months ${length.weeks || 0} weeks ${length.days || 0} days`
+}

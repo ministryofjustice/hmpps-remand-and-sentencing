@@ -4,8 +4,8 @@
 
 {% set pageTitle = applicationName + " - Add a court case Next court select" %}
 {% set fieldSetHtml %}
-    <h1 class="govuk-fieldset__heading">Is the next appearance at the same court?</h1>
-    <p class="govuk-body-l">{{ courtName }}</p>
+    <h1 class="govuk-fieldset__heading govuk-!-static-margin-bottom-3">Is the next appearance at the same court?</h1>
+    <p class="govuk-body-l govuk-!-static-margin-bottom-3">{{ courtName }}</p>
 {% endset %}
 {% block content %}
     {{ super() }}
@@ -13,7 +13,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-court-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/appearanceCaption.njk" %}
+                {% include "../../partials/nextAppearanceCaption.njk" %}
                 {{ govukRadios({
                     name: "nextHearingCourtSelect",
                     fieldset: {

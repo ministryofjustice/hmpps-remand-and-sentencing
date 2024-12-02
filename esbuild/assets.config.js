@@ -46,11 +46,9 @@ const buildAssets = buildConfig => {
 }
 
 module.exports = buildConfig => {
-  // eslint-disable-next-line no-console
   console.log('\u{1b}[1m\u{2728}  Building assets....\u{1b}[0m')
 
   Promise.all([buildAssets(buildConfig), buildAdditionalAssets(buildConfig)]).catch(e => {
-    // eslint-disable-next-line no-console
     console.log(e)
 
     process.exit(1)

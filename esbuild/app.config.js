@@ -4,7 +4,6 @@ const esbuild = require('esbuild')
 const glob = require('glob')
 
 module.exports = buildConfig => {
-  // eslint-disable-next-line no-console
   console.log('\u{1b}[1m\u{2728}  Building app....\u{1b}[0m')
 
   esbuild

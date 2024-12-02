@@ -56,6 +56,7 @@ function main() {
   }
 
   if (args.includes('--watch')) {
+    // eslint-disable-next-line no-console
     console.log('\u{1b}[1m\u{1F52D} Watching for changes...\u{1b}[0m')
     // Assets
     chokidar.watch(['assets/**/*'], chokidarOptions).on('all', () => buildAssets(buildConfig))

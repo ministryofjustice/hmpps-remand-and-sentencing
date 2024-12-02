@@ -678,7 +678,6 @@ export default class CourtAppearanceService {
         overallConvictionDateAppliedAllForm.overallConvictionDateAppliedAll
       if (overallConvictionDateAppliedAllForm.overallConvictionDateAppliedAll === 'true') {
         courtAppearance.offences = courtAppearance.offences.map(offence => {
-          // eslint-disable-next-line no-param-reassign
           const sentence = offence.sentence ?? {}
           sentence.convictionDate = courtAppearance.overallConvictionDate
           // eslint-disable-next-line no-param-reassign

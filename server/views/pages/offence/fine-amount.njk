@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
@@ -8,14 +8,12 @@
 {{ super() }}
 <div class="govuk-grid-row govuk-!-margin-top-4">
   <div class="govuk-grid-column-two-thirds">
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-edit-offence">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/fine-amount">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-      <span class="govuk-caption-l">
-        Add sentence information for offence
-      </span>
+      {% include "../../partials/offenceCaption.njk" %}
       {{ govukInput({
-        id: "cost",
-        name: "cost",
+        id: "fineAmount",
+        name: "fineAmount",
         label: {
           text: "What is the fine amount?",
           classes: "govuk-label--l",
@@ -29,7 +27,7 @@
       }) }}
 
     {{ govukButton({
-      text: "Save and continue"
+      text: "Continue"
     }) }}
     </form>
 

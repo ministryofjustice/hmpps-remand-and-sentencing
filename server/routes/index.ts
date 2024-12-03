@@ -28,7 +28,6 @@ export default function routes(services: Services): Router {
     services.courtRegisterService,
     services.appearanceOutcomeService,
     services.offenceOutcomeService,
-    services.prisonerSearchService,
   )
   const apiRoutes = new ApiRoutes(
     services.prisonerService,
@@ -160,16 +159,6 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-overall-case-outcome',
     courtCaseRoutes.submitOverallCaseOutcome,
-  )
-
-  get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/fine-amount',
-    courtCaseRoutes.getFineAmount,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/fine-amount',
-    courtCaseRoutes.submitFineAmount,
   )
 
   get(
@@ -350,6 +339,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-period-length',
     offenceRoutes.submitPeriodLength,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/fine-amount',
+    offenceRoutes.getFineAmount,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/fine-amount',
+    offenceRoutes.submitFineAmount,
   )
 
   get(

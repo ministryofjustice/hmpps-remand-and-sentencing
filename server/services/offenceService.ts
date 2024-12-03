@@ -3,7 +3,7 @@ import type {
   OffenceConfirmOffenceForm,
   OffenceConsecutiveToForm,
   OffenceConvictionDateForm,
-  OffenceCountNumberForm,
+  OffenceCountNumberForm, OffenceFineAmountForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
@@ -312,6 +312,32 @@ export default class OffenceService {
       sentence.sentenceTypeId = sentenceTypeId
       sentence.sentenceTypeClassification = sentenceTypeClassification
       offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
+  setOffenceFineAmount(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceFineAmountForm: OffenceFineAmountForm,
+  ) {
+    const errors = validate(
+      offenceFineAmountForm,
+      {
+        fineAmount: 'required|minWholeNumber:1',
+      },
+      {
+        'required.fineAmount': 'You must provide the fine amount',
+        'minWholeNumber.fineAmount': "The fine amount can't be less than 1",
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      offence.fineAmount = offenceFineAmountForm.fineAmount
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }

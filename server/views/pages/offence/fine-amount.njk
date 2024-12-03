@@ -4,34 +4,27 @@
 
 {% set pageTitle = applicationName + " - Add the fine amount" %}
 
-{% block content %}
-{{ super() }}
-<div class="govuk-grid-row govuk-!-margin-top-4">
-  <div class="govuk-grid-column-two-thirds">
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/fine-amount">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-      {% include "../../partials/offenceCaption.njk" %}
-      {{ govukInput({
-        id: "fineAmount",
-        name: "fineAmount",
-        label: {
-          text: "What is the fine amount?",
-          classes: "govuk-label--l",
-          isPageHeading: true
-        },
-        prefix: {
-          text: "£"
-        },
-        classes: "govuk-input--width-5",
-        spellcheck: false
-      }) }}
-
-    {{ govukButton({
-      text: "Continue"
+{% block pageContent %}
+  <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/fine-amount"?submitToEditOffence=true" if submitToEditOffence }}>
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% include "../../partials/offenceCaption.njk" %}
+    {{ govukInput({
+      id: "fineAmount",
+      name: "fineAmount",
+      label: {
+        text: "What is the fine amount?",
+        classes: "govuk-label--l",
+        isPageHeading: true
+      },
+      prefix: {
+        text: "£"
+      },
+      classes: "govuk-input--width-5",
+      spellcheck: false
     }) }}
-    </form>
 
-  </div>
-</div>
-
+  {{ govukButton({
+    text: "Continue"
+  }) }}
+  </form>
 {% endblock %}

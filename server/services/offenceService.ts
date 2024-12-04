@@ -3,7 +3,8 @@ import type {
   OffenceConfirmOffenceForm,
   OffenceConsecutiveToForm,
   OffenceConvictionDateForm,
-  OffenceCountNumberForm, OffenceFineAmountForm,
+  OffenceCountNumberForm,
+  OffenceFineAmountForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
@@ -327,11 +328,11 @@ export default class OffenceService {
     const errors = validate(
       offenceFineAmountForm,
       {
-        fineAmount: 'required|minWholeNumber:1',
+        fineAmount: 'required|minWholeNumber:0',
       },
       {
         'required.fineAmount': 'You must provide the fine amount',
-        'minWholeNumber.fineAmount': "The fine amount can't be less than 1",
+        'minWholeNumber.fineAmount': 'The number must be a whole number, or 0',
       },
     )
     if (errors.length === 0) {

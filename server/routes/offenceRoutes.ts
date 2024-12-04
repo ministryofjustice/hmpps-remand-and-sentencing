@@ -839,7 +839,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       offenceReference,
     } = req.params
-    const { submitToEditOffence, periodLengthType } = req.query
+    const { submitToEditOffence } = req.query
     const offenceFineAmountForm = trimForm<OffenceFineAmountForm>(req.body)
     const errors = this.offenceService.setOffenceFineAmount(
       req.session,

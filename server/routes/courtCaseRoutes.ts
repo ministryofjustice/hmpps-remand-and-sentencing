@@ -749,10 +749,6 @@ export default class CourtCaseRoutes {
     const skippedOutcome = req.flash('skippedOutcome')[0] === 'true' || false
     const overallCaseOutcomeForm = trimForm<CourtCaseOverallCaseOutcomeForm>(req.body)
     const errors = this.courtAppearanceService.setAppearanceOutcomeUuid(req.session, nomsId, overallCaseOutcomeForm)
-    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
-    const overallCaseOutcome: string = (
-      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
-    ).outcomeName
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('overallCaseOutcomeForm', { ...overallCaseOutcomeForm })

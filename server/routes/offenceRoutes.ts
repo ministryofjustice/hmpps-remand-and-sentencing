@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import {
+import type {
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConsecutiveToForm,

@@ -332,7 +332,7 @@ export default class OffenceService {
       },
       {
         'required.fineAmount': 'You must provide the fine amount',
-        'minWholeNumber.fineAmount': 'The number must be a whole number, or 0',
+        'minWholeNumber.fineAmount': 'The fine amount must be a whole number, or 0',
       },
     )
     if (errors.length === 0) {

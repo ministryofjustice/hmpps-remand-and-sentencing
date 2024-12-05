@@ -817,6 +817,11 @@ export default class OffenceRoutes {
       }
     }
 
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length`
+    if (submitToEditOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+    }
+
     return res.render('pages/offence/fine-amount', {
       nomsId,
       courtCaseReference,
@@ -825,6 +830,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       offenceFineAmountForm,
       offenceReference,
+      backLink,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
     })
@@ -852,7 +858,7 @@ export default class OffenceRoutes {
       req.flash('errors', errors)
       req.flash('offenceFineAmountForm', { ...offenceFineAmountForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
@@ -1576,7 +1582,7 @@ export default class OffenceRoutes {
   }
 
   private isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
-    return addOrEditCourtCase.includes('add') && addOrEditCourtAppearance.includes('add')
+    return addOrEditCourtCase === 'add-court-case' && addOrEditCourtAppearance === 'add-court-appearance'
   }
 
   private saveOffenceInAppearance(

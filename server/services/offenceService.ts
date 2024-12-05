@@ -328,7 +328,7 @@ export default class OffenceService {
     const errors = validate(
       offenceFineAmountForm,
       {
-        fineAmount: 'required|minWholeNumber:0',
+        fineAmount: 'required|numeric|min:0',
       },
       {
         'required.fineAmount': 'You must provide the fine amount',

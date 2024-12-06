@@ -30,7 +30,7 @@ context('Add Offence Fine amount Page', () => {
     offenceFineAmountPage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'The fine amount must be entered in a valid format, such as £21.34')
+      .should('equal', 'There is a problem The fine amount must be entered in a valid format, such as £21.34')
   })
   it('submitting without entering a fine amount', () => {
     offenceFineAmountPage.button().click()

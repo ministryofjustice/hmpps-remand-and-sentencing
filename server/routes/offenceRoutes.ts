@@ -810,10 +810,10 @@ export default class OffenceRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     let offenceFineAmountForm = (req.flash('offenceFineAmountForm')[0] || {}) as OffenceFineAmountForm
-    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    const { sentence } = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     if (Object.keys(offenceFineAmountForm).length === 0) {
       offenceFineAmountForm = {
-        fineAmount: offence?.fineAmount,
+        fineAmount: sentence?.fineAmount,
       }
     }
 

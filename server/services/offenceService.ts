@@ -332,13 +332,14 @@ export default class OffenceService {
       },
       {
         'required.fineAmount': 'You must provide the fine amount',
-        'minWholeNumber.fineAmount': 'The fine amount must be a whole number, or 0',
+        'numeric.fineAmount': 'The fine amount must be a number',
       },
     )
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
-      offence.fineAmount = offenceFineAmountForm.fineAmount
+      const sentence = offence.sentence ?? {}
+      sentence.fineAmount = offenceFineAmountForm.fineAmount
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }

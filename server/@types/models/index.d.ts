@@ -43,7 +43,6 @@ declare module 'models' {
     sentence?: Sentence
     terrorRelated?: boolean
     legacyData: Record<string, never>
-    fineAmount?: number
   }
 
   export interface Sentence {
@@ -56,6 +55,7 @@ declare module 'models' {
     sentenceTypeId?: string
     sentenceTypeClassification?: string
     convictionDate?: Date
+    fineAmount?: number
   }
 
   export interface SentenceLength {

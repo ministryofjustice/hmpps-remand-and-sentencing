@@ -328,11 +328,11 @@ export default class OffenceService {
     const errors = validate(
       offenceFineAmountForm,
       {
-        fineAmount: 'required|numeric|min:0',
+        fineAmount: 'required|minCurrency|min:0',
       },
       {
         'required.fineAmount': 'You must provide the fine amount',
-        'numeric.fineAmount': 'The fine amount must be a number',
+        'minCurrency.fineAmount': 'The fine amount must be entered in a valid format, such as £21.34',
       },
     )
     if (errors.length === 0) {

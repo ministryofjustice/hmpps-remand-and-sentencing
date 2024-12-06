@@ -27,7 +27,10 @@ context('Add Offence Fine amount Page', () => {
   it("submitting a fine amount that isn't a number", () => {
     offenceFineAmountPage.input().type('bazinga')
     offenceFineAmountPage.button().click()
-    offenceFineAmountPage.errorSummary().trimTextContent().should('equal', 'The fine amount must be a number')
+    offenceFineAmountPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The fine amount must be a number')
   })
   it('submitting without entering a fine amount', () => {
     offenceFineAmountPage.button().click()

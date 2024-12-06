@@ -831,6 +831,7 @@ export default class OffenceRoutes {
       offenceFineAmountForm,
       offenceReference,
       backLink,
+      submitToEditOffence,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
     })

@@ -37,31 +37,33 @@ const getTable = subject => {
   )
 }
 
-const getTableAndOffences = subject => {
+const getAppearanceCardDetails = subject => {
   if (subject.get().length > 1) {
     throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
   }
 
-  const tableElement = subject.get()[0]
-  const headers = [...tableElement.querySelectorAll('thead th')].map(e => e.textContent.replace(/\s/g, ' '))
+  const card = subject.get()[0]
 
-  const rows = [...tableElement.querySelectorAll('tbody tr')].map(row => {
-    return [...row.querySelectorAll('td, th')].map(e => {
-      if (e.firstElementChild && e.firstElementChild.tagName === 'DETAILS') {
-        return getOffenceDetails(e.querySelector('details'))
+  const appearances = [...card.querySelectorAll('[data-qa=appearance]')].map(appearance => {
+    const headers = [...appearance.querySelectorAll('h3')].map(e => e.textContent.replace(/\s/g, ' '))
+
+    const values = headers.map(field => {
+      const value =
+        field !== 'Offences'
+          ? appearance
+              .querySelector(`[data-qa=${field.toLowerCase().replace(' ', '-')}]`)
+              .textContent.replace(/\r?\n|\r|\n/g, '')
+              .trim()
+          : getOffenceDetails(appearance.querySelector(`[data-qa=${field.toLowerCase().replace(' ', '-')}]`))
+
+      return {
+        [field]: value,
       }
-      return e.textContent.replace(/\r?\n|\r|\n/g, '').trim()
     })
+    return Object.assign({}, ...values)
   })
 
-  return rows.map(row =>
-    row.reduce((acc, curr, index) => {
-      if (typeof curr === 'string') {
-        return { ...acc, [headers[index]]: curr }
-      }
-      return { ...acc, ...curr }
-    }, {}),
-  )
+  return appearances
 }
 
 const getOffenceDetails = detailsElement => {
@@ -179,7 +181,7 @@ Cypress.Commands.add('getActions', { prevSubject: true }, getActions)
 Cypress.Commands.add('getTaskList', { prevSubject: true }, getTaskList)
 Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 Cypress.Commands.add('getOffenceCards', { prevSubject: true }, getOffenceCards)
-Cypress.Commands.add('getTableAndOffences', { prevSubject: true }, getTableAndOffences)
+Cypress.Commands.add('getAppearanceCardDetails', { prevSubject: true }, getAppearanceCardDetails)
 
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
   cy.visit(

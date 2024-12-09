@@ -30,50 +30,42 @@ context('Court Case details Page', () => {
         .and('contain.text', 'Cell numberCELL-1')
     })
 
-    it('appearances summary shows correct data', () => {
-      courtCaseDetailsPage.appearancesSummaryList().getSummaryList().should('deep.equal', {
-        'Case references': 'C894623, F23325',
-        'Overall case outcome': 'Remanded in custody',
-        'Next hearing date': '15/12/2024',
-      })
-    })
-
-    it('appearances table shows correct data', () => {
+    it('appearances tab shows correct data', () => {
       courtCaseDetailsPage
-        .appearancesTable()
-        .getTableAndOffences()
+        .appearancesTab()
+        .getAppearanceCardDetails()
         .should('deep.equal', [
           {
             'Case reference': 'C894623',
             Location: 'Accrington Youth Court',
             'Warrant date': '15/12/2023',
             Outcome: 'Remanded in custody',
-            '': 'Edit',
-          },
-          {
-            'Offences (1)': [
-              {
-                offenceCardHeader: 'PS90037 An offence description',
-                'Committed on': '15/12/2023',
-                Outcome: 'Remanded in custody',
-              },
-            ],
+            'Court documents': 'No documents uploaded',
+            Offences: {
+              'Offences (1)': [
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': '15/12/2023',
+                  Outcome: 'Remanded in custody',
+                },
+              ],
+            },
           },
           {
             'Case reference': 'F23325',
             Location: 'Birmingham Crown Court',
             'Warrant date': '15/10/2022',
             Outcome: 'Lie on file',
-            '': 'Edit',
-          },
-          {
-            'Offences (1)': [
-              {
-                offenceCardHeader: 'PS90037 An offence description',
-                'Committed on': '15/12/2023',
-                Outcome: 'A Nomis Outcome',
-              },
-            ],
+            'Court documents': 'No documents uploaded',
+            Offences: {
+              'Offences (1)': [
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': '15/12/2023',
+                  Outcome: 'A Nomis Outcome',
+                },
+              ],
+            },
           },
         ])
     })
@@ -89,14 +81,6 @@ context('Court Case details Page', () => {
         CourtCaseDetailsPage,
         'Appearances for C894623 at Accrington Youth Court',
       )
-    })
-
-    it('appearances summary shows correct data', () => {
-      courtCaseDetailsPage.appearancesSummaryList().getSummaryList().should('deep.equal', {
-        'Case references': 'C894623, F23325',
-        'Overall case outcome': 'Imprisonment',
-        'Overall sentence length': '4 years 5 months 0 weeks 0 days',
-      })
     })
   })
 })

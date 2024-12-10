@@ -1203,17 +1203,12 @@ export default class OffenceRoutes {
     const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
     const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
 
-    const promises = [
+    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison] = await Promise.all([
       this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
-    ]
-
-    if (courtAppearance.hasOverallSentenceLength === 'true') {
-      promises.push(this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username))
-    }
-
-    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison] = await Promise.all(promises)
+      this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
+    ])
 
     return res.render('pages/offence/check-offence-answers', {
       nomsId,

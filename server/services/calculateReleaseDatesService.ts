@@ -17,7 +17,7 @@ export default class CalculateReleaseDatesService {
   ): Promise<OverallSentenceLengthComparison> {
     const sentences = appearance.offences.filter(it => it.sentence).map(it => it.sentence)
 
-    if (sentences.length && appearance.hasOverallSentenceLength) {
+    if (sentences.length && appearance.hasOverallSentenceLength === 'true') {
       const consecutive = sentences.filter(
         sentence =>
           sentence.sentenceServeType === 'CONSECUTIVE' ||

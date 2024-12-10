@@ -1203,12 +1203,17 @@ export default class OffenceRoutes {
     const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
     const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
 
-    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison] = await Promise.all([
+    const promises = [
       this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
-      this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
-    ])
+    ]
+
+    if (courtAppearance.hasOverallSentenceLength === 'true') {
+      promises.push(this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username))
+    }
+
+    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison] = await Promise.all(promises)
 
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
@@ -1246,7 +1251,11 @@ export default class OffenceRoutes {
       )
     }
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    if (courtAppearance.warrantType === 'SENTENCING' && finishedAddingOffences.finishedAddingOffences === 'true') {
+    if (
+      courtAppearance.warrantType === 'SENTENCING' &&
+      finishedAddingOffences.finishedAddingOffences === 'true' &&
+      courtAppearance.hasOverallSentenceLength
+    ) {
       const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
         courtAppearance,
         req.user.username,

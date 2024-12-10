@@ -71,7 +71,11 @@ const sentenceTypePeriodLengths = {
     ],
   },
   LEGACY: {
-    periodLengths: [],
+    periodLengths: [
+      {
+        type: 'SENTENCE_LENGTH',
+      },
+    ],
   },
   NON_CUSTODIAL: {
     periodLengths: [],

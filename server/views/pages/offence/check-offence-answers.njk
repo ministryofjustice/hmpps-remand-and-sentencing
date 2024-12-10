@@ -75,7 +75,7 @@
                 convictionDate: offence.sentence.convictionDate | formatDate,
                 terrorRelated: offence.terrorRelated,
                 isSentenced: offence.sentence,
-                custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH") if courtAppearance.hasOverallSentenceLength === 'true',
+                custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
                 licencePeriodLength: offence.sentence.licencePeriodLength,
                 sentenceServeType: offence.sentence.sentenceServeType,
                 consecutiveTo: offence.sentence.consecutiveTo,

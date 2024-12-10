@@ -1246,7 +1246,11 @@ export default class OffenceRoutes {
       )
     }
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    if (courtAppearance.warrantType === 'SENTENCING' && finishedAddingOffences.finishedAddingOffences === 'true') {
+    if (
+      courtAppearance.warrantType === 'SENTENCING' &&
+      finishedAddingOffences.finishedAddingOffences === 'true' &&
+      courtAppearance.hasOverallSentenceLength
+    ) {
       const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
         courtAppearance,
         req.user.username,

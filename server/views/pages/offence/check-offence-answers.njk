@@ -3,7 +3,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
-{% from "govuk/components/inset-text/macro.njk"          import govukInsetText %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 
@@ -21,7 +21,7 @@
             {% endif %}
         </h1>
         
-        {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength %}
+        {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength === 'true' %}
             {{ govukSummaryList({
                 rows: [
                     {

@@ -1087,6 +1087,7 @@ export interface components {
         | 'UNABLE_TO_DETERMINE_SHPO_RELEASE_PROVISIONS'
         | 'SE2020_INVALID_OFFENCE_DETAIL'
         | 'SE2020_INVALID_OFFENCE_COURT_DETAIL'
+        | 'REMAND_ON_OR_AFTER_SENTENCE_DATE'
       arguments: string[]
       message: string
       /** @enum {string} */
@@ -1483,7 +1484,19 @@ export interface components {
       sentenceAndOffenceAnalysis: 'NEW' | 'UPDATED' | 'SAME'
       isSDSPlus: boolean
       /** @enum {string} */
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'TERRORISM' | 'NO'
+      hasAnSDSEarlyReleaseExclusion:
+        | 'SEXUAL'
+        | 'VIOLENT'
+        | 'DOMESTIC_ABUSE'
+        | 'NATIONAL_SECURITY'
+        | 'TERRORISM'
+        | 'SEXUAL_T3'
+        | 'VIOLENT_T3'
+        | 'DOMESTIC_ABUSE_T3'
+        | 'NATIONAL_SECURITY_T3'
+        | 'TERRORISM_T3'
+        | 'MURDER_T3'
+        | 'NO'
     }
     OffenderOffence: {
       /** Format: int64 */
@@ -1733,7 +1746,19 @@ export interface components {
       fineAmount?: number
       isSDSPlus: boolean
       /** @enum {string} */
-      hasAnSDSEarlyReleaseExclusion: 'SEXUAL' | 'VIOLENT' | 'DOMESTIC_ABUSE' | 'NATIONAL_SECURITY' | 'TERRORISM' | 'NO'
+      hasAnSDSEarlyReleaseExclusion:
+        | 'SEXUAL'
+        | 'VIOLENT'
+        | 'DOMESTIC_ABUSE'
+        | 'NATIONAL_SECURITY'
+        | 'TERRORISM'
+        | 'SEXUAL_T3'
+        | 'VIOLENT_T3'
+        | 'DOMESTIC_ABUSE_T3'
+        | 'NATIONAL_SECURITY_T3'
+        | 'TERRORISM_T3'
+        | 'MURDER_T3'
+        | 'NO'
     }
     PersonComparisonJson: {
       inputData: components['schemas']['JsonNode']

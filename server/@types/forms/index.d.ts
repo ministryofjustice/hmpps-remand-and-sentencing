@@ -158,6 +158,10 @@ declare module 'forms' {
     sentenceType?: string
   }
 
+  export interface OffenceFineAmountForm {
+    fineAmount?: number
+  }
+
   export interface CourtCaseOverallConvictionDateForm {
     'overallConvictionDate-day'?: string
     'overallConvictionDate-month'?: string

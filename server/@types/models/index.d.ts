@@ -55,6 +55,7 @@ declare module 'models' {
     sentenceTypeId?: string
     sentenceTypeClassification?: string
     convictionDate?: Date
+    fineAmount?: number
   }
 
   export interface SentenceLength {

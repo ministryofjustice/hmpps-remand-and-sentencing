@@ -1548,6 +1548,7 @@ export default class CourtCaseRoutes {
       appearanceReference,
       courtAppearance,
       courtAppearanceCourtName,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
 }

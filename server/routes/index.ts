@@ -482,12 +482,17 @@ export default function routes(services: Services): Router {
 
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-next-hearing-answers',
-    courtCaseRoutes.submiCheckNextHearingAnswers,
+    courtCaseRoutes.submitCheckNextHearingAnswers,
   )
 
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/confirmation',
     courtCaseRoutes.getConfirmationPage,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/save-court-case',
+    courtCaseRoutes.getDraftConfirmationPage,
   )
 
   return router

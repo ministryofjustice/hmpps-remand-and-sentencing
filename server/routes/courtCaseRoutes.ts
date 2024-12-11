@@ -1515,7 +1515,7 @@ export default class CourtCaseRoutes {
     })
   }
 
-  public submiCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
+  public submitCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.setNextCourtAppearanceAcceptedTrue(req.session, nomsId)
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
@@ -1533,6 +1533,21 @@ export default class CourtCaseRoutes {
 
     return res.render('pages/courtAppearance/confirmation', {
       nomsId,
+    })
+  }
+
+  public getDraftConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference } = req.params
+    const { courtAppearanceCourtName } = res.locals
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    return res.render('pages/courtAppearance/save-court-case', {
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      courtAppearance,
+      courtAppearanceCourtName,
     })
   }
 }

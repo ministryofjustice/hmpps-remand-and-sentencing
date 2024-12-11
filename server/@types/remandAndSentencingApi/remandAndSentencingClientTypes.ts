@@ -35,3 +35,5 @@ export type SentenceType = components['schemas']['SentenceType']
 export type AppearanceOutcome = components['schemas']['CourtAppearanceOutcome']
 
 export type OffenceOutcome = components['schemas']['ChargeOutcome']
+
+export type AppearanceType = components['schemas']['AppearanceType']

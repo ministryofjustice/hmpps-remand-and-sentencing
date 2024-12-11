@@ -66,7 +66,7 @@ export default class CourtCasesDetailsModel {
       this.nextHearing = [
         courtMap[pageCourtCaseContent.latestAppearance.nextCourtAppearance.courtCode] ??
           pageCourtCaseContent.latestAppearance.nextCourtAppearance.courtCode,
-        pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceType,
+        pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceType.description,
         appearanceDateFormatted,
       ]
     } else {

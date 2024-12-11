@@ -5,6 +5,7 @@ context('Next hearing type page', () => {
   let courtCaseNextHearingTypePage: CourtCaseNextHearingTypePage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetAllAppearanceTypes')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-type')
     courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)

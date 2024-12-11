@@ -1319,4 +1319,29 @@ export default {
       },
     })
   },
+
+  stubGetAllAppearanceTypes: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/appearance-type/all',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            appearanceTypeUuid: '1da09b6e-55cb-4838-a157-ee6944f2094c',
+            description: 'Video link',
+            displayOrder: 20,
+          },
+          {
+            appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+            description: 'Court appearance',
+            displayOrder: 10,
+          },
+        ],
+      },
+    })
+  },
 }

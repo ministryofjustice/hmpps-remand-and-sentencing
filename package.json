@@ -25,7 +25,7 @@
     "generate-prison-api-types": "openapi-typescript https://api-dev.prison.service.justice.gov.uk/v3/api-docs > ./server/@types/prisonApi/index.d.ts",
     "generate-court-register-types": "openapi-typescript https://court-register-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/courtRegisterApi/index.d.ts",
     "generate-manage-offences-types": "openapi-typescript https://manage-offences-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/manageOffencesApi/index.d.ts",
-    "generate-remand-and-sentencing-api-types": "openapi-typescript https://remand-and-sentencing-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/remandAndSentencingApi/index.d.ts",
+    "generate-remand-and-sentencing-api-types": "openapi-typescript http://localhost:8080/v3/api-docs > ./server/@types/remandAndSentencingApi/index.d.ts",
     "generate-document-management-api-types": "openapi-typescript https://document-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/documentManagementApi/index.d.ts",
     "generate-prisoner-search-api-types": "openapi-typescript https://prisoner-search-dev.prison.service.justice.gov.uk/v3/api-docs > ./server/@types/prisonerSearchApi/index.d.ts",
     "generate-token-verification-api-types": "openapi-typescript https://token-verification-api-dev.prison.service.justice.gov.uk/v3/api-docs > ./server/@types/tokenVerificationApi/index.d.ts",

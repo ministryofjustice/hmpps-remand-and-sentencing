@@ -508,7 +508,7 @@ export default class CourtAppearanceService {
         delete courtAppearance.nextHearingCourtCode
         delete courtAppearance.nextHearingDate
         delete courtAppearance.nextHearingTimeSet
-        delete courtAppearance.nextHearingType
+        delete courtAppearance.nextHearingTypeUuid
       }
       if (previousNextHearingSelect !== courtAppearance.nextHearingSelect) {
         courtAppearance.nextCourtAppearanceAccepted = !courtAppearance.nextHearingSelect
@@ -519,8 +519,8 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingType(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).nextHearingType
+  getNextHearingTypeUuid(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtAppearance(session, nomsId).nextHearingTypeUuid
   }
 
   setNextHearingType(
@@ -539,7 +539,7 @@ export default class CourtAppearanceService {
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.nextHearingType = nextHearingTypeForm.nextHearingType
+      courtAppearance.nextHearingTypeUuid = nextHearingTypeForm.nextHearingType
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

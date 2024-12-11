@@ -1,6 +1,7 @@
 import type { CourtAppearance, CourtCase } from 'models'
 import { Dayjs } from 'dayjs'
 import type {
+  AppearanceType,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
   PageCourtCase,
@@ -83,6 +84,16 @@ export default class RemandAndSentencingService {
       )
     }
     return sentenceTypeMap
+  }
+
+  async getAllAppearanceTypes(username: string): Promise<AppearanceType[]> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAppearanceTypes()
+  }
+
+  async getAppearanceTypeByUuid(appearanceTypeUuid: string, username: string): Promise<AppearanceType> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAppearanceTypeByUuid(
+      appearanceTypeUuid,
+    )
   }
 
   private async getSystemClientToken(username: string): Promise<string> {

@@ -154,13 +154,20 @@ export default class CourtCaseRoutes {
           .getOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
           .then(outcome => outcome.outcomeName)
       : Promise.resolve(appearance.legacyData.outcomeDescription ?? '')
-    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
-      this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
-      this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
-      outcomePromise,
-      this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
-    ])
+    const appearanceTypePromise = appearance.nextHearingTypeUuid
+      ? this.remandAndSentencingService
+          .getAppearanceTypeByUuid(appearance.nextHearingTypeUuid, req.user.username)
+          .then(appearanceType => appearanceType.description)
+      : Promise.resolve('')
+    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap, appearanceTypeDescription] =
+      await Promise.all([
+        this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
+        this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
+        this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
+        outcomePromise,
+        this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
+        appearanceTypePromise,
+      ])
 
     return res.render('pages/courtAppearance/details', {
       nomsId,
@@ -174,6 +181,7 @@ export default class CourtCaseRoutes {
       sentenceTypeMap,
       overallCaseOutcome,
       outcomeMap,
+      appearanceTypeDescription,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }
@@ -1231,7 +1239,7 @@ export default class CourtCaseRoutes {
     let nextHearingTypeForm = (req.flash('nextHearingTypeForm')[0] || {}) as CourtCaseNextHearingTypeForm
     if (Object.keys(nextHearingTypeForm).length === 0) {
       nextHearingTypeForm = {
-        nextHearingType: this.courtAppearanceService.getNextHearingType(req.session, nomsId),
+        nextHearingType: this.courtAppearanceService.getNextHearingTypeUuid(req.session, nomsId),
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-select`
@@ -1240,12 +1248,15 @@ export default class CourtCaseRoutes {
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
     }
-
+    const appearanceTypes = (await this.remandAndSentencingService.getAllAppearanceTypes(req.user.username)).sort(
+      (first, second) => first.displayOrder - second.displayOrder,
+    )
     return res.render('pages/courtAppearance/next-hearing-type', {
       nomsId,
       nextHearingTypeForm,
       courtCaseReference,
       appearanceReference,
+      appearanceTypes,
       submitToCheckAnswers,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1489,22 +1500,20 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     let nextHearingCourtName
-    if (courtAppearance.nextHearingCourtCode) {
-      try {
-        const court = await this.courtRegisterService.findCourtById(
-          courtAppearance.nextHearingCourtCode,
-          req.user.username,
-        )
-        nextHearingCourtName = court.courtName
-      } catch (e) {
-        logger.error(e)
-        nextHearingCourtName = courtAppearance.courtCode
-      }
+    let nextHearingAppearanceType
+    if (courtAppearance.nextHearingCourtSelect === 'true') {
+      const [court, appearanceType] = await Promise.all([
+        this.courtRegisterService.findCourtById(courtAppearance.nextHearingCourtCode, req.user.username),
+        this.remandAndSentencingService.getAppearanceTypeByUuid(courtAppearance.nextHearingTypeUuid, req.user.username),
+      ])
+      nextHearingCourtName = court.courtName
+      nextHearingAppearanceType = appearanceType.description
     }
     return res.render('pages/courtAppearance/check-next-hearing-answers', {
       nomsId,
       courtAppearance,
       nextHearingCourtName,
+      nextHearingAppearanceType,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,

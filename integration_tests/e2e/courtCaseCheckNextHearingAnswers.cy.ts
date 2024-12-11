@@ -10,6 +10,7 @@ context('Check Next Hearing Answers page', () => {
   let courtCaseCheckOffenceAnswersPage: CourtCaseCheckNextHearingAnswersPage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetAppearanceTypeByUuid')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-hearing-answers')
     courtCaseCheckOffenceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
@@ -31,7 +32,7 @@ context('Check Next Hearing Answers page', () => {
   it('clicking next hearing type and submitting goes back to check answers page', () => {
     courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-type').click()
     const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioLabelSelector('Court appearance').click()
+    courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
     courtCaseNextHearingTypePage.button().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })

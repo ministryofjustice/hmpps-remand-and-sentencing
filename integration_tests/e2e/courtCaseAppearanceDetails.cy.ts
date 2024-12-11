@@ -31,6 +31,7 @@ context('Court Case Appearance details Page', () => {
           outcomeType: 'REMAND',
         },
       ])
+      cy.task('stubGetAppearanceTypeByUuid')
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
@@ -66,7 +67,7 @@ context('Court Case Appearance details Page', () => {
     it('next hearing summary shows correct data', () => {
       courtCaseAppearanceDetailsPage.nextHearingSummaryList().getSummaryList().should('deep.equal', {
         'Next hearing set': 'Yes',
-        'Court name': 'Birmingham Crown Court',
+        'Court name': 'Southampton Magistrate Court',
         'Hearing type': 'Court appearance',
         Date: '15/12/2024',
       })
@@ -266,6 +267,7 @@ context('Court Case Appearance details Page', () => {
         },
       ])
       cy.task('stubGetChargeOutcomeById', {})
+      cy.task('stubGetAppearanceTypeByUuid')
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',

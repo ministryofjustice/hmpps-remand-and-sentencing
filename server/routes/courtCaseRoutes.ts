@@ -154,14 +154,20 @@ export default class CourtCaseRoutes {
           .getOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
           .then(outcome => outcome.outcomeName)
       : Promise.resolve(appearance.legacyData.outcomeDescription ?? '')
-    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap, appearanceType] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
-      this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
-      this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
-      outcomePromise,
-      this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
-      this.remandAndSentencingService.getAppearanceTypeByUuid(appearance.nextHearingTypeUuid, req.user.username),
-    ])
+    const appearanceTypePromise = appearance.nextHearingTypeUuid
+      ? this.remandAndSentencingService
+          .getAppearanceTypeByUuid(appearance.nextHearingTypeUuid, req.user.username)
+          .then(appearanceType => appearanceType.description)
+      : Promise.resolve('')
+    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap, appearanceTypeDescription] =
+      await Promise.all([
+        this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
+        this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
+        this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
+        outcomePromise,
+        this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
+        appearanceTypePromise,
+      ])
 
     return res.render('pages/courtAppearance/details', {
       nomsId,
@@ -175,7 +181,7 @@ export default class CourtCaseRoutes {
       sentenceTypeMap,
       overallCaseOutcome,
       outcomeMap,
-      appearanceType,
+      appearanceTypeDescription,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

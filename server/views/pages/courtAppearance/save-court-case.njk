@@ -21,12 +21,10 @@
             <p class="govuk-body">
                 You can return to finish adding court case and offence information from <a href="/person/{{ nomsId }}/">{{ prisoner | firstNameSpaceLastName | pluraliseName }} Court cases page</a>.
             </p>
-            <form method="post" action="/person/{{ nomsId }}/">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {{ govukButton({
-                    text: "Continue"
-                }) }}
-            </form>
+            {{ govukButton({
+                text: "Continue",
+                href: "/person/{{ nomsId }}/"
+            }) }}
         </div>
     </div>
 

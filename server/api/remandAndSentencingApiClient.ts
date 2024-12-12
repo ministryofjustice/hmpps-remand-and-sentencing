@@ -4,6 +4,10 @@ import {
   CreateCourtAppearanceResponse,
   CreateCourtCase,
   CreateCourtCaseResponse,
+  DraftCourtAppearanceCreatedResponse,
+  DraftCourtCaseCreatedResponse,
+  DraftCreateCourtAppearance,
+  DraftCreateCourtCase,
   OffenceOutcome,
   PageCourtCase,
   PageCourtCaseAppearance,
@@ -29,6 +33,23 @@ export default class RemandAndSentencingApiClient {
       data: createCourtCase,
       path: '/court-case',
     })) as unknown as Promise<CreateCourtCaseResponse>
+  }
+
+  async createDraftCourtCase(draftCreateCourtCase: DraftCreateCourtCase): Promise<DraftCourtCaseCreatedResponse> {
+    return (await this.restClient.post({
+      data: draftCreateCourtCase,
+      path: '/draft/court-case',
+    })) as unknown as Promise<DraftCourtCaseCreatedResponse>
+  }
+
+  async createDraftCourtAppearance(
+    courtCaseUuid: string,
+    draftCreateCourtAppearance: DraftCreateCourtAppearance,
+  ): Promise<DraftCourtAppearanceCreatedResponse> {
+    return (await this.restClient.post({
+      data: draftCreateCourtAppearance,
+      path: `/draft/court-case/${courtCaseUuid}/appearance`,
+    })) as unknown as Promise<DraftCourtAppearanceCreatedResponse>
   }
 
   async searchCourtCases(prisonerId: string, sortBy: string): Promise<PageCourtCase> {

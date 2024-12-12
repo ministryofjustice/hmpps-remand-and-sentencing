@@ -90,6 +90,11 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.submitTaskList,
   )
 
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-draft-task-list',
+    courtCaseRoutes.submitDraftTaskList,
+  )
+
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/reference',
     courtCaseRoutes.getReference,

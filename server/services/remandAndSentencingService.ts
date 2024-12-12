@@ -2,7 +2,7 @@ import type { CourtAppearance, CourtCase } from 'models'
 import { Dayjs } from 'dayjs'
 import type {
   CreateCourtAppearanceResponse,
-  CreateCourtCaseResponse,
+  CreateCourtCaseResponse, DraftCourtCaseCreatedResponse, DraftCreateCourtCase,
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
@@ -11,6 +11,7 @@ import type {
 import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
 import { courtAppearanceToCreateCourtAppearance, courtCaseToCreateCourtCase } from '../utils/mappingUtils'
 import { HmppsAuthClient } from '../data'
+import CookieSessionObject = CookieSessionInterfaces.CookieSessionObject
 
 export default class RemandAndSentencingService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
@@ -31,6 +32,19 @@ export default class RemandAndSentencingService {
   ): Promise<CreateCourtAppearanceResponse> {
     const createCourtAppearance = courtAppearanceToCreateCourtAppearance(courtAppearance, courtCaseUuid)
     return new RemandAndSentencingApiClient(token).createCourtAppearance(createCourtAppearance)
+  }
+
+  async createDraftCourtCase(
+    token: string,
+    nomsId: string,
+    draftCourtCase: CourtCase,
+  ): Promise<DraftCourtCaseCreatedResponse> {
+    const createDraftCourtCase: DraftCreateCourtCase = {
+      prisonerId: nomsId,
+      draftAppearances: Object.entries(draftCourtCase.appearances),
+    }
+
+    return new RemandAndSentencingApiClient(token).createDraftCourtCase(createDraftCourtCase)
   }
 
   async updateCourtAppearance(

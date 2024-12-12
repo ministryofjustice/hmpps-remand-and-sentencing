@@ -297,4 +297,16 @@ export default class TaskListModel {
       .filter(status => status !== 'Optional')
       .every(status => status === 'Completed')
   }
+
+  isAppearanceInformationComplete(): boolean {
+    return this.items
+      .filter(item => item.title.text.includes('appearance'))
+      .every(item => {
+        if (item.status.tag) {
+          return item.status.tag.text === 'Completed'
+        }
+
+        return item.status.text === 'Completed'
+      })
+  }
 }

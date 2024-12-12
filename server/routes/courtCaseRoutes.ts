@@ -654,7 +654,7 @@ export default class CourtCaseRoutes {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (addOrEditCourtCase === 'add-court-case') {
       const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createDraftCourtCase(nomsId, token, courtCase)
+      await this.remandAndSentencingService.createDraftCourtCase(token, nomsId, courtCase)
     } else {
       await this.remandAndSentencingService.createDraftCourtAppearance(token, courtCaseReference, courtAppearance)
     }

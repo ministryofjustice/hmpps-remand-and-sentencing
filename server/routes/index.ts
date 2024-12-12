@@ -92,7 +92,7 @@ export default function routes(services: Services): Router {
 
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-draft-task-list',
-    courtCaseRoutes.submitDraftTaskList,
+    courtCaseRoutes.submitTaskListAsDraft,
   )
 
   get(

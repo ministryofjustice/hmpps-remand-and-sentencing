@@ -1,8 +1,12 @@
 import type { CourtAppearance, CourtCase } from 'models'
 import { Dayjs } from 'dayjs'
-import type {
+import {
   CreateCourtAppearanceResponse,
-  CreateCourtCaseResponse, DraftCourtCaseCreatedResponse, DraftCreateCourtCase,
+  CreateCourtCaseResponse,
+  DraftCourtAppearance,
+  DraftCourtAppearanceCreatedResponse,
+  DraftCourtCaseCreatedResponse, DraftCreateCourtAppearance,
+  DraftCreateCourtCase,
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
@@ -11,7 +15,6 @@ import type {
 import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
 import { courtAppearanceToCreateCourtAppearance, courtCaseToCreateCourtCase } from '../utils/mappingUtils'
 import { HmppsAuthClient } from '../data'
-import CookieSessionObject = CookieSessionInterfaces.CookieSessionObject
 
 export default class RemandAndSentencingService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
@@ -39,12 +42,27 @@ export default class RemandAndSentencingService {
     nomsId: string,
     draftCourtCase: CourtCase,
   ): Promise<DraftCourtCaseCreatedResponse> {
+    const draftAppearances = draftCourtCase.appearances.map(appearance => ({
+      sessionBlob: Object.fromEntries(Object.entries(appearance)) as Record<string, never>,
+    }))
+
     const createDraftCourtCase: DraftCreateCourtCase = {
       prisonerId: nomsId,
-      draftAppearances: Object.entries(draftCourtCase.appearances),
+      draftAppearances,
     }
 
     return new RemandAndSentencingApiClient(token).createDraftCourtCase(createDraftCourtCase)
+  }
+
+  async createDraftCourtAppearance(
+    token: string,
+    courtCaseUuid: string,
+    courtAppearance: CourtAppearance,
+  ): Promise<DraftCourtAppearanceCreatedResponse> {
+    const draftCourtAppearance: DraftCreateCourtAppearance = {
+      sessionBlob: Object.fromEntries(Object.entries(courtAppearance)) as Record<string, never>,
+    }
+    return new RemandAndSentencingApiClient(token).createDraftCourtAppearance(courtCaseUuid, draftCourtAppearance)
   }
 
   async updateCourtAppearance(

@@ -38,7 +38,7 @@ export default class RemandAndSentencingService {
   }
 
   async createDraftCourtCase(
-    token: string,
+    username: string,
     nomsId: string,
     draftCourtCase: CourtCase,
   ): Promise<DraftCourtCaseCreatedResponse> {
@@ -50,19 +50,23 @@ export default class RemandAndSentencingService {
       prisonerId: nomsId,
       draftAppearances,
     }
-
-    return new RemandAndSentencingApiClient(token).createDraftCourtCase(createDraftCourtCase)
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createDraftCourtCase(
+      createDraftCourtCase,
+    )
   }
 
   async createDraftCourtAppearance(
-    token: string,
+    username: string,
     courtCaseUuid: string,
     courtAppearance: CourtAppearance,
   ): Promise<DraftCourtAppearanceCreatedResponse> {
     const draftCourtAppearance: DraftCreateCourtAppearance = {
       sessionBlob: Object.fromEntries(Object.entries(courtAppearance)) as Record<string, never>,
     }
-    return new RemandAndSentencingApiClient(token).createDraftCourtAppearance(courtCaseUuid, draftCourtAppearance)
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createDraftCourtAppearance(
+      courtCaseUuid,
+      draftCourtAppearance,
+    )
   }
 
   async updateCourtAppearance(

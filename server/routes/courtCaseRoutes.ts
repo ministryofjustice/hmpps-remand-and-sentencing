@@ -650,15 +650,14 @@ export default class CourtCaseRoutes {
 
   public submitTaskListAsDraft: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (addOrEditCourtCase === 'add-court-case') {
       const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createDraftCourtCase(token, nomsId, courtCase)
+      await this.remandAndSentencingService.createDraftCourtCase(username, nomsId, courtCase)
     } else {
-      await this.remandAndSentencingService.createDraftCourtAppearance(token, courtCaseReference, courtAppearance)
+      await this.remandAndSentencingService.createDraftCourtAppearance(username, courtCaseReference, courtAppearance)
     }
-    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/save-court-case`,
     )
@@ -1558,6 +1557,7 @@ export default class CourtCaseRoutes {
     const { nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference } = req.params
     const { courtAppearanceCourtName } = res.locals
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.render('pages/courtAppearance/save-court-case', {
       nomsId,
       addOrEditCourtCase,

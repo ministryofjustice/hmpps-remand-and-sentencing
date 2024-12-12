@@ -3,17 +3,20 @@ import { Dayjs } from 'dayjs'
 import {
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
-  DraftCourtAppearance,
   DraftCourtAppearanceCreatedResponse,
-  DraftCourtCaseCreatedResponse, DraftCreateCourtAppearance,
-  DraftCreateCourtCase,
+  DraftCourtCaseCreatedResponse,
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
-import { courtAppearanceToCreateCourtAppearance, courtCaseToCreateCourtCase } from '../utils/mappingUtils'
+import {
+  courtAppearanceToCreateCourtAppearance,
+  courtAppearanceToDraftCreateCourtAppearance,
+  courtCaseToCreateCourtCase,
+  courtCaseToDraftCreateCourtCase,
+} from '../utils/mappingUtils'
 import { HmppsAuthClient } from '../data'
 
 export default class RemandAndSentencingService {
@@ -40,16 +43,9 @@ export default class RemandAndSentencingService {
   async createDraftCourtCase(
     username: string,
     nomsId: string,
-    draftCourtCase: CourtCase,
+    courtCase: CourtCase,
   ): Promise<DraftCourtCaseCreatedResponse> {
-    const draftAppearances = draftCourtCase.appearances.map(appearance => ({
-      sessionBlob: Object.fromEntries(Object.entries(appearance)) as Record<string, never>,
-    }))
-
-    const createDraftCourtCase: DraftCreateCourtCase = {
-      prisonerId: nomsId,
-      draftAppearances,
-    }
+    const createDraftCourtCase = courtCaseToDraftCreateCourtCase(nomsId, courtCase)
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createDraftCourtCase(
       createDraftCourtCase,
     )
@@ -60,12 +56,10 @@ export default class RemandAndSentencingService {
     courtCaseUuid: string,
     courtAppearance: CourtAppearance,
   ): Promise<DraftCourtAppearanceCreatedResponse> {
-    const draftCourtAppearance: DraftCreateCourtAppearance = {
-      sessionBlob: Object.fromEntries(Object.entries(courtAppearance)) as Record<string, never>,
-    }
+    const createDraftCourtAppearance = courtAppearanceToDraftCreateCourtAppearance(courtAppearance)
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createDraftCourtAppearance(
       courtCaseUuid,
-      draftCourtAppearance,
+      createDraftCourtAppearance,
     )
   }
 

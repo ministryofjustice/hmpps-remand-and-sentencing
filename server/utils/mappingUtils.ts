@@ -10,6 +10,8 @@ import {
   CreateNextCourtAppearance,
   CreatePeriodLength,
   CreateSentence,
+  DraftCreateCourtAppearance,
+  DraftCreateCourtCase,
   NextCourtAppearance,
   PageCourtCaseAppearance,
   PeriodLength,
@@ -291,4 +293,21 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextHearingDate,
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
   } as CourtAppearance
+}
+
+export function courtCaseToDraftCreateCourtCase(nomsId: string, courtCase: CourtCase): DraftCreateCourtCase {
+  const draftAppearances = courtCase.appearances.map(appearance =>
+    courtAppearanceToDraftCreateCourtAppearance(appearance),
+  )
+
+  return {
+    prisonerId: nomsId,
+    draftAppearances,
+  }
+}
+
+export function courtAppearanceToDraftCreateCourtAppearance(appearance: CourtAppearance) {
+  return {
+    sessionBlob: Object.fromEntries(Object.entries(appearance)) as Record<string, never>,
+  }
 }

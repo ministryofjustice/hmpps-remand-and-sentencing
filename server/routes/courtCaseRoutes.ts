@@ -614,7 +614,7 @@ export default class CourtCaseRoutes {
     const { username } = req.user
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
 
-    if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId, appearanceReference)) {
+    if (addOrEditCourtAppearance === 'resume-court-appearance') {
       const draftAppearance = await this.remandAndSentencingService.getDraftCourtAppearanceByAppearanceUuid(
         appearanceReference,
         username,

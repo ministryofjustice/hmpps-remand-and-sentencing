@@ -10,6 +10,7 @@ import {
   CreateNextCourtAppearance,
   CreatePeriodLength,
   CreateSentence,
+  DraftCourtAppearance,
   DraftCreateCourtAppearance,
   DraftCreateCourtCase,
   NextCourtAppearance,
@@ -309,5 +310,39 @@ export function courtCaseToDraftCreateCourtCase(nomsId: string, courtCase: Court
 export function courtAppearanceToDraftCreateCourtAppearance(appearance: CourtAppearance) {
   return {
     sessionBlob: Object.fromEntries(Object.entries(appearance)) as Record<string, never>,
+  }
+}
+
+export function draftCourtAppearanceToPageCourtAppearance(
+  draftAppearance: DraftCourtAppearance,
+): PageCourtCaseAppearance {
+  const blobAsCourtAppearance = <CourtAppearance>(<unknown>draftAppearance.sessionBlob)
+
+  return {
+    charges: [],
+    lifetimeUuid: 'draft',
+    appearanceUuid: 'draft',
+    /** Format: uuid */
+    // lifetimeUuid: string
+    outcome: {
+      outcomeUuid: blobAsCourtAppearance.appearanceOutcomeUuid,
+      outcomeName: 'draft',
+      nomisCode: null,
+      outcomeType: null,
+      displayOrder: null,
+      relatedChargeOutcomeUuid: null,
+      isSubList: null,
+    },
+    courtCode: blobAsCourtAppearance.courtCode,
+    courtCaseReference: blobAsCourtAppearance.caseReferenceNumber,
+    /** Format: date */
+    appearanceDate: String(blobAsCourtAppearance.warrantDate),
+    warrantId: blobAsCourtAppearance.warrantId,
+    warrantType: blobAsCourtAppearance.warrantType,
+    /** Format: int32 */
+    // nextCourtAppearance?: components['schemas']['NextCourtAppearance']
+    // charges: components['schemas']['Charge'][]
+    /** Format: date */
+    overallConvictionDate: String(blobAsCourtAppearance.overallConvictionDate),
   }
 }

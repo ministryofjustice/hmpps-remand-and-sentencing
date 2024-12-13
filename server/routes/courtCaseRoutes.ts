@@ -106,8 +106,9 @@ export default class CourtCaseRoutes {
       .map(appearance => appearance.charges.map(charge => charge.offenceCode))
       .flat()
 
-    const courtIds = [courtCaseDetails.latestAppearance.courtCode]
+    const courtIds = [courtCaseDetails.latestAppearance?.courtCode]
       .concat(courtCaseDetails.appearances.map(appearance => appearance.courtCode))
+      .concat(courtCaseDetails.draftAppearances.map(draft => draft.sessionBlob.courtCode))
       .filter(courtId => courtId !== undefined && courtId !== null)
 
     const [offenceMap, courtMap] = await Promise.all([
@@ -645,8 +646,6 @@ export default class CourtCaseRoutes {
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/confirmation`,
     )
   }
-
-
 
   public submitTaskListAsDraft: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params

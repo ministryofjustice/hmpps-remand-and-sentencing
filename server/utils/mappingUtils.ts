@@ -307,8 +307,14 @@ export function courtCaseToDraftCreateCourtCase(nomsId: string, courtCase: Court
 }
 
 export function courtAppearanceToDraftCreateCourtAppearance(appearance: CourtAppearance) {
+  const entries = Object.entries(appearance).map(([key, value]) => {
+    if (key === 'warrantDate') {
+      return [key, dayjs(value as Date).format('YYYY-MM-DD')]
+    }
+    return [key, value]
+  })
   return {
-    sessionBlob: Object.fromEntries(Object.entries(appearance)) as Record<string, never>,
+    sessionBlob: Object.fromEntries(entries) as Record<string, never>,
   }
 }
 

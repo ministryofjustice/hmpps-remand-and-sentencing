@@ -10,7 +10,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"prisonerId": "A1234AB", "appearances": [{"outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceType": "Court appearance"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND"}]}',
+              '{"prisonerId": "A1234AB", "appearances": [{"outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND"}]}',
           },
         ],
       },
@@ -132,7 +132,11 @@ export default {
                   appearanceDate: '2024-12-15',
                   appearanceTime: '10:30:00.000000000',
                   courtCode: 'Birmingham Crown Court',
-                  appearanceType: 'Court appearance',
+                  appearanceType: {
+                    appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                    description: 'Court appearance',
+                    displayOrder: 10,
+                  },
                 },
                 charges: [
                   {
@@ -167,7 +171,11 @@ export default {
                     appearanceDate: '2024-12-15',
                     appearanceTime: '10:30:00.000000000',
                     courtCode: 'Birmingham Crown Court',
-                    appearanceType: 'Court appearance',
+                    appearanceType: {
+                      appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                      description: 'Court appearance',
+                      displayOrder: 10,
+                    },
                   },
                   charges: [
                     {
@@ -200,7 +208,11 @@ export default {
                   nextCourtAppearance: {
                     appearanceDate: '2023-12-15',
                     courtCode: 'Birmingham Crown Court',
-                    appearanceType: 'Court appearance',
+                    appearanceType: {
+                      appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                      description: 'Court appearance',
+                      displayOrder: 10,
+                    },
                   },
                   charges: [
                     {
@@ -245,7 +257,11 @@ export default {
                 nextCourtAppearance: {
                   appearanceDate: '2024-12-15',
                   courtCode: 'Birmingham Crown Court',
-                  appearanceType: 'Court appearance',
+                  appearanceType: {
+                    appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                    description: 'Court appearance',
+                    displayOrder: 10,
+                  },
                 },
                 charges: [
                   {
@@ -278,7 +294,11 @@ export default {
                   nextCourtAppearance: {
                     appearanceDate: '2024-12-15',
                     courtCode: 'Birmingham Crown Court',
-                    appearanceType: 'Court appearance',
+                    appearanceType: {
+                      appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                      description: 'Court appearance',
+                      displayOrder: 10,
+                    },
                   },
                   charges: [
                     {
@@ -351,7 +371,11 @@ export default {
           nextCourtAppearance: {
             appearanceDate: '2024-12-15',
             courtCode: 'ACCRYC',
-            appearanceType: 'Court appearance',
+            appearanceType: {
+              appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+              description: 'Court appearance',
+              displayOrder: 10,
+            },
           },
           charges: [
             {
@@ -389,7 +413,7 @@ export default {
             nextCourtAppearance: {
               appearanceDate: '2023-10-18',
               courtCode: 'ACCRYC',
-              appearanceType: 'Court appearance',
+              appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
             },
             charges: [
               {
@@ -462,7 +486,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceType": "Court appearance"}}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a"}}',
           },
         ],
       },
@@ -504,7 +528,7 @@ export default {
         nextCourtAppearance: {
           appearanceDate: '2023-10-18',
           courtCode: 'ACCRYC',
-          appearanceType: 'Court appearance',
+          appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
         },
       },
     })
@@ -610,8 +634,12 @@ export default {
           nextCourtAppearance: {
             appearanceDate: '2024-12-15',
             appearanceTime: null,
-            courtCode: 'Birmingham Crown Court',
-            appearanceType: 'Court appearance',
+            courtCode: 'STHHPM',
+            appearanceType: {
+              appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+              description: 'Court appearance',
+              displayOrder: 10,
+            },
           },
           charges: [
             {
@@ -659,7 +687,11 @@ export default {
             appearanceDate: '2024-12-15',
             appearanceTime: null,
             courtCode: 'Birmingham Crown Court',
-            appearanceType: 'Court appearance',
+            appearanceType: {
+              appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+              description: 'Court appearance',
+              displayOrder: 10,
+            },
           },
           charges: [
             {
@@ -758,7 +790,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "warrantType": "REMAND", "courtCode": "STHHPM", "courtCaseReference": "T12345678", "appearanceDate": "2023-12-15", "nextCourtAppearance": {"appearanceDate": "2024-12-15", "courtCode": "Birmingham Crown Court", "appearanceType": "Court appearance"}, "charges": [{"chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537"}]}',
+              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "warrantType": "REMAND", "courtCode": "STHHPM", "courtCaseReference": "T12345678", "appearanceDate": "2023-12-15", "nextCourtAppearance": {"appearanceDate": "2024-12-15", "courtCode": "STHHPM", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a"}, "charges": [{"chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537"}]}',
           },
         ],
       },
@@ -786,8 +818,8 @@ export default {
         appearanceDate: '2023-12-15',
         nextCourtAppearance: {
           appearanceDate: '2024-12-15',
-          courtCode: 'Birmingham Crown Court',
-          appearanceType: 'Court appearance',
+          courtCode: 'STHHPM',
+          appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
         },
         charges: [
           {
@@ -828,7 +860,11 @@ export default {
             nextCourtAppearance: {
               appearanceDate: '2024-12-15',
               courtCode: 'ACCRYC',
-              appearanceType: 'Court appearance',
+              appearanceType: {
+                appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                description: 'Court appearance',
+                displayOrder: 10,
+              },
             },
             charges: [
               {
@@ -862,7 +898,11 @@ export default {
               nextCourtAppearance: {
                 appearanceDate: '2024-12-15',
                 courtCode: 'ACCRYC',
-                appearanceType: 'Court appearance',
+                appearanceType: {
+                  appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                  description: 'Court appearance',
+                  displayOrder: 10,
+                },
               },
               charges: [
                 {
@@ -895,7 +935,11 @@ export default {
               nextCourtAppearance: {
                 appearanceDate: '2023-12-15',
                 courtCode: 'Birmingham Crown Court',
-                appearanceType: 'Court appearance',
+                appearanceType: {
+                  appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                  description: 'Court appearance',
+                  displayOrder: 10,
+                },
               },
               charges: [
                 {
@@ -1029,7 +1073,11 @@ export default {
               nextCourtAppearance: {
                 appearanceDate: '2023-12-15',
                 courtCode: 'Birmingham Crown Court',
-                appearanceType: 'Court appearance',
+                appearanceType: {
+                  appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                  description: 'Court appearance',
+                  displayOrder: 10,
+                },
               },
               charges: [
                 {
@@ -1360,6 +1408,49 @@ export default {
             ...outcome,
           }
         }),
+      },
+    })
+  },
+
+  stubGetAllAppearanceTypes: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/appearance-type/all',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            appearanceTypeUuid: '1da09b6e-55cb-4838-a157-ee6944f2094c',
+            description: 'Video link',
+            displayOrder: 20,
+          },
+          {
+            appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+            description: 'Court appearance',
+            displayOrder: 10,
+          },
+        ],
+      },
+    })
+  },
+
+  stubGetAppearanceTypeByUuid: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/appearance-type/63e8fce0-033c-46ad-9edf-391b802d547a',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+          description: 'Court appearance',
+          displayOrder: 10,
+        },
       },
     })
   },

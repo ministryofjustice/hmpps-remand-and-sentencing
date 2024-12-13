@@ -58,6 +58,7 @@ context('New Court Case journey', () => {
         outcomeType: 'REMAND',
       },
     ])
+    cy.task('stubGetAppearanceTypeByUuid')
     const caseRef = 'T12345678'
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
@@ -228,7 +229,7 @@ context('New Court Case journey', () => {
     courtCaseNextHearingSetPage.button().click()
 
     const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioLabelSelector('Court appearance').click()
+    courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
     courtCaseNextHearingTypePage.button().click()
 
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)

@@ -1,5 +1,6 @@
 import {
   AppearanceOutcome,
+  AppearanceType,
   CreateCourtAppearance,
   CreateCourtAppearanceResponse,
   CreateCourtCase,
@@ -160,5 +161,17 @@ export default class RemandAndSentencingApiClient {
     return (await this.restClient.get({
       path: `/charge-outcome/${outcomeId}`,
     })) as unknown as Promise<OffenceOutcome>
+  }
+
+  async getAppearanceTypes(): Promise<AppearanceType[]> {
+    return (await this.restClient.get({
+      path: `/appearance-type/all`,
+    })) as unknown as Promise<AppearanceType[]>
+  }
+
+  async getAppearanceTypeByUuid(appearanceTypeUuid: string): Promise<AppearanceType> {
+    return (await this.restClient.get({
+      path: `/appearance-type/${appearanceTypeUuid}`,
+    })) as unknown as Promise<AppearanceType>
   }
 }

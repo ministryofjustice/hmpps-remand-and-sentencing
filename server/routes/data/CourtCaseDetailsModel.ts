@@ -64,7 +64,7 @@ export default class CourtCaseDetailsModel {
     this.overallCaseStatus = pageCourtCaseContent.status
     this.appearanceTotal = pageCourtCaseContent.appearances.length
     this.appearances = pageCourtCaseContent.appearances
-    this.draftAppearances = pageCourtCaseContent.draftAppearances.map(appearance => {
+    this.draftAppearances = pageCourtCaseContent.draftAppearances?.map(appearance => {
       return draftCourtAppearanceToPageCourtAppearance(appearance)
     })
   }

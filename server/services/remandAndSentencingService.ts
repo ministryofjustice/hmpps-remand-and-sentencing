@@ -3,6 +3,7 @@ import { Dayjs } from 'dayjs'
 import {
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
+  DraftCourtAppearance,
   DraftCourtAppearanceCreatedResponse,
   DraftCourtCaseCreatedResponse,
   PageCourtCase,
@@ -82,6 +83,12 @@ export default class RemandAndSentencingService {
 
   async getCourtAppearanceByAppearanceUuid(appearanceUuid: string, token: string): Promise<PageCourtCaseAppearance> {
     return new RemandAndSentencingApiClient(token).getCourtAppearanceByAppearanceUuid(appearanceUuid)
+  }
+
+  async getDraftCourtAppearanceByAppearanceUuid(draftUuid: string, username: string): Promise<DraftCourtAppearance> {
+    return new RemandAndSentencingApiClient(
+      await this.getSystemClientToken(username),
+    ).getDraftCourtAppearanceByDraftUuid(draftUuid)
   }
 
   async getCourtCaseDetails(courtCaseUuid: string, token: string): Promise<PageCourtCaseContent> {

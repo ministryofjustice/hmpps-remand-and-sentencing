@@ -5,7 +5,7 @@ import {
   PageCourtCaseContent,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
-import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
+import { draftCourtAppearanceToPageCourtAppearance, periodLengthToSentenceLength } from '../../utils/mappingUtils'
 
 export default class CourtCaseDetailsModel {
   courtCaseUuid: string
@@ -28,10 +28,12 @@ export default class CourtCaseDetailsModel {
 
   appearances: PageCourtCaseAppearance[]
 
+  draftAppearances: PageCourtCaseAppearance[]
+
   constructor(pageCourtCaseContent: PageCourtCaseContent) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
-    this.latestCaseReference = pageCourtCaseContent.latestAppearance.courtCaseReference
-    this.latestCourtCode = pageCourtCaseContent.latestAppearance.courtCode
+    this.latestCaseReference = pageCourtCaseContent.latestAppearance?.courtCaseReference
+    this.latestCourtCode = pageCourtCaseContent.latestAppearance?.courtCode
     this.caseReferences = Array.from(
       new Set(
         pageCourtCaseContent.appearances
@@ -40,27 +42,30 @@ export default class CourtCaseDetailsModel {
       ),
     ).join(', ')
     this.overallCaseOutcome =
-      pageCourtCaseContent.latestAppearance.outcome?.outcomeName ??
-      pageCourtCaseContent.latestAppearance.legacyData?.outcomeDescription
+      pageCourtCaseContent.latestAppearance?.outcome?.outcomeName ??
+      pageCourtCaseContent.latestAppearance?.legacyData?.outcomeDescription
 
-    if (pageCourtCaseContent.latestAppearance.nextCourtAppearance) {
+    if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance) {
       const appearanceDate = dayjs(
-        `${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate}${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime ? `T${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime}` : ''}`,
+        `${pageCourtCaseContent.latestAppearance?.nextCourtAppearance.appearanceDate}${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime ? `T${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime}` : ''}`,
       )
       let appearanceDateFormatted = appearanceDate.format(config.dateFormat)
-      if (pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime) {
+      if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance.appearanceTime) {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)
       }
       this.nextHearingDate = appearanceDateFormatted
     }
 
-    if (pageCourtCaseContent.latestAppearance.overallSentenceLength) {
+    if (pageCourtCaseContent.latestAppearance?.overallSentenceLength) {
       this.overallSentenceLength = formatLengths(
-        periodLengthToSentenceLength(pageCourtCaseContent.latestAppearance.overallSentenceLength),
+        periodLengthToSentenceLength(pageCourtCaseContent.latestAppearance?.overallSentenceLength),
       )
     }
     this.overallCaseStatus = pageCourtCaseContent.status
     this.appearanceTotal = pageCourtCaseContent.appearances.length
     this.appearances = pageCourtCaseContent.appearances
+    this.draftAppearances = pageCourtCaseContent.draftAppearances.map(appearance => {
+      return draftCourtAppearanceToPageCourtAppearance(appearance)
+    })
   }
 }

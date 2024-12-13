@@ -4,6 +4,7 @@ import {
   CreateCourtAppearanceResponse,
   CreateCourtCase,
   CreateCourtCaseResponse,
+  DraftCourtAppearance,
   DraftCourtAppearanceCreatedResponse,
   DraftCourtCaseCreatedResponse,
   DraftCreateCourtAppearance,
@@ -89,6 +90,12 @@ export default class RemandAndSentencingApiClient {
     return (await this.restClient.get({
       path: `/court-appearance/${appearanceUuid}`,
     })) as unknown as Promise<PageCourtCaseAppearance>
+  }
+
+  async getDraftCourtAppearanceByDraftUuid(appearanceUuid: string): Promise<DraftCourtAppearance> {
+    return (await this.restClient.get({
+      path: `/draft/court-appearance/${appearanceUuid}`,
+    })) as unknown as Promise<DraftCourtAppearance>
   }
 
   async getCourtCaseByUuid(courtCaseUuid: string): Promise<PageCourtCaseContent> {

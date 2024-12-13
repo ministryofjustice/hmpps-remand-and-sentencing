@@ -30,6 +30,7 @@ import { getAsStringOrDefault, outcomeValueOrLegacy } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
 import {
+  draftCourtAppearanceToCourtAppearance,
   pageCourtCaseAppearanceToCourtAppearance,
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
@@ -602,7 +603,21 @@ export default class CourtCaseRoutes {
 
   public getTaskList: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { username } = req.user
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+
+    if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId, appearanceReference)) {
+      const draftAppearance = await this.remandAndSentencingService.getDraftCourtAppearanceByAppearanceUuid(
+        appearanceReference,
+        username,
+      )
+      this.courtAppearanceService.setSessionCourtAppearance(
+        req.session,
+        nomsId,
+        draftCourtAppearanceToCourtAppearance(draftAppearance),
+      )
+    }
+
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     let caseReferenceSet = !!courtAppearance.caseReferenceNumber
     if (!res.locals.isAddCourtCase && !caseReferenceSet) {

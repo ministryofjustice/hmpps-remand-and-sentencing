@@ -312,6 +312,10 @@ export function courtAppearanceToDraftCreateCourtAppearance(appearance: CourtApp
   }
 }
 
+export function draftCourtAppearanceToCourtAppearance(draftAppearance: DraftCourtAppearance): CourtAppearance {
+  return draftAppearance.sessionBlob as unknown as CourtAppearance
+}
+
 export function draftCourtAppearanceToPageCourtAppearance(
   draftAppearance: DraftCourtAppearance,
 ): PageCourtCaseAppearance {
@@ -320,7 +324,7 @@ export function draftCourtAppearanceToPageCourtAppearance(
   return {
     charges: [],
     lifetimeUuid: 'draft',
-    appearanceUuid: 'draft',
+    appearanceUuid: draftAppearance.draftUuid,
     /** Format: uuid */
     // lifetimeUuid: string
     outcome: {

@@ -68,10 +68,12 @@
         <div class="govuk-grid-column-one-half">
             <ul class="offence-card-actions-list">
                 <li class="offence-card-action-link">
-                        <a class="govuk-link--no-visited-state" href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/details">
+
                             {% if draft == 'true' %}
+                            <a class="govuk-link--no-visited-state" href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/add-court-appearance/{{ appearance.appearanceUuid }}/task-list">
                             Continue adding appearance information
                             {% else %}
+                            <a class="govuk-link--no-visited-state" href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/details">
                             Edit
                             {% endif %}
                         </a>

@@ -288,7 +288,6 @@ context('New Court Case journey', () => {
       },
     ])
     cy.task('stubCreateDraftCourtCaseForRemand')
-    const caseRef = 'T12345678'
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 

@@ -29,6 +29,7 @@ import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseConvictionDateAppliedAllPage from '../pages/courtCaseConvictionDateAppliedAllPage'
 import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
+import CourtCaseAppearanceDetailsPage from '../pages/courtCaseDraftSavedPage'
 
 context('New Court Case journey', () => {
   beforeEach(() => {
@@ -270,10 +271,118 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-    courtCaseTaskListPage.button().click()
+    courtCaseTaskListPage.submitButton().click()
 
     cy.task('verifyCreateCourtCaseRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
+  })
+
+  it('fill in remand journey - Saving appearance info as draft', () => {
+    cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetAppearanceOutcomeById', {})
+    cy.task('stubGetChargeOutcomesByIds', [
+      {
+        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+        outcomeName: 'Remanded in custody',
+        outcomeType: 'REMAND',
+      },
+    ])
+    cy.task('stubCreateDraftCourtCaseForRemand')
+    const caseRef = 'T12345678'
+    const startPage = Page.verifyOnPage(StartPage)
+    startPage.actionListLink().click()
+
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
+    courtCaseWarrantTypePage.button().click()
+
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Add offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Next court appearance',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Cannot start yet',
+        },
+      ])
+    courtCaseTaskListPage.appearanceInformationLink().click()
+
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+    courtCaseReferencePage.input().type('T12345678')
+    courtCaseReferencePage.button().click()
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.button().click()
+    const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
+    courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
+    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.button().click()
+
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage.button().click()
+
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
+    courtCaseCaseOutcomeAppliedAllPage.button().click()
+
+    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference': 'T12345678',
+      'Warrant date': '12/05/2023',
+      'Court name': 'Accrington Youth Court',
+      'Overall case outcome': 'Remanded in custody',
+      'Outcome applies to all offences': 'No',
+    })
+    courtCaseCheckAnswersPage.button().click()
+
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add offences',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Next court appearance',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
+
+    courtCaseTaskListPage.submitDraftButton().click()
+    Page.verifyOnPageTitle(
+      CourtCaseAppearanceDetailsPage,
+      'Court case on 12/05/2023 at Accrington Youth Court has been saved',
+    )
   })
 
   it('fill in sentencing journey', () => {
@@ -516,10 +625,122 @@ context('New Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.button().click()
+    courtCaseTaskListPage.submitButton().click()
 
     cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
+  })
+
+  it('fill in sentencing journey - Saving appearance info as draft', () => {
+    cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetSentenceTypesByIds')
+    cy.task('stubGetAppearanceOutcomeById', {
+      outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+      outcomeName: 'Imprisonment',
+      outcomeType: 'SENTENCING',
+    })
+    cy.task('stubGetChargeOutcomesByIds', [
+      {
+        outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      },
+    ])
+    cy.task('stubCreateDraftCourtCaseForSentencing')
+    const caseRef = 'T12345678'
+
+    const startPage = Page.verifyOnPage(StartPage)
+    startPage.actionListLink().click()
+
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.button().click()
+
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Add offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Cannot start yet',
+        },
+      ])
+    courtCaseTaskListPage.appearanceInformationLink().click()
+
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+    courtCaseReferencePage.input().type(caseRef)
+    courtCaseReferencePage.button().click()
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.button().click()
+    const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
+    courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
+    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.button().click()
+
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
+    courtCaseOverallCaseOutcomePage.button().click()
+
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.button().click()
+
+    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
+    courtCaseTaggedBailPage.radioLabelSelector('true').click()
+    courtCaseTaggedBailPage.input().type('5')
+    courtCaseTaggedBailPage.button().click()
+
+    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference': caseRef,
+      'Warrant date': '12/05/2023',
+      'Court name': 'Accrington Youth Court',
+      'Overall case outcome': 'Imprisonment',
+      'Outcome applies to all offences': 'Yes',
+      'Tagged bail': '5 days',
+    })
+    courtCaseCheckAnswersPage.button().click()
+
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add offences',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
+
+    courtCaseTaskListPage.submitDraftButton().click()
+    Page.verifyOnPageTitle(
+      CourtCaseAppearanceDetailsPage,
+      'Court case on 12/05/2023 at Accrington Youth Court has been saved',
+    )
   })
 
   it('fill in sentencing journey with only one outcome option', () => {
@@ -747,7 +968,7 @@ context('New Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.button().click()
+    courtCaseTaskListPage.submitButton().click()
 
     cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')

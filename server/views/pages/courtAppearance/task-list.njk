@@ -40,7 +40,10 @@
               <input type="hidden" name="_csrf" value="{{ csrfToken }}">
               {{ govukButton({
                 text: "Finish and save",
-                disabled: model.isAllMandatoryItemsComplete() === false
+                disabled: model.isAllMandatoryItemsComplete() === false,
+                attributes: {
+                  "data-qa": "submit"
+                }
               }) }}
             </form>
 
@@ -49,7 +52,10 @@
               {{ govukButton({
                 text: "Save and come back later",
                 classes: "govuk-button--secondary",
-                disabled: model.isAppearanceInformationComplete() === false
+                disabled: model.isAppearanceInformationComplete() === false,
+                attributes: {
+                  "data-qa": "submitDraft"
+                }
               }) }}
             </form>
           </div>

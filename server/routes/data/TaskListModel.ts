@@ -300,7 +300,7 @@ export default class TaskListModel {
 
   isAppearanceInformationComplete(): boolean {
     return this.items
-      .filter(item => item.title.text.includes('appearance'))
+      .filter(item => item.title.text.includes('appearance information'))
       .every(item => {
         if (item.status.tag) {
           return item.status.tag.text === 'Completed'

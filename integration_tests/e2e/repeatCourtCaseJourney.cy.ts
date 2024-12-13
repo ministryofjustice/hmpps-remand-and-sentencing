@@ -263,7 +263,7 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.button().click()
+    courtCaseTaskListPage.submitButton().click()
 
     cy.task('verifyCreateCourtAppearanceRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
@@ -496,7 +496,7 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.button().click()
+    courtCaseTaskListPage.submitButton().click()
 
     cy.task('verifyCreateSentenceCourtAppearanceRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
@@ -714,7 +714,7 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.button().click()
+    courtCaseTaskListPage.submitButton().click()
 
     cy.task('verifyCreateSentenceCourtAppearanceRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')

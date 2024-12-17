@@ -47,7 +47,7 @@
               }) }}
             </form>
 
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft-task-list">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
               <input type="hidden" name="_csrf" value="{{ csrfToken }}">
               {{ govukButton({
                 text: "Save and come back later",

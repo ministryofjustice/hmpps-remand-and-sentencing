@@ -609,23 +609,27 @@ export default class CourtCaseRoutes {
     )
   }
 
-  public getTaskList: RequestHandler = async (req, res): Promise<void> => {
+  public getDraftAppearance: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { username } = req.user
+
+    const draftAppearance = await this.remandAndSentencingService.getDraftCourtAppearanceByAppearanceUuid(
+      appearanceReference,
+      username,
+    )
+    this.courtAppearanceService.setSessionCourtAppearance(
+      req.session,
+      nomsId,
+      draftCourtAppearanceToCourtAppearance(draftAppearance),
+    )
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+    )
+  }
+
+  public getTaskList: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-
-    if (addOrEditCourtAppearance === 'resume-court-appearance') {
-      const draftAppearance = await this.remandAndSentencingService.getDraftCourtAppearanceByAppearanceUuid(
-        appearanceReference,
-        username,
-      )
-      this.courtAppearanceService.setSessionCourtAppearance(
-        req.session,
-        nomsId,
-        draftCourtAppearanceToCourtAppearance(draftAppearance),
-      )
-    }
-
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     let caseReferenceSet = !!courtAppearance.caseReferenceNumber
     if (!res.locals.isAddCourtCase && !caseReferenceSet) {

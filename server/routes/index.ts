@@ -81,6 +81,11 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/resume-draft',
+    courtCaseRoutes.getDraftAppearance,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/task-list',
     courtCaseRoutes.getTaskList,
   )
@@ -91,7 +96,7 @@ export default function routes(services: Services): Router {
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-draft-task-list',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-draft',
     courtCaseRoutes.submitTaskListAsDraft,
   )
 

@@ -10,6 +10,8 @@ import {
   CreateNextCourtAppearance,
   CreatePeriodLength,
   CreateSentence,
+  DraftCourtAppearance,
+  DraftCreateCourtCase,
   NextCourtAppearance,
   PageCourtCaseAppearance,
   PeriodLength,
@@ -291,4 +293,65 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextHearingDate,
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
   } as CourtAppearance
+}
+
+export function courtCaseToDraftCreateCourtCase(nomsId: string, courtCase: CourtCase): DraftCreateCourtCase {
+  const draftAppearances = courtCase.appearances.map(appearance =>
+    courtAppearanceToDraftCreateCourtAppearance(appearance),
+  )
+
+  return {
+    prisonerId: nomsId,
+    draftAppearances,
+  }
+}
+
+export function courtAppearanceToDraftCreateCourtAppearance(appearance: CourtAppearance) {
+  const entries = Object.entries(appearance).map(([key, value]) => {
+    if (key === 'warrantDate') {
+      return [key, dayjs(value as Date).format('YYYY-MM-DD')]
+    }
+    return [key, value]
+  })
+  return {
+    sessionBlob: Object.fromEntries(entries) as Record<string, never>,
+  }
+}
+
+export function draftCourtAppearanceToCourtAppearance(draftAppearance: DraftCourtAppearance): CourtAppearance {
+  return draftAppearance.sessionBlob as unknown as CourtAppearance
+}
+
+export function draftCourtAppearanceToPageCourtAppearance(
+  draftAppearance: DraftCourtAppearance,
+): PageCourtCaseAppearance {
+  const blobAsCourtAppearance = <CourtAppearance>(<unknown>draftAppearance.sessionBlob)
+
+  return {
+    charges: [],
+    lifetimeUuid: 'draft',
+    appearanceUuid: draftAppearance.draftUuid,
+    /** Format: uuid */
+    // lifetimeUuid: string
+    outcome: {
+      outcomeUuid: blobAsCourtAppearance.appearanceOutcomeUuid,
+      outcomeName: 'draft',
+      nomisCode: null,
+      outcomeType: null,
+      displayOrder: null,
+      relatedChargeOutcomeUuid: null,
+      isSubList: null,
+    },
+    courtCode: blobAsCourtAppearance.courtCode,
+    courtCaseReference: blobAsCourtAppearance.caseReferenceNumber,
+    /** Format: date */
+    appearanceDate: String(blobAsCourtAppearance.warrantDate),
+    warrantId: blobAsCourtAppearance.warrantId,
+    warrantType: blobAsCourtAppearance.warrantType,
+    /** Format: int32 */
+    // nextCourtAppearance?: components['schemas']['NextCourtAppearance']
+    // charges: components['schemas']['Charge'][]
+    /** Format: date */
+    overallConvictionDate: String(blobAsCourtAppearance.overallConvictionDate),
+  }
 }

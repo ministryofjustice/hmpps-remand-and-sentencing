@@ -5,6 +5,11 @@ import {
   CreateCourtAppearanceResponse,
   CreateCourtCase,
   CreateCourtCaseResponse,
+  DraftCourtAppearance,
+  DraftCourtAppearanceCreatedResponse,
+  DraftCourtCaseCreatedResponse,
+  DraftCreateCourtAppearance,
+  DraftCreateCourtCase,
   OffenceOutcome,
   PageCourtCase,
   PageCourtCaseAppearance,
@@ -30,6 +35,23 @@ export default class RemandAndSentencingApiClient {
       data: createCourtCase,
       path: '/court-case',
     })) as unknown as Promise<CreateCourtCaseResponse>
+  }
+
+  async createDraftCourtCase(draftCreateCourtCase: DraftCreateCourtCase): Promise<DraftCourtCaseCreatedResponse> {
+    return (await this.restClient.post({
+      data: draftCreateCourtCase,
+      path: '/draft/court-case',
+    })) as unknown as Promise<DraftCourtCaseCreatedResponse>
+  }
+
+  async createDraftCourtAppearance(
+    courtCaseUuid: string,
+    draftCreateCourtAppearance: DraftCreateCourtAppearance,
+  ): Promise<DraftCourtAppearanceCreatedResponse> {
+    return (await this.restClient.post({
+      data: draftCreateCourtAppearance,
+      path: `/draft/court-case/${courtCaseUuid}/appearance`,
+    })) as unknown as Promise<DraftCourtAppearanceCreatedResponse>
   }
 
   async searchCourtCases(prisonerId: string, sortBy: string): Promise<PageCourtCase> {
@@ -69,6 +91,12 @@ export default class RemandAndSentencingApiClient {
     return (await this.restClient.get({
       path: `/court-appearance/${appearanceUuid}`,
     })) as unknown as Promise<PageCourtCaseAppearance>
+  }
+
+  async getDraftCourtAppearanceByDraftUuid(appearanceUuid: string): Promise<DraftCourtAppearance> {
+    return (await this.restClient.get({
+      path: `/draft/court-appearance/${appearanceUuid}`,
+    })) as unknown as Promise<DraftCourtAppearance>
   }
 
   async getCourtCaseByUuid(courtCaseUuid: string): Promise<PageCourtCaseContent> {

@@ -7,42 +7,58 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-l">
-                    {% if isAddCourtCase %}
-                        Add a court case
-                    {% else %}
-                        Add an appearance
-                    {% endif %}
-                </h1>
-                <h2 class="govuk-heading-m">
-                    {% if warrantType === 'SENTENCING'%}
-                        Enter information from a sentencing warrant
-                    {% else %}
-                        Enter information from a remand warrant
-                    {% endif %}
-                </h2>
-                <p class="govuk-body">You must enter information exactly as it is written on the warrant.</p>
-                {{ govukTaskList({
-                    classes: "govuk-!-margin-top-7",
-                    items: model.items
-                })
-                }}
-                <h2 class="govuk-heading-m">
-                    {% if isAddCourtCase %}
-                        Finish adding court case
-                    {% else %}
-                        Finish adding an appearance
-                    {% endif %}
-                </h2>
-                <p class="govuk-body">To save a draft of the court case, you must first complete the appearance information.</p>
-                <p class="govuk-body">Once you have finished adding all the information, select ‘Finish and save’. You will not be able to return to this page, but can edit the details in the Court cases tab.</p>
-                <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-task-list">
-                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                    {{ govukButton({
-                        text: "Finish and save",
-                        disabled: model.isAllMandatoryItemsComplete() == false
-                    }) }}
-                </form>
+          <h1 class="govuk-heading-l">
+            {% if isAddCourtCase %}
+              Add a court case
+            {% else %}
+              Add an appearance
+            {% endif %}
+          </h1>
+          <h2 class="govuk-heading-m">
+            {% if warrantType === 'SENTENCING'%}
+              Enter information from a sentencing warrant
+            {% else %}
+              Enter information from a remand warrant
+            {% endif %}
+          </h2>
+          <p class="govuk-body">You must enter information exactly as it is written on the warrant.</p>
+          {{ govukTaskList({
+            classes: "govuk-!-margin-top-7",
+            items: model.items
+          }) }}
+          <h2 class="govuk-heading-m">
+            {% if isAddCourtCase %}
+              Finish adding court case
+            {% else %}
+              Finish adding an appearance
+            {% endif %}
+          </h2>
+          <p class="govuk-body">To save a draft of the court case, you must first complete the appearance information.</p>
+          <p class="govuk-body">Once you have finished adding all the information, select ‘Finish and save’. You will not be able to return to this page, but can edit the details in the Court cases tab.</p>
+          <div class="govuk-button-group">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-task-list">
+              <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+              {{ govukButton({
+                text: "Finish and save",
+                disabled: model.isAllMandatoryItemsComplete() === false,
+                attributes: {
+                  "data-qa": "submit"
+                }
+              }) }}
+            </form>
+
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+              <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+              {{ govukButton({
+                text: "Save and come back later",
+                classes: "govuk-button--secondary",
+                disabled: model.isAppearanceInformationComplete() === false,
+                attributes: {
+                  "data-qa": "submitDraft"
+                }
+              }) }}
+            </form>
+          </div>
         </div>
     </div>
 {% endblock %}

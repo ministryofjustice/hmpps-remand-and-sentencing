@@ -11,7 +11,7 @@
             <span class="govuk-caption-l">
                 Add a court case
             </span>
-            <h2 class="govuk-heading-l">Court case on {{ courtAppearance.warrantDate | formatDate }} at {{ courtAppearanceCourtName }} has been saved</h2>
+            <h1 class="govuk-heading-l">Court case on {{ courtAppearance.warrantDate | formatDate }} at {{ courtAppearanceCourtName }} has been saved</h1>
             {{ govukInsetText({
                 text: "This appearance has not been saved to NOMIS"
             }) }}
@@ -23,7 +23,7 @@
             </p>
             {{ govukButton({
                 text: "Continue",
-                href: "/person/{{ nomsId }}/"
+                href: "/person/" + nomsId
             }) }}
         </div>
     </div>

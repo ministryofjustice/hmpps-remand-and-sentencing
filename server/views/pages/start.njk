@@ -108,19 +108,19 @@
                             captionClasses: "govuk-table__caption--m",
                             head: [
                                 {
-                                text: "Case reference"
+                                    text: "Case reference"
                                 },
                                 {
-                                text: "Location"
+                                    text: "Location"
                                 },
                                 {
-                                text: "Warrant date"
+                                    text: "Warrant date"
                                 },
                                 {
-                                text: "Outcome"
+                                    text: "Outcome"
                                 },
                                 {
-                                text: ""
+                                    text: ""
                                 }
                             ],
                             rows: appearanceTableRows,
@@ -146,31 +146,32 @@
                     {% set offenceDetailsHtml %}
                     {% for offence in courtCaseDetails.offences %}
                         {{
-                                    offenceCard({
-                                        offenceCode: offence.offenceCode,
-                                        offenceName: offenceMap[offence.offenceCode],
-                                        offenceStartDate: offence.offenceStartDate | formatDate,
-                                        offenceEndDate: offence.offenceEndDate | formatDate,
-                                        outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
-                                        countNumber: offence.sentence.countNumber,
-                                        convictionDate: offence.sentence.convictionDate | formatDate,
-                                        terrorRelated: offence.terrorRelated,
-                                        isSentenced: offence.sentence,
-                                        custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
-                                        sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId],
-                                        fineAmount: offence.sentence.fineAmount
-                                    })
-                                }}
+                            offenceCard({
+                                offenceCode: offence.offenceCode,
+                                offenceName: offenceMap[offence.offenceCode],
+                                offenceStartDate: offence.offenceStartDate | formatDate,
+                                offenceEndDate: offence.offenceEndDate | formatDate,
+                                outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                                countNumber: offence.sentence.countNumber,
+                                convictionDate: offence.sentence.convictionDate | formatDate,
+                                terrorRelated: offence.terrorRelated,
+                                isSentenced: offence.sentence,
+                                custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
+                                sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId],
+                                fineAmount: offence.sentence.fineAmount
+                            })
+                        }}
                     {% endfor %}
                     {% endset %}
 
                     {{ govukDetails({
-                            summaryText: "Show offences",
-                            html: offenceDetailsHtml,
-                                attributes: {
-                                    "data-qa": "courtCaseDetailsComponent-" + courtCaseDetails.courtCaseUuid
-                                }
-                        }) }}
+                        summaryText: "Show offences",
+                        html: offenceDetailsHtml,
+                            attributes: {
+                                "data-qa": "courtCaseDetailsComponent-" + courtCaseDetails.courtCaseUuid
+                            }
+                        })
+                    }}
 
                     <a href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}/details">View details about this court case</a>
 

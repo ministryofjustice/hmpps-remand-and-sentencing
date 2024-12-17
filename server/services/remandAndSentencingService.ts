@@ -4,13 +4,21 @@ import type {
   AppearanceType,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
+  DraftCourtAppearance,
+  DraftCourtAppearanceCreatedResponse,
+  DraftCourtCaseCreatedResponse,
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
-import { courtAppearanceToCreateCourtAppearance, courtCaseToCreateCourtCase } from '../utils/mappingUtils'
+import {
+  courtAppearanceToCreateCourtAppearance,
+  courtAppearanceToDraftCreateCourtAppearance,
+  courtCaseToCreateCourtCase,
+  courtCaseToDraftCreateCourtCase,
+} from '../utils/mappingUtils'
 import { HmppsAuthClient } from '../data'
 
 export default class RemandAndSentencingService {
@@ -34,6 +42,29 @@ export default class RemandAndSentencingService {
     return new RemandAndSentencingApiClient(token).createCourtAppearance(createCourtAppearance)
   }
 
+  async createDraftCourtCase(
+    username: string,
+    nomsId: string,
+    courtCase: CourtCase,
+  ): Promise<DraftCourtCaseCreatedResponse> {
+    const createDraftCourtCase = courtCaseToDraftCreateCourtCase(nomsId, courtCase)
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createDraftCourtCase(
+      createDraftCourtCase,
+    )
+  }
+
+  async createDraftCourtAppearance(
+    username: string,
+    courtCaseUuid: string,
+    courtAppearance: CourtAppearance,
+  ): Promise<DraftCourtAppearanceCreatedResponse> {
+    const createDraftCourtAppearance = courtAppearanceToDraftCreateCourtAppearance(courtAppearance)
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createDraftCourtAppearance(
+      courtCaseUuid,
+      createDraftCourtAppearance,
+    )
+  }
+
   async updateCourtAppearance(
     token: string,
     courtCaseUuid: string,
@@ -53,6 +84,12 @@ export default class RemandAndSentencingService {
 
   async getCourtAppearanceByAppearanceUuid(appearanceUuid: string, token: string): Promise<PageCourtCaseAppearance> {
     return new RemandAndSentencingApiClient(token).getCourtAppearanceByAppearanceUuid(appearanceUuid)
+  }
+
+  async getDraftCourtAppearanceByAppearanceUuid(draftUuid: string, username: string): Promise<DraftCourtAppearance> {
+    return new RemandAndSentencingApiClient(
+      await this.getSystemClientToken(username),
+    ).getDraftCourtAppearanceByDraftUuid(draftUuid)
   }
 
   async getCourtCaseDetails(courtCaseUuid: string, token: string): Promise<PageCourtCaseContent> {

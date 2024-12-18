@@ -6,7 +6,7 @@
 {% set pageTitle = applicationName + " - Add offence dates" %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-date{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+            <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 
@@ -81,9 +81,15 @@
 
                 {% endcall %}
 
-                {{ govukButton({
-                    text: "Continue"
-                }) }}
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button" formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-date{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+                        Continue
+                    </button>
+
+                    <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                        Save as draft
+                    </button>
+                </div>
             </form>
 
 {% endblock %}

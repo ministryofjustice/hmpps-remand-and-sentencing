@@ -36,12 +36,22 @@
                     ],
                     errorMessage: errors | findError('unknownCode')
                 })}}
-
+                <div class="govuk-button-group">
 
                 {{ govukButton({
                     text: "Continue"
                 }) }}
-            </form>
+                    </form>
+                    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                    {{ govukButton({
+                        text: "Save as draft",
+                        classes: "govuk-button--secondary",
+                        attributes: {
+                            "data-qa": "submitDraft"
+                        }
+                    }) }}
+                    </form>
+
 
 {% endblock %}
 

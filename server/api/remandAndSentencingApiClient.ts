@@ -54,6 +54,16 @@ export default class RemandAndSentencingApiClient {
     })) as unknown as Promise<DraftCourtAppearanceCreatedResponse>
   }
 
+  async updateDraftCourtAppearance(
+    courtAppearanceUuid: string,
+    draftCreateCourtAppearance: DraftCreateCourtAppearance,
+  ): Promise<void> {
+    return (await this.restClient.put({
+      data: draftCreateCourtAppearance,
+      path: `/draft/court-appearance/${courtAppearanceUuid}`,
+    })) as unknown as Promise<void>
+  }
+
   async searchCourtCases(prisonerId: string, sortBy: string): Promise<PageCourtCase> {
     return (await this.restClient.get({
       path: `/court-case/search`,

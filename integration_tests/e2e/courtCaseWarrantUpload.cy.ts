@@ -20,6 +20,6 @@ context('Warrant upload page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseWarrantUploadPage.button().should('contain.text', 'Continue')
+    courtCaseWarrantUploadPage.continueButton().should('contain.text', 'Continue')
   })
 })

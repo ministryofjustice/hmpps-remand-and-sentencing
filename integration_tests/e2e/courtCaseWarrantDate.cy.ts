@@ -21,11 +21,11 @@ context('Court Case Warrant Date Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseWarrantDatePage.button().should('contain.text', 'Continue')
+    courtCaseWarrantDatePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {
-    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage.continueButton().click()
     courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage
       .errorSummary()
@@ -40,7 +40,7 @@ context('Court Case Warrant Date Page', () => {
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('35')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('1')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2024')
-    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage.continueButton().click()
     courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage
       .errorSummary()
@@ -53,7 +53,7 @@ context('Court Case Warrant Date Page', () => {
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type(futureDate.date().toString())
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type((futureDate.month() + 1).toString())
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type(futureDate.year().toString())
-    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage.continueButton().click()
     courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage
       .errorSummary()

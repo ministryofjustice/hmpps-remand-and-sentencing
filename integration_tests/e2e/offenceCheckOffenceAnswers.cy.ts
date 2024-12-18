@@ -28,7 +28,7 @@ context('Check Offence Answers Page', () => {
 
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type('T12345678')
-    courtCaseReferencePage.button().click()
+    courtCaseReferencePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
   })
@@ -43,7 +43,7 @@ context('Check Offence Answers Page', () => {
   })
 
   it('button add an offence is displayed', () => {
-    offenceCheckOffenceAnswersPage.button().should('contain.text', 'Add an offence')
+    offenceCheckOffenceAnswersPage.continueButton().should('contain.text', 'Add an offence')
   })
 
   context('remand', () => {
@@ -51,7 +51,7 @@ context('Check Offence Answers Page', () => {
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-      courtCaseWarrantTypePage.button().click()
+      courtCaseWarrantTypePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
     })
@@ -61,7 +61,7 @@ context('Check Offence Answers Page', () => {
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
       const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
       offenceDeleteOffencePage.radioLabelSelector('true').click()
-      offenceDeleteOffencePage.button().click()
+      offenceDeleteOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
     })
 
@@ -92,9 +92,9 @@ context('Check Offence Answers Page', () => {
         'Select the outcome for this offence',
       )
       offenceOffenceOutcomePage.radioLabelContains('Lie on file').click()
-      offenceOffenceOutcomePage.button().click()
+      offenceOffenceOutcomePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.button().click()
+      offenceEditOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
     })
   })
@@ -117,7 +117,7 @@ context('Check Offence Answers Page', () => {
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-      courtCaseWarrantTypePage.button().click()
+      courtCaseWarrantTypePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
     })
@@ -128,7 +128,7 @@ context('Check Offence Answers Page', () => {
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
       const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
       offenceDeleteOffencePage.radioLabelSelector('true').click()
-      offenceDeleteOffencePage.button().click()
+      offenceDeleteOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
     })
 
@@ -142,7 +142,7 @@ context('Check Offence Answers Page', () => {
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
       const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
-      offenceDeleteOffencePage.button().click()
+      offenceDeleteOffencePage.continueButton().click()
       offenceDeleteOffencePage
         .errorSummary()
         .trimTextContent()

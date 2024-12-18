@@ -23,11 +23,11 @@ context('Select reference page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseSelectReferencePage.button().should('contain.text', 'Continue')
+    courtCaseSelectReferencePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything in the input results in an error', () => {
-    courtCaseSelectReferencePage.button().click()
+    courtCaseSelectReferencePage.continueButton().click()
     courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
     courtCaseSelectReferencePage
       .errorSummary()

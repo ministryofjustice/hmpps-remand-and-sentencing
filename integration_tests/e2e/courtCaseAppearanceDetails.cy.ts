@@ -52,7 +52,7 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('button to confirm changes is displayed', () => {
-      courtCaseAppearanceDetailsPage.button().should('contain.text', 'Confirm changes')
+      courtCaseAppearanceDetailsPage.continueButton().should('contain.text', 'Confirm changes')
     })
 
     it('appearance summary shows correct data', () => {
@@ -93,7 +93,7 @@ context('Court Case Appearance details Page', () => {
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
       courtCaseReferencePage.captionText().contains('Add appearance information')
       courtCaseReferencePage.input().clear().type('T12345678')
-      courtCaseReferencePage.button().click()
+      courtCaseReferencePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
         'Edit appearance T12345678 at Southampton Magistrate Court on 15/12/2023',
@@ -128,7 +128,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseCourtNamePage.autoCompleteInput().type('cou')
       courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
       courtCaseCourtNamePage.firstAutoCompleteOption().click()
-      courtCaseCourtNamePage.button().click()
+      courtCaseCourtNamePage.continueButton().click()
 
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
@@ -155,12 +155,12 @@ context('Court Case Appearance details Page', () => {
 
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
       courtCaseReferencePage.input().clear().type('T12345678')
-      courtCaseReferencePage.button().click()
+      courtCaseReferencePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
         'Edit appearance T12345678 at Southampton Magistrate Court on 15/12/2023',
       )
-      courtCaseAppearanceDetailsPage.button().click()
+      courtCaseAppearanceDetailsPage.continueButton().click()
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
     })
   })
@@ -230,7 +230,7 @@ context('Court Case Appearance details Page', () => {
       offenceOffenceDatePage.yearDateInput('offenceStartDate').should('have.value', '2023')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
       offenceOffenceDatePage.dayDateInput('offenceStartDate').type('25')
-      offenceOffenceDatePage.button().click()
+      offenceOffenceDatePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
@@ -242,7 +242,7 @@ context('Court Case Appearance details Page', () => {
         'Sentence length': '4 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
-      offenceEditOffencePage.button().click()
+      offenceEditOffencePage.continueButton().click()
       Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
         'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
@@ -301,7 +301,7 @@ context('Court Case Appearance details Page', () => {
       )
       courtCaseOverallCaseOutcomePage.legendParagraph().should('contain', 'A Nomis description')
       courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-      courtCaseOverallCaseOutcomePage.button().click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
         'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
@@ -333,7 +333,7 @@ context('Court Case Appearance details Page', () => {
       const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Edit the outcome for this offence')
       offenceOutcomePage.legendParagraph().should('contain', 'A Nomis description')
       offenceOutcomePage.radioLabelContains('Remanded in custody').click()
-      offenceOutcomePage.button().click()
+      offenceOutcomePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         Offence: 'PS90037 An offence description',
@@ -341,7 +341,7 @@ context('Court Case Appearance details Page', () => {
         'Committed on': '15/12/2023',
         Outcome: 'Remanded in custody',
       })
-      offenceEditOffencePage.button().click()
+      offenceEditOffencePage.continueButton().click()
       Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
         'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',

@@ -23,7 +23,8 @@
             </p>
             {{ govukButton({
                 text: "Continue",
-                href: "/person/" + nomsId
+                href: "/person/" + nomsId,
+                attributes: {  'data-qa': 'continue-button' }
             }) }}
         </div>
     </div>

@@ -10,7 +10,7 @@ context('Add Court Case Sentence Length Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-sentence-length')
     courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
   })
@@ -25,12 +25,12 @@ context('Add Court Case Sentence Length Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseOverallSentenceLengthPage.button().should('contain.text', 'Save and continue')
+    courtCaseOverallSentenceLengthPage.continueButton().should('contain.text', 'Save and continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
-    courtCaseOverallSentenceLengthPage.button().click()
+    courtCaseOverallSentenceLengthPage.continueButton().click()
     courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage
       .errorSummary()
@@ -41,7 +41,7 @@ context('Add Court Case Sentence Length Page', () => {
   it('submitting a decimal number results in an error', () => {
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('1.5')
-    courtCaseOverallSentenceLengthPage.button().click()
+    courtCaseOverallSentenceLengthPage.continueButton().click()
     courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage
       .errorSummary()
@@ -53,7 +53,7 @@ context('Add Court Case Sentence Length Page', () => {
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('0')
     courtCaseOverallSentenceLengthPage.monthsInput().type('0')
-    courtCaseOverallSentenceLengthPage.button().click()
+    courtCaseOverallSentenceLengthPage.continueButton().click()
     courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage
       .errorSummary()

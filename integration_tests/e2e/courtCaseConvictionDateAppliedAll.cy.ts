@@ -20,11 +20,11 @@ context('Court Case Conviction date applied all Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseConvictionDateAppliedAllPage.button().should('contain.text', 'Save and continue')
+    courtCaseConvictionDateAppliedAllPage.continueButton().should('contain.text', 'Save and continue')
   })
 
   it('submitting without selecting anything results in error', () => {
-    courtCaseConvictionDateAppliedAllPage.button().click()
+    courtCaseConvictionDateAppliedAllPage.continueButton().click()
     courtCaseConvictionDateAppliedAllPage
       .errorSummary()
       .trimTextContent()

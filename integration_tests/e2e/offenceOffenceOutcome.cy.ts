@@ -11,7 +11,7 @@ context('Add Offence Outcome Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
     offenceOffenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Select the outcome for this offence')
   })
@@ -26,11 +26,11 @@ context('Add Offence Outcome Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceOffenceOutcomePage.button().should('contain.text', 'Continue')
+    offenceOffenceOutcomePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting anything results in an error', () => {
-    offenceOffenceOutcomePage.button().click()
+    offenceOffenceOutcomePage.continueButton().click()
     offenceOffenceOutcomePage
       .errorSummary()
       .trimTextContent()

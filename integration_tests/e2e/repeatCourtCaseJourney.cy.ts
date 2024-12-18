@@ -62,7 +62,7 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
@@ -90,31 +90,31 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
     courtCaseSelectReferencePage.radioLabelSelector('true').click()
-    courtCaseSelectReferencePage.button().click()
+    courtCaseSelectReferencePage.continueButton().click()
 
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
-    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage.continueButton().click()
 
     const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
       CourtCaseSelectCourtNamePage,
       'Was the appearance at Accrington Youth Court?',
     )
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
-    courtCaseSelectCourtNamePage.button().click()
+    courtCaseSelectCourtNamePage.continueButton().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-    courtCaseOverallCaseOutcomePage.button().click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.button().click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
@@ -124,7 +124,7 @@ context('Repeat Court Case journey', () => {
       'Overall case outcome': 'Remanded in custody',
       'Outcome applies to all offences': 'Yes',
     })
-    courtCaseCheckAnswersPage.button().click()
+    courtCaseCheckAnswersPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
@@ -169,7 +169,7 @@ context('Repeat Court Case journey', () => {
     courtCaseTaskListPage.reviewOffencesLink().click()
     const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.radioLabelSelector('true').click()
-    offenceReviewOffencesPage.button().click()
+    offenceReviewOffencesPage.continueButton().click()
 
     let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'offence')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
@@ -178,18 +178,18 @@ context('Repeat Court Case journey', () => {
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage.continueButton().click()
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage.continueButton().click()
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.button().click()
+    offenceOffenceCodeConfirmPage.continueButton().click()
 
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.button().click()
+    offenceTerrorRelatedPage.continueButton().click()
 
     offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
@@ -222,24 +222,24 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
     courtCaseNextHearingSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingSetPage.button().click()
+    courtCaseNextHearingSetPage.continueButton().click()
 
     const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
     courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
-    courtCaseNextHearingTypePage.button().click()
+    courtCaseNextHearingTypePage.continueButton().click()
 
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
     courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type('18')
     courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type('10')
     courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type('2023')
-    courtCaseNextHearingDatePage.button().click()
+    courtCaseNextHearingDatePage.continueButton().click()
 
     const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
     courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingCourtSetPage.button().click()
+    courtCaseNextHearingCourtSetPage.continueButton().click()
 
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
-    courtCaseNextHearingAnswersPage.button().click()
+    courtCaseNextHearingAnswersPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
@@ -264,7 +264,7 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.submitButton().click()
+    courtCaseTaskListPage.continueButton().click()
 
     cy.task('verifyCreateCourtAppearanceRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
@@ -303,7 +303,7 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
@@ -327,36 +327,36 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
     courtCaseSelectReferencePage.radioLabelSelector('true').click()
-    courtCaseSelectReferencePage.button().click()
+    courtCaseSelectReferencePage.continueButton().click()
 
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
-    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage.continueButton().click()
 
     const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
       CourtCaseSelectCourtNamePage,
       'Was the appearance at Accrington Youth Court?',
     )
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
-    courtCaseSelectCourtNamePage.button().click()
+    courtCaseSelectCourtNamePage.continueButton().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
-    courtCaseOverallCaseOutcomePage.button().click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.button().click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage.continueButton().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
@@ -367,7 +367,7 @@ context('Repeat Court Case journey', () => {
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
     })
-    courtCaseCheckAnswersPage.button().click()
+    courtCaseCheckAnswersPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
@@ -411,21 +411,21 @@ context('Repeat Court Case journey', () => {
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('4')
     courtCaseOverallSentenceLengthPage.monthsInput().type('5')
-    courtCaseOverallSentenceLengthPage.button().click()
+    courtCaseOverallSentenceLengthPage.continueButton().click()
 
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
     courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
-    courtCaseOverallConvictionDatePage.button().click()
+    courtCaseOverallConvictionDatePage.continueButton().click()
 
     const courtCaseConvictionDateAppliedAllPage = Page.verifyOnPage(CourtCaseConvictionDateAppliedAllPage)
     courtCaseConvictionDateAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseConvictionDateAppliedAllPage.button().click()
+    courtCaseConvictionDateAppliedAllPage.continueButton().click()
 
     const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.radioLabelSelector('true').click()
-    offenceReviewOffencesPage.button().click()
+    offenceReviewOffencesPage.continueButton().click()
 
     let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
@@ -433,37 +433,37 @@ context('Repeat Court Case journey', () => {
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.button().click()
+    offenceCountNumberPage.continueButton().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage.continueButton().click()
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage.continueButton().click()
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.button().click()
+    offenceOffenceCodeConfirmPage.continueButton().click()
 
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.button().click()
+    offenceTerrorRelatedPage.continueButton().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
-    offenceSentenceTypePage.button().click()
+    offenceSentenceTypePage.continueButton().click()
 
     const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage.yearsInput().type('4')
     offencePeriodLengthPage.monthsInput().type('5')
-    offencePeriodLengthPage.button().click()
+    offencePeriodLengthPage.continueButton().click()
 
     const cffenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    cffenceSentenceServeTypePage.button().click()
+    cffenceSentenceServeTypePage.continueButton().click()
 
     offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
 
@@ -497,7 +497,7 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.submitButton().click()
+    courtCaseTaskListPage.continueButton().click()
 
     cy.task('verifyCreateSentenceCourtAppearanceRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
@@ -536,7 +536,7 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
@@ -560,30 +560,30 @@ context('Repeat Court Case journey', () => {
 
     const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
     courtCaseSelectReferencePage.radioLabelSelector('true').click()
-    courtCaseSelectReferencePage.button().click()
+    courtCaseSelectReferencePage.continueButton().click()
 
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
-    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage.continueButton().click()
 
     const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
       CourtCaseSelectCourtNamePage,
       'Was the appearance at Accrington Youth Court?',
     )
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
-    courtCaseSelectCourtNamePage.button().click()
+    courtCaseSelectCourtNamePage.continueButton().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.button().click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage.continueButton().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
@@ -594,7 +594,7 @@ context('Repeat Court Case journey', () => {
       'Outcome applies to all offences': 'Yes',
       'Tagged bail': '5 days',
     })
-    courtCaseCheckAnswersPage.button().click()
+    courtCaseCheckAnswersPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appearance')
     courtCaseTaskListPage
@@ -638,21 +638,21 @@ context('Repeat Court Case journey', () => {
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('4')
     courtCaseOverallSentenceLengthPage.monthsInput().type('5')
-    courtCaseOverallSentenceLengthPage.button().click()
+    courtCaseOverallSentenceLengthPage.continueButton().click()
 
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
     courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
-    courtCaseOverallConvictionDatePage.button().click()
+    courtCaseOverallConvictionDatePage.continueButton().click()
 
     const courtCaseConvictionDateAppliedAllPage = Page.verifyOnPage(CourtCaseConvictionDateAppliedAllPage)
     courtCaseConvictionDateAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseConvictionDateAppliedAllPage.button().click()
+    courtCaseConvictionDateAppliedAllPage.continueButton().click()
 
     const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.radioLabelSelector('true').click()
-    offenceReviewOffencesPage.button().click()
+    offenceReviewOffencesPage.continueButton().click()
 
     let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
@@ -660,37 +660,37 @@ context('Repeat Court Case journey', () => {
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.button().click()
+    offenceCountNumberPage.continueButton().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage.continueButton().click()
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage.continueButton().click()
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.button().click()
+    offenceOffenceCodeConfirmPage.continueButton().click()
 
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.button().click()
+    offenceTerrorRelatedPage.continueButton().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
-    offenceSentenceTypePage.button().click()
+    offenceSentenceTypePage.continueButton().click()
 
     const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage.yearsInput().type('4')
     offencePeriodLengthPage.monthsInput().type('5')
-    offencePeriodLengthPage.button().click()
+    offencePeriodLengthPage.continueButton().click()
 
     const cffenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    cffenceSentenceServeTypePage.button().click()
+    cffenceSentenceServeTypePage.continueButton().click()
 
     offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
@@ -715,7 +715,7 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.submitButton().click()
+    courtCaseTaskListPage.continueButton().click()
 
     cy.task('verifyCreateSentenceCourtAppearanceRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')

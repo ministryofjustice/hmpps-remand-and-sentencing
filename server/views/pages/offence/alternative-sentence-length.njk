@@ -62,7 +62,8 @@
                 {% endcall %}
 
                 {{ govukButton({
-                    text: "Continue"
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
                 }) }}
             </form>
 

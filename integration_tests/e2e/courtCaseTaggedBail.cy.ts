@@ -20,11 +20,11 @@ context('Tagged bail page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseTaggedBailPage.button().should('contain.text', 'Continue')
+    courtCaseTaggedBailPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting anything results in error', () => {
-    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage.continueButton().click()
     courtCaseTaggedBailPage
       .errorSummary()
       .trimTextContent()
@@ -33,7 +33,7 @@ context('Tagged bail page', () => {
 
   it('selecting yes and not entering anything into input results in error', () => {
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage.continueButton().click()
     courtCaseTaggedBailPage
       .errorSummary()
       .trimTextContent()
@@ -43,7 +43,7 @@ context('Tagged bail page', () => {
   it('selecting yes and entering 0 input results in error', () => {
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('0')
-    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage.continueButton().click()
     courtCaseTaggedBailPage.radioSelector('true').should('be.checked')
     courtCaseTaggedBailPage
       .errorSummary()
@@ -54,7 +54,7 @@ context('Tagged bail page', () => {
   it('selecting yes and entering a decimal in input results in error', () => {
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('2.5')
-    courtCaseTaggedBailPage.button().click()
+    courtCaseTaggedBailPage.continueButton().click()
     courtCaseTaggedBailPage.radioSelector('true').should('be.checked')
     courtCaseTaggedBailPage
       .errorSummary()

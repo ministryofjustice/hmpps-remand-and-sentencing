@@ -21,19 +21,19 @@ context('Add Offence Fine amount Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceFineAmountPage.button().should('contain.text', 'Continue')
+    offenceFineAmountPage.continueButton().should('contain.text', 'Continue')
   })
 
   it("submitting a fine amount that isn't a number", () => {
     offenceFineAmountPage.input().type('bazinga')
-    offenceFineAmountPage.button().click()
+    offenceFineAmountPage.continueButton().click()
     offenceFineAmountPage
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem The fine amount must be entered in a valid format, such as £21.34')
   })
   it('submitting without entering a fine amount', () => {
-    offenceFineAmountPage.button().click()
+    offenceFineAmountPage.continueButton().click()
     offenceFineAmountPage
       .errorSummary()
       .trimTextContent()

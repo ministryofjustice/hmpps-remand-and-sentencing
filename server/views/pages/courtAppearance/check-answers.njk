@@ -125,7 +125,8 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
-                    text: "Accept and continue"
+                    text: "Accept and continue",
+                    attributes: {  'data-qa': 'continue-button' }
                 }) }}
             </form>
 

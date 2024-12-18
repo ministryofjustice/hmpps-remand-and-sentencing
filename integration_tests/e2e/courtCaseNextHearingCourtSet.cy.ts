@@ -13,7 +13,7 @@ context('Next hearing been set page', () => {
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
     courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
-    courtCaseCourtNamePage.button().click()
+    courtCaseCourtNamePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-court-select')
     courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
   })
@@ -28,11 +28,11 @@ context('Next hearing been set page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseNextHearingCourtSetPage.button().should('contain.text', 'Continue')
+    courtCaseNextHearingCourtSetPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting anything results in error', () => {
-    courtCaseNextHearingCourtSetPage.button().click()
+    courtCaseNextHearingCourtSetPage.continueButton().click()
     courtCaseNextHearingCourtSetPage
       .errorSummary()
       .trimTextContent()

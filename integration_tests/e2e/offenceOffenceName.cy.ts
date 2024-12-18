@@ -21,11 +21,11 @@ context('Add Offence Offence Name Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceOffenceNamePage.button().should('contain.text', 'Continue')
+    offenceOffenceNamePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {
-    offenceOffenceNamePage.button().click()
+    offenceOffenceNamePage.continueButton().click()
     offenceOffenceNamePage = Page.verifyOnPage(OffenceOffenceNamePage)
     offenceOffenceNamePage
       .errorSummary()
@@ -35,7 +35,7 @@ context('Add Offence Offence Name Page', () => {
 
   it('submitting an invalid offence results in an error', () => {
     offenceOffenceNamePage.autoCompleteInput().type('an invalid offence')
-    offenceOffenceNamePage.button().click()
+    offenceOffenceNamePage.continueButton().click()
     offenceOffenceNamePage = Page.verifyOnPage(OffenceOffenceNamePage)
     offenceOffenceNamePage
       .errorSummary()

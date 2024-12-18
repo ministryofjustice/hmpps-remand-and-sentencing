@@ -10,7 +10,7 @@ context('Add Offence Count number Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/count-number')
     offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
   })
@@ -25,11 +25,11 @@ context('Add Offence Count number Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceCountNumberPage.button().should('contain.text', 'Save and continue')
+    offenceCountNumberPage.continueButton().should('contain.text', 'Save and continue')
   })
 
   it('submitting without selecting entering anything results in error', () => {
-    offenceCountNumberPage.button().click()
+    offenceCountNumberPage.continueButton().click()
     offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage
       .errorSummary()
@@ -41,7 +41,7 @@ context('Add Offence Count number Page', () => {
     offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().clear()
     offenceCountNumberPage.input().type('0')
-    offenceCountNumberPage.button().click()
+    offenceCountNumberPage.continueButton().click()
     offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage
       .errorSummary()
@@ -53,7 +53,7 @@ context('Add Offence Count number Page', () => {
     offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().clear()
     offenceCountNumberPage.input().type('6.5')
-    offenceCountNumberPage.button().click()
+    offenceCountNumberPage.continueButton().click()
     offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage
       .errorSummary()

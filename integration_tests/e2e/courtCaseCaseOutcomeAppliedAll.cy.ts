@@ -13,14 +13,14 @@ context('Court Case Case Outcome applied all Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-    courtCaseOverallCaseOutcomePage.button().click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
     courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
   })
 
@@ -34,11 +34,11 @@ context('Court Case Case Outcome applied all Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseCaseOutcomeAppliedAllPage.button().should('contain.text', 'Continue')
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting anything results in error', () => {
-    courtCaseCaseOutcomeAppliedAllPage.button().click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
     courtCaseCaseOutcomeAppliedAllPage
       .errorSummary()
       .trimTextContent()

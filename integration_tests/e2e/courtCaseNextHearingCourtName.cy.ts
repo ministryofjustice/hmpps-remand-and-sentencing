@@ -20,11 +20,11 @@ context('Next hearing court name page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseNextHearingCourtNamePage.button().should('contain.text', 'Continue')
+    courtCaseNextHearingCourtNamePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything in the input results in an error', () => {
-    courtCaseNextHearingCourtNamePage.button().click()
+    courtCaseNextHearingCourtNamePage.continueButton().click()
     courtCaseNextHearingCourtNamePage
       .errorSummary()
       .trimTextContent()

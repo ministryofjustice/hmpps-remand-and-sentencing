@@ -20,11 +20,11 @@ context('Next hearing been set page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseNextHearingSetPage.button().should('contain.text', 'Continue')
+    courtCaseNextHearingSetPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting anything results in an error', () => {
-    courtCaseNextHearingSetPage.button().click()
+    courtCaseNextHearingSetPage.continueButton().click()
     courtCaseNextHearingSetPage
       .errorSummary()
       .trimTextContent()

@@ -10,7 +10,7 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+            <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <input type="hidden" name="courtCode" id="court-code" value="{{nextHearingCourtNameForm.courtCode}}">
                 {% include "../../partials/nextAppearanceCaption.njk" %}
@@ -29,10 +29,23 @@
                     items: []
                 }) }}
 
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
+                <div class="govuk-button-group">
+                    <button type="submit"
+                            class="govuk-button"
+                            data-module="govuk-button"
+                            data-qa="continue-button"
+                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                        Continue
+                    </button>
+
+                    <button type="submit"
+                            class="govuk-button govuk-button--secondary"
+                            data-module="govuk-button"
+                            data-qa="save-draft-button"
+                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                        Save as draft
+                    </button>
+                </div>
             </form>
 
         </div>

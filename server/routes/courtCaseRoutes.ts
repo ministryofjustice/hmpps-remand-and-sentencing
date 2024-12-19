@@ -85,7 +85,14 @@ export default class CourtCaseRoutes {
     const courtCaseDetailModels = courtCases.content.map(
       pageCourtCaseContent => new CourtCasesDetailsModel(pageCourtCaseContent, courtMap),
     )
-
+    const offenceOutcomeMap = Object.fromEntries(
+      courtCases.content
+        .filter(courtCase => courtCase.latestAppearance)
+        .flatMap(courtCase =>
+          courtCase.latestAppearance.charges.filter(charge => charge.outcome).map(charge => charge.outcome),
+        )
+        .map(outcome => [outcome.outcomeUuid, outcome.outcomeName]),
+    )
     const newCourtCaseId = courtCases.totalElements
     return res.render('pages/start', {
       nomsId,
@@ -95,6 +102,7 @@ export default class CourtCaseRoutes {
       courtMap,
       sortBy,
       courtCaseTotal: courtCaseDetailModels.length,
+      offenceOutcomeMap,
     })
   }
 

@@ -43,7 +43,7 @@ context('Check Offence Answers Page', () => {
   })
 
   it('button add an offence is displayed', () => {
-    offenceCheckOffenceAnswersPage.continueButton().should('contain.text', 'Add an offence')
+    offenceCheckOffenceAnswersPage.addAnotherButton().should('contain.text', 'Add an offence')
   })
 
   context('remand', () => {

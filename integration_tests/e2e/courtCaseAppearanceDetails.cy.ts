@@ -52,7 +52,7 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('button to confirm changes is displayed', () => {
-      courtCaseAppearanceDetailsPage.continueButton().should('contain.text', 'Confirm changes')
+      courtCaseAppearanceDetailsPage.confirmButton().should('contain.text', 'Confirm changes')
     })
 
     it('appearance summary shows correct data', () => {
@@ -160,7 +160,7 @@ context('Court Case Appearance details Page', () => {
         CourtCaseAppearanceDetailsPage,
         'Edit appearance T12345678 at Southampton Magistrate Court on 15/12/2023',
       )
-      courtCaseAppearanceDetailsPage.continueButton().click()
+      courtCaseAppearanceDetailsPage.confirmButton().click()
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
     })
   })

@@ -46,7 +46,7 @@
 {% endif %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-confirm-offence{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+            <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <input type="hidden" name="offenceCode" value="{{ offence.code }}">
                 <input type="hidden" name="offenceName" value="{{ offence.description }}">
@@ -63,11 +63,23 @@
                     }
                 }) }}
 
+                <div class="govuk-button-group">
+                    <button type="submit"
+                            class="govuk-button"
+                            data-module="govuk-button"
+                            data-qa="continue-button"
+                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-confirm-offence{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+                        Confirm and continue
+                    </button>
 
-                {{ govukButton({
-                    text: "Confirm and continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
+                    <button type="submit"
+                            class="govuk-button govuk-button--secondary"
+                            data-module="govuk-button"
+                            data-qa="save-draft-button"
+                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                        Save as draft
+                    </button>
+                </div>
             </form>
             <p class="govuk-body">
                 <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/offence-code" class="govuk-link--no-visited-state">Enter a different offence code</a>

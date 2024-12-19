@@ -21,11 +21,11 @@ context('Add Offence Conviction Date Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceConvictionDatePage.button().should('contain.text', 'Save and continue')
+    offenceConvictionDatePage.continueButton().should('contain.text', 'Save and continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {
-    offenceConvictionDatePage.button().click()
+    offenceConvictionDatePage.continueButton().click()
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()
@@ -41,7 +41,7 @@ context('Add Offence Conviction Date Page', () => {
     offenceConvictionDatePage.dayDateInput('convictionDate').type(futureDate.date().toString())
     offenceConvictionDatePage.monthDateInput('convictionDate').type((futureDate.month() + 1).toString())
     offenceConvictionDatePage.yearDateInput('convictionDate').type(futureDate.year().toString())
-    offenceConvictionDatePage.button().click()
+    offenceConvictionDatePage.continueButton().click()
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()
@@ -53,7 +53,7 @@ context('Add Offence Conviction Date Page', () => {
     offenceConvictionDatePage.dayDateInput('convictionDate').type('35')
     offenceConvictionDatePage.monthDateInput('convictionDate').type('1')
     offenceConvictionDatePage.yearDateInput('convictionDate').type('2024')
-    offenceConvictionDatePage.button().click()
+    offenceConvictionDatePage.continueButton().click()
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage
       .errorSummary()

@@ -26,14 +26,14 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseCheckOffenceAnswersPage.button().should('contain.text', 'Accept and continue')
+    courtCaseCheckOffenceAnswersPage.continueButton().should('contain.text', 'Accept and continue')
   })
 
   it('clicking next hearing type and submitting goes back to check answers page', () => {
     courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-type').click()
     const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
     courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
-    courtCaseNextHearingTypePage.button().click()
+    courtCaseNextHearingTypePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
 
@@ -44,16 +44,16 @@ context('Check Next Hearing Answers page', () => {
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
     courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
-    courtCaseCourtNamePage.button().click()
+    courtCaseCourtNamePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-hearing-answers')
     courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-court-select').click()
     const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
     courtCaseNextHearingCourtSetPage.radioLabelSelector('false').click()
-    courtCaseNextHearingCourtSetPage.button().click()
+    courtCaseNextHearingCourtSetPage.continueButton().click()
     const courtCaseNextHearingCourtNamePage = Page.verifyOnPage(CourtCaseNextHearingCourtNamePage)
     courtCaseNextHearingCourtNamePage.autoCompleteInput().type('cou')
     courtCaseNextHearingCourtNamePage.firstAutoCompleteOption().click()
-    courtCaseNextHearingCourtNamePage.button().click()
+    courtCaseNextHearingCourtNamePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
 
@@ -63,7 +63,7 @@ context('Check Next Hearing Answers page', () => {
     courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type('15')
     courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type('12')
     courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type('2024')
-    courtCaseNextHearingDatePage.button().click()
+    courtCaseNextHearingDatePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
 })

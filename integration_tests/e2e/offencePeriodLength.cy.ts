@@ -16,11 +16,11 @@ context('Add Offence Period Length Page', () => {
     offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
     offenceConvictionDatePage.yearDateInput('convictionDate').clear()
     offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
-    offenceConvictionDatePage.button().click()
+    offenceConvictionDatePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/sentence-type')
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
-    offenceSentenceTypePage.button().click()
+    offenceSentenceTypePage.continueButton().click()
     cy.visit(
       '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/period-length?periodLengthType=SENTENCE_LENGTH',
     )
@@ -37,11 +37,11 @@ context('Add Offence Period Length Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offencePeriodLengthPage.button().should('contain.text', 'Continue')
+    offencePeriodLengthPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {
-    offencePeriodLengthPage.button().click()
+    offencePeriodLengthPage.continueButton().click()
     offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage
       .errorSummary()
@@ -51,7 +51,7 @@ context('Add Offence Period Length Page', () => {
 
   it('submitting a decimal number results in an error', () => {
     offencePeriodLengthPage.yearsInput().type('1.5')
-    offencePeriodLengthPage.button().click()
+    offencePeriodLengthPage.continueButton().click()
     offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage
       .errorSummary()
@@ -62,7 +62,7 @@ context('Add Offence Period Length Page', () => {
   it('submitting all zeros results in an error', () => {
     offencePeriodLengthPage.yearsInput().type('0')
     offencePeriodLengthPage.monthsInput().type('0')
-    offencePeriodLengthPage.button().click()
+    offencePeriodLengthPage.continueButton().click()
     offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage
       .errorSummary()

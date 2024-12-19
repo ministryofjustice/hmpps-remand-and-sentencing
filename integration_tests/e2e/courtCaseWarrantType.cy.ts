@@ -20,11 +20,11 @@ context('Warrant type page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseWarrantTypePage.button().should('contain.text', 'Continue')
+    courtCaseWarrantTypePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting anything results in error', () => {
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
     courtCaseWarrantTypePage
       .errorSummary()
       .trimTextContent()

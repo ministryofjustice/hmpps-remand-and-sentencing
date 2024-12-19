@@ -18,33 +18,33 @@ context('Court Case Check Answers Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/reference')
 
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type('T12345678')
-    courtCaseReferencePage.button().click()
+    courtCaseReferencePage.continueButton().click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
-    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage.continueButton().click()
     const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
     courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
-    courtCaseCourtNamePage.button().click()
+    courtCaseCourtNamePage.continueButton().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-    courtCaseOverallCaseOutcomePage.button().click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
-    courtCaseCaseOutcomeAppliedAllPage.button().click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
     courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
@@ -59,7 +59,7 @@ context('Court Case Check Answers Page', () => {
   })
 
   it('button to Save court case is displayed', () => {
-    courtCaseCheckAnswersPage.button().should('contain.text', 'Accept and continue')
+    courtCaseCheckAnswersPage.continueButton().should('contain.text', 'Accept and continue')
   })
 
   it('displays court appearance details', () => {
@@ -76,7 +76,7 @@ context('Court Case Check Answers Page', () => {
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'reference').click()
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type('T12345678')
-    courtCaseReferencePage.button().click()
+    courtCaseReferencePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 
@@ -86,7 +86,7 @@ context('Court Case Check Answers Page', () => {
     courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('12')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2023')
-    courtCaseWarrantDatePage.button().click()
+    courtCaseWarrantDatePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 
@@ -96,7 +96,7 @@ context('Court Case Check Answers Page', () => {
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
     courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
-    courtCaseCourtNamePage.button().click()
+    courtCaseCourtNamePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 
@@ -108,7 +108,7 @@ context('Court Case Check Answers Page', () => {
       'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-    courtCaseOverallCaseOutcomePage.button().click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 
@@ -116,7 +116,7 @@ context('Court Case Check Answers Page', () => {
     courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'case-outcome-applied-all').click()
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.button().click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckAnswersPage)
   })
 })

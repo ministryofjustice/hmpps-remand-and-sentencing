@@ -259,7 +259,8 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        text: "Confirm changes"
+                        text: "Confirm changes",
+                        attributes: {  'data-qa': 'confirm-button' }
                     }) }}
 
                     <a class="govuk-link" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/details">Cancel changes</a>

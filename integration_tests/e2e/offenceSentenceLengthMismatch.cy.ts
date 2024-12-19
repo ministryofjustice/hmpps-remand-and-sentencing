@@ -22,11 +22,11 @@ context('Offence sentence length mismatch', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceSentenceLengthMismatchPage.button().should('contain.text', 'Continue')
+    offenceSentenceLengthMismatchPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submiting without selecting answer', () => {
-    offenceSentenceLengthMismatchPage.button().click()
+    offenceSentenceLengthMismatchPage.continueButton().click()
     offenceSentenceLengthMismatchPage
       .errorSummary()
       .trimTextContent()
@@ -35,13 +35,13 @@ context('Offence sentence length mismatch', () => {
 
   it('submitting selecting yes', () => {
     offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
-    offenceSentenceLengthMismatchPage.button().click()
+    offenceSentenceLengthMismatchPage.continueButton().click()
     Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
   })
 
   it('submitting selecting no', () => {
     offenceSentenceLengthMismatchPage.radioLabelSelector('no').click()
-    offenceSentenceLengthMismatchPage.button().click()
+    offenceSentenceLengthMismatchPage.continueButton().click()
     Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, '')
   })
 })

@@ -5,6 +5,8 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     super(title)
   }
 
+  confirmButton = (): PageElement => cy.get('[data-qa=confirm-button]')
+
   appearanceSummaryList = (): PageElement => cy.get('[data-qa=appearanceSummaryList]')
 
   nextHearingSummaryList = (): PageElement => cy.get('[data-qa=nextHearingSummaryList]')

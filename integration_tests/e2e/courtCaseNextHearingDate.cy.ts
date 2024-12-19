@@ -20,11 +20,11 @@ context('Next hearing date page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseNextHearingDatePage.button().should('contain.text', 'Continue')
+    courtCaseNextHearingDatePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {
-    courtCaseNextHearingDatePage.button().click()
+    courtCaseNextHearingDatePage.continueButton().click()
     courtCaseNextHearingDatePage
       .errorSummary()
       .trimTextContent()
@@ -39,7 +39,7 @@ context('Next hearing date page', () => {
     courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type('7')
     courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type('2026')
     courtCaseNextHearingDatePage.nextHearingTimeInput().type('123:456')
-    courtCaseNextHearingDatePage.button().click()
+    courtCaseNextHearingDatePage.continueButton().click()
     courtCaseNextHearingDatePage
       .errorSummary()
       .trimTextContent()
@@ -50,7 +50,7 @@ context('Next hearing date page', () => {
     courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type('35')
     courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type('1')
     courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type('2024')
-    courtCaseNextHearingDatePage.button().click()
+    courtCaseNextHearingDatePage.continueButton().click()
     courtCaseNextHearingDatePage
       .errorSummary()
       .trimTextContent()

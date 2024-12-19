@@ -21,11 +21,11 @@ context('Court Case Overall Conviction Date Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseOverallConvictionDatePage.button().should('contain.text', 'Save and continue')
+    courtCaseOverallConvictionDatePage.continueButton().should('contain.text', 'Save and continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {
-    courtCaseOverallConvictionDatePage.button().click()
+    courtCaseOverallConvictionDatePage.continueButton().click()
     courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
     courtCaseOverallConvictionDatePage
       .errorSummary()
@@ -40,7 +40,7 @@ context('Court Case Overall Conviction Date Page', () => {
     courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').type('35')
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').type('1')
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').type('2024')
-    courtCaseOverallConvictionDatePage.button().click()
+    courtCaseOverallConvictionDatePage.continueButton().click()
     courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
     courtCaseOverallConvictionDatePage
       .errorSummary()
@@ -53,7 +53,7 @@ context('Court Case Overall Conviction Date Page', () => {
     courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').type(futureDate.date().toString())
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').type((futureDate.month() + 1).toString())
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').type(futureDate.year().toString())
-    courtCaseOverallConvictionDatePage.button().click()
+    courtCaseOverallConvictionDatePage.continueButton().click()
     courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
     courtCaseOverallConvictionDatePage
       .errorSummary()

@@ -191,8 +191,8 @@ Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: stri
   courtCaseCheckAnswersPage.changeLink(personId, courtCaseNumber, appearanceReference, 'reference').click()
   const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
   courtCaseReferencePage.input().type(courtCaseNumber)
-  courtCaseReferencePage.button().click()
-  courtCaseCheckAnswersPage.button().click()
+  courtCaseReferencePage.continueButton().click()
+  courtCaseCheckAnswersPage.continueButton().click()
 })
 
 Cypress.Commands.add(
@@ -203,7 +203,7 @@ Cypress.Commands.add(
     )
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
 
     cy.visit(
       `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
@@ -215,22 +215,22 @@ Cypress.Commands.add(
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('7')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage.continueButton().click()
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().clear()
     offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage.continueButton().click()
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.button().click()
+    offenceOffenceCodeConfirmPage.continueButton().click()
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.button().click()
+    offenceTerrorRelatedPage.continueButton().click()
     const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
       OffenceOffenceOutcomePage,
       'Select the outcome for this offence',
     )
     offenceOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
-    offenceOffenceOutcomePage.button().click()
+    offenceOffenceOutcomePage.continueButton().click()
   },
 )
 
@@ -242,7 +242,7 @@ Cypress.Commands.add(
     )
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
 
     cy.visit(
       `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/count-number`,
@@ -251,7 +251,7 @@ Cypress.Commands.add(
     offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().clear()
     offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.button().click()
+    offenceCountNumberPage.continueButton().click()
 
     const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage.dayDateInput('convictionDate').clear()
@@ -260,7 +260,7 @@ Cypress.Commands.add(
     offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
     offenceConvictionDatePage.yearDateInput('convictionDate').clear()
     offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
-    offenceConvictionDatePage.button().click()
+    offenceConvictionDatePage.continueButton().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
@@ -269,39 +269,39 @@ Cypress.Commands.add(
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.button().click()
+    offenceOffenceDatePage.continueButton().click()
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().clear()
     offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage.continueButton().click()
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.button().click()
+    offenceOffenceCodeConfirmPage.continueButton().click()
 
     const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.button().click()
+    offenceTerrorRelatedPage.continueButton().click()
 
     const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
       OffenceOffenceOutcomePage,
       'Select the outcome for this offence',
     )
     offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
-    offenceOffenceOutcomePage.button().click()
+    offenceOffenceOutcomePage.continueButton().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
-    offenceSentenceTypePage.button().click()
+    offenceSentenceTypePage.continueButton().click()
 
     const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage.yearsInput().clear()
     offencePeriodLengthPage.yearsInput().type('4')
     offencePeriodLengthPage.monthsInput().clear()
     offencePeriodLengthPage.monthsInput().type('5')
-    offencePeriodLengthPage.button().click()
+    offencePeriodLengthPage.continueButton().click()
 
     const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    offenceSentenceServeTypePage.button().click()
+    offenceSentenceServeTypePage.continueButton().click()
   },
 )

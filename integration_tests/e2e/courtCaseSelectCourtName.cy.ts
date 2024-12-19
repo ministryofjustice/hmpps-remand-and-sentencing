@@ -27,11 +27,11 @@ context('Select court name page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseSelectCourtNamePage.button().should('contain.text', 'Continue')
+    courtCaseSelectCourtNamePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting anything in the input results in an error', () => {
-    courtCaseSelectCourtNamePage.button().click()
+    courtCaseSelectCourtNamePage.continueButton().click()
     courtCaseSelectCourtNamePage
       .errorSummary()
       .trimTextContent()

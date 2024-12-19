@@ -10,7 +10,7 @@ context('Add Offence Alternative Sentence Length Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/alternative-sentence-length')
     offenceAlternativeSentenceLengthPage = Page.verifyOnPage(OffenceAlternativeSentenceLengthPage)
   })
@@ -25,11 +25,11 @@ context('Add Offence Alternative Sentence Length Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceAlternativeSentenceLengthPage.button().should('contain.text', 'Continue')
+    offenceAlternativeSentenceLengthPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {
-    offenceAlternativeSentenceLengthPage.button().click()
+    offenceAlternativeSentenceLengthPage.continueButton().click()
     offenceAlternativeSentenceLengthPage = Page.verifyOnPage(OffenceAlternativeSentenceLengthPage)
     offenceAlternativeSentenceLengthPage
       .errorSummary()
@@ -39,7 +39,7 @@ context('Add Offence Alternative Sentence Length Page', () => {
 
   it('submitting a decimal number results in an error', () => {
     offenceAlternativeSentenceLengthPage.sentenceLengthInput('first').type('2.5')
-    offenceAlternativeSentenceLengthPage.button().click()
+    offenceAlternativeSentenceLengthPage.continueButton().click()
     offenceAlternativeSentenceLengthPage = Page.verifyOnPage(OffenceAlternativeSentenceLengthPage)
     offenceAlternativeSentenceLengthPage
       .errorSummary()
@@ -50,7 +50,7 @@ context('Add Offence Alternative Sentence Length Page', () => {
   it('submitting all zeros results in an error', () => {
     offenceAlternativeSentenceLengthPage.sentenceLengthInput('first').type('0')
     offenceAlternativeSentenceLengthPage.sentenceLengthInput('second').type('0')
-    offenceAlternativeSentenceLengthPage.button().click()
+    offenceAlternativeSentenceLengthPage.continueButton().click()
     offenceAlternativeSentenceLengthPage = Page.verifyOnPage(OffenceAlternativeSentenceLengthPage)
     offenceAlternativeSentenceLengthPage
       .errorSummary()

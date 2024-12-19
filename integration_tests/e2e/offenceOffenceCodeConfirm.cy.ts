@@ -11,7 +11,7 @@ context('Add Offence Offence Code Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage.continueButton().click()
     offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
   })
 
@@ -25,7 +25,7 @@ context('Add Offence Offence Code Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceOffenceCodeConfirmPage.button().should('contain.text', 'Confirm and continue')
+    offenceOffenceCodeConfirmPage.continueButton().should('contain.text', 'Confirm and continue')
   })
 
   it('displays offence details', () => {

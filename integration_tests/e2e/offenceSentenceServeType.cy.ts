@@ -20,11 +20,11 @@ context('Add Offence Sentence Serve Type Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceSentenceServeTypePage.button().should('contain.text', 'Continue')
+    offenceSentenceServeTypePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting an option results in error', () => {
-    offenceSentenceServeTypePage.button().click()
+    offenceSentenceServeTypePage.continueButton().click()
     offenceSentenceServeTypePage
       .errorSummary()
       .trimTextContent()

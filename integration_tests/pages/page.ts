@@ -21,7 +21,7 @@ export default abstract class Page {
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
-  button = (): PageElement => cy.get('.govuk-button')
+  continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
   prisonerBanner = (): PageElement => cy.get('.mini-profile')
 

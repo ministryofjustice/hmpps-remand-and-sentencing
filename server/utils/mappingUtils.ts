@@ -319,7 +319,10 @@ export function courtAppearanceToDraftCreateCourtAppearance(appearance: CourtApp
 }
 
 export function draftCourtAppearanceToCourtAppearance(draftAppearance: DraftCourtAppearance): CourtAppearance {
-  return draftAppearance.sessionBlob as unknown as CourtAppearance
+  const appearance = draftAppearance.sessionBlob as unknown as CourtAppearance
+  appearance.appearanceReference = draftAppearance.draftUuid
+  appearance.existingDraft = true
+  return appearance
 }
 
 export function draftCourtAppearanceToPageCourtAppearance(

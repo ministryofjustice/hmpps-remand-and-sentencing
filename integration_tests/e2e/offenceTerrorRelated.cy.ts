@@ -10,7 +10,7 @@ context('Add Offence Terror related Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/terror-related')
     offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
   })
@@ -25,11 +25,11 @@ context('Add Offence Terror related Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceTerrorRelatedPage.button().should('contain.text', 'Continue')
+    offenceTerrorRelatedPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting an option results in error', () => {
-    offenceTerrorRelatedPage.button().click()
+    offenceTerrorRelatedPage.continueButton().click()
     offenceTerrorRelatedPage
       .errorSummary()
       .trimTextContent()

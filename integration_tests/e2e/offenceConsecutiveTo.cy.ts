@@ -11,7 +11,7 @@ context('Add Offence Consecutive to Page', () => {
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.button().click()
+    offenceCountNumberPage.continueButton().click()
 
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/consecutive-to')
     offenceConsecutiveToPage = Page.verifyOnPageTitle(OffenceConsecutiveToPage, '1')
@@ -27,11 +27,11 @@ context('Add Offence Consecutive to Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceConsecutiveToPage.button().should('contain.text', 'Continue')
+    offenceConsecutiveToPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything results in error', () => {
-    offenceConsecutiveToPage.button().click()
+    offenceConsecutiveToPage.continueButton().click()
     offenceConsecutiveToPage = Page.verifyOnPageTitle(OffenceConsecutiveToPage, '1')
     offenceConsecutiveToPage
       .errorSummary()
@@ -42,7 +42,7 @@ context('Add Offence Consecutive to Page', () => {
   it('submitting a negative number results in error', () => {
     offenceConsecutiveToPage.input().clear()
     offenceConsecutiveToPage.input().type('-5')
-    offenceConsecutiveToPage.button().click()
+    offenceConsecutiveToPage.continueButton().click()
     offenceConsecutiveToPage = Page.verifyOnPageTitle(OffenceConsecutiveToPage, '1')
     offenceConsecutiveToPage
       .errorSummary()
@@ -53,7 +53,7 @@ context('Add Offence Consecutive to Page', () => {
   it('submitting a decimal number results in error', () => {
     offenceConsecutiveToPage.input().clear()
     offenceConsecutiveToPage.input().type('6.2')
-    offenceConsecutiveToPage.button().click()
+    offenceConsecutiveToPage.continueButton().click()
     offenceConsecutiveToPage = Page.verifyOnPageTitle(OffenceConsecutiveToPage, '1')
     offenceConsecutiveToPage
       .errorSummary()

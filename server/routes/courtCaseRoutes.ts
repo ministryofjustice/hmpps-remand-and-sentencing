@@ -19,7 +19,7 @@ import type {
   CourtCaseOverallConvictionDateForm,
   CourtCaseOverallConvictionDateAppliedAllForm,
 } from 'forms'
-import type { CourtCase } from 'models'
+import type { CourtAppearance, CourtCase } from 'models'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -686,15 +686,29 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { username } = res.locals.user
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    if (addOrEditCourtCase === 'add-court-case') {
+    if (addOrEditCourtCase === 'add-court-case' && !courtAppearance.existingDraft) {
       const courtCase = { appearances: [courtAppearance] } as CourtCase
       await this.remandAndSentencingService.createDraftCourtCase(username, nomsId, courtCase)
     } else {
-      await this.remandAndSentencingService.createDraftCourtAppearance(username, courtCaseReference, courtAppearance)
+      await this.createOrUpdateDraftAppearance(username, courtCaseReference, courtAppearance)
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/save-court-case`,
     )
+  }
+
+  private async createOrUpdateDraftAppearance(
+    username: string,
+    courtCaseReference: string,
+    courtAppearance: CourtAppearance,
+  ) {
+    return courtAppearance.existingDraft
+      ? this.remandAndSentencingService.updateDraftCourtAppearance(
+          username,
+          courtAppearance.appearanceReference,
+          courtAppearance,
+        )
+      : this.remandAndSentencingService.createDraftCourtAppearance(username, courtCaseReference, courtAppearance)
   }
 
   public getWarrantUpload: RequestHandler = async (req, res): Promise<void> => {

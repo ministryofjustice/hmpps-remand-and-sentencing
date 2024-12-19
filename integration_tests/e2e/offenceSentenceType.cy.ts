@@ -18,7 +18,7 @@ context('Add Offence Sentence Type Page', () => {
     offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
     offenceConvictionDatePage.yearDateInput('convictionDate').clear()
     offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
-    offenceConvictionDatePage.button().click()
+    offenceConvictionDatePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/sentence-type')
     offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
   })
@@ -33,11 +33,11 @@ context('Add Offence Sentence Type Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceSentenceTypePage.button().should('contain.text', 'Continue')
+    offenceSentenceTypePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting an option results in error', () => {
-    offenceSentenceTypePage.button().click()
+    offenceSentenceTypePage.continueButton().click()
     offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage
       .errorSummary()

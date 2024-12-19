@@ -11,7 +11,7 @@ context('Court Case Overall Case Outcome Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.button().click()
+    courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
     courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
@@ -29,11 +29,11 @@ context('Court Case Overall Case Outcome Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseOverallCaseOutcomePage.button().should('contain.text', 'Continue')
+    courtCaseOverallCaseOutcomePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without selecting anything results in an error', () => {
-    courtCaseOverallCaseOutcomePage.button().click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
     courtCaseOverallCaseOutcomePage
       .errorSummary()
       .trimTextContent()

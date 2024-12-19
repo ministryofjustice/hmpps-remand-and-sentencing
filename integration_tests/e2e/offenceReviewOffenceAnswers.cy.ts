@@ -24,6 +24,6 @@ context('Review Offences Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceReviewOffencesPage.button().should('contain.text', 'Continue')
+    offenceReviewOffencesPage.continueButton().should('contain.text', 'Continue')
   })
 })

@@ -21,7 +21,7 @@ context('Add Offence Offence Code Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceOffenceCodePage.button().should('contain.text', 'Continue')
+    offenceOffenceCodePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('checking the checkbox after typing the input clears the input', () => {
@@ -38,14 +38,14 @@ context('Add Offence Offence Code Page', () => {
   it('submitting a code which does not exist results in error', () => {
     cy.task('stubGetOffenceByCodeNotFound')
     offenceOffenceCodePage.input().type('AB12345')
-    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage.continueButton().click()
     offenceOffenceCodePage
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem You must enter a valid offence code.')
   })
   it('submitting without entering a code or ticking the box results in error', () => {
-    offenceOffenceCodePage.button().click()
+    offenceOffenceCodePage.continueButton().click()
     offenceOffenceCodePage
       .errorSummary()
       .trimTextContent()

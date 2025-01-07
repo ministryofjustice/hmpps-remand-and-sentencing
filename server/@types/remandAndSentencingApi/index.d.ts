@@ -125,8 +125,8 @@ export interface paths {
      */
     get: operations['get_2']
     /**
-     * Update a charge
-     * @description Synchronise an update of charge from NOMIS Offender charges into remand and sentencing API.
+     * Update a charge in all appearances
+     * @description Synchronise an update of charge in all appearances from NOMIS Offender charges into remand and sentencing API.
      */
     put: operations['update_2']
     post?: never
@@ -135,6 +135,26 @@ export interface paths {
      * @description Synchronise a deletion of charge from NOMIS offender charges into remand and sentencing API.
      */
     delete: operations['delete_2']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/legacy/charge/{lifetimeUuid}/appearance/{appearanceLifetimeUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update a charge in an appearance
+     * @description Synchronise an update of charge within an appearance from NOMIS Offender charges into remand and sentencing API.
+     */
+    put: operations['updateInAppearance']
+    post?: never
+    delete?: never
     options?: never
     head?: never
     patch?: never
@@ -830,6 +850,8 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
+      /** @example 13:48:13.540889 */
+      appearanceTime?: string
     }
     LegacyCreateCourtAppearance: {
       courtCaseUuid: string
@@ -837,18 +859,20 @@ export interface components {
       /** Format: date */
       appearanceDate: string
       legacyData: components['schemas']['CourtAppearanceLegacyData']
+      /** Format: uuid */
+      appearanceTypeUuid: string
+    }
+    LegacyUpdateWholeCharge: {
+      offenceCode: string
     }
     ChargeLegacyData: {
       postedDate?: string
       nomisOutcomeCode?: string
       outcomeDescription?: string
     }
-    LegacyCreateCharge: {
-      /** Format: uuid */
-      appearanceLifetimeUuid: string
-      offenceCode: string
+    LegacyUpdateCharge: {
       /** Format: date */
-      offenceStartDate: string
+      offenceStartDate?: string
       /** Format: date */
       offenceEndDate?: string
       active: boolean
@@ -906,6 +930,7 @@ export interface components {
       /** Format: date */
       overallConvictionDate?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
+      prisonId: string
     }
     CreateCourtCase: {
       prisonerId: string
@@ -918,7 +943,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:42:32.919363 */
+      /** @example 13:48:13.540889 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -957,6 +982,7 @@ export interface components {
       /** Format: date */
       convictionDate?: string
       fineAmount?: components['schemas']['CreateFineAmount']
+      prisonId: string
     }
     CreateChargeResponse: {
       /** Format: uuid */
@@ -979,7 +1005,7 @@ export interface components {
       chargeNOMISId: string
       offenceCode: string
       /** Format: date */
-      offenceStartDate: string
+      offenceStartDate?: string
       /** Format: date */
       offenceEndDate?: string
       active: boolean
@@ -989,6 +1015,8 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
+      /** Format: uuid */
+      appearanceTypeUuid: string
       legacyData: components['schemas']['CourtAppearanceLegacyData']
       charges: components['schemas']['MigrationCreateCharge'][]
     }
@@ -1018,6 +1046,17 @@ export interface components {
       lifetimeUuid: string
       courtCaseUuid: string
       prisonerId: string
+    }
+    LegacyCreateCharge: {
+      /** Format: uuid */
+      appearanceLifetimeUuid: string
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string
+      /** Format: date */
+      offenceEndDate?: string
+      active: boolean
+      legacyData: components['schemas']['ChargeLegacyData']
     }
     LegacyChargeCreatedResponse: {
       /** Format: uuid */
@@ -1140,7 +1179,7 @@ export interface components {
       nomisOutcomeCode?: string
       offenceCode: string
       /** Format: date */
-      offenceStartDate: string
+      offenceStartDate?: string
       /** Format: date */
       offenceEndDate?: string
       legacyData?: components['schemas']['ChargeLegacyData']
@@ -1154,13 +1193,15 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
+      /** @example 13:48:13.540889 */
+      appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
     }
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:42:32.919363 */
+      /** @example 13:48:13.540889 */
       appearanceTime?: string
       courtId: string
     }
@@ -1183,7 +1224,7 @@ export interface components {
       lifetimeUuid: string
       offenceCode: string
       /** Format: date */
-      offenceStartDate: string
+      offenceStartDate?: string
       /** Format: date */
       offenceEndDate?: string
       outcome?: components['schemas']['ChargeOutcome']
@@ -1247,7 +1288,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:42:32.919363 */
+      /** @example 13:48:13.540889 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -1264,12 +1305,12 @@ export interface components {
       totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      content?: components['schemas']['CourtCase'][]
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       size?: number
       first?: boolean
       last?: boolean
-      content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
       pageable?: components['schemas']['PageableObject']
@@ -1281,17 +1322,17 @@ export interface components {
       sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
+      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
       /** Format: int32 */
       pageSize?: number
-      unpaged?: boolean
     }
     SortObject: {
       empty?: boolean
-      sorted?: boolean
       unsorted?: boolean
+      sorted?: boolean
     }
   }
   responses: never
@@ -1799,7 +1840,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['LegacyCreateCharge']
+        'application/json': components['schemas']['LegacyUpdateWholeCharge']
       }
     }
     responses: {
@@ -1838,6 +1879,45 @@ export interface operations {
     requestBody?: never
     responses: {
       /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  updateInAppearance: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        lifetimeUuid: string
+        appearanceLifetimeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LegacyUpdateCharge']
+      }
+    }
+    responses: {
+      /** @description charge updated */
       200: {
         headers: {
           [name: string]: unknown

@@ -28,7 +28,7 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): Cre
   } as CreatePeriodLength
 }
 
-const sentenceToCreateSentence = (sentence: Sentence): CreateSentence | undefined => {
+const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateSentence | undefined => {
   let createSentence
   if (sentence) {
     const periodLengths =
@@ -39,6 +39,7 @@ const sentenceToCreateSentence = (sentence: Sentence): CreateSentence | undefine
       sentenceServeType: sentence.sentenceServeType,
       sentenceTypeId: sentence.sentenceTypeId,
       consecutiveToChargeNumber: sentence.consecutiveTo,
+      prisonId,
       ...(sentence.convictionDate && { convictionDate: dayjs(sentence.convictionDate).format('YYYY-MM-DD') }),
     } as CreateSentence
   }
@@ -61,8 +62,8 @@ const courtAppearanceToCreateNextCourtAppearance = (
   return nextCourtAppearance
 }
 
-const offenceToCreateCharge = (offence: Offence): CreateCharge => {
-  const sentence = sentenceToCreateSentence(offence.sentence)
+const offenceToCreateCharge = (offence: Offence, prisonId: string): CreateCharge => {
+  const sentence = sentenceToCreateSentence(offence.sentence, prisonId)
   return {
     offenceCode: offence.offenceCode,
     offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),
@@ -77,6 +78,7 @@ const offenceToCreateCharge = (offence: Offence): CreateCharge => {
 
 export const courtAppearanceToCreateCourtAppearance = (
   courtAppearance: CourtAppearance,
+  prisonId: string,
   courtCaseUuid?: string,
   appearanceUuid?: string,
 ): CreateCourtAppearance => {
@@ -88,9 +90,10 @@ export const courtAppearanceToCreateCourtAppearance = (
     courtCode: courtAppearance.courtCode,
     courtCaseReference: courtAppearance.caseReferenceNumber,
     appearanceDate: dayjs(courtAppearance.warrantDate).format('YYYY-MM-DD'),
-    charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence)),
+    charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence, prisonId)),
     warrantType: courtAppearance.warrantType,
     warrantId: courtAppearance.warrantId,
+    prisonId,
     ...(courtAppearance.taggedBail && { taggedBail: parseInt(courtAppearance.taggedBail, 10) }),
     ...(nextCourtAppearance && { nextCourtAppearance }),
     ...(courtAppearance.overallSentenceLength && {
@@ -103,9 +106,13 @@ export const courtAppearanceToCreateCourtAppearance = (
   } as CreateCourtAppearance
 }
 
-export const courtCaseToCreateCourtCase = (prisonerId: string, courtCase: CourtCase): CreateCourtCase => {
+export const courtCaseToCreateCourtCase = (
+  prisonerId: string,
+  courtCase: CourtCase,
+  prisonId: string,
+): CreateCourtCase => {
   const appearances = courtCase.appearances.map(courtAppearance =>
-    courtAppearanceToCreateCourtAppearance(courtAppearance),
+    courtAppearanceToCreateCourtAppearance(courtAppearance, prisonId),
   )
 
   return {

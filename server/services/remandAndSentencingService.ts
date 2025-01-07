@@ -24,8 +24,13 @@ import { HmppsAuthClient } from '../data'
 export default class RemandAndSentencingService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
-  async createCourtCase(prisonerId: string, token: string, courtCase: CourtCase): Promise<CreateCourtCaseResponse> {
-    const createCourtCase = courtCaseToCreateCourtCase(prisonerId, courtCase)
+  async createCourtCase(
+    prisonerId: string,
+    token: string,
+    courtCase: CourtCase,
+    prisonId: string,
+  ): Promise<CreateCourtCaseResponse> {
+    const createCourtCase = courtCaseToCreateCourtCase(prisonerId, courtCase, prisonId)
     return new RemandAndSentencingApiClient(token).createCourtCase(createCourtCase)
   }
 
@@ -37,8 +42,9 @@ export default class RemandAndSentencingService {
     token: string,
     courtCaseUuid: string,
     courtAppearance: CourtAppearance,
+    prisonId: string,
   ): Promise<CreateCourtAppearanceResponse> {
-    const createCourtAppearance = courtAppearanceToCreateCourtAppearance(courtAppearance, courtCaseUuid)
+    const createCourtAppearance = courtAppearanceToCreateCourtAppearance(courtAppearance, prisonId, courtCaseUuid)
     return new RemandAndSentencingApiClient(token).createCourtAppearance(createCourtAppearance)
   }
 
@@ -82,8 +88,14 @@ export default class RemandAndSentencingService {
     courtCaseUuid: string,
     appearanceUuid: string,
     courtAppearance: CourtAppearance,
+    prisonId: string,
   ): Promise<CreateCourtAppearanceResponse> {
-    const updateCourtAppearance = courtAppearanceToCreateCourtAppearance(courtAppearance, courtCaseUuid, appearanceUuid)
+    const updateCourtAppearance = courtAppearanceToCreateCourtAppearance(
+      courtAppearance,
+      prisonId,
+      courtCaseUuid,
+      appearanceUuid,
+    )
     return new RemandAndSentencingApiClient(token).putCourtAppearance(appearanceUuid, updateCourtAppearance)
   }
 

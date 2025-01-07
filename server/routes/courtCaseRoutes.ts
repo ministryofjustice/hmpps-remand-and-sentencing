@@ -199,12 +199,14 @@ export default class CourtCaseRoutes {
   public submitAppearanceDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { token } = res.locals.user
+    const { prisonId } = res.locals.prisoner
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     await this.remandAndSentencingService.updateCourtAppearance(
       token,
       courtCaseReference,
       appearanceReference,
       courtAppearance,
+      prisonId,
     )
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
@@ -669,12 +671,13 @@ export default class CourtCaseRoutes {
   public submitTaskList: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { token } = res.locals.user
+    const { prisonId } = res.locals.prisoner
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (addOrEditCourtCase === 'add-court-case') {
       const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createCourtCase(nomsId, token, courtCase)
+      await this.remandAndSentencingService.createCourtCase(nomsId, token, courtCase, prisonId)
     } else {
-      await this.remandAndSentencingService.createCourtAppearance(token, courtCaseReference, courtAppearance)
+      await this.remandAndSentencingService.createCourtAppearance(token, courtCaseReference, courtAppearance, prisonId)
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.redirect(

@@ -17,7 +17,7 @@
                     {% if courtCaseDetails.appearances | length == 0 %}
                         Appearances
                     {%  else %}
-                        Appearances for {{ courtCaseDetails.latestCaseReference }} at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }}
+                        Appearances{{ ' for ' + courtCaseDetails.latestCaseReference if courtCaseDetails.latestCaseReference }} at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }}
                     {%  endif %}
                 </h1>
 
@@ -73,7 +73,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
-            <h2 class="govuk-heading-m">{{ appearance.courtCaseReference }} at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
+            <h2 class="govuk-heading-m">{{ appearance.courtCaseReference + ' at ' if appearance.courtCaseReference }}{{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
                 on {{ appearance.appearanceDate | formatDate }}</h2>
         </div>
         <div class="govuk-grid-column-one-half">
@@ -96,14 +96,14 @@
     <div class="govuk-grid-row govuk-!-padding-bottom-2 govuk-!-margin-top-2">
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Case reference</h3>
-            <p data-qa="case-reference" class="govuk-body govuk-!-margin-bottom-3">{{ appearance.courtCaseReference}}</p>
+            <p data-qa="case-reference" class="govuk-body govuk-!-margin-bottom-3">{{ appearance.courtCaseReference if appearance.courtCaseReference else 'Not entered' }}</p>
 
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant date</h3>
             <p data-qa="warrant-date" class="govuk-body govuk-!-margin-bottom-3">{{ appearance.appearanceDate | formatDate }}</p>
 
-            {% if appearance.warrantType == 'SENTENCING' %}
+            {% if appearance.warrantType == 'SENTENCING' and appearance.overallConvictionDate %}
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
-                <p data-qa="conviction-date" class="govuk-body govuk-!-margin-bottom-2">Overall conviction date?</p>
+                <p data-qa="conviction-date" class="govuk-body govuk-!-margin-bottom-2">{{ appearance.overallConvictionDate | formatDate }}</p>
             {% endif %}
         </div>
 

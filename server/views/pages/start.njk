@@ -60,7 +60,7 @@
                             rows: [
                             {
                                 key: { text: "Case references"},
-                                value: { text: courtCaseDetails.caseReferences }
+                                value: { text: courtCaseDetails.caseReferences if courtCaseDetails.caseReferences else 'Not entered' }
                             },
                             {
                                 key: { text: "Overall case outcome"},

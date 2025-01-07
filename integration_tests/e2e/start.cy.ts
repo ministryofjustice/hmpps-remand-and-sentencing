@@ -33,7 +33,7 @@ context('Start Page', () => {
 
   it('displays court case summary', () => {
     startPage.courtCaseSummaryList('3fa85f64-5717-4562-b3fc-2c963f66afa6').getSummaryList().should('deep.equal', {
-      'Case references': 'C894623, F23325',
+      'Case references': 'C894623, F23325, J39596',
       'Overall case outcome': 'Remanded in custody',
       'Next hearing': 'Birmingham Crown Court Court appearance 15/12/2024 10:30',
     })

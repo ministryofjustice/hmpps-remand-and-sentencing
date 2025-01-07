@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import type { Offence } from 'models'
 import {
+  CourtCaseLegacyData,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -41,13 +42,16 @@ export default class CourtCasesDetailsModel {
 
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
-    this.caseReferences = Array.from(
-      new Set(
-        pageCourtCaseContent.appearances
-          .filter(appearance => !!appearance.courtCaseReference)
-          .map(appearance => appearance.courtCaseReference),
-      ),
-    ).join(', ')
+    let references = pageCourtCaseContent.appearances
+      .filter(appearance => !!appearance.courtCaseReference)
+      .map(appearance => appearance.courtCaseReference)
+    if (pageCourtCaseContent.legacyData) {
+      const courtCaseLegacyData = pageCourtCaseContent.legacyData as unknown as CourtCaseLegacyData
+      references = references.concat(
+        courtCaseLegacyData.caseReferences.map(caseReference => caseReference.offenderCaseReference),
+      )
+    }
+    this.caseReferences = Array.from(new Set(references)).join(', ')
     this.overallCaseOutcome = outcomeValueOrLegacy(
       pageCourtCaseContent.latestAppearance?.outcome?.outcomeName,
       pageCourtCaseContent.latestAppearance?.legacyData,

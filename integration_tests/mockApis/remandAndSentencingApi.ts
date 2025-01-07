@@ -231,6 +231,22 @@ export default {
                   ],
                 },
               ],
+              legacyData: {
+                caseReferences: [
+                  {
+                    offenderCaseReference: 'C894623',
+                    updatedDate: '2023-12-15T10:15:30',
+                  },
+                  {
+                    offenderCaseReference: 'F23325',
+                    updatedDate: '2022-10-15T10:15:30',
+                  },
+                  {
+                    offenderCaseReference: 'J39596',
+                    updatedDate: '2021-10-15T10:15:30',
+                  },
+                ],
+              },
             },
             {
               prisonerId: 'A1234AB',

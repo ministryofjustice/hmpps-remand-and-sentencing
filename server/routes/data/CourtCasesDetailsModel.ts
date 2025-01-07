@@ -45,7 +45,15 @@ export default class CourtCasesDetailsModel {
     if (pageCourtCaseContent.legacyData) {
       const courtCaseLegacyData = pageCourtCaseContent.legacyData as unknown as CourtCaseLegacyData
       this.caseReferences = Array.from(
-        new Set(courtCaseLegacyData.caseReferences.map(caseReference => caseReference.offenderCaseReference)),
+        new Set(
+          courtCaseLegacyData.caseReferences
+            .map(caseReference => caseReference.offenderCaseReference)
+            .concat(
+              pageCourtCaseContent.appearances
+                .filter(appearance => !!appearance.courtCaseReference)
+                .map(appearance => appearance.courtCaseReference),
+            ),
+        ),
       ).join(', ')
     }
     this.overallCaseOutcome = outcomeValueOrLegacy(

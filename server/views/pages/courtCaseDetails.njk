@@ -101,9 +101,9 @@
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant date</h3>
             <p data-qa="warrant-date" class="govuk-body govuk-!-margin-bottom-3">{{ appearance.appearanceDate | formatDate }}</p>
 
-            {% if appearance.warrantType == 'SENTENCING' %}
+            {% if appearance.warrantType == 'SENTENCING' and appearance.overallConvictionDate %}
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
-                <p data-qa="conviction-date" class="govuk-body govuk-!-margin-bottom-2">Overall conviction date?</p>
+                <p data-qa="conviction-date" class="govuk-body govuk-!-margin-bottom-2">{{ appearance.overallConvictionDate | formatDate }}</p>
             {% endif %}
         </div>
 

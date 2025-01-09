@@ -1523,7 +1523,15 @@ export default class OffenceRoutes {
       Array.from(new Set(latestCourtAppearance.charges.map(offence => offence.offenceCode))),
       req.user.token,
     )
-    const offences = latestCourtAppearance.charges.map(charge => chargeToOffence(charge))
+    const offences = latestCourtAppearance.charges
+      .filter(charge => {
+        let dispositionCode = charge.outcome?.dispositionCode
+        if (!dispositionCode && charge.legacyData) {
+          dispositionCode = charge.legacyData.outcomeDispositionCode
+        }
+        return charge.status === 'ACTIVE' && dispositionCode === 'INTERIM'
+      })
+      .map(charge => chargeToOffence(charge))
     const offenceOutcomeMap = Object.fromEntries(
       latestCourtAppearance.charges
         ?.filter(charge => charge.outcome)
@@ -1551,6 +1559,13 @@ export default class OffenceRoutes {
       courtCaseReference,
     )
     latestCourtAppearance.charges
+      .filter(charge => {
+        let dispositionCode = charge.outcome?.dispositionCode
+        if (!dispositionCode && charge.legacyData) {
+          dispositionCode = charge.legacyData.outcomeDispositionCode
+        }
+        return charge.status === 'ACTIVE' && dispositionCode === 'INTERIM'
+      })
       .map(charge => chargeToOffence(charge))
       .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))
 

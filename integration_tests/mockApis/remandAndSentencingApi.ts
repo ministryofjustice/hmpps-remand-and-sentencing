@@ -143,7 +143,6 @@ export default {
                     chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
                     offenceCode: 'PS90037',
                     offenceStartDate: '2023-12-15',
-                    status: 'ACTIVE',
                     outcome: {
                       outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                       outcomeName: 'Remanded in custody',
@@ -184,7 +183,6 @@ export default {
                       chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
                       offenceCode: 'PS90037',
                       offenceStartDate: '2023-12-15',
-                      status: 'ACTIVE',
                       outcome: {
                         outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                         outcomeName: 'Remanded in custody',
@@ -223,7 +221,6 @@ export default {
                       chargeUuid: '9056c1f3-b090-4d1e-bc6e-4f66ebed2ed5',
                       offenceCode: 'PS90037',
                       offenceStartDate: '2023-12-15',
-                      status: 'ACTIVE',
                       outcome: {
                         outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
                         outcomeName: 'Lie on file',
@@ -290,7 +287,6 @@ export default {
                     chargeUuid: 'b5fbb9be-5773-47f8-9091-dcc9c154a7d5',
                     offenceCode: 'PS90037',
                     offenceStartDate: '2023-12-15',
-                    status: 'ACTIVE',
                     legacyData: {
                       offenderChargeId: '1',
                       bookingId: '1',
@@ -329,7 +325,6 @@ export default {
                       chargeUuid: 'b5fbb9be-5773-47f8-9091-dcc9c154a7d5',
                       offenceCode: 'PS90037',
                       offenceStartDate: '2023-12-15',
-                      status: 'ACTIVE',
                       legacyData: {
                         offenderChargeId: '1',
                         bookingId: '1',
@@ -408,7 +403,6 @@ export default {
               chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
               offenceCode: 'PS90037',
               offenceStartDate: '2023-12-15',
-              status: 'ACTIVE',
               outcome: {
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 outcomeName: 'Remanded in custody',
@@ -680,7 +674,6 @@ export default {
               chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
               offenceCode: 'PS90037',
               offenceStartDate: '2023-12-15',
-              status: 'ACTIVE',
               outcome: {
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 outcomeName: 'Remanded in custody',
@@ -734,7 +727,6 @@ export default {
               chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
               offenceCode: 'PS90037',
               offenceStartDate: '2023-12-15',
-              status: 'ACTIVE',
               legacyData: {
                 offenderChargeId: '1',
                 bookingId: '1',
@@ -780,7 +772,6 @@ export default {
               chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
               offenceCode: 'PS90037',
               offenceStartDate: '2023-12-15',
-              status: 'ACTIVE',
               outcome: {
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 outcomeName: 'Imprisonment',
@@ -912,7 +903,6 @@ export default {
                 chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
                 offenceCode: 'PS90037',
                 offenceStartDate: '2023-12-15',
-                status: 'ACTIVE',
                 outcome: {
                   outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                   outcomeName: 'Remanded in custody',
@@ -952,7 +942,6 @@ export default {
                   chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
                   offenceCode: 'PS90037',
                   offenceStartDate: '2023-12-15',
-                  status: 'ACTIVE',
                   outcome: {
                     outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                     outcomeName: 'Remanded in custody',
@@ -991,7 +980,6 @@ export default {
                   chargeUuid: '9056c1f3-b090-4d1e-bc6e-4f66ebed2ed5',
                   offenceCode: 'PS90037',
                   offenceStartDate: '2023-12-15',
-                  status: 'ACTIVE',
                   legacyData: {
                     offenderChargeId: '1',
                     bookingId: '1',
@@ -1046,7 +1034,6 @@ export default {
                 chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
                 offenceCode: 'PS90037',
                 offenceStartDate: '2023-12-15',
-                status: 'ACTIVE',
                 outcome: {
                   outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
                   outcomeName: 'Imprisonment',
@@ -1099,7 +1086,6 @@ export default {
                   chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
                   offenceCode: 'PS90037',
                   offenceStartDate: '2023-12-15',
-                  status: 'ACTIVE',
                   outcome: {
                     outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
                     outcomeName: 'Imprisonment',
@@ -1147,7 +1133,6 @@ export default {
                   chargeUuid: '9056c1f3-b090-4d1e-bc6e-4f66ebed2ed5',
                   offenceCode: 'PS90037',
                   offenceStartDate: '2023-12-15',
-                  status: 'ACTIVE',
                   outcome: {
                     outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                     outcomeName: 'Remanded in custody',

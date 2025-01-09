@@ -1529,7 +1529,7 @@ export default class OffenceRoutes {
         if (!dispositionCode && charge.legacyData) {
           dispositionCode = charge.legacyData.outcomeDispositionCode
         }
-        return charge.status === 'ACTIVE' && dispositionCode === 'INTERIM'
+        return dispositionCode === 'INTERIM'
       })
       .map(charge => chargeToOffence(charge))
     const offenceOutcomeMap = Object.fromEntries(
@@ -1564,7 +1564,7 @@ export default class OffenceRoutes {
         if (!dispositionCode && charge.legacyData) {
           dispositionCode = charge.legacyData.outcomeDispositionCode
         }
-        return charge.status === 'ACTIVE' && dispositionCode === 'INTERIM'
+        return dispositionCode === 'INTERIM'
       })
       .map(charge => chargeToOffence(charge))
       .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))

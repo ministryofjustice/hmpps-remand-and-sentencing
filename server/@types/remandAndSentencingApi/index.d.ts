@@ -1229,8 +1229,6 @@ export interface components {
       terrorRelated?: boolean
       sentence?: components['schemas']['Sentence']
       legacyData?: components['schemas']['JsonNode']
-      /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE' | 'EDITED' | 'DELETED' | 'DRAFT' | 'FUTURE'
     }
     ChargeOutcome: {
       /** Format: uuid */

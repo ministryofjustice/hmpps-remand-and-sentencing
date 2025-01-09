@@ -850,7 +850,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 13:48:13.540889 */
+      /** @example 16:49:56.026857 */
       appearanceTime?: string
     }
     LegacyCreateCourtAppearance: {
@@ -869,13 +869,13 @@ export interface components {
       postedDate?: string
       nomisOutcomeCode?: string
       outcomeDescription?: string
+      outcomeDispositionCode?: string
     }
     LegacyUpdateCharge: {
       /** Format: date */
       offenceStartDate?: string
       /** Format: date */
       offenceEndDate?: string
-      active: boolean
       legacyData: components['schemas']['ChargeLegacyData']
     }
     DraftCreateCourtAppearance: {
@@ -943,7 +943,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:48:13.540889 */
+      /** @example 16:49:56.026857 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -1008,7 +1008,6 @@ export interface components {
       offenceStartDate?: string
       /** Format: date */
       offenceEndDate?: string
-      active: boolean
       legacyData: components['schemas']['ChargeLegacyData']
     }
     MigrationCreateCourtAppearance: {
@@ -1055,7 +1054,6 @@ export interface components {
       offenceStartDate?: string
       /** Format: date */
       offenceEndDate?: string
-      active: boolean
       legacyData: components['schemas']['ChargeLegacyData']
     }
     LegacyChargeCreatedResponse: {
@@ -1193,7 +1191,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 13:48:13.540889 */
+      /** @example 16:49:56.026857 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -1201,7 +1199,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:48:13.540889 */
+      /** @example 16:49:56.026857 */
       appearanceTime?: string
       courtId: string
     }
@@ -1241,6 +1239,7 @@ export interface components {
       /** Format: int32 */
       displayOrder: number
       isSubList: boolean
+      dispositionCode: string
     }
     CourtAppearance: {
       /** Format: uuid */
@@ -1288,7 +1287,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:48:13.540889 */
+      /** @example 16:49:56.026857 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -1305,23 +1304,23 @@ export interface components {
       totalPages?: number
       /** Format: int64 */
       totalElements?: number
-      content?: components['schemas']['CourtCase'][]
-      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       size?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
       number?: number
+      content?: components['schemas']['CourtCase'][]
+      sort?: components['schemas']['SortObject']
       pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
     }
     PageableObject: {
-      sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
+      sort?: components['schemas']['SortObject']
       unpaged?: boolean
       paged?: boolean
       /** Format: int32 */

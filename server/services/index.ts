@@ -13,6 +13,7 @@ import CourtRegisterService from './courtRegisterService'
 import AppearanceOutcomeService from './appearanceOutcomeService'
 import OffenceOutcomeService from './offenceOutcomeService'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
+import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
 
 export const services = () => {
   const { applicationInfo, feComponentsClient, hmppsAuthClient, hmppsAuditClient } = dataAccess()
@@ -40,6 +41,7 @@ export const services = () => {
   const courtRegisterService = new CourtRegisterService(hmppsAuthClient)
   const appearanceOutcomeService = new AppearanceOutcomeService(hmppsAuthClient)
   const offenceOutcomeService = new OffenceOutcomeService(hmppsAuthClient)
+  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
 
   return {
     applicationInfo,
@@ -57,6 +59,7 @@ export const services = () => {
     appearanceOutcomeService,
     offenceOutcomeService,
     calculateReleaseDatesService,
+    courtCasesReleaseDatesService,
   }
 }
 

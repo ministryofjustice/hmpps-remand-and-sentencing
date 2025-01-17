@@ -42,6 +42,7 @@ import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -52,6 +53,7 @@ export default class CourtCaseRoutes {
     private readonly courtRegisterService: CourtRegisterService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
+    private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -59,7 +61,10 @@ export default class CourtCaseRoutes {
     const { token } = res.locals.user
     const sortBy = getAsStringOrDefault(req.query.sortBy, 'desc')
 
-    const courtCases = await this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy)
+    const [courtCases, serviceDefinitions] = await Promise.all([
+      this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy),
+      this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
+    ])
 
     const chargeCodes = courtCases.content
       .map(courtCase => courtCase.appearances.map(appearance => appearance.charges.map(charge => charge.offenceCode)))
@@ -103,6 +108,7 @@ export default class CourtCaseRoutes {
       sortBy,
       courtCaseTotal: courtCaseDetailModels.length,
       offenceOutcomeMap,
+      serviceDefinitions,
     })
   }
 

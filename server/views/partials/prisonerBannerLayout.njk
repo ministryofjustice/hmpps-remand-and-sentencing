@@ -19,13 +19,7 @@
         {% endblock %}
     </aside>
     {% block subNavigation %}
-        {% set navigation = {
-                activeSubNav: 'court-cases',
-                documents: {
-                    enabled: false
-                }
-            } %}
-        {{ subNavigation(environment, navigation, prisoner.prisonerNumber) }}
+        {{ subNavigation(serviceDefinitions.services, 'courtCases') }}
     {% endblock %}
 {% endblock %}
 

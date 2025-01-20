@@ -24,6 +24,7 @@ generic-service:
     ADJUSTMENTS_UI_URL: "https://adjust-release-dates-preprod.hmpps.service.justice.gov.uk"
     CALCULATE_RELEASE_DATES_API_URL: "https://calculate-release-dates-api-preprod.hmpps.service.justice.gov.uk"
     AUDIT_ENABLED: "false"
+    COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-preprod.hmpps.service.justice.gov.uk"
 
   allowlist:
     penetration-test-ip-1: 54.37.241.156/30

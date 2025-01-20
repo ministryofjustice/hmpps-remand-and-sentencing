@@ -25,6 +25,8 @@ export default abstract class Page {
 
   prisonerBanner = (): PageElement => cy.get('.mini-profile')
 
+  subnav = (): PageElement => cy.get('nav')
+
   input = (): PageElement => cy.get('.govuk-input')
 
   checkboxLabelSelector = (value: string): PageElement =>

@@ -1,3 +1,4 @@
+import CourtCaseAppearanceDetailsPage from '../pages/courtCaseAppearanceDetailsPage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
@@ -255,6 +256,48 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+      })
+    })
+  })
+
+  context('edit', () => {
+    let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
+    beforeEach(() => {
+      cy.task('stubGetRemandNomisAppearanceDetails')
+      cy.task('stubGetCourtsByIds')
+      cy.task('stubGetCourtById', {
+        courtId: 'STHHPM',
+        courtName: 'Southampton Magistrate Court',
+      })
+      cy.task('stubGetAppearanceOutcomeById', {})
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
+      cy.task('stubGetAppearanceTypeByUuid')
+      cy.task('stubGetChargeOutcomeById', {})
+      cy.visit(
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
+      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseAppearanceDetailsPage,
+        'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
+      )
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
+        .click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    })
+
+    it('show terror related as not entered when null', () => {
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Committed on': '15/12/2023',
+        Offence: 'PS90037 An offence description',
+        Outcome: 'Remanded in custody',
+        'Terror related': 'Not entered',
       })
     })
   })

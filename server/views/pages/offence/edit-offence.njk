@@ -2,6 +2,12 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% set terrorRelated = 'Not entered' %}
+{% if offence.terrorRelated %}
+    {% set terrorRelated = 'Yes' %}
+{% elseif offence.terrorRelated === false %}
+    {% set terrorRelated = 'No' %}
+{% endif %}
 {% set summaryRows=[{
                     key: {
                         text: "Offence"
@@ -21,7 +27,7 @@
                     key: {
                         text: "Terror related"
                     }, value: {
-                        text: 'Yes' if offence.terrorRelated else 'No'
+                        text: terrorRelated
                     },
                     actions: {
                         items: [{

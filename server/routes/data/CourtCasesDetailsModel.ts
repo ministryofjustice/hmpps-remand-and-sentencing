@@ -88,7 +88,12 @@ export default class CourtCasesDetailsModel {
       this.showingChargeTotal = 5
     }
     const charges = pageCourtCaseContent.latestAppearance?.charges
-      .sort((a, b) => (dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1))
+      .sort((a, b) => {
+        if (a.offenceStartDate && b.offenceStartDate) {
+          return dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1
+        }
+        return -1
+      })
       .slice(0, 5)
     this.offences = charges?.map(charge => chargeToOffence(charge))
     this.sentenceTypeMap = Object.fromEntries(

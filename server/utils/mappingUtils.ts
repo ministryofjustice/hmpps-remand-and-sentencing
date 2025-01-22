@@ -153,11 +153,11 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
 
 export const chargeToOffence = (charge: Charge): Offence => {
   return {
-    offenceStartDate: dayjs(charge.offenceStartDate).toDate(),
     offenceCode: charge.offenceCode,
     outcomeUuid: charge.outcome?.outcomeUuid,
     chargeUuid: charge.chargeUuid,
     terrorRelated: charge.terrorRelated,
+    ...(charge.offenceStartDate && { offenceStartDate: dayjs(charge.offenceStartDate).toDate() }),
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),

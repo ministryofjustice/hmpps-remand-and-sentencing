@@ -1157,6 +1157,38 @@ export default {
                   },
                 },
               },
+              {
+                chargeUuid: 'a94b4ba8-d6b4-443e-bf69-7f1dab98a6bf',
+                offenceCode: 'PS90037',
+                offenceStartDate: '2023-12-15',
+                outcome: {
+                  outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+                  outcomeName: 'Imprisonment',
+                  nomisCode: '09753',
+                  outcomeType: 'SENTENCING',
+                  displayOrder: 10,
+                  dispositionCode: 'FINAL',
+                },
+                sentence: {
+                  chargeNumber: '2',
+                  periodLengths: [
+                    {
+                      months: 2,
+                      years: 1,
+                      periodOrder: 'years,months',
+                      periodLengthType: 'SENTENCE_LENGTH',
+                    },
+                  ],
+                  sentenceServeType: 'UNKNOWN',
+                  sentenceType: null,
+                  legacyData: {
+                    sentenceCalcType: '1',
+                    sentenceCategory: '1',
+                    sentenceTypeDesc: 'A Nomis sentence type',
+                    postedDate: '10-10-2024',
+                  },
+                },
+              },
             ],
           },
           appearances: [
@@ -1206,6 +1238,38 @@ export default {
                       sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
                       description: 'SDS (Standard Determinate Sentence)',
                       classification: 'STANDARD',
+                    },
+                  },
+                },
+                {
+                  chargeUuid: 'a94b4ba8-d6b4-443e-bf69-7f1dab98a6bf',
+                  offenceCode: 'PS90037',
+                  offenceStartDate: '2023-12-16',
+                  outcome: {
+                    outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+                    outcomeName: 'Imprisonment',
+                    nomisCode: '09753',
+                    outcomeType: 'SENTENCING',
+                    displayOrder: 10,
+                    dispositionCode: 'FINAL',
+                  },
+                  sentence: {
+                    chargeNumber: '2',
+                    periodLengths: [
+                      {
+                        months: 2,
+                        years: 1,
+                        periodOrder: 'years,months',
+                        periodLengthType: 'SENTENCE_LENGTH',
+                      },
+                    ],
+                    sentenceServeType: 'UNKNOWN',
+                    sentenceType: null,
+                    legacyData: {
+                      sentenceCalcType: '1',
+                      sentenceCategory: '1',
+                      sentenceTypeDesc: 'A Nomis sentence type',
+                      postedDate: '10-10-2024',
                     },
                   },
                 },

@@ -274,7 +274,12 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     taggedBail: pageCourtCaseAppearance.taggedBail?.toLocaleString(),
     hasTaggedBail: pageCourtCaseAppearance.taggedBail ? 'true' : 'false',
     ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
-    offences: pageCourtCaseAppearance.charges.map(chargeToOffence),
+    offences: pageCourtCaseAppearance.charges.map(chargeToOffence).sort((a, b) => {
+      if (a.offenceStartDate && b.offenceStartDate) {
+        return dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1
+      }
+      return -1
+    }),
     ...(pageCourtCaseAppearance.overallSentenceLength && {
       overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),
     }),

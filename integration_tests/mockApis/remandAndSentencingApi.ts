@@ -730,7 +730,7 @@ export default {
             {
               chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
               offenceCode: 'PS90037',
-              offenceStartDate: '2023-12-15',
+              offenceStartDate: null,
               terrorRelated: null,
               outcome: {
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',

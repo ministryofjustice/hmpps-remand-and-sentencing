@@ -142,7 +142,7 @@
                         offenceCard({
                             offenceCode: charge.offenceCode,
                             offenceName: offenceMap[charge.offenceCode],
-                            offenceStartDate: charge.offenceStartDate | formatDate,
+                            offenceStartDate: charge.offenceStartDate | formatDate if charge.offenceStartDate else 'Not entered',
                             offenceEndDate: charge.offenceEndDate | formatDate,
                             outcome: charge.outcome | chargeOutcomeOrLegacy(charge.legacyData),
                             countNumber: charge.sentence.chargeNumber,

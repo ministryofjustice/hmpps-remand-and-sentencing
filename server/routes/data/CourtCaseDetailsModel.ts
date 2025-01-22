@@ -63,7 +63,15 @@ export default class CourtCaseDetailsModel {
     }
     this.overallCaseStatus = pageCourtCaseContent.status
     this.appearanceTotal = pageCourtCaseContent.appearances.length
-    this.appearances = pageCourtCaseContent.appearances
+    this.appearances = pageCourtCaseContent.appearances.map(appearance => {
+      const sortedCharges = appearance.charges.sort((a, b) => {
+        if (a.offenceStartDate && b.offenceStartDate) {
+          return dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1
+        }
+        return -1
+      })
+      return { ...appearance, charges: sortedCharges }
+    })
     this.draftAppearances = pageCourtCaseContent.draftAppearances?.map(appearance => {
       return draftCourtAppearanceToPageCourtAppearance(appearance)
     })

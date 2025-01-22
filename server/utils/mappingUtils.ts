@@ -16,6 +16,7 @@ import {
   PageCourtCaseAppearance,
   PeriodLength,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { sortByOffenceStartDate } from './utils'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): CreatePeriodLength => {
   return {
@@ -153,11 +154,11 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
 
 export const chargeToOffence = (charge: Charge): Offence => {
   return {
-    offenceStartDate: dayjs(charge.offenceStartDate).toDate(),
     offenceCode: charge.offenceCode,
     outcomeUuid: charge.outcome?.outcomeUuid,
     chargeUuid: charge.chargeUuid,
     terrorRelated: charge.terrorRelated,
+    ...(charge.offenceStartDate && { offenceStartDate: dayjs(charge.offenceStartDate).toDate() }),
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
@@ -274,7 +275,9 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     taggedBail: pageCourtCaseAppearance.taggedBail?.toLocaleString(),
     hasTaggedBail: pageCourtCaseAppearance.taggedBail ? 'true' : 'false',
     ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
-    offences: pageCourtCaseAppearance.charges.map(chargeToOffence),
+    offences: pageCourtCaseAppearance.charges.map(chargeToOffence).sort((a, b) => {
+      return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+    }),
     ...(pageCourtCaseAppearance.overallSentenceLength && {
       overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),
     }),

@@ -83,6 +83,11 @@ context('Start Page', () => {
       .should('deep.equal', [
         {
           offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': 'Not entered',
+          Outcome: 'Commit to Crown Court for trial in custody',
+        },
+        {
+          offenceCardHeader: 'PS90037 An offence description',
           'Committed on': '15/12/2023',
           Outcome: 'Remanded in custody',
         },

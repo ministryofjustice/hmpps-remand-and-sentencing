@@ -42,7 +42,12 @@ context('Court Case details Page', () => {
             Outcome: 'Remanded in custody',
             'Court documents': 'No documents uploaded',
             Offences: {
-              'Offences (1)': [
+              'Offences (2)': [
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': 'Not entered',
+                  Outcome: 'Commit to Crown Court for trial in custody',
+                },
                 {
                   offenceCardHeader: 'PS90037 An offence description',
                   'Committed on': '15/12/2023',

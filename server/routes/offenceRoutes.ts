@@ -36,7 +36,7 @@ import {
 } from '../utils/mappingUtils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
-import { getNextPeriodLengthType, outcomeValueOrLegacy } from '../utils/utils'
+import { getNextPeriodLengthType, outcomeValueOrLegacy, sortByOffenceStartDate } from '../utils/utils'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
@@ -1519,7 +1519,7 @@ export default class OffenceRoutes {
         .filter(charge => charge.sentence?.sentenceType.sentenceTypeUuid)
         .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]),
     )
-    const offenceMap = await this.manageOffencesService.getOffenceMap(
+    const offenceNameMap = await this.manageOffencesService.getOffenceMap(
       Array.from(new Set(latestCourtAppearance.charges.map(offence => offence.offenceCode))),
       req.user.token,
     )
@@ -1532,6 +1532,9 @@ export default class OffenceRoutes {
         return dispositionCode === 'INTERIM'
       })
       .map(charge => chargeToOffence(charge))
+      .sort((a, b) => {
+        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+      })
     const offenceOutcomeMap = Object.fromEntries(
       latestCourtAppearance.charges
         ?.filter(charge => charge.outcome)
@@ -1544,7 +1547,7 @@ export default class OffenceRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offenceMap,
+      offenceNameMap,
       sentenceTypeMap,
       offences,
       offenceOutcomeMap,
@@ -1567,6 +1570,9 @@ export default class OffenceRoutes {
         return dispositionCode === 'INTERIM'
       })
       .map(charge => chargeToOffence(charge))
+      .sort((a, b) => {
+        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+      })
       .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))
 
     const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)

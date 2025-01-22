@@ -1,16 +1,11 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 
 {% set pageTitle = applicationName + " - Review offences" %}
 
-{% block content %}
-
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-
-            {% include "../../partials/offenceCaption.njk" %}
+{% block pageContent %}
             <h1 class="govuk-heading-l">Review the offence details for this appearance</h1>
             
             <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Offences</h2>
@@ -19,8 +14,8 @@
                 {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
-                        offenceName: offenceMap[offence.offenceCode],
-                        offenceStartDate: offence.offenceStartDate | formatDate,
+                        offenceName: offenceNameMap[offence.offenceCode],
+                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
                         offenceEndDate: offence.offenceEndDate | formatDate,
                         outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
                         countNumber: offence.sentence.countNumber,
@@ -68,7 +63,5 @@
                     attributes: {  'data-qa': 'continue-button' }
                 }) }}
             </form>
-        </div>
-    </div>
 
 {% endblock %}

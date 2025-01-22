@@ -870,6 +870,39 @@ export default {
                 },
               },
             },
+            {
+              chargeUuid: 'a94b4ba8-d6b4-443e-bf69-7f1dab98a6bf',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-14',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                isSubList: false,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                chargeNumber: '2',
+                periodLengths: [
+                  {
+                    months: 2,
+                    years: 1,
+                    periodOrder: 'years,months',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                ],
+                sentenceServeType: 'UNKNOWN',
+                sentenceType: null,
+                legacyData: {
+                  sentenceCalcType: '1',
+                  sentenceCategory: '1',
+                  sentenceTypeDesc: 'A Nomis sentence type',
+                  postedDate: '10-10-2024',
+                },
+              },
+            },
           ],
           overallSentenceLength: {
             years: 4,

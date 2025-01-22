@@ -1519,7 +1519,7 @@ export default class OffenceRoutes {
         .filter(charge => charge.sentence?.sentenceType.sentenceTypeUuid)
         .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]),
     )
-    const offenceMap = await this.manageOffencesService.getOffenceMap(
+    const offenceNameMap = await this.manageOffencesService.getOffenceMap(
       Array.from(new Set(latestCourtAppearance.charges.map(offence => offence.offenceCode))),
       req.user.token,
     )
@@ -1532,6 +1532,12 @@ export default class OffenceRoutes {
         return dispositionCode === 'INTERIM'
       })
       .map(charge => chargeToOffence(charge))
+      .sort((a, b) => {
+        if (a.offenceStartDate && b.offenceStartDate) {
+          return dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1
+        }
+        return -1
+      })
     const offenceOutcomeMap = Object.fromEntries(
       latestCourtAppearance.charges
         ?.filter(charge => charge.outcome)
@@ -1544,7 +1550,7 @@ export default class OffenceRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offenceMap,
+      offenceNameMap,
       sentenceTypeMap,
       offences,
       offenceOutcomeMap,
@@ -1567,6 +1573,12 @@ export default class OffenceRoutes {
         return dispositionCode === 'INTERIM'
       })
       .map(charge => chargeToOffence(charge))
+      .sort((a, b) => {
+        if (a.offenceStartDate && b.offenceStartDate) {
+          return dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1
+        }
+        return -1
+      })
       .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))
 
     const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)

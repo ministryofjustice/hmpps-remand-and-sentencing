@@ -31,7 +31,7 @@ declare module 'models' {
     nextCourtAppearanceAccepted?: boolean
     overallConvictionDate?: Date
     overallConvictionDateAppliedAll?: string
-    legacyData: Record<string, never>
+    legacyData?: Record<string, never>
     hasOverallSentenceLength?: string
     existingDraft?: boolean
   }
@@ -44,7 +44,7 @@ declare module 'models' {
     chargeUuid?: string
     sentence?: Sentence
     terrorRelated?: boolean
-    legacyData: Record<string, never>
+    legacyData?: Record<string, never>
   }
 
   export interface Sentence {
@@ -58,6 +58,7 @@ declare module 'models' {
     sentenceTypeClassification?: string
     convictionDate?: Date
     fineAmount?: number
+    legacyData?: Record<string, never>
   }
 
   export interface SentenceLength {

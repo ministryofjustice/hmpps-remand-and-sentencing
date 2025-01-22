@@ -149,6 +149,7 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     sentenceTypeClassification: apiSentence.sentenceType.classification,
     consecutiveTo: apiSentence.consecutiveToChargeNumber,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
+    ...(apiSentence.legacyData && { legacyData: { ...apiSentence.legacyData } }),
   } as Sentence
 }
 

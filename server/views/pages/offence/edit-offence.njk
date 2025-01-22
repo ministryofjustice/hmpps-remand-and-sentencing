@@ -91,7 +91,7 @@
                     text: "Sentence type"
                 },
                     value: {
-                    text: sentenceType
+                    text: sentenceType | sentenceTypeValueOrLegacy(offence.sentence.legacyData)
                 },
                     actions: {
                         items: [{

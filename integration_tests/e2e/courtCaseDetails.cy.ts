@@ -87,5 +87,56 @@ context('Court Case details Page', () => {
         'Appearances for C894623 at Accrington Youth Court',
       )
     })
+
+    it('appearances tab shows correct data', () => {
+      courtCaseDetailsPage
+        .appearancesTab()
+        .getAppearanceCardDetails()
+        .should('deep.equal', [
+          {
+            'Case reference': 'C894623',
+            'Warrant date': '15/12/2023',
+            Location: 'Accrington Youth Court',
+            Outcome: 'Imprisonment',
+            'Court documents': 'No documents uploaded',
+            Offences: {
+              'Offences (2)': [
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': '16/12/2023',
+                  Outcome: 'Imprisonment',
+                  'Sentence type': 'A Nomis sentence type',
+                  'Sentence length': '1 years 2 months 0 weeks 0 days',
+                  'Consecutive or concurrent': 'Unknown',
+                },
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': '15/12/2023',
+                  Outcome: 'Imprisonment',
+                  'Sentence type': 'SDS (Standard Determinate Sentence)',
+                  'Sentence length': '4 years 5 months 0 weeks 0 days',
+                  'Consecutive or concurrent': 'Forthwith',
+                },
+              ],
+            },
+          },
+          {
+            'Case reference': 'F23325',
+            'Warrant date': '15/10/2022',
+            Location: 'Birmingham Crown Court',
+            Outcome: 'A Nomis Outcome',
+            'Court documents': 'No documents uploaded',
+            Offences: {
+              'Offences (1)': [
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': '15/12/2023',
+                  Outcome: 'Remanded in custody',
+                },
+              ],
+            },
+          },
+        ])
+    })
   })
 })

@@ -73,6 +73,16 @@ export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: Record<st
   return 'Not entered'
 }
 
+export const sentenceTypeValueOrLegacy = (sentenceTypeValue: string, legacyData: Record<string, never>) => {
+  if (sentenceTypeValue) {
+    return sentenceTypeValue
+  }
+  if (legacyData?.sentenceTypeDesc) {
+    return legacyData.sentenceTypeDesc
+  }
+  return null
+}
+
 export const formatLengthsWithoutPeriodOrder = (length: {
   years: number
   months: number

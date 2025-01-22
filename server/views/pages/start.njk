@@ -159,7 +159,7 @@
                                 terrorRelated: offence.terrorRelated,
                                 isSentenced: offence.sentence,
                                 custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
-                                sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId],
+                                sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
                                 fineAmount: offence.sentence.fineAmount
                             })
                         }}

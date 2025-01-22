@@ -17,6 +17,7 @@ import {
   initialiseName,
   outcomeValueOrLegacy,
   pluraliseName,
+  sentenceTypeValueOrLegacy,
 } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -137,6 +138,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   })
 
   njkEnv.addFilter('outcomeValueOrLegacy', outcomeValueOrLegacy)
+  njkEnv.addFilter('sentenceTypeValueOrLegacy', sentenceTypeValueOrLegacy)
 
   njkEnv.addFilter('personProfileName', personProfileName)
   njkEnv.addFilter('personDateOfBirth', personDateOfBirth)

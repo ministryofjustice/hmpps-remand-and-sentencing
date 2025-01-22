@@ -153,7 +153,7 @@
                             licencePeriodLength: charge.sentence.extendedLicensePeriodLength | periodLengthToSentenceLength,
                             sentenceServeType: charge.sentence.sentenceServeType,
                             consecutiveTo: charge.sentence.consecutiveToChargeNumber,
-                            sentenceType: charge.sentence.sentenceType.description,
+                            sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
                             fineAmount: charge.sentence.fineAmount,
                             detailsClasses: 'govuk-!-padding-4'
                         })

@@ -36,7 +36,12 @@ import {
 } from '../utils/mappingUtils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
-import { getNextPeriodLengthType, outcomeValueOrLegacy, sortByOffenceStartDate } from '../utils/utils'
+import {
+  getNextPeriodLengthType,
+  outcomeValueOrLegacy,
+  sentenceTypeValueOrLegacy,
+  sortByOffenceStartDate,
+} from '../utils/utils'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
@@ -632,6 +637,10 @@ export default class OffenceRoutes {
       convictionDate,
       req.user.username,
     )
+    let legacySentenceType
+    if (!offence.sentence?.sentenceTypeId && !res.locals.isAddCourtCase) {
+      legacySentenceType = sentenceTypeValueOrLegacy(undefined, offence.sentence?.legacyData)
+    }
 
     return res.render('pages/offence/sentence-type', {
       nomsId,
@@ -643,6 +652,7 @@ export default class OffenceRoutes {
       submitToEditOffence,
       offenceSentenceTypeForm,
       sentenceTypes,
+      legacySentenceType,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink: submitToEditOffence
@@ -1451,9 +1461,11 @@ export default class OffenceRoutes {
       | 'OVERALL_SENTENCE_LENGTH'
     let sentenceLength: string
     if (offence.sentence) {
-      sentenceType = (
-        await this.remandAndSentencingService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
-      ).description
+      if (offence.sentence.sentenceTypeId) {
+        sentenceType = (
+          await this.remandAndSentencingService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
+        ).description
+      }
 
       sentenceLengthType =
         offence.sentence?.sentenceTypeClassification === 'EXTENDED' ? 'OVERALL_SENTENCE_LENGTH' : 'SENTENCE_LENGTH'

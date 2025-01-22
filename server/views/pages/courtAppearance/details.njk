@@ -236,7 +236,7 @@
                         licencePeriodLength: offence.sentence.licencePeriodLength,
                         sentenceServeType: offence.sentence.sentenceServeType,
                         consecutiveTo: offence.sentence.consecutiveTo,
-                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId],
+                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
                         fineAmount: offence.sentence.fineAmount,
                         actions: {
                             items: [

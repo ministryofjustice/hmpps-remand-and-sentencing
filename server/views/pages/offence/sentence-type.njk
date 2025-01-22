@@ -4,6 +4,13 @@
 
 {% set pageTitle = applicationName + " - Sentence type " %}
 
+{% set fieldSetHtml %}
+    <h1 class="govuk-fieldset__heading{% if legacySentenceType %} govuk-!-static-margin-bottom-3{% endif %}">{% if isAddCourtAppearance%}Select the sentence type{%else%}Edit the sentence type{%endif%}</h1>
+    {% if legacySentenceType%}
+    <p class="govuk-body-l govuk-!-static-margin-bottom-3" data-qa="legendParagraph">{{ legacySentenceType }}</p>
+    {% endif %}
+{% endset %}
+
 {% set sentenceTypeItems = [] %}
 
 {% for sentenceType in sentenceTypes %}
@@ -27,8 +34,7 @@
                     name: "sentenceType",
                     fieldset: {
                         legend: {
-                            text: "Select the sentence type",
-                            isPageHeading: true,
+                            html: fieldSetHtml,
                             classes: "govuk-fieldset__legend--l"
                         }
                     },

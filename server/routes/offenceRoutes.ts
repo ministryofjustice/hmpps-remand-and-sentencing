@@ -36,7 +36,7 @@ import {
 } from '../utils/mappingUtils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
-import { getNextPeriodLengthType, outcomeValueOrLegacy } from '../utils/utils'
+import { getNextPeriodLengthType, outcomeValueOrLegacy, sortByOffenceStartDate } from '../utils/utils'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
@@ -1533,10 +1533,7 @@ export default class OffenceRoutes {
       })
       .map(charge => chargeToOffence(charge))
       .sort((a, b) => {
-        if (a.offenceStartDate && b.offenceStartDate) {
-          return dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1
-        }
-        return -1
+        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
       })
     const offenceOutcomeMap = Object.fromEntries(
       latestCourtAppearance.charges
@@ -1574,10 +1571,7 @@ export default class OffenceRoutes {
       })
       .map(charge => chargeToOffence(charge))
       .sort((a, b) => {
-        if (a.offenceStartDate && b.offenceStartDate) {
-          return dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1
-        }
-        return -1
+        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
       })
       .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))
 

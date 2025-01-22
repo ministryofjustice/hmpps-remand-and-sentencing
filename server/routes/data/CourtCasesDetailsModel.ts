@@ -7,7 +7,7 @@ import {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { chargeToOffence } from '../../utils/mappingUtils'
-import { outcomeValueOrLegacy } from '../../utils/utils'
+import { outcomeValueOrLegacy, sortByOffenceStartDate } from '../../utils/utils'
 
 export default class CourtCasesDetailsModel {
   courtCaseUuid: string
@@ -89,10 +89,7 @@ export default class CourtCasesDetailsModel {
     }
     const charges = pageCourtCaseContent.latestAppearance?.charges
       .sort((a, b) => {
-        if (a.offenceStartDate && b.offenceStartDate) {
-          return dayjs(a.offenceStartDate).isBefore(dayjs(b.offenceStartDate)) ? 1 : -1
-        }
-        return -1
+        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
       })
       .slice(0, 5)
     this.offences = charges?.map(charge => chargeToOffence(charge))

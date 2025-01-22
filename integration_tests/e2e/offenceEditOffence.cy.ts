@@ -292,9 +292,9 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 
-    it('show terror related as not entered when null', () => {
+    it('show fields as not entered when null', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
-        'Committed on': '15/12/2023',
+        'Committed on': 'Not entered',
         Offence: 'PS90037 An offence description',
         Outcome: 'Remanded in custody',
         'Terror related': 'Not entered',

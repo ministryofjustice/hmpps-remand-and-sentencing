@@ -49,7 +49,7 @@
                             text: "Conviction date"
                         },
                             value: {
-                            text: appearance.overallConvictionDate | formatDate
+                            text: appearance.overallConvictionDate | formatDate if appearance.overallConvictionDate else 'Not entered'
                         },
                             actions: {
                             items: [

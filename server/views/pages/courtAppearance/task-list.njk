@@ -41,6 +41,7 @@
               {{ govukButton({
                 text: "Finish and save",
                 disabled: model.isAllMandatoryItemsComplete() === false,
+                preventDoubleClick: true,
                 attributes: {
                   "data-qa": "continue-button"
                 }

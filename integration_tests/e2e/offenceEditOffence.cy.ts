@@ -124,13 +124,16 @@ context('Add Offence Edit offence Page', () => {
       offenceOffenceDatePage.yearDateInput('offenceStartDate').should('have.value', '2023')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
       offenceOffenceDatePage.dayDateInput('offenceStartDate').type('25')
+      offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('28')
+      offenceOffenceDatePage.monthDateInput('offenceEndDate').clear().type('5')
+      offenceOffenceDatePage.yearDateInput('offenceEndDate').clear().type('2023')
       offenceOffenceDatePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
         'Terror related': 'Yes',
-        'Committed on': '25/05/2023',
+        'Committed on': '25/05/2023 to 28/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',

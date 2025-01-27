@@ -41,7 +41,7 @@
                     key: {
                         text: "Committed on"
                     }, value: {
-                        text: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered' + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
+                        text: (offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered') + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
                     },
                     actions: {
                         items: [{

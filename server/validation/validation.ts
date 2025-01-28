@@ -41,7 +41,7 @@ Validator.register('minCurrency', minCurrencyValidate, 'must be entered in a val
 Validator.register('isValidDate', isValidDate, 'This date does not exist.')
 Validator.registerImplicit('requiredFieldWith', requiredFieldWith, 'This field is required.')
 Validator.register('isPastDate', isPastDate, 'date must be in the past')
-Validator.register('isAfterDate', isAfterDate, 'date must be same or after')
+Validator.register('isAfterDate', isAfterDate, 'date must be after')
 Validator.registerImplicit(
   'requireAlternativeSentenceLength',
   requireAlternativeSentenceLength,

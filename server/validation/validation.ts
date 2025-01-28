@@ -13,6 +13,7 @@ import requireOneNonZeroSentenceLength from './requireOneNonZeroSentenceLength'
 import requireOneNonZeroAlternativeSentenceLength from './requireOneNonZeroAlternativeSentenceLength'
 import requireSentenceLengthIf from './requireSentenceLengthIf'
 import requireOneNonZeroSentenceLengthIf from './requireOneNonZeroSentenceLengthIf'
+import isAfterDate from './isAfterDate'
 
 export default function validate<T>(
   form: T,
@@ -40,6 +41,7 @@ Validator.register('minCurrency', minCurrencyValidate, 'must be entered in a val
 Validator.register('isValidDate', isValidDate, 'This date does not exist.')
 Validator.registerImplicit('requiredFieldWith', requiredFieldWith, 'This field is required.')
 Validator.register('isPastDate', isPastDate, 'date must be in the past')
+Validator.register('isAfterDate', isAfterDate, 'date must be after')
 Validator.registerImplicit(
   'requireAlternativeSentenceLength',
   requireAlternativeSentenceLength,

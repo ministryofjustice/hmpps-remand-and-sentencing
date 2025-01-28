@@ -104,4 +104,19 @@ context('Add Offence Offence Date Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem Offence end date must use a date from the past')
   })
+
+  it('submitting an end date that is before the start date results in an error', () => {
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('15')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('1')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
+    offenceOffenceDatePage.dayDateInput('offenceEndDate').type('5')
+    offenceOffenceDatePage.monthDateInput('offenceEndDate').type('1')
+    offenceOffenceDatePage.yearDateInput('offenceEndDate').type('2024')
+    offenceOffenceDatePage.continueButton().click()
+    offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The offence end date must be after the offence start date')
+  })
 })

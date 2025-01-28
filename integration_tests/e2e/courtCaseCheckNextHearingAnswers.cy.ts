@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseNextHearingCourtNamePage from '../pages/courtCaseNextHearingCourtNamePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
@@ -60,9 +61,10 @@ context('Check Next Hearing Answers page', () => {
   it('clicking next hearing date and submitting goes back to check answers page', () => {
     courtCaseCheckOffenceAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-date').click()
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
-    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type('15')
-    courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type('12')
-    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type('2024')
+    const futureDate = dayjs().add(10, 'day')
+    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type(futureDate.date().toString())
+    courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type((futureDate.month() + 1).toString())
+    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type(futureDate.year().toString())
     courtCaseNextHearingDatePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })

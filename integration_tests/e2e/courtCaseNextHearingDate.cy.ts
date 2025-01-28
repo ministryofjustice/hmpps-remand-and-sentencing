@@ -56,4 +56,15 @@ context('Next hearing date page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem This date does not exist.')
   })
+
+  it('submitting a date in the past results in an error', () => {
+    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type('15')
+    courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type('1')
+    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type('2024')
+    courtCaseNextHearingDatePage.continueButton().click()
+    courtCaseNextHearingDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The next court date must be in the future')
+  })
 })

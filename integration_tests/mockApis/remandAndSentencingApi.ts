@@ -2,15 +2,14 @@ import { SuperAgentRequest } from 'superagent'
 import { stubFor, verifyRequest } from './wiremock'
 
 export default {
-  stubCreateCourtCase: (): SuperAgentRequest => {
+  stubCreateCourtCase: ({ nextHearingDate = '' }: { nextHearingDate: string }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
         urlPattern: '/remand-and-sentencing-api/court-case',
         bodyPatterns: [
           {
-            equalToJson:
-              '{"prisonerId": "A1234AB", "appearances": [{"outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND"}]}',
+            equalToJson: `{"prisonerId": "A1234AB", "appearances": [{"outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND"}]}`,
           },
         ],
       },
@@ -432,7 +431,7 @@ export default {
     })
   },
 
-  verifyCreateCourtCaseRequest: (): Promise<number> => {
+  verifyCreateCourtCaseRequest: ({ nextHearingDate = '' }: { nextHearingDate: string }): Promise<number> => {
     return verifyRequest({
       requestUrlPattern: '/remand-and-sentencing-api/court-case',
       method: 'POST',
@@ -447,7 +446,7 @@ export default {
             warrantType: 'REMAND',
             prisonId: 'MDI',
             nextCourtAppearance: {
-              appearanceDate: '2023-10-18',
+              appearanceDate: nextHearingDate,
               courtCode: 'ACCRYC',
               appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
             },
@@ -516,15 +515,14 @@ export default {
     })
   },
 
-  stubCreateCourtAppearance: (): SuperAgentRequest => {
+  stubCreateCourtAppearance: ({ nextHearingDate = '' }: { nextHearingDate: string }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
         urlPattern: '/remand-and-sentencing-api/court-appearance',
         bodyPatterns: [
           {
-            equalToJson:
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND", "nextCourtAppearance": {"appearanceDate": "2023-10-18", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a"}}',
+            equalToJson: `{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true}], "warrantType": "REMAND", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a"}}`,
           },
         ],
       },
@@ -538,7 +536,7 @@ export default {
     })
   },
 
-  verifyCreateCourtAppearanceRequest: (): Promise<number> => {
+  verifyCreateCourtAppearanceRequest: ({ nextHearingDate = '' }: { nextHearingDate: string }): Promise<number> => {
     return verifyRequest({
       requestUrlPattern: '/remand-and-sentencing-api/court-appearance',
       method: 'POST',
@@ -565,7 +563,7 @@ export default {
         ],
         warrantType: 'REMAND',
         nextCourtAppearance: {
-          appearanceDate: '2023-10-18',
+          appearanceDate: nextHearingDate,
           courtCode: 'ACCRYC',
           appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
         },

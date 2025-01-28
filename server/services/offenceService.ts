@@ -35,12 +35,13 @@ export default class OffenceService {
     offenceOffenceDateForm: OffenceOffenceDateForm,
   ) {
     let isValidOffenceStartDateRule = ''
+    let startDateString = ''
     if (
       offenceOffenceDateForm['offenceStartDate-day'] &&
       offenceOffenceDateForm['offenceStartDate-month'] &&
       offenceOffenceDateForm['offenceStartDate-year']
     ) {
-      const startDateString = toDateString(
+      startDateString = toDateString(
         offenceOffenceDateForm['offenceStartDate-year'],
         offenceOffenceDateForm['offenceStartDate-month'],
         offenceOffenceDateForm['offenceStartDate-day'],
@@ -59,6 +60,9 @@ export default class OffenceService {
         offenceOffenceDateForm['offenceEndDate-day'],
       )
       isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastDate:${endDateString}`
+      if (startDateString) {
+        isValidOffenceEndDateRule += `|isSameOrAfterDate:${startDateString},${endDateString}`
+      }
     }
     const errors = validate(
       offenceOffenceDateForm,
@@ -81,6 +85,7 @@ export default class OffenceService {
         'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
         'isValidDate.offenceEndDate-day': 'This date does not exist.',
         'isPastDate.offenceEndDate-day': 'Offence end date must use a date from the past',
+        'isSameOrAfterDate.offenceEndDate-day': 'The offence end date must be after the offence start date',
       },
     )
     if (errors.length === 0) {

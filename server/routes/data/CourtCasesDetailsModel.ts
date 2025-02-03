@@ -4,6 +4,7 @@ import {
   CourtCaseLegacyData,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  PeriodLength,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { chargeToOffence } from '../../utils/mappingUtils'
@@ -19,6 +20,12 @@ export default class CourtCasesDetailsModel {
   firstDayInCustody: string
 
   overallCaseOutcome: string
+
+  overallSentenceLength: PeriodLength
+
+  convictionDate: string
+
+  warrantType: string
 
   overallCaseStatus: string
 
@@ -46,7 +53,7 @@ export default class CourtCasesDetailsModel {
     this.title = titleValue
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     let references = pageCourtCaseContent.appearances
-      .filter(appearance => !!appearance.courtCaseReference)
+      .filter(appearance => appearance.courtCaseReference)
       .map(appearance => appearance.courtCaseReference)
     if (pageCourtCaseContent.legacyData) {
       const courtCaseLegacyData = pageCourtCaseContent.legacyData as unknown as CourtCaseLegacyData
@@ -68,6 +75,14 @@ export default class CourtCasesDetailsModel {
       pageCourtCaseContent.latestAppearance?.legacyData,
     )
 
+    this.overallSentenceLength = pageCourtCaseContent.latestAppearance?.overallSentenceLength
+    this.convictionDate = 'Not entered'
+    if (pageCourtCaseContent.latestAppearance?.overallConvictionDate) {
+      this.convictionDate = dayjs(pageCourtCaseContent.latestAppearance?.overallConvictionDate).format(
+        config.dateFormat,
+      )
+    }
+    this.warrantType = pageCourtCaseContent.latestAppearance?.warrantType
     this.overallCaseStatus = pageCourtCaseContent.status
 
     if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance) {

@@ -100,21 +100,27 @@
                             visuallyHiddenText: "sentence type"
                         }]
                     }
-                },{
+                }] )) %}
+
+            {% for periodLength in offence.sentence.periodLengths %}
+                {% set summaryRows = (summaryRows.concat({
                     key: {
-                    text: "Sentence length"
-                },
-                    value: {
-                    text: sentenceLength
-                },
+                        text: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize
+                    },
+                        value: {
+                            text: periodLength | formatLengths
+                        },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/period-length?periodLengthType=" + sentenceLengthType + "&submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/period-length?periodLengthType=" + periodLength.periodLengthType +"&submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: "sentence length"
-                        }]
-                    }
-                },{
+                            visuallyHiddenText: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize
+                    }]
+                }
+                })) %}
+            {% endfor %}
+
+            {% set summaryRows = (summaryRows.concat({
                     key: {
                     text: "Consecutive or concurrent"
                 },
@@ -128,7 +134,7 @@
                             visuallyHiddenText: "consecutive or concurrent"
                     }]
                 }
-            }] )) %}
+            })) %}
 {% else %}
     {% set summaryRows = (summaryRows.concat({
                     key: {

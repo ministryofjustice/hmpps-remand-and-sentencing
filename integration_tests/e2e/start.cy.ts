@@ -48,7 +48,7 @@ context('Start Page', () => {
     startPage
       .courtCaseCard('3fa85f64-5717-4562-b3fc-2c963f66afa6')
       .getActions()
-      .should('equal', 'Add an appearance Add an appearance (C894623 at Accrington Youth Court)')
+      .should('equal', 'Add appearance Add appearance (C894623 at Accrington Youth Court)')
   })
 
   it('displays latest appearance', () => {

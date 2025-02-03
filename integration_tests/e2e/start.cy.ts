@@ -41,39 +41,29 @@ context('Start Page', () => {
   })
 
   it('displays inactive tag on inactive case', () => {
-    startPage
-      .courtCaseCard('d316d5b7-022f-40e5-98ab-aebe8ac4abf4')
-      .getActions()
-      .should('equal', 'Inactive Inactive (Court Case d316d5b7-022f-40e5-98ab-aebe8ac4abf4)')
+    startPage.courtCaseCard('d316d5b7-022f-40e5-98ab-aebe8ac4abf4').getActions().should('equal', 'Inactive Inactive ()')
   })
 
   it('displays add appearance link on inactive case', () => {
     startPage
       .courtCaseCard('3fa85f64-5717-4562-b3fc-2c963f66afa6')
       .getActions()
-      .should('equal', 'Add an appearance Add an appearance (Court Case 3fa85f64-5717-4562-b3fc-2c963f66afa6)')
+      .should('equal', 'Add an appearance Add an appearance (C894623 at Accrington Youth Court)')
   })
 
-  it('displays court case appearances', () => {
+  it('displays latest appearance', () => {
     startPage
-      .courtCaseAppearanceTable('3fa85f64-5717-4562-b3fc-2c963f66afa6')
-      .getTable()
-      .should('deep.equal', [
-        {
-          'Case reference': 'C894623',
-          Location: 'Accrington Youth Court',
-          'Warrant date': '15/12/2023',
-          Outcome: 'Remanded in custody',
-          '': 'View and edit',
-        },
-        {
-          'Case reference': 'F23325',
-          Location: 'Accrington Youth Court',
-          'Warrant date': '15/10/2022',
-          Outcome: 'Lie on file',
-          '': 'View and edit',
-        },
-      ])
+      .courtCaseLatestAppearanceCaseReference('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+      .should('contain.text', 'C894623')
+    startPage
+      .courtCaseLatestAppearanceWarrantDate('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+      .should('contain.text', '15/12/2023')
+    startPage
+      .courtCaseLatestAppearanceLocation('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+      .should('contain.text', 'Accrington Youth Court')
+    startPage
+      .courtCaseLatestAppearanceOutcome('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+      .should('contain.text', 'Remanded in custody')
   })
 
   it('displays offences', () => {

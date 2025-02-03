@@ -12,7 +12,11 @@ import { outcomeValueOrLegacy, sortByOffenceStartDate } from '../../utils/utils'
 export default class CourtCasesDetailsModel {
   courtCaseUuid: string
 
+  title: string
+
   caseReferences: string
+
+  firstDayInCustody: string
 
   overallCaseOutcome: string
 
@@ -22,9 +26,7 @@ export default class CourtCasesDetailsModel {
 
   appearanceTotal: number
 
-  showingAppearanceTotal?: number
-
-  latestAppearances: PageCourtCaseAppearance[]
+  latestAppearance: PageCourtCaseAppearance
 
   chargeTotal: number
 
@@ -36,11 +38,12 @@ export default class CourtCasesDetailsModel {
 
   offenceOutcomeMap: { [key: string]: string }
 
-  latestCourtCode: string
-
-  latestAppearanceDate: string
-
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
+    let titleValue = courtMap[pageCourtCaseContent.latestAppearance?.courtCode]
+    if (pageCourtCaseContent.latestAppearance?.courtCaseReference) {
+      titleValue = `${pageCourtCaseContent.latestAppearance.courtCaseReference} at ${titleValue}`
+    }
+    this.title = titleValue
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     let references = pageCourtCaseContent.appearances
       .filter(appearance => !!appearance.courtCaseReference)
@@ -52,6 +55,14 @@ export default class CourtCasesDetailsModel {
       )
     }
     this.caseReferences = Array.from(new Set(references)).join(', ')
+    this.firstDayInCustody = 'Not entered'
+    if (pageCourtCaseContent.appearances.length) {
+      this.firstDayInCustody = pageCourtCaseContent.appearances
+        .map(appearance => dayjs(appearance.appearanceDate))
+        .reduce((a, b) => (a.isBefore(b) ? a : b))
+        .format(config.dateFormat)
+    }
+
     this.overallCaseOutcome = outcomeValueOrLegacy(
       pageCourtCaseContent.latestAppearance?.outcome?.outcomeName,
       pageCourtCaseContent.latestAppearance?.legacyData,
@@ -77,21 +88,16 @@ export default class CourtCasesDetailsModel {
       this.nextHearing = ['Date to be fixed']
     }
     this.appearanceTotal = pageCourtCaseContent.appearances.length
-    if (this.appearanceTotal > 5) {
-      this.showingAppearanceTotal = 5
-    }
-    this.latestAppearances = pageCourtCaseContent.appearances
-      .sort((a, b) => (dayjs(a.appearanceDate).isBefore(dayjs(b.appearanceDate)) ? 1 : -1))
-      .slice(0, 5)
+    this.latestAppearance = pageCourtCaseContent.latestAppearance
     this.chargeTotal = pageCourtCaseContent.latestAppearance?.charges.length
-    if (this.chargeTotal > 5) {
-      this.showingChargeTotal = 5
+    if (this.chargeTotal > 6) {
+      this.showingChargeTotal = 6
     }
     const charges = pageCourtCaseContent.latestAppearance?.charges
       .sort((a, b) => {
         return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
       })
-      .slice(0, 5)
+      .slice(0, 6)
     this.offences = charges?.map(charge => chargeToOffence(charge))
     this.sentenceTypeMap = Object.fromEntries(
       charges
@@ -103,7 +109,5 @@ export default class CourtCasesDetailsModel {
         ?.filter(charge => charge.outcome)
         .map(charge => [charge.outcome.outcomeUuid, charge.outcome.outcomeName]) ?? [],
     )
-    this.latestCourtCode = pageCourtCaseContent.latestAppearance?.courtCode
-    this.latestAppearanceDate = dayjs(pageCourtCaseContent.latestAppearance?.appearanceDate).format(config.dateFormat)
   }
 }

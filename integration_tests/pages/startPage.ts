@@ -9,8 +9,17 @@ export default class StartPage extends Page {
 
   courtCaseCard = (courtCaseUuid: string): PageElement => cy.get(`[data-qa=courtCaseCard-${courtCaseUuid}]`)
 
-  courtCaseAppearanceTable = (courtCaseUuid: string): PageElement =>
-    cy.get(`[data-qa=courtCaseAppearanceTable-${courtCaseUuid}]`)
+  courtCaseLatestAppearanceCaseReference = (courtCaseUuid: string): PageElement =>
+    cy.get(`[data-qa=latestAppearanceCourtCaseReference-${courtCaseUuid}]`)
+
+  courtCaseLatestAppearanceWarrantDate = (courtCaseUuid: string): PageElement =>
+    cy.get(`[data-qa=latestAppearanceWarrantDate-${courtCaseUuid}]`)
+
+  courtCaseLatestAppearanceLocation = (courtCaseUuid: string): PageElement =>
+    cy.get(`[data-qa=latestAppearanceLocation-${courtCaseUuid}]`)
+
+  courtCaseLatestAppearanceOutcome = (courtCaseUuid: string): PageElement =>
+    cy.get(`[data-qa=latestAppearanceOutcome-${courtCaseUuid}]`)
 
   courtCaseDetailsComponent = (courtCaseUuid: string): PageElement =>
     cy.get(`[data-qa=courtCaseDetailsComponent-${courtCaseUuid}]`)

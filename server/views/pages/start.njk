@@ -56,22 +56,43 @@
                             {% endfor %}
                         </ul>
                         {% endset %}
-                        {{
-                            govukSummaryList({
-                                rows: [
+
+                        {% set courtCaseSummaryRows = [
                                 {
                                     key: { text: "Case references"},
                                     value: { text: courtCaseDetails.caseReferences if courtCaseDetails.caseReferences else 'Not entered' }
                                 },
                                 {
+                                    key: { text: "First day in custody"},
+                                    value: { text: courtCaseDetails.firstDayInCustody }
+                                },
+                                {
                                     key: { text: "Overall case outcome"},
                                     value: { text: courtCaseDetails.overallCaseOutcome }
+                                }
+                        ] %}
+                        {% if courtCaseDetails.warrantType === 'SENTENCING' %}
+                            {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat([{
+                                    key: { text: "Overall sentence length"},
+                                    value: { text: courtCaseDetails.overallSentenceLength | formatLengths if courtCaseDetails.overallSentenceLength else 'Not entered' }
                                 },
+                                {
+                                    key: { text: "Conviction date"},
+                                    value: { text: courtCaseDetails.convictionDate }
+                                }
+                                ]))%}
+                        {% endif %}
+
+                        {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat(
                                 {
                                     key: { text: "Next hearing"},
                                     value: { html: nextHearingHtml }
                                 }
-                                ],
+                        ))%}
+
+                        {{
+                            govukSummaryList({
+                                rows: courtCaseSummaryRows,
                                 attributes: {
                                     "data-qa": "courtCaseSummary-" + courtCaseDetails.courtCaseUuid
                                 }
@@ -94,6 +115,10 @@
                                             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceCourtCaseReference-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.courtCaseReference if courtCaseDetails.latestAppearance.courtCaseReference else 'Not entered'}}</p>
                                             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant date</h3>
                                             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.appearanceDate | formatDate }}</p>
+                                            {% if courtCaseDetails.latestAppearance.warrantType === 'SENTENCING' %}
+                                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
+                                                <p class="govuk-body govuk-!-margin-bottom-2">05/10/2024 {{ courtCaseDetails.latestAppearance.overallConvictionDate | formatDate if courtCaseDetails.latestAppearance.overallConvictionDate else 'Not entered' }}</p>
+                                            {% endif %}
                                         </div>
                                         <div class="govuk-grid-column-two-thirds">
                                             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
@@ -116,8 +141,11 @@
                                                             terrorRelated: offence.terrorRelated,
                                                             isSentenced: offence.sentence,
                                                             custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
+                                                            sentenceServeType: offence.sentence.sentenceServeType,
+                                                            consecutiveTo: offence.sentence.consecutiveTo,
                                                             sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
-                                                            fineAmount: offence.sentence.fineAmount
+                                                            fineAmount: offence.sentence.fineAmount,
+                                                            detailsClasses: 'govuk-!-padding-4'
                                                         })
                                                     }}
                                                 {% endfor %}

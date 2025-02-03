@@ -22,7 +22,6 @@ import type {
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
-import { formatLengths } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -1452,26 +1451,12 @@ export default class OffenceRoutes {
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
     let sentenceType: string
-    let sentenceLengthType:
-      | 'SENTENCE_LENGTH'
-      | 'CUSTODIAL_TERM'
-      | 'LICENCE_PERIOD'
-      | 'TARIFF_LENGTH'
-      | 'TERM_LENGTH'
-      | 'OVERALL_SENTENCE_LENGTH'
-    let sentenceLength: string
     if (offence.sentence) {
       if (offence.sentence.sentenceTypeId) {
         sentenceType = (
           await this.remandAndSentencingService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
         ).description
       }
-
-      sentenceLengthType =
-        offence.sentence?.sentenceTypeClassification === 'EXTENDED' ? 'OVERALL_SENTENCE_LENGTH' : 'SENTENCE_LENGTH'
-      sentenceLength = formatLengths(
-        offence.sentence.periodLengths.find(x => x.periodLengthType === sentenceLengthType),
-      )
     }
     let outcome
     if (offence.outcomeUuid) {
@@ -1489,9 +1474,8 @@ export default class OffenceRoutes {
       errors: req.flash('errors') || [],
       offenceMap,
       sentenceType,
-      sentenceLength,
-      sentenceLengthType,
       outcome,
+      periodLengthTypeHeadings,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       backLink: res.locals.isAddCourtAppearance
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`

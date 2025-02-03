@@ -131,6 +131,7 @@ export const periodLengthToSentenceLength = (periodLength: PeriodLength): Senten
       ...(typeof periodLength.years === 'number' ? { years: String(periodLength.years) } : {}),
       periodOrder: periodLength.periodOrder.split(','),
       periodLengthType: periodLength.periodLengthType,
+      legacyData: periodLength.legacyData,
     } as SentenceLength
   }
   return null

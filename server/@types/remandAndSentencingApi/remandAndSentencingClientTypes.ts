@@ -49,3 +49,5 @@ export type OffenceOutcome = components['schemas']['ChargeOutcome']
 export type AppearanceType = components['schemas']['AppearanceType']
 
 export type CourtCaseLegacyData = components['schemas']['CourtCaseLegacyData']
+
+export type PeriodLengthLegacyData = components['schemas']['PeriodLengthLegacyData']

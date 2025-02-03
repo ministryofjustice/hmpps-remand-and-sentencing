@@ -85,7 +85,7 @@ export default class CourtCasesDetailsModel {
         appearanceDateFormatted,
       ]
     } else {
-      this.nextHearing = ['Date to be fixed']
+      this.nextHearing = ['No future appearance scheduled']
     }
     this.appearanceTotal = pageCourtCaseContent.appearances.length
     this.latestAppearance = pageCourtCaseContent.latestAppearance

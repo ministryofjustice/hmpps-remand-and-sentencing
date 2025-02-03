@@ -16,6 +16,7 @@ import {
   formatLengthsWithoutPeriodOrder,
   initialiseName,
   outcomeValueOrLegacy,
+  periodLengthValueOrLegacy,
   pluraliseName,
   sentenceTypeValueOrLegacy,
 } from './utils'
@@ -136,6 +137,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     }
     return 'Not entered'
   })
+
+  njkEnv.addFilter('periodLengthValueOrLegacy', periodLengthValueOrLegacy)
 
   njkEnv.addFilter('outcomeValueOrLegacy', outcomeValueOrLegacy)
   njkEnv.addFilter('sentenceTypeValueOrLegacy', sentenceTypeValueOrLegacy)

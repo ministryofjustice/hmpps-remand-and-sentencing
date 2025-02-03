@@ -257,7 +257,9 @@ context('Add Offence Edit offence Page', () => {
         'Committed on': '12/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
-        'Sentence length': '6 years 6 months 0 weeks 0 days',
+        'Overall sentence length': '6 years 6 months 0 weeks 0 days',
+        'Custodial term': '4 years 4 months 0 weeks 0 days',
+        'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
     })

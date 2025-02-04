@@ -26,6 +26,7 @@ import {
 } from '../utils/mappingUtils'
 import RemandAndSentencingService from './remandAndSentencingService'
 import { toDateString } from '../utils/utils'
+import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 
 export default class CourtAppearanceService {
   constructor(private readonly remandAndSentencingService: RemandAndSentencingService) {}
@@ -407,6 +408,7 @@ export default class CourtAppearanceService {
         courtAppearance.overallSentenceLength = sentenceLengthFormToSentenceLength(
           courtCaseOverallSentenceLengthForm,
           'OVERALL_SENTENCE_LENGTH',
+          periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
         )
       } else {
         delete courtAppearance.overallSentenceLength

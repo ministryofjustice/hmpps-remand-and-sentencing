@@ -22,7 +22,7 @@ import {
 } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
-import { periodLengthToSentenceLength } from './mappingUtils'
+import { periodLengthsToSentenceLengths } from './mappingUtils'
 import type { AppearanceOutcome, OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 const production = process.env.NODE_ENV === 'production'
@@ -152,5 +152,5 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatLengths', formatLengths)
   njkEnv.addFilter('formatLengthsWithoutPeriodOrder', formatLengthsWithoutPeriodOrder)
 
-  njkEnv.addFilter('periodLengthToSentenceLength', periodLengthToSentenceLength)
+  njkEnv.addFilter('periodLengthsToSentenceLengths', periodLengthsToSentenceLengths)
 }

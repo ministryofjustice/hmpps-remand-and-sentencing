@@ -17,6 +17,7 @@ import {
   PeriodLength,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import { sortByOffenceStartDate } from './utils'
+import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): CreatePeriodLength => {
   return {
@@ -122,19 +123,25 @@ export const courtCaseToCreateCourtCase = (
   } as CreateCourtCase
 }
 
-export const periodLengthToSentenceLength = (periodLength: PeriodLength): SentenceLength => {
-  if (periodLength) {
-    return {
-      ...(typeof periodLength.days === 'number' ? { days: String(periodLength.days) } : {}),
-      ...(typeof periodLength.weeks === 'number' ? { weeks: String(periodLength.weeks) } : {}),
-      ...(typeof periodLength.months === 'number' ? { months: String(periodLength.months) } : {}),
-      ...(typeof periodLength.years === 'number' ? { years: String(periodLength.years) } : {}),
-      periodOrder: periodLength.periodOrder.split(','),
-      periodLengthType: periodLength.periodLengthType,
-      legacyData: periodLength.legacyData,
-    } as SentenceLength
+export const periodLengthsToSentenceLengths = (periodLengths: PeriodLength[]): SentenceLength[] => {
+  if (periodLengths) {
+    return periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength))
   }
   return null
+}
+
+const periodLengthToSentenceLength = (periodLength: PeriodLength): SentenceLength => {
+  return {
+    ...(typeof periodLength.days === 'number' ? { days: String(periodLength.days) } : {}),
+    ...(typeof periodLength.weeks === 'number' ? { weeks: String(periodLength.weeks) } : {}),
+    ...(typeof periodLength.months === 'number' ? { months: String(periodLength.months) } : {}),
+    ...(typeof periodLength.years === 'number' ? { years: String(periodLength.years) } : {}),
+    periodOrder: periodLength.periodOrder.split(','),
+    periodLengthType: periodLength.periodLengthType,
+    legacyData: periodLength.legacyData,
+    description:
+      periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription,
+  } as SentenceLength
 }
 
 const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
@@ -203,7 +210,7 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(
     | 'TERM_LENGTH'
     | 'OVERALL_SENTENCE_LENGTH',
 ): SentenceLength {
-  const sentenceLength = { periodOrder: [], periodLengthType }
+  const sentenceLength = { periodOrder: [], description: periodLengthTypeHeadings[periodLengthType], periodLengthType }
   if (alternativeSentenceLengthForm['firstSentenceLength-value']) {
     sentenceLength[alternativeSentenceLengthForm['firstSentenceLength-period']] =
       alternativeSentenceLengthForm['firstSentenceLength-value']
@@ -245,6 +252,7 @@ export function sentenceLengthToSentenceLengthForm(
 export function sentenceLengthFormToSentenceLength(
   sentenceLengthForm: SentenceLengthForm,
   periodLengthType: string,
+  description: string,
 ): SentenceLength {
   return {
     ...(sentenceLengthForm['sentenceLength-years'] ? { years: sentenceLengthForm['sentenceLength-years'] } : {}),
@@ -259,6 +267,7 @@ export function sentenceLengthFormToSentenceLength(
     ],
     periodLengthType,
     hasOverallSentenceLength: sentenceLengthForm.hasOverallSentenceLength === 'true',
+    description,
   } as SentenceLength
 }
 

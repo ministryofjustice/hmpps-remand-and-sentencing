@@ -31,6 +31,7 @@ const sentenceTypePeriodLengths = {
           years: '1',
           periodOrder: ['years'],
           periodLengthType: 'LICENCE_PERIOD',
+          description: 'Licence period',
         },
       },
     ],

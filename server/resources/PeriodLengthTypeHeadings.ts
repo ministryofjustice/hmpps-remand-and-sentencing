@@ -1,10 +1,10 @@
 const periodLengthTypeHeadings = {
-  SENTENCE_LENGTH: 'sentence length',
-  CUSTODIAL_TERM: 'custodial term',
-  LICENCE_PERIOD: 'licence period',
-  TARIFF_LENGTH: 'tariff length',
-  TERM_LENGTH: 'term length',
-  OVERALL_SENTENCE_LENGTH: 'overall sentence length',
+  SENTENCE_LENGTH: 'Sentence length',
+  CUSTODIAL_TERM: 'Custodial term',
+  LICENCE_PERIOD: 'Licence period',
+  TARIFF_LENGTH: 'Tariff length',
+  TERM_LENGTH: 'Term length',
+  OVERALL_SENTENCE_LENGTH: 'Overall sentence length',
 }
 
 export default periodLengthTypeHeadings

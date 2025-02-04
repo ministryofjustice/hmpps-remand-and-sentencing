@@ -130,7 +130,7 @@ export const periodLengthsToSentenceLengths = (periodLengths: PeriodLength[]): S
   return null
 }
 
-const periodLengthToSentenceLength = (periodLength: PeriodLength): SentenceLength => {
+export const periodLengthToSentenceLength = (periodLength: PeriodLength): SentenceLength => {
   return {
     ...(typeof periodLength.days === 'number' ? { days: String(periodLength.days) } : {}),
     ...(typeof periodLength.weeks === 'number' ? { weeks: String(periodLength.weeks) } : {}),

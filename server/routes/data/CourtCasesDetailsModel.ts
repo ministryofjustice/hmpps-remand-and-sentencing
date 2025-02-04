@@ -1,13 +1,13 @@
 import dayjs from 'dayjs'
 import type { Offence } from 'models'
+import { SentenceLength } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
   CourtCaseLegacyData,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
-  PeriodLength,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
-import { chargeToOffence } from '../../utils/mappingUtils'
+import { chargeToOffence, periodLengthToSentenceLength } from '../../utils/mappingUtils'
 import { outcomeValueOrLegacy, sortByOffenceStartDate } from '../../utils/utils'
 
 export default class CourtCasesDetailsModel {
@@ -21,7 +21,7 @@ export default class CourtCasesDetailsModel {
 
   overallCaseOutcome: string
 
-  overallSentenceLength: PeriodLength
+  overallSentenceLength: SentenceLength
 
   convictionDate: string
 
@@ -74,8 +74,11 @@ export default class CourtCasesDetailsModel {
       pageCourtCaseContent.latestAppearance?.outcome?.outcomeName,
       pageCourtCaseContent.latestAppearance?.legacyData,
     )
-
-    this.overallSentenceLength = pageCourtCaseContent.latestAppearance?.overallSentenceLength
+    if (pageCourtCaseContent.latestAppearance?.overallSentenceLength) {
+      this.overallSentenceLength = periodLengthToSentenceLength(
+        pageCourtCaseContent.latestAppearance?.overallSentenceLength,
+      )
+    }
     this.convictionDate = 'Not entered'
     if (pageCourtCaseContent.latestAppearance?.overallConvictionDate) {
       this.convictionDate = dayjs(pageCourtCaseContent.latestAppearance?.overallConvictionDate).format(

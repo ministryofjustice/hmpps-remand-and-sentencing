@@ -24,6 +24,7 @@ import {
 import ManageOffencesService from './manageOffencesService'
 import logger from '../../logger'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
+import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 
 export default class OffenceService {
   constructor(private readonly manageOffencesService: ManageOffencesService) {}
@@ -378,50 +379,6 @@ export default class OffenceService {
     }
   }
 
-  setCustodialSentenceLength(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceSentenceLengthForm: SentenceLengthForm,
-  ) {
-    const errors = validate(
-      offenceSentenceLengthForm,
-      {
-        'sentenceLength-years': 'requireSentenceLength|minWholeNumber:0|requireOneNonZeroSentenceLength',
-        'sentenceLength-months': 'minWholeNumber:0',
-        'sentenceLength-weeks': 'minWholeNumber:0',
-        'sentenceLength-days': 'minWholeNumber:0',
-      },
-      {
-        'requireSentenceLength.sentenceLength-years': 'You must enter the sentence length',
-        'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
-        'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
-        'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
-        'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
-        'requireOneNonZeroSentenceLength.sentenceLength-years': 'The sentence length cannot be 0',
-      },
-    )
-    if (errors.length === 0) {
-      const id = this.getOffenceId(nomsId, courtCaseReference)
-      const offence = this.getOffence(session.offences, id)
-      const sentence = offence.sentence ?? {}
-      const periodLengths = sentence.periodLengths ?? []
-      const sentenceLength = sentenceLengthFormToSentenceLength(offenceSentenceLengthForm, 'SENTENCE_LENGTH')
-      const index = periodLengths.findIndex(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH')
-      if (index !== -1) {
-        periodLengths[index] = sentenceLength
-      } else {
-        periodLengths.push(sentenceLength)
-      }
-      sentence.periodLengths = periodLengths
-      sentence.periodLengths = periodLengths
-      offence.sentence = sentence
-      // eslint-disable-next-line no-param-reassign
-      session.offences[id] = offence
-    }
-    return errors
-  }
-
   setPeriodLength(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
@@ -451,10 +408,17 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
       const periodLengths = sentence.periodLengths ?? []
-      const sentenceLength = sentenceLengthFormToSentenceLength(offenceSentenceLengthForm, periodLengthType)
+      const sentenceLength = sentenceLengthFormToSentenceLength(
+        offenceSentenceLengthForm,
+        periodLengthType,
+        periodLengthTypeHeadings[periodLengthType],
+      )
       const index = periodLengths.findIndex(periodLength => periodLength.periodLengthType === periodLengthType)
       if (index !== -1) {
-        periodLengths[index] = sentenceLength
+        periodLengths[index] = {
+          ...sentenceLength,
+          description: sentenceLength.description ?? periodLengths[index].description,
+        }
       } else {
         periodLengths.push(sentenceLength)
       }

@@ -75,6 +75,7 @@ declare module 'models' {
       | 'TERM_LENGTH'
       | 'OVERALL_SENTENCE_LENGTH'
     legacyData?: PeriodLengthLegacyData
+    description?: string
   }
   export interface TaskListItem {
     title: { text: string; classes?: string }

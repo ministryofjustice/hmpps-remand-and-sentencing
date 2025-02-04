@@ -1,15 +1,11 @@
 {% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-
-{% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
-
-{% set pageTitle = applicationName + " - sentence length mismatch" %}
+{% set pageTitle = "offence - sentence length mismatch" %}
 
     {% block pageContent %}
         {% include "../../partials/offenceCaption.njk" %}

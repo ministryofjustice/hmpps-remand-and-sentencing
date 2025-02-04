@@ -17,6 +17,7 @@ import {
   PeriodLength,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import { sortByOffenceStartDate } from './utils'
+import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): CreatePeriodLength => {
   return {
@@ -122,6 +123,13 @@ export const courtCaseToCreateCourtCase = (
   } as CreateCourtCase
 }
 
+export const periodLengthsToSentenceLengths = (periodLengths: PeriodLength[]): SentenceLength[] => {
+  if (periodLengths) {
+    return periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength))
+  }
+  return null
+}
+
 export const periodLengthToSentenceLength = (periodLength: PeriodLength): SentenceLength => {
   if (periodLength) {
     return {
@@ -132,6 +140,8 @@ export const periodLengthToSentenceLength = (periodLength: PeriodLength): Senten
       periodOrder: periodLength.periodOrder.split(','),
       periodLengthType: periodLength.periodLengthType,
       legacyData: periodLength.legacyData,
+      description:
+        periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription,
     } as SentenceLength
   }
   return null
@@ -141,9 +151,6 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
     countNumber: apiSentence.chargeNumber,
-    custodialSentenceLength: periodLengthToSentenceLength(
-      apiSentence.periodLengths.find(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH'),
-    ),
     periodLengths: apiSentence.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
     sentenceServeType: apiSentence.sentenceServeType,
     sentenceTypeId: apiSentence.sentenceType?.sentenceTypeUuid,
@@ -203,7 +210,7 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(
     | 'TERM_LENGTH'
     | 'OVERALL_SENTENCE_LENGTH',
 ): SentenceLength {
-  const sentenceLength = { periodOrder: [], periodLengthType }
+  const sentenceLength = { periodOrder: [], description: periodLengthTypeHeadings[periodLengthType], periodLengthType }
   if (alternativeSentenceLengthForm['firstSentenceLength-value']) {
     sentenceLength[alternativeSentenceLengthForm['firstSentenceLength-period']] =
       alternativeSentenceLengthForm['firstSentenceLength-value']
@@ -245,6 +252,7 @@ export function sentenceLengthToSentenceLengthForm(
 export function sentenceLengthFormToSentenceLength(
   sentenceLengthForm: SentenceLengthForm,
   periodLengthType: string,
+  description: string,
 ): SentenceLength {
   return {
     ...(sentenceLengthForm['sentenceLength-years'] ? { years: sentenceLengthForm['sentenceLength-years'] } : {}),
@@ -259,6 +267,7 @@ export function sentenceLengthFormToSentenceLength(
     ],
     periodLengthType,
     hasOverallSentenceLength: sentenceLengthForm.hasOverallSentenceLength === 'true',
+    description,
   } as SentenceLength
 }
 

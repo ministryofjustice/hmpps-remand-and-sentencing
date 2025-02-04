@@ -131,26 +131,26 @@ export const periodLengthsToSentenceLengths = (periodLengths: PeriodLength[]): S
 }
 
 export const periodLengthToSentenceLength = (periodLength: PeriodLength): SentenceLength => {
-  return {
-    ...(typeof periodLength.days === 'number' ? { days: String(periodLength.days) } : {}),
-    ...(typeof periodLength.weeks === 'number' ? { weeks: String(periodLength.weeks) } : {}),
-    ...(typeof periodLength.months === 'number' ? { months: String(periodLength.months) } : {}),
-    ...(typeof periodLength.years === 'number' ? { years: String(periodLength.years) } : {}),
-    periodOrder: periodLength.periodOrder.split(','),
-    periodLengthType: periodLength.periodLengthType,
-    legacyData: periodLength.legacyData,
-    description:
-      periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription,
-  } as SentenceLength
+  if (periodLength) {
+    return {
+      ...(typeof periodLength.days === 'number' ? { days: String(periodLength.days) } : {}),
+      ...(typeof periodLength.weeks === 'number' ? { weeks: String(periodLength.weeks) } : {}),
+      ...(typeof periodLength.months === 'number' ? { months: String(periodLength.months) } : {}),
+      ...(typeof periodLength.years === 'number' ? { years: String(periodLength.years) } : {}),
+      periodOrder: periodLength.periodOrder.split(','),
+      periodLengthType: periodLength.periodLengthType,
+      legacyData: periodLength.legacyData,
+      description:
+        periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription,
+    } as SentenceLength
+  }
+  return null
 }
 
 const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
     countNumber: apiSentence.chargeNumber,
-    custodialSentenceLength: periodLengthToSentenceLength(
-      apiSentence.periodLengths.find(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH'),
-    ),
     periodLengths: apiSentence.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
     sentenceServeType: apiSentence.sentenceServeType,
     sentenceTypeId: apiSentence.sentenceType?.sentenceTypeUuid,

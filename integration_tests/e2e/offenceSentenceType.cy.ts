@@ -7,7 +7,13 @@ context('Add Offence Sentence Type Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubSearchSentenceTypes')
-    cy.task('stubGetSentenceTypesByIds')
+    cy.task('stubGetSentenceTypesByIds', [
+      {
+        sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        description: 'SDS (Standard Determinate Sentence)',
+        classification: 'STANDARD',
+      },
+    ])
     cy.task('stubGetSentenceTypeById', {})
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/conviction-date')

@@ -350,6 +350,182 @@ export default {
                 },
               ],
             },
+            {
+              prisonerId: 'A1234AB',
+              courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
+              status: 'ACTIVE',
+              latestAppearance: {
+                appearanceUuid: 'ff6e0dbf-f38a-4131-9c61-ad529188412f',
+                lifetimeUuid: 'a19d8229-3098-4fc1-93a8-c19b4d247541',
+                outcome: {
+                  outcomeUuid: '6fa97bb8-02f8-40ec-8758-fcb16bf315c6',
+                  outcomeName: 'Imprisonment',
+                  nomisCode: '1002',
+                  outcomeType: 'SENTENCING',
+                  displayOrder: 10,
+                  relatedChargeOutcomeUuid: 'f4617346-3b8e-467b-acc4-a4fab809ed3b',
+                  isSubList: false,
+                },
+                courtCode: 'ACCRYC',
+                courtCaseReference: 'XX1234',
+                appearanceDate: '2024-01-23',
+                warrantId: null,
+                warrantType: 'SENTENCING',
+                taggedBail: null,
+                nextCourtAppearance: null,
+                charges: [
+                  {
+                    chargeUuid: 'aeb5ba2e-0bf5-444d-b540-4739012cd7a5',
+                    lifetimeUuid: 'bf831234-41af-4ba6-b7d0-bd36b02dd5fa',
+                    offenceCode: 'PS90037',
+                    offenceStartDate: '2023-10-11',
+                    offenceEndDate: null,
+                    outcome: {
+                      outcomeUuid: 'f4617346-3b8e-467b-acc4-a4fab809ed3b',
+                      outcomeName: 'Imprisonment',
+                      nomisCode: '1002',
+                      outcomeType: 'SENTENCING',
+                      displayOrder: 10,
+                      isSubList: false,
+                      dispositionCode: 'FINAL',
+                    },
+                    terrorRelated: false,
+                    sentence: {
+                      sentenceUuid: '29fa8c7f-7ba1-4033-ac4d-83ff0c125a45',
+                      sentenceLifetimeUuid: '34511c2a-3daf-4d07-a8e2-47046c12967f',
+                      chargeNumber: '1',
+                      periodLengths: [
+                        {
+                          years: 1,
+                          months: null,
+                          weeks: null,
+                          days: null,
+                          periodOrder: 'years',
+                          periodLengthType: 'TARIFF_LENGTH',
+                          legacyData: null,
+                        },
+                      ],
+                      sentenceServeType: 'FORTHWITH',
+                      consecutiveToChargeNumber: null,
+                      sentenceType: {
+                        sentenceTypeUuid: '43370123-38b2-4f6c-89d7-d5e197d44f09',
+                        description: 'Automatic Life',
+                        classification: 'INDETERMINATE',
+                        hintText: null,
+                      },
+                      convictionDate: '2023-10-12',
+                      fineAmount: null,
+                      legacyData: null,
+                    },
+                    legacyData: null,
+                  },
+                ],
+                overallSentenceLength: {
+                  years: 1,
+                  months: null,
+                  weeks: null,
+                  days: null,
+                  periodOrder: 'years',
+                  periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+                  legacyData: null,
+                },
+                overallConvictionDate: '2023-10-23',
+                legacyData: null,
+              },
+              appearances: [
+                {
+                  appearanceUuid: 'ff6e0dbf-f38a-4131-9c61-ad529188412f',
+                  lifetimeUuid: 'a19d8229-3098-4fc1-93a8-c19b4d247541',
+                  outcome: {
+                    outcomeUuid: '6fa97bb8-02f8-40ec-8758-fcb16bf315c6',
+                    outcomeName: 'Imprisonment',
+                    nomisCode: '1002',
+                    outcomeType: 'SENTENCING',
+                    displayOrder: 10,
+                    relatedChargeOutcomeUuid: 'f4617346-3b8e-467b-acc4-a4fab809ed3b',
+                    isSubList: false,
+                  },
+                  courtCode: 'ACCRYC',
+                  courtCaseReference: 'XX1234',
+                  appearanceDate: '2024-01-23',
+                  warrantId: null,
+                  warrantType: 'SENTENCING',
+                  taggedBail: null,
+                  nextCourtAppearance: null,
+                  charges: [
+                    {
+                      chargeUuid: 'aeb5ba2e-0bf5-444d-b540-4739012cd7a5',
+                      lifetimeUuid: 'bf831234-41af-4ba6-b7d0-bd36b02dd5fa',
+                      offenceCode: 'PS90037',
+                      offenceStartDate: '2023-10-11',
+                      offenceEndDate: null,
+                      outcome: {
+                        outcomeUuid: 'f4617346-3b8e-467b-acc4-a4fab809ed3b',
+                        outcomeName: 'Imprisonment',
+                        nomisCode: '1002',
+                        outcomeType: 'SENTENCING',
+                        displayOrder: 10,
+                        isSubList: false,
+                        dispositionCode: 'FINAL',
+                      },
+                      terrorRelated: false,
+                      sentence: {
+                        sentenceUuid: '29fa8c7f-7ba1-4033-ac4d-83ff0c125a45',
+                        sentenceLifetimeUuid: '34511c2a-3daf-4d07-a8e2-47046c12967f',
+                        chargeNumber: '1',
+                        periodLengths: [
+                          {
+                            years: 1,
+                            months: null,
+                            weeks: null,
+                            days: null,
+                            periodOrder: 'years',
+                            periodLengthType: 'TARIFF_LENGTH',
+                            legacyData: null,
+                          },
+                        ],
+                        sentenceServeType: 'FORTHWITH',
+                        consecutiveToChargeNumber: null,
+                        sentenceType: {
+                          sentenceTypeUuid: '43370123-38b2-4f6c-89d7-d5e197d44f09',
+                          description: 'Automatic Life',
+                          classification: 'INDETERMINATE',
+                          hintText: null,
+                        },
+                        convictionDate: '2023-10-12',
+                        fineAmount: null,
+                        legacyData: null,
+                      },
+                      legacyData: null,
+                    },
+                  ],
+                  overallSentenceLength: {
+                    years: 1,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years',
+                    periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+                    legacyData: null,
+                  },
+                  overallConvictionDate: '2023-10-23',
+                  legacyData: null,
+                },
+              ],
+              legacyData: {
+                caseReferences: [
+                  {
+                    updatedDate: '2024-10-10T08:47:37Z',
+                    offenderCaseReference: 'XX1234',
+                  },
+                  {
+                    updatedDate: '2024-10-09T13:40:56Z',
+                    offenderCaseReference: 'YY1234',
+                  },
+                ],
+              },
+              draftAppearances: [],
+            },
           ],
           number: 0,
           sort: {
@@ -901,6 +1077,61 @@ export default {
                 },
               },
             },
+            {
+              chargeUuid: 'a6d6dbaf-9dc8-443d-acb4-5b52dd919f11',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                isSubList: false,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+                chargeNumber: '3',
+                periodLengths: [
+                  {
+                    years: 1,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years',
+                    periodLengthType: 'CUSTODIAL_TERM',
+                    legacyData: null,
+                  },
+                  {
+                    years: 2,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years',
+                    periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+                    legacyData: null,
+                  },
+                  {
+                    years: 2,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years',
+                    periodLengthType: 'LICENCE_PERIOD',
+                    legacyData: null,
+                  },
+                ],
+                sentenceServeType: 'CONSECUTIVE',
+                consecutiveToChargeNumber: '1',
+                sentenceType: {
+                  sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+                  description: 'EDS (Extended Determinate Sentence)',
+                  classification: 'EXTENDED',
+                  hintText: null,
+                },
+              },
+            },
           ],
           overallSentenceLength: {
             years: 4,
@@ -1384,9 +1615,11 @@ export default {
   stubGetSentenceTypeById: ({
     sentenceTypeUuid = '467e2fa8-fce1-41a4-8110-b378c727eed3',
     description = 'SDS (Standard Determinate Sentence)',
+    classification = 'STANDARD',
   }: {
     sentenceTypeUuid: string
     description: string
+    classification: string
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -1399,32 +1632,34 @@ export default {
         jsonBody: {
           sentenceTypeUuid,
           description,
-          classification: 'STANDARD',
+          classification,
         },
       },
     })
   },
-  stubGetSentenceTypesByIds: (): SuperAgentRequest => {
+  stubGetSentenceTypesByIds: (
+    sentenceTypes: [
+      {
+        sentenceTypeUuid: string
+        description: string
+        classification: string
+      },
+    ],
+  ): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
         urlPath: '/remand-and-sentencing-api/sentence-type/uuid/multiple',
         queryParameters: {
           uuids: {
-            equalTo: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+            equalTo: sentenceTypes.map(sentenceType => sentenceType.sentenceTypeUuid).join(','),
           },
         },
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: [
-          {
-            sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
-            description: 'SDS (Standard Determinate Sentence)',
-            classification: 'STANDARD',
-          },
-        ],
+        jsonBody: sentenceTypes,
       },
     })
   },

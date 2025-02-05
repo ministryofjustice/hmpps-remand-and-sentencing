@@ -90,4 +90,15 @@ context('Start Page', () => {
     startPage.sortLink('asc').click()
     Page.verifyOnPage(StartPage)
   })
+
+  it('displays sentence court case summary', () => {
+    startPage.courtCaseSummaryList('261911e2-6346-42e0-b025-a806048f4d04').getSummaryList().should('deep.equal', {
+      'Case references': 'XX1234, YY1234',
+      'First day in custody': '23/01/2024',
+      'Overall case outcome': 'Imprisonment',
+      'Overall sentence length': '1 years 0 months 0 weeks 0 days',
+      'Conviction date': '23/10/2023',
+      'Next hearing': 'No future appearance scheduled',
+    })
+  })
 })

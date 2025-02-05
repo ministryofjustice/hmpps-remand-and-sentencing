@@ -64,6 +64,14 @@ export const getNextPeriodLengthType = (sentence: Sentence, currentPeriodLengthT
   return expectedPeriodLengthTypes[nextIndex]
 }
 
+export const allPeriodLengthTypesEntered = (sentence: Sentence): boolean => {
+  const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths.map(
+    periodLength => periodLength.type,
+  )
+  const enteredPeriodLengthTypes = sentence.periodLengths.map(periodLength => periodLength.periodLengthType)
+  return expectedPeriodLengthTypes.every(expectedType => enteredPeriodLengthTypes.includes(expectedType))
+}
+
 export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: Record<string, never>) => {
   if (outcomeValue) {
     return outcomeValue

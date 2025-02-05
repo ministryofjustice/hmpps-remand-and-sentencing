@@ -36,6 +36,7 @@ import {
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import {
+  allPeriodLengthTypesEntered,
   getNextPeriodLengthType,
   outcomeValueOrLegacy,
   sentenceTypeValueOrLegacy,
@@ -717,17 +718,20 @@ export default class OffenceRoutes {
     } = req.params
     const { submitToEditOffence, periodLengthType } = req.query
     const { sentence } = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    const currentPeriodLength = sentence.periodLengths?.find(
+      periodLength => periodLength.periodLengthType === periodLengthType,
+    )
     let periodLengthForm = (req.flash('periodLengthForm')[0] || {}) as SentenceLengthForm
     if (Object.keys(periodLengthForm).length === 0) {
-      periodLengthForm = sentenceLengthToSentenceLengthForm(
-        sentence.periodLengths?.find(periodLength => periodLength.periodLengthType === periodLengthType),
-      )
+      periodLengthForm = sentenceLengthToSentenceLengthForm(currentPeriodLength)
     }
     const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths
       .map(periodLength => periodLength.type)
       .indexOf(periodLengthType as string)
     const sentenceTypeClassification = sentence?.sentenceTypeClassification
-    const periodLengthHeader = periodLengthTypeHeadings[periodLengthType as string]
+    const periodLengthHeader =
+      periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
+      currentPeriodLength?.legacyData?.sentenceTermDescription
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
@@ -767,6 +771,7 @@ export default class OffenceRoutes {
     const { submitToEditOffence, periodLengthType } = req.query
     const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
     const { sentence } = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    this.offenceService.setInitialPeriodLengths(req.session, nomsId, courtCaseReference, sentence?.periodLengths ?? [])
     const errors = this.offenceService.setPeriodLength(
       req.session,
       nomsId,
@@ -787,12 +792,9 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount`,
       )
     }
-
-    const nextPeriodLengthType = getNextPeriodLengthType(
-      this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
-      periodLengthType as string,
-    )
-    if (nextPeriodLengthType) {
+    const allPeriodLengthsEntered = allPeriodLengthTypesEntered(sentence)
+    const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType as string)
+    if (nextPeriodLengthType && !allPeriodLengthsEntered) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${nextPeriodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
       )
@@ -803,6 +805,7 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     )

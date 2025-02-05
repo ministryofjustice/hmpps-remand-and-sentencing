@@ -117,7 +117,7 @@
                                             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.appearanceDate | formatDate }}</p>
                                             {% if courtCaseDetails.latestAppearance.warrantType === 'SENTENCING' %}
                                                 <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
-                                                <p class="govuk-body govuk-!-margin-bottom-2">05/10/2024 {{ courtCaseDetails.latestAppearance.overallConvictionDate | formatDate if courtCaseDetails.latestAppearance.overallConvictionDate else 'Not entered' }}</p>
+                                                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceConvictionDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.overallConvictionDate | formatDate if courtCaseDetails.latestAppearance.overallConvictionDate else 'Not entered' }}</p>
                                             {% endif %}
                                         </div>
                                         <div class="govuk-grid-column-two-thirds">
@@ -140,7 +140,7 @@
                                                             convictionDate: offence.sentence.convictionDate | formatDate,
                                                             terrorRelated: offence.terrorRelated,
                                                             isSentenced: offence.sentence,
-                                                            custodialSentenceLength: offence.sentence.periodLengths | findPeriodLengthByType("SENTENCE_LENGTH"),
+                                                            periodLengths: offence.sentence.periodLengths,
                                                             sentenceServeType: offence.sentence.sentenceServeType,
                                                             consecutiveTo: offence.sentence.consecutiveTo,
                                                             sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),

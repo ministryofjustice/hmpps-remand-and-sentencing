@@ -57,17 +57,21 @@ export const pluraliseName = (name: string) => {
 }
 
 export const getNextPeriodLengthType = (sentence: Sentence, currentPeriodLengthType: string | undefined) => {
-  const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths
+  const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification]?.periodLengths
     .filter(periodLength => !periodLength.auto)
     .map(periodLength => periodLength.type)
-  const nextIndex = expectedPeriodLengthTypes.indexOf(currentPeriodLengthType) + 1
-  return expectedPeriodLengthTypes[nextIndex]
+  if (expectedPeriodLengthTypes) {
+    const nextIndex = expectedPeriodLengthTypes.indexOf(currentPeriodLengthType) + 1
+    return expectedPeriodLengthTypes[nextIndex]
+  }
+  return null
 }
 
 export const allPeriodLengthTypesEntered = (sentence: Sentence): boolean => {
-  const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths.map(
-    periodLength => periodLength.type,
-  )
+  const expectedPeriodLengthTypes =
+    sentenceTypePeriodLengths[sentence.sentenceTypeClassification]?.periodLengths.map(
+      periodLength => periodLength.type,
+    ) ?? []
   const enteredPeriodLengthTypes = sentence.periodLengths.map(periodLength => periodLength.periodLengthType)
   return expectedPeriodLengthTypes.every(expectedType => enteredPeriodLengthTypes.includes(expectedType))
 }

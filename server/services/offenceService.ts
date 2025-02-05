@@ -433,6 +433,7 @@ export default class OffenceService {
         periodLengths[index] = {
           ...sentenceLength,
           description: sentenceLength.description ?? periodLengths[index].description,
+          legacyData: periodLengths[index].legacyData,
         }
       } else {
         periodLengths.push(sentenceLength)

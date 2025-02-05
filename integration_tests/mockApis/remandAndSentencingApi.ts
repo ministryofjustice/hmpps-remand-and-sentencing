@@ -1077,6 +1077,61 @@ export default {
                 },
               },
             },
+            {
+              chargeUuid: 'a6d6dbaf-9dc8-443d-acb4-5b52dd919f11',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                isSubList: false,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+                chargeNumber: '3',
+                periodLengths: [
+                  {
+                    years: 1,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years',
+                    periodLengthType: 'CUSTODIAL_TERM',
+                    legacyData: null,
+                  },
+                  {
+                    years: 2,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years',
+                    periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+                    legacyData: null,
+                  },
+                  {
+                    years: 2,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years',
+                    periodLengthType: 'LICENCE_PERIOD',
+                    legacyData: null,
+                  },
+                ],
+                sentenceServeType: 'CONSECUTIVE',
+                consecutiveToChargeNumber: '1',
+                sentenceType: {
+                  sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+                  description: 'EDS (Extended Determinate Sentence)',
+                  classification: 'EXTENDED',
+                  hintText: null,
+                },
+              },
+            },
           ],
           overallSentenceLength: {
             years: 4,
@@ -1560,9 +1615,11 @@ export default {
   stubGetSentenceTypeById: ({
     sentenceTypeUuid = '467e2fa8-fce1-41a4-8110-b378c727eed3',
     description = 'SDS (Standard Determinate Sentence)',
+    classification = 'STANDARD',
   }: {
     sentenceTypeUuid: string
     description: string
+    classification: string
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -1575,32 +1632,34 @@ export default {
         jsonBody: {
           sentenceTypeUuid,
           description,
-          classification: 'STANDARD',
+          classification,
         },
       },
     })
   },
-  stubGetSentenceTypesByIds: (): SuperAgentRequest => {
+  stubGetSentenceTypesByIds: (
+    sentenceTypes: [
+      {
+        sentenceTypeUuid: string
+        description: string
+        classification: string
+      },
+    ],
+  ): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
         urlPath: '/remand-and-sentencing-api/sentence-type/uuid/multiple',
         queryParameters: {
           uuids: {
-            equalTo: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+            equalTo: sentenceTypes.map(sentenceType => sentenceType.sentenceTypeUuid).join(','),
           },
         },
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: [
-          {
-            sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
-            description: 'SDS (Standard Determinate Sentence)',
-            classification: 'STANDARD',
-          },
-        ],
+        jsonBody: sentenceTypes,
       },
     })
   },

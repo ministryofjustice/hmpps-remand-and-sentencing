@@ -770,6 +770,7 @@ export default class OffenceRoutes {
     const { submitToEditOffence, periodLengthType } = req.query
     const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
     const { sentence } = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    this.offenceService.setInitialPeriodLengths(req.session, nomsId, courtCaseReference, sentence?.periodLengths ?? [])
     const errors = this.offenceService.setPeriodLength(
       req.session,
       nomsId,
@@ -785,27 +786,25 @@ export default class OffenceRoutes {
       )
     }
 
+    if (submitToEditOffence) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+      )
+    }
+
     if (sentence.sentenceTypeClassification === 'FINE') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount`,
       )
     }
 
-    const nextPeriodLengthType = getNextPeriodLengthType(
-      this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
-      periodLengthType as string,
-    )
+    const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType as string)
     if (nextPeriodLengthType) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${nextPeriodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
       )
     }
 
-    if (submitToEditOffence) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
-      )
-    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     )

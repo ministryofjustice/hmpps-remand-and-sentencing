@@ -725,7 +725,7 @@ export default class OffenceRoutes {
     if (Object.keys(periodLengthForm).length === 0) {
       periodLengthForm = sentenceLengthToSentenceLengthForm(currentPeriodLength)
     }
-    const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths
+    const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths
       .map(periodLength => periodLength.type)
       .indexOf(periodLengthType as string)
     const sentenceTypeClassification = sentence?.sentenceTypeClassification

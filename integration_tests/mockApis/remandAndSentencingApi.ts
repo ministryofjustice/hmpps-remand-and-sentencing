@@ -987,6 +987,79 @@ export default {
     })
   },
 
+  stubGetLegacySentenceAppearanceDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/3f20856f-fa17-493b-89c7-205970c749b8',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '3f20856f-fa17-493b-89c7-205970c749b8',
+          legacyData: {
+            eventId: '1',
+            caseId: '1',
+            postedDate: '10-10-2015',
+            nomisOutcomeCode: 'NOMISCODE',
+            outcomeDescription: 'A Nomis description',
+            outcomeDispositionCode: 'F',
+            outcomeConvictionFlag: true,
+          },
+          warrantType: 'SENTENCING',
+          courtCode: 'STHHPM',
+          courtCaseReference: 'BB7937',
+          appearanceDate: '2025-01-27',
+          nextCourtAppearance: null,
+          charges: [
+            {
+              chargeUuid: 'b2565181-6066-4b55-b4a7-32c2ddf8c36d',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              legacyData: {
+                offenderChargeId: '1',
+                bookingId: '1',
+                postedDate: '10-10-2015',
+                nomisOutcomeCode: 'NOMISCODE',
+                outcomeDescription: 'A Nomis description',
+                outcomeDispositionCode: 'I',
+              },
+              sentence: {
+                sentenceUuid: '4fec0281-ec54-4a15-b588-dee8fab6c250',
+                sentenceLifetimeUuid: '11060e5b-da7e-4475-94f6-a27d27e28672',
+                chargeNumber: '1',
+                periodLengths: [
+                  {
+                    years: 2,
+                    periodOrder: 'years',
+                    periodLengthType: 'UNSUPPORTED',
+                    legacyData: {
+                      lifeSentence: false,
+                      sentenceTermCode: 'SEC_86',
+                      sentenceTermDescription: 'Section 86 of 2000 Act',
+                    },
+                  },
+                ],
+                sentenceServeType: 'UNKNOWN',
+                consecutiveToChargeNumber: null,
+                sentenceType: null,
+                convictionDate: null,
+                fineAmount: null,
+                legacyData: {
+                  sentenceCalcType: '1',
+                  sentenceCategory: '1',
+                  sentenceTypeDesc: 'A Nomis sentence type description',
+                  postedDate: '10-10-2015',
+                },
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
+
   stubGetSentenceAppearanceDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {

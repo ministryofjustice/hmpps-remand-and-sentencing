@@ -265,7 +265,7 @@ context('Court Case Appearance details Page', () => {
     })
   })
 
-  context('legacy appearance', () => {
+  context('legacy remand appearance', () => {
     beforeEach(() => {
       cy.task('stubGetLegacyAppearanceDetails')
       cy.task('stubGetCourtsByIds')
@@ -360,6 +360,73 @@ context('Court Case Appearance details Page', () => {
       Page.verifyOnPageTitle(
         CourtCaseAppearanceDetailsPage,
         'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
+      )
+    })
+  })
+
+  context('legacy sentence appearance', () => {
+    beforeEach(() => {
+      cy.task('stubGetLegacySentenceAppearanceDetails')
+      cy.task('stubGetCourtsByIds')
+      cy.task('stubGetCourtById', {
+        courtId: 'STHHPM',
+        courtName: 'Southampton Magistrate Court',
+      })
+      cy.signIn()
+      cy.visit(
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3f20856f-fa17-493b-89c7-205970c749b8/details',
+      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseAppearanceDetailsPage,
+        'Edit appearance BB7937 at Southampton Magistrate Court on 27/01/2025',
+      )
+    })
+
+    it('appearance details are correct', () => {
+      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'BB7937',
+        'Warrant date': '27/01/2025',
+        'Conviction date': 'Not entered',
+        'Court name': 'Southampton Magistrate Court',
+        'Overall case outcome': 'A Nomis description',
+      })
+    })
+
+    it('can edit an unsupported period length', () => {
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3f20856f-fa17-493b-89c7-205970c749b8', '0')
+        .click()
+
+      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage
+        .editPeriodLengthLink(
+          'A1234AB',
+          'edit',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3f20856f-fa17-493b-89c7-205970c749b8',
+          '0',
+          'UNSUPPORTED',
+        )
+        .click()
+      const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'Section 86 of 2000 Act')
+      offencePeriodLengthPage.yearsInput().should('have.value', '2')
+      offencePeriodLengthPage.yearsInput().clear().type('5')
+      offencePeriodLengthPage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        'Terror related': 'Not entered',
+        'Committed on': '15/12/2023',
+        'Conviction date': 'N/A',
+        'Sentence type': 'A Nomis sentence type description',
+        'Section 86 of 2000 act': '5 years 0 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Unknown',
+      })
+      offenceEditOffencePage.continueButton().click()
+      Page.verifyOnPageTitle(
+        CourtCaseAppearanceDetailsPage,
+        'Edit appearance BB7937 at Southampton Magistrate Court on 27/01/2025',
       )
     })
   })

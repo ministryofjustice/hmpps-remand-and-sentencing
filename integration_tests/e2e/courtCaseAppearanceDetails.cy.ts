@@ -3,8 +3,8 @@ import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
-import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
+import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import Page from '../pages/page'
 
 context('Court Case Appearance details Page', () => {
@@ -173,7 +173,18 @@ context('Court Case Appearance details Page', () => {
         courtId: 'STHHPM',
         courtName: 'Southampton Magistrate Court',
       })
-      cy.task('stubGetSentenceTypesByIds')
+      cy.task('stubGetSentenceTypesByIds', [
+        {
+          sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+          description: 'EDS (Extended Determinate Sentence)',
+          classification: 'EXTENDED',
+        },
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
+        },
+      ])
       cy.task('stubGetAppearanceOutcomeById', {
         outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
         outcomeName: 'Imprisonment',
@@ -208,39 +219,43 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('can edit sentence information', () => {
-      cy.task('stubGetSentenceTypeById', {})
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+        description: 'EDS (Extended Determinate Sentence)',
+        classification: 'EXTENDED',
+      })
       cy.task('stubGetChargeOutcomeById', {})
       courtCaseAppearanceDetailsPage
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
         .click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage
-        .editFieldLink(
+        .editPeriodLengthLink(
           'A1234AB',
           'edit',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
           '0',
-          'offence-date',
+          'CUSTODIAL_TERM',
         )
         .click()
-      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Edit the offence dates')
-      offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '15')
-      offenceOffenceDatePage.monthDateInput('offenceStartDate').should('have.value', '12')
-      offenceOffenceDatePage.yearDateInput('offenceStartDate').should('have.value', '2023')
-      offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
-      offenceOffenceDatePage.dayDateInput('offenceStartDate').type('25')
-      offenceOffenceDatePage.continueButton().click()
+      const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'custodial term')
+      offencePeriodLengthPage.yearsInput().should('have.value', '1')
+      offencePeriodLengthPage.yearsInput().clear()
+      offencePeriodLengthPage.yearsInput().type('2')
+      offencePeriodLengthPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
-        'Count number': 'Count 1',
+        'Count number': 'Count 3',
         Offence: 'PS90037 An offence description',
         'Terror related': 'Not entered',
-        'Committed on': '25/12/2023',
+        'Committed on': '15/12/2023',
         'Conviction date': 'N/A',
-        'Sentence type': 'SDS (Standard Determinate Sentence)',
-        'Sentence length': '4 years 0 months 0 weeks 0 days',
-        'Consecutive or concurrent': 'Forthwith',
+        'Sentence type': 'EDS (Extended Determinate Sentence)',
+        'Custodial term': '2 years 0 months 0 weeks 0 days',
+        'Overall sentence length': '2 years 0 months 0 weeks 0 days',
+        'Licence period': '2 years 0 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Consecutive to count 1',
       })
       offenceEditOffencePage.continueButton().click()
       Page.verifyOnPageTitle(

@@ -13,7 +13,7 @@ import type {
   OffenceTerrorRelatedForm,
   SentenceLengthForm,
 } from 'forms'
-import type { Offence } from 'models'
+import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import validate from '../validation/validation'
 import { toDateString } from '../utils/utils'
@@ -377,6 +377,21 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
+  }
+
+  setInitialPeriodLengths(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    periodLengths: SentenceLength[],
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = offence.sentence ?? {}
+    sentence.periodLengths = periodLengths
+    offence.sentence = sentence
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
   }
 
   setPeriodLength(

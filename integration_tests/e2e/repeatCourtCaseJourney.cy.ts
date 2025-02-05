@@ -278,7 +278,13 @@ context('Repeat Court Case journey', () => {
 
   it('remand to sentencing journey', () => {
     cy.task('stubGetAllAppearanceOutcomes')
-    cy.task('stubGetSentenceTypesByIds')
+    cy.task('stubGetSentenceTypesByIds', [
+      {
+        sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        description: 'SDS (Standard Determinate Sentence)',
+        classification: 'STANDARD',
+      },
+    ])
     cy.task('stubGetAppearanceOutcomeById', {
       outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
       outcomeName: 'Imprisonment',
@@ -511,7 +517,13 @@ context('Repeat Court Case journey', () => {
 
   it('remand to sentencing journey with only one outcome option', () => {
     cy.task('stubGetAllAppearanceOutcomesWithSingleResults')
-    cy.task('stubGetSentenceTypesByIds')
+    cy.task('stubGetSentenceTypesByIds', [
+      {
+        sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        description: 'SDS (Standard Determinate Sentence)',
+        classification: 'STANDARD',
+      },
+    ])
     cy.task('stubGetAppearanceOutcomeById', {
       outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
       outcomeName: 'Imprisonment',

@@ -36,6 +36,7 @@ import {
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import {
+  allPeriodLengthTypesEntered,
   getNextPeriodLengthType,
   outcomeValueOrLegacy,
   sentenceTypeValueOrLegacy,
@@ -770,6 +771,7 @@ export default class OffenceRoutes {
     const { submitToEditOffence, periodLengthType } = req.query
     const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
     const { sentence } = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    this.offenceService.setInitialPeriodLengths(req.session, nomsId, courtCaseReference, sentence?.periodLengths ?? [])
     const errors = this.offenceService.setPeriodLength(
       req.session,
       nomsId,
@@ -790,12 +792,9 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount`,
       )
     }
-
-    const nextPeriodLengthType = getNextPeriodLengthType(
-      this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
-      periodLengthType as string,
-    )
-    if (nextPeriodLengthType) {
+    const allPeriodLengthsEntered = allPeriodLengthTypesEntered(sentence)
+    const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType as string)
+    if (nextPeriodLengthType && !allPeriodLengthsEntered) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${nextPeriodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
       )
@@ -806,6 +805,7 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     )

@@ -59,7 +59,13 @@ context('Add Offence Edit offence Page', () => {
   context('sentence', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceTypeById', {})
-      cy.task('stubGetSentenceTypesByIds')
+      cy.task('stubGetSentenceTypesByIds', [
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
+        },
+      ])
       cy.task('stubGetChargeOutcomeById', {
         outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
         outcomeName: 'Imprisonment',

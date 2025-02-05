@@ -36,6 +36,7 @@ import {
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import {
+  allPeriodLengthTypesEntered,
   getNextPeriodLengthType,
   outcomeValueOrLegacy,
   sentenceTypeValueOrLegacy,
@@ -786,22 +787,22 @@ export default class OffenceRoutes {
       )
     }
 
-    if (submitToEditOffence) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
-      )
-    }
-
     if (sentence.sentenceTypeClassification === 'FINE') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount`,
       )
     }
-
+    const allPeriodLengthsEntered = allPeriodLengthTypesEntered(sentence)
     const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType as string)
-    if (nextPeriodLengthType) {
+    if (nextPeriodLengthType && !allPeriodLengthsEntered) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${nextPeriodLengthType}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+      )
+    }
+
+    if (submitToEditOffence) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
 

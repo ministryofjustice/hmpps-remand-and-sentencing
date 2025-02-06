@@ -125,6 +125,7 @@ export default {
                 },
                 courtCode: 'ACCRYC',
                 status: 'ACTIVE',
+                warrantType: 'REMAND',
                 courtCaseReference: 'C894623',
                 appearanceDate: '2023-12-15',
                 nextCourtAppearance: {
@@ -179,6 +180,7 @@ export default {
                   },
                   courtCode: 'ACCRYC',
                   courtCaseReference: 'C894623',
+                  warrantType: 'REMAND',
                   appearanceDate: '2023-12-15',
                   nextCourtAppearance: {
                     appearanceDate: '2024-12-15',
@@ -217,6 +219,7 @@ export default {
                     displayOrder: 20,
                   },
                   courtCode: 'ACCRYC',
+                  warrantType: 'REMAND',
                   courtCaseReference: 'F23325',
                   appearanceDate: '2022-10-15',
                   nextCourtAppearance: {
@@ -283,6 +286,7 @@ export default {
                   outcomeDescription: 'A Nomis outcome',
                 },
                 courtCode: 'ACCRYC',
+                warrantType: 'REMAND',
                 courtCaseReference: 'C894623',
                 appearanceDate: '2023-12-15',
                 nextCourtAppearance: {
@@ -322,6 +326,7 @@ export default {
                   },
                   courtCode: 'ACCRYC',
                   courtCaseReference: 'C894623',
+                  warrantType: 'REMAND',
                   appearanceDate: '2023-12-15',
                   nextCourtAppearance: {
                     appearanceDate: '2024-12-15',

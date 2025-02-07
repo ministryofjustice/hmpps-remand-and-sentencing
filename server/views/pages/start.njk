@@ -64,7 +64,7 @@
                                 },
                                 {
                                     key: { text: "First day in custody"},
-                                    value: { text: courtCaseDetails.firstDayInCustody }
+                                    value: { text: courtCaseDetails.firstDayInCustody + ( ' (' + courtCaseDetails.warrantType | capitalize + ')' if courtCaseDetails.warrantType else '') }
                                 },
                                 {
                                     key: { text: "Overall case outcome"},
@@ -115,16 +115,20 @@
                                             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceCourtCaseReference-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.courtCaseReference if courtCaseDetails.latestAppearance.courtCaseReference else 'Not entered'}}</p>
                                             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant date</h3>
                                             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.appearanceDate | formatDate }}</p>
-                                            {% if courtCaseDetails.latestAppearance.warrantType === 'SENTENCING' %}
-                                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
-                                                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceConvictionDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.overallConvictionDate | formatDate if courtCaseDetails.latestAppearance.overallConvictionDate else 'Not entered' }}</p>
-                                            {% endif %}
+                                            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
+                                            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceOutcome-{{courtCaseDetails.courtCaseUuid}}"> {{ courtCaseDetails.latestAppearance.outcome | appearanceOutcomeOrLegacy(courtCaseDetails.latestAppearance.legacyData) }}</p>
+                                            
                                         </div>
                                         <div class="govuk-grid-column-two-thirds">
                                             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
                                             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceLocation-{{courtCaseDetails.courtCaseUuid}}">{{ courtMap[courtCaseDetails.latestAppearance.courtCode] }}</p>
-                                            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
-                                            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceOutcome-{{courtCaseDetails.courtCaseUuid}}"> {{ courtCaseDetails.latestAppearance.outcome | appearanceOutcomeOrLegacy(courtCaseDetails.latestAppearance.legacyData) }}</p>
+                                            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant type</h3>
+                                            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantType-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.warrantType | capitalize }}</p>
+                                            {% if courtCaseDetails.latestAppearance.warrantType === 'SENTENCING' %}
+                                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
+                                                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceConvictionDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.overallConvictionDate | formatDate if courtCaseDetails.latestAppearance.overallConvictionDate else 'Not entered' }}</p>
+                                            {% endif %}
+                                            
                                         </div>
                                         <div class="govuk-grid-column-full govuk-!-margin-top-2">
                                             {% set offenceDetailsHtml %}
@@ -170,7 +174,7 @@
                         </div>
                         <hr class="govuk-section-break govuk-!-margin-top-4 govuk-section-break--visible">
                         <p class="govuk-body govuk-!-margin-top-6">
-                            <a class="govuk-link--no-visited-state govuk-!-font-weight-bold" href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}/details">View and edit all appearances ({{ courtCaseDetails.appearanceTotal }})</a>
+                            <a class="govuk-link--no-visited-state govuk-!-font-weight-bold" href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}/details">View and edit all appearances for this court case ({{ courtCaseDetails.appearanceTotal }})</a>
                         </p>
 
                     {% endset %}

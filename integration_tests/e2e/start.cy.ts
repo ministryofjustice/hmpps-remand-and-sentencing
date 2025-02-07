@@ -35,7 +35,7 @@ context('Start Page', () => {
   it('displays court case summary', () => {
     startPage.courtCaseSummaryList('3fa85f64-5717-4562-b3fc-2c963f66afa6').getSummaryList().should('deep.equal', {
       'Case references': 'C894623, F23325, J39596',
-      'First day in custody': '15/10/2022',
+      'First day in custody': '15/10/2022 (Remand)',
       'Overall case outcome': 'Remanded in custody',
       'Next hearing': 'Birmingham Crown Court Court appearance 15/12/2024 10:30',
     })
@@ -94,7 +94,7 @@ context('Start Page', () => {
   it('displays sentence court case summary', () => {
     startPage.courtCaseSummaryList('261911e2-6346-42e0-b025-a806048f4d04').getSummaryList().should('deep.equal', {
       'Case references': 'XX1234, YY1234',
-      'First day in custody': '23/01/2024',
+      'First day in custody': '23/01/2024 (Sentencing)',
       'Overall case outcome': 'Imprisonment',
       'Overall sentence length': '1 years 0 months 0 weeks 0 days',
       'Conviction date': '23/10/2023',

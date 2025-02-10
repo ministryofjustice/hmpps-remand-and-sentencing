@@ -169,12 +169,12 @@ export default class CourtCaseRoutes {
       ? this.appearanceOutcomeService
           .getOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
           .then(outcome => outcome.outcomeName)
-      : Promise.resolve(appearance.legacyData.outcomeDescription ?? '')
+      : Promise.resolve(appearance.legacyData?.outcomeDescription ?? 'Not entered')
     const appearanceTypePromise = appearance.nextHearingTypeUuid
       ? this.remandAndSentencingService
           .getAppearanceTypeByUuid(appearance.nextHearingTypeUuid, req.user.username)
           .then(appearanceType => appearanceType.description)
-      : Promise.resolve('')
+      : Promise.resolve('Not entered')
     const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap, appearanceTypeDescription] =
       await Promise.all([
         this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),

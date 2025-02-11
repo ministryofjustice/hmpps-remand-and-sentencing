@@ -64,12 +64,13 @@ export default class RemandAndSentencingApiClient {
     })) as unknown as Promise<void>
   }
 
-  async searchCourtCases(prisonerId: string, sortBy: string): Promise<PageCourtCase> {
+  async searchCourtCases(prisonerId: string, sortBy: string, page: number): Promise<PageCourtCase> {
     return (await this.restClient.get({
       path: `/court-case/search`,
       query: {
         prisonerId,
         sort: `latestCourtAppearance_appearanceDate,${sortBy}`,
+        page,
       },
     })) as unknown as Promise<PageCourtCase>
   }

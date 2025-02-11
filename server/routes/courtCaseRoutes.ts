@@ -43,6 +43,8 @@ import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
+import mojPaginationFromPageCourtCase from './data/pagination'
+import config from '../config'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -60,9 +62,10 @@ export default class CourtCaseRoutes {
     const { nomsId } = req.params
     const { token } = res.locals.user
     const sortBy = getAsStringOrDefault(req.query.sortBy, 'desc')
+    const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
 
     const [courtCases, serviceDefinitions] = await Promise.all([
-      this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy),
+      this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy, pageNumber),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
 
@@ -99,6 +102,7 @@ export default class CourtCaseRoutes {
         .map(outcome => [outcome.outcomeUuid, outcome.outcomeName]),
     )
     const newCourtCaseId = courtCases.totalElements
+    const pagination = mojPaginationFromPageCourtCase(courtCases, new URL(`/person/${nomsId}`, config.domain))
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
@@ -109,6 +113,7 @@ export default class CourtCaseRoutes {
       courtCaseTotal: courtCaseDetailModels.length,
       offenceOutcomeMap,
       serviceDefinitions,
+      pagination,
     })
   }
 

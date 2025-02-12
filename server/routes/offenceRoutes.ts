@@ -1524,11 +1524,8 @@ export default class OffenceRoutes {
     )
     const offences = latestCourtAppearance.charges
       .filter(charge => {
-        let dispositionCode = charge.outcome?.dispositionCode
-        if (!dispositionCode && charge.legacyData) {
-          dispositionCode = charge.legacyData.outcomeDispositionCode
-        }
-        return dispositionCode === 'INTERIM'
+        const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
+        return !dispositionCode || dispositionCode === 'INTERIM'
       })
       .map(charge => chargeToOffence(charge))
       .sort((a, b) => {
@@ -1562,11 +1559,8 @@ export default class OffenceRoutes {
     )
     latestCourtAppearance.charges
       .filter(charge => {
-        let dispositionCode = charge.outcome?.dispositionCode
-        if (!dispositionCode && charge.legacyData) {
-          dispositionCode = charge.legacyData.outcomeDispositionCode
-        }
-        return dispositionCode === 'INTERIM'
+        const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
+        return !dispositionCode || dispositionCode === 'INTERIM'
       })
       .map(charge => chargeToOffence(charge))
       .sort((a, b) => {

@@ -3,6 +3,8 @@ import logger from '../../logger'
 import PrisonerSearchService from '../services/prisonerSearchService'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import FullPageError from '../model/FullPageError'
+import { CaseLoad } from '../@types/prisonApi/types'
+import { PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi/prisonerSearchTypes'
 
 export default function populateCurrentPrisoner(prisonerSearchService: PrisonerSearchService): RequestHandler {
   return async (req, res, next) => {
@@ -13,10 +15,7 @@ export default function populateCurrentPrisoner(prisonerSearchService: PrisonerS
       try {
         const prisoner = await prisonerSearchService.getPrisonerDetails(nomsId, username)
         res.locals.prisoner = prisoner
-        if (
-          prisoner.prisonId === 'OUT' ||
-          !caseLoads.map(caseload => caseload.caseLoadId).includes(prisoner.prisonId)
-        ) {
+        if (!canAccessPrisoner(caseLoads, prisoner)) {
           throw FullPageError.notInCaseLoadError()
         }
       } catch (error) {
@@ -27,4 +26,11 @@ export default function populateCurrentPrisoner(prisonerSearchService: PrisonerS
 
     return next()
   }
+}
+
+function canAccessPrisoner(caseLoads: CaseLoad[], prisonerDetails: PrisonerSearchApiPrisoner): boolean {
+  return (
+    caseLoads.map(caseLoad => caseLoad.caseLoadId).includes(prisonerDetails.prisonId) ||
+    ['TRN', 'OUT'].includes(prisonerDetails.prisonId)
+  )
 }

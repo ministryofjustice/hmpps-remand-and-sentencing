@@ -2,9 +2,28 @@
 {% from "hmpps/components/mini-profile/macro.njk" import miniProfile %}
 {% from "hmpps/components/court-cases-release-dates/sub-navigation/macro.njk" import subNavigation %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "hmpps/components/court-cases-release-dates/profile-banner/macro.njk" import profileBanner %}
 
 {% block beforeContent %}
     <aside role="complementary">
+         {% set banners = {
+            'OUT': {
+                dataQa: "personOutsideBanner",
+                heading: "This person has been released",
+                paragraphText: "Some information may be hidden"
+            },
+            'TRN': {
+                dataQa: "personTransferredBanner",
+                heading: "This person has been transferred",
+                paragraphText: "Some information may be hidden"
+            }
+        } %}
+
+        {% set profileBannerParams = banners[prisoner.prisonId] %}
+
+        {% if profileBannerParams %}
+            {{ profileBanner(profileBannerParams) }}
+        {% endif %}
         {% block banner %}
             {% set person = {
                 firstName: prisoner.firstName,

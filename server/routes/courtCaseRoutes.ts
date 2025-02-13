@@ -127,7 +127,12 @@ export default class CourtCaseRoutes {
       .flat()
 
     const courtIds = [courtCaseDetails.latestAppearance?.courtCode]
-      .concat(courtCaseDetails.appearances.map(appearance => appearance.courtCode))
+      .concat(
+        courtCaseDetails.appearances.flatMap(appearance => [
+          appearance.courtCode,
+          appearance.nextCourtAppearance?.courtCode,
+        ]),
+      )
       .concat(courtCaseDetails.draftAppearances?.map(draft => draft.sessionBlob.courtCode))
       .filter(courtId => courtId !== undefined && courtId !== null)
 

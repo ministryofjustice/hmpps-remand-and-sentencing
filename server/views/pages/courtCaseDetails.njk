@@ -120,6 +120,11 @@
         </div>
 
         <div class="govuk-grid-one-third">
+            {% if appearance.warrantType == 'REMAND' %}
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next hearing</h3>
+                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="next-hearing">{{ appearance.nextCourtAppearance | formatNextHearing(courtMap) }}</p>
+            {% endif %}
+
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Court documents</h3>
             <ul class="govuk-list govuk-list--no--bullet govuk-!-margin-bottom-3" data-qa="court-documents" >
                 {%  if appearance.documents | length == 0 %}

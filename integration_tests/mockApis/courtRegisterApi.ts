@@ -174,7 +174,7 @@ export default {
                 equalTo: 'ACCRYC',
               },
               {
-                equalTo: 'Birmingham Crown Court',
+                equalTo: 'BCC',
               },
               {
                 equalTo: 'STHHPM',
@@ -227,6 +227,17 @@ export default {
             type: {
               courtType: 'MAG',
               courtName: 'Magistrate',
+            },
+            active: true,
+            buildings: [],
+          },
+          {
+            courtId: 'BCC',
+            courtName: 'Birmingham Crown Court',
+            courtDescription: 'Birmingham Crown Court',
+            type: {
+              courtType: 'CRW',
+              courtName: 'Crown',
             },
             active: true,
             buildings: [],

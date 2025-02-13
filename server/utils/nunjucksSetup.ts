@@ -10,6 +10,7 @@ import {
   formatLengths,
 } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { SentenceLength } from 'models'
+import dayjs from 'dayjs'
 import {
   formatDate,
   formatDateTime,
@@ -23,7 +24,11 @@ import {
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import { periodLengthsToSentenceLengths } from './mappingUtils'
-import type { AppearanceOutcome, OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import type {
+  AppearanceOutcome,
+  NextCourtAppearance,
+  OffenceOutcome,
+} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -137,6 +142,19 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     }
     return 'Not entered'
   })
+
+  njkEnv.addFilter(
+    'formatNextHearing',
+    (nextCourtAppearance: NextCourtAppearance, courtNameMap: Map<string, string>) => {
+      if (nextCourtAppearance) {
+        const hearingDate = dayjs(
+          `${nextCourtAppearance.appearanceDate}${nextCourtAppearance.appearanceTime ? `T${nextCourtAppearance.appearanceTime}` : ''}`,
+        )
+        return `${hearingDate.format(nextCourtAppearance.appearanceTime ? config.dateTimeFormat : config.dateFormat)} at ${courtNameMap[nextCourtAppearance.courtCode]}`
+      }
+      return 'Not entered'
+    },
+  )
 
   njkEnv.addFilter('periodLengthValueOrLegacy', periodLengthValueOrLegacy)
 

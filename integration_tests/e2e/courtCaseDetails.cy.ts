@@ -40,6 +40,7 @@ context('Court Case details Page', () => {
             Location: 'Accrington Youth Court',
             'Warrant date': '15/12/2023',
             Outcome: 'Remanded in custody',
+            'Next hearing': '15/12/2024 at Accrington Youth Court',
             'Court documents': 'No documents uploaded',
             Offences: {
               'Offences (2)': [
@@ -61,6 +62,7 @@ context('Court Case details Page', () => {
             Location: 'Birmingham Crown Court',
             'Warrant date': '15/10/2022',
             Outcome: 'Lie on file',
+            'Next hearing': '15/12/2023 at Birmingham Crown Court',
             'Court documents': 'No documents uploaded',
             Offences: {
               'Offences (1)': [

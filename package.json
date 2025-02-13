@@ -34,7 +34,7 @@
   },
   "engines": {
     "node": "^22",
-    "npm": "^10"
+    "npm": "^11"
   },
   "jest": {
     "transform": {
@@ -159,7 +159,7 @@
     "cypress": "^14.0.2",
     "cypress-multi-reporters": "^2.0.5",
     "dotenv": "^16.4.7",
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.25.0",
     "esbuild-plugin-clean": "^1.0.1",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-sass-plugin": "^3.3.1",
@@ -182,8 +182,8 @@
     "typescript": "^5.7.3"
   },
   "overrides": {
-    "csurf": {
-      "cookie": "1.0.2"
+    "@jgoz/esbuild-plugin-typecheck": {
+      "esbuild": "$esbuild"
     }
   }
 }

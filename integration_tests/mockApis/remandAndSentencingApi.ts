@@ -1300,6 +1300,7 @@ export default {
             courtCode: 'ACCRYC',
             courtCaseReference: 'C894623',
             appearanceDate: '2023-12-15',
+            warrantType: 'REMAND',
             nextCourtAppearance: {
               appearanceDate: '2024-12-15',
               courtCode: 'ACCRYC',
@@ -1352,6 +1353,7 @@ export default {
               courtCode: 'ACCRYC',
               courtCaseReference: 'C894623',
               appearanceDate: '2023-12-15',
+              warrantType: 'REMAND',
               nextCourtAppearance: {
                 appearanceDate: '2024-12-15',
                 courtCode: 'ACCRYC',
@@ -1400,12 +1402,13 @@ export default {
                 outcomeType: 'REMAND',
                 displayOrder: 20,
               },
-              courtCode: 'Birmingham Crown Court',
+              courtCode: 'BCC',
               courtCaseReference: 'F23325',
               appearanceDate: '2022-10-15',
+              warrantType: 'REMAND',
               nextCourtAppearance: {
                 appearanceDate: '2023-12-15',
-                courtCode: 'Birmingham Crown Court',
+                courtCode: 'BCC',
                 appearanceType: {
                   appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
                   description: 'Court appearance',

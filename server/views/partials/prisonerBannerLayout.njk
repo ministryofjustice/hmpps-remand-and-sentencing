@@ -13,7 +13,8 @@
                 dateOfBirth: prisoner.dateOfBirth,
                 status: prisoner.imprisonmentStatusDescription,
                 prisonName: prisoner.prisonName,
-                cellLocation: prisoner.cellLocation
+                cellLocation: prisoner.cellLocation,
+                prisonId: prisoner.prisonId
             } %}
             {{ miniProfile(person, '/api/person/' + prisoner.prisonerNumber + '/image', digitalPrisonServicesUrl + '/prisoner/' + prisoner.prisonerNumber) }}
         {% endblock %}

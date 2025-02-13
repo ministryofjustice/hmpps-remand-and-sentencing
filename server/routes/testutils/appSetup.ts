@@ -42,6 +42,7 @@ export const user: HmppsUser = {
   ],
   activeCaseLoadId: 'MDI',
   hasAdjustmentsAccess: false,
+  hasInactiveBookingsAccess: false,
 }
 
 const defaultPrisoner: PrisonerSearchApiPrisoner = {

@@ -704,12 +704,17 @@ export default class CourtCaseRoutes {
   public submitTaskListAsDraft: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { username } = res.locals.user
+
+    const draftSubmittedFrom = req.query["submittedFromUrl"]
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    courtAppearance["draftFormContent"] = req.body
+    courtAppearance["draftSubmittedFromUrl"] = draftSubmittedFrom
+
     if (addOrEditCourtCase === 'add-court-case' && !courtAppearance.existingDraft) {
       const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createDraftCourtCase(username, nomsId, courtCase)
+      await this.remandAndSentencingService.createDraftCourtCase(username, nomsId, courtCase, req.body, draftSubmittedFrom as string)
     } else {
-      await this.createOrUpdateDraftAppearance(username, courtCaseReference, courtAppearance)
+      await this.createOrUpdateDraftAppearance(username, courtCaseReference, courtAppearance, req.body, draftSubmittedFrom as string)
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/save-court-case`,
@@ -720,7 +725,11 @@ export default class CourtCaseRoutes {
     username: string,
     courtCaseReference: string,
     courtAppearance: CourtAppearance,
+    draftFormContent: Record<string, unknown>,
+    draftSubmittedFromUrl: string,
   ) {
+    courtAppearance["draftFormContent"] = draftFormContent
+    courtAppearance["draftSubmittedFromUrl"] = draftSubmittedFromUrl
     return courtAppearance.existingDraft
       ? this.remandAndSentencingService.updateDraftCourtAppearance(
           username,
@@ -993,6 +1002,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       submitToCheckAnswers,
       courtCaseOverallSentenceLengthForm,
+      req,
       errors: req.flash('errors') || [],
       backLink: submitToCheckAnswers
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
@@ -1016,6 +1026,7 @@ export default class CourtCaseRoutes {
       )
     }
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
+
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
       )
@@ -1045,6 +1056,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       submitToCheckAnswers,
       courtCaseAlternativeSentenceLengthForm,
+      req,
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length`,
     })
@@ -1110,6 +1122,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
+      req
     })
   }
 
@@ -1173,6 +1186,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
+      req
     })
   }
 

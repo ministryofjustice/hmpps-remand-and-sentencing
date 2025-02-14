@@ -1364,6 +1364,7 @@ export interface components {
       /** Format: date */
       overallConvictionDate?: string
       legacyData?: components['schemas']['JsonNode']
+      draftLastEditedUrl?: string
     }
     CourtAppearanceOutcome: {
       /** Format: uuid */

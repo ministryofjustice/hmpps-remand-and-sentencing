@@ -377,5 +377,6 @@ export function draftCourtAppearanceToPageCourtAppearance(
     // charges: components['schemas']['Charge'][]
     /** Format: date */
     overallConvictionDate: String(blobAsCourtAppearance.overallConvictionDate),
+    draftLastEditedUrl: blobAsCourtAppearance["draftSubmittedFromUrl"]
   }
 }

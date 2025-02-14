@@ -1,0 +1,48 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - inactive offence" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-inactive-offence{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+                <h1 class="govuk-heading-l">
+                    You have entered an inactive offence
+                </h1>
+                <p class="govuk-body">The offence <strong>{{ offence.code }} {{ offence.description }}</strong> was made inactive on <strong>{{ offence.endDate | formatDate }}</strong>.</p>
+                <p class="govuk-body">Selecting this offence could impact your release dates calcuation.</p>
+                {{ govukRadios({
+                    name: "confirmOffence",
+                    classes: "govuk-radios--inline",
+                    errorMessage: errors | findError('confirmOffence'),
+                    fieldset: {
+                        legend: {
+                            text: "Do you want to continue with this offence?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--m"
+                        },
+                        classes: "govuk-!-margin-top-6"
+                    },
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes, continue with this inactive offence",
+                            checked: inactiveOffenceForm.confirmOffence === 'true'
+                        },
+                        {
+                            value: "false",
+                            text: "No, go back and change the offence",
+                            checked: inactiveOffenceForm.confirmOffence === 'false'
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+
+            </form>
+{% endblock %}

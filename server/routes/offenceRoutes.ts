@@ -8,6 +8,7 @@ import type {
   OffenceDeleteOffenceForm,
   OffenceFineAmountForm,
   OffenceFinishedAddingForm,
+  OffenceInactiveOffenceForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
@@ -373,7 +374,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const offenceCodeForm = trimForm<OffenceOffenceCodeForm>(req.body)
-    const errors = await this.offenceService.setOffenceCode(
+    const { errors, offence } = await this.offenceService.setOffenceCode(
       req.session,
       nomsId,
       courtCaseReference,
@@ -392,6 +393,22 @@ export default class OffenceRoutes {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
+    }
+
+    if (offence.endDate) {
+      const sessionOffence = this.getSessionOffenceOrAppearanceOffence(
+        req,
+        nomsId,
+        courtCaseReference,
+        offenceReference,
+      )
+      const offenceEndDate = dayjs(offence.endDate)
+      const enteredStartDate = dayjs(sessionOffence.offenceStartDate)
+      if (offenceEndDate.isBefore(enteredStartDate)) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/inactive-offence?backTo=CODE${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+        )
+      }
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
@@ -450,7 +467,7 @@ export default class OffenceRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceNameForm = trimForm<OffenceOffenceNameForm>(req.body)
-    const errors = await this.offenceService.setOffenceCodeFromLookup(
+    const { errors, offence } = await this.offenceService.setOffenceCodeFromLookup(
       req.session,
       nomsId,
       courtCaseReference,
@@ -464,6 +481,23 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
+
+    if (offence.endDate) {
+      const sessionOffence = this.getSessionOffenceOrAppearanceOffence(
+        req,
+        nomsId,
+        courtCaseReference,
+        offenceReference,
+      )
+      const offenceEndDate = dayjs(offence.endDate)
+      const enteredStartDate = dayjs(sessionOffence.offenceStartDate)
+      if (offenceEndDate.isBefore(enteredStartDate)) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/inactive-offence?backTo=NAME${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+        )
+      }
+    }
+
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
@@ -471,6 +505,76 @@ export default class OffenceRoutes {
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/terror-related`,
+    )
+  }
+
+  public getInactiveOffenceCode: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence, backTo } = req.query
+    const inactiveOffenceForm = (req.flash('inactiveOffenceForm')[0] || {}) as OffenceInactiveOffenceForm
+    const offence = await this.manageOffencesService.getOffenceByCode(
+      this.offenceService.getOffenceCode(req.session, nomsId, courtCaseReference),
+      req.user.token,
+    )
+
+    return res.render('pages/offence/inactive-offence', {
+      nomsId,
+      courtCaseReference,
+      offence,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      submitToEditOffence,
+      backTo,
+      inactiveOffenceForm,
+      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      errors: req.flash('errors') || [],
+      backLink:
+        backTo === 'NAME'
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+    })
+  }
+
+  public submitInactiveOffenceCode: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence, backTo } = req.query
+    const inactiveOffenceForm = trimForm<OffenceInactiveOffenceForm>(req.body)
+    const errors = this.offenceService.validateOffenceInactiveForm(inactiveOffenceForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('inactiveOffenceForm', { ...inactiveOffenceForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/inactive-offence${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+    if (inactiveOffenceForm.confirmOffence === 'false') {
+      if (backTo === 'NAME') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        )
+      }
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
     )
   }
 

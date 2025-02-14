@@ -467,7 +467,7 @@ export default class OffenceRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceNameForm = trimForm<OffenceOffenceNameForm>(req.body)
-    const errors = await this.offenceService.setOffenceCodeFromLookup(
+    const { errors, offence } = await this.offenceService.setOffenceCodeFromLookup(
       req.session,
       nomsId,
       courtCaseReference,
@@ -481,6 +481,23 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
+
+    if (offence.endDate) {
+      const sessionOffence = this.getSessionOffenceOrAppearanceOffence(
+        req,
+        nomsId,
+        courtCaseReference,
+        offenceReference,
+      )
+      const offenceEndDate = dayjs(offence.endDate)
+      const enteredStartDate = dayjs(sessionOffence.offenceStartDate)
+      if (offenceEndDate.isBefore(enteredStartDate)) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/inactive-offence${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        )
+      }
+    }
+
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,

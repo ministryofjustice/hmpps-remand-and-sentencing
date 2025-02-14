@@ -178,7 +178,13 @@ export default class OffenceService {
     courtCaseReference: string,
     authToken: string,
     offenceNameForm: OffenceOffenceNameForm,
-  ) {
+  ): Promise<{
+    errors: {
+      text: string
+      href: string
+    }[]
+    offence: ApiOffence
+  }> {
     const errors = validate(
       offenceNameForm,
       {
@@ -189,9 +195,10 @@ export default class OffenceService {
       },
     )
     const [offenceCode] = offenceNameForm.offenceName.split(' ')
+    let apiOffence
     if (offenceCode) {
       try {
-        await this.manageOffencesService.getOffenceByCode(offenceCode, authToken)
+        apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCode, authToken)
       } catch (error) {
         logger.error(error)
         errors.push({ text: 'You must enter a valid offence.', href: '#offenceName' })
@@ -204,7 +211,7 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-    return errors
+    return { errors, offence: apiOffence }
   }
 
   setOffenceCodeFromConfirm(

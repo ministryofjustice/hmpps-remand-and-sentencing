@@ -1309,7 +1309,8 @@ export interface components {
     DraftCourtAppearance: {
       /** Format: uuid */
       draftUuid: string
-      sessionBlob: components['schemas']['JsonNode']
+      sessionBlob: components['schemas']['JsonNode'],
+      draftSubmittedFromUrl: ?string
     }
     AppearanceType: {
       /** Format: uuid */
@@ -1364,6 +1365,7 @@ export interface components {
       /** Format: date */
       overallConvictionDate?: string
       legacyData?: components['schemas']['JsonNode']
+      draftLastEditedUrl?: string
     }
     CourtAppearanceOutcome: {
       /** Format: uuid */

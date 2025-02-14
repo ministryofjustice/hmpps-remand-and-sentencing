@@ -52,8 +52,10 @@ export default class RemandAndSentencingService {
     username: string,
     nomsId: string,
     courtCase: CourtCase,
+    draftFormContent: Record<string, unknown>,
   ): Promise<DraftCourtCaseCreatedResponse> {
     const createDraftCourtCase = courtCaseToDraftCreateCourtCase(nomsId, courtCase)
+    createDraftCourtCase["draftFormContent"] = draftFormContent
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createDraftCourtCase(
       createDraftCourtCase,
     )
@@ -76,7 +78,9 @@ export default class RemandAndSentencingService {
     courtAppearanceUuid: string,
     courtAppearance: CourtAppearance,
   ): Promise<void> {
+
     const createDraftCourtAppearance = courtAppearanceToDraftCreateCourtAppearance(courtAppearance)
+
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).updateDraftCourtAppearance(
       courtAppearanceUuid,
       createDraftCourtAppearance,

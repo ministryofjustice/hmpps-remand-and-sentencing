@@ -38,6 +38,8 @@ export default class TaskListModel {
   }
 
   private getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
+    if (courtAppearance.draf)
+
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
       return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/check-answers`
     }

@@ -285,6 +285,7 @@ export default class OffenceRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink,
+      req
     })
   }
 

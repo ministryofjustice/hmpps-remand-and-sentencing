@@ -101,4 +101,10 @@ context('Start Page', () => {
       'Next hearing': 'No future appearance scheduled',
     })
   })
+
+  it('displays empty content when no court cases', () => {
+    cy.task('stubEmptySearchCourtCases', {})
+    cy.reload()
+    startPage.courtCasesContent().should('contain.text', 'There are no court cases recorded for Marvin Haggler')
+  })
 })

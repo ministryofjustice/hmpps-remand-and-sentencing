@@ -12,7 +12,7 @@
                     You have entered an inactive offence
                 </h1>
                 <p class="govuk-body">The offence <strong>{{ offence.code }} - {{ offence.description }}</strong> was made inactive on <strong>{{ offence.endDate | formatDate }}</strong>.</p>
-                <p class="govuk-body">Selecting this offence could impact your release dates calcuation.</p>
+                <p class="govuk-body">Selecting this offence could impact your release dates calculation.</p>
                 {{ govukRadios({
                     name: "confirmOffence",
                     classes: "govuk-radios--inline",

@@ -559,6 +559,55 @@ export default {
     })
   },
 
+  stubEmptySearchCourtCases: ({ sortBy = 'desc' }: { sortBy: string }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-case/search',
+        queryParameters: {
+          prisonerId: {
+            equalTo: 'A1234AB',
+          },
+          sort: {
+            equalTo: `latestCourtAppearance_appearanceDate,${sortBy}`,
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          totalPages: 0,
+          totalElements: 0,
+          size: 0,
+          content: [],
+          number: 0,
+          sort: {
+            empty: true,
+            sorted: true,
+            unsorted: true,
+          },
+          numberOfElements: 0,
+          pageable: {
+            offset: 0,
+            sort: {
+              empty: true,
+              sorted: true,
+              unsorted: true,
+            },
+            pageSize: 0,
+            pageNumber: 0,
+            paged: true,
+            unpaged: true,
+          },
+          last: false,
+          first: false,
+          empty: true,
+        },
+      },
+    })
+  },
+
   stubGetLatestCourtAppearance: (): SuperAgentRequest => {
     return stubFor({
       request: {

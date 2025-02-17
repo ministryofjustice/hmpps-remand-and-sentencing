@@ -736,11 +736,9 @@ export default class OffenceRoutes {
     const convictionDate = dayjs(offence?.sentence?.convictionDate)
     const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
-    const sentenceTypes = await this.remandAndSentencingService.getSentenceTypes(
-      ageAtConviction,
-      convictionDate,
-      req.user.username,
-    )
+    const sentenceTypes = (
+      await this.remandAndSentencingService.getSentenceTypes(ageAtConviction, convictionDate, req.user.username)
+    ).sort((a, b) => a.displayOrder - b.displayOrder)
     let legacySentenceType
     if (!offence.sentence?.sentenceTypeId && !res.locals.isAddCourtCase) {
       legacySentenceType = sentenceTypeValueOrLegacy(undefined, offence.sentence?.legacyData)

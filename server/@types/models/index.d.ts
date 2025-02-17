@@ -58,7 +58,7 @@ declare module 'models' {
     sentenceTypeClassification?: string
     convictionDate?: Date
     fineAmount?: number
-    legacyData?: Record<string, never>
+    legacyData?: SentenceLegacyData
   }
 
   export interface SentenceLength {

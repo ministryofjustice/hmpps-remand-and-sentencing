@@ -2,7 +2,10 @@ import dayjs from 'dayjs'
 import type { Sentence } from 'models'
 import config from '../config'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
-import { PeriodLengthLegacyData } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import {
+  CourtAppearanceLegacyData,
+  PeriodLengthLegacyData,
+} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -76,7 +79,7 @@ export const allPeriodLengthTypesEntered = (sentence: Sentence): boolean => {
   return expectedPeriodLengthTypes.every(expectedType => enteredPeriodLengthTypes.includes(expectedType))
 }
 
-export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: Record<string, never>) => {
+export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: CourtAppearanceLegacyData) => {
   if (outcomeValue) {
     return outcomeValue
   }

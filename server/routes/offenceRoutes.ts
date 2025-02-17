@@ -73,6 +73,8 @@ export default class OffenceRoutes {
     let offenceEndDateDay: number | string = offenceDateForm['offenceEndDate-day']
     let offenceEndDateMonth: number | string = offenceDateForm['offenceEndDate-month']
     let offenceEndDateYear: number | string = offenceDateForm['offenceEndDate-year']
+
+    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
 
     if (offence.offenceStartDate && Object.keys(offenceDateForm).length === 0) {
@@ -119,6 +121,7 @@ export default class OffenceRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink,
+      req
     })
   }
 
@@ -286,6 +289,7 @@ export default class OffenceRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink,
+      req
     })
   }
 
@@ -361,6 +365,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       submitToEditOffence,
       backLink,
+      req
     })
   }
 
@@ -757,6 +762,7 @@ export default class OffenceRoutes {
       offenceSentenceTypeForm,
       sentenceTypes,
       legacySentenceType,
+      req,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink: submitToEditOffence
@@ -860,6 +866,7 @@ export default class OffenceRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink,
+      req
     })
   }
 

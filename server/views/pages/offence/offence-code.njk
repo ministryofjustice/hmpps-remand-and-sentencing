@@ -51,7 +51,7 @@
                             class="govuk-button govuk-button--secondary"
                             data-module="govuk-button"
                             data-qa="save-draft-button"
-                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft?submittedFromUrl={{ req.url }}">
                         Save as draft
                     </button>
                 </div>

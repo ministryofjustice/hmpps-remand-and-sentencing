@@ -1,13 +1,16 @@
 import { SuperAgentRequest } from 'superagent'
+import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
 
 export default {
   stubGetOffenceByCode: ({
     offenceCode = 'PS90037',
     offenceDescription = 'An offence description',
+    endDate = dayjs().add(2, 'days').format('YYYY-MM-DD'),
   }: {
     offenceCode: string
     offenceDescription: string
+    endDate: string
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -24,7 +27,7 @@ export default {
           offenceType: 'CE',
           revisionId: 338258,
           startDate: '2007-06-30',
-          endDate: '2007-06-30',
+          endDate,
           homeOfficeStatsCode: '099/96',
           homeOfficeDescription: 'home office offence description',
           changedDate: '2009-07-17T16:06:30',

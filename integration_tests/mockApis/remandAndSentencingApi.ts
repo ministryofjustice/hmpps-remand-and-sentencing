@@ -1732,11 +1732,13 @@ export default {
             sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
             description: 'SDS (Standard Determinate Sentence)',
             classification: 'STANDARD',
+            displayOrder: 100,
           },
           {
             sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
             description: 'EDS (Extended Determinate Sentence)',
             classification: 'EXTENDED',
+            displayOrder: 50,
           },
         ],
       },

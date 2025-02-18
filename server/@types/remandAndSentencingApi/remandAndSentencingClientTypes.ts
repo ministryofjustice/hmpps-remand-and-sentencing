@@ -51,3 +51,7 @@ export type AppearanceType = components['schemas']['AppearanceType']
 export type CourtCaseLegacyData = components['schemas']['CourtCaseLegacyData']
 
 export type PeriodLengthLegacyData = components['schemas']['PeriodLengthLegacyData']
+
+export type CourtAppearanceLegacyData = components['schemas']['CourtAppearanceLegacyData']
+
+export type SentenceLegacyData = components['schemas']['SentenceLegacyData']

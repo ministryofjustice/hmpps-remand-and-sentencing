@@ -415,15 +415,9 @@ export default class CourtCaseRoutes {
       )
     }
     if (addOrEditCourtCase === 'edit-court-case') {
-      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-        req.user.token,
-        courtCaseReference,
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-court-name`,
       )
-      if (latestCourtAppearance.nextCourtAppearance?.courtCode) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-court-name`,
-        )
-      }
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`,
@@ -442,18 +436,15 @@ export default class CourtCaseRoutes {
       const court = this.courtAppearanceService.getCourtCode(req.session, nomsId)
       if (court) {
         selectCourtNameForm = {
-          courtNameSelect: court === latestCourtAppearance.nextCourtAppearance?.courtCode ? 'true' : 'false',
+          courtNameSelect: court === latestCourtAppearance.courtCode ? 'true' : 'false',
         }
       }
     }
 
-    let lastCourtName = latestCourtAppearance.nextCourtAppearance?.courtCode
+    let lastCourtName = latestCourtAppearance.courtCode
     try {
       lastCourtName = (
-        await this.courtRegisterService.findCourtById(
-          latestCourtAppearance.nextCourtAppearance?.courtCode,
-          req.user.username,
-        )
+        await this.courtRegisterService.findCourtById(latestCourtAppearance.courtCode, req.user.username)
       ).courtDescription
     } catch (e) {
       logger.error(e)

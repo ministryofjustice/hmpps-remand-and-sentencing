@@ -195,7 +195,7 @@ export default class CourtAppearanceService {
         courtCaseReference,
       )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.courtCode = latestCourtAppearance.nextCourtAppearance?.courtCode
+      courtAppearance.courtCode = latestCourtAppearance.courtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

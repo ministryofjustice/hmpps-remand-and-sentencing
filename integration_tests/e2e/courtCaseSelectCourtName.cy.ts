@@ -35,6 +35,6 @@ context('Select court name page', () => {
     courtCaseSelectCourtNamePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', "There is a problem Select 'Yes' if the appearance was at this court.")
+      .should('equal', 'There is a problem You must select Yes or No')
   })
 })

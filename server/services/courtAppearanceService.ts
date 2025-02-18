@@ -187,7 +187,7 @@ export default class CourtAppearanceService {
     const errors = validate(
       selectCourtNameForm,
       { courtNameSelect: 'required' },
-      { 'required.courtNameSelect': "Select 'Yes' if the appearance was at this court." },
+      { 'required.courtNameSelect': 'You must select Yes or No' },
     )
     if (errors.length === 0 && selectCourtNameForm.courtNameSelect === 'true') {
       const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(

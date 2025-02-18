@@ -132,7 +132,7 @@
     "validatorjs": "^3.22.1"
   },
   "devDependencies": {
-    "@jgoz/esbuild-plugin-typecheck": "^4.0.2",
+    "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
     "@types/compression": "^1.7.5",
@@ -174,7 +174,7 @@
     "nock": "^14.0.1",
     "nodemon": "^3.1.9",
     "openapi-typescript": "^7.6.1",
-    "prettier": "^3.5.0",
+    "prettier": "^3.5.1",
     "prettier-plugin-jinja-template": "^2.0.0",
     "sass": "^1.84.0",
     "supertest": "^7.0.0",

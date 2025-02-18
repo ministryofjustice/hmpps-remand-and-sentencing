@@ -1485,7 +1485,7 @@ export default class OffenceRoutes {
     }
     let outcome
     if (offence.outcomeUuid) {
-      outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.token)).outcomeName
+      outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
     }
     return res.render('pages/offence/delete-offence', {
       nomsId,
@@ -1565,7 +1565,7 @@ export default class OffenceRoutes {
     }
     let outcome
     if (offence.outcomeUuid) {
-      outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.token)).outcomeName
+      outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
     }
 
     return res.render('pages/offence/edit-offence', {

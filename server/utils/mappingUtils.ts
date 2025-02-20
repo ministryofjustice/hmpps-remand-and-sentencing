@@ -50,6 +50,7 @@ const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateS
 
 const courtAppearanceToCreateNextCourtAppearance = (
   courtAppearance: CourtAppearance,
+  prisonId: string,
 ): CreateNextCourtAppearance | undefined => {
   let nextCourtAppearance
   if (courtAppearance.nextHearingSelect) {
@@ -58,6 +59,7 @@ const courtAppearanceToCreateNextCourtAppearance = (
       appearanceDate: appearanceDate.format('YYYY-MM-DD'),
       courtCode: courtAppearance.nextHearingCourtCode,
       appearanceTypeUuid: courtAppearance.nextHearingTypeUuid,
+      prisonId,
       ...(courtAppearance.nextHearingTimeSet ? { appearanceTime: appearanceDate.format('HH:mm:[00].[000000]') } : {}),
     } as CreateNextCourtAppearance
   }
@@ -70,6 +72,7 @@ const offenceToCreateCharge = (offence: Offence, prisonId: string): CreateCharge
     offenceCode: offence.offenceCode,
     offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),
     outcomeUuid: offence.outcomeUuid,
+    prisonId,
     ...(offence.terrorRelated !== undefined && { terrorRelated: offence.terrorRelated }),
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
     ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),
@@ -84,7 +87,7 @@ export const courtAppearanceToCreateCourtAppearance = (
   courtCaseUuid?: string,
   appearanceUuid?: string,
 ): CreateCourtAppearance => {
-  const nextCourtAppearance = courtAppearanceToCreateNextCourtAppearance(courtAppearance)
+  const nextCourtAppearance = courtAppearanceToCreateNextCourtAppearance(courtAppearance, prisonId)
   return {
     courtCaseUuid,
     appearanceUuid,
@@ -120,6 +123,7 @@ export const courtCaseToCreateCourtCase = (
   return {
     prisonerId,
     appearances,
+    prisonId,
   } as CreateCourtCase
 }
 

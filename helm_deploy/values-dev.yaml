@@ -25,6 +25,7 @@ generic-service:
     CALCULATE_RELEASE_DATES_API_URL: "https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk"
     AUDIT_ENABLED: "false"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk"
+    SAVE_AS_DRAFT_ENABLED: "false"
 
 
   # Switches off the allow list in the DEV env only.

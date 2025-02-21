@@ -176,6 +176,9 @@ export default {
   sqs: {
     audit: auditConfig(),
   },
+  featureToggles: {
+    saveAsDraftEnabled: get('SAVE_AS_DRAFT_ENABLED', false) === 'true',
+  },
 
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),

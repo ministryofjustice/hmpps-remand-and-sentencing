@@ -89,7 +89,7 @@
                             formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-offence-date{{ "?submitToEditOffence=true" if submitToEditOffence }}">
                         Continue
                     </button>
-
+                {% if featureToggles.saveDraftEnabled %}
                     <button type="submit"
                             class="govuk-button govuk-button--secondary"
                             data-module="govuk-button"
@@ -97,6 +97,7 @@
                             formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
                         Save as draft
                     </button>
+                {% endif %}
                 </div>
             </form>
 

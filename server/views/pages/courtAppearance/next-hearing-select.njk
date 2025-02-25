@@ -42,13 +42,15 @@
                         Continue
                     </button>
 
-                    <button type="submit"
-                            class="govuk-button govuk-button--secondary"
-                            data-module="govuk-button"
-                            data-qa="save-draft-button"
-                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
-                        Save as draft
-                    </button>
+                    {% if featureToggles.saveDraftEnabled %}
+                        <button type="submit"
+                                class="govuk-button govuk-button--secondary"
+                                data-module="govuk-button"
+                                data-qa="save-draft-button"
+                                formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                            Save as draft
+                        </button>
+                    {% endif %}
                 </div>
             </form>
 

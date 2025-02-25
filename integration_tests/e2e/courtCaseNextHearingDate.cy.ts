@@ -19,6 +19,10 @@ context('Next hearing date page', () => {
       .and('contain.text', 'Cell numberCELL-1')
   })
 
+  it('button to save draft is not displayed', () => {
+    courtCaseNextHearingDatePage.saveDraftButton().should('not.exist')
+  })
+
   it('button to continue is displayed', () => {
     courtCaseNextHearingDatePage.continueButton().should('contain.text', 'Continue')
   })

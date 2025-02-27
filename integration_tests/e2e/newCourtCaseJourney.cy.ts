@@ -285,7 +285,8 @@ context('New Court Case journey', () => {
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 
-  it('fill in remand journey - Saving appearance info as draft', () => {
+  // Skipped test as SAVE_AS_DRAFT_ENABLED feature is disabled
+  it.skip('fill in remand journey - Saving appearance info as draft', () => {
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetAppearanceOutcomeById', {})
     cy.task('stubGetChargeOutcomesByIds', [
@@ -644,7 +645,8 @@ context('New Court Case journey', () => {
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 
-  it('fill in sentencing journey - Saving appearance info as draft', () => {
+  // Skipped test as SAVE_AS_DRAFT_ENABLED feature is disabled
+  it.skip('fill in sentencing journey - Saving appearance info as draft', () => {
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetSentenceTypesByIds', [
       {

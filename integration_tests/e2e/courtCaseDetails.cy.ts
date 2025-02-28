@@ -140,5 +140,9 @@ context('Court Case details Page', () => {
           },
         ])
     })
+
+    it('Drafts tab should not display', () => {
+      courtCaseDetailsPage.draftsTab().should('not.exist')
+    })
   })
 })

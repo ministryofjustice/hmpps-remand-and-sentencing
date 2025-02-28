@@ -5,6 +5,7 @@ import type {
   OffenceConvictionDateForm,
   OffenceCountNumberForm,
   OffenceFineAmountForm,
+  OffenceInactiveOffenceForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
@@ -25,6 +26,7 @@ import ManageOffencesService from './manageOffencesService'
 import logger from '../../logger'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
+import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 
 export default class OffenceService {
   constructor(private readonly manageOffencesService: ManageOffencesService) {}
@@ -119,7 +121,13 @@ export default class OffenceService {
     courtCaseReference: string,
     authToken: string,
     offenceCodeForm: OffenceOffenceCodeForm,
-  ) {
+  ): Promise<{
+    errors: {
+      text: string
+      href: string
+    }[]
+    offence: ApiOffence
+  }> {
     const errors = validate(
       offenceCodeForm,
       {
@@ -132,9 +140,10 @@ export default class OffenceService {
         'required_without.offenceCode': 'You must enter the offence code',
       },
     )
+    let apiOffence
     if (offenceCodeForm.offenceCode && !offenceCodeForm.unknownCode) {
       try {
-        await this.manageOffencesService.getOffenceByCode(offenceCodeForm.offenceCode, authToken)
+        apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCodeForm.offenceCode, authToken)
       } catch (error) {
         logger.error(error)
         errors.push({ text: 'You must enter a valid offence code.', href: '#offenceCode' })
@@ -147,6 +156,19 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
+    return { errors, offence: apiOffence }
+  }
+
+  validateOffenceInactiveForm(inactiveOffenceForm: OffenceInactiveOffenceForm) {
+    const errors = validate(
+      inactiveOffenceForm,
+      {
+        confirmOffence: 'required',
+      },
+      {
+        'required.confirmOffence': 'You must either select Yes or No to continue with this offence',
+      },
+    )
     return errors
   }
 
@@ -156,7 +178,13 @@ export default class OffenceService {
     courtCaseReference: string,
     authToken: string,
     offenceNameForm: OffenceOffenceNameForm,
-  ) {
+  ): Promise<{
+    errors: {
+      text: string
+      href: string
+    }[]
+    offence: ApiOffence
+  }> {
     const errors = validate(
       offenceNameForm,
       {
@@ -167,9 +195,10 @@ export default class OffenceService {
       },
     )
     const [offenceCode] = offenceNameForm.offenceName.split(' ')
+    let apiOffence
     if (offenceCode) {
       try {
-        await this.manageOffencesService.getOffenceByCode(offenceCode, authToken)
+        apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCode, authToken)
       } catch (error) {
         logger.error(error)
         errors.push({ text: 'You must enter a valid offence.', href: '#offenceName' })
@@ -182,7 +211,7 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-    return errors
+    return { errors, offence: apiOffence }
   }
 
   setOffenceCodeFromConfirm(

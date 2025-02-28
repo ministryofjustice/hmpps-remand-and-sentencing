@@ -171,4 +171,5 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatLengthsWithoutPeriodOrder', formatLengthsWithoutPeriodOrder)
 
   njkEnv.addFilter('periodLengthsToSentenceLengths', periodLengthsToSentenceLengths)
+  njkEnv.addGlobal('featureToggles', config.featureToggles)
 }

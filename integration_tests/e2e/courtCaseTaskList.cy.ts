@@ -18,4 +18,8 @@ context('Task List Page', () => {
       .and('contain.text', 'EstablishmentHMP Bedford')
       .and('contain.text', 'Cell numberCELL-1')
   })
+
+  it('Save draft button should not display', () => {
+    courtCaseTaskListPage.submitDraftButton().should('not.exist')
+  })
 })

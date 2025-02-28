@@ -14,7 +14,7 @@ export default abstract class Page {
   }
 
   checkOnPage(): void {
-    cy.get('h1').contains(this.title)
+    cy.get('h1:first').contains(this.title)
   }
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
@@ -22,6 +22,8 @@ export default abstract class Page {
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
   continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
+
+  saveDraftButton = (): PageElement => cy.get('[data-qa=save-draft-button]')
 
   prisonerBanner = (): PageElement => cy.get('.mini-profile')
 

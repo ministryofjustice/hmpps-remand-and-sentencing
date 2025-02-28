@@ -26,7 +26,6 @@ generic-service:
     AUDIT_ENABLED: "false"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk"
 
-
   # Switches off the allow list in the DEV env only.
   allowlist: null
 generic-prometheus-alerts:

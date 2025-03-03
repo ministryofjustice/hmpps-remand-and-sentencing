@@ -5,7 +5,6 @@ describe('mapping util tests', () => {
   it('correctly map next court appearance', () => {
     const appearance = {
       appearanceUuid: '020cdc11-b45e-433a-ad86-305b5be6a6c5',
-      lifetimeUuid: 'a36bf43e-0fc2-48c6-a8f4-1e42638ac2ac',
       outcome: {
         outcomeUuid: 'ca76bb03-c598-41c9-871e-6fc02b09d92c',
         outcomeName: 'Remanded in custody',

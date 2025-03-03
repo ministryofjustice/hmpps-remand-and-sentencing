@@ -19,7 +19,7 @@ import {
 import { sortByOffenceStartDate } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 
-const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): CreatePeriodLength => {
+const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, prisonId: string): CreatePeriodLength => {
   return {
     ...(sentenceLength.days ? { days: Number(sentenceLength.days) } : {}),
     ...(sentenceLength.weeks ? { weeks: Number(sentenceLength.weeks) } : {}),
@@ -28,6 +28,7 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): Cre
     periodOrder: sentenceLength.periodOrder.join(','),
     type: sentenceLength.periodLengthType,
     periodLengthUuid: sentenceLength.uuid,
+    prisonId,
   } as CreatePeriodLength
 }
 
@@ -35,7 +36,7 @@ const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateS
   let createSentence
   if (sentence) {
     const periodLengths =
-      sentence.periodLengths?.map(sentenceLength => sentenceLengthToCreatePeriodLength(sentenceLength)) ?? []
+      sentence.periodLengths?.map(sentenceLength => sentenceLengthToCreatePeriodLength(sentenceLength, prisonId)) ?? []
     createSentence = {
       chargeNumber: sentence.countNumber,
       periodLengths,
@@ -103,7 +104,7 @@ export const courtAppearanceToCreateCourtAppearance = (
     ...(courtAppearance.taggedBail && { taggedBail: parseInt(courtAppearance.taggedBail, 10) }),
     ...(nextCourtAppearance && { nextCourtAppearance }),
     ...(courtAppearance.overallSentenceLength && {
-      overallSentenceLength: sentenceLengthToCreatePeriodLength(courtAppearance.overallSentenceLength),
+      overallSentenceLength: sentenceLengthToCreatePeriodLength(courtAppearance.overallSentenceLength, prisonId),
       ...(courtAppearance.overallConvictionDate && {
         overallConvictionDate: dayjs(courtAppearance.overallConvictionDate).format('YYYY-MM-DD'),
       }),

@@ -1816,7 +1816,12 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/remand-and-sentencing-api/appearance-outcome/all',
+        urlPath: '/remand-and-sentencing-api/appearance-outcome/status',
+        queryParameters: {
+          statuses: {
+            equalTo: 'ACTIVE',
+          },
+        },
       },
       response: {
         status: 200,
@@ -1875,7 +1880,12 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/remand-and-sentencing-api/appearance-outcome/all',
+        urlPath: '/remand-and-sentencing-api/appearance-outcome/status',
+        queryParameters: {
+          statuses: {
+            equalTo: 'ACTIVE',
+          },
+        },
       },
       response: {
         status: 200,

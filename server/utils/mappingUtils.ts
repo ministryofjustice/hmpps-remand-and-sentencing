@@ -27,6 +27,7 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength): Cre
     ...(sentenceLength.years ? { years: Number(sentenceLength.years) } : {}),
     periodOrder: sentenceLength.periodOrder.join(','),
     type: sentenceLength.periodLengthType,
+    periodLengthUuid: sentenceLength.uuid,
   } as CreatePeriodLength
 }
 
@@ -146,6 +147,7 @@ export const periodLengthToSentenceLength = (periodLength: PeriodLength): Senten
       legacyData: periodLength.legacyData,
       description:
         periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription,
+      uuid: periodLength.periodLengthUuid,
     } as SentenceLength
   }
   return null
@@ -357,7 +359,6 @@ export function draftCourtAppearanceToPageCourtAppearance(
 
   return {
     charges: [],
-    lifetimeUuid: 'draft',
     appearanceUuid: draftAppearance.draftUuid,
     /** Format: uuid */
     // lifetimeUuid: string

@@ -787,7 +787,7 @@ export default class CourtCaseRoutes {
         overallCaseOutcome: `${courtAppearance.appearanceOutcomeUuid}|${courtAppearance.relatedOffenceOutcomeUuid}`,
       }
     }
-    const { warrantType } = courtAppearance
+    const { warrantType, appearanceOutcomeUuid } = courtAppearance
     const caseOutcomes = await this.appearanceOutcomeService.getAllOutcomes(req.user.username)
     const [subListOutcomes, mainOutcomes] = caseOutcomes
       .filter(caseOutcome => caseOutcome.outcomeType === warrantType)
@@ -799,7 +799,16 @@ export default class CourtCaseRoutes {
         [[], []],
       )
     let legacyCaseOutcome
-    if (!courtAppearance.appearanceOutcomeUuid && !res.locals.isAddCourtAppearance) {
+    if (
+      appearanceOutcomeUuid &&
+      !mainOutcomes
+        .concat(subListOutcomes)
+        .map(outcome => outcome.outcomeUuid)
+        .includes(appearanceOutcomeUuid)
+    ) {
+      const outcome = await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+      legacyCaseOutcome = outcome.outcomeName
+    } else if (!appearanceOutcomeUuid && !res.locals.isAddCourtAppearance) {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, courtAppearance.legacyData)
     }
 

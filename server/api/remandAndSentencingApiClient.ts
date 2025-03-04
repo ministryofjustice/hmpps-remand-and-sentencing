@@ -143,7 +143,10 @@ export default class RemandAndSentencingApiClient {
 
   async getAllAppearanceOutcomes(): Promise<AppearanceOutcome[]> {
     return (await this.restClient.get({
-      path: `/appearance-outcome/all`,
+      path: `/appearance-outcome/status`,
+      query: {
+        statuses: 'ACTIVE',
+      },
     })) as unknown as Promise<AppearanceOutcome[]>
   }
 

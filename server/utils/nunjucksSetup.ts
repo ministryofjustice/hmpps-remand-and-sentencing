@@ -8,7 +8,7 @@ import {
   personStatus,
   firstNameSpaceLastName,
   formatLengths,
-} from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
+} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import {
@@ -77,7 +77,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       path.join(__dirname, '../../server/views'),
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
-      'node_modules/hmpps-court-cases-release-dates-design/',
+      'node_modules/@ministryofjustice/hmpps-court-cases-release-dates-design/',
     ],
     {
       autoescape: true,

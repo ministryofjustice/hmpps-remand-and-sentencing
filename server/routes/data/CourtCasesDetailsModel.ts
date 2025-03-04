@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import type { Offence } from 'models'
-import { SentenceLength } from 'hmpps-court-cases-release-dates-design/hmpps/@types'
+import { SentenceLength } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
   CourtCaseLegacyData,
   PageCourtCaseAppearance,

@@ -1957,7 +1957,12 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/remand-and-sentencing-api/charge-outcome/all',
+        urlPath: '/remand-and-sentencing-api/charge-outcome/status',
+        queryParameters: {
+          statuses: {
+            equalTo: 'ACTIVE',
+          },
+        },
       },
       response: {
         status: 200,

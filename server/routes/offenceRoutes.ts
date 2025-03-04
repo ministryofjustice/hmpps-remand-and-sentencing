@@ -183,7 +183,16 @@ export default class OffenceRoutes {
       )
 
     let legacyCaseOutcome
-    if (!offence.outcomeUuid && !res.locals.isAddCourtAppearance) {
+    if (
+      offence.outcomeUuid &&
+      !mainOutcomes
+        .concat(subListOutcomes)
+        .map(outcome => outcome.outcomeUuid)
+        .includes(offence.outcomeUuid)
+    ) {
+      const outcome = await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)
+      legacyCaseOutcome = outcome.outcomeName
+    } else if (!offence.outcomeUuid && !res.locals.isAddCourtAppearance) {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, offence.legacyData)
     }
 

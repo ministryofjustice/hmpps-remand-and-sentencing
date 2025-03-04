@@ -1322,9 +1322,10 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     let nextHearingTypeForm = (req.flash('nextHearingTypeForm')[0] || {}) as CourtCaseNextHearingTypeForm
+    const nextHearingTypeUuid = this.courtAppearanceService.getNextHearingTypeUuid(req.session, nomsId)
     if (Object.keys(nextHearingTypeForm).length === 0) {
       nextHearingTypeForm = {
-        nextHearingType: this.courtAppearanceService.getNextHearingTypeUuid(req.session, nomsId),
+        nextHearingType: nextHearingTypeUuid,
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-select`
@@ -1336,6 +1337,14 @@ export default class CourtCaseRoutes {
     const appearanceTypes = (await this.remandAndSentencingService.getAllAppearanceTypes(req.user.username)).sort(
       (first, second) => first.displayOrder - second.displayOrder,
     )
+    let currentlySetTypeDescription
+    if (nextHearingTypeUuid && !appearanceTypes.map(type => type.appearanceTypeUuid).includes(nextHearingTypeUuid)) {
+      const currentlySetType = await this.remandAndSentencingService.getAppearanceTypeByUuid(
+        nextHearingTypeUuid,
+        req.user.username,
+      )
+      currentlySetTypeDescription = currentlySetType.description
+    }
     return res.render('pages/courtAppearance/next-hearing-type', {
       nomsId,
       nextHearingTypeForm,
@@ -1345,6 +1354,7 @@ export default class CourtCaseRoutes {
       submitToCheckAnswers,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      currentlySetTypeDescription,
       errors: req.flash('errors') || [],
       backLink,
     })

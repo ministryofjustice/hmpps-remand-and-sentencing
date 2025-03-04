@@ -2058,7 +2058,12 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/remand-and-sentencing-api/appearance-type/all',
+        urlPath: '/remand-and-sentencing-api/appearance-type/status',
+        queryParameters: {
+          statuses: {
+            equalTo: 'ACTIVE',
+          },
+        },
       },
       response: {
         status: 200,

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { formatLengths } from 'hmpps-court-cases-release-dates-design/hmpps/utils/utils'
+import { formatLengths } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import {
   PageCourtCaseAppearance,
   PageCourtCaseContent,

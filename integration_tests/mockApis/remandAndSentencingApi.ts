@@ -1738,6 +1738,9 @@ export default {
           convictionDate: {
             equalTo: '2023-05-12',
           },
+          statuses: {
+            equalTo: 'ACTIVE',
+          },
         },
       },
       response: {

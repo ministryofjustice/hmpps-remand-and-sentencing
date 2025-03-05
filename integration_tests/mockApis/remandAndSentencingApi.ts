@@ -661,6 +661,63 @@ export default {
     })
   },
 
+  stubGetLatestCourtAppearanceSameNextHearingDate: ({
+    warrantDate = '',
+  }: {
+    warrantDate: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/latest-appearance',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
+          outcome: {
+            outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+            outcomeName: 'Remanded in custody',
+            nomisCode: '3452',
+            outcomeType: 'REMAND',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+            isSubList: false,
+          },
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          nextCourtAppearance: {
+            appearanceDate: warrantDate,
+            courtCode: 'WRTH',
+            appearanceType: {
+              appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+              description: 'Court appearance',
+              displayOrder: 10,
+            },
+          },
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Remanded in custody',
+                nomisCode: '3452',
+                outcomeType: 'REMAND',
+                displayOrder: 10,
+                isSubList: false,
+                dispositionCode: 'INTERIM',
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
+
   verifyCreateCourtCaseRequest: ({ nextHearingDate = '' }: { nextHearingDate: string }): Promise<number> => {
     return verifyRequest({
       requestUrlPattern: '/remand-and-sentencing-api/court-case',

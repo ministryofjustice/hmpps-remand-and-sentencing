@@ -128,7 +128,7 @@ export default {
         jsonBody: {
           courtId,
           courtName,
-          courtDescription: 'Accrington Youth Court',
+          courtDescription: courtName,
           type: {
             courtType: 'COU',
             courtName: 'County Court/County Divorce Ct',

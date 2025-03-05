@@ -20,6 +20,7 @@ import type {
   CourtCaseOverallConvictionDateAppliedAllForm,
 } from 'forms'
 import type { CourtAppearance, CourtCase } from 'models'
+import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -415,14 +416,19 @@ export default class CourtCaseRoutes {
       )
     }
     if (addOrEditCourtCase === 'edit-court-case') {
-      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-        req.user.token,
-        courtCaseReference,
-      )
-      if (latestCourtAppearance.nextCourtAppearance?.courtCode) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-court-name`,
+      try {
+        const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+          req.user.token,
+          courtCaseReference,
         )
+        if (latestCourtAppearance) {
+          return res.redirect(
+            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-court-name`,
+          )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) {
+        logger.info(`no latest appearance for ${courtCaseReference}`)
       }
     }
     return res.redirect(
@@ -437,27 +443,26 @@ export default class CourtCaseRoutes {
       req.user.token,
       courtCaseReference,
     )
+    const sessionAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    let { courtCode } = latestCourtAppearance
+    if (latestCourtAppearance.nextCourtAppearance?.appearanceDate) {
+      const nextAppearanceDate = dayjs(latestCourtAppearance.nextCourtAppearance.appearanceDate)
+      const currentWarrantDate = dayjs(sessionAppearance.warrantDate)
+      if (nextAppearanceDate.isSame(currentWarrantDate)) {
+        courtCode = latestCourtAppearance.nextCourtAppearance.courtCode
+      }
+    }
     let selectCourtNameForm = (req.flash('selectCourtNameForm')[0] || {}) as CourtCaseSelectCourtNameForm
     if (Object.keys(selectCourtNameForm).length === 0) {
       const court = this.courtAppearanceService.getCourtCode(req.session, nomsId)
       if (court) {
         selectCourtNameForm = {
-          courtNameSelect: court === latestCourtAppearance.nextCourtAppearance?.courtCode ? 'true' : 'false',
+          courtNameSelect: court === courtCode ? 'true' : 'false',
         }
       }
     }
 
-    let lastCourtName = latestCourtAppearance.nextCourtAppearance?.courtCode
-    try {
-      lastCourtName = (
-        await this.courtRegisterService.findCourtById(
-          latestCourtAppearance.nextCourtAppearance?.courtCode,
-          req.user.username,
-        )
-      ).courtDescription
-    } catch (e) {
-      logger.error(e)
-    }
+    const lastCourtName = (await this.courtRegisterService.findCourtById(courtCode, req.user.username)).courtDescription
     return res.render('pages/courtAppearance/select-court-name', {
       nomsId,
       submitToCheckAnswers,

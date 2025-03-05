@@ -9,7 +9,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-select-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <span class="govuk-caption-l">Add an appearance</span>
+                <span class="govuk-caption-l">Add a court appearance</span>
                 {{ govukRadios({
                     name: "courtNameSelect",
                     id: "courtNameSelect",

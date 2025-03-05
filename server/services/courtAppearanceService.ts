@@ -177,11 +177,9 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  async setCourtNameFromSelect(
+  setCourtNameFromSelect(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
-    courtCaseReference: string,
-    token: string,
     selectCourtNameForm: CourtCaseSelectCourtNameForm,
   ) {
     const errors = validate(
@@ -190,12 +188,8 @@ export default class CourtAppearanceService {
       { 'required.courtNameSelect': "Select 'Yes' if the appearance was at this court." },
     )
     if (errors.length === 0 && selectCourtNameForm.courtNameSelect === 'true') {
-      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-        token,
-        courtCaseReference,
-      )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.courtCode = latestCourtAppearance.nextCourtAppearance?.courtCode
+      courtAppearance.courtCode = selectCourtNameForm.lastCourtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

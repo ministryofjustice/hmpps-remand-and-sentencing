@@ -16,6 +16,7 @@ declare module 'forms' {
 
   export interface CourtCaseSelectCourtNameForm {
     courtNameSelect?: string
+    lastCourtCode?: string
   }
 
   export interface CourtCaseCourtNameForm {

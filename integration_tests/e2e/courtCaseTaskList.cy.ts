@@ -19,7 +19,8 @@ context('Task List Page', () => {
       .and('contain.text', 'Cell numberCELL-1')
   })
 
-  it('Save draft button should not display', () => {
+  it('Save draft button and related text should not display', () => {
     courtCaseTaskListPage.submitDraftButton().should('not.exist')
+    courtCaseTaskListPage.saveDraftParagraph().should('not.exist')
   })
 })

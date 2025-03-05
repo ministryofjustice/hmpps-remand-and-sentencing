@@ -233,12 +233,15 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     let courtCaseReferenceForm = (req.flash('courtCaseReferenceForm')[0] || {}) as CourtCaseReferenceForm
+    const { caseReferenceNumber, referenceNumberSelect } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+    )
     if (Object.keys(courtCaseReferenceForm).length === 0) {
-      const referenceNumber = this.courtAppearanceService.getCaseReferenceNumber(req.session, nomsId)
       const noCaseReference = submitToCheckAnswers ? 'true' : ''
       courtCaseReferenceForm = {
-        referenceNumber,
-        noCaseReference: referenceNumber ? '' : noCaseReference,
+        referenceNumber: caseReferenceNumber,
+        noCaseReference: caseReferenceNumber ? '' : noCaseReference,
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
@@ -246,7 +249,7 @@ export default class CourtCaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-    } else if (addOrEditCourtCase === 'edit-court-case') {
+    } else if (addOrEditCourtCase === 'edit-court-case' && referenceNumberSelect !== undefined) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-reference`
     }
 

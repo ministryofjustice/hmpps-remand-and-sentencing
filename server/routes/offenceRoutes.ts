@@ -749,7 +749,16 @@ export default class OffenceRoutes {
       await this.remandAndSentencingService.getSentenceTypes(ageAtConviction, convictionDate, req.user.username)
     ).sort((a, b) => a.displayOrder - b.displayOrder)
     let legacySentenceType
-    if (!offence.sentence?.sentenceTypeId && !res.locals.isAddCourtCase) {
+    if (
+      offence.sentence?.sentenceTypeId &&
+      !sentenceTypes.map(sentenceType => sentenceType.sentenceTypeUuid).includes(offence.sentence?.sentenceTypeId)
+    ) {
+      const sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
+        offence.sentence.sentenceTypeId,
+        req.user.username,
+      )
+      legacySentenceType = sentenceType.description
+    } else if (!offence.sentence?.sentenceTypeId && !res.locals.isAddCourtCase) {
       legacySentenceType = sentenceTypeValueOrLegacy(undefined, offence.sentence?.legacyData)
     }
 

@@ -122,6 +122,7 @@ export default class RemandAndSentencingApiClient {
       query: {
         age,
         convictionDate,
+        statuses: 'ACTIVE',
       },
     })) as unknown as Promise<SentenceType[]>
   }

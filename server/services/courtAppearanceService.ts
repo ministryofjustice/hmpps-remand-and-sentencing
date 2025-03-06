@@ -189,7 +189,7 @@ export default class CourtAppearanceService {
     )
     if (errors.length === 0 && selectCourtNameForm.courtNameSelect === 'true') {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.courtCode = selectCourtNameForm.lastCourtCode
+      courtAppearance.courtCode = selectCourtNameForm.previousCourtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

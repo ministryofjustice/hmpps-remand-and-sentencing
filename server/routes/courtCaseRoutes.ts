@@ -461,7 +461,7 @@ export default class CourtCaseRoutes {
       if (court) {
         selectCourtNameForm = {
           courtNameSelect: court === courtCode ? 'true' : 'false',
-          lastCourtCode: courtCode,
+          previousCourtCode: courtCode,
         }
       }
     }
@@ -477,7 +477,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       selectCourtNameForm,
-      lastCourtCode: courtCode,
+      previousCourtCode: courtCode,
       backLink: submitToCheckAnswers
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`,

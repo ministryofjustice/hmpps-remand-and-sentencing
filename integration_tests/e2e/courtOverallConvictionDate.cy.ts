@@ -32,11 +32,25 @@ context('Court Case Overall Conviction Date Page', () => {
       .trimTextContent()
       .should(
         'equal',
+        'There is a problem Select yes if the conviction date is the same for all offences on the warrant',
+      )
+  })
+
+  it('selecting yes and not entering anything in input results in error', () => {
+    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
+    courtCaseOverallConvictionDatePage.continueButton().click()
+    courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
+    courtCaseOverallConvictionDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should(
+        'equal',
         'There is a problem Conviction date must include day Conviction date must include month Conviction date must include year',
       )
   })
 
   it('submitting an invalid date results in an error', () => {
+    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
     courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').type('35')
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').type('1')
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').type('2024')
@@ -49,6 +63,7 @@ context('Court Case Overall Conviction Date Page', () => {
   })
 
   it('submitting a date in the future results in an error', () => {
+    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
     const futureDate = dayjs().add(7, 'day')
     courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').type(futureDate.date().toString())
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').type((futureDate.month() + 1).toString())

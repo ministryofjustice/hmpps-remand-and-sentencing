@@ -28,7 +28,6 @@ import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
-import CourtCaseConvictionDateAppliedAllPage from '../pages/courtCaseConvictionDateAppliedAllPage'
 import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseDraftSavedPage'
 
@@ -528,14 +527,11 @@ context('New Court Case journey', () => {
     courtCaseOverallSentenceLengthPage.continueButton().click()
 
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
+    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
     courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
-
-    const courtCaseConvictionDateAppliedAllPage = Page.verifyOnPage(CourtCaseConvictionDateAppliedAllPage)
-    courtCaseConvictionDateAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseConvictionDateAppliedAllPage.continueButton().click()
 
     let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
@@ -893,14 +889,11 @@ context('New Court Case journey', () => {
     courtCaseOverallSentenceLengthPage.continueButton().click()
 
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
+    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
     courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
-
-    const courtCaseConvictionDateAppliedAllPage = Page.verifyOnPage(CourtCaseConvictionDateAppliedAllPage)
-    courtCaseConvictionDateAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseConvictionDateAppliedAllPage.continueButton().click()
 
     let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
     offenceCheckOffenceAnswersPage.addAnotherButton().click()

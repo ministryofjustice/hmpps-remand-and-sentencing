@@ -171,6 +171,7 @@ declare module 'forms' {
     'overallConvictionDate-day'?: string
     'overallConvictionDate-month'?: string
     'overallConvictionDate-year'?: string
+    overallConvictionDateAppliedAll?: string
   }
 
   export interface CourtCaseOverallConvictionDateAppliedAllForm {

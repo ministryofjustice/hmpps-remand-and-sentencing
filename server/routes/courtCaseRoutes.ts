@@ -233,15 +233,12 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     let courtCaseReferenceForm = (req.flash('courtCaseReferenceForm')[0] || {}) as CourtCaseReferenceForm
-    const { caseReferenceNumber, referenceNumberSelect } = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-    )
+    const { caseReferenceNumber, referenceNumberSelect, noCaseReference } =
+      this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (Object.keys(courtCaseReferenceForm).length === 0) {
-      const noCaseReference = submitToCheckAnswers ? 'true' : ''
       courtCaseReferenceForm = {
         referenceNumber: caseReferenceNumber,
-        noCaseReference: caseReferenceNumber ? '' : noCaseReference,
+        noCaseReference,
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
@@ -461,6 +458,7 @@ export default class CourtCaseRoutes {
       if (court) {
         selectCourtNameForm = {
           courtNameSelect: court === courtCode ? 'true' : 'false',
+          previousCourtCode: courtCode,
         }
       }
     }
@@ -476,6 +474,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       selectCourtNameForm,
+      previousCourtCode: courtCode,
       backLink: submitToCheckAnswers
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`,
@@ -485,13 +484,7 @@ export default class CourtCaseRoutes {
   public submitSelectCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const selectCourtNameForm = trimForm<CourtCaseSelectCourtNameForm>(req.body)
-    const errors = await this.courtAppearanceService.setCourtNameFromSelect(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      req.user.token,
-      selectCourtNameForm,
-    )
+    const errors = this.courtAppearanceService.setCourtNameFromSelect(req.session, nomsId, selectCourtNameForm)
 
     if (errors.length > 0) {
       req.flash('errors', errors)

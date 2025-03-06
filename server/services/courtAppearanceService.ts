@@ -634,26 +634,33 @@ export default class CourtAppearanceService {
     const errors = validate(
       overallConvictionDateForm,
       {
-        'overallConvictionDate-day': `required${isValidOverallConvictionDateRule}`,
-        'overallConvictionDate-month': `required`,
-        'overallConvictionDate-year': `required`,
+        'overallConvictionDate-day': `required_if:overallConvictionDateAppliedAll,true${isValidOverallConvictionDateRule}`,
+        'overallConvictionDate-month': `required_if:overallConvictionDateAppliedAll,true`,
+        'overallConvictionDate-year': `required_if:overallConvictionDateAppliedAll,true`,
+        overallConvictionDateAppliedAll: 'required',
       },
       {
-        'required.overallConvictionDate-year': 'Conviction date must include year',
-        'required.overallConvictionDate-month': 'Conviction date must include month',
-        'required.overallConvictionDate-day': 'Conviction date must include day',
+        'required_if.overallConvictionDate-year': 'Conviction date must include year',
+        'required_if.overallConvictionDate-month': 'Conviction date must include month',
+        'required_if.overallConvictionDate-day': 'Conviction date must include day',
         'isValidDate.overallConvictionDate-day': 'This date does not exist.',
         'isPastDate.overallConvictionDate-day': 'Conviction date must be in the past',
+        'required.overallConvictionDateAppliedAll':
+          'Select yes if the conviction date is the same for all offences on the warrant',
       },
     )
     if (errors.length === 0) {
-      const overallConvictionDate = dayjs({
-        year: overallConvictionDateForm['overallConvictionDate-year'],
-        month: parseInt(overallConvictionDateForm['overallConvictionDate-month'], 10) - 1,
-        day: overallConvictionDateForm['overallConvictionDate-day'],
-      })
       const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.overallConvictionDate = overallConvictionDate.toDate()
+      courtAppearance.overallConvictionDateAppliedAll = overallConvictionDateForm.overallConvictionDateAppliedAll
+      if (overallConvictionDateForm.overallConvictionDateAppliedAll === 'true') {
+        const overallConvictionDate = dayjs({
+          year: overallConvictionDateForm['overallConvictionDate-year'],
+          month: parseInt(overallConvictionDateForm['overallConvictionDate-month'], 10) - 1,
+          day: overallConvictionDateForm['overallConvictionDate-day'],
+        })
+
+        courtAppearance.overallConvictionDate = overallConvictionDate.toDate()
+      }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

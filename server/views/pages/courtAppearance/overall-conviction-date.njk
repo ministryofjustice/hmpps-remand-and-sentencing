@@ -1,31 +1,19 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 
-{% set pageTitle = applicationName + " - Add a court case Overall conviction Date" %}
-
-{% block content %}
-    {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-overall-conviction-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% set isAddOffences = true %}
-                {% include "../../partials/offenceCaption.njk" %}
-                {{ govukDateInput({
+{% set yesHtml %}
+    {{ govukDateInput({
                     id: "overall-conviction-date",
                     namePrefix: "overallConvictionDate",
                     errorMessage: errors | findErrorsBeginningWith('overallConvictionDate'),
                     fieldset: {
                         legend: {
-                            text: "Enter the conviction date" if isAddCourtAppearance else "Edit the conviction date",
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--l"
+                            text: "Enter the conviction date",
+                            classes: "govuk-fieldset__legend--m"
                         }
-                    },
-                    hint: {
-                        text: "This is the overall conviction date for the appearance"
                     },
                     items: [
                         {
@@ -48,6 +36,47 @@
                         }
                     ]
                 }) }}
+{% endset %}
+
+{% set pageTitle = applicationName + " - Add a court case Overall conviction Date" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-overall-conviction-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% set isAddOffences = true %}
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {{ govukRadios({
+                    name: "overallConvictionDateAppliedAll",
+                    fieldset: {
+                        legend: {
+                            text: "Is the conviction date the same for all offences on the warrant?",
+                            classes: "govuk-fieldset__legend--l",
+                            isPageHeading: true
+                        }
+                    },
+                    errorMessage: errors | findError('overallConvictionDateAppliedAll'),
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes",
+                            checked: overallConvictionDateAppliedAll === 'true',
+                            conditional: {
+                                html: yesHtml
+                            }
+                        },
+                        {
+                            value: "false",
+                            checked: overallConvictionDateAppliedAll === 'false',
+                            text: "No"
+                        }
+                    ]
+                    }) }}
+
+
 
                 {{ govukButton({
                     text: "Save and continue",

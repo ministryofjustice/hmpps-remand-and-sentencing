@@ -1093,12 +1093,17 @@ export default class CourtCaseRoutes {
     let overallConvictionDateDay: number | string = overallConvictionDateForm['overallConvictionDate-day']
     let overallConvictionDateMonth: number | string = overallConvictionDateForm['overallConvictionDate-month']
     let overallConvictionDateYear: number | string = overallConvictionDateForm['overallConvictionDate-year']
-    const overallConvictionDateValue = this.courtAppearanceService.getOverallConvictionDate(req.session, nomsId)
+    let { overallConvictionDateAppliedAll } = overallConvictionDateForm
+    const {
+      overallConvictionDate: overallConvictionDateValue,
+      overallConvictionDateAppliedAll: overallConvictionDateAppliedAllValue,
+    } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (overallConvictionDateValue && Object.keys(overallConvictionDateForm).length === 0) {
       const overallConvictionDate = new Date(overallConvictionDateValue)
       overallConvictionDateDay = overallConvictionDate.getDate()
       overallConvictionDateMonth = overallConvictionDate.getMonth() + 1
       overallConvictionDateYear = overallConvictionDate.getFullYear()
+      overallConvictionDateAppliedAll = overallConvictionDateAppliedAllValue
     }
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length`
@@ -1118,6 +1123,7 @@ export default class CourtCaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      overallConvictionDateAppliedAll,
       errors: req.flash('errors') || [],
       backLink,
     })
@@ -1125,13 +1131,14 @@ export default class CourtCaseRoutes {
 
   public submitOverallConvictionDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query
     const overallConvictionDateForm = trimForm<CourtCaseOverallConvictionDateForm>(req.body)
     const errors = this.courtAppearanceService.setOverallConvictionDate(req.session, nomsId, overallConvictionDateForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('overallConvictionDateForm', { ...overallConvictionDateForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
       )
     }
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
@@ -1139,14 +1146,13 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
       )
     }
-    const { submitToCheckAnswers } = req.query
-    if (submitToCheckAnswers) {
+    if (res.locals.isAddCourtCase) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date-applied-all`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
   }
 

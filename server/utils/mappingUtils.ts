@@ -284,6 +284,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
   return {
     appearanceReference: pageCourtCaseAppearance.appearanceUuid,
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
+    noCaseReference: pageCourtCaseAppearance.courtCaseReference ? 'true' : undefined,
     warrantDate: dayjs(pageCourtCaseAppearance.appearanceDate).toDate(),
     courtCode: pageCourtCaseAppearance.courtCode,
     appearanceOutcomeUuid: pageCourtCaseAppearance.outcome?.outcomeUuid,

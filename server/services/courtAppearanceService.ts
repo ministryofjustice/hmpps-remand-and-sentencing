@@ -58,6 +58,7 @@ export default class CourtAppearanceService {
       } else {
         delete courtAppearance.caseReferenceNumber
       }
+      courtAppearance.noCaseReference = courtCaseReferenceForm.noCaseReference
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

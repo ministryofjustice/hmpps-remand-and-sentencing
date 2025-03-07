@@ -7,7 +7,8 @@
                 <div class="govuk-grid-column-one-half">
                     {{ govukBackLink({
                         text: "Back",
-                        href: backLink
+                        href: backLink,
+                        attributes: {  'data-qa': 'back-link' }
                     }) }}
                     </div>
                 <div class="govuk-grid-column-one-half govuk-!-text-align-right"><a href="/person/{{ nomsId }}" class="govuk-link govuk-body-s">Go to Court cases</a></div>

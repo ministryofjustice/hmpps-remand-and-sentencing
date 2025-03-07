@@ -370,6 +370,10 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).overallSentenceLength
   }
 
+  getHasOverallSentenceLength(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+    return this.getCourtAppearance(session, nomsId).hasOverallSentenceLength
+  }
+
   setOverallSentenceLength(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

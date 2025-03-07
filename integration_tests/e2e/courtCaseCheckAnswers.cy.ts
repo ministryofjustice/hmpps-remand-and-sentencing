@@ -59,11 +59,12 @@ context('Court Case Check Answers Page', () => {
   })
 
   it('button to Save court case is displayed', () => {
-    courtCaseCheckAnswersPage.continueButton().should('contain.text', 'Accept and continue')
+    courtCaseCheckAnswersPage.continueButton().should('contain.text', 'Confirm and continue')
   })
 
   it('displays court appearance details', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Warrant type': 'REMAND',
       'Case reference': 'T12345678',
       'Court name': 'Accrington Youth Court',
       'Outcome applies to all offences': 'No',

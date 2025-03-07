@@ -33,8 +33,10 @@
                     Finish adding an appearance
                 {% endif %}
             </h2>
+            {% if featureToggles.saveDraftEnabled %}
             <p class="govuk-body">To save a draft of the court case, you must first complete the appearance
                 information.</p>
+            {% endif %}
             <p class="govuk-body">Once you have finished adding all the information, select ‘Finish and save’. You will
                 not be able to return to this page, but can edit the details in the Court cases tab.</p>
             <div class="govuk-button-group">

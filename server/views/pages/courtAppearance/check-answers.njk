@@ -5,6 +5,14 @@
 {% set checkAnswersRows = [
                         {
                             key: {
+                            text: "Warrant type"
+                        },
+                            value: {
+                            text: courtAppearance.warrantType | capitalize
+                        }
+                        },
+                        {
+                            key: {
                             text: "Case reference"
                         },
                             value: {
@@ -125,7 +133,7 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
-                    text: "Accept and continue",
+                    text: "Confirm and continue",
                     attributes: {  'data-qa': 'continue-button' }
                 }) }}
             </form>

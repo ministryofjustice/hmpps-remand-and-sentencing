@@ -245,6 +245,10 @@ export function sentenceLengthToSentenceLengthForm(
   sentenceLength: SentenceLength,
   hasOverallSentenceLength?: string,
 ): SentenceLengthForm {
+  if (!sentenceLength && hasOverallSentenceLength) {
+    return { hasOverallSentenceLength }
+  }
+
   return sentenceLength
     ? {
         'sentenceLength-years': sentenceLength.years,

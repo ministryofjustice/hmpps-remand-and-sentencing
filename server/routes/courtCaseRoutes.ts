@@ -992,6 +992,7 @@ export default class CourtCaseRoutes {
     if (Object.keys(courtCaseOverallSentenceLengthForm).length === 0) {
       courtCaseOverallSentenceLengthForm = sentenceLengthToSentenceLengthForm(
         this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
+        this.courtAppearanceService.getHasOverallSentenceLength(req.session, nomsId),
       )
     }
     return res.render('pages/courtAppearance/overall-sentence-length', {

@@ -1,9 +1,11 @@
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
 import Page from '../pages/page'
+import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 
 context('Add Court Case Sentence Length Page', () => {
   let courtCaseOverallSentenceLengthPage: CourtCaseOverallSentenceLengthPage
+  let offenceConvictionDatePage: OffenceConvictionDatePage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
@@ -59,5 +61,22 @@ context('Add Court Case Sentence Length Page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem The sentence length cannot be 0')
+  })
+
+  it('Navigating away from the page and coming back using the back-link retains the state of the page', () => {
+    courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
+    courtCaseOverallSentenceLengthPage.yearsInput().type('2')
+    courtCaseOverallSentenceLengthPage.continueButton().click()
+    offenceConvictionDatePage = Page.verifyOnPageTitle(
+      OffenceConvictionDatePage,
+      'Is the conviction date the same for all offences on the warrant?',
+    )
+    offenceConvictionDatePage.backLink().click()
+    courtCaseOverallSentenceLengthPage.radioSelector('true').should('be.checked')
+    courtCaseOverallSentenceLengthPage.yearsInput().should('have.value', '2')
+    courtCaseOverallSentenceLengthPage.radioLabelSelector('false').click()
+    courtCaseOverallSentenceLengthPage.continueButton().click()
+    offenceConvictionDatePage.backLink().click()
+    courtCaseOverallSentenceLengthPage.radioSelector('false').should('be.checked')
   })
 })

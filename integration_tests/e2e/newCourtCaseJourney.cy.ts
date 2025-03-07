@@ -120,6 +120,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Warrant type': 'REMAND',
       'Case reference': 'T12345678',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
@@ -354,6 +355,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Warrant type': 'REMAND',
       'Case reference': 'T12345678',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
@@ -474,6 +476,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Warrant type': 'SENTENCING',
       'Case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
@@ -725,6 +728,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Warrant type': 'SENTENCING',
       'Case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
@@ -836,6 +840,7 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Warrant type': 'SENTENCING',
       'Case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',

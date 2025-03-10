@@ -42,4 +42,13 @@ context('Add Offence Offence Name Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem You must enter a valid offence.')
   })
+
+  it('Clearing the the selection removes all text from the auto complete field', () => {
+    offenceOffenceNamePage.autoCompleteInput().type('invalid offence text')
+    offenceOffenceNamePage.autoCompleteInput().should('have.value', 'invalid offence text')
+    offenceOffenceNamePage.continueButton().click()
+    offenceOffenceNamePage.autoCompleteInput().click()
+    offenceOffenceNamePage.clearTheSelection().click()
+    offenceOffenceNamePage.autoCompleteInput().should('have.value', '')
+  })
 })

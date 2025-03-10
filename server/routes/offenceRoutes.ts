@@ -30,7 +30,6 @@ import CourtAppearanceService from '../services/courtAppearanceService'
 import validate from '../validation/validation'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import {
-  chargeToOffence,
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
@@ -41,7 +40,6 @@ import {
   getNextPeriodLengthType,
   outcomeValueOrLegacy,
   sentenceTypeValueOrLegacy,
-  sortByOffenceStartDate,
 } from '../utils/utils'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
@@ -1629,65 +1627,37 @@ export default class OffenceRoutes {
 
   public getReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-      req.user.token,
-      courtCaseReference,
+    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+
+    const sentenceTypeIds = Array.from(
+      new Set(
+        offences.filter(offence => offence.sentence?.sentenceTypeId).map(offence => offence.sentence?.sentenceTypeId),
+      ),
     )
-    const sentenceTypeMap = Object.entries(
-      latestCourtAppearance.charges
-        .filter(charge => charge.sentence?.sentenceType.sentenceTypeUuid)
-        .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]),
-    )
-    const offenceNameMap = await this.manageOffencesService.getOffenceMap(
-      Array.from(new Set(latestCourtAppearance.charges.map(offence => offence.offenceCode))),
-      req.user.token,
-    )
-    const offences = latestCourtAppearance.charges
-      .filter(charge => {
-        const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
-        return !dispositionCode || dispositionCode === 'INTERIM'
-      })
-      .map(charge => chargeToOffence(charge))
-      .sort((a, b) => {
-        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
-      })
-    const offenceOutcomeMap = Object.fromEntries(
-      latestCourtAppearance.charges
-        ?.filter(charge => charge.outcome)
-        .map(charge => [charge.outcome.outcomeUuid, charge.outcome.outcomeName]) ?? [],
-    )
+    const offenceCodes = Array.from(new Set(offences.map(offence => offence.offenceCode)))
+    const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
+
+    const [offenceMap, sentenceTypeMap, outcomeMap] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
+      this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
+    ])
     return res.render('pages/offence/review-offences', {
       nomsId,
       courtCaseReference,
-      latestCourtAppearance,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offenceNameMap,
+      offenceMap,
       sentenceTypeMap,
       offences,
-      offenceOutcomeMap,
+      outcomeMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
   public submitReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-      req.user.token,
-      courtCaseReference,
-    )
-    latestCourtAppearance.charges
-      .filter(charge => {
-        const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
-        return !dispositionCode || dispositionCode === 'INTERIM'
-      })
-      .map(charge => chargeToOffence(charge))
-      .sort((a, b) => {
-        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
-      })
-      .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))
-
     const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)
     if (reviewOffenceForm.changeOffence === 'true') {
       return res.redirect(

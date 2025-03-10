@@ -26,10 +26,11 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtCasesDetailsModel from './data/CourtCasesDetailsModel'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
-import { getAsStringOrDefault, outcomeValueOrLegacy } from '../utils/utils'
+import { getAsStringOrDefault, outcomeValueOrLegacy, sortByOffenceStartDate } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
 import {
+  chargeToOffence,
   draftCourtAppearanceToCourtAppearance,
   pageCourtCaseAppearanceToCourtAppearance,
   sentenceLengthToAlternativeSentenceLengthForm,
@@ -581,6 +582,22 @@ export default class CourtCaseRoutes {
   public newJourney: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    if (!res.locals.isAddCourtCase) {
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        req.user.token,
+        courtCaseReference,
+      )
+      latestCourtAppearance.charges
+        .filter(charge => {
+          const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
+          return !dispositionCode || dispositionCode === 'INTERIM'
+        })
+        .map(charge => chargeToOffence(charge))
+        .sort((a, b) => {
+          return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+        })
+        .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-type`,
     )

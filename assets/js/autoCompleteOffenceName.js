@@ -25,7 +25,10 @@ window.addEventListener('load', function () {
     menuClasses: 'govuk-body',
     templates: {
       inputValue: function (result) {
-        return (result && offenceValue(result)) ?? ''
+        if (!result || typeof result === 'string') {
+          return ''
+        }
+        return offenceValue(result)
       },
       suggestion: function (result) {
         if (result.unableToLoad) {

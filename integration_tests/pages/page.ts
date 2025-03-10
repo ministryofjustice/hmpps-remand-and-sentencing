@@ -67,4 +67,6 @@ export default abstract class Page {
   legendParagraph = (): PageElement => cy.get('[data-qa=legendParagraph]')
 
   backLink = (): PageElement => cy.get('[data-qa=back-link]')
+
+  clearTheSelection = (): PageElement => cy.contains('Clear the selection')
 }

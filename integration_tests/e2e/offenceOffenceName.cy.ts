@@ -44,8 +44,8 @@ context('Add Offence Offence Name Page', () => {
   })
 
   it('Clearing the the selection removes all text from the auto complete field', () => {
-    offenceOffenceNamePage.autoCompleteInput().type('invalid offenvce')
-    offenceOffenceNamePage.autoCompleteInput().should('have.value', 'invalid offenvce')
+    offenceOffenceNamePage.autoCompleteInput().type('invalid offence text')
+    offenceOffenceNamePage.autoCompleteInput().should('have.value', 'invalid offence text')
     offenceOffenceNamePage.continueButton().click()
     offenceOffenceNamePage.autoCompleteInput().click()
     offenceOffenceNamePage.clearTheSelection().click()

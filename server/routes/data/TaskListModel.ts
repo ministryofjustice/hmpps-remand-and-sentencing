@@ -213,12 +213,13 @@ export default class TaskListModel {
             classes: 'govuk-tag--grey',
           },
         }
-      }
-      status = {
-        tag: {
-          text: 'Incomplete',
-          classes: 'govuk-tag--blue',
-        },
+      } else {
+        status = {
+          tag: {
+            text: 'Incomplete',
+            classes: 'govuk-tag--blue',
+          },
+        }
       }
     }
 

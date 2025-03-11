@@ -172,7 +172,7 @@ export default {
   adjustmentService: {
     ui_url: get('ADJUSTMENTS_UI_URL', 'http://127.0.0.1:3000/adjustments', requiredInProduction),
   },
-  domain: get('INGRESS_URL', 'http://127.0.0.1:3000', requiredInProduction),
+  domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   sqs: {
     audit: auditConfig(),
   },

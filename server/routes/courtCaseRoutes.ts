@@ -1547,7 +1547,7 @@ export default class CourtCaseRoutes {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     let nextHearingCourtName
     let nextHearingAppearanceType
-    if (courtAppearance.nextHearingCourtSelect === 'true') {
+    if (courtAppearance.nextHearingSelect) {
       const [court, appearanceType] = await Promise.all([
         this.courtRegisterService.findCourtById(courtAppearance.nextHearingCourtCode, req.user.username),
         this.remandAndSentencingService.getAppearanceTypeByUuid(courtAppearance.nextHearingTypeUuid, req.user.username),

@@ -322,7 +322,7 @@ context('Repeat Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Review offences',
+          name: 'Update offence outcomes',
           status: 'Cannot start yet',
         },
         {
@@ -387,7 +387,7 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Review offences',
+          name: 'Update offence outcomes',
           status: 'Incomplete',
         },
         {
@@ -413,7 +413,7 @@ context('Repeat Court Case journey', () => {
     // courtCaseDocumentsPage.button().click()
 
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    courtCaseTaskListPage.reviewOffencesLink().click()
+    courtCaseTaskListPage.updateOffenceOutcomesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
@@ -493,7 +493,7 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Review offences',
+          name: 'Update offence outcomes',
           status: 'Completed',
         },
         {
@@ -554,7 +554,7 @@ context('Repeat Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Review offences',
+          name: 'Update offence outcomes',
           status: 'Cannot start yet',
         },
         {
@@ -613,7 +613,7 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Review offences',
+          name: 'Update offence outcomes',
           status: 'Incomplete',
         },
         {
@@ -639,7 +639,7 @@ context('Repeat Court Case journey', () => {
     // courtCaseDocumentsPage.button().click()
 
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    courtCaseTaskListPage.reviewOffencesLink().click()
+    courtCaseTaskListPage.updateOffenceOutcomesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
@@ -710,7 +710,7 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Review offences',
+          name: 'Update offence outcomes',
           status: 'Completed',
         },
         {

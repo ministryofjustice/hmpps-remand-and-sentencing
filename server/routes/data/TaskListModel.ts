@@ -155,7 +155,7 @@ export default class TaskListModel {
   private getOffenceSentencesItem(courtAppearance: CourtAppearance): TaskListItem {
     return {
       title: {
-        text: this.getOffenceSentenceTitleText(),
+        text: this.getOffenceSentenceTitleText(courtAppearance),
         classes: 'govuk-link--no-visited-state',
       },
       href: this.getOffenceSentenceHref(courtAppearance),
@@ -163,9 +163,12 @@ export default class TaskListModel {
     }
   }
 
-  private getOffenceSentenceTitleText(): string {
+  private getOffenceSentenceTitleText(courtAppearance: CourtAppearance): string {
     if (this.isAddCourtCase()) {
       return 'Add offences'
+    }
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      return 'Update offence outcomes'
     }
 
     return 'Review offences'

@@ -527,15 +527,11 @@ context('New Court Case journey', () => {
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('4')
     courtCaseOverallSentenceLengthPage.monthsInput().type('5')
-    courtCaseOverallSentenceLengthPage
-      .appearanceDetailsSummaryList()
-      .invoke('text')
-      .then(text => {
-        const normalizedText = text.replace(/\s+/g, ' ').trim() // Normalize spaces
-        expect(normalizedText).to.include('Case reference number T12345678')
-        expect(normalizedText).to.include('Court name Accrington Youth Court')
-        expect(normalizedText).to.include('Warrant date 12/05/2023')
-      })
+    courtCaseOverallSentenceLengthPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference number': 'T12345678',
+      'Court name': 'Accrington Youth Court',
+      'Warrant date': '12/05/2023',
+    })
     courtCaseOverallSentenceLengthPage.continueButton().click()
 
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)

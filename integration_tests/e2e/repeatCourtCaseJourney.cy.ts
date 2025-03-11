@@ -413,7 +413,7 @@ context('Repeat Court Case journey', () => {
     // courtCaseDocumentsPage.button().click()
 
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    courtCaseTaskListPage.reviewOffencesLink().click()
+    courtCaseTaskListPage.updateOffenceOutcomesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
@@ -639,7 +639,7 @@ context('Repeat Court Case journey', () => {
     // courtCaseDocumentsPage.button().click()
 
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    courtCaseTaskListPage.reviewOffencesLink().click()
+    courtCaseTaskListPage.updateOffenceOutcomesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()

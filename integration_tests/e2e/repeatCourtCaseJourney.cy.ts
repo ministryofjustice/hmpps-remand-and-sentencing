@@ -140,7 +140,7 @@ context('Repeat Court Case journey', () => {
         },
         {
           name: 'Review offences',
-          status: 'Incomplete',
+          status: 'Optional',
         },
         {
           name: 'Add next court appearance',
@@ -299,11 +299,6 @@ context('Repeat Court Case journey', () => {
     ])
 
     cy.task('stubGetChargeOutcomesByIds', [
-      {
-        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-        outcomeName: 'Imprisonment',
-        outcomeType: 'SENTENCING',
-      },
       {
         outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
         outcomeName: 'Imprisonment by default',
@@ -536,11 +531,6 @@ context('Repeat Court Case journey', () => {
     ])
 
     cy.task('stubGetChargeOutcomesByIds', [
-      {
-        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-        outcomeName: 'Imprisonment',
-        outcomeType: 'SENTENCING',
-      },
       {
         outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
         outcomeName: 'Imprisonment by default',

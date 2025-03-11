@@ -49,46 +49,44 @@
 
 {% block pageContent %}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <form method="post"
-              action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            {% include "../../partials/offenceCaption.njk" %}
+    <form method="post"
+          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/offenceCaption.njk" %}
 
-            {{ govukRadios({
-                name: "hasOverallSentenceLength",
-                value: courtCaseOverallSentenceLengthForm["hasOverallSentenceLength"],
-                hint: {
-                    text: "Select one option."
-                },
-                fieldset: {
-                    legend: {
-                        text: "Is there an overall sentence length on the warrant?",
-                        classes: "govuk-fieldset__legend--l",
-                        isPageHeading: true
-                    }
-                },
-                errorMessage: errors | findError('hasOverallSentenceLength'),
-                items: [{
-                    value: "true",
-                    text: "Yes",
-                    checked: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true',
-                    conditional: {
-                        html: yesHtml
-                    }
-                },
-                    {
-                        value: "false",
-                        checked: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'false',
-                        text: "No"
-                    }]
-            }) }}
+        {{ govukRadios({
+            name: "hasOverallSentenceLength",
+            value: courtCaseOverallSentenceLengthForm["hasOverallSentenceLength"],
+            hint: {
+                text: "Select one option."
+            },
+            fieldset: {
+                legend: {
+                    text: "Is there an overall sentence length on the warrant?",
+                    classes: "govuk-fieldset__legend--l",
+                    isPageHeading: true
+                }
+            },
+            errorMessage: errors | findError('hasOverallSentenceLength'),
+            items: [{
+                value: "true",
+                text: "Yes",
+                checked: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true',
+                conditional: {
+                    html: yesHtml
+                }
+            },
+                {
+                    value: "false",
+                    checked: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'false',
+                    text: "No"
+                }]
+        }) }}
 
-            {{ govukButton({
-                text: "Save and continue",
-                attributes: {  'data-qa': 'continue-button' }
-            }) }}
+        {{ govukButton({
+            text: "Save and continue",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
 
-        </form>
-    </div>
+    </form>
 {% endblock %}

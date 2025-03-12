@@ -18,31 +18,49 @@ The header and footer components have been incorporated into this application bu
 
 Fallback html must be included for all imported components for instances when the api call fails. These should be kept within the calling project, but should remain consistent with the designs detailed [here](https://github.com/ministryofjustice/hmpps-micro-frontend-components/blob/main/readme/incorporating.md#fallbacks-services-with-prison-and-external-users).
 
-## Running the app
-The easiest way to run the app is to use docker compose to create the service and all dependencies. 
+### Running the App Locally Against Dev Services (for Development)
 
-`docker compose pull`
+1. **Create a `.env` file** in the root directory (most of these values come from `values-dev.yaml`).  
+   The `client_ids` and `secrets` are from the dev namespace.
 
-`docker compose up`
+   ```ini
+   API_CLIENT_ID="XXX_CLIENT_ID_FROM_DEV_K8S_SECRETS_XXX"
+   API_CLIENT_SECRET="XXX_CLIENT_SECRET_FROM_DEV_K8S_SECRETS_XXX"
+   SYSTEM_CLIENT_ID="XXX_SYSTEM_CLIENT_ID_FROM_DEV_K8S_SECRETS_XXX"
+   SYSTEM_CLIENT_SECRET="XXX_SYSTEM_CLIENT_SECRET_FROM_DEV_K8S_SECRETS_XXX"
+   HMPPS_AUTH_URL="https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
+   TOKEN_VERIFICATION_API_URL="https://token-verification-api-dev.prison.service.justice.gov.uk"
+   MANAGE_OFFENCES_API_URL="https://manage-offences-api-dev.hmpps.service.justice.gov.uk"
+   PRISON_API_URL="https://prison-api-dev.prison.service.justice.gov.uk"
+   PRISONER_SEARCH_API_URL="https://prisoner-search-dev.prison.service.justice.gov.uk"
+   COURT_CASES_RELEASE_DATES_API_URL="https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk"
+   DIGITAL_PRISON_SERVICES_URL="https://digital-dev.prison.service.justice.gov.uk"
+   COURT_REGISTER_API_URL="https://court-register-api-dev.hmpps.service.justice.gov.uk"
+   ENVIRONMENT_NAME="DEV"
+   COMPONENT_API_URL="https://frontend-components-dev.hmpps.service.justice.gov.uk"
+   COMMON_COMPONENTS_ENABLED="true"
+   REMAND_AND_SENTENCING_API_URL="https://remand-and-sentencing-api-dev.hmpps.service.justice.gov.uk"
+   DOCUMENT_MANAGEMENT_API_URL="https://document-api-dev.hmpps.service.justice.gov.uk"
+   ADJUSTMENTS_UI_URL="https://adjust-release-dates-dev.hmpps.service.justice.gov.uk"
+   CALCULATE_RELEASE_DATES_API_URL="https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk"
+   AUDIT_ENABLED="false"
+   ```
 
-### Dependencies
-The app requires: 
-* hmpps-auth - for authentication
-* redis - session store and token caching
+2. **Ensure the `NODE_OPTIONS` environment variable is set** to allow the `.env` file to be read:
+   ```sh
+   export NODE_OPTIONS="-r dotenv/config"
+   ```
 
-### Running the app for development
+3. **Start the app** by running:
+   ```sh
+   npm run start
+   ```
 
-To start the main services excluding the example typescript template app: 
-
-`docker compose up --scale=app=0`
-
-Install dependencies using `npm install`, ensuring you are using `node v18.x` and `npm v9.x`
-
-Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --latest-npm` within the repository folder to use the correct version of node, and the latest version of npm. This matches the `engines` config in `package.json` and the CircleCI build config.
-
-And then, to build the assets and start the app with nodemon:
-
-`npm run start:dev`
+4. **Access the application** in your browser:
+   ```
+   http://localhost:3000/person/XXX
+   ```
+   _(Replace `XXX` with a valid prisoner ID from the dev environment.)_
 
 ### Run linter
 

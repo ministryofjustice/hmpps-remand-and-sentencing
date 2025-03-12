@@ -79,4 +79,8 @@ context('Add Court Case Sentence Length Page', () => {
     offenceConvictionDatePage.backLink().click()
     courtCaseOverallSentenceLengthPage.radioSelector('false').should('be.checked')
   })
+
+  it('Correct offences caption is displayed', () => {
+    courtCaseOverallSentenceLengthPage.offencesCaption().should('have.text', 'Add offences')
+  })
 })

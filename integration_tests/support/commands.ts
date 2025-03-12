@@ -175,6 +175,32 @@ const trimTextContent = subject => {
   return element.textContent.trim().replace(/\s{2,}/g, ' ')
 }
 
+const getRadioOptions = subject => {
+  if (subject.get().length > 1) {
+    throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
+  }
+
+  const radiosElement = subject.get()[0]
+
+  return [...radiosElement.querySelectorAll('div.govuk-radios__item, div.govuk-radios__divider')].map(
+    radioOptionElement => {
+      if (radioOptionElement.classList.contains('govuk-radios__item')) {
+        const label = radioOptionElement
+          .querySelector('label')
+          .textContent.trim()
+          .replace(/\s{2,}/g, ' ')
+        return {
+          label,
+        }
+      }
+      return {
+        isDivider: true,
+        label: radioOptionElement.textContent.trim().replace(/\s{2,}/g, ' '),
+      }
+    },
+  )
+}
+
 Cypress.Commands.add('getTable', { prevSubject: true }, getTable)
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
 Cypress.Commands.add('getActions', { prevSubject: true }, getActions)
@@ -182,6 +208,7 @@ Cypress.Commands.add('getTaskList', { prevSubject: true }, getTaskList)
 Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 Cypress.Commands.add('getOffenceCards', { prevSubject: true }, getOffenceCards)
 Cypress.Commands.add('getAppearanceCardDetails', { prevSubject: true }, getAppearanceCardDetails)
+Cypress.Commands.add('getRadioOptions', { prevSubject: true }, getRadioOptions)
 
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
   cy.visit(

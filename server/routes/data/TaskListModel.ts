@@ -135,7 +135,7 @@ export default class TaskListModel {
       status = {
         tag: {
           text: 'Cannot start yet',
-          classes: 'govuk-tag--grey',
+          classes: 'govuk-task-list__status--cannot-start-yet',
         },
       }
     }
@@ -199,7 +199,7 @@ export default class TaskListModel {
       return {
         tag: {
           text: 'Cannot start yet',
-          classes: 'govuk-tag--grey',
+          classes: 'govuk-task-list__status--cannot-start-yet',
         },
       }
     }
@@ -268,7 +268,7 @@ export default class TaskListModel {
       status = {
         tag: {
           text: 'Cannot start yet',
-          classes: 'govuk-tag--grey',
+          classes: 'govuk-task-list__status--cannot-start-yet',
         },
       }
     } else if (courtAppearance.nextCourtAppearanceAccepted) {

@@ -83,7 +83,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Next court appearance',
+          name: 'Add next court appearance',
           status: 'Cannot start yet',
         },
         {
@@ -143,7 +143,7 @@ context('New Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Next court appearance',
+          name: 'Add next court appearance',
           status: 'Incomplete',
         },
         {
@@ -217,7 +217,7 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Next court appearance',
+          name: 'Add next court appearance',
           status: 'Incomplete',
         },
         {
@@ -225,7 +225,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-    courtCaseTaskListPage.nextCourtAppearanceLink().click()
+    courtCaseTaskListPage.addNextCourtAppearanceLink().click()
 
     const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
     courtCaseNextHearingSetPage.radioLabelSelector('true').click()
@@ -271,7 +271,7 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Next court appearance',
+          name: 'Add next court appearance',
           status: 'Completed',
         },
         {
@@ -318,7 +318,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Next court appearance',
+          name: 'Add next court appearance',
           status: 'Cannot start yet',
         },
         {
@@ -378,7 +378,7 @@ context('New Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Next court appearance',
+          name: 'Add next court appearance',
           status: 'Incomplete',
         },
         {

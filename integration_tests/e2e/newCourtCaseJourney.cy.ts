@@ -83,7 +83,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Next court appearance',
+          name: 'Add next court appearance',
           status: 'Cannot start yet',
         },
         {
@@ -225,7 +225,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-    courtCaseTaskListPage.nextCourtAppearanceLink().click()
+    courtCaseTaskListPage.addNextCourtAppearanceLink().click()
 
     const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
     courtCaseNextHearingSetPage.radioLabelSelector('true').click()

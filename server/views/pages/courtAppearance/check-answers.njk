@@ -16,7 +16,7 @@
                             text: "Case reference"
                         },
                             value: {
-                            text: courtAppearance.caseReferenceNumber
+                            text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered'
                         },
                             actions: {
                             items: [

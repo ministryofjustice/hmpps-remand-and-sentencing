@@ -133,10 +133,8 @@ export default class TaskListModel {
 
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
       status = {
-        tag: {
-          text: 'Cannot start yet',
-          classes: 'govuk-task-list__status--cannot-start-yet',
-        },
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
       }
     }
 
@@ -197,10 +195,8 @@ export default class TaskListModel {
 
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
       return {
-        tag: {
-          text: 'Cannot start yet',
-          classes: 'govuk-task-list__status--cannot-start-yet',
-        },
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
       }
     }
 
@@ -266,10 +262,8 @@ export default class TaskListModel {
     }
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
       status = {
-        tag: {
-          text: 'Cannot start yet',
-          classes: 'govuk-task-list__status--cannot-start-yet',
-        },
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
       }
     } else if (courtAppearance.nextCourtAppearanceAccepted) {
       status = {

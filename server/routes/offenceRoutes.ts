@@ -170,12 +170,14 @@ export default class OffenceRoutes {
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const caseOutcomes = await this.offenceOutcomeService.getAllOutcomes(req.user.username)
 
-    const [subListOutcomes, mainOutcomes] = caseOutcomes
-      .filter(caseOutcome => caseOutcome.outcomeType === warrantType)
+    const [warrantTypeOutcomes, nonCustodialOutcomes] = caseOutcomes
+      .filter(caseOutcome => caseOutcome.outcomeType === warrantType || caseOutcome.outcomeType === 'NON_CUSTODIAL')
       .sort((a, b) => a.displayOrder - b.displayOrder)
       .reduce(
-        ([subList, mainList], caseOutcome) => {
-          return caseOutcome.isSubList ? [[...subList, caseOutcome], mainList] : [subList, [...mainList, caseOutcome]]
+        ([warrantList, nonCustodialList], caseOutcome) => {
+          return caseOutcome.outcomeType === warrantType
+            ? [[...warrantList, caseOutcome], nonCustodialList]
+            : [warrantList, [...nonCustodialList, caseOutcome]]
         },
         [[], []],
       )
@@ -183,8 +185,8 @@ export default class OffenceRoutes {
     let legacyCaseOutcome
     if (
       offence.outcomeUuid &&
-      !mainOutcomes
-        .concat(subListOutcomes)
+      !warrantTypeOutcomes
+        .concat(nonCustodialOutcomes)
         .map(outcome => outcome.outcomeUuid)
         .includes(offence.outcomeUuid)
     ) {
@@ -212,8 +214,8 @@ export default class OffenceRoutes {
       submitToEditOffence,
       errors: req.flash('errors') || [],
       backLink,
-      mainOutcomes,
-      subListOutcomes,
+      warrantTypeOutcomes,
+      nonCustodialOutcomes,
       legacyCaseOutcome,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })

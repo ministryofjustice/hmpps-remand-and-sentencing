@@ -22,7 +22,7 @@
                     items: []
     } %}
 
-{% for caseOutcome in mainOutcomes %}
+{% for caseOutcome in warrantTypeOutcomes %}
     {%- set caseOutcomeRow = {
         value: caseOutcome.outcomeUuid,
         text: caseOutcome.outcomeName,
@@ -31,10 +31,10 @@
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
 
-{% if subListOutcomes.length %}
+{% if nonCustodialOutcomes.length %}
     {{ radiosData.items.push({ divider: "or"}) }}
 
-    {% for caseOutcome in subListOutcomes %}
+    {% for caseOutcome in nonCustodialOutcomes %}
     {%- set caseOutcomeRow = {
             value: caseOutcome.outcomeUuid,
             text: caseOutcome.outcomeName,

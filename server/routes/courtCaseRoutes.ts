@@ -445,11 +445,13 @@ export default class CourtCaseRoutes {
     )
     const sessionAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     let { courtCode } = latestCourtAppearance
+    let useNextCourtAppearance = false
     if (latestCourtAppearance.nextCourtAppearance?.appearanceDate) {
       const nextAppearanceDate = dayjs(latestCourtAppearance.nextCourtAppearance.appearanceDate)
       const currentWarrantDate = dayjs(sessionAppearance.warrantDate)
       if (nextAppearanceDate.isSame(currentWarrantDate)) {
         courtCode = latestCourtAppearance.nextCourtAppearance.courtCode
+        useNextCourtAppearance = true
       }
     }
     let selectCourtNameForm = (req.flash('selectCourtNameForm')[0] || {}) as CourtCaseSelectCourtNameForm
@@ -475,6 +477,7 @@ export default class CourtCaseRoutes {
       errors: req.flash('errors') || [],
       selectCourtNameForm,
       previousCourtCode: courtCode,
+      useNextCourtAppearance,
       backLink: submitToCheckAnswers
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`,

@@ -243,11 +243,7 @@ export default class TaskListModel {
   }
 
   private getNextCourtAppearanceTitleText(): string {
-    let titleText = 'Add next court appearance'
-    if (this.isAddCourtCase()) {
-      titleText = 'Next court appearance'
-    }
-    return titleText
+    return 'Add next court appearance'
   }
 
   private getNextCourtAppearanceHref(courtAppearance: CourtAppearance): string {

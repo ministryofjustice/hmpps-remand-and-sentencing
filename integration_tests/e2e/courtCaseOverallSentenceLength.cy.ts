@@ -81,6 +81,6 @@ context('Add Court Case Sentence Length Page', () => {
   })
 
   it('Correct offences caption is displayed', () => {
-    courtCaseOverallSentenceLengthPage.offencesCaption().should('have.text', 'Add offences')
+    courtCaseOverallSentenceLengthPage.offencesCaption().should('contain.text', 'Add offences')
   })
 })

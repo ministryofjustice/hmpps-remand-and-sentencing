@@ -18,32 +18,6 @@ The header and footer components have been incorporated into this application bu
 
 Fallback html must be included for all imported components for instances when the api call fails. These should be kept within the calling project, but should remain consistent with the designs detailed [here](https://github.com/ministryofjustice/hmpps-micro-frontend-components/blob/main/readme/incorporating.md#fallbacks-services-with-prison-and-external-users).
 
-## Running the app
-The easiest way to run the app is to use docker compose to create the service and all dependencies. 
-
-`docker compose pull`
-
-`docker compose up`
-
-### Dependencies
-The app requires: 
-* hmpps-auth - for authentication
-* redis - session store and token caching
-
-### Running the app for development
-
-To start the main services excluding the example typescript template app: 
-
-`docker compose up --scale=app=0`
-
-Install dependencies using `npm install`, ensuring you are using `node v18.x` and `npm v9.x`
-
-Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --latest-npm` within the repository folder to use the correct version of node, and the latest version of npm. This matches the `engines` config in `package.json` and the CircleCI build config.
-
-And then, to build the assets and start the app with nodemon:
-
-`npm run start:dev`
-
 ### Running the App Locally Against Dev Services (for Development)
 
 1. **Create a `.env` file** in the root directory (most of these values come from `values-dev.yaml`).  

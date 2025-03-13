@@ -65,9 +65,9 @@ context('Court Case Check Answers Page', () => {
   it('displays court appearance details', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
-      'Case reference': 'T12345678',
+      'Court case reference': 'T12345678',
       'Court name': 'Accrington Youth Court',
-      'Outcome applies to all offences': 'No',
+      'Does this apply to all offences on the warrant?': 'No',
       'Overall case outcome': 'Remanded in custody',
       'Warrant date': '12/05/2023',
     })

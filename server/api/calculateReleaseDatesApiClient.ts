@@ -17,6 +17,11 @@ export default class CalculateReleaseDatesApiClient {
   }
 
   async compareOverallSentenceLength(request: OverallSentenceLengthRequest): Promise<OverallSentenceLengthComparison> {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>')
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>')
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>')
+    console.log('Sending request to API:', JSON.stringify(request, null, 2))
+
     return this.restClient.post({
       path: `/overall-sentence-length`,
       data: request,

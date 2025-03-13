@@ -21,9 +21,19 @@ export default class CalculateReleaseDatesService {
       const consecutive = sentences.filter(
         sentence =>
           sentence.sentenceServeType === 'CONSECUTIVE' ||
-          sentences.some(it => it.consecutiveTo === sentence.countNumber),
+          (sentence.hasCountNumber === 'true' &&
+            sentences.some(it => it.hasCountNumber === 'true' && it.consecutiveTo === sentence.countNumber)),
       )
       const concurrent = sentences.filter(it => !consecutive.includes(it))
+
+      console.log('JSON.stringify(all) >>> ')
+      console.log(JSON.stringify(sentences))
+      console.log('JSON.stringify(consecutive) >>> ')
+
+      console.log(JSON.stringify(consecutive))
+
+      console.log('JSON.stringify(concurrent) >>> ')
+      console.log(JSON.stringify(concurrent))
 
       const request = {
         concurrentSentences: concurrent.map(it => this.mapSentenceToOverallSentenceLengthSentence(it)),

@@ -121,11 +121,11 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
-      'Case reference': 'T12345678',
+      'Court case reference': 'T12345678',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Outcome applies to all offences': 'No',
+      'Does this apply to all offences on the warrant?': 'No',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 
@@ -356,11 +356,11 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
-      'Case reference': 'T12345678',
+      'Court case reference': 'T12345678',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Outcome applies to all offences': 'No',
+      'Does this apply to all offences on the warrant?': 'No',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 
@@ -477,11 +477,11 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
-      'Case reference': caseRef,
+      'Court case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Imprisonment',
-      'Outcome applies to all offences': 'Yes',
+      'Does this apply to all offences on the warrant?': 'Yes',
       'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.continueButton().click()
@@ -734,11 +734,11 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
-      'Case reference': caseRef,
+      'Court case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Imprisonment',
-      'Outcome applies to all offences': 'Yes',
+      'Does this apply to all offences on the warrant?': 'Yes',
       'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.continueButton().click()
@@ -846,11 +846,11 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
-      'Case reference': caseRef,
+      'Court case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Imprisonment',
-      'Outcome applies to all offences': 'Yes',
+      'Does this apply to all offences on the warrant?': 'Yes',
       'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.continueButton().click()

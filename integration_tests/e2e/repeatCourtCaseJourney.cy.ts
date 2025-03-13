@@ -121,11 +121,11 @@ context('Repeat Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
-      'Case reference': 'C894623',
+      'Court case reference': 'C894623',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Outcome applies to all offences': 'Yes',
+      'Does this apply to all offences on the warrant?': 'Yes',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 
@@ -368,11 +368,11 @@ context('Repeat Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
-      'Case reference': 'C894623',
+      'Court case reference': 'C894623',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Imprisonment',
-      'Outcome applies to all offences': 'Yes',
+      'Does this apply to all offences on the warrant?': 'Yes',
       'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.continueButton().click()
@@ -594,11 +594,11 @@ context('Repeat Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
-      'Case reference': 'C894623',
+      'Court case reference': 'C894623',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Imprisonment',
-      'Outcome applies to all offences': 'Yes',
+      'Does this apply to all offences on the warrant?': 'Yes',
       'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.continueButton().click()

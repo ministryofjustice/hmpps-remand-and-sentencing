@@ -61,7 +61,6 @@ context('New Court Case journey', () => {
       },
     ])
     cy.task('stubGetAppearanceTypeByUuid')
-    const caseRef = 'T12345678'
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
@@ -199,7 +198,7 @@ context('New Court Case journey', () => {
     offenceOutcomePage.radioLabelContains('Remanded in custody').click()
     offenceOutcomePage.continueButton().click()
 
-    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
@@ -541,7 +540,7 @@ context('New Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
@@ -579,7 +578,7 @@ context('New Court Case journey', () => {
     offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     offenceSentenceServeTypePage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
 
     offenceCheckOffenceAnswersPage.notFinishedRadio().click()
 
@@ -606,7 +605,7 @@ context('New Court Case journey', () => {
 
     courtCaseTaskListPage.offencesLink().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage
       .overallSentenceLength()
@@ -905,7 +904,7 @@ context('New Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
@@ -943,7 +942,7 @@ context('New Court Case journey', () => {
     offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     offenceSentenceServeTypePage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
 
     offenceCheckOffenceAnswersPage.notFinishedRadio().click()
 
@@ -970,7 +969,7 @@ context('New Court Case journey', () => {
 
     courtCaseTaskListPage.offencesLink().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 

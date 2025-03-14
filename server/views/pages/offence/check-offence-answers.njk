@@ -14,7 +14,7 @@
     {% block pageContent %}
         {% include "../../partials/offenceCaption.njk" %}
         <h1 class="govuk-heading-l">
-            You have added {{courtAppearance.offences.length }} offence{{"s" if courtAppearance.offence.length > 1}}
+            You have added {{courtAppearance.offences.length }} {{"offence" if courtAppearance.offences.length === 1 else "offences"}}
         </h1>
         
         {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength === 'true' %}

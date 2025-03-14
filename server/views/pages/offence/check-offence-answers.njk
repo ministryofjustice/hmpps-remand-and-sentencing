@@ -9,16 +9,12 @@
 
 {% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
 
-{% set pageTitle = applicationName + " - Check "+ offenceSentence + "s" %}
+{% set pageTitle = applicationName + " - Check offences" %}
 
     {% block pageContent %}
         {% include "../../partials/offenceCaption.njk" %}
         <h1 class="govuk-heading-l">
-            {% if isAddCourtCase %}
-                Add offences to case {{ courtAppearance.caseReferenceNumber }}
-            {% else %}
-                Edit the {{ offenceSentence }} details for this appearance
-            {% endif %}
+            You have added {{courtAppearance.offences.length }} offence{{"s" if courtAppearance.offence.length > 1}}
         </h1>
         
         {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength === 'true' %}
@@ -85,12 +81,12 @@
                         {
                             href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/edit-offence",
                             text: "Edit",
-                            visuallyHiddenText: "edit " + offenceSentence
+                            visuallyHiddenText: "edit offence"
                         },
                         {
                             href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
                             text: "Delete",
-                            visuallyHiddenText: "delete " + offenceSentence
+                            visuallyHiddenText: "delete offence"
                         }
                     ]
                 }

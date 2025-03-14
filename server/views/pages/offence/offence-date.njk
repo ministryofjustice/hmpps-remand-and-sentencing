@@ -5,6 +5,14 @@
 
 {% set pageTitle = applicationName + " - Add offence dates" %}
 
+{% set legendText = "Edit the offence dates" %}
+{% if isFirstOffence %}
+    {% set legendText = "Enter the offence dates for the first offence" %}
+{% elif isAddCourtAppearance %}
+    {% set legendText = "Enter the offence dates" %}
+{% endif %}
+
+
 {% block pageContent %}
             <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -12,7 +20,7 @@
 
                 {% call govukFieldset({
                     legend: {
-                        text: "Enter the offence dates" if isAddCourtAppearance else "Edit the offence dates",
+                        text: legendText,
                         classes: "govuk-fieldset__legend--l",
                         isPageHeading: true
                     }

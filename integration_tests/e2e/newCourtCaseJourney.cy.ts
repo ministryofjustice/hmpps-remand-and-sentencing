@@ -170,10 +170,10 @@ context('New Court Case journey', () => {
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.offencesLink().click()
 
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
-    offenceCheckOffenceAnswersPage.addAnotherButton().click()
-
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(
+      OffenceOffenceDatePage,
+      'Enter the offence dates for the first offence',
+    )
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
@@ -199,7 +199,7 @@ context('New Court Case journey', () => {
     offenceOutcomePage.radioLabelContains('Remanded in custody').click()
     offenceOutcomePage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage(caseRef)
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 

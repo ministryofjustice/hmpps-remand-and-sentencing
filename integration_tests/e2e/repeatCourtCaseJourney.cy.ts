@@ -194,7 +194,10 @@ context('Repeat Court Case journey', () => {
     offenceTerrorRelatedPage.radioLabelSelector('true').click()
     offenceTerrorRelatedPage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'offence')
+    offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+      OffenceCheckOffenceAnswersPageEdit,
+      'You have added 2 offence',
+    )
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
@@ -432,7 +435,10 @@ context('Repeat Court Case journey', () => {
     offenceReviewOffencesPage.radioLabelSelector('true').click()
     offenceReviewOffencesPage.continueButton().click()
 
-    let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
+    let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+      OffenceCheckOffenceAnswersPageEdit,
+      'You have added 1 offence',
+    )
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
@@ -470,7 +476,10 @@ context('Repeat Court Case journey', () => {
     cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     cffenceSentenceServeTypePage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
+    offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+      OffenceCheckOffenceAnswersPageEdit,
+      'You have added 2 offence',
+    )
 
     offenceCheckOffenceAnswersPage
       .overallSentenceLength()
@@ -658,7 +667,10 @@ context('Repeat Court Case journey', () => {
     offenceReviewOffencesPage.radioLabelSelector('true').click()
     offenceReviewOffencesPage.continueButton().click()
 
-    let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
+    let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+      OffenceCheckOffenceAnswersPageEdit,
+      'You have added 1 offence',
+    )
     offenceCheckOffenceAnswersPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
@@ -696,7 +708,10 @@ context('Repeat Court Case journey', () => {
     cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     cffenceSentenceServeTypePage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'sentence')
+    offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+      OffenceCheckOffenceAnswersPageEdit,
+      'You have added 2 offence',
+    )
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 

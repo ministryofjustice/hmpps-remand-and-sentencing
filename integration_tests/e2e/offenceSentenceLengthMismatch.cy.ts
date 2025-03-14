@@ -42,6 +42,6 @@ context('Offence sentence length mismatch', () => {
   it('submitting selecting no', () => {
     offenceSentenceLengthMismatchPage.radioLabelSelector('no').click()
     offenceSentenceLengthMismatchPage.continueButton().click()
-    Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, '')
+    Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 0 offence')
   })
 })

@@ -1,4 +1,3 @@
-import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
@@ -30,13 +29,8 @@ context('Check Offence Answers Page', () => {
     ])
     cy.task('stubGetChargeOutcomeById', {})
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/reference')
-
-    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
-    courtCaseReferencePage.input().type('T12345678')
-    courtCaseReferencePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
   })
 
   it('displays person details', () => {
@@ -59,21 +53,21 @@ context('Check Offence Answers Page', () => {
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
       courtCaseWarrantTypePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
     })
     it('deleting offence removes from list and goes back to check answers page', () => {
       cy.createOffence('A1234AB', '0', '0', '0')
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
       const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
       offenceDeleteOffencePage.radioLabelSelector('true').click()
       offenceDeleteOffencePage.continueButton().click()
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
     })
 
     it('creating a new offence results in showing the offence', () => {
       cy.createOffence('A1234AB', '0', '0', '0')
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     })
     it('changing an existing offence results in changes in the offence', () => {
       cy.task('stubGetChargeOutcomesByIds', [
@@ -89,7 +83,7 @@ context('Check Offence Answers Page', () => {
         outcomeType: 'REMAND',
       })
       cy.createOffence('A1234AB', '0', '0', '0')
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
       offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'offence-outcome').click()
@@ -101,7 +95,7 @@ context('Check Offence Answers Page', () => {
       offenceOffenceOutcomePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.continueButton().click()
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     })
   })
 
@@ -125,27 +119,27 @@ context('Check Offence Answers Page', () => {
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
     })
 
     it('deleting sentence removes from list and goes back to check answers page', () => {
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
       const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
       offenceDeleteOffencePage.radioLabelSelector('true').click()
       offenceDeleteOffencePage.continueButton().click()
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
     })
 
     it('creating a new sentenced offence results in showing the sentenced offence', () => {
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     })
 
     it('deleting sentence and not selecting yes or no results in error', () => {
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('T12345678')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
       const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
       offenceDeleteOffencePage.continueButton().click()

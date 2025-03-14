@@ -75,4 +75,20 @@ context('Court Case Overall Conviction Date Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem Conviction date must be in the past')
   })
+
+  it('navigates to overall outcome page when valid date is entered', () => {
+    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
+    const validDate = dayjs().subtract(7, 'day')
+    courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').type(validDate.date().toString())
+    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').type((validDate.month() + 1).toString())
+    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').type(validDate.year().toString())
+    courtCaseOverallConvictionDatePage.continueButton().click()
+    cy.url().should('include', '/overall-case-outcome')
+  })
+
+  it('navigates to overall outcome page when no is selected', () => {
+    courtCaseOverallConvictionDatePage.radioLabelSelector('false').click()
+    courtCaseOverallConvictionDatePage.continueButton().click()
+    cy.url().should('include', '/overall-case-outcome')
+  })
 })

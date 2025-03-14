@@ -86,7 +86,8 @@ export default class OffenceRoutes {
       offenceEndDateYear = offenceEndDate.getFullYear()
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    const { warrantType, offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const isFirstOffence = offences.length === 0
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     } else if (warrantType === 'SENTENCING') {
@@ -99,6 +100,8 @@ export default class OffenceRoutes {
       } else {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date`
       }
+    } else if (isFirstOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
     }
     return res.render('pages/offence/offence-date', {
       nomsId,
@@ -115,6 +118,7 @@ export default class OffenceRoutes {
       offenceEndDateMonth,
       offenceEndDateYear,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      isFirstOffence,
       errors: req.flash('errors') || [],
       backLink,
     })

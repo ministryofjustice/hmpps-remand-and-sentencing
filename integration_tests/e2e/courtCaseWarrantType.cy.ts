@@ -30,4 +30,14 @@ context('Warrant type page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem You must select the type of warrant')
   })
+
+  it('displays correct caption for add-court-case', () => {
+    courtCaseWarrantTypePage.captionText().should('contain.text', 'Add a court case')
+  })
+
+  it('displays correct caption for edit-court-case', () => {
+    cy.visit('/person/A1234AB/edit-court-case/0/add-court-appearance/0/warrant-type')
+    courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.captionText().should('contain.text', 'Add an appearance')
+  })
 })

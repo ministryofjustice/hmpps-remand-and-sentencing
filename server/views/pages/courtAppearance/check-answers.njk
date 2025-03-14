@@ -13,7 +13,7 @@
                         },
                         {
                             key: {
-                            text: "Case reference"
+                            text: "Court case reference"
                         },
                             value: {
                             text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered'
@@ -23,7 +23,7 @@
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference?submitToCheckAnswers=true",
                                     text: "Edit",
-                                    visuallyHiddenText: "case reference number"
+                                    visuallyHiddenText: "court case reference"
                                 }
                             ]
                         }
@@ -81,7 +81,7 @@
                         },
                         {
                             key: {
-                            text: "Outcome applies to all offences"
+                            text: "Does this apply to all offences on the warrant?"
                         },
                             value: {
                             text: "Yes" if courtAppearance.caseOutcomeAppliedAll == 'true' else "No"
@@ -91,7 +91,7 @@
                                 {
                                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
                                     text: "Edit",
-                                    visuallyHiddenText: "edit outcome applies to all offences"
+                                    visuallyHiddenText: "does this apply to all offences on the warrant?"
                                 }
                             ]
                         }

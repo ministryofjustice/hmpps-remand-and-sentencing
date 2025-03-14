@@ -133,10 +133,8 @@ export default class TaskListModel {
 
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
       status = {
-        tag: {
-          text: 'Cannot start yet',
-          classes: 'govuk-tag--grey',
-        },
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
       }
     }
 
@@ -177,7 +175,15 @@ export default class TaskListModel {
   private getOffenceSentenceHref(courtAppearance: CourtAppearance): string {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      if (courtAppearance.warrantType === 'REMAND' || this.offenceOverallFieldsFilledOut(courtAppearance)) {
+      if (courtAppearance.warrantType === 'REMAND') {
+        if (courtAppearance.offences.length === 0) {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/0/offence-date`
+        } else if (this.isAddCourtCase()) {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+        } else {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
+        }
+      } else if (this.offenceOverallFieldsFilledOut(courtAppearance)) {
         if (this.isAddCourtCase()) {
           href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
         } else {
@@ -197,10 +203,8 @@ export default class TaskListModel {
 
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
       return {
-        tag: {
-          text: 'Cannot start yet',
-          classes: 'govuk-tag--grey',
-        },
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
       }
     }
 
@@ -266,10 +270,8 @@ export default class TaskListModel {
     }
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
       status = {
-        tag: {
-          text: 'Cannot start yet',
-          classes: 'govuk-tag--grey',
-        },
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
       }
     } else if (courtAppearance.nextCourtAppearanceAccepted) {
       status = {

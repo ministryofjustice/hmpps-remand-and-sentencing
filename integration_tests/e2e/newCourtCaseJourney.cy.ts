@@ -183,6 +183,7 @@ context('New Court Case journey', () => {
       'Case reference number': 'T12345678',
       'Court name': 'Accrington Youth Court',
       'Warrant date': '12/05/2023',
+      'Overall case outcome': 'Remanded in custody',
     })
     offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.continueButton().click()
@@ -530,6 +531,7 @@ context('New Court Case journey', () => {
       'Case reference number': 'T12345678',
       'Court name': 'Accrington Youth Court',
       'Warrant date': '12/05/2023',
+      'Overall case outcome': 'Imprisonment',
     })
     courtCaseOverallSentenceLengthPage.continueButton().click()
 

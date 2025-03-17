@@ -29,15 +29,11 @@ export default function setupCurrentCourtAppearance(
         res.locals.courtAppearanceCourtName = courtAppearance.courtCode
       }
     }
-    let overallCaseOutcome = 'Not entered'
-    if (courtAppearance.appearanceOutcomeUuid) {
-      const outcome = await appearanceOutcomeService.getOutcomeByUuid(
-        courtAppearance.appearanceOutcomeUuid,
-        req.user.username,
-      )
-      overallCaseOutcome = outcome?.outcomeName ?? 'Not entered'
-    }
-    res.locals.overallCaseOutcome = overallCaseOutcome
+
+    res.locals.overallCaseOutcome = courtAppearance.appearanceOutcomeUuid
+      ? (await appearanceOutcomeService.getOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username))
+          .outcomeName
+      : 'Not entered'
     next()
   }
 }

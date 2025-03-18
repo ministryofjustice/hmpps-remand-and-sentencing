@@ -3,11 +3,13 @@ import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import ManageOffencesService from '../services/manageOffencesService'
+import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 
 export default function setupCurrentCourtAppearance(
   courtAppearanceService: CourtAppearanceService,
   courtRegisterService: CourtRegisterService,
   manageOffenceService: ManageOffencesService,
+  appearanceOutcomeService: AppearanceOutcomeService,
 ): RequestHandler {
   return async (req, res, next) => {
     const { nomsId, addOrEditCourtAppearance } = req.params
@@ -27,6 +29,11 @@ export default function setupCurrentCourtAppearance(
         res.locals.courtAppearanceCourtName = courtAppearance.courtCode
       }
     }
+
+    res.locals.overallCaseOutcome = courtAppearance.appearanceOutcomeUuid
+      ? (await appearanceOutcomeService.getOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username))
+          .outcomeName
+      : 'Not entered'
     next()
   }
 }

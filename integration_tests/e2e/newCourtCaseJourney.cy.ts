@@ -8,7 +8,6 @@ import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
 import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
-import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
@@ -17,18 +16,14 @@ import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersP
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
-import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
-import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseNextHearingSetPage from '../pages/courtCaseNextHearingSetPage'
 import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
-import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
-import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseDraftSavedPage'
 
 context('New Court Case journey', () => {
@@ -542,49 +537,26 @@ context('New Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
-    offenceCheckOffenceAnswersPage.addAnotherButton().click()
+    Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
-    offenceCountNumberPage.radioLabelSelector('true').click()
-    offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.continueButton().click()
+    Page.verifyOnPage(CourtCaseTaggedBailPage)
+    courtCaseTaggedBailPage.radioLabelSelector('true').click()
+    courtCaseTaggedBailPage.input().type('5')
+    courtCaseTaggedBailPage.continueButton().click()
 
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.continueButton().click()
-
-    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-    offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.continueButton().click()
-
-    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.continueButton().click()
-
-    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.continueButton().click()
-
-    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
-    offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
-    offenceSentenceTypePage.continueButton().click()
-
-    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
-    offencePeriodLengthPage.yearsInput().type('4')
-    offencePeriodLengthPage.monthsInput().type('5')
-    offencePeriodLengthPage.continueButton().click()
-
-    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    offenceSentenceServeTypePage.continueButton().click()
-
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-
-    offenceCheckOffenceAnswersPage.notFinishedRadio().click()
-
-    offenceCheckOffenceAnswersPage.finishAddingButton().click()
+    Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Warrant type': 'Sentencing',
+      'Court case reference': caseRef,
+      'Warrant date': '12/05/2023',
+      'Court name': 'Accrington Youth Court',
+      'Overall case outcome': 'Imprisonment',
+      'Does this apply to all offences on the warrant?': 'Yes',
+      'Tagged bail': '55 days',
+    })
+    courtCaseCheckAnswersPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -604,50 +576,6 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-
-    courtCaseTaskListPage.offencesLink().click()
-
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
-    offenceCheckOffenceAnswersPage
-      .overallSentenceLength()
-      .trimTextContent()
-      .should('contain', '4 years 5 months 0 weeks 0 days')
-    offenceCheckOffenceAnswersPage
-      .sentencesAdded()
-      .trimTextContent()
-      .should('contain', '10 years 0 months 0 weeks 0 days')
-
-    offenceCheckOffenceAnswersPage.finishAddingButton().click()
-
-    const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
-
-    offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
-    offenceSentenceLengthMismatchPage.continueButton().click()
-
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Completed',
-        },
-        {
-          name: 'Add offences',
-          status: 'Completed',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-      ])
-
-    courtCaseTaskListPage.continueButton().click()
-
-    cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
-    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 
   // Skipped test as SAVE_AS_DRAFT_ENABLED feature is disabled
@@ -906,49 +834,26 @@ context('New Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
-    offenceCheckOffenceAnswersPage.addAnotherButton().click()
+    Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
-    offenceCountNumberPage.radioLabelSelector('true').click()
-    offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.continueButton().click()
+    Page.verifyOnPage(CourtCaseTaggedBailPage)
+    courtCaseTaggedBailPage.radioLabelSelector('true').click()
+    courtCaseTaggedBailPage.input().type('5')
+    courtCaseTaggedBailPage.continueButton().click()
 
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.continueButton().click()
-
-    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-    offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.continueButton().click()
-
-    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.continueButton().click()
-
-    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.continueButton().click()
-
-    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
-    offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
-    offenceSentenceTypePage.continueButton().click()
-
-    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
-    offencePeriodLengthPage.yearsInput().type('4')
-    offencePeriodLengthPage.monthsInput().type('5')
-    offencePeriodLengthPage.continueButton().click()
-
-    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    offenceSentenceServeTypePage.continueButton().click()
-
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-
-    offenceCheckOffenceAnswersPage.notFinishedRadio().click()
-
-    offenceCheckOffenceAnswersPage.finishAddingButton().click()
+    Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Warrant type': 'Sentencing',
+      'Court case reference': caseRef,
+      'Warrant date': '12/05/2023',
+      'Court name': 'Accrington Youth Court',
+      'Overall case outcome': 'Imprisonment',
+      'Does this apply to all offences on the warrant?': 'Yes',
+      'Tagged bail': '55 days',
+    })
+    courtCaseCheckAnswersPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -970,38 +875,5 @@ context('New Court Case journey', () => {
       ])
 
     courtCaseTaskListPage.offencesLink().click()
-
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
-    offenceCheckOffenceAnswersPage.finishAddingButton().click()
-
-    const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
-
-    offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
-    offenceSentenceLengthMismatchPage.continueButton().click()
-
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Completed',
-        },
-        {
-          name: 'Add offences',
-          status: 'Completed',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-      ])
-
-    courtCaseTaskListPage.continueButton().click()
-
-    cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
-    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 })

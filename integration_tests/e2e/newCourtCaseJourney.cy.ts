@@ -8,7 +8,6 @@ import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
 import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
-import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
@@ -17,18 +16,14 @@ import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersP
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
-import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
-import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import CourtCaseCheckNextHearingAnswersPage from '../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseNextHearingSetPage from '../pages/courtCaseNextHearingSetPage'
 import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
 import CourtCaseNextHearingCourtSetPage from '../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
-import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
-import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseDraftSavedPage'
 
 context('New Court Case journey', () => {
@@ -878,7 +873,5 @@ context('New Court Case journey', () => {
       ])
 
     courtCaseTaskListPage.offencesLink().click()
-
-    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
   })
 })

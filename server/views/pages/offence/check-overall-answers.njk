@@ -1,0 +1,133 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " - Check your answers" %}
+{% set isAddOffences = true %}
+{% block pageContent %}
+        {% include "../../partials/offenceCaption.njk" %}
+        <h1 class="govuk-heading-l">
+            Check your answers
+        </h1>
+        
+            {{ govukSummaryList({
+                rows: [
+                    {
+                        key: {
+                            text: "Is there an overall sentence length on the warrant?"
+                        },
+                        value: {
+                            text: "Yes" if courtAppearance.hasOverallSentenceLength === 'true' else 'No'
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-sentence-length?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "is there an overall sentence length on the warrant"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Overall sentence length"
+                        },
+                        value: {
+                            text: courtAppearance.overallSentenceLength | formatLengths if courtAppearance.overallSentenceLength else 'Not entered'
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-sentence-length?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "overall sentence length"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Is the conviction date the same for all offences on the warrant?"
+                        },
+                        value: {
+                            text: "Yes" if courtAppearance.overallConvictionDateAppliedAll === 'true' else 'No'
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-conviction-date?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "conviction date the same for all offences on the warrant"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Conviction date"
+                        },
+                        value: {
+                            text: courtAppearance.overallConvictionDate | formatDate if courtAppearance.overallConvictionDate else 'Not entered'
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-conviction-date?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "conviction date"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Is the outcome the same for all offences on the warrant?"
+                        },
+                        value: {
+                            text: "Yes" if courtAppearance.caseOutcomeAppliedAll === 'true' else 'No'
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "is the outcome the same for all offences on the warrant"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                attributes: {
+                    "data-qa": "check-overall-answers-summary-list"
+                }
+            }) }}
+
+
+            <div class="govuk-button-group govuk-!-margin-top-8">
+                <form method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                    <div class="govuk-button-group">
+                        <button type="submit"
+                                class="govuk-button"
+                                data-module="govuk-button"
+                                data-qa="confirm-and-add-offence"
+                                formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-overall-answers">
+                            Confirm and add offences
+                        </button>
+
+                        {% if featureToggles.saveDraftEnabled %}
+                            <button type="submit"
+                                    class="govuk-button govuk-button--secondary"
+                                    data-module="govuk-button"
+                                    data-qa="save-draft-button"
+                                    formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                                Save as draft
+                            </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
+    {% endblock %}

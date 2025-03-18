@@ -71,4 +71,43 @@ context('Offence Check Overall Answers Page', () => {
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
   })
+
+  it('clicking edit overall sentence length and submitting goes back to check answers page', () => {
+    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'overall-sentence-length').click()
+    const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
+    courtCaseOverallSentenceLengthPage.yearsInput().should('have.value', '4').clear().type('6')
+
+    courtCaseOverallSentenceLengthPage.monthsInput().should('have.value', '5').clear()
+    courtCaseOverallSentenceLengthPage.continueButton().click()
+    offenceCheckOverallAnswersPage = Page.verifyOnPage(OffenceCheckOverallAnswersPage)
+    offenceCheckOverallAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
+      'Is there an overall sentence length on the warrant?': 'Yes',
+      'Overall sentence length': '6 years 0 months 0 weeks 0 days',
+      'Is the conviction date the same for all offences on the warrant?': 'Yes',
+      'Conviction date': '12/05/2023',
+      'Is the outcome the same for all offences on the warrant?': 'Yes',
+    })
+  })
+
+  it('clicking edit conviction date and submitting goes back to check answers page', () => {
+    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'overall-conviction-date').click()
+    const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
+    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
+    courtCaseOverallConvictionDatePage
+      .dayDateInput('overallConvictionDate')
+      .should('have.value', '12')
+      .clear()
+      .type('20')
+    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').should('have.value', '5')
+    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').should('have.value', '2023')
+    courtCaseOverallConvictionDatePage.continueButton().click()
+    offenceCheckOverallAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
+      'Is there an overall sentence length on the warrant?': 'Yes',
+      'Overall sentence length': '4 years 5 months 0 weeks 0 days',
+      'Is the conviction date the same for all offences on the warrant?': 'Yes',
+      'Conviction date': '20/05/2023',
+      'Is the outcome the same for all offences on the warrant?': 'Yes',
+    })
+  })
 })

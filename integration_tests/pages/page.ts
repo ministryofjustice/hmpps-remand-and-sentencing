@@ -69,4 +69,9 @@ export default abstract class Page {
   backLink = (): PageElement => cy.get('[data-qa=back-link]')
 
   clearTheSelection = (): PageElement => cy.contains('Clear the selection')
+
+  changeLink = (personId: string, courtCaseReference: string, appearanceReference: string, page: string): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/${page}?submitToCheckAnswers=true"]:first`,
+    )
 }

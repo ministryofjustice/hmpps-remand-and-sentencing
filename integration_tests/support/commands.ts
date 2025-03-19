@@ -7,7 +7,6 @@ import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
-import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
@@ -252,9 +251,6 @@ Cypress.Commands.add(
     offenceOffenceCodePage.continueButton().click()
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
-    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.continueButton().click()
     const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
       OffenceOffenceOutcomePage,
       'Select the outcome for this offence',
@@ -307,10 +303,6 @@ Cypress.Commands.add(
     offenceOffenceCodePage.continueButton().click()
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
-
-    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.continueButton().click()
 
     const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
       OffenceOffenceOutcomePage,

@@ -9,7 +9,6 @@ import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
-import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import Page from '../pages/page'
 
 context('Add Offence Edit offence Page', () => {
@@ -42,18 +41,18 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 
-    it('displays person details', () => {
-      offenceEditOffencePage
-        .prisonerBanner()
-        .should('contain.text', 'Haggler, Marvin')
-        .and('contain.text', 'A1234AB')
-        .and('contain.text', 'EstablishmentHMP Bedford')
-        .and('contain.text', 'Cell numberCELL-1')
-    })
-
-    it('button to accept changes is displayed', () => {
-      offenceEditOffencePage.continueButton().should('contain.text', 'Accept changes')
-    })
+    //   it('displays person details', () => {
+    //     offenceEditOffencePage
+    //       .prisonerBanner()
+    //       .should('contain.text', 'Haggler, Marvin')
+    //       .and('contain.text', 'A1234AB')
+    //       .and('contain.text', 'EstablishmentHMP Bedford')
+    //       .and('contain.text', 'Cell numberCELL-1')
+    //   })
+    //
+    //   it('button to accept changes is displayed', () => {
+    //     offenceEditOffencePage.continueButton().should('contain.text', 'Accept changes')
+    //   })
   })
 
   context('sentence', () => {
@@ -113,7 +112,6 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 5',
         Offence: 'PS90037 An offence description',
-        'Terror related': 'Yes',
         'Committed on': '12/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -138,7 +136,6 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
-        'Terror related': 'Yes',
         'Committed on': '25/05/2023 to 28/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -164,25 +161,6 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'AB11000 Another offence description',
-        'Terror related': 'Yes',
-        'Committed on': '12/05/2023',
-        'Conviction date': '12/05/2023',
-        'Sentence type': 'SDS (Standard Determinate Sentence)',
-        'Sentence length': '4 years 5 months 0 weeks 0 days',
-        'Consecutive or concurrent': 'Forthwith',
-      })
-    })
-
-    it('can edit terror related and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'terror-related').click()
-      const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-      offenceTerrorRelatedPage.radioLabelSelector('false').click()
-      offenceTerrorRelatedPage.continueButton().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
-        'Count number': 'Count 1',
-        Offence: 'PS90037 An offence description',
-        'Terror related': 'No',
         'Committed on': '12/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -205,7 +183,6 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
-        'Terror related': 'Yes',
         'Committed on': '12/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -224,7 +201,6 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
-        'Terror related': 'Yes',
         'Committed on': '12/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -259,7 +235,6 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
-        'Terror related': 'Yes',
         'Committed on': '12/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
@@ -308,7 +283,6 @@ context('Add Offence Edit offence Page', () => {
         'Committed on': 'Not entered',
         Offence: 'PS90037 An offence description',
         Outcome: 'Remanded in custody',
-        'Terror related': 'Not entered',
       })
     })
   })

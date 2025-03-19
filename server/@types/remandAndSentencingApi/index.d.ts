@@ -724,7 +724,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/charge-outcome/all': {
+  '/charge-outcome/status': {
     parameters: {
       query?: never
       header?: never
@@ -732,8 +732,8 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get all charge outcomes
-     * @description This endpoint will get all charge outcomes
+     * Get all charge outcomes by statuses
+     * @description This endpoint will get all charge outcomes by statuses
      */
     get: operations['getAllChargeOutcomes']
     put?: never
@@ -764,7 +764,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/appearance-type/all': {
+  '/appearance-type/status': {
     parameters: {
       query?: never
       header?: never
@@ -772,8 +772,8 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get all appearance types
-     * @description This endpoint will get all appearance types
+     * Get all appearance types by statuses
+     * @description This endpoint will get all appearance types by statuses
      */
     get: operations['getAllAppearanceTypes']
     put?: never
@@ -804,7 +804,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/appearance-outcome/all': {
+  '/appearance-outcome/status': {
     parameters: {
       query?: never
       header?: never
@@ -812,8 +812,8 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get all appearance outcomes
-     * @description This endpoint will get all appearance outcomes
+     * Get all appearance outcomes by status
+     * @description This endpoint will get all appearance outcomes by status
      */
     get: operations['getAllAppearanceOutcomes']
     put?: never
@@ -897,14 +897,12 @@ export interface components {
       active: boolean
     }
     CourtAppearanceLegacyData: {
-      eventId?: string
-      caseId?: string
       postedDate?: string
       nomisOutcomeCode?: string
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 09:07:27.490629 */
+      /** @example 14:17:35.95498 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -997,7 +995,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:07:27.490629 */
+      /** @example 14:17:35.95498 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -1050,7 +1048,6 @@ export interface components {
     CreateCourtAppearanceResponse: {
       /** Format: uuid */
       appearanceUuid: string
-      eventId?: string
     }
     CreateCourtCaseResponse: {
       courtCaseUuid: string
@@ -1077,7 +1074,8 @@ export interface components {
       courtCaseUuid: string
     }
     MigrationCreateCharge: {
-      chargeNOMISId: string
+      /** Format: int64 */
+      chargeNOMISId: number
       offenceCode: string
       /** Format: date */
       offenceStartDate?: string
@@ -1086,11 +1084,16 @@ export interface components {
       legacyData: components['schemas']['ChargeLegacyData']
       sentence?: components['schemas']['MigrationCreateSentence']
       merged?: boolean
-      mergedFromCourtCaseUuid?: string
-      /** Format: uuid */
-      mergedChargeLifetimeUuid?: string
+      /** Format: int64 */
+      mergedFromCaseId?: number
+      /** Format: int64 */
+      mergedFromEventId?: number
+      /** Format: int64 */
+      mergedChargeNOMISId?: number
     }
     MigrationCreateCourtAppearance: {
+      /** Format: int64 */
+      eventId: number
       courtCode: string
       /** Format: date */
       appearanceDate: string
@@ -1100,11 +1103,16 @@ export interface components {
       charges: components['schemas']['MigrationCreateCharge'][]
     }
     MigrationCreateCourtCase: {
-      prisonerId: string
+      /** Format: int64 */
+      caseId: number
       active: boolean
       courtCaseLegacyData: components['schemas']['CourtCaseLegacyData']
       appearances: components['schemas']['MigrationCreateCourtAppearance'][]
       merged?: boolean
+    }
+    MigrationCreateCourtCases: {
+      prisonerId: string
+      courtCases: components['schemas']['MigrationCreateCourtCase'][]
     }
     MigrationCreateFine: {
       fineAmount: number
@@ -1127,13 +1135,7 @@ export interface components {
       fine?: components['schemas']['MigrationCreateFine']
       active: boolean
       legacyData: components['schemas']['SentenceLegacyData']
-      /** @description The consecutive to sentence Id if the sentence is in the same court case */
       consecutiveToSentenceId?: components['schemas']['MigrationSentenceId']
-      /**
-       * Format: uuid
-       * @description The consecutive to lifetime uuid if the sentence is not in the same court case
-       */
-      consecutiveToSentenceLifetimeUuid?: string
       periodLengths: components['schemas']['MigrationCreatePeriodLength'][]
     }
     MigrationSentenceId: {
@@ -1144,16 +1146,23 @@ export interface components {
     }
     MigrationCreateChargeResponse: {
       /** Format: uuid */
-      lifetimeChargeUuid: string
-      chargeNOMISId: string
+      chargeUuid: string
+      /** Format: int64 */
+      chargeNOMISId: number
     }
     MigrationCreateCourtAppearanceResponse: {
       /** Format: uuid */
-      lifetimeUuid: string
-      eventId: string
+      appearanceUuid: string
+      /** Format: int64 */
+      eventId: number
     }
     MigrationCreateCourtCaseResponse: {
       courtCaseUuid: string
+      /** Format: int64 */
+      caseId: number
+    }
+    MigrationCreateCourtCasesResponse: {
+      courtCases: components['schemas']['MigrationCreateCourtCaseResponse'][]
       appearances: components['schemas']['MigrationCreateCourtAppearanceResponse'][]
       charges: components['schemas']['MigrationCreateChargeResponse'][]
       sentences: components['schemas']['MigrationCreateSentenceResponse'][]
@@ -1161,12 +1170,12 @@ export interface components {
     }
     MigrationCreatePeriodLengthResponse: {
       /** Format: uuid */
-      uuid: string
+      periodLengthUuid: string
       sentenceTermNOMISId: components['schemas']['NomisPeriodLengthId']
     }
     MigrationCreateSentenceResponse: {
       /** Format: uuid */
-      lifetimeSentenceUuid: string
+      sentenceUuid: string
       sentenceNOMISId: components['schemas']['MigrationSentenceId']
     }
     LegacyCourtAppearanceCreatedResponse: {
@@ -1357,7 +1366,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:07:27.490629 */
+      /** @example 14:17:35.95498 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -1365,7 +1374,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:07:27.490629 */
+      /** @example 14:17:35.95498 */
       appearanceTime?: string
       courtId: string
     }
@@ -1413,7 +1422,6 @@ export interface components {
       outcomeType: string
       /** Format: int32 */
       displayOrder: number
-      isSubList: boolean
       dispositionCode: string
     }
     CourtAppearance: {
@@ -1460,7 +1468,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:07:27.490629 */
+      /** @example 14:17:35.95498 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -1477,12 +1485,12 @@ export interface components {
       totalPages?: number
       /** Format: int64 */
       totalElements?: number
-      content?: components['schemas']['CourtCase'][]
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       size?: number
       first?: boolean
       last?: boolean
+      content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
       pageable?: components['schemas']['PageableObject']
@@ -1491,20 +1499,20 @@ export interface components {
       empty?: boolean
     }
     PageableObject: {
+      sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
-      sort?: components['schemas']['SortObject']
-      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
       /** Format: int32 */
       pageSize?: number
+      unpaged?: boolean
     }
     SortObject: {
       empty?: boolean
-      unsorted?: boolean
       sorted?: boolean
+      unsorted?: boolean
     }
   }
   responses: never
@@ -2717,7 +2725,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['MigrationCreateCourtCase']
+        'application/json': components['schemas']['MigrationCreateCourtCases']
       }
     }
     responses: {
@@ -2727,7 +2735,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['MigrationCreateCourtCaseResponse']
+          'application/json': components['schemas']['MigrationCreateCourtCasesResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -2736,7 +2744,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['MigrationCreateCourtCaseResponse']
+          'application/json': components['schemas']['MigrationCreateCourtCasesResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
@@ -2745,7 +2753,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['MigrationCreateCourtCaseResponse']
+          'application/json': components['schemas']['MigrationCreateCourtCasesResponse']
         }
       }
     }
@@ -3147,6 +3155,8 @@ export interface operations {
       query: {
         age: number
         convictionDate: string
+        statuses?: ('ACTIVE' | 'INACTIVE')[]
+        offenceDate: string
       }
       header?: never
       path?: never
@@ -3542,7 +3552,9 @@ export interface operations {
   }
   getAllChargeOutcomes: {
     parameters: {
-      query?: never
+      query: {
+        statuses: ('ACTIVE' | 'INACTIVE')[]
+      }
       header?: never
       path?: never
       cookie?: never
@@ -3620,7 +3632,9 @@ export interface operations {
   }
   getAllAppearanceTypes: {
     parameters: {
-      query?: never
+      query: {
+        statuses: ('ACTIVE' | 'INACTIVE')[]
+      }
       header?: never
       path?: never
       cookie?: never
@@ -3698,7 +3712,9 @@ export interface operations {
   }
   getAllAppearanceOutcomes: {
     parameters: {
-      query?: never
+      query: {
+        statuses: ('ACTIVE' | 'INACTIVE')[]
+      }
       header?: never
       path?: never
       cookie?: never

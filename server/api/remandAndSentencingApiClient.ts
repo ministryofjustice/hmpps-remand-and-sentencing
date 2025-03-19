@@ -116,13 +116,14 @@ export default class RemandAndSentencingApiClient {
     })) as unknown as Promise<PageCourtCaseContent>
   }
 
-  async searchSentenceTypes(age: number, convictionDate: string): Promise<SentenceType[]> {
+  async searchSentenceTypes(age: number, convictionDate: string, offenceDate: string): Promise<SentenceType[]> {
     return (await this.restClient.get({
       path: `/sentence-type/search`,
       query: {
         age,
         convictionDate,
         statuses: 'ACTIVE',
+        offenceDate,
       },
     })) as unknown as Promise<SentenceType[]>
   }

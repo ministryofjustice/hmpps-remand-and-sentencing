@@ -1772,6 +1772,9 @@ export default {
           statuses: {
             equalTo: 'ACTIVE',
           },
+          offenceDate: {
+            equalTo: '2023-05-12',
+          },
         },
       },
       response: {

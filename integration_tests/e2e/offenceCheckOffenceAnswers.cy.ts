@@ -96,6 +96,7 @@ context('Check Offence Answers Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+      offenceCheckOffenceAnswersPage.offencesSummaryCard().should('not.exist')
     })
   })
 
@@ -135,6 +136,7 @@ context('Check Offence Answers Page', () => {
     it('creating a new sentenced offence results in showing the sentenced offence', () => {
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+      offenceCheckOffenceAnswersPage.offencesSummaryCard().should('not.exist')
     })
 
     it('deleting sentence and not selecting yes or no results in error', () => {

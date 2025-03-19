@@ -138,7 +138,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add next court appearance',
-          status: 'Incomplete',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',
@@ -213,7 +213,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add next court appearance',
-          status: 'Incomplete',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',

@@ -36,4 +36,6 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
   overallSentenceLength = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"] > :nth-child(1)')
 
   sentencesAdded = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"] > :nth-child(2)')
+
+  offencesSummaryCard = (): PageElement => cy.get('[data-qa="offences-summary-card"]')
 }

@@ -782,7 +782,7 @@ export default class OffenceRoutes {
     const convictionDate = dayjs(offence?.sentence?.convictionDate)
     const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
-    const offenceDate = dayjs(offence?.offenceStartDate)
+    const offenceDate = dayjs(offence?.offenceEndDate ?? offence?.offenceStartDate)
     const sentenceTypes = (
       await this.remandAndSentencingService.getSentenceTypes(
         ageAtConviction,

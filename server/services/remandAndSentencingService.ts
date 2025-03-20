@@ -120,10 +120,16 @@ export default class RemandAndSentencingService {
     return new RemandAndSentencingApiClient(token).getCourtCaseByUuid(courtCaseUuid)
   }
 
-  async getSentenceTypes(age: number, convictionDate: Dayjs, username: string): Promise<SentenceType[]> {
+  async getSentenceTypes(
+    age: number,
+    convictionDate: Dayjs,
+    offenceDate: Dayjs,
+    username: string,
+  ): Promise<SentenceType[]> {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).searchSentenceTypes(
       age,
       convictionDate.format('YYYY-MM-DD'),
+      offenceDate.format('YYYY-MM-DD'),
     )
   }
 

@@ -41,18 +41,18 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 
-    //   it('displays person details', () => {
-    //     offenceEditOffencePage
-    //       .prisonerBanner()
-    //       .should('contain.text', 'Haggler, Marvin')
-    //       .and('contain.text', 'A1234AB')
-    //       .and('contain.text', 'EstablishmentHMP Bedford')
-    //       .and('contain.text', 'Cell numberCELL-1')
-    //   })
-    //
-    //   it('button to accept changes is displayed', () => {
-    //     offenceEditOffencePage.continueButton().should('contain.text', 'Accept changes')
-    //   })
+    it('displays person details', () => {
+      offenceEditOffencePage
+        .prisonerBanner()
+        .should('contain.text', 'Haggler, Marvin')
+        .and('contain.text', 'A1234AB')
+        .and('contain.text', 'EstablishmentHMP Bedford')
+        .and('contain.text', 'Cell numberCELL-1')
+    })
+
+    it('button to accept changes is displayed', () => {
+      offenceEditOffencePage.continueButton().should('contain.text', 'Accept changes')
+    })
   })
 
   context('sentence', () => {

@@ -4,6 +4,10 @@ import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import Page from '../pages/page'
+import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
+import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
+import OffenceOffenceNamePage from '../pages/offenceOffenceNamePage'
+import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
 
 context('Check Offence Answers Page', () => {
   let offenceCheckOffenceAnswersPage: OffenceCheckOffenceAnswersPage
@@ -97,6 +101,30 @@ context('Check Offence Answers Page', () => {
       offenceEditOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
       offenceCheckOffenceAnswersPage.offencesSummaryCard().should('not.exist')
+    })
+
+    it('Entering an offence via the Offence Name route navigates to the offence-confirmation page', () => {
+      cy.visit(`/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type`)
+      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+      courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
+      courtCaseWarrantTypePage.continueButton().click()
+
+      cy.visit(`/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date`)
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').type('16')
+      offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
+      offenceOffenceDatePage.monthDateInput('offenceStartDate').type('8')
+      offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
+      offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+      offenceOffenceDatePage.continueButton().click()
+      const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+      offenceOffenceCodePage.unknownCodeCheckbox().check()
+      offenceOffenceCodePage.continueButton().click()
+      const offenceOffenceNamePage = Page.verifyOnPage(OffenceOffenceNamePage)
+      offenceOffenceNamePage.autoCompleteInput().type('PS90037 An offence description')
+      offenceOffenceNamePage.continueButton().click()
+      Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     })
   })
 

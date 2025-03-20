@@ -117,10 +117,6 @@ declare module 'forms' {
     hasCountNumber?: string
   }
 
-  export interface OffenceTerrorRelatedForm {
-    terrorRelated?: string
-  }
-
   export interface OffenceAlternativeSentenceLengthForm {
     'firstSentenceLength-value'?: string
     'firstSentenceLength-period'?: string

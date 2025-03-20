@@ -24,7 +24,6 @@ import OffenceReviewOffencesPage from '../pages/offenceReviewOffencesPage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
-import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import Page from '../pages/page'
 import StartPage from '../pages/startPage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
@@ -189,10 +188,6 @@ context('Repeat Court Case journey', () => {
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
-
-    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.continueButton().click()
 
     offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
       OffenceCheckOffenceAnswersPageEdit,
@@ -459,10 +454,6 @@ context('Repeat Court Case journey', () => {
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
 
-    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.continueButton().click()
-
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
     offenceSentenceTypePage.continueButton().click()
@@ -690,10 +681,6 @@ context('Repeat Court Case journey', () => {
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
-
-    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.continueButton().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()

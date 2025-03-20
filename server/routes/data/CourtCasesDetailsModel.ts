@@ -119,7 +119,7 @@ export default class CourtCasesDetailsModel {
     this.offences = charges?.map(charge => chargeToOffence(charge))
     this.sentenceTypeMap = Object.fromEntries(
       charges
-        ?.filter(charge => charge.sentence)
+        ?.filter(charge => charge.sentence?.sentenceType)
         .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]) ?? [],
     )
     this.offenceOutcomeMap = Object.fromEntries(

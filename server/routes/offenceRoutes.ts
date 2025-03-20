@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express'
+import {RequestHandler} from 'express'
 import type {
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
@@ -15,13 +15,12 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
-  OffenceTerrorRelatedForm,
   ReviewOffencesForm,
   SentenceLengthForm,
   SentenceLengthMismatchForm,
 } from 'forms'
 import deepmerge from 'deepmerge'
-import type { Offence } from 'models'
+import type {Offence} from 'models'
 import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
@@ -29,10 +28,7 @@ import ManageOffencesService from '../services/manageOffencesService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import validate from '../validation/validation'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
-import {
-  sentenceLengthToAlternativeSentenceLengthForm,
-  sentenceLengthToSentenceLengthForm,
-} from '../utils/mappingUtils'
+import {sentenceLengthToAlternativeSentenceLengthForm, sentenceLengthToSentenceLengthForm,} from '../utils/mappingUtils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import {

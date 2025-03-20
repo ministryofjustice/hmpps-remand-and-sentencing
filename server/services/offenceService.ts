@@ -11,22 +11,18 @@ import type {
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
   OffenceSentenceTypeForm,
-  OffenceTerrorRelatedForm,
   SentenceLengthForm,
 } from 'forms'
-import type { Offence, SentenceLength } from 'models'
+import type {Offence, SentenceLength} from 'models'
 import dayjs from 'dayjs'
 import validate from '../validation/validation'
-import { toDateString } from '../utils/utils'
-import {
-  alternativeSentenceLengthFormToSentenceLength,
-  sentenceLengthFormToSentenceLength,
-} from '../utils/mappingUtils'
+import {toDateString} from '../utils/utils'
+import {alternativeSentenceLengthFormToSentenceLength, sentenceLengthFormToSentenceLength,} from '../utils/mappingUtils'
 import ManageOffencesService from './manageOffencesService'
 import logger from '../../logger'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
-import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import type {Offence as ApiOffence} from '../@types/manageOffencesApi/manageOffencesClientTypes'
 
 export default class OffenceService {
   constructor(private readonly manageOffencesService: ManageOffencesService) {}

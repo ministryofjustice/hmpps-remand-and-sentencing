@@ -894,9 +894,13 @@ export default class CourtCaseRoutes {
     const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
     const skippedOutcome = req.flash('skippedOutcome')[0] === 'true' || false
 
-    const overallCaseOutcome: string = (
+    let overallCaseOutcome: string = (
       await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    if (warrantType === 'SENTENCING') {
+      overallCaseOutcome = 'Imprisonment'
+    }
     let caseOutcomeAppliedAllForm = (req.flash('caseOutcomeAppliedAllForm')[0] ||
       {}) as CourtCaseCaseOutcomeAppliedAllForm
     if (Object.keys(caseOutcomeAppliedAllForm).length === 0) {
@@ -905,6 +909,9 @@ export default class CourtCaseRoutes {
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?backNav=true`
+    if (warrantType === 'SENTENCING') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome`
+    }
     if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
     }
@@ -947,7 +954,7 @@ export default class CourtCaseRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-overall-answers`,
       )
     }
     return res.redirect(

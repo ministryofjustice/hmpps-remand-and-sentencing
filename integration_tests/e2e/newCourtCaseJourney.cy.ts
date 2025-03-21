@@ -25,6 +25,7 @@ import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseDraftSavedPage'
+import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -109,6 +110,8 @@ context('New Court Case journey', () => {
     courtCaseOverallCaseOutcomePage.continueButton().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Remanded in custody')
+
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
@@ -461,25 +464,47 @@ context('New Court Case journey', () => {
     courtCaseOverallCaseOutcomePage.continueButton().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Imprisonment')
+
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.continueButton().click()
+    // const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
+    // courtCaseTaggedBailPage.radioLabelSelector('true').click()
+    // courtCaseTaggedBailPage.input().type('5')
+    // courtCaseTaggedBailPage.continueButton().click()
 
-    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Warrant type': 'Sentencing',
-      'Court case reference': caseRef,
-      'Warrant date': '12/05/2023',
-      'Court name': 'Accrington Youth Court',
-      'Overall case outcome': 'Imprisonment',
-      'Does this apply to all offences on the warrant?': 'Yes',
-      'Tagged bail': '5 days',
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(
+      OffenceOffenceDatePage,
+      'Enter the offence dates for the first offence',
+    )
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.continueButton().click()
+
+    const offenceOverallCheckAnswersPage = Page.verifyOnPage(OffenceCheckOverallAnswersPage)
+    offenceOverallCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
+      'Is there an overall sentence length on the warrant?': 'No',
+      'Overall sentence length': 'Not entered',
+      'Is the conviction date the same for all offences on the warrant?': 'No',
+      'Conviction date': 'Not entered',
+      'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
-    courtCaseCheckAnswersPage.continueButton().click()
+    offenceOverallCheckAnswersPage.confirmAndAddOffenceButton().click()
+
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
+      'Case reference number': 'T12345678',
+      'Court name': 'Accrington Youth Court',
+      'Warrant date': '12/05/2023',
+      'Overall case outcome': 'Remanded in custody',
+    })
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.continueButton().click()
+
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -541,12 +566,12 @@ context('New Court Case journey', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    Page.verifyOnPage(CourtCaseTaggedBailPage)
+    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('5')
     courtCaseTaggedBailPage.continueButton().click()
 
-    Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
       'Court case reference': caseRef,

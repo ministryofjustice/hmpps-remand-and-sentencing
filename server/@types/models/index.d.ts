@@ -46,6 +46,7 @@ declare module 'models' {
     sentence?: Sentence
     terrorRelated?: boolean
     legacyData?: Record<string, never>
+    updatedOutcome?: boolean
   }
 
   export interface Sentence {

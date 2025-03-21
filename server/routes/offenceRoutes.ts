@@ -185,6 +185,73 @@ export default class OffenceRoutes {
     )
   }
 
+  public getUpdateOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    const caseOutcomes = await this.offenceOutcomeService.getAllOutcomes(req.user.username)
+
+    const [warrantTypeOutcomes, nonCustodialOutcomes] = caseOutcomes
+      .filter(caseOutcome => caseOutcome.outcomeType === warrantType || caseOutcome.outcomeType === 'NON_CUSTODIAL')
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .reduce(
+        ([warrantList, nonCustodialList], caseOutcome) => {
+          return caseOutcome.outcomeType === warrantType
+            ? [[...warrantList, caseOutcome], nonCustodialList]
+            : [warrantList, [...nonCustodialList, caseOutcome]]
+        },
+        [[], []],
+      )
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.token)
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+
+    return res.render('pages/offence/update-outcome', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink,
+      warrantTypeOutcomes,
+      nonCustodialOutcomes,
+      offenceDetails,
+      offence,
+    })
+  }
+
+  public submitUpdateOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
+    const errors = this.offenceService.updateOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm)
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`,
+      )
+    }
+    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+    )
+  }
+
   public getOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,

@@ -194,13 +194,8 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    let offenceOutcomeForm = (req.flash('offenceOutcomeForm')[0] || {}) as OffenceOffenceOutcomeForm
+    const offenceOutcomeForm = (req.flash('offenceOutcomeForm')[0] || {}) as OffenceOffenceOutcomeForm
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-    if (Object.keys(offenceOutcomeForm).length === 0) {
-      offenceOutcomeForm = {
-        offenceOutcome: offence.outcomeUuid,
-      }
-    }
 
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const caseOutcomes = await this.offenceOutcomeService.getAllOutcomes(req.user.username)

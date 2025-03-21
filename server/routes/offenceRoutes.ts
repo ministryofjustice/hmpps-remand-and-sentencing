@@ -246,12 +246,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
-    const errors = this.courtAppearanceService.updateOffenceOutcome(
-      req.session,
-      nomsId,
-      parseInt(offenceReference, 10),
-      offenceOutcomeForm,
-    )
+    const errors = this.offenceService.updateOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm)
 
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -260,6 +255,7 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`,
       )
     }
+    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )

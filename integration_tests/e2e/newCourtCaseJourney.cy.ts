@@ -11,7 +11,6 @@ import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
-import OffenceTerrorRelatedPage from '../pages/offenceTerrorRelatedPage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
@@ -141,7 +140,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add next court appearance',
-          status: 'Incomplete',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',
@@ -189,10 +188,6 @@ context('New Court Case journey', () => {
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
 
-    const offenceTerrorRelatedPage = Page.verifyOnPage(OffenceTerrorRelatedPage)
-    offenceTerrorRelatedPage.radioLabelSelector('true').click()
-    offenceTerrorRelatedPage.continueButton().click()
-
     const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Select the outcome for this offence')
     offenceOutcomePage.radioLabelContains('Remanded in custody').click()
     offenceOutcomePage.continueButton().click()
@@ -216,7 +211,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add next court appearance',
-          status: 'Incomplete',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',

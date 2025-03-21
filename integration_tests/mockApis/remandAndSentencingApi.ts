@@ -9,7 +9,7 @@ export default {
         urlPattern: '/remand-and-sentencing-api/court-case',
         bodyPatterns: [
           {
-            equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "terrorRelated": true, "prisonId": "MDI"}], "warrantType": "REMAND"}]}`,
+            equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}, "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI"}], "warrantType": "REMAND"}]}`,
           },
         ],
       },
@@ -75,7 +75,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"outcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "terrorRelated": true, "sentence": {"chargeNumber": "1", "periodLengths":[{"months": 5, "years": 4, "periodOrder": "years,months", "type": "SENTENCE_LENGTH", "prisonId": "MDI"}], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12", "prisonId": "MDI"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months", "type": "OVERALL_SENTENCE_LENGTH", "prisonId": "MDI"}, "overallConvictionDate" : "2023-05-12"}]}',
+              '{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"outcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "sentence": {"chargeNumber": "1", "periodLengths":[{"months": 5, "years": 4, "periodOrder": "years,months", "type": "SENTENCE_LENGTH", "prisonId": "MDI"}], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12", "prisonId": "MDI"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months", "type": "OVERALL_SENTENCE_LENGTH", "prisonId": "MDI"}, "overallConvictionDate" : "2023-05-12"}]}',
           },
         ],
       },
@@ -388,7 +388,6 @@ export default {
                       displayOrder: 10,
                       dispositionCode: 'FINAL',
                     },
-                    terrorRelated: false,
                     sentence: {
                       sentenceUuid: '29fa8c7f-7ba1-4033-ac4d-83ff0c125a45',
                       sentenceLifetimeUuid: '34511c2a-3daf-4d07-a8e2-47046c12967f',
@@ -406,15 +405,14 @@ export default {
                       ],
                       sentenceServeType: 'FORTHWITH',
                       consecutiveToChargeNumber: null,
-                      sentenceType: {
-                        sentenceTypeUuid: '43370123-38b2-4f6c-89d7-d5e197d44f09',
-                        description: 'Automatic Life',
-                        classification: 'INDETERMINATE',
-                        hintText: null,
-                      },
+                      sentenceType: null,
                       convictionDate: '2023-10-12',
                       fineAmount: null,
-                      legacyData: null,
+                      legacyData: {
+                        sentenceCalcType: 'A',
+                        sentenceCategory: 'B',
+                        sentenceTypeDesc: 'A NOMIS Sentence Type',
+                      },
                     },
                     legacyData: null,
                   },
@@ -465,7 +463,6 @@ export default {
                         displayOrder: 10,
                         dispositionCode: 'FINAL',
                       },
-                      terrorRelated: false,
                       sentence: {
                         sentenceUuid: '29fa8c7f-7ba1-4033-ac4d-83ff0c125a45',
                         sentenceLifetimeUuid: '34511c2a-3daf-4d07-a8e2-47046c12967f',
@@ -483,15 +480,14 @@ export default {
                         ],
                         sentenceServeType: 'FORTHWITH',
                         consecutiveToChargeNumber: null,
-                        sentenceType: {
-                          sentenceTypeUuid: '43370123-38b2-4f6c-89d7-d5e197d44f09',
-                          description: 'Automatic Life',
-                          classification: 'INDETERMINATE',
-                          hintText: null,
-                        },
+                        sentenceType: null,
                         convictionDate: '2023-10-12',
                         fineAmount: null,
-                        legacyData: null,
+                        legacyData: {
+                          sentenceCalcType: 'A',
+                          sentenceCategory: 'B',
+                          sentenceTypeDesc: 'A NOMIS Sentence Type',
+                        },
                       },
                       legacyData: null,
                     },
@@ -732,7 +728,6 @@ export default {
                 offenceCode: 'PS90037',
                 offenceStartDate: '2023-05-12',
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-                terrorRelated: true,
                 prisonId: 'MDI',
               },
             ],
@@ -762,7 +757,6 @@ export default {
                 offenceStartDate: '2023-05-12',
                 outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
                 prisonId: 'MDI',
-                terrorRelated: true,
                 sentence: {
                   chargeNumber: '1',
                   periodLengths: [
@@ -804,7 +798,7 @@ export default {
         urlPattern: '/remand-and-sentencing-api/court-appearance',
         bodyPatterns: [
           {
-            equalToJson: `{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "terrorRelated": true}], "warrantType": "REMAND", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}}`,
+            equalToJson: `{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI" }], "warrantType": "REMAND", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}}`,
           },
         ],
       },
@@ -841,7 +835,6 @@ export default {
             offenceCode: 'PS90037',
             offenceStartDate: '2023-05-12',
             outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-            terrorRelated: true,
             prisonId: 'MDI',
           },
         ],
@@ -864,7 +857,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "terrorRelated": true, "sentence": {"chargeNumber": "1", "periodLengths": [{"months": 5, "years": 4, "periodOrder": "years,months", "type":"SENTENCE_LENGTH", "prisonId": "MDI" }], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12", "prisonId": "MDI"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months", "type":"OVERALL_SENTENCE_LENGTH", "prisonId": "MDI" }, "overallConvictionDate" : "2023-05-12"}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "sentence": {"chargeNumber": "1", "periodLengths": [{"months": 5, "years": 4, "periodOrder": "years,months", "type":"SENTENCE_LENGTH", "prisonId": "MDI" }], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12", "prisonId": "MDI"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months", "type":"OVERALL_SENTENCE_LENGTH", "prisonId": "MDI" }, "overallConvictionDate" : "2023-05-12"}',
           },
         ],
       },
@@ -902,7 +895,6 @@ export default {
             offenceStartDate: '2023-05-12',
             outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
             prisonId: 'MDI',
-            terrorRelated: true,
             sentence: {
               chargeNumber: '1',
               periodLengths: [
@@ -1015,7 +1007,6 @@ export default {
               chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
               offenceCode: 'PS90037',
               offenceStartDate: null,
-              terrorRelated: null,
               outcome: {
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 outcomeName: 'Remanded in custody',
@@ -1771,6 +1762,9 @@ export default {
           },
           statuses: {
             equalTo: 'ACTIVE',
+          },
+          offenceDate: {
+            equalTo: '2023-05-12',
           },
         },
       },

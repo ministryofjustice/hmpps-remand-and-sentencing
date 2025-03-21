@@ -15,6 +15,7 @@ import type {
   CourtCaseSelectReferenceForm,
   CourtCaseTaggedBailForm,
   CourtCaseWarrantDateForm,
+  OffenceOffenceOutcomeForm,
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
@@ -734,6 +735,32 @@ export default class CourtAppearanceService {
   getOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     return courtAppearance.offences[offenceReference]
+  }
+
+  updateOffenceOutcome(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+    offenceOutcomeForm: OffenceOffenceOutcomeForm,
+  ): {
+    text: string
+    href: string
+  }[] {
+    const errors = validate(
+      offenceOutcomeForm,
+      { offenceOutcome: 'required' },
+      { 'required.offenceOutcome': 'You must select the new outcome for this offence' },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const offence = courtAppearance.offences[offenceReference]
+      offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
+      offence.updatedOutcome = true
+      courtAppearance.offences[offenceReference] = offence
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {

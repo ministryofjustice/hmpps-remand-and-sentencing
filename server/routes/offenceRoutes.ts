@@ -185,6 +185,86 @@ export default class OffenceRoutes {
     )
   }
 
+  public getUpdateOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    let offenceOutcomeForm = (req.flash('offenceOutcomeForm')[0] || {}) as OffenceOffenceOutcomeForm
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    if (Object.keys(offenceOutcomeForm).length === 0) {
+      offenceOutcomeForm = {
+        offenceOutcome: offence.outcomeUuid,
+      }
+    }
+
+    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    const caseOutcomes = await this.offenceOutcomeService.getAllOutcomes(req.user.username)
+
+    const [warrantTypeOutcomes, nonCustodialOutcomes] = caseOutcomes
+      .filter(caseOutcome => caseOutcome.outcomeType === warrantType || caseOutcome.outcomeType === 'NON_CUSTODIAL')
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .reduce(
+        ([warrantList, nonCustodialList], caseOutcome) => {
+          return caseOutcome.outcomeType === warrantType
+            ? [[...warrantList, caseOutcome], nonCustodialList]
+            : [warrantList, [...nonCustodialList, caseOutcome]]
+        },
+        [[], []],
+      )
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.token)
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+
+    return res.render('pages/offence/update-outcome', {
+      nomsId,
+      courtCaseReference,
+      offenceOutcomeForm,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink,
+      warrantTypeOutcomes,
+      nonCustodialOutcomes,
+      offenceDetails,
+      offence,
+    })
+  }
+
+  public submitUpdateOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
+    const errors = this.courtAppearanceService.updateOffenceOutcome(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+      offenceOutcomeForm,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+    )
+  }
+
   public getOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,

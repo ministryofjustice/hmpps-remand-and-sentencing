@@ -1,0 +1,56 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Update offence outcome" %}
+
+{% set fieldSetHtml %}
+    <h1 class="govuk-fieldset__heading{% if legacyCaseOutcome %} govuk-!-static-margin-bottom-3{% endif %}">What is the new outcome for this offence?</h1>
+    <p class="govuk-body-l" data-qa="offenceParagraph">{{ offence.offenceCode }} - {{ offenceDetails.description }} committed on {{ offence.offenceStartDate | formatDate }}{{" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate }}</p>
+{% endset %}
+
+{% set radiosData = {
+                    name: "offenceOutcome",
+                    fieldset: {
+                        legend: {
+                        html: fieldSetHtml,
+                        classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: []
+    } %}
+
+{% for caseOutcome in warrantTypeOutcomes %}
+    {%- set caseOutcomeRow = {
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName
+    } -%}
+    {{ radiosData.items.push(caseOutcomeRow) }}
+{% endfor %}
+
+{% if nonCustodialOutcomes.length %}
+    {{ radiosData.items.push({ divider: "or"}) }}
+
+    {% for caseOutcome in nonCustodialOutcomes %}
+    {%- set caseOutcomeRow = {
+            value: caseOutcome.outcomeUuid,
+            text: caseOutcome.outcomeName
+        } -%}
+        {{ radiosData.items.push(caseOutcomeRow) }}
+    {% endfor %}
+{% endif %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-update-offence-outcome">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Update offence outcomes</span>
+
+                {{ govukRadios(radiosData) }}
+
+                {{ govukButton({
+                    text: "Save and continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+            </form>
+
+{% endblock %}

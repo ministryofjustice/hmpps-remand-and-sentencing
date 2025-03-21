@@ -37,6 +37,7 @@ export default defineConfig({
             courtRegisterApi.stubSearchCourt(),
             remandAndSentencingApi.stubSearchSentenceTypes(),
             remandAndSentencingApi.stubGetAllAppearanceTypes(),
+            courtCasesReleaseDatesApi.stubGetServiceDefinitions(),
           ])
         },
         ...auth,

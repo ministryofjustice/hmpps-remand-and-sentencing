@@ -9,6 +9,15 @@
 {% block pageContent %}
             <h1 class="govuk-heading-l">Review offences</h1>
             
+            {{ govukButton({
+                text: "Add an offence" ,
+                classes: "govuk-button--link",
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
+                attributes: {
+                    "data-qa": "addAnotherOffence"
+                }
+            }) }}
+
             {% for offence in unchangedOffences %}
                 {{
                     offenceCard({

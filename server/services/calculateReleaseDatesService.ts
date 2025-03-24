@@ -11,6 +11,8 @@ import {
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
+  private readonly supportedLengthTypes = new Set(['SENTENCE_LENGTH', 'CUSTODIAL_TERM', 'LICENCE_PERIOD'])
+
   async compareOverallSentenceLength(
     appearance: CourtAppearance,
     username: string,
@@ -18,6 +20,17 @@ export default class CalculateReleaseDatesService {
     const sentences = appearance.offences.filter(it => it.sentence).map(it => it.sentence)
 
     if (sentences.length && appearance.hasOverallSentenceLength === 'true') {
+      // Skip validation if any sentence has unsupported length type
+      const hasUnsupportedType = sentences.some(sentence =>
+        sentence.periodLengths?.some(length => !this.supportedLengthTypes.has(length.periodLengthType)),
+      )
+      if (hasUnsupportedType) {
+        return {
+          custodialLengthMatches: false,
+          custodialLength: {},
+        } as OverallSentenceLengthComparison
+      }
+
       const consecutive = sentences.filter(
         sentence =>
           sentence.sentenceServeType === 'CONSECUTIVE' ||

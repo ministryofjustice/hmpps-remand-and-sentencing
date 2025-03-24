@@ -277,13 +277,6 @@ export default class TaskListModel {
       status = {
         text: 'Completed',
       }
-    } else if (this.isAddCourtCase()) {
-      status = {
-        tag: {
-          text: 'Incomplete',
-          classes: 'govuk-tag--blue',
-        },
-      }
     }
 
     return status

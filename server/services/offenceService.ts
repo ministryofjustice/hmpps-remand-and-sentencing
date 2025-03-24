@@ -11,7 +11,6 @@ import type {
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
   OffenceSentenceTypeForm,
-  OffenceTerrorRelatedForm,
   SentenceLengthForm,
 } from 'forms'
 import type { Offence, SentenceLength } from 'models'
@@ -268,36 +267,6 @@ export default class OffenceService {
       }
 
       offence.sentence = sentence
-      // eslint-disable-next-line no-param-reassign
-      session.offences[id] = offence
-    }
-    return errors
-  }
-
-  getTerrorRelated(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtCaseReference: string) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    return this.getOffence(session.offences, id).terrorRelated
-  }
-
-  setTerrorRelated(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    terrorRelatedForm: OffenceTerrorRelatedForm,
-  ) {
-    const errors = validate(
-      terrorRelatedForm,
-      {
-        terrorRelated: 'required',
-      },
-      {
-        'required.terrorRelated': 'You must select Yes or No.',
-      },
-    )
-    if (errors.length === 0) {
-      const id = this.getOffenceId(nomsId, courtCaseReference)
-      const offence = this.getOffence(session.offences, id)
-      offence.terrorRelated = terrorRelatedForm.terrorRelated === 'true'
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }

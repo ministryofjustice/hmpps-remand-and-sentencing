@@ -13,11 +13,24 @@ export default class CalculateReleaseDatesService {
 
   private readonly supportedLengthTypes = new Set(['SENTENCE_LENGTH', 'CUSTODIAL_TERM', 'LICENCE_PERIOD'])
 
+  private createEmptySentenceLength(): OverallSentenceLength {
+    return {
+      years: 0,
+      months: 0,
+      weeks: 0,
+      days: 0,
+    }
+  }
+
   async compareOverallSentenceLength(
     appearance: CourtAppearance,
     username: string,
   ): Promise<OverallSentenceLengthComparison> {
     const sentences = appearance.offences.filter(it => it.sentence).map(it => it.sentence)
+    const emptyResponse = {
+      custodialLength: this.createEmptySentenceLength(),
+      custodialLengthMatches: false,
+    }
 
     if (sentences.length && appearance.hasOverallSentenceLength === 'true') {
       // Skip validation if any sentence has unsupported length type
@@ -25,10 +38,29 @@ export default class CalculateReleaseDatesService {
         sentence.periodLengths?.some(length => !this.supportedLengthTypes.has(length.periodLengthType)),
       )
       if (hasUnsupportedType) {
+        return emptyResponse
+      }
+
+      // Handle single sentence case locally
+      if (sentences.length === 1) {
+        const sentence = sentences[0]
+
+        // TODO Multiple period lengths per sentence?? is that how it works??
+        const custodialDuration = this.mapPeriodLengthToOverallSentenceLength(
+          sentence.periodLengths.find(
+            it => it.periodLengthType === 'SENTENCE_LENGTH' || it.periodLengthType === 'CUSTODIAL_TERM',
+          ),
+        )
+        const overallLength = this.mapPeriodLengthToOverallSentenceLength(appearance.overallSentenceLength)
+
         return {
-          custodialLengthMatches: false,
-          custodialLength: {},
-        } as OverallSentenceLengthComparison
+          custodialLength: custodialDuration || this.createEmptySentenceLength(),
+          custodialLengthMatches:
+            custodialDuration?.years === overallLength?.years &&
+            custodialDuration?.months === overallLength?.months &&
+            custodialDuration?.weeks === overallLength?.weeks &&
+            custodialDuration?.days === overallLength?.days,
+        }
       }
 
       const consecutive = sentences.filter(
@@ -49,10 +81,7 @@ export default class CalculateReleaseDatesService {
         request,
       )
     }
-    return {
-      custodialLengthMatches: false,
-      custodialLength: {},
-    } as OverallSentenceLengthComparison
+    return emptyResponse
   }
 
   private mapSentenceToOverallSentenceLengthSentence(sentence: Sentence): OverallSentenceLengthSentence {

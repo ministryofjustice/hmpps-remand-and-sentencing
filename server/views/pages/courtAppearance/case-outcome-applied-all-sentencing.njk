@@ -1,13 +1,13 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/caseOutcomeAppliedAllAppearanceDetails.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Add a court case Outcome applied to all" %}
+{% set pageTitle = applicationName + " - Add a court case Outcome applied to all" %}        
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading govuk-!-static-margin-bottom-3">Is the outcome the same for all offences on the warrant?</h1>
     <p class="govuk-body-l govuk-!-static-margin-bottom-3">{{ overallCaseOutcome }}</p>
 {% endset %}
-{% block content %}
+{% block pageContent %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
@@ -26,12 +26,12 @@
                         {
                             value: "true",
                             text: "Yes",
-                            checked: caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true'
+                            checked: false
                         },
                         {
                             value: "false",
                             text: "No",
-                            checked: caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'false'
+                            checked: false
                         }
                     ],
                     errorMessage:  errors | findError('caseOutcomeAppliedAll')

@@ -182,6 +182,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/case-outcome-applied-all-sentencing',
+    courtCaseRoutes.getCaseOutcomeAppliedAllSentencing,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-case-outcome-applied-all-sentencing',
+    courtCaseRoutes.submitCaseOutcomeAppliedAllSentencing,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/tagged-bail',
     courtCaseRoutes.getTaggedBail,
   )

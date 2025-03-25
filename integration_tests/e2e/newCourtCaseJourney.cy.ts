@@ -27,9 +27,9 @@ import CourtCaseAppearanceDetailsPage from '../pages/courtCaseDraftSavedPage'
 import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
-import OffenceSentenceLengthPage from '../pages/offenceSentenceLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
+import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -561,12 +561,12 @@ context('New Court Case journey', () => {
     offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
     offenceSentenceTypePage.continueButton().click()
 
-    const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
-    offenceSentenceLengthPage.yearsInput().type('1')
-    offenceSentenceLengthPage.monthsInput().type('2')
-    offenceSentenceLengthPage.weeksInput().type('3')
-    offenceSentenceLengthPage.daysInput().type('4')
-    offenceSentenceLengthPage.continueButton().click()
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'Enter the sentence length')
+    offencePeriodLengthPage.yearsInput().type('1')
+    offencePeriodLengthPage.monthsInput().type('2')
+    offencePeriodLengthPage.weeksInput().type('3')
+    offencePeriodLengthPage.daysInput().type('4')
+    offencePeriodLengthPage.continueButton().click()
 
     const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
@@ -916,12 +916,12 @@ context('New Court Case journey', () => {
     offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
     offenceSentenceTypePage.continueButton().click()
 
-    const offenceSentenceLengthPage = Page.verifyOnPage(OffenceSentenceLengthPage)
-    offenceSentenceLengthPage.yearsInput().type('1')
-    offenceSentenceLengthPage.monthsInput().type('2')
-    offenceSentenceLengthPage.weeksInput().type('3')
-    offenceSentenceLengthPage.daysInput().type('4')
-    offenceSentenceLengthPage.continueButton().click()
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'Enter the sentence length')
+    offencePeriodLengthPage.yearsInput().type('1')
+    offencePeriodLengthPage.monthsInput().type('2')
+    offencePeriodLengthPage.weeksInput().type('3')
+    offencePeriodLengthPage.daysInput().type('4')
+    offencePeriodLengthPage.continueButton().click()
 
     const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()

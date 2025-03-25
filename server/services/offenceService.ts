@@ -294,6 +294,31 @@ export default class OffenceService {
     return errors
   }
 
+  updateOffenceOutcome(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceOutcomeForm: OffenceOffenceOutcomeForm,
+  ): {
+    text: string
+    href: string
+  }[] {
+    const errors = validate(
+      offenceOutcomeForm,
+      { offenceOutcome: 'required' },
+      { 'required.offenceOutcome': 'You must select the new outcome for this offence' },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
+      offence.updatedOutcome = true
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
   setSentenceType(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

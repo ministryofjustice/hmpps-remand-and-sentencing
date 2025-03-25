@@ -39,7 +39,7 @@ window.addEventListener('load', function () {
         return result && result.courtDescription
       },
     },
-    minLength: 2,
+    minLength: 3,
     source: debounce(function (query, populateResults) {
       request.open('GET', '/api/search-court?searchString=' + query, true)
       // Time to wait before giving up fetching the search index

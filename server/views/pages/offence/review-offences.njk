@@ -5,7 +5,7 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - Review offences" %}
-
+{% set hideOffences = true %}
 {% block pageContent %}
             <h1 class="govuk-heading-l">Review offences</h1>
             
@@ -55,7 +55,7 @@
             
             <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes</h2>
 
-            {% for offence in changedList %}
+            {% for offence in changedOffences %}
                 {{
                     offenceCard({
                         offenceCode: offence.offenceCode,

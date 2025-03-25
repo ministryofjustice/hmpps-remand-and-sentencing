@@ -246,15 +246,10 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`,
       )
     }
-    return this.saveSessionOffenceInAppearance(
-      req,
-      res,
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      addOrEditCourtAppearance,
-      appearanceReference,
-      offenceReference,
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
   }
 
@@ -1696,8 +1691,13 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
       )
     }
+    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      )
+    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
   }
 
@@ -1719,10 +1719,10 @@ export default class OffenceRoutes {
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
     ])
     const [changedOffences, unchangedOffences] = offences.reduce(
-      ([changedList, unchangedList], offence) => {
+      ([changedList, unchangedList], offence, index) => {
         return offence.updatedOutcome
-          ? [[...changedList, offence], unchangedList]
-          : [changedList, [...unchangedList, offence]]
+          ? [[...changedList, { ...offence, index }], unchangedList]
+          : [changedList, [...unchangedList, { ...offence, index }]]
       },
       [[], []],
     )

@@ -5,7 +5,7 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - Review offences" %}
-
+{% set hideOffences = true %}
 {% block pageContent %}
             <h1 class="govuk-heading-l">Review offences</h1>
             
@@ -26,20 +26,36 @@
                         offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
                         offenceEndDate: offence.offenceEndDate | formatDate,
                         outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                        outcomeUpdated: offence.updatedOutcome,
                         countNumber: offence.sentence.countNumber,
                         convictionDate: offence.sentence.convictionDate | formatDate,
                         terrorRelated: offence.terrorRelated,
                         isSentenced: offence.sentence,
                         periodLengths: offence.sentence.periodLengths,
                         sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                        fineAmount: offence.sentence.fineAmount
+                        fineAmount: offence.sentence.fineAmount,
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/edit-offence",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit offence"
+                                }
+                            ]
+                        },
+                        listItems: {
+                            classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+                            items: [{
+                                html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.index + '/update-offence-outcome">Update outcome</a>'
+                            }]
+                        }
                     })
                 }}
             {% endfor %}
             
             <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes</h2>
 
-            {% for offence in changedList %}
+            {% for offence in changedOffences %}
                 {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
@@ -47,13 +63,23 @@
                         offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
                         offenceEndDate: offence.offenceEndDate | formatDate,
                         outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                        outcomeUpdated: offence.updatedOutcome,
                         countNumber: offence.sentence.countNumber,
                         convictionDate: offence.sentence.convictionDate | formatDate,
                         terrorRelated: offence.terrorRelated,
                         isSentenced: offence.sentence,
                         periodLengths: offence.sentence.periodLengths,
                         sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                        fineAmount: offence.sentence.fineAmount
+                        fineAmount: offence.sentence.fineAmount,
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/edit-offence",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit offence"
+                                }
+                            ]
+                        }
                     })
                 }}
             {% else %}

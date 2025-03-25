@@ -386,23 +386,6 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    // courtCaseTaskListPage.courtDocumentsLink().click()
-
-    // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
-    // courtCaseDocumentTypePage.radioLabelSelector('Custodial warrant').click()
-    // courtCaseDocumentTypePage.button().click()
-
-    // const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
-    // courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
-    // courtCaseWarrantUploadPage.button().click()
-
-    // const courtCaseDocumentsPage = Page.verifyOnPage(CourtCaseDocumentsPage) - not built yet
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'Custodial warrant 1': 'uploaded',
-    // })
-    // courtCaseDocumentsPage.button().click()
-
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.updateOffenceOutcomesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
@@ -421,11 +404,6 @@ context('Repeat Court Case journey', () => {
     let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.addAnotherButton().click()
 
-    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
-    offenceCountNumberPage.radioLabelSelector('true').click()
-    offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.continueButton().click()
-
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
@@ -438,6 +416,11 @@ context('Repeat Court Case journey', () => {
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
+
+    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.radioLabelSelector('true').click()
+    offenceCountNumberPage.input().type('1')
+    offenceCountNumberPage.continueButton().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
@@ -594,24 +577,6 @@ context('Repeat Court Case journey', () => {
           status: 'Optional',
         },
       ])
-
-    // courtCaseTaskListPage.courtDocumentsLink().click()
-
-    // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
-    // courtCaseDocumentTypePage.radioLabelSelector('Custodial warrant').click()
-    // courtCaseDocumentTypePage.button().click()
-
-    // const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
-    // courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
-    // courtCaseWarrantUploadPage.button().click()
-
-    // const courtCaseDocumentsPage = Page.verifyOnPage(CourtCaseDocumentsPage) - not built yet
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'Custodial warrant 1': 'uploaded',
-    // })
-    // courtCaseDocumentsPage.button().click()
-
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.updateOffenceOutcomesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
@@ -630,11 +595,6 @@ context('Repeat Court Case journey', () => {
     let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.addAnotherButton().click()
 
-    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
-    offenceCountNumberPage.radioLabelSelector('true').click()
-    offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.continueButton().click()
-
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
@@ -647,6 +607,11 @@ context('Repeat Court Case journey', () => {
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
+
+    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.radioLabelSelector('true').click()
+    offenceCountNumberPage.input().type('1')
+    offenceCountNumberPage.continueButton().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()

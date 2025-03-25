@@ -117,7 +117,7 @@
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "govuk-frontend": "^5.9.0",
-    "helmet": "^8.0.0",
+    "helmet": "^8.1.0",
     "http-errors": "^2.0.0",
     "jwt-decode": "^4.0.0",
     "multer": "^1.4.5-lts.1",
@@ -176,7 +176,7 @@
     "openapi-typescript": "^7.6.1",
     "prettier": "^3.5.3",
     "prettier-plugin-jinja-template": "^2.0.0",
-    "sass": "^1.85.1",
+    "sass": "^1.86.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.6",
     "typescript": "^5.8.2"

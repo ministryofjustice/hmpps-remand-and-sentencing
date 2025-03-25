@@ -758,7 +758,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add next court appearance',
-          status: 'Optional',
+          status: 'Cannot start yet',
         },
         {
           name: 'Upload court documents',

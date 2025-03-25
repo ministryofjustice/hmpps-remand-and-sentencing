@@ -155,12 +155,14 @@ export default class OffenceRoutes {
   public getCheckOverallAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const overallCaseOutcome = 'Imprisonment'
 
     return res.render('pages/offence/check-overall-answers', {
       nomsId,
       courtAppearance,
       courtCaseReference,
       appearanceReference,
+      overallCaseOutcome,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all`,
@@ -367,7 +369,7 @@ export default class OffenceRoutes {
         courtAppearance.overallConvictionDate,
       )
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
       )
     }
     return res.redirect(
@@ -678,7 +680,7 @@ export default class OffenceRoutes {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
         )
       }
       this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)

@@ -897,16 +897,18 @@ export default class CourtCaseRoutes {
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
     const skippedOutcome = req.flash('skippedOutcome')[0] === 'true' || false
-
-    let overallCaseOutcome: string = (
-      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
-    ).outcomeName
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    if (warrantType === 'SENTENCING') {
+    let overallCaseOutcome = ''
+    if (warrantType !== 'SENTENCING') {
+      const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
+      overallCaseOutcome = (
+        await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+      ).outcomeName
+    } else {
       overallCaseOutcome = 'Imprisonment'
     }
+
     let caseOutcomeAppliedAllForm = (req.flash('caseOutcomeAppliedAllForm')[0] ||
       {}) as CourtCaseCaseOutcomeAppliedAllForm
     if (Object.keys(caseOutcomeAppliedAllForm).length === 0) {
@@ -914,6 +916,7 @@ export default class CourtCaseRoutes {
         caseOutcomeAppliedAll: this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId),
       }
     }
+
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?backNav=true`
     if (warrantType === 'SENTENCING') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome`
@@ -1020,6 +1023,7 @@ export default class CourtCaseRoutes {
   public getOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
+    const overallCaseOutcome = 'Imprisonment'
     let courtCaseOverallSentenceLengthForm = (req.flash('courtCaseOverallSentenceLengthForm')[0] ||
       {}) as SentenceLengthForm
     if (Object.keys(courtCaseOverallSentenceLengthForm).length === 0) {
@@ -1032,6 +1036,7 @@ export default class CourtCaseRoutes {
       nomsId,
       courtCaseReference,
       appearanceReference,
+      overallCaseOutcome,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       submitToCheckAnswers,
@@ -1215,9 +1220,14 @@ export default class CourtCaseRoutes {
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const overallCaseOutcome: string = (
-      await this.appearanceOutcomeService.getOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username)
-    ).outcomeName
+
+    let overallCaseOutcome = ''
+    if (courtAppearance.warrantType !== 'SENTENCING') {
+      overallCaseOutcome = (
+        await this.appearanceOutcomeService.getOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username)
+      ).outcomeName
+    }
+
     let courtName
     if (courtAppearance.courtCode) {
       try {

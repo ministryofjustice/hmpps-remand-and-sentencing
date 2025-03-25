@@ -30,11 +30,9 @@ export default class TaskListModel {
     this.items = [
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getOffenceSentencesItem(courtAppearance),
+      this.getNextCourtAppearanceItem(courtAppearance),
+      this.getCourtDocumentsItem(courtAppearance),
     ]
-    if (courtAppearance.warrantType === 'REMAND') {
-      this.items.push(this.getNextCourtAppearanceItem(courtAppearance))
-    }
-    this.items.push(this.getCourtDocumentsItem(courtAppearance))
   }
 
   private getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {

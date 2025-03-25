@@ -1972,6 +1972,35 @@ export default {
     })
   },
 
+  stubGetAppearanceOutcomeImprisonmentById: ({
+    outcomeUuid = '62412083-9892-48c9-bf01-7864af4a8b3c',
+    outcomeName = 'Imprisonment',
+    outcomeType = 'SENTENCING',
+  }: {
+    outcomeUuid: string
+    outcomeName: string
+    outcomeType: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/appearance-outcome/${outcomeUuid}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          outcomeUuid,
+          outcomeName,
+          nomisCode: '1002',
+          outcomeType,
+          displayOrder: 10,
+          relatedChargeOutcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+        },
+      },
+    })
+  },
+
   stubGetAllChargeOutcomes: (): SuperAgentRequest => {
     return stubFor({
       request: {

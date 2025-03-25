@@ -561,7 +561,7 @@ context('New Court Case journey', () => {
     offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
     offenceSentenceTypePage.continueButton().click()
 
-    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'Enter the sentence length')
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage.yearsInput().type('1')
     offencePeriodLengthPage.monthsInput().type('2')
     offencePeriodLengthPage.weeksInput().type('3')
@@ -916,7 +916,7 @@ context('New Court Case journey', () => {
     offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
     offenceSentenceTypePage.continueButton().click()
 
-    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'Enter the sentence length')
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage.yearsInput().type('1')
     offencePeriodLengthPage.monthsInput().type('2')
     offencePeriodLengthPage.weeksInput().type('3')

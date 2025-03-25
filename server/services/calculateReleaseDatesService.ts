@@ -26,6 +26,11 @@ export default class CalculateReleaseDatesService {
       custodialLengthMatches: true,
     }
 
+    // Do not run this validation if there is no overall sentence length
+    if (appearance.hasOverallSentenceLength !== 'true') {
+      return skippedValidationResponse
+    }
+
     if (sentences.length && appearance.hasOverallSentenceLength === 'true') {
       // Handle single sentence here without calling CRD-API (single sentence validation occurs for all sentence types)
       if (sentences.length === 1 && sentences[0].periodLengths.length === 1) {
@@ -55,7 +60,10 @@ export default class CalculateReleaseDatesService {
         request,
       )
     }
-    return skippedValidationResponse
+    return {
+      custodialLength: this.emptySentenceLength,
+      custodialLengthMatches: false,
+    }
   }
 
   private checkSingleSentenceLength(periodLength: SentenceLength, overallSentenceLength: SentenceLength) {

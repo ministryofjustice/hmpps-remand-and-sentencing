@@ -25,16 +25,16 @@ describe('CalculateReleaseDatesService', () => {
   })
 
   describe('compareOverallSentenceLength', () => {
-    it('should pass validation when no sentences exist', async () => {
+    it('should fail validation when no sentences exist and there is an overall sentence length', async () => {
       const result = await service.compareOverallSentenceLength(baseAppearance, 'user')
-      expect(result.custodialLengthMatches).toBe(true)
+      expect(result.custodialLengthMatches).toBe(false)
     })
 
-    it('should pass validation  when hasOverallSentenceLength is not true', async () => {
+    it('should pass validation when hasOverallSentenceLength is not true', async () => {
       const result = await service.compareOverallSentenceLength(
         {
           ...baseAppearance,
-          hasOverallSentenceLength: 'true',
+          hasOverallSentenceLength: 'false',
         },
         'user',
       )

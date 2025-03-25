@@ -428,6 +428,10 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
+          name: 'Add next court appearance',
+          status: 'Cannot start yet',
+        },
+        {
           name: 'Upload court documents',
           status: 'Cannot start yet',
         },
@@ -488,6 +492,10 @@ context('New Court Case journey', () => {
         {
           name: 'Add offences',
           status: 'Incomplete',
+        },
+        {
+          name: 'Add next court appearance',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',
@@ -567,6 +575,10 @@ context('New Court Case journey', () => {
           status: 'Incomplete',
         },
         {
+          name: 'Add next court appearance',
+          status: 'Optional',
+        },
+        {
           name: 'Upload court documents',
           status: 'Optional',
         },
@@ -616,6 +628,10 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Add next court appearance',
           status: 'Cannot start yet',
         },
         {
@@ -681,6 +697,10 @@ context('New Court Case journey', () => {
           status: 'Incomplete',
         },
         {
+          name: 'Add next court appearance',
+          status: 'Optional',
+        },
+        {
           name: 'Upload court documents',
           status: 'Optional',
         },
@@ -734,6 +754,10 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Add next court appearance',
           status: 'Cannot start yet',
         },
         {
@@ -791,6 +815,10 @@ context('New Court Case journey', () => {
         {
           name: 'Add offences',
           status: 'Incomplete',
+        },
+        {
+          name: 'Add next court appearance',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',
@@ -862,6 +890,10 @@ context('New Court Case journey', () => {
         {
           name: 'Add offences',
           status: 'Incomplete',
+        },
+        {
+          name: 'Add next court appearance',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',

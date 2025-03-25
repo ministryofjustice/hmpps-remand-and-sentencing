@@ -246,9 +246,15 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`,
       )
     }
-    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+    return this.saveSessionOffenceInAppearance(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      offenceReference,
     )
   }
 
@@ -356,9 +362,15 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
       )
     }
-    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+    return this.saveSessionOffenceInAppearance(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      offenceReference,
     )
   }
 
@@ -748,9 +760,15 @@ export default class OffenceRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
         )
       }
-      this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      return this.saveSessionOffenceInAppearance(
+        req,
+        res,
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        offenceReference,
       )
     }
     if (submitToEditOffence) {
@@ -1209,9 +1227,15 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+    return this.saveSessionOffenceInAppearance(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      offenceReference,
     )
   }
 
@@ -1279,9 +1303,15 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-    this.saveSessionOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference)
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+    return this.saveSessionOffenceInAppearance(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      offenceReference,
     )
   }
 
@@ -1688,6 +1718,14 @@ export default class OffenceRoutes {
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
     ])
+    const [changedOffences, unchangedOffences] = offences.reduce(
+      ([changedList, unchangedList], offence) => {
+        return offence.updatedOutcome
+          ? [[...changedList, offence], unchangedList]
+          : [changedList, [...unchangedList, offence]]
+      },
+      [[], []],
+    )
     return res.render('pages/offence/review-offences', {
       nomsId,
       courtCaseReference,
@@ -1696,7 +1734,8 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       offenceMap,
       sentenceTypeMap,
-      offences,
+      changedOffences,
+      unchangedOffences,
       outcomeMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
@@ -1705,12 +1744,11 @@ export default class OffenceRoutes {
   public submitReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)
-    if (reviewOffenceForm.changeOffence === 'true') {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
-      )
-    }
-    this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, true)
+    this.courtAppearanceService.setOffenceSentenceAccepted(
+      req.session,
+      nomsId,
+      reviewOffenceForm.changeOffence === 'true',
+    )
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
@@ -1731,9 +1769,26 @@ export default class OffenceRoutes {
     return deepmerge(appearanceOffence, sessionOffence, { arrayMerge: (_target, source, _options) => source })
   }
 
-  private saveSessionOffenceInAppearance(req, nomsId: string, courtCaseReference: string, offenceReference: string) {
+  private saveSessionOffenceInAppearance(
+    req,
+    res,
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseReference: string,
+    addOrEditCourtAppearance: string,
+    appearanceReference: string,
+    offenceReference: string,
+  ) {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
+    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+    )
   }
 
   private isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {

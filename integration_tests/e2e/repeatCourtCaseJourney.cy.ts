@@ -15,7 +15,6 @@ import CourtCaseTaggedBailPage from '../pages/courtCaseTaggedBailPage'
 import CourtCaseTaskListPage from '../pages/courtCaseTaskListPage'
 import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
-import OffenceCheckOffenceAnswersPageEdit from '../pages/offenceCheckOffenceAnswersPageEdit'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
@@ -169,12 +168,8 @@ context('Repeat Court Case journey', () => {
 
     // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.reviewOffencesLink().click()
-    const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.radioLabelSelector('true').click()
-    offenceReviewOffencesPage.continueButton().click()
-
-    let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPageEdit, 'offence')
-    offenceCheckOffenceAnswersPage.addAnotherButton().click()
+    let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    offenceReviewOffencesPage.addAnotherButton().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
@@ -189,12 +184,9 @@ context('Repeat Court Case journey', () => {
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
-      OffenceCheckOffenceAnswersPageEdit,
-      'You have added 2 offence',
-    )
-    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
-    offenceCheckOffenceAnswersPage.finishAddingButton().click()
+    offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    offenceReviewOffencesPage.radioLabelSelector('true').click()
+    offenceReviewOffencesPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
     courtCaseTaskListPage
@@ -426,15 +418,8 @@ context('Repeat Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.radioLabelSelector('true').click()
-    offenceReviewOffencesPage.continueButton().click()
-
-    let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
-      OffenceCheckOffenceAnswersPageEdit,
-      'You have added 1 offence',
-    )
-    offenceCheckOffenceAnswersPage.addAnotherButton().click()
+    let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    offenceReviewOffencesPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.radioLabelSelector('true').click()
@@ -467,21 +452,9 @@ context('Repeat Court Case journey', () => {
     cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     cffenceSentenceServeTypePage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
-      OffenceCheckOffenceAnswersPageEdit,
-      'You have added 2 offence',
-    )
-
-    offenceCheckOffenceAnswersPage
-      .overallSentenceLength()
-      .trimTextContent()
-      .should('contain', '4 years 5 months 0 weeks 0 days')
-    offenceCheckOffenceAnswersPage
-      .sentencesAdded()
-      .trimTextContent()
-      .should('contain', '4 years 5 months 0 weeks 0 days')
-    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
-    offenceCheckOffenceAnswersPage.finishAddingButton().click()
+    offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    offenceReviewOffencesPage.radioLabelSelector('true').click()
+    offenceReviewOffencesPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
     courtCaseTaskListPage
@@ -654,15 +627,8 @@ context('Repeat Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.radioLabelSelector('true').click()
-    offenceReviewOffencesPage.continueButton().click()
-
-    let offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
-      OffenceCheckOffenceAnswersPageEdit,
-      'You have added 1 offence',
-    )
-    offenceCheckOffenceAnswersPage.addAnotherButton().click()
+    let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    offenceReviewOffencesPage.addAnotherButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.radioLabelSelector('true').click()
@@ -695,12 +661,9 @@ context('Repeat Court Case journey', () => {
     cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     cffenceSentenceServeTypePage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
-      OffenceCheckOffenceAnswersPageEdit,
-      'You have added 2 offence',
-    )
-    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
-    offenceCheckOffenceAnswersPage.finishAddingButton().click()
+    offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    offenceReviewOffencesPage.radioLabelSelector('true').click()
+    offenceReviewOffencesPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
     courtCaseTaskListPage

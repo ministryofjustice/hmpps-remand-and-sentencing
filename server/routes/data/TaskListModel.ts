@@ -213,7 +213,11 @@ export default class TaskListModel {
         text: 'Completed',
       }
     } else if (appearanceInfoComplete) {
-      if (!this.isAddCourtCase() && courtAppearance.warrantType === 'REMAND') {
+      if (
+        !this.isAddCourtCase() &&
+        courtAppearance.warrantType === 'REMAND' &&
+        courtAppearance.caseOutcomeAppliedAll === 'true'
+      ) {
         status = {
           tag: {
             text: 'Optional',

@@ -2,15 +2,23 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - Review offences" %}
 
 {% block pageContent %}
-            <h1 class="govuk-heading-l">Review the offence details for this appearance</h1>
+            <h1 class="govuk-heading-l">Review offences</h1>
             
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Offences</h2>
+            {{ govukButton({
+                text: "Add an offence" ,
+                classes: "govuk-button--link",
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
+                attributes: {
+                    "data-qa": "addAnotherOffence"
+                }
+            }) }}
 
-            {% for offence in offences %}
+            {% for offence in unchangedOffences %}
                 {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
@@ -29,6 +37,31 @@
                 }}
             {% endfor %}
             
+            <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes</h2>
+
+            {% for offence in changedList %}
+                {{
+                    offenceCard({
+                        offenceCode: offence.offenceCode,
+                        offenceName: offenceMap[offence.offenceCode],
+                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
+                        offenceEndDate: offence.offenceEndDate | formatDate,
+                        outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                        countNumber: offence.sentence.countNumber,
+                        convictionDate: offence.sentence.convictionDate | formatDate,
+                        terrorRelated: offence.terrorRelated,
+                        isSentenced: offence.sentence,
+                        periodLengths: offence.sentence.periodLengths,
+                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+                        fineAmount: offence.sentence.fineAmount
+                    })
+                }}
+            {% else %}
+                {{ govukInsetText({
+                    text: "There are no offences with updated outcomes."
+                }) }}
+            {% endfor %}
+
 
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-review-offences">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -38,22 +71,19 @@
                         name: "changeOffence",
                         fieldset: {
                             legend: {
-                            text: "Do you need to make any changes to the offences?",
+                            text: "Have you finished reviewing offences?",
                             isPageHeading: false,
                             classes: "govuk-fieldset__legend--m"
                             }
                         },
-                        hint: {
-                            text: "This includes adding or deleting offences."
-                        },
                         items: [
                             {
                                 value: "true",
-                                text: "Yes, I need to make changes"
+                                text: "Yes, I've finished reviewing offences"
                             },
                             {
                                 value: "false",
-                                text: "No"
+                                text: "No, I'll come back to it later"
                             }
                         ]
                     }) }}

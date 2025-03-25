@@ -53,7 +53,7 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseNextHearingAnswersPage.continueButton().should('contain.text', 'Accept and continue')
+    courtCaseNextHearingAnswersPage.continueButton().should('contain.text', 'Confirm and continue')
   })
 
   it('clicking next hearing type and submitting goes back to check answers page', () => {
@@ -100,5 +100,16 @@ context('Check Next Hearing Answers page', () => {
     courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').clear().type(differentFutureDate.year().toString())
     courtCaseNextHearingDatePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
+  })
+
+  it('setting next-hearing-select to No and submitting goes back to check answers page', () => {
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-select')
+    const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
+    courtCaseNextHearingSetPage.radioLabelSelector('false').click()
+    courtCaseNextHearingSetPage.continueButton().click()
+    courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
+    courtCaseNextHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Next court date set': 'Date to be fixed',
+    })
   })
 })

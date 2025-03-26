@@ -653,7 +653,7 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setWarrantType(req.session, nomsId, warrantType)
     if (warrantType === 'SENTENCING') {
       const overallCaseOutcomeForm = {
-        overallCaseOutcome: '62412083-9892-48c9-bf01-7864af4a8b3c',
+        overallCaseOutcome: '62412083-9892-48c9-bf01-7864af4a8b3c|f17328cf-ceaa-43c2-930a-26cf74480e18',
       }
       this.courtAppearanceService.setAppearanceOutcomeUuid(req.session, nomsId, overallCaseOutcomeForm)
     }
@@ -1063,10 +1063,6 @@ export default class CourtCaseRoutes {
   public getOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
-    const overallCaseOutcome = (
-      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
-    ).outcomeName
     let courtCaseOverallSentenceLengthForm = (req.flash('courtCaseOverallSentenceLengthForm')[0] ||
       {}) as SentenceLengthForm
     if (Object.keys(courtCaseOverallSentenceLengthForm).length === 0) {

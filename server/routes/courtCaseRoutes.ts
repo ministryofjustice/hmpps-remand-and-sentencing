@@ -1444,7 +1444,7 @@ export default class CourtCaseRoutes {
       nextHearingDateMonth = nextHearingDate.getMonth() + 1
       nextHearingDateYear = nextHearingDate.getFullYear()
       nextHearingTime = this.courtAppearanceService.hasNextHearingTimeSet(req.session, nomsId)
-        ? `${nextHearingDate.getHours()}:${nextHearingDate.getMinutes()}`
+        ? dayjs(nextHearingDate).format('HH:mm')
         : ''
     }
 

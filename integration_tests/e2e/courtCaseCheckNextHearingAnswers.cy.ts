@@ -35,6 +35,7 @@ context('Check Next Hearing Answers page', () => {
     courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type(futureDate.date().toString())
     courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type((futureDate.month() + 1).toString())
     courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type(futureDate.year().toString())
+    courtCaseNextHearingDatePage.nextHearingTimeInput().type('9:30')
     courtCaseNextHearingDatePage.continueButton().click()
 
     const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
@@ -82,7 +83,7 @@ context('Check Next Hearing Answers page', () => {
       .summaryList()
       .getSummaryList()
       .should('deep.equal', {
-        'Next hearing date': futureDate.format('DD/MM/YYYY'),
+        'Next hearing date': `${futureDate.format('DD/MM/YYYY')} 09:30`,
         'Next hearing location': 'Southampton Magistrate Court',
         'Next hearing type': 'Court appearance',
       })
@@ -91,6 +92,7 @@ context('Check Next Hearing Answers page', () => {
   it('clicking next hearing date and submitting goes back to check answers page', () => {
     courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-date').click()
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
+    courtCaseNextHearingDatePage.nextHearingTimeInput().should('have.value', '09:30')
     const differentFutureDate = futureDate.add(10, 'days')
     courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').clear().type(differentFutureDate.date().toString())
     courtCaseNextHearingDatePage

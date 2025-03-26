@@ -219,11 +219,7 @@ context('Add Offence Edit offence Page', () => {
       offenceSentenceTypePage.radioSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').should('be.checked')
       offenceSentenceTypePage.radioLabelContains('EDS (Extended Determinate Sentence)').click()
       offenceSentenceTypePage.continueButton().click()
-      let offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'overall sentence length')
-      offencePeriodLengthPage.yearsInput().type('6')
-      offencePeriodLengthPage.monthsInput().type('6')
-      offencePeriodLengthPage.continueButton().click()
-      offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'custodial term')
+      let offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'custodial term')
       offencePeriodLengthPage.yearsInput().type('4')
       offencePeriodLengthPage.monthsInput().type('4')
       offencePeriodLengthPage.continueButton().click()
@@ -238,7 +234,6 @@ context('Add Offence Edit offence Page', () => {
         'Committed on': '12/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
-        'Overall sentence length': '6 years 6 months 0 weeks 0 days',
         'Custodial term': '4 years 4 months 0 weeks 0 days',
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',

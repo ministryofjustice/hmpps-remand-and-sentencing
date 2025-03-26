@@ -42,11 +42,13 @@ export default defineConfig({
               outcomeName: 'Imprisonment',
               outcomeType: 'SENTENCING',
             }),
-            remandAndSentencingApi.stubGetChargeOutcomeById({
-              outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
-              outcomeName: 'Imprisonment',
-              outcomeType: 'SENTENCING',
-            }),
+            remandAndSentencingApi.stubGetChargeOutcomesByIds([
+              {
+                outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+                outcomeName: 'Imprisonment',
+                outcomeType: 'SENTENCING',
+              },
+            ]),
             courtCasesReleaseDatesApi.stubGetServiceDefinitions(),
           ])
         },

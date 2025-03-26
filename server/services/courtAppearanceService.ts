@@ -41,6 +41,7 @@ export default class CourtAppearanceService {
         referenceNumber: [
           'required_without:noCaseReference',
           `onlyOne:${courtCaseReferenceForm.noCaseReference ?? ''}`,
+          'regex:/^[A-Za-z0-9\\/\\.\\- ]$/',
         ],
         noCaseReference: `onlyOne:${courtCaseReferenceForm.referenceNumber ?? ''}`,
       },
@@ -48,6 +49,7 @@ export default class CourtAppearanceService {
         'required_without.referenceNumber': 'You must enter the case reference',
         'onlyOne.referenceNumber': 'Either reference number or no reference number must be submitted',
         'onlyOne.noCaseReference': 'Either reference number or no reference number must be submitted',
+        'regex.referenceNumber': 'You can only use letters, numbers and ‘/’ symbol when entering a Case reference',
       },
     )
     if (errors.length === 0) {

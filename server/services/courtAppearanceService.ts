@@ -41,7 +41,7 @@ export default class CourtAppearanceService {
         referenceNumber: [
           'required_without:noCaseReference',
           `onlyOne:${courtCaseReferenceForm.noCaseReference ?? ''}`,
-          'regex:/^[A-Za-z0-9\\/\\.\\- ]$/',
+          'regex:/^[A-Za-z0-9\\/\\.\\- ]+$/',
         ],
         noCaseReference: `onlyOne:${courtCaseReferenceForm.referenceNumber ?? ''}`,
       },

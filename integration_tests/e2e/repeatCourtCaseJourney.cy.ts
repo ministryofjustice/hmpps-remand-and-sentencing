@@ -274,6 +274,7 @@ context('Repeat Court Case journey', () => {
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
   })
 
+  // currently failing due to the changes put in for new sentence journey. will need to be updated once all the new journey is in place.
   it.skip('remand to sentencing journey', () => {
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetSentenceTypesByIds', [
@@ -512,6 +513,7 @@ context('Repeat Court Case journey', () => {
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
   })
 
+  // currently failing due to the changes put in for new sentence journey. will need to be updated once all the new journey is in place.
   it.skip('remand to sentencing journey with only one outcome option', () => {
     cy.task('stubGetAllAppearanceOutcomesWithSingleResults')
     cy.task('stubGetSentenceTypesByIds', [

@@ -653,7 +653,7 @@ export default class CourtCaseRoutes {
     this.courtAppearanceService.setWarrantType(req.session, nomsId, warrantType)
     if (warrantType === 'SENTENCING') {
       const overallCaseOutcomeForm = {
-        overallCaseOutcome: '62412083-9892-48c9-bf01-7864af4a8b3c',
+        overallCaseOutcome: '62412083-9892-48c9-bf01-7864af4a8b3c|f17328cf-ceaa-43c2-930a-26cf74480e18',
       }
       this.courtAppearanceService.setAppearanceOutcomeUuid(req.session, nomsId, overallCaseOutcomeForm)
     }
@@ -961,7 +961,6 @@ export default class CourtCaseRoutes {
   public getCaseOutcomeAppliedAllSentencing: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const skippedOutcome = req.flash('skippedOutcome')[0] === 'true' || false
     const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
     const overallCaseOutcome = (
       await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
@@ -978,10 +977,7 @@ export default class CourtCaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date?backNav=true`
 
     if (submitToCheckAnswers) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-    }
-    if (skippedOutcome) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name?backNav`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-overall-answers`
     }
 
     return res.render('pages/courtAppearance/case-outcome-applied-all-sentencing', {
@@ -1007,7 +1003,7 @@ export default class CourtCaseRoutes {
       req.flash('errors', errors)
       req.flash('caseOutcomeAppliedAllForm', { ...caseOutcomeAppliedAllForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/case-outcome-applied-all-sentencing${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all-sentencing${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
       )
     }
     return res.redirect(

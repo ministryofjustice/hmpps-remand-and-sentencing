@@ -1952,35 +1952,10 @@ export default {
     outcomeName: string
     outcomeType: string
   }): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPath: `/remand-and-sentencing-api/appearance-outcome/${outcomeUuid}`,
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          outcomeUuid,
-          outcomeName,
-          nomisCode: '3452',
-          outcomeType,
-          displayOrder: 10,
-          relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-        },
-      },
-    })
-  },
+    const nomisCode = outcomeType === 'REMAND' ? '3452' : '1002'
+    const relatedChargeOutcomeUuid =
+      outcomeType === 'REMAND' ? '85ffc6bf-6a2c-4f2b-8db8-5b466b602537' : 'f17328cf-ceaa-43c2-930a-26cf74480e18'
 
-  stubGetAppearanceOutcomeImprisonmentById: ({
-    outcomeUuid = '62412083-9892-48c9-bf01-7864af4a8b3c',
-    outcomeName = 'Imprisonment',
-    outcomeType = 'SENTENCING',
-  }: {
-    outcomeUuid: string
-    outcomeName: string
-    outcomeType: string
-  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -1992,10 +1967,10 @@ export default {
         jsonBody: {
           outcomeUuid,
           outcomeName,
-          nomisCode: '1002',
+          nomisCode,
           outcomeType,
           displayOrder: 10,
-          relatedChargeOutcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+          relatedChargeOutcomeUuid,
         },
       },
     })

@@ -37,7 +37,7 @@ export default defineConfig({
             courtRegisterApi.stubSearchCourt(),
             remandAndSentencingApi.stubSearchSentenceTypes(),
             remandAndSentencingApi.stubGetAllAppearanceTypes(),
-            remandAndSentencingApi.stubGetAppearanceOutcomeImprisonmentById({
+            remandAndSentencingApi.stubGetAppearanceOutcomeById({
               outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
               outcomeName: 'Imprisonment',
               outcomeType: 'SENTENCING',

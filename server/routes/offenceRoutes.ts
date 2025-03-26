@@ -42,6 +42,7 @@ import {
 } from '../utils/utils'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 
 export default class OffenceRoutes {
   constructor(
@@ -51,6 +52,7 @@ export default class OffenceRoutes {
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
+    private readonly appearanceOutcomeService: AppearanceOutcomeService,
   ) {}
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -155,7 +157,10 @@ export default class OffenceRoutes {
   public getCheckOverallAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const overallCaseOutcome = 'Imprisonment'
+    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
+    const overallCaseOutcome = (
+      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+    ).outcomeName
 
     return res.render('pages/offence/check-overall-answers', {
       nomsId,

@@ -1882,10 +1882,10 @@ export default {
           {
             outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
             outcomeName: 'Imprisonment',
-            nomisCode: '09753',
+            nomisCode: '1002',
             outcomeType: 'SENTENCING',
             displayOrder: 10,
-            relatedChargeOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+            relatedChargeOutcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
           },
           {
             outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d11',
@@ -1933,10 +1933,10 @@ export default {
           {
             outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
             outcomeName: 'Imprisonment',
-            nomisCode: '09753',
+            nomisCode: '1002',
             outcomeType: 'SENTENCING',
             displayOrder: 10,
-            relatedChargeOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+            relatedChargeOutcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
           },
         ],
       },
@@ -1952,6 +1952,10 @@ export default {
     outcomeName: string
     outcomeType: string
   }): SuperAgentRequest => {
+    const nomisCode = outcomeType === 'REMAND' ? '3452' : '1002'
+    const relatedChargeOutcomeUuid =
+      outcomeType === 'REMAND' ? '85ffc6bf-6a2c-4f2b-8db8-5b466b602537' : 'f17328cf-ceaa-43c2-930a-26cf74480e18'
+
     return stubFor({
       request: {
         method: 'GET',
@@ -1963,10 +1967,10 @@ export default {
         jsonBody: {
           outcomeUuid,
           outcomeName,
-          nomisCode: '3452',
+          nomisCode,
           outcomeType,
           displayOrder: 10,
-          relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          relatedChargeOutcomeUuid,
         },
       },
     })
@@ -2022,6 +2026,7 @@ export default {
     outcomeName: string
     outcomeType: string
   }): SuperAgentRequest => {
+    const nomisCode = outcomeType === 'REMAND' ? '3452' : '1002'
     return stubFor({
       request: {
         method: 'GET',
@@ -2033,7 +2038,7 @@ export default {
         jsonBody: {
           outcomeUuid,
           outcomeName,
-          nomisCode: '3452',
+          nomisCode,
           outcomeType,
           displayOrder: 10,
         },
@@ -2041,13 +2046,11 @@ export default {
     })
   },
   stubGetChargeOutcomesByIds: (
-    outcomes: [
-      {
-        outcomeUuid: string
-        outcomeName: string
-        outcomeType: string
-      },
-    ],
+    outcomes: Array<{
+      outcomeUuid: string
+      outcomeName: string
+      outcomeType: string
+    }>,
   ): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -2062,13 +2065,11 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: outcomes.map(outcome => {
-          return {
-            nomisCode: '09753',
-            displayOrder: 10,
-            ...outcome,
-          }
-        }),
+        jsonBody: outcomes.map(outcome => ({
+          nomisCode: outcome.outcomeType === 'REMAND' ? '3452' : '09753',
+          displayOrder: 10,
+          ...outcome,
+        })),
       },
     })
   },

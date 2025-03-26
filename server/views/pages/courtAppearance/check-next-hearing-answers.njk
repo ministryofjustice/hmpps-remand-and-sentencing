@@ -2,17 +2,16 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-
-
 {% set pageTitle = applicationName + " - Check next hearing answers" %}
 
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-                {% include "../../partials/nextAppearanceCaption.njk" %}
-                <h1 class="govuk-heading-l">Check your answers</h1>
+            {% include "../../partials/nextAppearanceCaption.njk" %}
+            <h1 class="govuk-heading-l">Check your answers</h1>
 
+            {% if courtAppearance.nextHearingSelect %}
                 {{ govukSummaryList({
                     rows: [
                         {
@@ -68,6 +67,29 @@
                         }
                     ]
                 }) }}
+            {% else %}
+                {{ govukSummaryList({
+                    rows: [
+                        {
+                            key: {
+                            text: "Next court date set"
+                        },
+                            value: {
+                            text: "Date to be fixed"
+                        },
+                            actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-select?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "next court date set"
+                                }
+                            ]
+                        }
+                        }
+                    ]
+                }) }}
+            {% endif %}
 
             <form method="post">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -77,7 +99,7 @@
                             data-module="govuk-button"
                             data-qa="continue-button"
                             formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-next-hearing-answers">
-                        Accept and continue
+                        Confirm and continue
                     </button>
 
                     {% if featureToggles.saveDraftEnabled %}

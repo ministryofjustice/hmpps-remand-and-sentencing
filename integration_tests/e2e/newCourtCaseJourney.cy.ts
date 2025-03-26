@@ -602,29 +602,6 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-    // courtCaseTaskListPage.courtDocumentsLink().click()
-
-    // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
-    // courtCaseDocumentTypePage.radioLabelSelector('Custodial warrant').click()
-    // courtCaseDocumentTypePage.button().click()
-
-    // const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
-    // courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
-    // courtCaseWarrantUploadPage.button().click()
-
-    // const courtCaseDocumentsPage = Page.verifyOnPage(CourtCaseDocumentsPage) - not built yet
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'Custodial warrant 1': 'uploaded',
-    // })
-    // courtCaseDocumentsPage.button().click()
-
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    // courtCaseTaskListPage.offencesLink().click()
-
-    // const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    // courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    // courtCaseTaggedBailPage.input().type('5')
-    // courtCaseTaggedBailPage.continueButton().click()
   })
 
   // Skipped test as SAVE_AS_DRAFT_ENABLED feature is disabled
@@ -670,6 +647,10 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Add next court appearance',
           status: 'Cannot start yet',
         },
         {
@@ -733,6 +714,10 @@ context('New Court Case journey', () => {
         {
           name: 'Add offences',
           status: 'Incomplete',
+        },
+        {
+          name: 'Add next court appearance',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',

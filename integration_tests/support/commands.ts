@@ -271,22 +271,8 @@ Cypress.Commands.add(
     courtCaseWarrantTypePage.continueButton().click()
 
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/count-number`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
     )
-    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
-    offenceCountNumberPage.radioLabelSelector('true').click()
-    offenceCountNumberPage.input().clear()
-    offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.continueButton().click()
-
-    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
-    offenceConvictionDatePage.dayDateInput('convictionDate').clear()
-    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
-    offenceConvictionDatePage.monthDateInput('convictionDate').clear()
-    offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
-    offenceConvictionDatePage.yearDateInput('convictionDate').clear()
-    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
-    offenceConvictionDatePage.continueButton().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
@@ -310,6 +296,21 @@ Cypress.Commands.add(
     )
     offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
     offenceOffenceOutcomePage.continueButton().click()
+
+    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.radioLabelSelector('true').click()
+    offenceCountNumberPage.input().clear()
+    offenceCountNumberPage.input().type('1')
+    offenceCountNumberPage.continueButton().click()
+
+    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear()
+    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
+    offenceConvictionDatePage.monthDateInput('convictionDate').clear()
+    offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
+    offenceConvictionDatePage.yearDateInput('convictionDate').clear()
+    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
+    offenceConvictionDatePage.continueButton().click()
 
     const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
     offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()

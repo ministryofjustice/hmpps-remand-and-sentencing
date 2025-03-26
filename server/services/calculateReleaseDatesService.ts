@@ -11,13 +11,37 @@ import {
 export default class CalculateReleaseDatesService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
+  private readonly supportedPeriodLengthTypes = new Set(['SENTENCE_LENGTH', 'CUSTODIAL_TERM', 'LICENCE_PERIOD'])
+
+  private readonly emptySentenceLength: OverallSentenceLength = { years: 0, months: 0, weeks: 0, days: 0 }
+
   async compareOverallSentenceLength(
     appearance: CourtAppearance,
     username: string,
   ): Promise<OverallSentenceLengthComparison> {
     const sentences = appearance.offences.filter(it => it.sentence).map(it => it.sentence)
 
+    const skippedValidationResponse = {
+      custodialLength: this.emptySentenceLength,
+      custodialLengthMatches: true,
+    }
+
+    // Do not run this validation if there is no overall sentence length
+    if (appearance.hasOverallSentenceLength !== 'true') {
+      return skippedValidationResponse
+    }
+
     if (sentences.length && appearance.hasOverallSentenceLength === 'true') {
+      // Handle single sentence here without calling CRD-API (single sentence validation occurs for all sentence types)
+      if (sentences.length === 1 && sentences[0].periodLengths.length === 1) {
+        return this.checkSingleSentenceLength(sentences[0].periodLengths[0], appearance.overallSentenceLength)
+      }
+
+      // Only continue to validate using the CRD API for supported types
+      if (this.hasUnsupportedPeriodLengthTypes(sentences)) {
+        return skippedValidationResponse
+      }
+
       const consecutive = sentences.filter(
         sentence =>
           sentence.sentenceServeType === 'CONSECUTIVE' ||
@@ -37,9 +61,29 @@ export default class CalculateReleaseDatesService {
       )
     }
     return {
+      custodialLength: this.emptySentenceLength,
       custodialLengthMatches: false,
-      custodialLength: {},
-    } as OverallSentenceLengthComparison
+    }
+  }
+
+  private checkSingleSentenceLength(periodLength: SentenceLength, overallSentenceLength: SentenceLength) {
+    const custodialDuration = this.mapPeriodLengthToOverallSentenceLength(periodLength)
+    const overallLength = this.mapPeriodLengthToOverallSentenceLength(overallSentenceLength)
+
+    return {
+      custodialLength: custodialDuration || this.emptySentenceLength,
+      custodialLengthMatches:
+        custodialDuration?.years === overallLength?.years &&
+        custodialDuration?.months === overallLength?.months &&
+        custodialDuration?.weeks === overallLength?.weeks &&
+        custodialDuration?.days === overallLength?.days,
+    }
+  }
+
+  private hasUnsupportedPeriodLengthTypes(sentences: Sentence[]): boolean {
+    return sentences.some(sentence =>
+      sentence.periodLengths?.some(periodLength => !this.supportedPeriodLengthTypes.has(periodLength.periodLengthType)),
+    )
   }
 
   private mapSentenceToOverallSentenceLengthSentence(sentence: Sentence): OverallSentenceLengthSentence {

@@ -318,6 +318,8 @@ export default class CourtAppearanceService {
         courtAppearance.offences = courtAppearance.offences.map(offence => {
           // eslint-disable-next-line no-param-reassign
           offence.outcomeUuid = courtAppearance.relatedOffenceOutcomeUuid
+          // eslint-disable-next-line no-param-reassign
+          offence.updatedOutcome = true
           return offence
         })
       }

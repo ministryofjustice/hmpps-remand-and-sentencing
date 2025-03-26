@@ -1,8 +1,9 @@
-{% extends "../../partials/caseOutcomeAppliedAllAppearanceDetails.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Add a court case Outcome applied to all" %}        
+{% set pageTitle = applicationName + " - Add a court case Outcome applied to all" %}      
+{% set hideOffences = true %}
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading govuk-!-static-margin-bottom-3">Is the outcome the same for all offences on the warrant?</h1>
     <p class="govuk-body-l govuk-!-static-margin-bottom-3">{{ overallCaseOutcome }}</p>
@@ -21,17 +22,17 @@
                             html: fieldSetHtml,
                             classes: "govuk-fieldset__legend--l"
                         }
-                    },
+                    },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
                     items: [
                         {
                             value: "true",
                             text: "Yes",
-                            checked: false
+                            checked: caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true'
                         },
                         {
                             value: "false",
                             text: "No",
-                            checked: false
+                            checked: caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'false'
                         }
                     ],
                     errorMessage:  errors | findError('caseOutcomeAppliedAll')

@@ -1933,10 +1933,10 @@ export default {
           {
             outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
             outcomeName: 'Imprisonment',
-            nomisCode: '09753',
+            nomisCode: '1002',
             outcomeType: 'SENTENCING',
             displayOrder: 10,
-            relatedChargeOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+            relatedChargeOutcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
           },
         ],
       },

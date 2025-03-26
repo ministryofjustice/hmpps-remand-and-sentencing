@@ -7,7 +7,7 @@ export default function trimForm<T>(form: Record<string, unknown>): T {
 
 function trimItem(value: unknown): unknown {
   if (typeof value === 'string') {
-    return value.trim()
+    return value.trim().replace(/\0/g, '')
   }
   if (Array.isArray(value)) {
     return value.map(item => trimItem(item))

@@ -37,6 +37,18 @@ export default defineConfig({
             courtRegisterApi.stubSearchCourt(),
             remandAndSentencingApi.stubSearchSentenceTypes(),
             remandAndSentencingApi.stubGetAllAppearanceTypes(),
+            remandAndSentencingApi.stubGetAppearanceOutcomeById({
+              outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
+              outcomeName: 'Imprisonment',
+              outcomeType: 'SENTENCING',
+            }),
+            remandAndSentencingApi.stubGetChargeOutcomesByIds([
+              {
+                outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+                outcomeName: 'Imprisonment',
+                outcomeType: 'SENTENCING',
+              },
+            ]),
             courtCasesReleaseDatesApi.stubGetServiceDefinitions(),
           ])
         },

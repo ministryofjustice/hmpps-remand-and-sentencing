@@ -3,119 +3,124 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set checkAnswersRows = [
-                        {
-                            key: {
-                            text: "Warrant type"
-                        },
-                            value: {
-                            text: courtAppearance.warrantType | capitalize
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Court case reference"
-                        },
-                            value: {
-                            text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered'
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "court case reference"
-                                }
-                            ]
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Warrant date"
-                        },
-                            value: {
-                            text: courtAppearance.warrantDate | formatDate
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "warrant date"
-                                }
-                            ]
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Court name"
-                        },
-                            value: {
-                            text: courtName
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/court-name?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "court name"
-                                }
-                            ]
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Overall case outcome"
-                        },
-                            value: {
-                            text: overallCaseOutcome
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-case-outcome?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "overall case outcome"
-                                }
-                            ]
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Does this apply to all offences on the warrant?"
-                        },
-                            value: {
-                            text: "Yes" if courtAppearance.caseOutcomeAppliedAll == 'true' else "No"
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "does this apply to all offences on the warrant?"
-                                }
-                            ]
-                        }
-                        }
-                    ] %}
+    {
+        key: {
+            text: "Warrant type"
+        },
+        value: {
+            text: courtAppearance.warrantType | capitalize
+        }
+    },
+    {
+        key: {
+            text: "Court case reference"
+        },
+        value: {
+            text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered'
+        },
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "court case reference"
+                }
+            ]
+        }
+    },
+    {
+        key: {
+            text: "Warrant date"
+        },
+        value: {
+            text: courtAppearance.warrantDate | formatDate
+        },
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "warrant date"
+                }
+            ]
+        }
+    },
+    {
+        key: {
+            text: "Court name"
+        },
+        value: {
+            text: courtName
+        },
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/court-name?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "court name"
+                }
+            ]
+        }
+    }
+] %}
 
-{% if courtAppearance.warrantType === 'SENTENCING' %}
-    {% set checkAnswersRows = (checkAnswersRows.push({
-                            key: {
-                            text: "Tagged bail"
-                        },
-                            value: {
-                            text: courtAppearance.taggedBail + " days" if courtAppearance.taggedBail else "None"
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/tagged-bail?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "edit tagged bail"
-                                }
-                            ]
-                        }
-                        }), checkAnswersRows)%}
+{% if courtAppearance.warrantType == 'SENTENCING' %}
+    {% set checkAnswersRows = checkAnswersRows.concat([
+        {
+            key: {
+                text: "Tagged bail"
+            },
+            value: {
+                text: courtAppearance.taggedBail + " days"
+            },
+            actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/tagged-bail?submitToCheckAnswers=true",
+                        text: "Edit",
+                        visuallyHiddenText: "tagged bail"
+                    }
+                ]
+            }
+        }
+    ]) %}
+{% else %}
+    {% set checkAnswersRows = checkAnswersRows.concat([
+        {
+            key: {
+                text: "Overall case outcome"
+            },
+            value: {
+                text: overallCaseOutcome
+            },
+            actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-case-outcome?submitToCheckAnswers=true",
+                        text: "Edit",
+                        visuallyHiddenText: "overall case outcome"
+                    }
+                ]
+            }
+        },
+        {
+            key: {
+                text: "Does this apply to all offences on the warrant?"
+            },
+            value: {
+                text: "Yes" if courtAppearance.caseOutcomeAppliedAll == 'true' else "No"
+            },
+            actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
+                        text: "Edit",
+                        visuallyHiddenText: "does this apply to all offences on the warrant?"
+                    }
+                ]
+            }
+        }
+    ]) %}
 {% endif %}
 
 {% set pageTitle = applicationName + " - Check court appearance answers" %}
@@ -123,12 +128,12 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-                {% include "../../partials/appearanceCaption.njk" %}
-                <h1 class="govuk-heading-l">Check your answers</h1>
+            {% include "../../partials/appearanceCaption.njk" %}
+            <h1 class="govuk-heading-l">Check your answers</h1>
 
-                {{ govukSummaryList({
-                    rows: checkAnswersRows
-                }) }}
+            {{ govukSummaryList({
+                rows: checkAnswersRows
+            }) }}
 
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -137,8 +142,6 @@
                     attributes: {  'data-qa': 'continue-button' }
                 }) }}
             </form>
-
         </div>
     </div>
-
 {% endblock %}

@@ -1,48 +1,30 @@
-{% extends "../../partials/appearanceDetailsLayout.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "moj/components/interruption-card/macro.njk" import interruptionCard %}
 
 {% set pageTitle = applicationName + " - inactive offence" %}
 
-{% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-inactive-offence?backTo={{ backTo }}{{ "&submitToEditOffence=true" if submitToEditOffence }}">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/offenceCaption.njk" %}
-                <h1 class="govuk-heading-l">
-                    You have entered an inactive offence
-                </h1>
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% call interruptionCard({
+                heading: "You have entered an inactive offence",
+                primaryAction: {
+                    text: "Yes, continue",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offenceReference + "/confirm-offence-code" + ("&submitToEditOffence=true" if submitToEditOffence else ''),
+                    attributes: {
+                        "data-qa": "continue-button"
+                    }
+                },
+                secondaryAction: {
+                    text: "Go back and change the offence",
+                    href: backLink
+                }
+                }) -%}
                 <p class="govuk-body">The offence <strong>{{ offence.code }} - {{ offence.description }}</strong> was made inactive on <strong>{{ offence.endDate | formatDate }}</strong>.</p>
                 <p class="govuk-body">Selecting this offence could impact your release dates calculation.</p>
-                {{ govukRadios({
-                    name: "confirmOffence",
-                    classes: "govuk-radios--inline",
-                    errorMessage: errors | findError('confirmOffence'),
-                    fieldset: {
-                        legend: {
-                            text: "Do you want to continue with this offence?",
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--m"
-                        },
-                        classes: "govuk-!-margin-top-6"
-                    },
-                    items: [
-                        {
-                            value: "true",
-                            text: "Yes, continue with this inactive offence",
-                            checked: inactiveOffenceForm.confirmOffence === 'true'
-                        },
-                        {
-                            value: "false",
-                            text: "No, go back and change the offence",
-                            checked: inactiveOffenceForm.confirmOffence === 'false'
-                        }
-                    ]
-                }) }}
-
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
-
-            </form>
+                <p class="govuk-body">You can go back and change the offence, or you can continue with the inactive offence.</p>
+                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-6">Do you want to continue?</p>
+            {%- endcall %}
+        </div>
+    <div>
 {% endblock %}

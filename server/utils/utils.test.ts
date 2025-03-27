@@ -1,3 +1,4 @@
+import trimForm from './trim'
 import { convertToTitleCase, initialiseName, outcomeValueOrLegacy } from './utils'
 
 describe('convert to title case', () => {
@@ -36,5 +37,11 @@ describe('outcome value or legacy', () => {
 
   it('return not entered when no outcome value and legacy data with no outcome description', () => {
     expect(outcomeValueOrLegacy(null, { foo: 'bar' } as unknown as Record<string, never>)).toEqual('Not entered')
+  })
+})
+
+describe('trim', () => {
+  it('trims out null characters', () => {
+    expect(trimForm({ key: `value with null${String.fromCharCode(0)}` })).toEqual({ key: 'value with null' })
   })
 })

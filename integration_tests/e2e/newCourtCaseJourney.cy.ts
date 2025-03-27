@@ -24,6 +24,12 @@ import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseDraftSavedPage'
+import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
+import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
+import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
+import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
+import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
+import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -108,6 +114,8 @@ context('New Court Case journey', () => {
     courtCaseOverallCaseOutcomePage.continueButton().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Remanded in custody')
+
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
@@ -452,17 +460,6 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.continueButton().click()
 
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-      CourtCaseOverallCaseOutcomePage,
-      'Select the overall case outcome',
-    )
-    courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
-    courtCaseOverallCaseOutcomePage.continueButton().click()
-
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('5')
@@ -474,8 +471,6 @@ context('New Court Case journey', () => {
       'Court case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
-      'Overall case outcome': 'Imprisonment',
-      'Does this apply to all offences on the warrant?': 'Yes',
       'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.continueButton().click()
@@ -502,29 +497,15 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-    // courtCaseTaskListPage.courtDocumentsLink().click()
 
-    // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
-    // courtCaseDocumentTypePage.radioLabelSelector('Custodial warrant').click()
-    // courtCaseDocumentTypePage.button().click()
-
-    // const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
-    // courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
-    // courtCaseWarrantUploadPage.button().click()
-
-    // const courtCaseDocumentsPage = Page.verifyOnPage(CourtCaseDocumentsPage) - not built yet
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'Custodial warrant 1': 'uploaded',
-    // })
-    // courtCaseDocumentsPage.button().click()
-
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.offencesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('4')
     courtCaseOverallSentenceLengthPage.monthsInput().type('5')
+    courtCaseOverallSentenceLengthPage.weeksInput().type('3')
+    courtCaseOverallSentenceLengthPage.daysInput().type('2')
     courtCaseOverallSentenceLengthPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'T12345678',
       'Court name': 'Accrington Youth Court',
@@ -540,26 +521,64 @@ context('New Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.continueButton().click()
-
-    Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Warrant type': 'Sentencing',
-      'Court case reference': caseRef,
-      'Warrant date': '12/05/2023',
-      'Court name': 'Accrington Youth Court',
-      'Overall case outcome': 'Imprisonment',
-      'Does this apply to all offences on the warrant?': 'Yes',
-      'Tagged bail': '55 days',
+    const offenceOverallCheckAnswersPage = Page.verifyOnPage(OffenceCheckOverallAnswersPage)
+    offenceOverallCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
+      'Is there an overall sentence length on the warrant?': 'Yes',
+      'Overall sentence length': '4 years 5 months 3 weeks 2 days',
+      'Is the conviction date the same for all offences on the warrant?': 'Yes',
+      'Conviction date': '12/05/2023',
+      'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
-    courtCaseCheckAnswersPage.continueButton().click()
+    offenceOverallCheckAnswersPage.confirmAndAddOffenceButton().click()
+
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(
+      OffenceOffenceDatePage,
+      'Enter the offence dates for the first offence',
+    )
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.continueButton().click()
+
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.continueButton().click()
+
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.continueButton().click()
+
+    const offenceCountNumber = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumber.radioLabelSelector('true').click()
+    offenceCountNumber.input().type('1')
+    offenceCountNumber.continueButton().click()
+
+    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+    offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
+    offenceSentenceTypePage.continueButton().click()
+
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
+    offencePeriodLengthPage.yearsInput().type('1')
+    offencePeriodLengthPage.monthsInput().type('2')
+    offencePeriodLengthPage.weeksInput().type('3')
+    offencePeriodLengthPage.daysInput().type('4')
+    offencePeriodLengthPage.continueButton().click()
+
+    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
+    offenceSentenceServeTypePage.continueButton().click()
+
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
+    offenceCheckOffenceAnswersPage.finishAddingButton().click()
+
+    const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
+    offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
+    offenceSentenceLengthMismatchPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -572,7 +591,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add offences',
-          status: 'Incomplete',
+          status: 'Completed',
         },
         {
           name: 'Add next court appearance',
@@ -781,11 +800,6 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
     const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
     courtCaseTaggedBailPage.radioLabelSelector('true').click()
     courtCaseTaggedBailPage.input().type('5')
@@ -797,8 +811,6 @@ context('New Court Case journey', () => {
       'Court case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
-      'Overall case outcome': 'Imprisonment',
-      'Does this apply to all offences on the warrant?': 'Yes',
       'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.continueButton().click()
@@ -825,29 +837,21 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-    // courtCaseTaskListPage.courtDocumentsLink().click()
 
-    // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
-    // courtCaseDocumentTypePage.radioLabelSelector('Custodial warrant').click()
-    // courtCaseDocumentTypePage.button().click()
-
-    // const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
-    // courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
-    // courtCaseWarrantUploadPage.button().click()
-
-    // const courtCaseDocumentsPage = Page.verifyOnPage(CourtCaseDocumentsPage) - not built yet
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'Custodial warrant 1': 'uploaded',
-    // })
-    // courtCaseDocumentsPage.button().click()
-
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.offencesLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().type('4')
     courtCaseOverallSentenceLengthPage.monthsInput().type('5')
+    courtCaseOverallSentenceLengthPage.weeksInput().type('3')
+    courtCaseOverallSentenceLengthPage.daysInput().type('2')
+    courtCaseOverallSentenceLengthPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference number': 'T12345678',
+      'Court name': 'Accrington Youth Court',
+      'Warrant date': '12/05/2023',
+      'Overall case outcome': 'Imprisonment',
+    })
     courtCaseOverallSentenceLengthPage.continueButton().click()
 
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
@@ -857,26 +861,64 @@ context('New Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.continueButton().click()
-
-    Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Warrant type': 'Sentencing',
-      'Court case reference': caseRef,
-      'Warrant date': '12/05/2023',
-      'Court name': 'Accrington Youth Court',
-      'Overall case outcome': 'Imprisonment',
-      'Does this apply to all offences on the warrant?': 'Yes',
-      'Tagged bail': '55 days',
+    const offenceOverallCheckAnswersPage = Page.verifyOnPage(OffenceCheckOverallAnswersPage)
+    offenceOverallCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
+      'Is there an overall sentence length on the warrant?': 'Yes',
+      'Overall sentence length': '4 years 5 months 3 weeks 2 days',
+      'Is the conviction date the same for all offences on the warrant?': 'Yes',
+      'Conviction date': '12/05/2023',
+      'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
-    courtCaseCheckAnswersPage.continueButton().click()
+    offenceOverallCheckAnswersPage.confirmAndAddOffenceButton().click()
+
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(
+      OffenceOffenceDatePage,
+      'Enter the offence dates for the first offence',
+    )
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.continueButton().click()
+
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.continueButton().click()
+
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.continueButton().click()
+
+    const offenceCountNumber = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumber.radioLabelSelector('true').click()
+    offenceCountNumber.input().type('1')
+    offenceCountNumber.continueButton().click()
+
+    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+    offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
+    offenceSentenceTypePage.continueButton().click()
+
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
+    offencePeriodLengthPage.yearsInput().type('1')
+    offencePeriodLengthPage.monthsInput().type('2')
+    offencePeriodLengthPage.weeksInput().type('3')
+    offencePeriodLengthPage.daysInput().type('4')
+    offencePeriodLengthPage.continueButton().click()
+
+    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
+    offenceSentenceServeTypePage.continueButton().click()
+
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
+    offenceCheckOffenceAnswersPage.finishAddingButton().click()
+
+    const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
+    offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
+    offenceSentenceLengthMismatchPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -889,7 +931,7 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add offences',
-          status: 'Incomplete',
+          status: 'Completed',
         },
         {
           name: 'Add next court appearance',
@@ -900,7 +942,5 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-
-    courtCaseTaskListPage.offencesLink().click()
   })
 })

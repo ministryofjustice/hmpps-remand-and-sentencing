@@ -9,5 +9,9 @@ export default class CourtCaseOverallSentenceLengthPage extends Page {
 
   yearsInput = (): PageElement => cy.get('#sentenceLength-years')
 
+  weeksInput = (): PageElement => cy.get('#sentenceLength-weeks')
+
+  daysInput = (): PageElement => cy.get('#sentenceLength-days')
+
   offencesCaption = (): PageElement => cy.get('[data-qa=offences-caption]')
 }

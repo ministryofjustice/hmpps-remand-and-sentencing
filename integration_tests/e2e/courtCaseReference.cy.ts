@@ -30,4 +30,16 @@ context('Court Case Reference Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem You must enter the case reference')
   })
+
+  it('submitting illegal characters results in an error', () => {
+    courtCaseReferencePage.input().type(`CC,DF!@£${String.fromCharCode(0)}`)
+    courtCaseReferencePage.continueButton().click()
+    courtCaseReferencePage
+      .errorSummary()
+      .trimTextContent()
+      .should(
+        'equal',
+        'There is a problem You can only use letters, numbers and ‘/’ symbol when entering a Case reference',
+      )
+  })
 })

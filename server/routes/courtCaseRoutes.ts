@@ -904,7 +904,6 @@ export default class CourtCaseRoutes {
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const skippedOutcome = req.flash('skippedOutcome')[0] === 'true' || false
     const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
     const overallCaseOutcome = (
       await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
@@ -918,13 +917,10 @@ export default class CourtCaseRoutes {
       }
     }
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?backNav=true`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome`
 
     if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-    }
-    if (skippedOutcome) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name?backNav`
     }
 
     return res.render('pages/courtAppearance/case-outcome-applied-all', {

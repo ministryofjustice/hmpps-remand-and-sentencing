@@ -306,7 +306,7 @@ export default class OffenceRoutes {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, offence.legacyData)
     }
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     } else if (addOrEditCourtCase === 'edit-court-case') {

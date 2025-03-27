@@ -14,7 +14,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-case-outcome-applied-all-sentencing{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/appearanceCaption.njk" %}
+                {% include "../../partials/offenceCaption.njk" %}
                 {{ govukRadios({
                     name: "caseOutcomeAppliedAll",
                     fieldset: {

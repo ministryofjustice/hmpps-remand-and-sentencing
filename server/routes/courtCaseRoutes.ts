@@ -985,6 +985,7 @@ export default class CourtCaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink,
     })
@@ -1689,5 +1690,9 @@ export default class CourtCaseRoutes {
       courtAppearanceCourtName,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
+  }
+
+  private isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
+    return addOrEditCourtCase === 'add-court-case' && addOrEditCourtAppearance === 'add-court-appearance'
   }
 }

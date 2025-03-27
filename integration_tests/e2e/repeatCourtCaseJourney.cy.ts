@@ -680,4 +680,35 @@ context('Repeat Court Case journey', () => {
     cy.task('verifyCreateSentenceCourtAppearanceRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
   })
+
+  it('Add new sentencing-appearance where the court is the same as the previous one navigates to tagged bail)', () => {
+    const startPage = Page.verifyOnPage(StartPage)
+    startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
+
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.continueButton().click()
+
+    const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+    courtCaseTaskListPage.appearanceInformationLink().click()
+
+    const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
+    courtCaseSelectReferencePage.radioLabelSelector('true').click()
+    courtCaseSelectReferencePage.continueButton().click()
+
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.continueButton().click()
+
+    const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
+      CourtCaseSelectCourtNamePage,
+      'Was the appearance at Accrington Youth Court?',
+    )
+    courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
+    courtCaseSelectCourtNamePage.continueButton().click()
+
+    Page.verifyOnPage(CourtCaseTaggedBailPage)
+  })
 })

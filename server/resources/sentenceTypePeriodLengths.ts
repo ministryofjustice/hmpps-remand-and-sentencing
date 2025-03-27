@@ -9,9 +9,6 @@ const sentenceTypePeriodLengths = {
   EXTENDED: {
     periodLengths: [
       {
-        type: 'OVERALL_SENTENCE_LENGTH',
-      },
-      {
         type: 'CUSTODIAL_TERM',
       },
       {

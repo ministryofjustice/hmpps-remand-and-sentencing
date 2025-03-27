@@ -5,7 +5,6 @@ import type {
   OffenceConvictionDateForm,
   OffenceCountNumberForm,
   OffenceFineAmountForm,
-  OffenceInactiveOffenceForm,
   OffenceOffenceCodeForm,
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
@@ -156,19 +155,6 @@ export default class OffenceService {
       session.offences[id] = offence
     }
     return { errors, offence: apiOffence }
-  }
-
-  validateOffenceInactiveForm(inactiveOffenceForm: OffenceInactiveOffenceForm) {
-    const errors = validate(
-      inactiveOffenceForm,
-      {
-        confirmOffence: 'required',
-      },
-      {
-        'required.confirmOffence': 'You must either select Yes or No to continue with this offence',
-      },
-    )
-    return errors
   }
 
   async setOffenceCodeFromLookup(

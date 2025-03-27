@@ -30,14 +30,6 @@ context('Add Offence Offence Inactive Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceOffenceInactivePage.continueButton().should('contain.text', 'Continue')
-  })
-
-  it('submitting without selecting an option results in error', () => {
-    offenceOffenceInactivePage.continueButton().click()
-    offenceOffenceInactivePage
-      .errorSummary()
-      .trimTextContent()
-      .should('equal', 'There is a problem You must either select Yes or No to continue with this offence')
+    offenceOffenceInactivePage.continueButton().should('contain.text', 'Yes, continue')
   })
 })

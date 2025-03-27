@@ -74,10 +74,6 @@ declare module 'forms' {
     offenceName?: string
   }
 
-  export interface OffenceInactiveOffenceForm {
-    confirmOffence?: string
-  }
-
   export interface OffenceConfirmOffenceForm {
     offenceCode?: string
     offenceName?: string

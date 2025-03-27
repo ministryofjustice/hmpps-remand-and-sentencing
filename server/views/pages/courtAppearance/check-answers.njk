@@ -71,7 +71,7 @@
                 text: "Tagged bail"
             },
             value: {
-                text: courtAppearance.taggedBail + " days"
+                text: courtAppearance.taggedBail + " days" if courtAppearance.taggedBail else "None"
             },
             actions: {
                 items: [

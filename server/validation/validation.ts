@@ -20,12 +20,12 @@ export default function validate<T>(
   form: T,
   rules: Rules,
   customMessages: ErrorMessages,
-): Array<{ text: string; href: string }> {
+): Array<{ text?: string; html?: string; href: string }> {
   const validation = new Validator(form, rules, customMessages)
   return checkErrors(validation)
 }
 
-const checkErrors = <T>(validation: Validator.Validator<T>): Array<{ text: string; href: string }> => {
+const checkErrors = <T>(validation: Validator.Validator<T>): Array<{ text?: string; html?: string; href: string }> => {
   validation.check()
   return asErrors(validation.errors)
 }
@@ -33,7 +33,11 @@ const checkErrors = <T>(validation: Validator.Validator<T>): Array<{ text: strin
 const asErrors = (errors: Validator.Errors) =>
   Object.keys(errors.all()).map(key => {
     const message = errors.first(key) as string
-    return { text: message, href: `#${key}` }
+    let error = { text: message } as { text?: string; html?: string }
+    if (message.startsWith('html:')) {
+      error = { html: message.replace('html:', '') }
+    }
+    return { href: `#${key}`, ...error }
   })
 
 Validator.register('onlyOne', onlyOneValidate, 'only one validation rule')

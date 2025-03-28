@@ -35,6 +35,7 @@ const production = process.env.NODE_ENV === 'production'
 type Error = {
   href: string
   text: string
+  html: string
 }
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
@@ -95,6 +96,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     if (item) {
       return {
         text: item.text,
+        html: item.html,
       }
     }
     return null

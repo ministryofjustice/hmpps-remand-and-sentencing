@@ -121,7 +121,8 @@ export default class OffenceService {
     offenceCodeForm: OffenceOffenceCodeForm,
   ): Promise<{
     errors: {
-      text: string
+      text?: string
+      html?: string
       href: string
     }[]
     offence: ApiOffence
@@ -165,7 +166,8 @@ export default class OffenceService {
     offenceNameForm: OffenceOffenceNameForm,
   ): Promise<{
     errors: {
-      text: string
+      text?: string
+      html?: string
       href: string
     }[]
     offence: ApiOffence
@@ -286,7 +288,8 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceOutcomeForm: OffenceOffenceOutcomeForm,
   ): {
-    text: string
+    text?: string
+    html?: string
     href: string
   }[] {
     const errors = validate(
@@ -579,7 +582,8 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceConvictionDateForm: OffenceConvictionDateForm,
   ): {
-    text: string
+    text?: string
+    html?: string
     href: string
   }[] {
     let isValidConvictionDateRule = ''

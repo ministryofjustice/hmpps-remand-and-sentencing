@@ -90,19 +90,10 @@ export default class OffenceRoutes {
     const isFirstOffence = offences.length === 0
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-    } else if (warrantType === 'SENTENCING') {
-      const convictionDateAppliedAll = this.courtAppearanceService.getOverallConvictionDateAppliedAll(
-        req.session,
-        nomsId,
-      )
-      if (convictionDateAppliedAll === 'true') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`
-      } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date`
-      }
-    } else if (isFirstOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
+    } else if (warrantType === 'SENTENCING' && isFirstOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-overall-answers`
     }
+
     return res.render('pages/offence/offence-date', {
       nomsId,
       courtCaseReference,

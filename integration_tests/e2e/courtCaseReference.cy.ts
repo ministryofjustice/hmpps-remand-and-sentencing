@@ -39,7 +39,7 @@ context('Court Case Reference Page', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem You can only use letters, numbers and ‘/’ symbol when entering a Case reference',
+        "There is a problem You can only use spaces, letters, numbers and symbols '/', '.' and '-' when entering a Case referenceYou can only use spaces, letters, numbers, hyphens, forward slashes and full stops when entering a case reference.",
       )
   })
 })

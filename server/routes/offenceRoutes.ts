@@ -160,7 +160,7 @@ export default class OffenceRoutes {
       overallCaseOutcome,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all-sentencing`,
     })
   }
 

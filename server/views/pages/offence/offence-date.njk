@@ -5,10 +5,10 @@
 
 {% set pageTitle = applicationName + " - Add offence dates" %}
 
-{% set legendText = "Edit the offence dates" %}
+{% set legendText = "Enter the offence dates" %}
 {% if isFirstOffence %}
     {% set legendText = "Enter the offence dates for the first offence" %}
-{% elif isAddCourtAppearance %}
+{% elif submitToEditOffence %}
     {% set legendText = "Enter the offence dates" %}
 {% endif %}
 

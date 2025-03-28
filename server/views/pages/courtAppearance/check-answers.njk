@@ -105,7 +105,7 @@
         },
         {
             key: {
-                text: "Does this apply to all offences on the warrant?"
+                text: "Is the outcome the same for all offences on the warrant?"
             },
             value: {
                 text: "Yes" if courtAppearance.caseOutcomeAppliedAll == 'true' else "No"
@@ -115,7 +115,7 @@
                     {
                         href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
                         text: "Edit",
-                        visuallyHiddenText: "does this apply to all offences on the warrant?"
+                        visuallyHiddenText: "Is the outcome the same for all offences on the warrant?"
                     }
                 ]
             }

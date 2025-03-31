@@ -1453,9 +1453,9 @@ export default class OffenceRoutes {
       courtAppearance,
       req.user.username,
     )
-
+    const isAddJourney = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
-    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+    if (isAddJourney) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
     }
 
@@ -1468,6 +1468,7 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       overallSentenceLengthComparison,
       backLink,
+      isAddJourney,
     })
   }
 

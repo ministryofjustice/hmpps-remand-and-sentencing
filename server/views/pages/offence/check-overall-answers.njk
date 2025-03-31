@@ -4,14 +4,7 @@
 
 {% set pageTitle = applicationName + " - Check your answers" %}
 {% set isAddOffences = true %}
-{% block pageContent %}
-        {% include "../../partials/offenceCaption.njk" %}
-        <h1 class="govuk-heading-l">
-            Check your answers
-        </h1>
-        
-            {{ govukSummaryList({
-                rows: [
+{% set summaryRows = [
                     {
                         key: {
                             text: "Is there an overall sentence length on the warrant?"
@@ -79,25 +72,39 @@
                                 }
                             ]
                         }
-                    },
-                    {
-                        key: {
-                            text: "Is the outcome the same for all offences on the warrant?"
-                        },
-                        value: {
-                            text: "Yes" if courtAppearance.caseOutcomeAppliedAll === 'true' else 'No'
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "is the outcome the same for all offences on the warrant"
-                                }
-                            ]
-                        }
                     }
-                ],
+                ] %}
+
+{% if isAddJourney %}
+    {% set summaryRows = summaryRows.concat([
+        {
+            key: {
+                text: "Is the outcome the same for all offences on the warrant?"
+            },
+            value: {
+                text: "Yes" if courtAppearance.caseOutcomeAppliedAll === 'true' else 'No'
+            },
+                actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
+                        text: "Edit",
+                        visuallyHiddenText: "is the outcome the same for all offences on the warrant"
+                    }
+                ]
+            }
+        }
+    ])%}
+{% endif %}
+
+{% block pageContent %}
+        {% include "../../partials/offenceCaption.njk" %}
+        <h1 class="govuk-heading-l">
+            Check your answers
+        </h1>
+        
+            {{ govukSummaryList({
+                rows: summaryRows,
                 attributes: {
                     "data-qa": "check-overall-answers-summary-list"
                 }

@@ -159,7 +159,11 @@ export default class OffenceRoutes {
     const overallCaseOutcome = (
       await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName
-
+    const isAddJourney = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date`
+    if (isAddJourney) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all-sentencing`
+    }
     return res.render('pages/offence/check-overall-answers', {
       nomsId,
       courtAppearance,
@@ -168,7 +172,8 @@ export default class OffenceRoutes {
       overallCaseOutcome,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all-sentencing`,
+      isAddJourney,
+      backLink,
     })
   }
 

@@ -422,9 +422,9 @@ export default function routes(services: Services): Router {
     offenceRoutes.getSentenceLengthMismatch,
   )
 
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/submit-sentence-length-mismatch',
-    offenceRoutes.submitSentenceLengthMismatch,
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/continue-sentence-length-mismatch',
+    offenceRoutes.continueSentenceLengthMismatch,
   )
 
   get(

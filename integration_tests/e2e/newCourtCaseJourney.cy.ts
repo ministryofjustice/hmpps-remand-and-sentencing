@@ -577,7 +577,6 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
     const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
-    offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
     offenceSentenceLengthMismatchPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
@@ -917,7 +916,6 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
     const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
-    offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
     offenceSentenceLengthMismatchPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')

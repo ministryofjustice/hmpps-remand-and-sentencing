@@ -1,6 +1,5 @@
 import Page from '../pages/page'
 import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
-import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import CourtCaseTaskListPage from '../pages/courtCaseTaskListPage'
 
 context('Offence sentence length mismatch', () => {
@@ -22,26 +21,11 @@ context('Offence sentence length mismatch', () => {
   })
 
   it('button to continue is displayed', () => {
-    offenceSentenceLengthMismatchPage.continueButton().should('contain.text', 'Continue')
+    offenceSentenceLengthMismatchPage.continueButton().should('contain.text', 'Yes, continue')
   })
 
-  it('submiting without selecting answer', () => {
-    offenceSentenceLengthMismatchPage.continueButton().click()
-    offenceSentenceLengthMismatchPage
-      .errorSummary()
-      .trimTextContent()
-      .should('equal', 'There is a problem You must select whether you want to continue.')
-  })
-
-  it('submitting selecting yes', () => {
-    offenceSentenceLengthMismatchPage.radioLabelSelector('yes').click()
+  it('clicking continue goes back to task list page', () => {
     offenceSentenceLengthMismatchPage.continueButton().click()
     Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
-  })
-
-  it('submitting selecting no', () => {
-    offenceSentenceLengthMismatchPage.radioLabelSelector('no').click()
-    offenceSentenceLengthMismatchPage.continueButton().click()
-    Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 0 offence')
   })
 })

@@ -16,7 +16,6 @@ import type {
   OffenceSentenceTypeForm,
   ReviewOffencesForm,
   SentenceLengthForm,
-  SentenceLengthMismatchForm,
 } from 'forms'
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
@@ -1455,6 +1454,11 @@ export default class OffenceRoutes {
       req.user.username,
     )
 
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+    }
+
     return res.render('pages/offence/sentence-length-mismatch', {
       nomsId,
       courtCaseReference,
@@ -1463,42 +1467,15 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       overallSentenceLengthComparison,
-      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      errors: req.flash('errors') || [],
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      backLink,
     })
   }
 
-  public submitSentenceLengthMismatch: RequestHandler = async (req, res): Promise<void> => {
+  public continueSentenceLengthMismatch: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-
-    const sentenceLengthMismatch = trimForm<SentenceLengthMismatchForm>(req.body)
-    const errors = validate(
-      sentenceLengthMismatch,
-      {
-        confirmMismatch: 'required',
-      },
-      {
-        'required.confirmMismatch': `You must select whether you want to continue.`,
-      },
-    )
-
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/sentence-length-mismatch`,
-      )
-    }
-
-    if (sentenceLengthMismatch.confirmMismatch === 'yes') {
-      this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, true)
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
-      )
-    }
-
+    this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, true)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
   }
 

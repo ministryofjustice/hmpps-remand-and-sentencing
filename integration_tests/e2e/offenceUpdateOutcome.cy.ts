@@ -55,7 +55,7 @@ context('Update Offence Outcome Page', () => {
     it('displays offence paragraph', () => {
       offenceUpdateOutcomePage
         .offenceParagraph()
-        .should('contain.text', 'PS90037 - An offence description committed on 15/12/2023')
+        .should('contain.text', 'PS90037 - An offence description committed on 12/05/2023')
     })
 
     it('displays remand and non custodial outcomes', () => {

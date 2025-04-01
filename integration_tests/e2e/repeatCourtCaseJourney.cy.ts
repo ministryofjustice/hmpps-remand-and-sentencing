@@ -428,7 +428,6 @@ context('Repeat Court Case journey', () => {
     offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     offenceSentenceServeTypePage.continueButton().click()
 
-    cy.pause()
     offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.radioLabelSelector('true').click()
     offenceReviewOffencesPage.continueButton().click()

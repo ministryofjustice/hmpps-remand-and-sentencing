@@ -26,8 +26,8 @@ import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import Page from '../pages/page'
 import StartPage from '../pages/startPage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
-import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
+import OffenceUpdateOutcomePage from '../pages/offenceUpdateOutcomePage'
 
 context('Repeat Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -44,13 +44,6 @@ context('Repeat Court Case journey', () => {
     cy.task('stubGetAllChargeOutcomes')
     cy.task('stubOverallSentenceLengthPass')
     cy.task('stubGetServiceDefinitions')
-    cy.signIn()
-    cy.visit('/person/A1234AB')
-  })
-
-  it('repeat remand journey', () => {
-    cy.task('stubGetAllAppearanceOutcomes')
-    cy.task('stubGetAppearanceOutcomeById', {})
     cy.task('stubGetChargeOutcomesByIds', [
       {
         outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
@@ -58,6 +51,13 @@ context('Repeat Court Case journey', () => {
         outcomeType: 'REMAND',
       },
     ])
+    cy.signIn()
+    cy.visit('/person/A1234AB')
+  })
+
+  it('repeat remand journey', () => {
+    cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetAppearanceOutcomeById', {})
     cy.task('stubGetAppearanceTypeByUuid')
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
@@ -281,23 +281,15 @@ context('Repeat Court Case journey', () => {
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })
+    cy.task('stubGetChargeOutcomeById', {
+      outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+      outcomeName: 'Imprisonment',
+      outcomeType: 'SENTENCING',
+    })
     cy.task('stubGetChargeOutcomesByIds', [
-      {
-        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-        outcomeName: 'Imprisonment',
-        outcomeType: 'SENTENCING',
-      },
-    ])
-
-    cy.task('stubGetChargeOutcomesByIds', [
-      {
-        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-        outcomeName: 'Imprisonment',
-        outcomeType: 'SENTENCING',
-      },
       {
         outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
-        outcomeName: 'Imprisonment by default',
+        outcomeName: 'Imprisonment',
         outcomeType: 'SENTENCING',
       },
     ])
@@ -411,27 +403,11 @@ context('Repeat Court Case journey', () => {
     offenceOverallCheckAnswersPage.confirmAndAddOffenceButton().click()
 
     let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.addAnotherButton().click()
+    offenceReviewOffencesPage.updateOutcomeLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '0').click()
 
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.continueButton().click()
-
-    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-    offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.continueButton().click()
-
-    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.continueButton().click()
-
-    const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
-      OffenceOffenceOutcomePage,
-      'Select the outcome for this offence',
-    )
-    offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
-    offenceOffenceOutcomePage.continueButton().click()
+    const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+    offenceUpdateOutcomePage.radioLabelContains('Imprisonment').click()
+    offenceUpdateOutcomePage.continueButton().click()
 
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.radioLabelSelector('true').click()
@@ -447,9 +423,9 @@ context('Repeat Court Case journey', () => {
     offencePeriodLengthPage.monthsInput().type('5')
     offencePeriodLengthPage.continueButton().click()
 
-    const cffenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    cffenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    cffenceSentenceServeTypePage.continueButton().click()
+    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
+    offenceSentenceServeTypePage.continueButton().click()
 
     offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.radioLabelSelector('true').click()

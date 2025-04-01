@@ -256,7 +256,21 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`,
       )
     }
+
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    const outcome = await this.offenceOutcomeService.getOutcomeById(
+      offenceOutcomeForm.offenceOutcome,
+      req.user.username,
+    )
+    if (outcome.outcomeType === 'SENTENCING') {
+      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
+      )
+    }
+    if (outcome.outcomeType === 'NON_CUSTODIAL') {
+      delete offence.sentence
+    }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,

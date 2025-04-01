@@ -8,10 +8,7 @@
 {% set legendText = "Enter the offence dates" %}
 {% if isFirstOffence %}
     {% set legendText = "Enter the offence dates for the first offence" %}
-{% elif submitToEditOffence %}
-    {% set legendText = "Enter the offence dates" %}
 {% endif %}
-
 
 {% block pageContent %}
             <form method="post">

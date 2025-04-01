@@ -1,52 +1,33 @@
-{% extends "../../partials/appearanceDetailsLayout.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{%- from "moj/components/banner/macro.njk" import mojBanner -%}
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "moj/components/interruption-card/macro.njk" import interruptionCard %}
 
 {% set pageTitle = "offence - sentence length mismatch" %}
 
-    {% block pageContent %}
-        {% include "../../partials/offenceCaption.njk" %}
-        <h1 class="govuk-heading-l">
-            Sentence length mismatch
-        </h1>
-        
-        <p class="govuk-body">The total sentence length of the offences added for this appearance do not match the overall sentence length entered from the warrant.</p>
-        
-        <form method="post"
-            action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/submit-sentence-length-mismatch">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-
-            {{ govukRadios({
-                id: "confirmMismatch",
-                name: "confirmMismatch",
-                fieldset: {
-                    legend: {
-                        text: "Do you want to continue?",
-                        isPageHeading: false,
-                        classes: "govuk-fieldset__legend--m"
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% call interruptionCard({
+                heading: "Sentence length mismatch",
+                primaryAction: {
+                    text: "Yes, continue",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/continue-sentence-length-mismatch",
+                    attributes: {
+                        "data-qa": "continue-button"
                     }
                 },
-                errorMessage:  errors | findError('confirmMismatch'),
-                items: [
-                    {
-                        text: 'Yes, continue with mismatching sentence lengths',
-                        value: 'yes'
-                    },
-                    {
-                        text: 'No, go back and review offences',
-                        value: 'no'
-                    }
-                ]
-            }) }}
-
-            {{ govukButton({
-                text: "Continue",
-                attributes: {  'data-qa': 'continue-button' }
-            }) }}
-        </form>
-       
-
-    {% endblock %}
+                secondaryAction: {
+                    text: "Go back to update offences" if isAddJourney else "Go back to update offence outcomes",
+                    href: backLink
+                }
+            })%}
+                <p class="govuk-body">The sentence lengths you have entered total:</p> 
+                <p class="govuk-body govuk-!-font-weight-bold">{{ overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder }}</p>
+                <p>This does not match the overall sentence length from the warrant, which is:</p>
+                <p class="govuk-body govuk-!-font-weight-bold">{{ courtAppearance.overallSentenceLength | formatLengths }}</p>
+                <p class="govuk-body">You can go back and review offences, or you can continue with sentence length mismatch.</p>
+                <p class="govuk-body">If you continue, only a provisional calculation can be made.</p>
+                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-6">Do you want to continue?</p>
+            {%- endcall %}
+        </div>
+    </div>
+{% endblock %}

@@ -26,7 +26,6 @@ import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import Page from '../pages/page'
 import StartPage from '../pages/startPage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
-import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
 import OffenceUpdateOutcomePage from '../pages/offenceUpdateOutcomePage'
 

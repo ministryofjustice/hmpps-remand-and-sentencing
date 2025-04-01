@@ -268,6 +268,9 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
       )
     }
+    if (outcome.outcomeType === 'NON_CUSTODIAL') {
+      delete offence.sentence
+    }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,

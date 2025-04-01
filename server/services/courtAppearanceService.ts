@@ -49,7 +49,7 @@ export default class CourtAppearanceService {
         'required_without.referenceNumber': 'You must enter the case reference',
         'onlyOne.referenceNumber': 'Either reference number or no reference number must be submitted',
         'onlyOne.noCaseReference': 'Either reference number or no reference number must be submitted',
-        'regex.referenceNumber': 'You can only use letters, numbers and ‘/’ symbol when entering a Case reference',
+        'regex.referenceNumber': `html:<span aria-hidden='true' class="govuk-error-message">You can only use spaces, letters, numbers and symbols '/', '.' and '-' when entering a Case reference</span><span class="govuk-visually-hidden">You can only use spaces, letters, numbers, hyphens, forward slashes and full stops when entering a case reference.</span>`,
       },
     )
     if (errors.length === 0) {
@@ -109,7 +109,8 @@ export default class CourtAppearanceService {
     nomsId: string,
     courtCaseWarrantDateForm: CourtCaseWarrantDateForm,
   ): {
-    text: string
+    text?: string
+    html?: string
     href: string
   }[] {
     let isValidWarrantDateRule = ''
@@ -621,7 +622,8 @@ export default class CourtAppearanceService {
     nomsId: string,
     overallConvictionDateForm: CourtCaseOverallConvictionDateForm,
   ): {
-    text: string
+    text?: string
+    html?: string
     href: string
   }[] {
     let isValidOverallConvictionDateRule = ''

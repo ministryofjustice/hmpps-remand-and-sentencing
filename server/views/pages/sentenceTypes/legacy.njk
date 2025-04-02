@@ -1,0 +1,139 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{% set pageTitle = applicationName + " – Legacy sentence types" %}
+
+{% block content %}
+
+    {{ govukBreadcrumbs({
+        items: [
+            {
+                text: "Remand and Sentencing",
+                href: "/"
+            },
+            {
+                text: "Sentence Types",
+                href: "/sentence-types/"
+            },
+            {
+                text: "Legacy",
+                href: "/sentence-types/legacy/"
+            }]}) }}
+
+    <h1 class="govuk-heading-l govuk-!-padding-top-9">Legacy sentence types</h1>
+
+    {% if query.active or query.indeterminate or query.recall %}
+
+        <p class="govuk-body">
+            Showing sentence types
+            {% if query.active == 'true' %} that are
+                <strong>active</strong>{% elseif query.active == 'false' %} that are
+                <strong>inactive</strong>{% endif %}
+            {% if query.indeterminate == 'true' %} {% if query.active %} and{% endif %}
+                <strong>indeterminate</strong>{% elseif query.indeterminate == 'false' %} {% if query.active %} and{% endif %}
+                <strong>not indeterminate</strong>{% endif %}
+            {% if query.recall %} {% if query.active or query.indeterminate %} and{% endif %} with
+            <strong>{{ query.recall | replace("_", " ") | lower }}</strong> recall{% endif %}.
+        </p>
+    {% else %}
+        <p class="govuk-body">
+            This page lists sentence types that were originally created and maintained in NOMIS. These sentence types remain relevant for reviewing or interpreting historic legacy system (e.g. NOMIS) data.
+        </p>
+
+    {% endif %}
+
+
+    <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3" type="button"
+            aria-controls="filters-panel" aria-expanded="false" id="toggle-filters-button">
+        Show filters
+    </button>
+
+    <div id="filters-panel" hidden class="govuk-!-padding-2 govuk-!-margin-bottom-2 govuk-border--1px">
+
+        <form method="get" class="govuk-form-group govuk-!-margin-bottom-1 govuk-!-display-inline">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    Show only sentence types that match:
+                </legend>
+
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-quarter">
+                        {{ govukSelect({
+                            id: "active",
+                            name: "active",
+                            label: { text: "Active in NOMIS" },
+                            items: activeFilterItems
+                        }) }}
+                    </div>
+
+                    <div class="govuk-grid-column-one-quarter">
+
+                        {{ govukSelect({
+                            id: "indeterminate",
+                            name: "indeterminate",
+                            label: { text: "Indeterminate?" },
+                            items: indeterminateFilterItems
+                        }) }}
+                    </div>
+
+                    <div class="govuk-grid-column-one-quarter">
+                        {{ govukSelect({
+                            id: "recall",
+                            name: "recall",
+                            label: { text: "Recall type" },
+                            items: recallFilterItems
+                        }) }}
+                    </div>
+
+                    <div class="govuk-grid-column-one-quarter govuk-!-padding-top-6">
+                        <button type="submit" class="govuk-button govuk-!-margin-top-0">Apply filters</button>
+
+                        {% if query.active or query.indeterminate or query.recall %}
+                        <a href="/sentence-types/legacy" class="govuk-button govuk-button--secondary govuk-!-margin-top-0">Clear filters</a>
+                        {%  endif %}
+                    </div>
+
+                </div>
+            </fieldset>
+
+        </form>
+    </div>
+
+
+
+    <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-visually-hidden">List of legacy sentence types</caption>
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">NOMIS reference</th>
+            <th scope="col" class="govuk-table__header">Description</th>
+            <th scope="col" class="govuk-table__header">Indeterminate?</th>
+            <th scope="col" class="govuk-table__header">Recall type</th>
+            <th scope="col" class="govuk-table__header">Details</th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        {% for sentence in legacySentenceTypes %}
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ sentence.nomisSentenceTypeReference }}</td>
+                <td class="govuk-table__cell">{{ sentence.nomisDescription }}</td>
+                <td class="govuk-table__cell">{% if sentence.isIndeterminate %} Yes
+                    {% else %} No
+                    {% endif %}</td>
+                <td class="govuk-table__cell">{{ sentence.formattedRecallName }}</td>
+
+                <td class="govuk-table__cell">
+                    <a href="/sentence-types/legacy/detail?nomisSentenceTypeReference={{ sentence.nomisSentenceTypeReference | urlencode }}"
+                       class="govuk-link">View details</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script id="autocomplete-script" src="/assets/js/showLegacySentenceTypeFilters.js"></script>
+{% endblock %}

@@ -51,7 +51,7 @@
             {% endif %}
         </div>
     {% endif %}
-    <p class="govuk-body"><strong>Active in NOMIS:</strong> {% if sentenceType.nomisActive %}Yes{% else %}No{% endif %}
+    <p class="govuk-body"><strong>Active in NOMIS:</strong>{{"Yes" if sentenceType.nomisActive else "No" }}
     </p>
 
     {% if sentenceType.nomisExpiryDate %}
@@ -90,7 +90,7 @@
                     <p class="govuk-body"><strong>Length:</strong> {{ period.periodLength.years }} years</p>
                 {% endif %}
 
-                <p class="govuk-body"><strong>Auto-calculated:</strong> {% if period.auto %}Yes{% else %}No{% endif %}
+                <p class="govuk-body"><strong>Auto-calculated:</strong>{{"Yes" if period.auto else "No"  }}
                 </p>
             </div>
         {% endfor %}

@@ -7,6 +7,7 @@ import ApiRoutes from './apiRoutes'
 import OffenceRoutes from './offenceRoutes'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
+import sentenceTypeRoutes from './sentenceTypesRoutes'
 
 const upload = multer({ dest: 'uploads/' })
 export default function routes(services: Services): Router {
@@ -18,6 +19,8 @@ export default function routes(services: Services): Router {
 
   const postWithFileUpload = (path: string | string[], handler: RequestHandler) =>
     router.post(path, upload.single('warrantUpload'), asyncMiddleware(handler))
+
+  router.use('/sentence-types', sentenceTypeRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
     services.courtAppearanceService,

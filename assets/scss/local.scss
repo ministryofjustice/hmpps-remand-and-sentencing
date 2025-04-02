@@ -1,6 +1,6 @@
 .govuk-main-wrapper {
   min-height: 600px;
-  padding-top: 0px;
+  padding-top: 0;
 }
 
 .no-bottom-border {
@@ -25,4 +25,8 @@
 
 .govuk-button--link:hover {
   background: #144e81
+}
+
+.govuk-border--1px {
+  border:1px solid #b1b4b6
 }

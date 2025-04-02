@@ -11,7 +11,7 @@ export default class SentenceTypesRoutesHandler {
     )
 
     const legacySentenceTypeItems = [
-      { value: '', text: 'Lookup a legacy sentence type' },
+      { value: '', text: '' },
       ...legacySentenceTypes.map(sentence => ({
         value: sentence.nomisSentenceTypeReference,
         text: sentence.nomisSentenceTypeReference?.trim(),

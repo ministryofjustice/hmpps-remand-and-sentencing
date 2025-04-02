@@ -118,9 +118,7 @@
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ sentence.nomisSentenceTypeReference }}</td>
                 <td class="govuk-table__cell">{{ sentence.nomisDescription }}</td>
-                <td class="govuk-table__cell"> {{"Yes" if sentence.isIndeterminate else "No"}}
-                    {% else %} No
-                    {% endif %}</td>
+                <td class="govuk-table__cell"> {{"Yes" if sentence.isIndeterminate else "No"}}</td>
                 <td class="govuk-table__cell">{{ sentence.formattedRecallName }}</td>
 
                 <td class="govuk-table__cell">

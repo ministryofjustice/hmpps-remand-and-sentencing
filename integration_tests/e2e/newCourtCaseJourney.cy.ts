@@ -121,7 +121,7 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
-      'Court case reference': 'T12345678',
+      'Case reference': 'T12345678',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
@@ -181,7 +181,7 @@ context('New Court Case journey', () => {
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
-      'Case reference number': 'T12345678',
+      'Case reference': 'T12345678',
       'Court name': 'Accrington Youth Court',
       'Warrant date': '12/05/2023',
       'Overall case outcome': 'Remanded in custody',
@@ -358,7 +358,7 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
-      'Court case reference': caseRef,
+      'Case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Tagged bail': '5 days',
@@ -397,7 +397,7 @@ context('New Court Case journey', () => {
     courtCaseOverallSentenceLengthPage.weeksInput().type('3')
     courtCaseOverallSentenceLengthPage.daysInput().type('2')
     courtCaseOverallSentenceLengthPage.summaryList().getSummaryList().should('deep.equal', {
-      'Case reference number': 'T12345678',
+      'Case reference': 'T12345678',
       'Court name': 'Accrington Youth Court',
       'Warrant date': '12/05/2023',
       'Overall case outcome': 'Imprisonment',

@@ -1,0 +1,64 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+
+{% set pageTitle = (legacySentenceType[0].nomisSentenceTypeReference ~ " – " ~ applicationName ~ " – Sentence type detail") if legacySentenceType and legacySentenceType.length > 0 else (applicationName ~ " – Sentence type detail") %}
+
+
+{% block content %}
+
+    {{ govukBreadcrumbs({
+        items: [
+            {
+                text: "Remand and Sentencing",
+                href: "/"
+            },
+            {
+                text: "Sentence Types",
+                href: "/sentence-types/"
+            },
+            {
+                text: "Legacy",
+                href: "/sentence-types/legacy/"
+            },
+            {
+                text: "Detail",
+                href: "/sentence-types/legacy/detail?nomisSentenceTypeReference=" + nomisSentenceTypeReference
+            }
+        ]
+    }) }}
+    <h1 class="govuk-heading-l govuk-!-padding-top-9">{{ legacySentenceType[0].nomisSentenceTypeReference }}  - Legacy sentence type details</h1>
+
+    <p class="govuk-body">
+        The information on this page relates to the sentence type as recorded in NOMIS. Some fields may vary depending on the sentencing Act under which the sentence was imposed.
+    </p>
+
+    {% if legacySentenceType | length > 0 %}
+
+        <div class="govuk-tabs" data-module="govuk-tabs">
+            <h2 class="govuk-tabs__title">Contents</h2>
+
+            <ul class="govuk-tabs__list">
+                {% for sentenceType in legacySentenceType %}
+
+                    <li class="govuk-tabs__list-item {% if loop.first %}govuk-tabs__list-item--selected{% endif %}">
+                        <a class="govuk-tabs__tab" href="#tab-{{ sentenceType.sentencingAct | string | lower | replace(" ", "-") | replace("/", "-") }}">
+                            {{ sentenceType.sentencingAct or "Unknown Act" }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            {% for sentenceType in legacySentenceType %}
+                <div class="govuk-tabs__panel {% if not loop.first %}govuk-tabs__panel--hidden{% endif %}" id="tab-{{ sentenceType.sentencingAct | string | lower | replace(" ", "-") | replace("/", "-") }}">
+                    {% include "partials/legacy-sentence-type-panel.njk" %}
+                </div>
+            {% endfor %}
+        </div>
+   {% endif %}
+
+    <a href="/sentence-types/legacy" class="govuk-back-link govuk-!-margin-top-7">Back to legacy sentence types</a>
+
+{% endblock %}
+
+

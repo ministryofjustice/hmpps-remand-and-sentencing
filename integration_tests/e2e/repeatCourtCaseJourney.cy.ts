@@ -121,7 +121,7 @@ context('Repeat Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
-      'Court case reference': 'C894623',
+      'Case reference': 'C894623',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
@@ -349,7 +349,7 @@ context('Repeat Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
-      'Court case reference': 'C894623',
+      'Case reference': 'C894623',
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
       'Tagged bail': '5 days',

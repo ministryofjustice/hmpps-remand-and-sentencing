@@ -1,0 +1,54 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% set pageTitle = applicationName + " – Sentence types" %}
+
+{% block content %}
+    {{ govukBreadcrumbs({
+        items: [
+            { text: "Remand and Sentencing Administration", href: "/" },
+            { text: "Sentence Types", href: "/sentence-types/" }
+        ]
+    }) }}
+
+    <h1 class="govuk-heading-l govuk-!-padding-top-9">Sentence types</h1>
+
+    <p class="govuk-body">
+        This page helps you find and review sentence types.
+    </p>
+
+    <h2 class="govuk-heading-m">Legacy sentence types</h2>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <h3 class="govuk-heading-s">Find a sentence type</h3>
+            <p class="govuk-body">Start typing a legacy sentence type reference or description to go straight to its
+                detail page.</p>
+
+            {{ govukSelect({
+                id: "legacy-sentence-type-lookup",
+                name: "legacy-sentence-type-lookup",
+                label: {
+                    text: "Legacy sentence type"
+                },
+                classes: "autocomplete-select govuk-select",
+                items: legacySentenceTypeItems
+            }) }}
+        </div>
+
+        <div class="govuk-grid-column-one-half">
+            <h3 class="govuk-heading-s">Browse all legacy sentence types</h3>
+            <p class="govuk-body">View and filter the full list of sentence types originally recorded in NOMIS.</p>
+            {{ govukButton({
+                text: "Browse legacy sentence types",
+                href: "/sentence-types/legacy"
+            }) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/assets/accessible-autocomplete.min.js"></script>
+    <script src="/assets/js/autoCompleteLegacySentenceType.js" type="module"></script>
+{% endblock %}

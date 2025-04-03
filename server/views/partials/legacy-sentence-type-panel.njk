@@ -1,0 +1,98 @@
+{%- from "moj/components/alert/macro.njk" import mojAlert -%}
+
+<div class="govuk-!-margin-bottom-9">
+    {% if not sentenceType.nomisActive %}
+        {{ mojAlert({
+            variant: "warning",
+            title: "Inactive Sentence Type",
+            showTitleAsHeading: true,
+            dismissible: false,
+            html: 'This sentence type is no longer active in NOMIS.'
+        }) }}
+    {% endif %}
+
+    <h3 class="govuk-heading-m"><strong>NOMIS reference:</strong> {{ sentenceType.nomisSentenceTypeReference }}</h3>
+
+    <p class="govuk-body"><strong>Sentencing Act</strong>: {{ sentenceType.sentencingAct }}</p>
+    <p class="govuk-body"><strong>Description:</strong> {{ sentenceType.nomisDescription }}</p>
+    <p class="govuk-body"><strong>Classification:</strong> {{ sentenceType.classification | replace("_", " ") }}</p>
+    <p class="govuk-body"><strong>Recall type:</strong>
+        {% if sentenceType.recallType and sentenceType.recallType.name %}
+            {{ sentenceType.recallType.name | replace("_", " ") }}
+        {% else %}
+            Not specified
+        {% endif %}
+    </p>
+
+    {% if sentenceType.recallType and sentenceType.recallType.name %}
+        <div class="govuk-inset-text">
+            {% if sentenceType.recallType.isFixedTermRecall %}
+                This is a <strong>fixed term
+                recall</strong>, where a set number of days is applied. The standard length is
+                {{ sentenceType.recallType.lengthInDays or "not specified" }} days.
+            {% else %}
+                {% if sentenceType.recallType.name == "STANDARD_RECALL" %}
+                    This is a <strong>standard
+                    recall</strong>, where the release is determined by the Parole Board rather than a fixed period.
+                    {% elif sentenceType.recallType.name == "STANDARD_RECALL_255" %}
+                    This is a <strong>standard recall under section 255A of the Criminal Justice Act
+                    2003</strong>, typically used when:
+                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2">
+                        <li>the person has failed to comply with the curfew condition included in their licence, or</li>
+                        <li>their whereabouts can no longer be electronically monitored at the specified curfew
+                            address.
+                        </li>
+                    </ul>
+                    {% elif sentenceType.recallType.name == "NONE" %}
+                    This sentence is not associated with a recall.
+                {% else %}
+                    This recall type is unknown.
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endif %}
+    <p class="govuk-body"><strong>Active in NOMIS:</strong>{{"Yes" if sentenceType.nomisActive else "No" }}
+    </p>
+
+    {% if sentenceType.nomisExpiryDate %}
+        <p class="govuk-body"><strong>Expiry date:</strong> {{ sentenceType.nomisExpiryDate }}</p>
+    {% endif %}
+
+    {% if sentenceType.eligibility %}
+        <h3 class="govuk-heading-s govuk-!-margin-top-5">Eligibility</h3>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>SDS+: {{ sentenceType.eligibility.sdsPlusEligibilityType or "Not specified" }}</li>
+            <li>TORERA: {{ sentenceType.eligibility.toreraEligibilityType or "Not specified" }}</li>
+        </ul>
+    {% endif %}
+
+    <h3 class="govuk-heading-s govuk-!-margin-top-5">Term types in NOMIS</h3>
+    <ul class="govuk-list govuk-list--bullet">
+        {% for termCode, termDesc in sentenceType.nomisTermTypes %}
+            <li>{{ termCode }} – {{ termDesc }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if sentenceType.classificationPeriodDefinition %}
+
+
+
+        <h3 class="govuk-heading-s govuk-!-margin-top-5">Period definitions</h3>
+        {% for period in sentenceType.classificationPeriodDefinition.periodDefinitions %}
+            <div class="govuk-inset-text govuk-!-margin-bottom-5">
+                <p class="govuk-body"><strong>Period type:</strong> {{ period.type }}</p>
+
+                {% if period.periodLength.description %}
+                    <p class="govuk-body"><strong>Description:</strong> {{ period.periodLength.description }}</p>
+                {% endif %}
+
+                {% if period.periodLength.years %}
+                    <p class="govuk-body"><strong>Length:</strong> {{ period.periodLength.years }} years</p>
+                {% endif %}
+
+                <p class="govuk-body"><strong>Auto-calculated:</strong>{{"Yes" if period.auto else "No"  }}
+                </p>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

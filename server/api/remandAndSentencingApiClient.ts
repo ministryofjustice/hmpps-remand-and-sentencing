@@ -10,6 +10,8 @@ import {
   DraftCourtCaseCreatedResponse,
   DraftCreateCourtAppearance,
   DraftCreateCourtCase,
+  LegacySentenceType,
+  LegacySentenceTypeGroupingSummary,
   OffenceOutcome,
   PageCourtCase,
   PageCourtCaseAppearance,
@@ -195,5 +197,33 @@ export default class RemandAndSentencingApiClient {
     return (await this.restClient.get({
       path: `/appearance-type/${appearanceTypeUuid}`,
     })) as unknown as Promise<AppearanceType>
+  }
+
+  async getLegacySentenceTypesSummaryAll(): Promise<LegacySentenceTypeGroupingSummary[]> {
+    return (await this.restClient.get({
+      path: `/legacy/sentence-type/all/summary`,
+    })) as unknown as Promise<LegacySentenceTypeGroupingSummary[]>
+  }
+
+  async getLegacySentenceTypesAll(): Promise<LegacySentenceType[]> {
+    return (await this.restClient.get({
+      path: `/legacy/sentence-type/all`,
+    })) as unknown as Promise<LegacySentenceType[]>
+  }
+
+  async getLegacySentenceTypesDetail(nomisSentenceTypeReference: string) {
+    const encodedReference = encodeURIComponent(nomisSentenceTypeReference)
+
+    return (await this.restClient.get({
+      path: `/legacy/sentence-type/?nomisSentenceTypeReference=${encodedReference}`,
+    })) as unknown as Promise<LegacySentenceType[]>
+  }
+
+  async getLegacySentenceTypesSummary(nomisSentenceTypeReference: string) {
+    const encodedReference = encodeURIComponent(nomisSentenceTypeReference)
+
+    return (await this.restClient.get({
+      path: `/legacy/sentence-type/summary/?nomisSentenceTypeReference=${encodedReference}`,
+    })) as unknown as Promise<LegacySentenceTypeGroupingSummary>
   }
 }

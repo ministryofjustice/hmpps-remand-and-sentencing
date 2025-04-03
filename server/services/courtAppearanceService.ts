@@ -379,6 +379,13 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).hasOverallSentenceLength
   }
 
+  setHasOverallSentenceLengthTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    courtAppearance.hasOverallSentenceLength = 'true'
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   setOverallSentenceLength(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
@@ -461,6 +468,7 @@ export default class CourtAppearanceService {
       )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.overallSentenceLength = sentenceLength
+      courtAppearance.hasOverallSentenceLength = 'true'
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

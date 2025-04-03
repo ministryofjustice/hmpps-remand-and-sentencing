@@ -1133,6 +1133,7 @@ export default class CourtCaseRoutes {
           this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
         )
     }
+    this.courtAppearanceService.setHasOverallSentenceLengthTrue(req.session, nomsId)
     return res.render('pages/courtAppearance/alternative-sentence-length', {
       nomsId,
       courtCaseReference,

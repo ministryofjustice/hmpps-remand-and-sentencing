@@ -57,6 +57,7 @@ context('Court Case Appearance details Page', () => {
 
     it('appearance summary shows correct data', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         'Court name': 'Southampton Magistrate Court',
@@ -75,6 +76,7 @@ context('Court Case Appearance details Page', () => {
 
     it('can edit fields and return back to details page', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         'Court name': 'Southampton Magistrate Court',
@@ -100,6 +102,7 @@ context('Court Case Appearance details Page', () => {
         'Edit appearance T12345678 at Southampton Magistrate Court on 15/12/2023',
       )
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Warrant type': 'Remand',
         'Case reference': 'T12345678',
         'Warrant date': '15/12/2023',
         'Court name': 'Southampton Magistrate Court',
@@ -109,6 +112,7 @@ context('Court Case Appearance details Page', () => {
 
     it('can edit court name and return back to details page', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         'Court name': 'Southampton Magistrate Court',
@@ -136,6 +140,7 @@ context('Court Case Appearance details Page', () => {
         'Edit appearance C894623 at Accrington Youth Court on 15/12/2023',
       )
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         'Court name': 'Accrington Youth Court',
@@ -210,11 +215,11 @@ context('Court Case Appearance details Page', () => {
 
     it('appearance summary shows correct data', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Warrant type': 'Sentencing',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         'Conviction date': '12/09/2024',
         'Court name': 'Southampton Magistrate Court',
-        'Overall case outcome': 'Imprisonment',
         'Overall sentence length': '4 years 0 months 0 weeks 0 days',
       })
     })
@@ -296,6 +301,7 @@ context('Court Case Appearance details Page', () => {
     it('can edit overall outcome and return back to details page', () => {
       cy.task('stubGetAllAppearanceOutcomes')
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         'Court name': 'Southampton Magistrate Court',
@@ -322,6 +328,7 @@ context('Court Case Appearance details Page', () => {
         'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
       )
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         'Court name': 'Southampton Magistrate Court',
@@ -383,11 +390,11 @@ context('Court Case Appearance details Page', () => {
 
     it('appearance details are correct', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Warrant type': 'Sentencing',
         'Case reference': 'BB7937',
         'Warrant date': '27/01/2025',
         'Conviction date': 'Not entered',
         'Court name': 'Southampton Magistrate Court',
-        'Overall case outcome': 'A Nomis description',
       })
     })
 

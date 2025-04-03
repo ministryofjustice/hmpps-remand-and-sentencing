@@ -1,16 +1,14 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "../../components/alternativeSentenceLength/macro.njk" import alternativeSentenceLength%}
 {% set pageTitle = applicationName + " - Add alternative sentence length" %}
 
-{% block content %}
+{% block pageContent %}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-overall-alternative-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/appearanceCaption.njk" %}
+                {% include "../../partials/offenceCaption.njk" %}
 
                 {% call govukFieldset({
                     legend: {
@@ -68,6 +66,4 @@
                     attributes: {  'data-qa': 'continue-button' }
                 }) }}
             </form>
-        </div>
-    </div>
 {% endblock %}

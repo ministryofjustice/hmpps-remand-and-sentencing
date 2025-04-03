@@ -1142,6 +1142,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       submitToCheckAnswers,
       courtCaseAlternativeSentenceLengthForm,
+      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
     })

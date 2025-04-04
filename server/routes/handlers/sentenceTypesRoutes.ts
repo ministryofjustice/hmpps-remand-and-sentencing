@@ -81,7 +81,6 @@ export default class SentenceTypesRoutesHandler {
       if (recallType.isFixedTermRecall && recallType.lengthInDays) {
         return `Fixed term recall (${recallType.lengthInDays} days)`
       }
-
       return recallType.type.replace(/_/g, ' ')
     }
 
@@ -109,6 +108,12 @@ export default class SentenceTypesRoutesHandler {
       nomisSentenceTypeReference,
       req.user.username,
     )
+
+    legacySentenceType.sort((a, b) => {
+      const yearA = a.sentencingAct || 0
+      const yearB = b.sentencingAct || 0
+      return yearB - yearA
+    })
 
     return res.render('pages/sentenceTypes/detail', {
       legacySentenceType,

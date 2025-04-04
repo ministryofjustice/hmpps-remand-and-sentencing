@@ -1,5 +1,13 @@
 {%- from "moj/components/alert/macro.njk" import mojAlert -%}
 
+{% if sentenceType.recallType and sentenceType.recallType.isFixedTermRecall %}
+    {% set typeKey = 'fixed-term-recall' %}
+    {% elif sentenceType.recallType and sentenceType.recallType.type %}
+    {% set typeKey = sentenceType.recallType.type | lower | replace('_', '-') %}
+{% else %}
+    {% set typeKey = 'unknown' %}
+{% endif %}
+
 <div class="govuk-!-margin-bottom-9">
     {% if not sentenceType.nomisActive %}
         {{ mojAlert({
@@ -15,42 +23,27 @@
 
     <p class="govuk-body"><strong>Sentencing Act</strong>: {{ sentenceType.sentencingAct }}</p>
     <p class="govuk-body"><strong>Description:</strong> {{ sentenceType.nomisDescription }}</p>
-    <p class="govuk-body"><strong>Classification:</strong> {{ sentenceType.classification | replace("_", " ") }}</p>
-    <p class="govuk-body"><strong>Recall type:</strong>
-        {% if sentenceType.recallType and sentenceType.recallType.name %}
-            {{ sentenceType.recallType.name | replace("_", " ") }}
-        {% else %}
-            Not specified
-        {% endif %}
-    </p>
 
-    {% if sentenceType.recallType and sentenceType.recallType.name %}
+    {% set classificationKey = sentenceType.classification | lower | replace("_", "-") %}
+    <p class="govuk-body"><strong>Classification:</strong> {{ sentenceType.classification | replace("_", " ") }}</p>
+
+    <div class="govuk-inset-text">
+    {% include "./sentence-classifications/" + classificationKey + ".njk" ignore missing %}
+    </div>
+
+    <p class="govuk-body"><strong>Recall type:</strong>
+            {{ sentenceType.recallType.type | replace("_", " ") }}
+    </p>
+    {% if sentenceType.recallType %}
         <div class="govuk-inset-text">
-            {% if sentenceType.recallType.isFixedTermRecall %}
-                This is a <strong>fixed term
-                recall</strong>, where a set number of days is applied. The standard length is
-                {{ sentenceType.recallType.lengthInDays or "not specified" }} days.
-            {% else %}
-                {% if sentenceType.recallType.name == "STANDARD_RECALL" %}
-                    This is a <strong>standard
-                    recall</strong>, where the release is determined by the Parole Board rather than a fixed period.
-                    {% elif sentenceType.recallType.name == "STANDARD_RECALL_255" %}
-                    This is a <strong>standard recall under section 255A of the Criminal Justice Act
-                    2003</strong>, typically used when:
-                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-2">
-                        <li>the person has failed to comply with the curfew condition included in their licence, or</li>
-                        <li>their whereabouts can no longer be electronically monitored at the specified curfew
-                            address.
-                        </li>
-                    </ul>
-                    {% elif sentenceType.recallType.name == "NONE" %}
-                    This sentence is not associated with a recall.
-                {% else %}
-                    This recall type is unknown.
-                {% endif %}
+            {% include "./recall-type-descriptions/" + typeKey + ".njk" ignore missing %}
+            {% if not typeKey in ['fixed-term-recall', 'standard-recall', 'standard-recall-255', 'none'] %}
+                {% include "./recall-type-descriptions/unknown.njk" %}
             {% endif %}
         </div>
     {% endif %}
+
+
     <p class="govuk-body"><strong>Active in NOMIS:</strong>{{"Yes" if sentenceType.nomisActive else "No" }}
     </p>
 

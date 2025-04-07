@@ -11,6 +11,7 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceTypeForm,
   SentenceLengthForm,
+  SentenceSelectCaseForm,
 } from 'forms'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
@@ -548,6 +549,34 @@ export default class OffenceService {
       session.offences[id] = offence
     }
 
+    return errors
+  }
+
+  setConsecutiveToAppearanceUuid(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    sentenceSelectCaseForm: SentenceSelectCaseForm,
+  ) {
+    const errors = validate(
+      sentenceSelectCaseForm,
+      {
+        appearanceSelectedUuid: 'required',
+      },
+      {
+        'required.appearanceSelectedUuid': `You must select the case`,
+      },
+    )
+
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.consecutiveToAppearanceUuid = sentenceSelectCaseForm.appearanceSelectedUuid
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
     return errors
   }
 

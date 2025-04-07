@@ -1,0 +1,49 @@
+{%- from "moj/components/alert/macro.njk" import mojAlert -%}
+
+{% if sentenceType.recallType and sentenceType.recallType.isFixedTermRecall %}
+    {% set typeKey = 'fixed-term-recall' %}
+    {% elif sentenceType.recallType and sentenceType.recallType.type %}
+    {% set typeKey = sentenceType.recallType.type | lower | replace('_', '-') %}
+{% else %}
+    {% set typeKey = 'unknown' %}
+{% endif %}
+
+<div class="govuk-!-margin-bottom-9">
+    {% if not sentenceType.nomisActive %}
+        {{ mojAlert({
+            variant: "warning",
+            title: "Inactive Sentence Type",
+            showTitleAsHeading: true,
+            dismissible: false,
+            html: 'This sentence type is no longer active in NOMIS.'
+        }) }}
+    {% endif %}
+
+    <h3 class="govuk-heading-m"><strong>NOMIS reference:</strong> {{ sentenceType.nomisSentenceTypeReference }}</h3>
+
+    <p class="govuk-body"><strong>Sentencing Act</strong>: {{ sentenceType.sentencingAct }}</p>
+    <p class="govuk-body"><strong>Description:</strong> {{ sentenceType.nomisDescription }}</p>
+
+    {% set classificationKey = sentenceType.classification | lower | replace("_", "-") %}
+    <p class="govuk-body"><strong>Classification:</strong> {{ sentenceType.classification | replace("_", " ") }}</p>
+
+    <div class="govuk-inset-text">
+        {% include "./sentence-classifications/" + classificationKey + ".njk" ignore missing %}
+    </div>
+
+    <p class="govuk-body"><strong>Recall type:</strong>
+        {{ sentenceType.recallType.type | replace("_", " ") }}
+    </p>
+    {% if sentenceType.recallType %}
+        <div class="govuk-inset-text">
+            {% include "./recall-type-descriptions/" + typeKey + ".njk" ignore missing %}
+            {% if not typeKey in ['fixed-term-recall', 'standard-recall', 'standard-recall-255', 'none'] %}
+                {% include "./recall-type-descriptions/unknown.njk" %}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% include "partials/sentence-type-detail/remand-and-sentencing.njk" %}
+    {% include "partials/sentence-type-detail/calculate-release-dates.njk" %}
+    {% include "partials/sentence-type-detail/nomis.njk" %}
+</div>

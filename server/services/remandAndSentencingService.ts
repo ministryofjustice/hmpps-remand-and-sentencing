@@ -1,12 +1,15 @@
 import type { CourtAppearance, CourtCase } from 'models'
 import { Dayjs } from 'dayjs'
-import type {
+import {
   AppearanceType,
+  CourtCases,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
   DraftCourtAppearance,
   DraftCourtAppearanceCreatedResponse,
   DraftCourtCaseCreatedResponse,
+  LegacySentenceType,
+  LegacySentenceTypeGroupingSummary,
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
@@ -160,6 +163,24 @@ export default class RemandAndSentencingService {
   async getAppearanceTypeByUuid(appearanceTypeUuid: string, username: string): Promise<AppearanceType> {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAppearanceTypeByUuid(
       appearanceTypeUuid,
+    )
+  }
+
+  async getLegacySentenceTypesSummaryAll(username: string): Promise<LegacySentenceTypeGroupingSummary[]> {
+    return new RemandAndSentencingApiClient(
+      await this.getSystemClientToken(username),
+    ).getLegacySentenceTypesSummaryAll()
+  }
+
+  async getLegacySentenceType(nomisSentenceTypeReference: string, username: string): Promise<LegacySentenceType[]> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getLegacySentenceTypesDetail(
+      nomisSentenceTypeReference,
+    )
+  }
+
+  async getSentencedCourtCases(prisonerId: string, username: string): Promise<CourtCases> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getSentencedCourtCases(
+      prisonerId,
     )
   }
 

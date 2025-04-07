@@ -7,6 +7,7 @@ import ApiRoutes from './apiRoutes'
 import OffenceRoutes from './offenceRoutes'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
+import sentenceTypeRoutes from './sentenceTypesRoutes'
 
 const upload = multer({ dest: 'uploads/' })
 export default function routes(services: Services): Router {
@@ -18,6 +19,8 @@ export default function routes(services: Services): Router {
 
   const postWithFileUpload = (path: string | string[], handler: RequestHandler) =>
     router.post(path, upload.single('warrantUpload'), asyncMiddleware(handler))
+
+  router.use('/sentence-types', sentenceTypeRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
     services.courtAppearanceService,
@@ -42,6 +45,7 @@ export default function routes(services: Services): Router {
     services.offenceOutcomeService,
     services.calculateReleaseDatesService,
     services.appearanceOutcomeService,
+    services.courtRegisterService,
   )
 
   get('/', async (req, res, next) => {
@@ -395,6 +399,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-sentence-serve-type',
     offenceRoutes.submitSentenceServeType,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/sentence-select-case',
+    offenceRoutes.getSentenceSelectCase,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-sentence-select-case',
+    offenceRoutes.submitSentenceSelectCase,
   )
 
   get(

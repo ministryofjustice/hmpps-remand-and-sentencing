@@ -1,6 +1,7 @@
 import {
   AppearanceOutcome,
   AppearanceType,
+  CourtCases,
   CreateCourtAppearance,
   CreateCourtAppearanceResponse,
   CreateCourtCase,
@@ -225,5 +226,11 @@ export default class RemandAndSentencingApiClient {
     return (await this.restClient.get({
       path: `/legacy/sentence-type/summary/?nomisSentenceTypeReference=${encodedReference}`,
     })) as unknown as Promise<LegacySentenceTypeGroupingSummary>
+  }
+
+  async getSentencedCourtCases(prisonerId: string): Promise<CourtCases> {
+    return (await this.restClient.get({
+      path: `/person/${prisonerId}/sentenced-court-cases`,
+    })) as unknown as Promise<CourtCases>
   }
 }

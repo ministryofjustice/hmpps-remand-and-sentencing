@@ -45,6 +45,7 @@ export default function routes(services: Services): Router {
     services.offenceOutcomeService,
     services.calculateReleaseDatesService,
     services.appearanceOutcomeService,
+    services.courtRegisterService,
   )
 
   get('/', async (req, res, next) => {
@@ -398,6 +399,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-sentence-serve-type',
     offenceRoutes.submitSentenceServeType,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/sentence-select-case',
+    offenceRoutes.getSentenceSelectCase,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-sentence-select-case',
+    offenceRoutes.submitSentenceSelectCase,
   )
 
   get(

@@ -57,4 +57,20 @@ context('Court Case Alternative Sentence Length Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem The sentence length cannot be 0')
   })
+
+  it('submitting more than 1 of the same time unit results in an error', () => {
+    courtCaseAlternativeSentenceLengthPage.sentenceLengthInput('first').type('2')
+    courtCaseAlternativeSentenceLengthPage.sentenceLengthInput('second').type('2')
+    courtCaseAlternativeSentenceLengthPage.sentenceLengthDropDown('first').select('years')
+    courtCaseAlternativeSentenceLengthPage.sentenceLengthDropDown('second').select('years')
+    courtCaseAlternativeSentenceLengthPage.continueButton().click()
+    courtCaseAlternativeSentenceLengthPage = Page.verifyOnPage(CourtCaseAlternativeSentenceLengthPage)
+    courtCaseAlternativeSentenceLengthPage
+      .errorSummary()
+      .trimTextContent()
+      .should(
+        'equal',
+        'There is a problem More than one of the same type of date is not allowed More than one of the same type of date is not allowed',
+      )
+  })
 })

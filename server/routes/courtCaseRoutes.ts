@@ -1133,6 +1133,7 @@ export default class CourtCaseRoutes {
           this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
         )
     }
+    this.courtAppearanceService.setHasOverallSentenceLengthTrue(req.session, nomsId)
     return res.render('pages/courtAppearance/alternative-sentence-length', {
       nomsId,
       courtCaseReference,
@@ -1141,6 +1142,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       submitToCheckAnswers,
       courtCaseAlternativeSentenceLengthForm,
+      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
     })
@@ -1173,7 +1175,7 @@ export default class CourtCaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date`,
     )
   }
 

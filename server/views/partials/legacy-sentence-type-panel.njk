@@ -28,11 +28,11 @@
     <p class="govuk-body"><strong>Classification:</strong> {{ sentenceType.classification | replace("_", " ") }}</p>
 
     <div class="govuk-inset-text">
-    {% include "./sentence-classifications/" + classificationKey + ".njk" ignore missing %}
+        {% include "./sentence-classifications/" + classificationKey + ".njk" ignore missing %}
     </div>
 
     <p class="govuk-body"><strong>Recall type:</strong>
-            {{ sentenceType.recallType.type | replace("_", " ") }}
+        {{ sentenceType.recallType.type | replace("_", " ") }}
     </p>
     {% if sentenceType.recallType %}
         <div class="govuk-inset-text">
@@ -43,49 +43,7 @@
         </div>
     {% endif %}
 
-
-    <p class="govuk-body"><strong>Active in NOMIS:</strong>{{"Yes" if sentenceType.nomisActive else "No" }}
-    </p>
-
-    {% if sentenceType.nomisExpiryDate %}
-        <p class="govuk-body"><strong>Expiry date:</strong> {{ sentenceType.nomisExpiryDate }}</p>
-    {% endif %}
-
-    {% if sentenceType.eligibility %}
-        <h3 class="govuk-heading-s govuk-!-margin-top-5">Eligibility</h3>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>SDS+: {{ sentenceType.eligibility.sdsPlusEligibilityType or "Not specified" }}</li>
-            <li>TORERA: {{ sentenceType.eligibility.toreraEligibilityType or "Not specified" }}</li>
-        </ul>
-    {% endif %}
-
-    <h3 class="govuk-heading-s govuk-!-margin-top-5">Term types in NOMIS</h3>
-    <ul class="govuk-list govuk-list--bullet">
-        {% for termCode, termDesc in sentenceType.nomisTermTypes %}
-            <li>{{ termCode }} – {{ termDesc }}</li>
-        {% endfor %}
-    </ul>
-
-    {% if sentenceType.classificationPeriodDefinition %}
-
-
-
-        <h3 class="govuk-heading-s govuk-!-margin-top-5">Period definitions</h3>
-        {% for period in sentenceType.classificationPeriodDefinition.periodDefinitions %}
-            <div class="govuk-inset-text govuk-!-margin-bottom-5">
-                <p class="govuk-body"><strong>Period type:</strong> {{ period.type }}</p>
-
-                {% if period.periodLength.description %}
-                    <p class="govuk-body"><strong>Description:</strong> {{ period.periodLength.description }}</p>
-                {% endif %}
-
-                {% if period.periodLength.years %}
-                    <p class="govuk-body"><strong>Length:</strong> {{ period.periodLength.years }} years</p>
-                {% endif %}
-
-                <p class="govuk-body"><strong>Auto-calculated:</strong>{{"Yes" if period.auto else "No"  }}
-                </p>
-            </div>
-        {% endfor %}
-    {% endif %}
+    {% include "partials/sentence-type-detail/remand-and-sentencing.njk" %}
+    {% include "partials/sentence-type-detail/calculate-release-dates.njk" %}
+    {% include "partials/sentence-type-detail/nomis.njk" %}
 </div>

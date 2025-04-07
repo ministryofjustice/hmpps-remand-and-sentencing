@@ -1,0 +1,76 @@
+{% from "moj/components/timeline/macro.njk" import mojTimeline %}
+
+{% if sentenceType.inputSentenceType or sentenceType.classificationPeriodDefinition %}
+    <h2 class="govuk-heading-m">Remand and Sentencing</h2>
+
+    {% if sentenceType.inputSentenceType %}
+    <h3 class="govuk-heading-s">Sentence Detail</h3>
+    <div class="sentence-type-detail-panel">
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    <strong>Applies to offenders aged:</strong>
+                    {% if sentenceType.inputSentenceType.minAgeInclusive %}
+                        {{ sentenceType.inputSentenceType.minAgeInclusive }}
+                    {% endif %}
+                    {% if sentenceType.inputSentenceType.maxAgeExclusive %}
+                        to age {{ sentenceType.inputSentenceType.maxAgeExclusive }}
+                    {% else %}
+                        with no upper age limit
+                    {% endif %}
+                </li>
+
+                <li>
+                    <strong>Applies to Sentences imposed:</strong>
+                    {% if sentenceType.inputSentenceType.minDateInclusive %}
+                        after {{ sentenceType.inputSentenceType.minDateInclusive | formatDate }} and
+                    {% endif %}
+                    {% if sentenceType.inputSentenceType.maxDateExclusive %}
+                        before {{ sentenceType.inputSentenceType.maxDateExclusive | formatDate }}
+                    {% else %}
+                         still applies
+                    {% endif %}
+                </li>
+
+                <li>
+                    <strong>Applies to offences committed:</strong>
+                    {% if sentenceType.inputSentenceType.minOffenceDateInclusive %}
+                        after {{ sentenceType.inputSentenceType.minOffenceDateInclusive | formatDate }} and
+                    {% endif %}
+                    {% if sentenceType.inputSentenceType.maxOffenceDateExclusive %}
+                         before {{ sentenceType.inputSentenceType.maxOffenceDateExclusive | formatDate }}
+                    {% else %}
+                        still applies
+                    {% endif %}
+                </li>
+
+                <li><strong>NOMIS CJA Code:</strong> {{ sentenceType.inputSentenceType.nomisCjaCode }}</li>
+                <li><strong>Sentence calculation type:</strong> {{ sentenceType.inputSentenceType.nomisSentenceCalcType }}</li>
+                {% if sentenceType.inputSentenceType.hintText %}
+                    <li><strong>Hint text:</strong> {{ sentenceType.inputSentenceType.hintText }}</li>
+                {% endif %}
+                <li><strong>Remand and Sentencing classification:</strong> {{ sentenceType.inputSentenceType.classification | replace("_", " ") }}</li>
+                <li><strong>Remand and Sentencing description:</strong> {{ sentenceType.inputSentenceType.description }}</li>
+            </ul>
+        {% endif %}
+    </div>
+    {% if sentenceType.classificationPeriodDefinition %}
+    <h3 class="govuk-heading-s govuk-!-margin-top-5">Period definitions</h3>
+
+            {% for period in sentenceType.classificationPeriodDefinition.periodDefinitions %}
+                <div class="govuk-inset-text govuk-!-margin-bottom-5">
+                    <p class="govuk-body"><strong>Period type:</strong> {{ period.type }}</p>
+
+                    {% if period.periodLength.description %}
+                        <p class="govuk-body"><strong>Description:</strong> {{ period.periodLength.description }}</p>
+                    {% endif %}
+
+                    {% if period.periodLength.years %}
+                        <p class="govuk-body"><strong>Length:</strong> {{ period.periodLength.years }} years</p>
+                    {% endif %}
+
+                    <p class="govuk-body"><strong>Auto-calculated:</strong> {{ "Yes" if period.auto else "No" }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+{% endif %}

@@ -21,7 +21,7 @@ context('Court Case Overall Conviction Date Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseOverallConvictionDatePage.continueButton().should('contain.text', 'Save and continue')
+    courtCaseOverallConvictionDatePage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {

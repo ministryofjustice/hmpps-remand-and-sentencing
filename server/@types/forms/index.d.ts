@@ -128,6 +128,10 @@ declare module 'forms' {
     consecutiveTo?: string
   }
 
+  export interface SentenceSelectCaseForm {
+    appearanceSelectedUuid?: string
+  }
+
   export interface CourtCaseAlternativeSentenceLengthForm {
     'firstSentenceLength-value'?: string
     'firstSentenceLength-period'?: string

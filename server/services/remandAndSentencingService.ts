@@ -2,6 +2,7 @@ import type { CourtAppearance, CourtCase } from 'models'
 import { Dayjs } from 'dayjs'
 import {
   AppearanceType,
+  CourtCases,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
   DraftCourtAppearance,
@@ -174,6 +175,12 @@ export default class RemandAndSentencingService {
   async getLegacySentenceType(nomisSentenceTypeReference: string, username: string): Promise<LegacySentenceType[]> {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getLegacySentenceTypesDetail(
       nomisSentenceTypeReference,
+    )
+  }
+
+  async getSentencedCourtCases(prisonerId: string, username: string): Promise<CourtCases> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getSentencedCourtCases(
+      prisonerId,
     )
   }
 

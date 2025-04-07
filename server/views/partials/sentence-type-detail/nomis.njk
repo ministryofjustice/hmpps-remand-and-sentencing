@@ -1,0 +1,18 @@
+
+<h2 class="govuk-heading-m">NOMIS</h2>
+
+
+<p class="govuk-body"><strong>Active:</strong>{{"Yes" if sentenceType.nomisActive else "No" }}
+</p>
+
+{% if sentenceType.nomisExpiryDate %}
+    <p class="govuk-body"><strong>Expiry date:</strong> {{ sentenceType.nomisExpiryDate }}</p>
+{% endif %}
+
+
+<h3 class="govuk-heading-s govuk-!-margin-top-5">Term types</h3>
+<ul class="govuk-list govuk-list--bullet">
+    {% for termCode, termDesc in sentenceType.nomisTermTypes %}
+        <li>{{ termCode }} – {{ termDesc }}</li>
+    {% endfor %}
+</ul>

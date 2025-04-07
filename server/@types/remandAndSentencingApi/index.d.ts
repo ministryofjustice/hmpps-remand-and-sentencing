@@ -925,7 +925,9 @@ export interface paths {
     trace?: never
   }
 }
+
 export type webhooks = Record<string, never>
+
 export interface components {
   schemas: {
     CreateRecall: {
@@ -1559,7 +1561,7 @@ export interface components {
       sentencingAct: number
       eligibility?: components['schemas']['SentenceEligibility']
       recallType: components['schemas']['RecallType']
-      inputSentenceType?: components['schemas']['SentenceType']
+      inputSentenceType?: components['schemas']['SentenceTypeDetail']
       nomisActive: boolean
       nomisDescription: string
       /** Format: date */
@@ -1600,6 +1602,44 @@ export interface components {
       toreraEligibilityType?: 'NONE' | 'SOPC' | 'SDS'
       /** @enum {string} */
       sdsPlusEligibilityType?: 'NONE' | 'SECTION250' | 'SDS'
+    }
+    SentenceTypeDetail: {
+      /** Format: uuid */
+      sentenceTypeUuid: string
+      description: string
+      /** Format: int32 */
+      minAgeInclusive?: number
+      /** Format: int32 */
+      maxAgeExclusive?: number
+      /** Format: date */
+      minDateInclusive?: string
+      /** Format: date */
+      maxDateExclusive?: string
+      /** Format: date */
+      minOffenceDateInclusive?: string
+      /** Format: date */
+      maxOffenceDateExclusive?: string
+      /** @enum {string} */
+      classification:
+        | 'STANDARD'
+        | 'EXTENDED'
+        | 'SOPC'
+        | 'INDETERMINATE'
+        | 'BOTUS'
+        | 'CIVIL'
+        | 'DTO'
+        | 'FINE'
+        | 'LEGACY'
+        | 'NON_CUSTODIAL'
+        | 'LEGACY_RECALL'
+        | 'UNKNOWN'
+      hintText?: string
+      nomisCjaCode: string
+      nomisSentenceCalcType: string
+      /** Format: int32 */
+      displayOrder: number
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE'
     }
     SentenceTypePeriodDefinitions: {
       periodDefinitions: components['schemas']['Period'][]
@@ -1667,10 +1707,10 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
@@ -1707,7 +1747,9 @@ export interface components {
   headers: never
   pathItems: never
 }
+
 export type $defs = Record<string, never>
+
 export interface operations {
   getRecall: {
     parameters: {

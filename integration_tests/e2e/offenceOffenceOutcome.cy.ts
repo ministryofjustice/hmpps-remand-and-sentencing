@@ -1,4 +1,5 @@
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
+import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import Page from '../pages/page'
 
@@ -9,6 +10,8 @@ context('Add Offence Outcome Page', () => {
     cy.task('happyPathStubs')
     cy.task('stubGetAllChargeOutcomes')
     cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetOffenceByCode', {})
+    cy.task('stubGetOffencesByCodes', {})
     cy.signIn()
   })
 
@@ -41,6 +44,10 @@ context('Add Offence Outcome Page', () => {
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
       courtCaseWarrantTypePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
+      const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+      offenceOffenceCodePage.input().type('PS90037')
+      offenceOffenceCodePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
       offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
@@ -100,6 +107,10 @@ context('Add Offence Outcome Page', () => {
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
+      const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+      offenceOffenceCodePage.input().type('PS90037')
+      offenceOffenceCodePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
       offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,

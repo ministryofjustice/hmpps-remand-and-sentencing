@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class OffenceReviewOffencesPage extends Page {
   constructor() {
-    super('Review offences')
+    super('Update offence outcomes')
   }
 
   addAnotherButton = (): PageElement => cy.get('[data-qa="addAnotherOffence"]')

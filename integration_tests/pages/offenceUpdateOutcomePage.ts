@@ -6,6 +6,4 @@ export default class OffenceUpdateOutcomePage extends Page {
   }
 
   radios = (): PageElement => cy.get('.govuk-radios')
-
-  offenceParagraph = (): PageElement => cy.get('[data-qa=offenceParagraph]')
 }

@@ -68,6 +68,10 @@ context('Add Offence Outcome Page', () => {
       offenceOffenceOutcomePage.continueButton().should('contain.text', 'Continue')
     })
 
+    it('displays offence paragraph', () => {
+      offenceOffenceOutcomePage.offenceParagraph().should('contain.text', 'PS90037 - An offence description')
+    })
+
     it('submitting without selecting anything results in an error', () => {
       offenceOffenceOutcomePage.continueButton().click()
       offenceOffenceOutcomePage
@@ -136,6 +140,10 @@ context('Add Offence Outcome Page', () => {
             checked: false,
           },
         ]))
+
+    it('displays offence paragraph', () => {
+      offenceOffenceOutcomePage.offenceParagraph().should('contain.text', 'PS90037 - An offence description')
+    })
 
     it('selects the correct radio button if in review mode', () => {
       verifyReviewMode('Imprisonment')

@@ -23,4 +23,8 @@ context('Task List Page', () => {
     courtCaseTaskListPage.submitDraftButton().should('not.exist')
     courtCaseTaskListPage.saveDraftParagraph().should('not.exist')
   })
+
+  it('back link does not exist', () => {
+    courtCaseTaskListPage.backLink().should('not.exist')
+  })
 })

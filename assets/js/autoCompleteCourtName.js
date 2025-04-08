@@ -22,6 +22,8 @@ window.addEventListener('load', function () {
     onConfirm: function (confirmed) {
       if (confirmed && confirmed.courtId) {
         document.getElementById('court-code').value = confirmed.courtId
+      } else {
+        document.getElementById('court-code').value = ''
       }
     },
     templates: {

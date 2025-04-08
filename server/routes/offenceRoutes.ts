@@ -294,9 +294,11 @@ export default class OffenceRoutes {
         offenceOutcome: offence.outcomeUuid,
       }
     }
-
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    const caseOutcomes = await this.offenceOutcomeService.getAllOutcomes(req.user.username)
+    const [caseOutcomes, offenceDetails] = await Promise.all([
+      this.offenceOutcomeService.getAllOutcomes(req.user.username),
+      this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.token),
+    ])
 
     const [warrantTypeOutcomes, nonCustodialOutcomes] = caseOutcomes
       .filter(caseOutcome => caseOutcome.outcomeType === warrantType || caseOutcome.outcomeType === 'NON_CUSTODIAL')
@@ -345,6 +347,7 @@ export default class OffenceRoutes {
       warrantTypeOutcomes,
       nonCustodialOutcomes,
       legacyCaseOutcome,
+      offenceDetails,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }

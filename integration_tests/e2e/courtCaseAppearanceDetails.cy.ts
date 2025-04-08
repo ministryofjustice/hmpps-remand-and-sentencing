@@ -337,6 +337,7 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('can edit offence outcome and return back to details page', () => {
+      cy.task('stubGetOffenceByCode', {})
       cy.task('stubGetAllChargeOutcomes')
       courtCaseAppearanceDetailsPage
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '1')

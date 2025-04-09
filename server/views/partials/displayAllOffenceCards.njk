@@ -1,0 +1,39 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+
+{% for offence in offences %}
+    {{ offenceCard({
+        offenceCode: offence.offenceCode,
+        offenceName: offenceMap[offence.offenceCode],
+        offenceStartDate: offence.offenceStartDate | formatDate,
+        offenceEndDate: offence.offenceEndDate | formatDate,
+        outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
+        countNumber: offence.sentence.countNumber,
+        convictionDate: offence.sentence.convictionDate | formatDate,
+        terrorRelated: offence.terrorRelated,
+        isSentenced: offence.sentence,
+        periodLengths: offence.sentence.periodLengths,
+        sentenceServeType: offence.sentence.sentenceServeType,
+        consecutiveTo: offence.sentence.consecutiveTo,
+        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+        fineAmount: offence.sentence.fineAmount,
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/edit-offence",
+                    text: "Edit",
+                    visuallyHiddenText: "edit offence"
+                },
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/delete-offence",
+                    text: "Delete",
+                    visuallyHiddenText: "delete offence"
+                }
+            ]
+        }
+    }) }}
+{% else %}
+    {{ govukInsetText({
+                text: "No offences have been added to this appearance."
+    }) }}
+{% endfor %}

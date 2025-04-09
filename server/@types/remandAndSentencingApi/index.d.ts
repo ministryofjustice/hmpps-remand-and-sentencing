@@ -604,6 +604,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/person/{prisonerId}/sentenced-court-cases': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve all sentenced court cases for prisoner
+     * @description This endpoint will retrieve all sentenced court cases for prisoner
+     */
+    get: operations['getSentencedCourtCases']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/sentence-type/summary': {
     parameters: {
       query?: never
@@ -732,8 +752,8 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Retrieve all court cases for person (that have appearances)
-     * @description This endpoint will retrieve all court cases (that have appearances) for a person
+     * Retrieve all court cases for person (where each court case has at least one appearance in the past)
+     * @description This endpoint will retrieve all court cases for a person (where each court case has at least one appearance in the past - i.e. there exists a latest court appearance)
      */
     get: operations['searchCourtCases']
     put?: never
@@ -1383,182 +1403,6 @@ export interface components {
       pncNumber?: string
       status?: string
     }
-    LegacyPeriodLength: {
-      /** Format: int32 */
-      periodYears?: number
-      /** Format: int32 */
-      periodMonths?: number
-      /** Format: int32 */
-      periodWeeks?: number
-      /** Format: int32 */
-      periodDays?: number
-      isLifeSentence?: boolean
-      sentenceTermCode: string
-      /** Format: uuid */
-      periodLengthUuid: string
-    }
-    LegacySentence: {
-      prisonerId: string
-      courtCaseId: string
-      /** Format: uuid */
-      chargeLifetimeUuid: string
-      /** Format: uuid */
-      lifetimeUuid: string
-      /** Format: uuid */
-      appearanceUuid: string
-      active: boolean
-      sentenceCalcType: string
-      sentenceCategory: string
-      /** Format: uuid */
-      consecutiveToLifetimeUuid?: string
-      chargeNumber?: string
-      fineAmount?: number
-      periodLengths: components['schemas']['LegacyPeriodLength'][]
-      /** Format: date */
-      sentenceStartDate: string
-    }
-    LegacySentenceTypeGroupingSummary: {
-      nomisSentenceTypeReference: string
-      nomisDescription: string
-      isIndeterminate: boolean
-      recall: components['schemas']['RecallType']
-      nomisActive: boolean
-      /** Format: date */
-      nomisExpiryDate?: string
-    }
-    RecallType: {
-      isRecall: boolean
-      type: string
-      isFixedTermRecall: boolean
-      /** Format: int32 */
-      lengthInDays: number
-    }
-    LegacySentenceType: {
-      nomisSentenceTypeReference: string
-      /** @enum {string} */
-      classification:
-        | 'STANDARD'
-        | 'EXTENDED'
-        | 'SOPC'
-        | 'INDETERMINATE'
-        | 'BOTUS'
-        | 'CIVIL'
-        | 'DTO'
-        | 'FINE'
-        | 'LEGACY'
-        | 'NON_CUSTODIAL'
-        | 'LEGACY_RECALL'
-        | 'UNKNOWN'
-      classificationPeriodDefinition?: components['schemas']['SentenceTypePeriodDefinitions']
-      /** Format: int32 */
-      sentencingAct: number
-      eligibility?: components['schemas']['SentenceEligibility']
-      recallType: components['schemas']['RecallType']
-      inputSentenceType?: components['schemas']['SentenceType']
-      nomisActive: boolean
-      nomisDescription: string
-      /** Format: date */
-      nomisExpiryDate?: string
-      nomisTermTypes: {
-        [key: string]: string
-      }
-    }
-    Period: {
-      /** @enum {string} */
-      type:
-        | 'SENTENCE_LENGTH'
-        | 'CUSTODIAL_TERM'
-        | 'LICENCE_PERIOD'
-        | 'TARIFF_LENGTH'
-        | 'TERM_LENGTH'
-        | 'OVERALL_SENTENCE_LENGTH'
-        | 'UNSUPPORTED'
-      auto: boolean
-      periodLength?: components['schemas']['PeriodLengthDetail']
-    }
-    PeriodLengthDetail: {
-      years: string
-      periodOrder: string[]
-      /** @enum {string} */
-      periodLengthType:
-        | 'SENTENCE_LENGTH'
-        | 'CUSTODIAL_TERM'
-        | 'LICENCE_PERIOD'
-        | 'TARIFF_LENGTH'
-        | 'TERM_LENGTH'
-        | 'OVERALL_SENTENCE_LENGTH'
-        | 'UNSUPPORTED'
-      description: string
-    }
-    SentenceEligibility: {
-      /** @enum {string} */
-      toreraEligibilityType?: 'NONE' | 'SOPC' | 'SDS'
-      /** @enum {string} */
-      sdsPlusEligibilityType?: 'NONE' | 'SECTION250' | 'SDS'
-    }
-    SentenceTypePeriodDefinitions: {
-      periodDefinitions: components['schemas']['Period'][]
-    }
-    LegacyCourtCase: {
-      courtCaseUuid: string
-      prisonerId: string
-      active: boolean
-      /** Format: date */
-      startDate?: string
-      courtId?: string
-      caseReference?: string
-      caseReferences: components['schemas']['CaseReferenceLegacyData'][]
-    }
-    LegacyCharge: {
-      prisonerId: string
-      courtCaseUuid: string
-      /** Format: uuid */
-      lifetimeUuid: string
-      nomisOutcomeCode?: string
-      offenceCode: string
-      /** Format: date */
-      offenceStartDate?: string
-      /** Format: date */
-      offenceEndDate?: string
-      legacyData?: components['schemas']['ChargeLegacyData']
-    }
-    LegacyCourtAppearance: {
-      /** Format: uuid */
-      lifetimeUuid: string
-      courtCaseUuid: string
-      prisonerId: string
-      nomisOutcomeCode?: string
-      courtCode: string
-      /** Format: date */
-      appearanceDate: string
-      /** @example 14:30:00 */
-      appearanceTime: string
-      charges: components['schemas']['LegacyCharge'][]
-      nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
-    }
-    LegacyNextCourtAppearance: {
-      /** Format: date */
-      appearanceDate: string
-      /** @example 14:30:00 */
-      appearanceTime?: string
-      courtId: string
-    }
-    TestCourtCase: {
-      courtCaseUuid: string
-      prisonerId: string
-      active: boolean
-      /** Format: date */
-      startDate?: string
-      courtId?: string
-      caseReference?: string
-      caseReferences: components['schemas']['CaseReferenceLegacyData'][]
-      appearances: components['schemas']['LegacyCourtAppearance'][]
-    }
-    DraftCourtAppearance: {
-      /** Format: uuid */
-      draftUuid: string
-      sessionBlob: components['schemas']['JsonNode']
-    }
     AppearanceType: {
       /** Format: uuid */
       appearanceTypeUuid: string
@@ -1630,6 +1474,14 @@ export interface components {
       legacyData?: components['schemas']['CourtCaseLegacyData']
       draftAppearances: components['schemas']['DraftCourtAppearance'][]
     }
+    CourtCases: {
+      courtCases: components['schemas']['CourtCase'][]
+    }
+    DraftCourtAppearance: {
+      /** Format: uuid */
+      draftUuid: string
+      sessionBlob: components['schemas']['JsonNode']
+    }
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
@@ -1637,6 +1489,215 @@ export interface components {
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
+    }
+    LegacyPeriodLength: {
+      /** Format: int32 */
+      periodYears?: number
+      /** Format: int32 */
+      periodMonths?: number
+      /** Format: int32 */
+      periodWeeks?: number
+      /** Format: int32 */
+      periodDays?: number
+      isLifeSentence?: boolean
+      sentenceTermCode: string
+      /** Format: uuid */
+      periodLengthUuid: string
+    }
+    LegacySentence: {
+      prisonerId: string
+      courtCaseId: string
+      /** Format: uuid */
+      chargeLifetimeUuid: string
+      /** Format: uuid */
+      lifetimeUuid: string
+      /** Format: uuid */
+      appearanceUuid: string
+      active: boolean
+      sentenceCalcType: string
+      sentenceCategory: string
+      /** Format: uuid */
+      consecutiveToLifetimeUuid?: string
+      chargeNumber?: string
+      fineAmount?: number
+      periodLengths: components['schemas']['LegacyPeriodLength'][]
+      /** Format: date */
+      sentenceStartDate: string
+    }
+    LegacySentenceTypeGroupingSummary: {
+      nomisSentenceTypeReference: string
+      nomisDescription: string
+      isIndeterminate: boolean
+      recall: components['schemas']['RecallType']
+      nomisActive: boolean
+      /** Format: date */
+      nomisExpiryDate?: string
+    }
+    RecallType: {
+      isRecall: boolean
+      type: string
+      isFixedTermRecall: boolean
+      /** Format: int32 */
+      lengthInDays: number
+    }
+    LegacySentenceType: {
+      nomisSentenceTypeReference: string
+      /** @enum {string} */
+      classification:
+        | 'STANDARD'
+        | 'EXTENDED'
+        | 'SOPC'
+        | 'INDETERMINATE'
+        | 'BOTUS'
+        | 'CIVIL'
+        | 'DTO'
+        | 'FINE'
+        | 'LEGACY'
+        | 'NON_CUSTODIAL'
+        | 'LEGACY_RECALL'
+        | 'UNKNOWN'
+      classificationPeriodDefinition?: components['schemas']['SentenceTypePeriodDefinitions']
+      /** Format: int32 */
+      sentencingAct: number
+      eligibility?: components['schemas']['SentenceEligibility']
+      recallType: components['schemas']['RecallType']
+      inputSentenceType?: components['schemas']['SentenceTypeDetail']
+      nomisActive: boolean
+      nomisDescription: string
+      /** Format: date */
+      nomisExpiryDate?: string
+      nomisTermTypes: {
+        [key: string]: string
+      }
+    }
+    Period: {
+      /** @enum {string} */
+      type:
+        | 'SENTENCE_LENGTH'
+        | 'CUSTODIAL_TERM'
+        | 'LICENCE_PERIOD'
+        | 'TARIFF_LENGTH'
+        | 'TERM_LENGTH'
+        | 'OVERALL_SENTENCE_LENGTH'
+        | 'UNSUPPORTED'
+      auto: boolean
+      periodLength?: components['schemas']['PeriodLengthDetail']
+    }
+    PeriodLengthDetail: {
+      years: string
+      periodOrder: string[]
+      /** @enum {string} */
+      periodLengthType:
+        | 'SENTENCE_LENGTH'
+        | 'CUSTODIAL_TERM'
+        | 'LICENCE_PERIOD'
+        | 'TARIFF_LENGTH'
+        | 'TERM_LENGTH'
+        | 'OVERALL_SENTENCE_LENGTH'
+        | 'UNSUPPORTED'
+      description: string
+    }
+    SentenceEligibility: {
+      /** @enum {string} */
+      toreraEligibilityType?: 'NONE' | 'SOPC' | 'SDS'
+      /** @enum {string} */
+      sdsPlusEligibilityType?: 'NONE' | 'SECTION250' | 'SDS'
+    }
+    SentenceTypeDetail: {
+      /** Format: uuid */
+      sentenceTypeUuid: string
+      description: string
+      /** Format: int32 */
+      minAgeInclusive?: number
+      /** Format: int32 */
+      maxAgeExclusive?: number
+      /** Format: date */
+      minDateInclusive?: string
+      /** Format: date */
+      maxDateExclusive?: string
+      /** Format: date */
+      minOffenceDateInclusive?: string
+      /** Format: date */
+      maxOffenceDateExclusive?: string
+      /** @enum {string} */
+      classification:
+        | 'STANDARD'
+        | 'EXTENDED'
+        | 'SOPC'
+        | 'INDETERMINATE'
+        | 'BOTUS'
+        | 'CIVIL'
+        | 'DTO'
+        | 'FINE'
+        | 'LEGACY'
+        | 'NON_CUSTODIAL'
+        | 'LEGACY_RECALL'
+        | 'UNKNOWN'
+      hintText?: string
+      nomisCjaCode: string
+      nomisSentenceCalcType: string
+      /** Format: int32 */
+      displayOrder: number
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE'
+    }
+    SentenceTypePeriodDefinitions: {
+      periodDefinitions: components['schemas']['Period'][]
+    }
+    LegacyCourtCase: {
+      courtCaseUuid: string
+      prisonerId: string
+      active: boolean
+      /** Format: date */
+      startDate?: string
+      courtId?: string
+      caseReference?: string
+      caseReferences: components['schemas']['CaseReferenceLegacyData'][]
+    }
+    LegacyCharge: {
+      prisonerId: string
+      courtCaseUuid: string
+      /** Format: uuid */
+      lifetimeUuid: string
+      nomisOutcomeCode?: string
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string
+      /** Format: date */
+      offenceEndDate?: string
+      legacyData?: components['schemas']['ChargeLegacyData']
+    }
+    LegacyCourtAppearance: {
+      /** Format: uuid */
+      lifetimeUuid: string
+      courtCaseUuid: string
+      prisonerId: string
+      nomisOutcomeCode?: string
+      courtCode: string
+      /** Format: date */
+      appearanceDate: string
+      /** @example 14:30:00 */
+      appearanceTime: string
+      charges: components['schemas']['LegacyCharge'][]
+      nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
+    }
+    LegacyNextCourtAppearance: {
+      /** Format: date */
+      appearanceDate: string
+      /** @example 14:30:00 */
+      appearanceTime?: string
+      courtId: string
+    }
+    TestCourtCase: {
+      courtCaseUuid: string
+      prisonerId: string
+      active: boolean
+      /** Format: date */
+      startDate?: string
+      courtId?: string
+      caseReference?: string
+      caseReferences: components['schemas']['CaseReferenceLegacyData'][]
+      appearances: components['schemas']['LegacyCourtAppearance'][]
     }
     Pageable: {
       /** Format: int32 */
@@ -1646,10 +1707,10 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
@@ -1838,8 +1899,8 @@ export interface operations {
       }
     }
     responses: {
-      /** @description sentence updated */
-      200: {
+      /** @description No content */
+      204: {
         headers: {
           [name: string]: unknown
         }
@@ -1959,8 +2020,8 @@ export interface operations {
       }
     }
     responses: {
-      /** @description court case updated */
-      200: {
+      /** @description No content */
+      204: {
         headers: {
           [name: string]: unknown
         }
@@ -2081,7 +2142,7 @@ export interface operations {
     }
     responses: {
       /** @description court appearance updated */
-      200: {
+      204: {
         headers: {
           [name: string]: unknown
         }
@@ -2194,8 +2255,8 @@ export interface operations {
       }
     }
     responses: {
-      /** @description OK */
-      200: {
+      /** @description No content */
+      204: {
         headers: {
           [name: string]: unknown
         }
@@ -2307,8 +2368,8 @@ export interface operations {
       }
     }
     responses: {
-      /** @description charge updated */
-      200: {
+      /** @description No content */
+      204: {
         headers: {
           [name: string]: unknown
         }
@@ -2380,8 +2441,8 @@ export interface operations {
       }
     }
     responses: {
-      /** @description charge updated */
-      200: {
+      /** @description No content */
+      204: {
         headers: {
           [name: string]: unknown
         }
@@ -2459,7 +2520,7 @@ export interface operations {
     }
     responses: {
       /** @description court appearance updated */
-      200: {
+      204: {
         headers: {
           [name: string]: unknown
         }
@@ -2632,7 +2693,7 @@ export interface operations {
       }
     }
     responses: {
-      /** @description No Content */
+      /** @description No content */
       204: {
         headers: {
           [name: string]: unknown
@@ -3436,6 +3497,46 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PersonDetails']
+        }
+      }
+    }
+  }
+  getSentencedCourtCases: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns sentenced court cases */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtCases']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtCases']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtCases']
         }
       }
     }

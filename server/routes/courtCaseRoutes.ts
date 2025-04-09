@@ -505,7 +505,7 @@ export default class CourtCaseRoutes {
       }
 
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?backTo=SELECT`,
       )
     }
     const { submitToCheckAnswers } = req.query
@@ -591,7 +591,7 @@ export default class CourtCaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?backTo=NAME`,
     )
   }
 
@@ -806,17 +806,14 @@ export default class CourtCaseRoutes {
 
   public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers, backNav } = req.query
+    const { submitToCheckAnswers, backTo } = req.query
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
-    if (backNav) {
-      return res.redirect(backLink)
-    }
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-    } else if (addOrEditCourtCase === 'edit-court-case') {
+    } else if (backTo === 'SELECT') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-court-name`
     }
 
@@ -1133,6 +1130,7 @@ export default class CourtCaseRoutes {
           this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
         )
     }
+    this.courtAppearanceService.setHasOverallSentenceLengthTrue(req.session, nomsId)
     return res.render('pages/courtAppearance/alternative-sentence-length', {
       nomsId,
       courtCaseReference,
@@ -1141,6 +1139,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       submitToCheckAnswers,
       courtCaseAlternativeSentenceLengthForm,
+      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
     })
@@ -1173,7 +1172,7 @@ export default class CourtCaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date`,
     )
   }
 

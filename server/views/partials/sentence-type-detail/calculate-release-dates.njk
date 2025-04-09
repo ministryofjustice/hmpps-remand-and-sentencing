@@ -1,0 +1,12 @@
+
+{% if sentenceType.eligibility %}
+<h2 class="govuk-heading-m">Calculate Release Dates</h2>
+{% endif %}
+
+{% if sentenceType.eligibility %}
+    <h3 class="govuk-heading-s govuk-!-margin-top-5">Eligibility</h3>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>SDS+: {{ sentenceType.eligibility.sdsPlusEligibilityType or "Not specified" }}</li>
+        <li>TORERA: {{ sentenceType.eligibility.toreraEligibilityType or "Not specified" }}</li>
+    </ul>
+{% endif %}

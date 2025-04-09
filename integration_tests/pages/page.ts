@@ -76,4 +76,6 @@ export default abstract class Page {
     cy.get(
       `a[href="/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/${page}?submitToCheckAnswers=true"]:first`,
     )
+
+  offenceParagraph = (): PageElement => cy.get('[data-qa=offenceParagraph]')
 }

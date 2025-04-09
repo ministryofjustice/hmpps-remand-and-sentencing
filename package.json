@@ -96,7 +96,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.777.0",
+    "@aws-sdk/client-sqs": "^3.782.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.6",
     "@microsoft/applicationinsights-web": "^3.3.6",
     "@ministryofjustice/frontend": "^4.0.1",
@@ -176,7 +176,7 @@
     "openapi-typescript": "^7.6.1",
     "prettier": "^3.5.3",
     "prettier-plugin-jinja-template": "^2.0.0",
-    "sass": "^1.86.2",
+    "sass": "^1.86.3",
     "supertest": "^7.1.0",
     "ts-jest": "^29.3.1",
     "typescript": "^5.8.3"

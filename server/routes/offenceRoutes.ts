@@ -1662,7 +1662,8 @@ export default class OffenceRoutes {
 
   public getReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const { offences } = courtAppearance
 
     const sentenceTypeIds = Array.from(
       new Set(
@@ -1672,19 +1673,32 @@ export default class OffenceRoutes {
     const offenceCodes = Array.from(new Set(offences.map(offence => offence.offenceCode)))
     const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
 
-    const [offenceMap, sentenceTypeMap, outcomeMap] = await Promise.all([
+    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison] = await Promise.all([
       this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
+      this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
     ])
-    const [changedOffences, unchangedOffences] = offences.reduce(
-      ([changedList, unchangedList], offence, index) => {
-        return offence.updatedOutcome
-          ? [[...changedList, { ...offence, index }], unchangedList]
-          : [changedList, [...unchangedList, { ...offence, index }]]
+
+    // Categorize offences
+    const [unchangedOffences, custodialChangedOffences, nonCustodialChangedOffences] = await offences.reduce(
+      async (accPromise, offence, index) => {
+        const [unchangedList, custodialList, nonCustodialList] = await accPromise
+
+        if (offence.updatedOutcome && offence.outcomeUuid) {
+          const outcomeType = await this.getOutcomeType(offence.outcomeUuid, req.user.username)
+          if (outcomeType === 'SENTENCING') {
+            return [unchangedList, [...custodialList, { ...offence, index }], nonCustodialList]
+          }
+          if (outcomeType === 'NON_CUSTODIAL') {
+            return [unchangedList, custodialList, [...nonCustodialList, { ...offence, index }]]
+          }
+        }
+        return [[...unchangedList, { ...offence, index }], custodialList, nonCustodialList]
       },
-      [[], []],
+      Promise.resolve([[], [], []] as [Offence[], Offence[], Offence[]]),
     )
+
     return res.render('pages/offence/review-offences', {
       nomsId,
       courtCaseReference,
@@ -1693,21 +1707,80 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
       offenceMap,
       sentenceTypeMap,
-      changedOffences,
       unchangedOffences,
+      custodialChangedOffences,
+      nonCustodialChangedOffences,
       outcomeMap,
+      courtAppearance,
+      overallSentenceLengthComparison,
+      errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
+  }
+
+  private async getOutcomeType(outcomeUuid: string, username: string): Promise<string | undefined> {
+    if (!outcomeUuid) {
+      return undefined
+    }
+    const outcome = await this.offenceOutcomeService.getOutcomeById(outcomeUuid, username)
+    console.log(`Outcome for UUID ${outcomeUuid}:`, outcome)
+    return outcome?.outcomeType
   }
 
   public submitReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)
+
+    // Validate the form
+    const errors = validate(
+      reviewOffenceForm,
+      {
+        changeOffence: 'required',
+      },
+      {
+        'required.changeOffence': 'Select whether you have finished reviewing offences.',
+      },
+    )
+
+    if (errors.length > 0) {
+      // Re-render the page with errors
+      return res.render('pages/offence/review-offences', {
+        nomsId,
+        courtCaseReference,
+        appearanceReference,
+        addOrEditCourtCase,
+        addOrEditCourtAppearance,
+        errors,
+        csrfToken: req.csrfToken(),
+        courtAppearance: this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId),
+      })
+    }
+
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+
+    if (reviewOffenceForm.changeOffence === 'true' && courtAppearance.hasOverallSentenceLength) {
+      const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
+        courtAppearance,
+        req.user.username,
+      )
+      if (
+        overallSentenceComparison.custodialLengthMatches === false ||
+        overallSentenceComparison.licenseLengthMatches === false
+      ) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/sentence-length-mismatch`,
+        )
+      }
+    } else if (reviewOffenceForm.changeOffence === 'false') {
+      this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, false)
+    }
+
     this.courtAppearanceService.setOffenceSentenceAccepted(
       req.session,
       nomsId,
       reviewOffenceForm.changeOffence === 'true',
     )
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
@@ -1739,6 +1812,7 @@ export default class OffenceRoutes {
     offenceReference: string,
   ) {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    // offence.updatedOutcome = true
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(

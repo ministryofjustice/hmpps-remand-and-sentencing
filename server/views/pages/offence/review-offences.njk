@@ -7,10 +7,9 @@
 {% set pageTitle = applicationName + " - Review offences" %}
 {% set hideOffences = true %}
 {% block pageContent %}
-            <h1 class="govuk-heading-l">Update offence outcomes</h1>
-
-            {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength === 'true' %}
-            {{ govukSummaryList({
+    <h1 class="govuk-heading-l">Update offence outcomes</h1>
+    {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength === 'true' %}
+        {{ govukSummaryList({
                 rows: [
                     {
                         key: {
@@ -33,9 +32,9 @@
                     "data-qa": "overallSentenceLengthComparison"
                 }
             }) }}
-        {% endif %}
-            
-            {{ govukButton({
+    {% endif %}
+
+    {{ govukButton({
                 text: "Add an offence" ,
                 classes: "govuk-button--link",
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
@@ -44,12 +43,10 @@
                 }
             }) }}
 
-             <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that need updating</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that need updating</h2>
 
-            {% for offence in unchangedOffences %}
-    <pre>{{ offence.actions | dump }}</pre> <!-- Debugging output for listItems -->
-
-    {{
+    {% for offence in unchangedOffences %}
+        {{
         offenceCard({
             offenceCode: offence.offenceCode,
             offenceName: offenceMap[offence.offenceCode],
@@ -82,14 +79,18 @@
 
         })
     }}
-{% endfor %}
-            
-            <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes</h2>
+    {% else %}
+        {{ govukInsetText({
+                    text: "There are no offences that need updating."
+                }) }}
+    {% endfor %}
 
-            <h3 class="govuk-heading-m govuk-!-margin-top-8">Offences with custodial outcomes</h3>
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes</h2>
 
-            {% for offence in changedOffences %}
-                {{
+    <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with custodial outcomes</h3>
+
+    {% for offence in custodialChangedOffences %}
+        {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
                         offenceName: offenceMap[offence.offenceCode],
@@ -115,16 +116,16 @@
                         }
                     })
                 }}
-            {% else %}
-                {{ govukInsetText({
+    {% else %}
+        {{ govukInsetText({
                     text: "There are no offences with custodial outcomes."
                 }) }}
-            {% endfor %}
+    {% endfor %}
 
-            <h3 class="govuk-heading-m govuk-!-margin-top-8">Offences with non-custodial outcomes</h3>
+    <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with non-custodial outcomes</h3>
 
-            {% for offence in changedOffences %}
-                {{
+    {% for offence in nonCustodialChangedOffences %}
+        {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
                         offenceName: offenceMap[offence.offenceCode],
@@ -150,18 +151,17 @@
                         }
                     })
                 }}
-            {% else %}
-                {{ govukInsetText({
+    {% else %}
+        {{ govukInsetText({
                     text: "There are no offences with non-custodial outcomes."
                 }) }}
-            {% endfor %}
+    {% endfor %}
 
-
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-review-offences">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-
-                {{ govukRadios({
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-review-offences">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {{ govukRadios({
                         name: "changeOffence",
+                        id: "changeOffence",
                         fieldset: {
                             legend: {
                             text: "Have you finished reviewing offences?",
@@ -169,6 +169,7 @@
                             classes: "govuk-fieldset__legend--m"
                             }
                         },
+                        errorMessage: errors | findError("changeOffence"),
                         items: [
                             {
                                 value: "true",
@@ -181,10 +182,10 @@
                         ]
                     }) }}
 
-                    {{ govukButton({
+        {{ govukButton({
                     text: "Continue",
                     attributes: {  'data-qa': 'continue-button' }
                 }) }}
-            </form>
+    </form>
 
 {% endblock %}

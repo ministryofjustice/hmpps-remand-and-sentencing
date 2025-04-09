@@ -1803,7 +1803,6 @@ export default class OffenceRoutes {
       return undefined
     }
     const outcome = await this.offenceOutcomeService.getOutcomeById(outcomeUuid, username)
-    console.log(`Outcome for UUID ${outcomeUuid}:`, outcome)
     return outcome?.outcomeType
   }
 

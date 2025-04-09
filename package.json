@@ -99,7 +99,7 @@
     "@aws-sdk/client-sqs": "^3.777.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.6",
     "@microsoft/applicationinsights-web": "^3.3.6",
-    "@ministryofjustice/frontend": "^4.0.1",
+    "@ministryofjustice/frontend": "^5.1.2",
     "@ministryofjustice/hmpps-court-cases-release-dates-design": "^4.4.3",
     "accessible-autocomplete": "3.0.1",
     "agentkeepalive": "^4.6.0",

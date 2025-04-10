@@ -15,6 +15,7 @@ import type {
   CourtCaseSelectReferenceForm,
   CourtCaseTaggedBailForm,
   CourtCaseWarrantDateForm,
+  OffenceCountNumberForm,
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
@@ -740,6 +741,29 @@ export default class CourtAppearanceService {
     }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  setCountNumber(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+    countNumberForm: OffenceCountNumberForm,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const sentence = offence.sentence ?? {}
+      sentence.hasCountNumber = countNumberForm.hasCountNumber
+      if (countNumberForm.hasCountNumber === 'true') {
+        sentence.countNumber = countNumberForm.countNumber
+      } else {
+        delete sentence.countNumber
+      }
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
   }
 
   deleteOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number) {

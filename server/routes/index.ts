@@ -49,16 +49,7 @@ export default function routes(services: Services): Router {
     services.courtRegisterService,
   )
 
-  const sentencingRoutes = new SentencingRoutes(
-    services.courtAppearanceService,
-    services.remandAndSentencingService,
-    services.manageOffencesService,
-    services.documentManagementService,
-    services.courtRegisterService,
-    services.appearanceOutcomeService,
-    services.offenceOutcomeService,
-    services.courtCasesReleaseDatesService,
-  )
+  const sentencingRoutes = new SentencingRoutes(services.courtAppearanceService)
 
   get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })

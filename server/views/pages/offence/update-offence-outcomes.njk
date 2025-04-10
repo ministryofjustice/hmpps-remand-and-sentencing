@@ -4,12 +4,12 @@
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
-{% set pageTitle = applicationName + " - Review offences" %}
+{% set pageTitle = applicationName + " - Update offence outcomes" %}
 {% set hideOffences = true %}
 {% block pageContent %}
         <h1 class="govuk-heading-l">Update offence outcomes</h1>
         <p> {{warrantType}} </p>
-    {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength === 'true' %}
+    {% if courtAppearance.hasOverallSentenceLength === 'true' %}
         {{ govukSummaryList({
                 rows: [
                     {
@@ -161,7 +161,7 @@
     <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-update-offence-outcomes">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {{ govukRadios({
-                        name: "changeOffence",
+                        name: "finishedReviewOffences",
                         fieldset: {
                             legend: {
                             text: "Have you finished reviewing offences?",
@@ -169,7 +169,7 @@
                             classes: "govuk-fieldset__legend--m"
                             }
                         },
-                        errorMessage: errors | findError("changeOffence"),
+                        errorMessage: errors | findError("finishedReviewOffences"),
                         items: [
                             {
                                 value: "true",

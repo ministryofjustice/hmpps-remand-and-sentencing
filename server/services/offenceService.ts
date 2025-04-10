@@ -13,6 +13,7 @@ import type {
   ReviewOffencesForm,
   SentenceLengthForm,
   SentenceSelectCaseForm,
+  UpdateOffenceOutcomesForm,
 } from 'forms'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
@@ -662,9 +663,9 @@ export default class OffenceService {
     return errors
   }
 
-  setReviewOffenceForm(reviewOffenceForm: ReviewOffencesForm) {
+  validateUpdateOffenceOutcomesForm(updateOffenceOutcomesForm: UpdateOffenceOutcomesForm) {
     const errors = validate(
-      reviewOffenceForm,
+      updateOffenceOutcomesForm,
       {
         changeOffence: 'required',
       },

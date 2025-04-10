@@ -17,6 +17,7 @@ import type {
   ReviewOffencesForm,
   SentenceLengthForm,
   SentenceSelectCaseForm,
+  UpdateOffenceOutcomesForm,
 } from 'forms'
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
@@ -1746,8 +1747,14 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
     }
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    if (warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+      )
+    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
   }
 
@@ -1829,14 +1836,7 @@ export default class OffenceRoutes {
         const [unchangedList, custodialList, nonCustodialList] = acc
 
         if (offence.updatedOutcome && offence.outcomeUuid) {
-          const outcomeName = outcomeMap[offence.outcomeUuid]
-          let outcomeType: string | undefined
-
-          if (outcomeName === 'Sentencing Outcome') {
-            outcomeType = 'SENTENCING'
-          } else if (outcomeName === 'Non-Custodial Outcome') {
-            outcomeType = 'NON_CUSTODIAL'
-          }
+          const outcomeType = outcomeMap[offence.outcomeUuid]
 
           if (outcomeType === 'SENTENCING') {
             return [unchangedList, [...custodialList, { ...offence, index }], nonCustodialList]
@@ -1874,9 +1874,9 @@ export default class OffenceRoutes {
 
   public submitUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)
+    const updateOffenceOutcomesForm = trimForm<UpdateOffenceOutcomesForm>(req.body)
 
-    const errors = this.offenceService.setReviewOffenceForm(reviewOffenceForm)
+    const errors = this.offenceService.validateUpdateOffenceOutcomesForm(updateOffenceOutcomesForm)
 
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -1887,7 +1887,7 @@ export default class OffenceRoutes {
 
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
-    if (reviewOffenceForm.changeOffence === 'true' && courtAppearance.hasOverallSentenceLength) {
+    if (updateOffenceOutcomesForm.finishedReviewOffences === 'true' && courtAppearance.hasOverallSentenceLength) {
       const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
         courtAppearance,
         req.user.username,
@@ -1900,14 +1900,12 @@ export default class OffenceRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/sentence-length-mismatch`,
         )
       }
-    } else if (reviewOffenceForm.changeOffence === 'false') {
-      this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, false)
     }
 
     this.courtAppearanceService.setOffenceSentenceAccepted(
       req.session,
       nomsId,
-      reviewOffenceForm.changeOffence === 'true',
+      updateOffenceOutcomesForm.finishedReviewOffences === 'true',
     )
 
     return res.redirect(

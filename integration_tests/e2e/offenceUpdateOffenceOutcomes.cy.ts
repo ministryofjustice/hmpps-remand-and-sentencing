@@ -4,7 +4,7 @@ import OffenceUpdateOffenceOutcomesPage from '../pages/offenceUpdateOffenceOutco
 import Page from '../pages/page'
 import StartPage from '../pages/startPage'
 
-context('Review Offences Page', () => {
+context('Updatge Offence Outcomes Page', () => {
   let offenceUpdateOffenceOutcomesPage: OffenceUpdateOffenceOutcomesPage
   beforeEach(() => {
     cy.task('happyPathStubs')

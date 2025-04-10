@@ -8,6 +8,7 @@ import OffenceRoutes from './offenceRoutes'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
 import sentenceTypeRoutes from './sentenceTypesRoutes'
+import SentencingRoutes from './sentencingRoutes'
 
 const upload = multer({ dest: 'uploads/' })
 export default function routes(services: Services): Router {
@@ -47,6 +48,8 @@ export default function routes(services: Services): Router {
     services.appearanceOutcomeService,
     services.courtRegisterService,
   )
+
+  const sentencingRoutes = new SentencingRoutes(services.courtAppearanceService)
 
   get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
@@ -534,6 +537,16 @@ export default function routes(services: Services): Router {
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/save-court-case',
     courtCaseRoutes.getDraftConfirmationPage,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/overall-sentence-length',
+    sentencingRoutes.getOverallSentenceLength,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-overall-sentence-length',
+    sentencingRoutes.submitOverallSentenceLength,
   )
 
   return router

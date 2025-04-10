@@ -666,10 +666,10 @@ export default class OffenceService {
     const errors = validate(
       updateOffenceOutcomesForm,
       {
-        finishedReviewOffences: 'required',
+        finishedReviewOffenceOutcomes: 'required',
       },
       {
-        'required.finishedReviewOffences': 'Select whether you have finished reviewing offences.',
+        'required.finishedReviewOffenceOutcomes': 'Select whether you have finished reviewing offences.',
       },
     )
 

@@ -15,13 +15,13 @@ context('Updatge Offence Outcomes Page', () => {
 
   context('Remand to Sentence', () => {
     beforeEach(() => {
-      cy.task('stubGetLatestCourtAppearanceWithSentencing')
+      cy.task('stubGetLatestCourtAppearance')
       cy.task('stubGetOffencesByCodes', {})
       cy.task('stubGetChargeOutcomesByIds', [
         {
-          outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
-          outcomeName: 'Imprisonment',
-          outcomeType: 'SENTENCING',
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
         },
       ])
       cy.visit('/person/A1234AB')

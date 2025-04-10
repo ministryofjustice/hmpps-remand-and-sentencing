@@ -50,7 +50,7 @@ context('Review Offences Page', () => {
       offenceReviewOffencesPage.continueButton().should('contain.text', 'Continue')
     })
 
-    it('update outcome and return to review offences page with one entry in non custodial', () => {
+    it('update outcome and return to review offences page', () => {
       cy.task('stubGetAllChargeOutcomes')
       cy.task('stubGetOffenceByCode', {})
       cy.task('stubGetChargeOutcomesByIds', [

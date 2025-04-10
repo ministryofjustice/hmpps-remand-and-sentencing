@@ -96,7 +96,7 @@ declare module 'forms' {
   }
 
   export interface UpdateOffenceOutcomesForm {
-    finishedReviewOffences?: string
+    finishedReviewOffenceOutcomes?: string
   }
 
   export interface CourtCaseWarrantTypeForm {

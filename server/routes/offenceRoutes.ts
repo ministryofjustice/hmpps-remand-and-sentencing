@@ -221,7 +221,12 @@ export default class OffenceRoutes {
         [[], []],
       )
     const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.token)
-    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
+    let backLink
+    if (warrantType === 'SENTENCING') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
+    } else {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+    }
 
     return res.render('pages/offence/update-outcome', {
       nomsId,
@@ -1907,7 +1912,10 @@ export default class OffenceRoutes {
 
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
 
-    if (updateOffenceOutcomesForm.finishedReviewOffences === 'true' && courtAppearance.hasOverallSentenceLength) {
+    if (
+      updateOffenceOutcomesForm.finishedReviewOffenceOutcomes === 'true' &&
+      courtAppearance.hasOverallSentenceLength
+    ) {
       const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
         courtAppearance,
         req.user.username,
@@ -1925,7 +1933,7 @@ export default class OffenceRoutes {
     this.courtAppearanceService.setOffenceSentenceAccepted(
       req.session,
       nomsId,
-      updateOffenceOutcomesForm.finishedReviewOffences === 'true',
+      updateOffenceOutcomesForm.finishedReviewOffenceOutcomes === 'true',
     )
 
     return res.redirect(

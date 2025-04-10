@@ -10,6 +10,7 @@ import type {
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
   OffenceSentenceTypeForm,
+  ReviewOffencesForm,
   SentenceLengthForm,
   SentenceSelectCaseForm,
 } from 'forms'
@@ -658,6 +659,20 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
+    return errors
+  }
+
+  setReviewOffenceForm(reviewOffenceForm: ReviewOffencesForm) {
+    const errors = validate(
+      reviewOffenceForm,
+      {
+        changeOffence: 'required',
+      },
+      {
+        'required.changeOffence': 'Select whether you have finished reviewing offences.',
+      },
+    )
+
     return errors
   }
 

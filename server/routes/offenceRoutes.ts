@@ -1877,29 +1877,13 @@ export default class OffenceRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)
 
-    // Validate the form
-    const errors = validate(
-      reviewOffenceForm,
-      {
-        changeOffence: 'required',
-      },
-      {
-        'required.changeOffence': 'Select whether you have finished reviewing offences.',
-      },
-    )
+    const errors = this.offenceService.setReviewOffenceForm(reviewOffenceForm)
 
     if (errors.length > 0) {
-      // Re-render the page with errors
-      return res.render('pages/offence/review-offences', {
-        nomsId,
-        courtCaseReference,
-        appearanceReference,
-        addOrEditCourtCase,
-        addOrEditCourtAppearance,
-        errors,
-        csrfToken: req.csrfToken(),
-        courtAppearance: this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId),
-      })
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+      )
     }
 
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)

@@ -33,6 +33,11 @@ export default class TaskListModel {
       this.getNextCourtAppearanceItem(courtAppearance),
       this.getCourtDocumentsItem(courtAppearance),
     ]
+
+    // Add warrant information item only for SENTENCING warrantType
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      this.items.splice(1, 0, this.getWarrantInformationItem(courtAppearance))
+    }
   }
 
   private getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
@@ -111,6 +116,68 @@ export default class TaskListModel {
       typeSpecificInformationFilledOut ||
       courtAppearance.appearanceInformationAccepted
     )
+  }
+
+  private getWarrantInformationStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
+    if (this.allWarrantInformationFilledOut(courtAppearance)) {
+      return {
+        text: 'Completed',
+      }
+    }
+    if (this.someWarrantInformationFilledOut(courtAppearance)) {
+      return {
+        tag: {
+          text: 'In progress',
+          classes: 'govuk-tag--light-blue',
+        },
+      }
+    }
+    return {
+      tag: {
+        text: 'Incomplete',
+        classes: 'govuk-tag--blue',
+      },
+    }
+  }
+
+  private allWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+    return (
+      courtAppearance.overallSentenceLength &&
+      courtAppearance.overallConvictionDateAppliedAll &&
+      courtAppearance.caseOutcomeAppliedAll &&
+      courtAppearance.warrantInformationAccepted
+    )
+  }
+
+  private someWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+    return (
+      // TODO why !== undefined instead of just ! (copied from other similar methods but double check)
+      // TODO these weren't in the original check so do we need to check?
+      courtAppearance.overallSentenceLength !== undefined ||
+      courtAppearance.overallConvictionDateAppliedAll !== undefined ||
+      courtAppearance.caseOutcomeAppliedAll !== undefined ||
+      courtAppearance.warrantInformationAccepted
+    )
+  }
+
+  private getWarrantInformationHref(courtAppearance: CourtAppearance): string {
+    if (this.allWarrantInformationFilledOut(courtAppearance)) {
+      // TODO check what this is and should be - TODO new route to create for this
+      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/check-answers`
+    }
+    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/overall-sentence-length`
+
+  }
+
+  private getWarrantInformationItem(courtAppearance: CourtAppearance): TaskListItem {
+    return {
+      title: {
+        text: 'Add warrant information',
+        classes: 'govuk-link--no-visited-state',
+      },
+      href: this.getWarrantInformationHref(courtAppearance),
+      status: this.getWarrantInformationStatus(courtAppearance),
+    }
   }
 
   private offenceOverallFieldsFilledOut(courtAppearance: CourtAppearance): boolean {

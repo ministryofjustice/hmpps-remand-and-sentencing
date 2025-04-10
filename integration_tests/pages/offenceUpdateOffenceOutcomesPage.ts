@@ -1,11 +1,13 @@
 import Page, { PageElement } from './page'
 
-export default class OffenceReviewOffencesPage extends Page {
+export default class OffenceUpdateOffenceOutcomesPage extends Page {
   constructor() {
-    super('Review offences')
+    super('Update offence outcomes')
   }
 
   addAnotherButton = (): PageElement => cy.get('[data-qa="addAnotherOffence"]')
+
+  sentenceLengthSection = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"]')
 
   updateOutcomeLink = (
     personId: string,

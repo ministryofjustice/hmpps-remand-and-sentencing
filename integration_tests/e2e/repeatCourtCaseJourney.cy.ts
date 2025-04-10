@@ -28,6 +28,7 @@ import StartPage from '../pages/startPage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
 import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
 import OffenceUpdateOutcomePage from '../pages/offenceUpdateOutcomePage'
+import OffenceUpdateOffenceOutcomesPage from '../pages/offenceUpdateOffenceOutcomesPage'
 
 context('Repeat Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -407,8 +408,10 @@ context('Repeat Court Case journey', () => {
     })
     offenceOverallCheckAnswersPage.confirmAndAddOffenceButton().click()
 
-    let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.updateOutcomeLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '0').click()
+    let offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
+    offenceUpdateOffenceOutcomesPage
+      .updateOutcomeLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '0')
+      .click()
 
     const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
     offenceUpdateOutcomePage.radioLabelContains('Imprisonment').click()
@@ -432,9 +435,9 @@ context('Repeat Court Case journey', () => {
     offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     offenceSentenceServeTypePage.continueButton().click()
 
-    offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.radioLabelSelector('true').click()
-    offenceReviewOffencesPage.continueButton().click()
+    offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
+    offenceUpdateOffenceOutcomesPage.radioLabelSelector('true').click()
+    offenceUpdateOffenceOutcomesPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
     courtCaseTaskListPage

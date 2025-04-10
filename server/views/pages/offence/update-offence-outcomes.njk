@@ -7,9 +7,40 @@
 {% set pageTitle = applicationName + " - Review offences" %}
 {% set hideOffences = true %}
 {% block pageContent %}
-            <h1 class="govuk-heading-l">Review offences</h1>
-            
-            {{ govukButton({
+    <h1 class="govuk-heading-l">
+    {% if isAddOffences %}
+        Review offences
+    {% else %}
+        Update offence outcomes
+    {% endif %}
+</h1>
+    {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength === 'true' %}
+        {{ govukSummaryList({
+                rows: [
+                    {
+                        key: {
+                            text: "Overall sentence length"
+                        },
+                        value: {
+                            text: courtAppearance.overallSentenceLength | formatLengths
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Sentences added"
+                        },
+                        value: {
+                            text: overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder
+                        }
+                    }
+                ],
+                attributes: {
+                    "data-qa": "overallSentenceLengthComparison"
+                }
+            }) }}
+    {% endif %}
+
+    {{ govukButton({
                 text: "Add an offence" ,
                 classes: "govuk-button--link",
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
@@ -18,45 +49,54 @@
                 }
             }) }}
 
-            {% for offence in unchangedOffences %}
-                {{
-                    offenceCard({
-                        offenceCode: offence.offenceCode,
-                        offenceName: offenceMap[offence.offenceCode],
-                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                        offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
-                        outcomeUpdated: offence.updatedOutcome,
-                        countNumber: offence.sentence.countNumber,
-                        convictionDate: offence.sentence.convictionDate | formatDate,
-                        terrorRelated: offence.terrorRelated,
-                        isSentenced: offence.sentence,
-                        periodLengths: offence.sentence.periodLengths,
-                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                        fineAmount: offence.sentence.fineAmount,
-                        actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/edit-offence",
-                                    text: "Edit",
-                                    visuallyHiddenText: "edit offence"
-                                }
-                            ]
-                        },
-                        listItems: {
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that need updating</h2>
+
+    {% for offence in unchangedOffences %}
+        {{
+        offenceCard({
+            offenceCode: offence.offenceCode,
+            offenceName: offenceMap[offence.offenceCode],
+            offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
+            offenceEndDate: offence.offenceEndDate | formatDate,
+            outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+            outcomeUpdated: offence.updatedOutcome,
+            countNumber: offence.sentence.countNumber,
+            convictionDate: offence.sentence.convictionDate | formatDate,
+            terrorRelated: offence.terrorRelated,
+            isSentenced: offence.sentence,
+            periodLengths: offence.sentence.periodLengths,
+            sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+            fineAmount: offence.sentence.fineAmount,
+            actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/edit-offence",
+                        text: "Edit",
+                        visuallyHiddenText: "edit offence"
+                    }
+                ]
+            },
+                                    listItems: {
                             classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
                             items: [{
                                 html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.index + '/update-offence-outcome">Update outcome</a>'
                             }]
                         }
-                    })
-                }}
-            {% endfor %}
-            
-            <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes</h2>
 
-            {% for offence in changedOffences %}
-                {{
+        })
+    }}
+    {% else %}
+        {{ govukInsetText({
+                    text: "There are no offences that need updating."
+                }) }}
+    {% endfor %}
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes</h2>
+
+    <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with custodial outcomes</h3>
+
+    {% for offence in custodialChangedOffences %}
+        {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
                         offenceName: offenceMap[offence.offenceCode],
@@ -82,18 +122,52 @@
                         }
                     })
                 }}
-            {% else %}
-                {{ govukInsetText({
-                    text: "There are no offences with updated outcomes."
+    {% else %}
+        {{ govukInsetText({
+                    text: "There are no offences with custodial outcomes."
                 }) }}
-            {% endfor %}
+    {% endfor %}
 
+    <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with non-custodial outcomes</h3>
 
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-review-offences">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% for offence in nonCustodialChangedOffences %}
+        {{
+                    offenceCard({
+                        offenceCode: offence.offenceCode,
+                        offenceName: offenceMap[offence.offenceCode],
+                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
+                        offenceEndDate: offence.offenceEndDate | formatDate,
+                        outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                        outcomeUpdated: offence.updatedOutcome,
+                        countNumber: offence.sentence.countNumber,
+                        convictionDate: offence.sentence.convictionDate | formatDate,
+                        terrorRelated: offence.terrorRelated,
+                        isSentenced: offence.sentence,
+                        periodLengths: offence.sentence.periodLengths,
+                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+                        fineAmount: offence.sentence.fineAmount,
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/edit-offence",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit offence"
+                                }
+                            ]
+                        }
+                    })
+                }}
+    {% else %}
+        {{ govukInsetText({
+                    text: "There are no offences with non-custodial outcomes."
+                }) }}
+    {% endfor %}
 
-                {{ govukRadios({
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-review-offences">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {{ govukRadios({
                         name: "changeOffence",
+                        id: "changeOffence",
                         fieldset: {
                             legend: {
                             text: "Have you finished reviewing offences?",
@@ -101,6 +175,7 @@
                             classes: "govuk-fieldset__legend--m"
                             }
                         },
+                        errorMessage: errors | findError("changeOffence"),
                         items: [
                             {
                                 value: "true",
@@ -113,10 +188,10 @@
                         ]
                     }) }}
 
-                    {{ govukButton({
+        {{ govukButton({
                     text: "Continue",
                     attributes: {  'data-qa': 'continue-button' }
                 }) }}
-            </form>
+    </form>
 
 {% endblock %}

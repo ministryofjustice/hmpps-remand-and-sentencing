@@ -457,6 +457,7 @@ export default class OffenceRoutes {
     }
     const { submitToEditOffence } = req.query
     if (submitToEditOffence) {
+      this.courtAppearanceService.setCountNumber(req.session, nomsId, parseInt(offenceReference, 10), countNumberForm)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
@@ -1490,6 +1491,8 @@ export default class OffenceRoutes {
       [[], []],
     )
 
+    const showCountWarning = custodialOffences.some(offence => !offence.sentence?.countNumber)
+
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,
@@ -1504,6 +1507,7 @@ export default class OffenceRoutes {
       offences,
       custodialOffences,
       nonCustodialOffences,
+      showCountWarning,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,

@@ -6,9 +6,35 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-
-{% set offenceSentence = 'sentence' if courtAppearance.warrantType === 'SENTENCING' else 'offence' %}
 {% set hideOffences = true %}
+{% set overallSummaryRows = [{
+                        key: {
+                            text: "Conviction date"
+                        },
+                        value: {
+                            text: courtAppearance.overallConvictionDate | formatDate if courtAppearance.overallConvictionDate else "Not entered"
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Overall sentence length"
+                        },
+                        value: {
+                            text: courtAppearance.overallSentenceLength | formatLengths if courtAppearance.overallConvictionDate else "Not entered"
+                        }
+                    }]%}
+
+{% if courtAppearance.hasOverallSentenceLength === 'true' %}
+    {%set overallSummaryRows = overallSummaryRows.concat({
+                        key: {
+                            text: "Offences added"
+                        },
+                        value: {
+                            text: overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder
+                        }
+                    })%}
+{% endif %}
+
 
 {% set pageTitle = applicationName + " - Check offences" %}
 
@@ -18,26 +44,9 @@
             You have added {{courtAppearance.offences.length }} {{"offence" if courtAppearance.offences.length === 1 else "offences"}}
         </h1>
         
-        {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength === 'true' %}
+        {% if courtAppearance.warrantType === 'SENTENCING' %}
             {{ govukSummaryList({
-                rows: [
-                    {
-                        key: {
-                            text: "Overall sentence length"
-                        },
-                        value: {
-                            text: courtAppearance.overallSentenceLength | formatLengths
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Sentences added"
-                        },
-                        value: {
-                            text: overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder
-                        }
-                    }
-                ],
+                rows: overallSummaryRows,
                 attributes: {
                     "data-qa": "overallSentenceLengthComparison"
                 }
@@ -47,54 +56,19 @@
         {{ govukButton({
             text: "Add an offence" ,
             classes: "govuk-button--link",
-            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offences | length + "/add-another-offence",
             attributes: {
                 "data-qa": "addAnotherOffence"
             }
         }) }}
 
-        {% if courtAppearance.offences.length == 0 %}
-            {{ govukInsetText({
-                text: "No offences have been added to this appearance."
-            }) }}
+        {% if courtAppearance.warrantType === 'SENTENCING' %}
+            {% include "../../partials/displayCustodialNonCustodialOffenceCards.njk" %}
+        {% else %}
+            {% include "../../partials/displayAllOffenceCards.njk" %}
         {% endif %}
 
-    
-
-        {% for offence in courtAppearance.offences %}
-            {{ offenceCard({
-                offenceCode: offence.offenceCode,
-                offenceName: offenceMap[offence.offenceCode],
-                offenceStartDate: offence.offenceStartDate | formatDate,
-                offenceEndDate: offence.offenceEndDate | formatDate,
-                outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
-                countNumber: offence.sentence.countNumber,
-                convictionDate: offence.sentence.convictionDate | formatDate,
-                terrorRelated: offence.terrorRelated,
-                isSentenced: offence.sentence,
-                periodLengths: offence.sentence.periodLengths,
-                sentenceServeType: offence.sentence.sentenceServeType,
-                consecutiveTo: offence.sentence.consecutiveTo,
-                sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-                fineAmount: offence.sentence.fineAmount,
-                actions: {
-                    items: [
-                        {
-                            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/edit-offence",
-                            text: "Edit",
-                            visuallyHiddenText: "edit offence"
-                        },
-                        {
-                            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/delete-offence",
-                            text: "Delete",
-                            visuallyHiddenText: "delete offence"
-                        }
-                    ]
-                }
-            }) }}
-        {% endfor %}
-
-        {% if courtAppearance.offences.length > 0 %}
+        {% if offences.length > 0 %}
             <div class="govuk-button-group govuk-!-margin-top-8">
                 <form method="post">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">

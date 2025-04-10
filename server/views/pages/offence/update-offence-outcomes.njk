@@ -8,7 +8,6 @@
 {% set hideOffences = true %}
 {% block pageContent %}
         <h1 class="govuk-heading-l">Update offence outcomes</h1>
-        <p> {{warrantType}} </p>
     {% if courtAppearance.hasOverallSentenceLength === 'true' %}
         {{ govukSummaryList({
                 rows: [
@@ -53,7 +52,7 @@
             offenceName: offenceMap[offence.offenceCode],
             offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
             offenceEndDate: offence.offenceEndDate | formatDate,
-            outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+            outcome: outcomeMap[offence.outcomeUuid].outcomeType | outcomeValueOrLegacy(offence.legacyData),
             outcomeUpdated: offence.updatedOutcome,
             countNumber: offence.sentence.countNumber,
             convictionDate: offence.sentence.convictionDate | formatDate,
@@ -97,7 +96,7 @@
                         offenceName: offenceMap[offence.offenceCode],
                         offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
                         offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                        outcome: outcomeMap[offence.outcomeUuid].outcomeType | outcomeValueOrLegacy(offence.legacyData),
                         outcomeUpdated: offence.updatedOutcome,
                         countNumber: offence.sentence.countNumber,
                         convictionDate: offence.sentence.convictionDate | formatDate,
@@ -132,7 +131,7 @@
                         offenceName: offenceMap[offence.offenceCode],
                         offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
                         offenceEndDate: offence.offenceEndDate | formatDate,
-                        outcome: outcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                        outcome: outcomeMap[offence.outcomeUuid].outcomeType | outcomeValueOrLegacy(offence.legacyData),
                         outcomeUpdated: offence.updatedOutcome,
                         countNumber: offence.sentence.countNumber,
                         convictionDate: offence.sentence.convictionDate | formatDate,

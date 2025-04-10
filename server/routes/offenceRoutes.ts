@@ -1856,12 +1856,12 @@ export default class OffenceRoutes {
         const [unchangedList, custodialList, nonCustodialList] = acc
 
         if (offence.updatedOutcome && offence.outcomeUuid) {
-          const outcomeType = outcomeMap[offence.outcomeUuid]
+          const outcome = outcomeMap[offence.outcomeUuid]
 
-          if (outcomeType === 'SENTENCING') {
+          if (outcome.outcomeType === 'SENTENCING') {
             return [unchangedList, [...custodialList, { ...offence, index }], nonCustodialList]
           }
-          if (outcomeType === 'NON_CUSTODIAL') {
+          if (outcome.outcomeType === 'NON_CUSTODIAL') {
             return [unchangedList, custodialList, [...nonCustodialList, { ...offence, index }]]
           }
         }

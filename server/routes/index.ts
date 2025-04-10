@@ -272,7 +272,7 @@ export default function routes(services: Services): Router {
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-offence-outcomes',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-update-offence-outcomes',
     offenceRoutes.submitUpdateOffenceOutcomes,
   )
 

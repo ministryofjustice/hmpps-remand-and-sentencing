@@ -42,7 +42,7 @@ context('Review Offences Page', () => {
       courtCaseOverallSentenceLengthPage.daysInput().type('2')
       courtCaseOverallSentenceLengthPage.continueButton().click()
       cy.visit(
-        '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/review-offences',
+        '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/update-offence-outcomes',
       )
       offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
     })
@@ -50,6 +50,14 @@ context('Review Offences Page', () => {
     it('should display the govukSummaryList with overall sentence length', () => {
       // Assert that the govukSummaryList is visible
       offenceUpdateOffenceOutcomesPage.sentenceLengthSection().should('be.visible')
+    })
+
+    it('shows error if Continue button pressed without selecting an outcome', () => {
+      offenceUpdateOffenceOutcomesPage.continueButton().click()
+      offenceUpdateOffenceOutcomesPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Select whether you have finished reviewing offences.')
     })
   })
 })

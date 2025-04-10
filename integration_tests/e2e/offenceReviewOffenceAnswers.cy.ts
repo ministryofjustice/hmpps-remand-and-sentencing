@@ -71,15 +71,6 @@ context('Review Offences Page', () => {
       offenceUpdateOutcomePage.radioLabelContains('Lie on file').click()
       offenceUpdateOutcomePage.continueButton().click()
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-      cy.get('.govuk-inset-text').should('contain.text', 'There are no offences that need updating.')
-    })
-
-    it('shows error if Continue button pressed without selecting an outcome', () => {
-      offenceReviewOffencesPage.continueButton().click()
-      offenceReviewOffencesPage
-        .errorSummary()
-        .trimTextContent()
-        .should('equal', 'There is a problem Select whether you have finished reviewing offences.')
     })
   })
 })

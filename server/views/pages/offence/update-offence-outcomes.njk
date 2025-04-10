@@ -7,13 +7,8 @@
 {% set pageTitle = applicationName + " - Review offences" %}
 {% set hideOffences = true %}
 {% block pageContent %}
-    <h1 class="govuk-heading-l">
-    {% if isAddOffences %}
-        Review offences
-    {% else %}
-        Update offence outcomes
-    {% endif %}
-</h1>
+        <h1 class="govuk-heading-l">Update offence outcomes</h1>
+        <p> {{warrantType}} </p>
     {% if courtAppearance.warrantType === 'SENTENCING' and courtAppearance.hasOverallSentenceLength === 'true' %}
         {{ govukSummaryList({
                 rows: [
@@ -163,11 +158,10 @@
                 }) }}
     {% endfor %}
 
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-review-offences">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-update-offence-outcomes">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {{ govukRadios({
                         name: "changeOffence",
-                        id: "changeOffence",
                         fieldset: {
                             legend: {
                             text: "Have you finished reviewing offences?",

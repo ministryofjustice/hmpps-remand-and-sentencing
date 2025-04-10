@@ -1824,13 +1824,20 @@ export default class OffenceRoutes {
       this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
     ])
 
-    // Categorize offences
-    const [unchangedOffences, custodialChangedOffences, nonCustodialChangedOffences] = await offences.reduce(
-      async (accPromise, offence, index) => {
-        const [unchangedList, custodialList, nonCustodialList] = await accPromise
+    const [unchangedOffences, custodialChangedOffences, nonCustodialChangedOffences] = offences.reduce(
+      (acc, offence, index) => {
+        const [unchangedList, custodialList, nonCustodialList] = acc
 
         if (offence.updatedOutcome && offence.outcomeUuid) {
-          const outcomeType = await this.getOutcomeType(offence.outcomeUuid, req.user.username)
+          const outcomeName = outcomeMap[offence.outcomeUuid]
+          let outcomeType: string | undefined
+
+          if (outcomeName === 'Sentencing Outcome') {
+            outcomeType = 'SENTENCING'
+          } else if (outcomeName === 'Non-Custodial Outcome') {
+            outcomeType = 'NON_CUSTODIAL'
+          }
+
           if (outcomeType === 'SENTENCING') {
             return [unchangedList, [...custodialList, { ...offence, index }], nonCustodialList]
           }
@@ -1840,7 +1847,7 @@ export default class OffenceRoutes {
         }
         return [[...unchangedList, { ...offence, index }], custodialList, nonCustodialList]
       },
-      Promise.resolve([[], [], []] as [Offence[], Offence[], Offence[]]),
+      [[], [], []] as [Offence[], Offence[], Offence[]],
     )
 
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
@@ -1863,14 +1870,6 @@ export default class OffenceRoutes {
       errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
-  }
-
-  private async getOutcomeType(outcomeUuid: string, username: string): Promise<string | undefined> {
-    if (!outcomeUuid) {
-      return undefined
-    }
-    const outcome = await this.offenceOutcomeService.getOutcomeById(outcomeUuid, username)
-    return outcome?.outcomeType
   }
 
   public submitUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {

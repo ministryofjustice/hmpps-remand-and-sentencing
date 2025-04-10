@@ -27,7 +27,7 @@ context('Add Court Case Sentence Length Page', () => {
   })
 
   it('button to continue is displayed', () => {
-    courtCaseOverallSentenceLengthPage.continueButton().should('contain.text', 'Save and continue')
+    courtCaseOverallSentenceLengthPage.continueButton().should('contain.text', 'Continue')
   })
 
   it('submitting without entering anything in the inputs results in an error', () => {

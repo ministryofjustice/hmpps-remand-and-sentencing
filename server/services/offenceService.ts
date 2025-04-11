@@ -12,6 +12,7 @@ import type {
   OffenceSentenceTypeForm,
   SentenceLengthForm,
   SentenceSelectCaseForm,
+  UpdateOffenceOutcomesForm,
 } from 'forms'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
@@ -658,6 +659,20 @@ export default class OffenceService {
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
+    return errors
+  }
+
+  validateUpdateOffenceOutcomesForm(updateOffenceOutcomesForm: UpdateOffenceOutcomesForm) {
+    const errors = validate(
+      updateOffenceOutcomesForm,
+      {
+        finishedReviewOffenceOutcomes: 'required',
+      },
+      {
+        'required.finishedReviewOffenceOutcomes': 'Select whether you have finished reviewing offences.',
+      },
+    )
+
     return errors
   }
 

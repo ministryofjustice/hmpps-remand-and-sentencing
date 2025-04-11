@@ -17,6 +17,7 @@ import type {
   ReviewOffencesForm,
   SentenceLengthForm,
   SentenceSelectCaseForm,
+  UpdateOffenceOutcomesForm,
 } from 'forms'
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
@@ -187,7 +188,7 @@ export default class OffenceRoutes {
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
       )
     }
     return res.redirect(
@@ -220,7 +221,12 @@ export default class OffenceRoutes {
         [[], []],
       )
     const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.token)
-    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+    let backLink
+    if (warrantType === 'SENTENCING') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
+    } else {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+    }
 
     return res.render('pages/offence/update-outcome', {
       nomsId,
@@ -272,6 +278,12 @@ export default class OffenceRoutes {
       delete offence.sentence
     }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    if (warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
@@ -294,6 +306,7 @@ export default class OffenceRoutes {
         offenceOutcome: offence.outcomeUuid,
       }
     }
+
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const [caseOutcomes, offenceDetails] = await Promise.all([
       this.offenceOutcomeService.getAllOutcomes(req.user.username),
@@ -330,7 +343,11 @@ export default class OffenceRoutes {
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     } else if (addOrEditCourtCase === 'edit-court-case') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+      if (warrantType === 'SENTENCING') {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
+      } else {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/review-offences`
+      }
     }
 
     return res.render('pages/offence/offence-outcome', {
@@ -1570,7 +1587,7 @@ export default class OffenceRoutes {
       req.user.username,
     )
     const isAddJourney = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
     if (isAddJourney) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
     }
@@ -1755,6 +1772,12 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
     }
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    if (warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
@@ -1813,6 +1836,111 @@ export default class OffenceRoutes {
     )
   }
 
+  public getUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const { offences } = courtAppearance
+
+    const sentenceTypeIds = Array.from(
+      new Set(
+        offences.filter(offence => offence.sentence?.sentenceTypeId).map(offence => offence.sentence?.sentenceTypeId),
+      ),
+    )
+    const offenceCodes = Array.from(new Set(offences.map(offence => offence.offenceCode)))
+    const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
+
+    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
+      this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
+      this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
+    ])
+
+    const [unchangedOffences, custodialChangedOffences, nonCustodialChangedOffences] = offences.reduce(
+      (acc, offence, index) => {
+        const [unchangedList, custodialList, nonCustodialList] = acc
+
+        if (offence.updatedOutcome && offence.outcomeUuid) {
+          const outcome = outcomeMap[offence.outcomeUuid]
+
+          if (outcome.outcomeType === 'SENTENCING') {
+            return [unchangedList, [...custodialList, { ...offence, index }], nonCustodialList]
+          }
+          if (outcome.outcomeType === 'NON_CUSTODIAL') {
+            return [unchangedList, custodialList, [...nonCustodialList, { ...offence, index }]]
+          }
+        }
+        return [[...unchangedList, { ...offence, index }], custodialList, nonCustodialList]
+      },
+      [[], [], []] as [Offence[], Offence[], Offence[]],
+    )
+
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+
+    return res.render('pages/offence/update-offence-outcomes', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offenceMap,
+      sentenceTypeMap,
+      unchangedOffences,
+      custodialChangedOffences,
+      nonCustodialChangedOffences,
+      outcomeMap,
+      courtAppearance,
+      warrantType,
+      overallSentenceLengthComparison,
+      errors: req.flash('errors') || [],
+      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+    })
+  }
+
+  public submitUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const updateOffenceOutcomesForm = trimForm<UpdateOffenceOutcomesForm>(req.body)
+
+    const errors = this.offenceService.validateUpdateOffenceOutcomesForm(updateOffenceOutcomesForm)
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+      )
+    }
+
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+
+    if (
+      updateOffenceOutcomesForm.finishedReviewOffenceOutcomes === 'true' &&
+      courtAppearance.hasOverallSentenceLength
+    ) {
+      const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
+        courtAppearance,
+        req.user.username,
+      )
+      if (
+        overallSentenceComparison.custodialLengthMatches === false ||
+        overallSentenceComparison.licenseLengthMatches === false
+      ) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/sentence-length-mismatch`,
+        )
+      }
+    }
+
+    this.courtAppearanceService.setOffenceSentenceAccepted(
+      req.session,
+      nomsId,
+      updateOffenceOutcomesForm.finishedReviewOffenceOutcomes === 'true',
+    )
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+    )
+  }
+
   private getSessionOffenceOrAppearanceOffence(
     req,
     nomsId: string,
@@ -1843,6 +1971,12 @@ export default class OffenceRoutes {
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      )
+    }
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    if (warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
       )
     }
     return res.redirect(

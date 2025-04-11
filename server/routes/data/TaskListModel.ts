@@ -119,19 +119,19 @@ export default class TaskListModel {
   }
 
   private getWarrantInformationStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
-    if (this.allWarrantInformationFilledOut(courtAppearance)) {
+    if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+      return {
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
+      }
+    }
+
+    if (courtAppearance.warrantInformationAccepted) {
       return {
         text: 'Completed',
       }
     }
-    if (this.someWarrantInformationFilledOut(courtAppearance)) {
-      return {
-        tag: {
-          text: 'In progress',
-          classes: 'govuk-tag--light-blue',
-        },
-      }
-    }
+
     return {
       tag: {
         text: 'Incomplete',
@@ -161,12 +161,28 @@ export default class TaskListModel {
   }
 
   private getWarrantInformationHref(courtAppearance: CourtAppearance): string {
+    let href
+    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+      if (this.offenceOverallFieldsFilledOut(courtAppearance)) {
+        if (this.isAddCourtCase()) {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+        } else {
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/update-offence-outcomes`
+        }
+      } else {
+        // Tested
+        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/overall-sentence-length`
+      }
+    }
+    return href
+  }
+
+  private XXgetWarrantInformationHref(courtAppearance: CourtAppearance): string {
     if (this.allWarrantInformationFilledOut(courtAppearance)) {
       // TODO check what this is and should be - TODO new route to create for this
-      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/check-answers`
+      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/check-answers`
     }
-    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/overall-sentence-length`
-
+    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/overall-sentence-length`
   }
 
   private getWarrantInformationItem(courtAppearance: CourtAppearance): TaskListItem {
@@ -239,6 +255,7 @@ export default class TaskListModel {
 
   private getOffenceSentenceHref(courtAppearance: CourtAppearance): string {
     let href
+    // TODO does this need modifying?
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
       if (courtAppearance.warrantType === 'REMAND') {
         if (courtAppearance.offences.length === 0) {
@@ -248,6 +265,7 @@ export default class TaskListModel {
         } else {
           href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
         }
+        // TODO this overall fields check might needs refactoring
       } else if (this.offenceOverallFieldsFilledOut(courtAppearance)) {
         if (this.isAddCourtCase()) {
           href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`

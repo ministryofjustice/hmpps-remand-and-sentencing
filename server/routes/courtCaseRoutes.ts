@@ -958,6 +958,7 @@ export default class CourtCaseRoutes {
     )
   }
 
+  // TODO remove
   public getCaseOutcomeAppliedAllSentencing: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
@@ -995,6 +996,7 @@ export default class CourtCaseRoutes {
     })
   }
 
+  // TODO remove
   public submitCaseOutcomeAppliedAllSentencing: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const caseOutcomeAppliedAllForm = trimForm<CourtCaseCaseOutcomeAppliedAllForm>(req.body)

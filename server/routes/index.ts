@@ -49,7 +49,7 @@ export default function routes(services: Services): Router {
     services.courtRegisterService,
   )
 
-  const sentencingRoutes = new SentencingRoutes(services.courtAppearanceService)
+  const sentencingRoutes = new SentencingRoutes(services.courtAppearanceService, services.appearanceOutcomeService)
 
   get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
@@ -540,13 +540,43 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/overall-sentence-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/overall-sentence-length',
     sentencingRoutes.getOverallSentenceLength,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-overall-sentence-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-sentence-length',
     sentencingRoutes.submitOverallSentenceLength,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/overall-conviction-date',
+    sentencingRoutes.getOverallConvictionDate,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-conviction-date',
+    sentencingRoutes.submitOverallConvictionDate,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/case-outcome-applied-all',
+    sentencingRoutes.getCaseOutcomeAppliedAll,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-case-outcome-applied-all',
+    sentencingRoutes.submitCaseOutcomeAppliedAll,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/check-overall-answers',
+    sentencingRoutes.getCheckOverallAnswers,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-check-overall-answers',
+    sentencingRoutes.submitCheckOverallAnswers,
   )
 
   return router

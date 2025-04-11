@@ -1,0 +1,91 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+
+{% set yesHtml %}
+    {{ govukDateInput({
+        id: "overall-conviction-date",
+        namePrefix: "overallConvictionDate",
+        errorMessage: errors | findErrorsBeginningWith('overallConvictionDate'),
+        fieldset: {
+            legend: {
+                text: "Enter the conviction date",
+                classes: "govuk-fieldset__legend--m"
+            }
+        },
+        items: [
+            {
+                id: 'overallConvictionDate-day',
+                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('overallConvictionDate-day') else ''),
+                name:"day",
+                value: overallConvictionDateDay
+            },
+            {
+                id: 'overallConvictionDate-month',
+                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('overallConvictionDate-month') else ''),
+                name:"month",
+                value: overallConvictionDateMonth
+            },
+            {
+                id: 'overallConvictionDate-year',
+                classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('overallConvictionDate-year') else ''),
+                name:"year",
+                value: overallConvictionDateYear
+            }
+        ]
+    }) }}
+{% endset %}
+
+{% set pageTitle = applicationName + " - Add a court case Overall conviction Date" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/SENTENCING/submit-overall-conviction-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l" data-qa="warrant-information-caption">
+                    Add overall warrant information
+                </span>
+
+                {{ govukRadios({
+                    name: "overallConvictionDateAppliedAll",
+                    fieldset: {
+                        legend: {
+                            text: "Is the conviction date the same for all offences on the warrant?",
+                            classes: "govuk-fieldset__legend--l",
+                            isPageHeading: true
+                        }
+                    },
+                    errorMessage: errors | findError('overallConvictionDateAppliedAll'),
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes",
+                            checked: overallConvictionDateAppliedAll === 'true',
+                            conditional: {
+                            html: yesHtml
+                        }
+                        },
+                        {
+                            value: "false",
+                            checked: overallConvictionDateAppliedAll === 'false',
+                            text: "No"
+                        }
+                    ]
+                }) }}
+
+
+
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -281,7 +281,7 @@ export default class OffenceRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes?fromOutcomePage=true`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes?backTo=OUTCOME`,
       )
     }
     return res.redirect(
@@ -1841,10 +1841,10 @@ export default class OffenceRoutes {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const { offences } = courtAppearance
 
-    const { fromOutcomePage } = req.query // Query parameter to determine navigation context
+    const { backTo } = req.query // Query parameter to determine navigation context
 
     const backLink =
-      fromOutcomePage === 'true'
+      backTo === 'OUTCOME'
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/0/update-offence-outcome`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-overall-answers`
 
@@ -1867,7 +1867,7 @@ export default class OffenceRoutes {
       (acc, offence, index) => {
         const [unchangedList, custodialList, nonCustodialList] = acc
 
-        if (offence.outcomeUuid) {
+        if (offence.outcomeUuid && offence.updatedOutcome) {
           const outcome = outcomeMap[offence.outcomeUuid]
 
           if (outcome.outcomeType === 'SENTENCING') {

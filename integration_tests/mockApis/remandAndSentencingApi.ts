@@ -647,6 +647,75 @@ export default {
     })
   },
 
+  stubGetLatestCourtAppearanceWithSentencing: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/latest-appearance',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
+          outcome: {
+            outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+            outcomeName: 'Imprisonment',
+            nomisCode: '09753',
+            outcomeType: 'SENTENCING',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          },
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          warrantType: 'SENTENCING',
+          overallSentenceLength: {
+            years: 4,
+            months: 5,
+            weeks: null,
+            days: null,
+            periodOrder: 'years,months',
+            periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+          },
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',
+                countNumber: '1',
+                periodLengths: [
+                  {
+                    years: 4,
+                    months: 5,
+                    periodOrder: 'years,months',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                ],
+                sentenceServeType: 'FORTHWITH',
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
+
   stubGetLatestCourtAppearanceSameNextHearingDate: ({
     warrantDate = '',
   }: {

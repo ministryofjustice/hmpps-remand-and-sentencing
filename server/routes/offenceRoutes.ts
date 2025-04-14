@@ -281,7 +281,7 @@ export default class OffenceRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes?backTo=OUTCOME`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes?backTo=OUTCOME&offenceReference=${offenceReference}`,
       )
     }
     return res.redirect(
@@ -1837,18 +1837,11 @@ export default class OffenceRoutes {
   }
 
   public getUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      offenceReference,
-    } = req.params
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const { offences } = courtAppearance
 
-    const { backTo } = req.query // Query parameter to determine navigation context
+    const { backTo, offenceReference } = req.query // Query parameter to determine navigation context
 
     const backLink =
       backTo === 'OUTCOME'

@@ -281,7 +281,7 @@ export default class OffenceRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes?fromOutcomePage=true`,
       )
     }
     return res.redirect(
@@ -1841,6 +1841,13 @@ export default class OffenceRoutes {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const { offences } = courtAppearance
 
+    const { fromOutcomePage } = req.query // Query parameter to determine navigation context
+
+    const backLink =
+      fromOutcomePage === 'true'
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/0/update-offence-outcome`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-overall-answers`
+
     const sentenceTypeIds = Array.from(
       new Set(
         offences.filter(offence => offence.sentence?.sentenceTypeId).map(offence => offence.sentence?.sentenceTypeId),
@@ -1860,7 +1867,7 @@ export default class OffenceRoutes {
       (acc, offence, index) => {
         const [unchangedList, custodialList, nonCustodialList] = acc
 
-        if (offence.updatedOutcome && offence.outcomeUuid) {
+        if (offence.outcomeUuid) {
           const outcome = outcomeMap[offence.outcomeUuid]
 
           if (outcome.outcomeType === 'SENTENCING') {
@@ -1891,6 +1898,7 @@ export default class OffenceRoutes {
       outcomeMap,
       courtAppearance,
       warrantType,
+      backLink,
       overallSentenceLengthComparison,
       errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),

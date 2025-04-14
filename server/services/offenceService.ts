@@ -278,6 +278,7 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
+      offence.updatedOutcome = true
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }

@@ -1837,7 +1837,14 @@ export default class OffenceRoutes {
   }
 
   public getUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offenceReference,
+    } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const { offences } = courtAppearance
 
@@ -1845,7 +1852,7 @@ export default class OffenceRoutes {
 
     const backLink =
       backTo === 'OUTCOME'
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/0/update-offence-outcome`
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-overall-answers`
 
     const sentenceTypeIds = Array.from(

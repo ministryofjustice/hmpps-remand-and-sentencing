@@ -697,6 +697,9 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    console.log(`>>>>>>>>>>>>>>>>>>>${courtAppearance.overallSentenceLength}`)
+    console.log(courtAppearance.overallSentenceLength)
+
     let caseReferenceSet = !!courtAppearance.caseReferenceNumber
     if (!res.locals.isAddCourtCase && !caseReferenceSet) {
       const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(

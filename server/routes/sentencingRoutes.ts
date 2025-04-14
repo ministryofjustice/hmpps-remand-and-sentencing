@@ -15,12 +15,15 @@ export default class SentencingRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     let overallSentenceLengthForm = (req.flash('overallSentenceLengthForm')[0] || {}) as SentenceLengthForm
+    console.log('############# 0')
     if (Object.keys(overallSentenceLengthForm).length === 0) {
+      console.log('############# 1')
       overallSentenceLengthForm = sentenceLengthToSentenceLengthForm(
         this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
         this.courtAppearanceService.getHasOverallSentenceLength(req.session, nomsId),
       )
     }
+    console.log(`############# 2: ${JSON.stringify(overallSentenceLengthForm)}`)
     return res.render('pages/sentencing/overall-sentence-length', {
       nomsId,
       courtCaseReference,
@@ -222,22 +225,11 @@ export default class SentencingRoutes {
     })
   }
 
-  // TODO change urls
   public submitCheckOverallAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    if (courtAppearance.offences.length) {
-      if (res.locals.isAddCourtCase) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
-        )
-      }
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
-      )
-    }
+    this.courtAppearanceService.setWarrantInformationAccepted(req.session, nomsId)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/0/add-another-offence`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
   }
 

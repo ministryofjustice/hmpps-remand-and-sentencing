@@ -67,7 +67,7 @@ export default class TaskListModel {
         text: 'Completed',
       }
     }
-    if (this.someAppearanceInformationFilledOut(courtAppearance)) {
+    if (this.anyAppearanceInformationFilledOut(courtAppearance)) {
       return {
         tag: {
           text: 'In progress',
@@ -100,7 +100,7 @@ export default class TaskListModel {
     )
   }
 
-  private someAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+  private anyAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     let typeSpecificInformationFilledOut = false
     if (courtAppearance.warrantType === 'SENTENCING') {
       typeSpecificInformationFilledOut =
@@ -141,15 +141,20 @@ export default class TaskListModel {
   }
 
   private allWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+    console.log('Debugging allWarrantInformationFilledOut:')
+    console.log('overallSentenceLength:', courtAppearance.overallSentenceLength)
+    console.log('overallConvictionDateAppliedAll:', courtAppearance.overallConvictionDateAppliedAll)
+    console.log('caseOutcomeAppliedAll:', courtAppearance.caseOutcomeAppliedAll)
+    console.log('warrantInformationAccepted:', courtAppearance.warrantInformationAccepted)
     return (
-      courtAppearance.overallSentenceLength &&
-      courtAppearance.overallConvictionDateAppliedAll &&
-      courtAppearance.caseOutcomeAppliedAll &&
+      // courtAppearance.overallSentenceLength && TODO doesnt check this because it gets deleted if set to NO.. nit sure why but leave it
+      courtAppearance.overallConvictionDateAppliedAll && // Is the conviction date the same for all offences on the warrant
+      courtAppearance.caseOutcomeAppliedAll && // Is the outcome the same for all offences on the warrant?
       courtAppearance.warrantInformationAccepted
     )
   }
 
-  private someWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+  private anyWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     return (
       // TODO why !== undefined instead of just ! (copied from other similar methods but double check)
       // TODO these weren't in the original check so do we need to check?
@@ -160,14 +165,23 @@ export default class TaskListModel {
     )
   }
 
+  private warrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+    return (
+      // courtAppearance.overallSentenceLength !== undefined && TODO doesnt check this because it gets deleted if set to NO.. nit sure why but leave it
+      courtAppearance.overallConvictionDateAppliedAll !== undefined &&
+      courtAppearance.caseOutcomeAppliedAll !== undefined
+    )
+  }
+
   private getWarrantInformationHref(courtAppearance: CourtAppearance): string {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      if (this.offenceOverallFieldsFilledOut(courtAppearance)) {
+      //  TODO code improvement.. could be improved? combine ifs just one if else
+      if (this.warrantInformationFilledOut(courtAppearance)) {
         if (this.isAddCourtCase()) {
-          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/check-overall-answers`
         } else {
-          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/update-offence-outcomes`
+          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/overall-sentence-length`
         }
       } else {
         // Tested
@@ -196,6 +210,7 @@ export default class TaskListModel {
     }
   }
 
+  // TODO CHECK THE USAGE ON THIS POSSIBLY NEEDS REFACTORING
   private offenceOverallFieldsFilledOut(courtAppearance: CourtAppearance): boolean {
     return (
       courtAppearance.overallConvictionDate !== undefined &&
@@ -224,7 +239,7 @@ export default class TaskListModel {
         text: 'Upload court documents',
         classes: 'govuk-link--no-visited-state',
       },
-      href: this.allAppearanceInformationFilledOut(courtAppearance)
+      href: this.allWarrantInformationFilledOut(courtAppearance)
         ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/document-type`
         : null,
       status,
@@ -255,7 +270,6 @@ export default class TaskListModel {
 
   private getOffenceSentenceHref(courtAppearance: CourtAppearance): string {
     let href
-    // TODO does this need modifying?
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
       if (courtAppearance.warrantType === 'REMAND') {
         if (courtAppearance.offences.length === 0) {
@@ -265,15 +279,12 @@ export default class TaskListModel {
         } else {
           href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
         }
-        // TODO this overall fields check might needs refactoring
-      } else if (this.offenceOverallFieldsFilledOut(courtAppearance)) {
+      } else if (this.warrantInformationFilledOut(courtAppearance)) {
         if (this.isAddCourtCase()) {
           href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
         } else {
           href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/update-offence-outcomes`
         }
-      } else {
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/overall-sentence-length`
       }
     }
 
@@ -281,21 +292,22 @@ export default class TaskListModel {
   }
 
   private getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
-    const appearanceInfoComplete = this.allAppearanceInformationFilledOut(courtAppearance)
+    const warrantInformationComplete = this.allWarrantInformationFilledOut(courtAppearance)
     let status
 
-    if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+    if (!this.allWarrantInformationFilledOut(courtAppearance)) {
       return {
         text: 'Cannot start yet',
         classes: 'govuk-task-list__status--cannot-start-yet',
       }
     }
 
+    // TODO refactor how this is set or maybe ok?
     if (courtAppearance.offenceSentenceAccepted) {
       status = {
         text: 'Completed',
       }
-    } else if (appearanceInfoComplete) {
+    } else if (warrantInformationComplete) {
       if (
         !this.isAddCourtCase() &&
         courtAppearance.warrantType === 'REMAND' &&
@@ -326,7 +338,7 @@ export default class TaskListModel {
         text: this.getNextCourtAppearanceTitleText(),
         classes: 'govuk-link--no-visited-state',
       },
-      href: this.allAppearanceInformationFilledOut(courtAppearance)
+      href: this.allWarrantInformationFilledOut(courtAppearance)
         ? this.getNextCourtAppearanceHref(courtAppearance)
         : null,
       status: this.getNextCourtAppearanceStatus(courtAppearance),

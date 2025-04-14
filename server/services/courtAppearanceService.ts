@@ -425,6 +425,7 @@ export default class CourtAppearanceService {
           ),
         }
       } else {
+        // TODO I wonder why this is beinhg ddleted here?? but lave it i think
         delete courtAppearance.overallSentenceLength
       }
 
@@ -479,6 +480,13 @@ export default class CourtAppearanceService {
   setAppearanceInformationAcceptedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     courtAppearance.appearanceInformationAccepted = true
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  setWarrantInformationAccepted(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    courtAppearance.warrantInformationAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

@@ -172,30 +172,16 @@ export default class TaskListModel {
     )
   }
 
-  private xwarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
-    return (
-      // courtAppearance.overallSentenceLength !== undefined && TODO doesnt check this because it gets deleted if set to NO.. nit sure why but leave it
-      courtAppearance.overallConvictionDateAppliedAll !== undefined &&
-      courtAppearance.caseOutcomeAppliedAll !== undefined
-    )
-  }
-
   private getWarrantInformationHref(courtAppearance: CourtAppearance): string {
-    let href
-    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      //  TODO code improvement.. could be improved? combine ifs just one if else
-      if (this.allWarrantInformationFilledOut(courtAppearance)) {
-        if (this.isAddCourtCase()) {
-          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/check-overall-answers`
-        } else {
-          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/overall-sentence-length`
-        }
-      } else {
-        // Tested
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/overall-sentence-length`
-      }
+    if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+      return undefined
     }
-    return href
+
+    if (!this.allWarrantInformationFilledOut(courtAppearance) || !this.isAddCourtCase()) {
+      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/overall-sentence-length`
+    }
+
+    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/check-overall-answers`
   }
 
   private getWarrantInformationItem(courtAppearance: CourtAppearance): TaskListItem {
@@ -294,7 +280,6 @@ export default class TaskListModel {
       }
     }
 
-    // TODO refactor how this is set or maybe ok?
     if (courtAppearance.offenceSentenceAccepted) {
       status = {
         text: 'Completed',

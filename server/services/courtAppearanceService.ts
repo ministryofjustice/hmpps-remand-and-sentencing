@@ -425,7 +425,6 @@ export default class CourtAppearanceService {
           ),
         }
       } else {
-        // TODO I wonder why this is beinhg ddleted here?? but lave it i think
         delete courtAppearance.overallSentenceLength
       }
 

@@ -102,6 +102,33 @@ context('Start Page', () => {
     })
   })
 
+  it('displays sentenced offences correctly', () => {
+    startPage
+      .courtCaseDetailsComponent('261911e2-6346-42e0-b025-a806048f4d04')
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '11/05/2024',
+          Outcome: 'Imprisonment',
+          'Conviction date': '11/05/2024',
+          'Sentence type': 'A NOMIS Fine Sentence Type',
+          'Fine amount': '£10',
+          'Consecutive or concurrent': 'Concurrent',
+          'Term length': '6 months 0 years 0 weeks 0 days',
+        },
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '11/10/2023',
+          Outcome: 'Imprisonment',
+          'Consecutive or concurrent': 'Forthwith',
+          'Conviction date': '12/10/2023',
+          'Sentence type': 'A NOMIS Sentence Type',
+          'Tariff length': '1 years 0 months 0 weeks 0 days',
+        },
+      ])
+  })
+
   it('displays empty content when no court cases', () => {
     cy.task('stubEmptySearchCourtCases', {})
     cy.reload()

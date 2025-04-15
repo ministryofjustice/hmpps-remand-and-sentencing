@@ -376,7 +376,6 @@ export default {
                 charges: [
                   {
                     chargeUuid: 'aeb5ba2e-0bf5-444d-b540-4739012cd7a5',
-                    lifetimeUuid: 'bf831234-41af-4ba6-b7d0-bd36b02dd5fa',
                     offenceCode: 'PS90037',
                     offenceStartDate: '2023-10-11',
                     offenceEndDate: null,
@@ -390,7 +389,6 @@ export default {
                     },
                     sentence: {
                       sentenceUuid: '29fa8c7f-7ba1-4033-ac4d-83ff0c125a45',
-                      sentenceLifetimeUuid: '34511c2a-3daf-4d07-a8e2-47046c12967f',
                       chargeNumber: '1',
                       periodLengths: [
                         {
@@ -412,6 +410,48 @@ export default {
                         sentenceCalcType: 'A',
                         sentenceCategory: 'B',
                         sentenceTypeDesc: 'A NOMIS Sentence Type',
+                      },
+                    },
+                    legacyData: null,
+                  },
+                  {
+                    chargeUuid: '5073470d-56f4-41b0-9e71-dfe468ed3455',
+                    offenceCode: 'PS90037',
+                    offenceStartDate: '2024-05-11',
+                    offenceEndDate: null,
+                    outcome: {
+                      outcomeUuid: 'f4617346-3b8e-467b-acc4-a4fab809ed3b',
+                      outcomeName: 'Imprisonment',
+                      nomisCode: '1002',
+                      outcomeType: 'SENTENCING',
+                      displayOrder: 10,
+                      dispositionCode: 'FINAL',
+                    },
+                    sentence: {
+                      sentenceUuid: '7484fdbc-8e74-4590-b842-b131a004ab61',
+                      chargeNumber: '2',
+                      periodLengths: [
+                        {
+                          years: null,
+                          months: 6,
+                          weeks: null,
+                          days: null,
+                          periodOrder: 'months',
+                          periodLengthType: 'TERM_LENGTH',
+                          legacyData: null,
+                        },
+                      ],
+                      sentenceServeType: 'CONCURRENT',
+                      consecutiveToChargeNumber: null,
+                      sentenceType: null,
+                      convictionDate: '2024-05-11',
+                      fineAmount: {
+                        fineAmount: 10,
+                      },
+                      legacyData: {
+                        sentenceCalcType: 'C',
+                        sentenceCategory: 'D',
+                        sentenceTypeDesc: 'A NOMIS Fine Sentence Type',
                       },
                     },
                     legacyData: null,

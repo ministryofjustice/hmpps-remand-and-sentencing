@@ -23,7 +23,7 @@ import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
-import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
+import SentencingWarrantInformationCheckAnswersPage from '../pages/sentencingWarrantInformationCheckAnswersPage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
@@ -415,7 +415,7 @@ context('New Court Case journey', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    const offenceOverallCheckAnswersPage = Page.verifyOnPage(OffenceCheckOverallAnswersPage)
+    const offenceOverallCheckAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
     offenceOverallCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '4 years 5 months 3 weeks 2 days',

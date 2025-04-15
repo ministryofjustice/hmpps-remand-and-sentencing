@@ -13,7 +13,7 @@ context('Add Court Case Sentence Length Page', () => {
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.continueButton().click()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-sentence-length')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/SENTENCING/overall-sentence-length')
     courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
   })
 
@@ -81,6 +81,8 @@ context('Add Court Case Sentence Length Page', () => {
   })
 
   it('Correct offences caption is displayed', () => {
-    courtCaseOverallSentenceLengthPage.offencesCaption().should('contain.text', 'Add offences')
+    courtCaseOverallSentenceLengthPage
+      .warrantInformationCaption()
+      .should('contain.text', 'Add overall warrant information')
   })
 })

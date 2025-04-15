@@ -1,12 +1,12 @@
-import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
+import SentencingWarrantInformationCheckAnswersPage from '../pages/sentencingWarrantInformationCheckAnswersPage'
 import Page from '../pages/page'
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 
-context('Offence Check Overall Answers Page', () => {
-  let offenceCheckOverallAnswersPage: OffenceCheckOverallAnswersPage
+context('Warrant Information Check Answers Page', () => {
+  let offenceCheckOverallAnswersPage: SentencingWarrantInformationCheckAnswersPage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetAllAppearanceOutcomesWithSingleResults')
@@ -29,7 +29,7 @@ context('Offence Check Overall Answers Page', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-sentence-length')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/SENTENCING/overall-sentence-length')
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
@@ -44,9 +44,9 @@ context('Offence Check Overall Answers Page', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-overall-answers')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/SENTENCING/check-overall-answers')
 
-    offenceCheckOverallAnswersPage = Page.verifyOnPage(OffenceCheckOverallAnswersPage)
+    offenceCheckOverallAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
   })
 
   it('displays person details', () => {
@@ -80,18 +80,17 @@ context('Offence Check Overall Answers Page', () => {
 
     courtCaseOverallSentenceLengthPage.monthsInput().should('have.value', '5').clear()
     courtCaseOverallSentenceLengthPage.continueButton().click()
-    offenceCheckOverallAnswersPage = Page.verifyOnPage(OffenceCheckOverallAnswersPage)
+    offenceCheckOverallAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
     offenceCheckOverallAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '6 years 0 months 0 weeks 0 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
-      'Conviction date': '12/05/2023',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
   })
 
   it('clicking edit conviction date and submitting goes back to check answers page', () => {
-    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'overall-conviction-date').click()
+    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'SENTENCING/overall-conviction-date').click()
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
     courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
     courtCaseOverallConvictionDatePage

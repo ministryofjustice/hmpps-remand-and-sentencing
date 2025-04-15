@@ -26,7 +26,7 @@ import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import Page from '../pages/page'
 import StartPage from '../pages/startPage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
-import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
+import SentencingWarrantInformationCheckAnswersPage from '../pages/sentencingWarrantInformationCheckAnswersPage'
 import OffenceUpdateOutcomePage from '../pages/offenceUpdateOutcomePage'
 import OffenceUpdateOffenceOutcomesPage from '../pages/offenceUpdateOffenceOutcomesPage'
 
@@ -395,7 +395,7 @@ context('Repeat Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    const offenceOverallCheckAnswersPage = Page.verifyOnPage(OffenceCheckOverallAnswersPage)
+    const offenceOverallCheckAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
     offenceOverallCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '4 years 5 months 0 weeks 0 days',

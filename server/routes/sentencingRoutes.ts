@@ -127,6 +127,7 @@ export default class SentencingRoutes {
       )
     }
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      // TODO what replaces details??
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/details`,
       )

@@ -190,16 +190,6 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/case-outcome-applied-all-sentencing',
-    courtCaseRoutes.getCaseOutcomeAppliedAllSentencing,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-case-outcome-applied-all-sentencing',
-    courtCaseRoutes.submitCaseOutcomeAppliedAllSentencing,
-  )
-
-  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/tagged-bail',
     courtCaseRoutes.getTaggedBail,
   )
@@ -207,16 +197,6 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-tagged-bail',
     courtCaseRoutes.submitTaggedBail,
-  )
-
-  get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/overall-sentence-length',
-    courtCaseRoutes.getOverallSentenceLength,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-overall-sentence-length',
-    courtCaseRoutes.submitOverallSentenceLength,
   )
 
   get(
@@ -230,16 +210,6 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/overall-conviction-date',
-    courtCaseRoutes.getOverallConvictionDate,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-overall-conviction-date',
-    courtCaseRoutes.submitOverallConvictionDate,
-  )
-
-  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/check-answers',
     courtCaseRoutes.getCheckAnswers,
   )
@@ -247,16 +217,6 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-answers',
     courtCaseRoutes.submitCheckAnswers,
-  )
-
-  get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/check-overall-answers',
-    offenceRoutes.getCheckOverallAnswers,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-overall-answers',
-    offenceRoutes.submitCheckOverallAnswers,
   )
 
   get(

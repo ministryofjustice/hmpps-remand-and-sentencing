@@ -153,49 +153,6 @@ export default class OffenceRoutes {
     )
   }
 
-  public getCheckOverallAnswers: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
-    const overallCaseOutcome = (
-      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
-    ).outcomeName
-    const isAddJourney = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date`
-    if (isAddJourney) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all-sentencing`
-    }
-    return res.render('pages/offence/check-overall-answers', {
-      nomsId,
-      courtAppearance,
-      courtCaseReference,
-      appearanceReference,
-      overallCaseOutcome,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      isAddJourney,
-      backLink,
-    })
-  }
-
-  public submitCheckOverallAnswers: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    if (courtAppearance.offences.length) {
-      if (res.locals.isAddCourtCase) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
-        )
-      }
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
-      )
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/0/add-another-offence`,
-    )
-  }
-
   public getUpdateOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,

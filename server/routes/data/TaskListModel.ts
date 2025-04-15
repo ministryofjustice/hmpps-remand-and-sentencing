@@ -132,6 +132,15 @@ export default class TaskListModel {
       }
     }
 
+    if (this.anyWarrantInformationFilledOut(courtAppearance)) {
+      return {
+        tag: {
+          text: 'In progress',
+          classes: 'govuk-tag--light-blue',
+        },
+      }
+    }
+
     return {
       tag: {
         text: 'Incomplete',
@@ -147,7 +156,7 @@ export default class TaskListModel {
     console.log('caseOutcomeAppliedAll:', courtAppearance.caseOutcomeAppliedAll)
     console.log('warrantInformationAccepted:', courtAppearance.warrantInformationAccepted)
     return (
-      // courtAppearance.overallSentenceLength && TODO doesnt check this because it gets deleted if set to NO.. nit sure why but leave it
+      // Doesnt check courtAppearance.overallSentenceLength  because it gets deleted if set to NO
       courtAppearance.overallConvictionDateAppliedAll && // Is the conviction date the same for all offences on the warrant
       courtAppearance.caseOutcomeAppliedAll && // Is the outcome the same for all offences on the warrant?
       courtAppearance.warrantInformationAccepted
@@ -156,8 +165,6 @@ export default class TaskListModel {
 
   private anyWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     return (
-      // TODO why !== undefined instead of just ! (copied from other similar methods but double check)
-      // TODO these weren't in the original check so do we need to check?
       courtAppearance.overallSentenceLength !== undefined ||
       courtAppearance.overallConvictionDateAppliedAll !== undefined ||
       courtAppearance.caseOutcomeAppliedAll !== undefined ||
@@ -165,7 +172,7 @@ export default class TaskListModel {
     )
   }
 
-  private warrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+  private xwarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     return (
       // courtAppearance.overallSentenceLength !== undefined && TODO doesnt check this because it gets deleted if set to NO.. nit sure why but leave it
       courtAppearance.overallConvictionDateAppliedAll !== undefined &&
@@ -177,7 +184,7 @@ export default class TaskListModel {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
       //  TODO code improvement.. could be improved? combine ifs just one if else
-      if (this.warrantInformationFilledOut(courtAppearance)) {
+      if (this.allWarrantInformationFilledOut(courtAppearance)) {
         if (this.isAddCourtCase()) {
           href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/check-overall-answers`
         } else {
@@ -191,14 +198,6 @@ export default class TaskListModel {
     return href
   }
 
-  private XXgetWarrantInformationHref(courtAppearance: CourtAppearance): string {
-    if (this.allWarrantInformationFilledOut(courtAppearance)) {
-      // TODO check what this is and should be - TODO new route to create for this
-      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/check-answers`
-    }
-    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/SENTENCING/overall-sentence-length`
-  }
-
   private getWarrantInformationItem(courtAppearance: CourtAppearance): TaskListItem {
     return {
       title: {
@@ -208,15 +207,6 @@ export default class TaskListModel {
       href: this.getWarrantInformationHref(courtAppearance),
       status: this.getWarrantInformationStatus(courtAppearance),
     }
-  }
-
-  // TODO CHECK THE USAGE ON THIS POSSIBLY NEEDS REFACTORING
-  private offenceOverallFieldsFilledOut(courtAppearance: CourtAppearance): boolean {
-    return (
-      courtAppearance.overallConvictionDate !== undefined &&
-      courtAppearance.overallConvictionDateAppliedAll !== undefined &&
-      courtAppearance.overallSentenceLength !== undefined
-    )
   }
 
   private getCourtDocumentsItem(courtAppearance: CourtAppearance): TaskListItem {
@@ -279,12 +269,14 @@ export default class TaskListModel {
         } else {
           href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
         }
-      } else if (this.warrantInformationFilledOut(courtAppearance)) {
-        if (this.isAddCourtCase()) {
-          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
-        } else {
-          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/update-offence-outcomes`
-        }
+      } else if (this.allWarrantInformationFilledOut(courtAppearance)) {
+        // TODO is this right??
+        // if (this.isAddCourtCase()) {
+        //   href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+        // } else {
+        //   href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/update-offence-outcomes`
+        // }
+        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/update-offence-outcomes`
       }
     }
 

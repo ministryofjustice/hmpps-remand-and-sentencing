@@ -28,7 +28,7 @@ declare module 'models' {
     overallSentenceLength?: SentenceLength
     referenceNumberSelect?: string
     appearanceInformationAccepted?: boolean
-    warrantInformationAccepted?: boolean // TODO is this needed? check uses of above
+    warrantInformationAccepted?: boolean
     offenceSentenceAccepted?: boolean
     nextCourtAppearanceAccepted?: boolean
     overallConvictionDate?: Date

@@ -151,7 +151,7 @@ export default class TaskListModel {
 
   private allWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     return (
-      // Doesnt check courtAppearance.overallSentenceLength  because it gets deleted if set to NO
+      // Doesnt check courtAppearance.overallSentenceLength because it gets deleted if set to NO
       courtAppearance.overallConvictionDateAppliedAll &&
       courtAppearance.caseOutcomeAppliedAll &&
       courtAppearance.warrantInformationAccepted

@@ -376,7 +376,6 @@ export default {
                 charges: [
                   {
                     chargeUuid: 'aeb5ba2e-0bf5-444d-b540-4739012cd7a5',
-                    lifetimeUuid: 'bf831234-41af-4ba6-b7d0-bd36b02dd5fa',
                     offenceCode: 'PS90037',
                     offenceStartDate: '2023-10-11',
                     offenceEndDate: null,
@@ -390,7 +389,6 @@ export default {
                     },
                     sentence: {
                       sentenceUuid: '29fa8c7f-7ba1-4033-ac4d-83ff0c125a45',
-                      sentenceLifetimeUuid: '34511c2a-3daf-4d07-a8e2-47046c12967f',
                       chargeNumber: '1',
                       periodLengths: [
                         {
@@ -412,6 +410,48 @@ export default {
                         sentenceCalcType: 'A',
                         sentenceCategory: 'B',
                         sentenceTypeDesc: 'A NOMIS Sentence Type',
+                      },
+                    },
+                    legacyData: null,
+                  },
+                  {
+                    chargeUuid: '5073470d-56f4-41b0-9e71-dfe468ed3455',
+                    offenceCode: 'PS90037',
+                    offenceStartDate: '2024-05-11',
+                    offenceEndDate: null,
+                    outcome: {
+                      outcomeUuid: 'f4617346-3b8e-467b-acc4-a4fab809ed3b',
+                      outcomeName: 'Imprisonment',
+                      nomisCode: '1002',
+                      outcomeType: 'SENTENCING',
+                      displayOrder: 10,
+                      dispositionCode: 'FINAL',
+                    },
+                    sentence: {
+                      sentenceUuid: '7484fdbc-8e74-4590-b842-b131a004ab61',
+                      chargeNumber: '2',
+                      periodLengths: [
+                        {
+                          years: null,
+                          months: 6,
+                          weeks: null,
+                          days: null,
+                          periodOrder: 'months',
+                          periodLengthType: 'TERM_LENGTH',
+                          legacyData: null,
+                        },
+                      ],
+                      sentenceServeType: 'CONCURRENT',
+                      consecutiveToChargeNumber: null,
+                      sentenceType: null,
+                      convictionDate: '2024-05-11',
+                      fineAmount: {
+                        fineAmount: 10,
+                      },
+                      legacyData: {
+                        sentenceCalcType: 'C',
+                        sentenceCategory: 'D',
+                        sentenceTypeDesc: 'A NOMIS Fine Sentence Type',
                       },
                     },
                     legacyData: null,
@@ -639,6 +679,75 @@ export default {
                 outcomeType: 'REMAND',
                 displayOrder: 10,
                 dispositionCode: 'INTERIM',
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
+
+  stubGetLatestCourtAppearanceWithSentencing: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/latest-appearance',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
+          outcome: {
+            outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+            outcomeName: 'Imprisonment',
+            nomisCode: '09753',
+            outcomeType: 'SENTENCING',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          },
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          warrantType: 'SENTENCING',
+          overallSentenceLength: {
+            years: 4,
+            months: 5,
+            weeks: null,
+            days: null,
+            periodOrder: 'years,months',
+            periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+          },
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',
+                countNumber: '1',
+                periodLengths: [
+                  {
+                    years: 4,
+                    months: 5,
+                    periodOrder: 'years,months',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                ],
+                sentenceServeType: 'FORTHWITH',
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
               },
             },
           ],

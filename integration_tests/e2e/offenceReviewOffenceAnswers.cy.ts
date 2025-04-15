@@ -63,9 +63,10 @@ context('Review Offences Page', () => {
       cy.task('stubGetChargeOutcomeById', {
         outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
         outcomeName: 'Lie on file',
-        outcomeType: 'REMAND',
+        outcomeType: 'NON_CUSTODIAL',
       })
       offenceReviewOffencesPage.updateOutcomeLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '0').click()
+
       const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
       offenceUpdateOutcomePage.radioLabelContains('Lie on file').click()
       offenceUpdateOutcomePage.continueButton().click()

@@ -154,7 +154,7 @@ export const periodLengthToSentenceLength = (periodLength: PeriodLength): Senten
   return null
 }
 
-const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
+export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
     countNumber: apiSentence.chargeNumber,
@@ -163,6 +163,7 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     sentenceTypeId: apiSentence.sentenceType?.sentenceTypeUuid,
     sentenceTypeClassification: apiSentence.sentenceType?.classification,
     consecutiveTo: apiSentence.consecutiveToChargeNumber,
+    fineAmount: apiSentence.fineAmount?.fineAmount,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
     ...(apiSentence.legacyData && { legacyData: { ...apiSentence.legacyData } }),
   } as Sentence

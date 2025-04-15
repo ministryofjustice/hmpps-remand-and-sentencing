@@ -38,4 +38,14 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
   sentencesAdded = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"] > :nth-child(2)')
 
   offencesSummaryCard = (): PageElement => cy.get('[data-qa="offences-summary-card"]')
+
+  custodialOffences = (): PageElement => cy.get('[data-qa="custodialOffences"]')
+
+  nonCustodialOffences = (): PageElement => cy.get('[data-qa="nonCustodialOffences"]')
+
+  noNonCustodialOutcomeInset = (): PageElement => cy.get('[data-qa="noNonCustodialOutcomeInset"]')
+
+  noCustodialOutcomeInset = (): PageElement => cy.get('[data-qa="noCustodialOutcomeInset"]')
+
+  countWarning = (): PageElement => cy.get('[data-qa="countWarning"]')
 }

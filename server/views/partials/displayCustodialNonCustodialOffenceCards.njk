@@ -1,0 +1,103 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+
+<h2 class="govuk-heading-m">Offences with custodial outcomes</h2>
+{% if showCountWarning %}
+    {{ govukWarningText({
+        text: "There are missing count numbers. Please add these where possible",
+        iconFallbackText: "Warning",
+        attributes: {
+            'data-qa': 'countWarning'
+        }
+    }) }}
+{% endif %}
+<span data-qa="custodialOffences">
+    {% for offence in custodialOffences %}
+        {{ offenceCard({
+            offenceCode: offence.offenceCode,
+            offenceName: offenceMap[offence.offenceCode],
+            offenceStartDate: offence.offenceStartDate | formatDate,
+            offenceEndDate: offence.offenceEndDate | formatDate,
+            outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
+            countNumber: offence.sentence.countNumber,
+            convictionDate: offence.sentence.convictionDate | formatDate,
+            terrorRelated: offence.terrorRelated,
+            isSentenced: offence.sentence,
+            periodLengths: offence.sentence.periodLengths,
+            sentenceServeType: offence.sentence.sentenceServeType,
+            consecutiveTo: offence.sentence.consecutiveTo,
+            sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+            fineAmount: offence.sentence.fineAmount,
+            actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/edit-offence",
+                        text: "Edit",
+                        visuallyHiddenText: "edit offence"
+                    },
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/delete-offence",
+                        text: "Delete",
+                        visuallyHiddenText: "delete offence"
+                    }
+                ]
+            }
+        }) }}
+    {% else %}
+        {{ govukInsetText({
+                    text: "There are no offences with custodial outcomes.",
+                    classes: "govuk-!-margin-top-2",
+                    attributes: {
+                        'data-qa': 'noCustodialOutcomeInset'
+                    }
+        }) }}
+    {% endfor %}
+</span>
+
+<h2 class="govuk-heading-m govuk-!-margin-top-7">Offences with non-custodial outcomes</h2>
+<span data-qa="nonCustodialOffences">
+    {% for offence in nonCustodialOffences %}
+        {{ offenceCard({
+            offenceCode: offence.offenceCode,
+            offenceName: offenceMap[offence.offenceCode],
+            offenceStartDate: offence.offenceStartDate | formatDate,
+            offenceEndDate: offence.offenceEndDate | formatDate,
+            outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
+            countNumber: offence.sentence.countNumber,
+            convictionDate: offence.sentence.convictionDate | formatDate,
+            terrorRelated: offence.terrorRelated,
+            isSentenced: offence.sentence,
+            periodLengths: offence.sentence.periodLengths,
+            sentenceServeType: offence.sentence.sentenceServeType,
+            consecutiveTo: offence.sentence.consecutiveTo,
+            sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+            fineAmount: offence.sentence.fineAmount,
+            actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/edit-offence",
+                        text: "Edit",
+                        visuallyHiddenText: "edit offence"
+                    },
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/delete-offence",
+                        text: "Delete",
+                        visuallyHiddenText: "delete offence"
+                    }
+                ]
+            }
+        }) }}
+    {% else %}
+        {{ govukInsetText({
+                    text: "There are no offences with non-custodial outcomes.",
+                    classes: "govuk-!-margin-top-2",
+                    attributes: {
+                        'data-qa': 'noNonCustodialOutcomeInset'
+                    }
+        }) }}
+    {% endfor %}
+</span>
+
+

@@ -75,27 +75,25 @@
     }
 ] %}
 
-{% if isAddJourney %}
-    {% set summaryRows = summaryRows.concat([
-        {
-            key: {
-            text: "Is the outcome the same for all offences on the warrant?"
-        },
-            value: {
-            text: "Yes" if courtAppearance.caseOutcomeAppliedAll === 'true' else 'No'
-        },
-            actions: {
-            items: [
-                {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/SENTENCING/case-outcome-applied-all?submitToCheckAnswers=true",
-                    text: "Edit",
-                    visuallyHiddenText: "is the outcome the same for all offences on the warrant"
-                }
-            ]
-        }
-        }
-    ]) %}
-{% endif %}
+{% set summaryRows = summaryRows.concat([
+    {
+        key: {
+        text: "Is the outcome the same for all offences on the warrant?"
+    },
+        value: {
+        text: "Yes" if courtAppearance.caseOutcomeAppliedAll === 'true' else 'No'
+    },
+        actions: {
+        items: [
+            {
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/SENTENCING/case-outcome-applied-all?submitToCheckAnswers=true",
+                text: "Edit",
+                visuallyHiddenText: "is the outcome the same for all offences on the warrant"
+            }
+        ]
+    }
+    }
+]) %}
 
 {% block pageContent %}
     <span class="govuk-caption-l" data-qa="warrant-information-caption">

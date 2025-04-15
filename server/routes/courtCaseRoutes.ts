@@ -1010,66 +1010,6 @@ export default class CourtCaseRoutes {
     )
   }
 
-  // TODO check this.. does this need migrating too
-  public getAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
-    let courtCaseAlternativeSentenceLengthForm = (req.flash('courtCaseAlternativeSentenceLengthForm')[0] ||
-      {}) as CourtCaseAlternativeSentenceLengthForm
-
-    if (Object.keys(courtCaseAlternativeSentenceLengthForm).length === 0) {
-      courtCaseAlternativeSentenceLengthForm =
-        sentenceLengthToAlternativeSentenceLengthForm<CourtCaseAlternativeSentenceLengthForm>(
-          this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
-        )
-    }
-    this.courtAppearanceService.setHasOverallSentenceLengthTrue(req.session, nomsId)
-    return res.render('pages/courtAppearance/alternative-sentence-length', {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      submitToCheckAnswers,
-      courtCaseAlternativeSentenceLengthForm,
-      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      errors: req.flash('errors') || [],
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-sentence-length${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
-    })
-  }
-
-  // TODO check this.. does this need migrating too
-  public submitAlternativeSentenceLength: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
-    const courtCaseAlternativeSentenceLengthForm = trimForm<CourtCaseAlternativeSentenceLengthForm>(req.body)
-    const errors = this.courtAppearanceService.setOverallAlternativeSentenceLength(
-      req.session,
-      nomsId,
-      courtCaseAlternativeSentenceLengthForm,
-    )
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      req.flash('courtCaseAlternativeSentenceLengthForm', { ...courtCaseAlternativeSentenceLengthForm })
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/alternative-overall-sentence-length${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
-      )
-    }
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/details`,
-      )
-    }
-    if (submitToCheckAnswers) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-overall-answers`,
-      )
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-conviction-date`,
-    )
-  }
-
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)

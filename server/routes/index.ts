@@ -200,16 +200,6 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/alternative-overall-sentence-length',
-    courtCaseRoutes.getAlternativeSentenceLength,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-overall-alternative-sentence-length',
-    courtCaseRoutes.submitAlternativeSentenceLength,
-  )
-
-  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/check-answers',
     courtCaseRoutes.getCheckAnswers,
   )
@@ -547,6 +537,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-check-overall-answers',
     sentencingRoutes.submitCheckOverallAnswers,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/alternative-overall-sentence-length',
+    sentencingRoutes.getAlternativeSentenceLength,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-alternative-sentence-length',
+    sentencingRoutes.submitAlternativeSentenceLength,
   )
 
   return router

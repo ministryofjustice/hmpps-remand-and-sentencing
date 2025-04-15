@@ -6,9 +6,11 @@
 
 {% block pageContent %}
     {{ super() }}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-overall-alternative-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/SENTENCING/submit-overall-alternative-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/additionalInformationCaption.njk" %}
+                <span class="govuk-caption-l" data-qa="warrant-information-caption">
+                    Add overall warrant information
+                </span>
 
                 {% call govukFieldset({
                     legend: {

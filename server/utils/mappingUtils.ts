@@ -32,7 +32,7 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, pris
   } as CreatePeriodLength
 }
 
-const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateSentence | undefined => {
+export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateSentence | undefined => {
   let createSentence
   if (sentence) {
     const periodLengths =
@@ -45,6 +45,8 @@ const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateS
       consecutiveToChargeNumber: sentence.consecutiveTo,
       prisonId,
       ...(sentence.convictionDate && { convictionDate: dayjs(sentence.convictionDate).format('YYYY-MM-DD') }),
+      ...(sentence.fineAmount && { fineAmount: { fineAmount: sentence.fineAmount } }),
+      ...(sentence.sentenceUuid && { sentenceUuid: sentence.sentenceUuid }),
     } as CreateSentence
   }
   return createSentence

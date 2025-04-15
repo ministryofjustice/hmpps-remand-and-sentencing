@@ -38,6 +38,9 @@ export default class TaskListModel {
     if (courtAppearance.warrantType === 'SENTENCING') {
       this.items.splice(1, 0, this.getWarrantInformationItem(courtAppearance))
     }
+    console.log('Items: XXXXXXXXXXXXXXXXXXXXXXX')
+    console.log('Items: XXXXXXXXXXXXXXXXXXXXXXX')
+    console.log(`Items: XXXXXXXXXXXXXXXXXXXXXXX${JSON.stringify(this.items)}`)
   }
 
   private getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
@@ -270,16 +273,15 @@ export default class TaskListModel {
   private getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
     const appearanceInfoComplete = this.allAppearanceInformationFilledOut(courtAppearance)
     const warrantInformationComplete = this.allWarrantInformationFilledOut(courtAppearance)
-    let status
 
-    if (courtAppearance.warrantType === 'REMAND' && !this.allAppearanceInformationFilledOut(courtAppearance)) {
+    if (courtAppearance.warrantType === 'REMAND' && !appearanceInfoComplete) {
       return {
         text: 'Cannot start yet',
         classes: 'govuk-task-list__status--cannot-start-yet',
       }
     }
 
-    if (courtAppearance.warrantType === 'SENTENCING' && !this.allWarrantInformationFilledOut(courtAppearance)) {
+    if (courtAppearance.warrantType === 'SENTENCING' && !warrantInformationComplete) {
       return {
         text: 'Cannot start yet',
         classes: 'govuk-task-list__status--cannot-start-yet',
@@ -287,27 +289,21 @@ export default class TaskListModel {
     }
 
     if (courtAppearance.offenceSentenceAccepted) {
-      status = {
+      return {
         text: 'Completed',
       }
-    } else if (appearanceInfoComplete && courtAppearance.warrantType === 'REMAND') {
+    }
+
+    if (appearanceInfoComplete && courtAppearance.warrantType === 'REMAND') {
       if (!this.isAddCourtCase() && courtAppearance.caseOutcomeAppliedAll === 'true') {
-        status = {
+        return {
           tag: {
             text: 'Optional',
             classes: 'govuk-tag--grey',
           },
         }
-      } else {
-        status = {
-          tag: {
-            text: 'Incomplete',
-            classes: 'govuk-tag--blue',
-          },
-        }
       }
-    } else if (warrantInformationComplete) {
-      status = {
+      return {
         tag: {
           text: 'Incomplete',
           classes: 'govuk-tag--blue',
@@ -315,7 +311,21 @@ export default class TaskListModel {
       }
     }
 
-    return status
+    if (warrantInformationComplete) {
+      return {
+        tag: {
+          text: 'Incomplete',
+          classes: 'govuk-tag--blue',
+        },
+      }
+    }
+
+    return {
+      tag: {
+        text: 'Incomplete',
+        classes: 'govuk-tag--blue',
+      },
+    }
   }
 
   private getNextCourtAppearanceItem(courtAppearance: CourtAppearance): TaskListItem {

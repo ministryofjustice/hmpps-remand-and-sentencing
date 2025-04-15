@@ -3,11 +3,8 @@ import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseOverallConvictionDateForm,
-  OffenceAlternativeSentenceLengthForm,
   SentenceLengthForm,
 } from 'forms'
-import type { Offence } from 'models'
-import deepmerge from 'deepmerge'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import {
@@ -62,14 +59,8 @@ export default class SentencingRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/overall-sentence-length${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
       )
     }
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
-      // TODO what replaces deails?
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/details`,
-      )
-    }
+
     if (submitToCheckAnswers) {
-      // TODO is this the correct check your answers?
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`,
       )
@@ -122,12 +113,6 @@ export default class SentencingRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/alternative-overall-sentence-length${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
       )
     }
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
-      // TODO need to test this edit journey
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/details`,
-      )
-    }
     if (submitToCheckAnswers) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`,
@@ -160,11 +145,7 @@ export default class SentencingRoutes {
     }
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/overall-sentence-length`
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
-      // TODO check
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/details`
-    } else if (submitToCheckAnswers) {
-      // TODO check
+    if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`
     }
 
@@ -196,24 +177,14 @@ export default class SentencingRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/overall-conviction-date${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
       )
     }
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
-      // TODO what replaces details??
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/details`,
-      )
-    }
+
     if (submitToCheckAnswers) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`,
       )
     }
-    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/case-outcome-applied-all`,
-      )
-    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/case-outcome-applied-all`,
     )
   }
 

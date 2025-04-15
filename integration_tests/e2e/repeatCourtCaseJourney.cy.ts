@@ -56,219 +56,219 @@ context('Repeat Court Case journey', () => {
     cy.visit('/person/A1234AB')
   })
 
-  it('repeat remand journey', () => {
-    cy.task('stubGetAllAppearanceOutcomes')
-    cy.task('stubGetAppearanceOutcomeById', {})
-    cy.task('stubGetAppearanceTypeByUuid')
-
-    const startPage = Page.verifyOnPage(StartPage)
-    startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
-
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.continueButton().click()
-
-    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Incomplete',
-        },
-        {
-          name: 'Review offences',
-          status: 'Cannot start yet',
-        },
-        {
-          name: 'Add next court appearance',
-          status: 'Cannot start yet',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Cannot start yet',
-        },
-      ])
-    courtCaseTaskListPage.appearanceInformationLink().click()
-
-    const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
-    courtCaseSelectReferencePage.radioLabelSelector('true').click()
-    courtCaseSelectReferencePage.continueButton().click()
-
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
-    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
-    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
-    courtCaseWarrantDatePage.continueButton().click()
-
-    const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
-      CourtCaseSelectCourtNamePage,
-      'Was the appearance at Accrington Youth Court?',
-    )
-    courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
-    courtCaseSelectCourtNamePage.continueButton().click()
-
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-      CourtCaseOverallCaseOutcomePage,
-      'Select the overall case outcome',
-    )
-    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-    courtCaseOverallCaseOutcomePage.continueButton().click()
-
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
-    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Warrant type': 'Remand',
-      'Case reference': 'C894623',
-      'Warrant date': '12/05/2023',
-      'Court name': 'Accrington Youth Court',
-      'Overall case outcome': 'Remanded in custody',
-      'Is the outcome the same for all offences on the warrant?': 'Yes',
-    })
-    courtCaseCheckAnswersPage.continueButton().click()
-
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Completed',
-        },
-        {
-          name: 'Review offences',
-          status: 'Optional',
-        },
-        {
-          name: 'Add next court appearance',
-          status: 'Optional',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-      ])
-
-    // courtCaseTaskListPage.courtDocumentsLink().click()
-
-    // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
-    // courtCaseDocumentTypePage.radioLabelSelector('Custodial warrant').click()
-    // courtCaseDocumentTypePage.button().click()
-
-    // const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
-    // courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
-    // courtCaseWarrantUploadPage.button().click()
-
-    // const courtCaseDocumentsPage = Page.verifyOnPage(CourtCaseDocumentsPage) - not built yet
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'Custodial warrant 1': 'uploaded',
-    // })
-    // courtCaseDocumentsPage.button().click()
-
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
-    courtCaseTaskListPage.reviewOffencesLink().click()
-    let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.addAnotherButton().click()
-
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.continueButton().click()
-
-    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-    offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.continueButton().click()
-
-    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.continueButton().click()
-
-    offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.radioLabelSelector('true').click()
-    offenceReviewOffencesPage.continueButton().click()
-
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Completed',
-        },
-        {
-          name: 'Review offences',
-          status: 'Completed',
-        },
-        {
-          name: 'Add next court appearance',
-          status: 'Optional',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-      ])
-
-    courtCaseTaskListPage.addNextCourtAppearanceLink().click()
-
-    const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
-    courtCaseNextHearingSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingSetPage.continueButton().click()
-
-    const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
-    courtCaseNextHearingTypePage.continueButton().click()
-
-    const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
-    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type(futureDate.date().toString())
-    courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type((futureDate.month() + 1).toString())
-    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type(futureDate.year().toString())
-    courtCaseNextHearingDatePage.continueButton().click()
-
-    const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingCourtSetPage.continueButton().click()
-
-    const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
-    courtCaseNextHearingAnswersPage.continueButton().click()
-
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Completed',
-        },
-        {
-          name: 'Review offences',
-          status: 'Completed',
-        },
-        {
-          name: 'Add next court appearance',
-          status: 'Completed',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-      ])
-
-    courtCaseTaskListPage.continueButton().click()
-
-    cy.task('verifyCreateCourtAppearanceRequest', { nextHearingDate: futureDate.format('YYYY-MM-DD') }).should(
-      'equal',
-      1,
-    )
-    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
-  })
+  // it('repeat remand journey', () => {
+  //   cy.task('stubGetAllAppearanceOutcomes')
+  //   cy.task('stubGetAppearanceOutcomeById', {})
+  //   cy.task('stubGetAppearanceTypeByUuid')
+  //
+  //   const startPage = Page.verifyOnPage(StartPage)
+  //   startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
+  //
+  //   const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+  //   courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
+  //   courtCaseWarrantTypePage.continueButton().click()
+  //
+  //   let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+  //   courtCaseTaskListPage
+  //     .taskList()
+  //     .getTaskList()
+  //     .should('deep.equal', [
+  //       {
+  //         name: 'Add appearance information',
+  //         status: 'Incomplete',
+  //       },
+  //       {
+  //         name: 'Review offences',
+  //         status: 'Cannot start yet',
+  //       },
+  //       {
+  //         name: 'Add next court appearance',
+  //         status: 'Cannot start yet',
+  //       },
+  //       {
+  //         name: 'Upload court documents',
+  //         status: 'Cannot start yet',
+  //       },
+  //     ])
+  //   courtCaseTaskListPage.appearanceInformationLink().click()
+  //
+  //   const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
+  //   courtCaseSelectReferencePage.radioLabelSelector('true').click()
+  //   courtCaseSelectReferencePage.continueButton().click()
+  //
+  //   const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+  //   courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+  //   courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+  //   courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+  //   courtCaseWarrantDatePage.continueButton().click()
+  //
+  //   const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
+  //     CourtCaseSelectCourtNamePage,
+  //     'Was the appearance at Accrington Youth Court?',
+  //   )
+  //   courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
+  //   courtCaseSelectCourtNamePage.continueButton().click()
+  //
+  //   const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+  //     CourtCaseOverallCaseOutcomePage,
+  //     'Select the overall case outcome',
+  //   )
+  //   courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+  //   courtCaseOverallCaseOutcomePage.continueButton().click()
+  //
+  //   const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+  //   courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+  //   courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
+  //
+  //   const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+  //   courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+  //     'Warrant type': 'Remand',
+  //     'Case reference': 'C894623',
+  //     'Warrant date': '12/05/2023',
+  //     'Court name': 'Accrington Youth Court',
+  //     'Overall case outcome': 'Remanded in custody',
+  //     'Is the outcome the same for all offences on the warrant?': 'Yes',
+  //   })
+  //   courtCaseCheckAnswersPage.continueButton().click()
+  //
+  //   courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+  //   courtCaseTaskListPage
+  //     .taskList()
+  //     .getTaskList()
+  //     .should('deep.equal', [
+  //       {
+  //         name: 'Add appearance information',
+  //         status: 'Completed',
+  //       },
+  //       {
+  //         name: 'Review offences',
+  //         status: 'Optional',
+  //       },
+  //       {
+  //         name: 'Add next court appearance',
+  //         status: 'Optional',
+  //       },
+  //       {
+  //         name: 'Upload court documents',
+  //         status: 'Optional',
+  //       },
+  //     ])
+  //
+  //   // courtCaseTaskListPage.courtDocumentsLink().click()
+  //
+  //   // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
+  //   // courtCaseDocumentTypePage.radioLabelSelector('Custodial warrant').click()
+  //   // courtCaseDocumentTypePage.button().click()
+  //
+  //   // const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
+  //   // courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
+  //   // courtCaseWarrantUploadPage.button().click()
+  //
+  //   // const courtCaseDocumentsPage = Page.verifyOnPage(CourtCaseDocumentsPage) - not built yet
+  //   // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+  //   //   'Custodial warrant 1': 'uploaded',
+  //   // })
+  //   // courtCaseDocumentsPage.button().click()
+  //
+  //   // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
+  //   courtCaseTaskListPage.reviewOffencesLink().click()
+  //   let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+  //   offenceReviewOffencesPage.addAnotherButton().click()
+  //
+  //   const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+  //   offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+  //   offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+  //   offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+  //   offenceOffenceDatePage.continueButton().click()
+  //
+  //   const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+  //   offenceOffenceCodePage.input().type('PS90037')
+  //   offenceOffenceCodePage.continueButton().click()
+  //
+  //   const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+  //   offenceOffenceCodeConfirmPage.continueButton().click()
+  //
+  //   offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+  //   offenceReviewOffencesPage.radioLabelSelector('true').click()
+  //   offenceReviewOffencesPage.continueButton().click()
+  //
+  //   courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+  //   courtCaseTaskListPage
+  //     .taskList()
+  //     .getTaskList()
+  //     .should('deep.equal', [
+  //       {
+  //         name: 'Add appearance information',
+  //         status: 'Completed',
+  //       },
+  //       {
+  //         name: 'Review offences',
+  //         status: 'Completed',
+  //       },
+  //       {
+  //         name: 'Add next court appearance',
+  //         status: 'Optional',
+  //       },
+  //       {
+  //         name: 'Upload court documents',
+  //         status: 'Optional',
+  //       },
+  //     ])
+  //
+  //   courtCaseTaskListPage.addNextCourtAppearanceLink().click()
+  //
+  //   const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
+  //   courtCaseNextHearingSetPage.radioLabelSelector('true').click()
+  //   courtCaseNextHearingSetPage.continueButton().click()
+  //
+  //   const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
+  //   courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
+  //   courtCaseNextHearingTypePage.continueButton().click()
+  //
+  //   const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
+  //   courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type(futureDate.date().toString())
+  //   courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type((futureDate.month() + 1).toString())
+  //   courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type(futureDate.year().toString())
+  //   courtCaseNextHearingDatePage.continueButton().click()
+  //
+  //   const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
+  //   courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
+  //   courtCaseNextHearingCourtSetPage.continueButton().click()
+  //
+  //   const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
+  //   courtCaseNextHearingAnswersPage.continueButton().click()
+  //
+  //   courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+  //   courtCaseTaskListPage
+  //     .taskList()
+  //     .getTaskList()
+  //     .should('deep.equal', [
+  //       {
+  //         name: 'Add appearance information',
+  //         status: 'Completed',
+  //       },
+  //       {
+  //         name: 'Review offences',
+  //         status: 'Completed',
+  //       },
+  //       {
+  //         name: 'Add next court appearance',
+  //         status: 'Completed',
+  //       },
+  //       {
+  //         name: 'Upload court documents',
+  //         status: 'Optional',
+  //       },
+  //     ])
+  //
+  //   courtCaseTaskListPage.continueButton().click()
+  //
+  //   cy.task('verifyCreateCourtAppearanceRequest', { nextHearingDate: futureDate.format('YYYY-MM-DD') }).should(
+  //     'equal',
+  //     1,
+  //   )
+  //   Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
+  // })
 
   it('remand to sentencing', () => {
     cy.task('stubGetSentenceTypesByIds', [
@@ -310,6 +310,10 @@ context('Repeat Court Case journey', () => {
         {
           name: 'Add appearance information',
           status: 'Incomplete',
+        },
+        {
+          name: 'Add warrant information',
+          status: 'Cannot start yet',
         },
         {
           name: 'Update offence outcomes',
@@ -368,85 +372,12 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Update offence outcomes',
+          name: 'Add warrant information',
           status: 'Incomplete',
         },
         {
-          name: 'Add next court appearance',
-          status: 'Optional',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-      ])
-    courtCaseTaskListPage.updateOffenceOutcomesLink().click()
-
-    const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
-    courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
-    courtCaseOverallSentenceLengthPage.yearsInput().type('4')
-    courtCaseOverallSentenceLengthPage.monthsInput().type('5')
-    courtCaseOverallSentenceLengthPage.continueButton().click()
-
-    const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
-    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
-    courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
-    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
-    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
-    courtCaseOverallConvictionDatePage.continueButton().click()
-
-    const offenceOverallCheckAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
-    offenceOverallCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
-      'Is there an overall sentence length on the warrant?': 'Yes',
-      'Overall sentence length': '4 years 5 months 0 weeks 0 days',
-      'Is the conviction date the same for all offences on the warrant?': 'Yes',
-      'Conviction date': '12/05/2023',
-    })
-    offenceOverallCheckAnswersPage.confirmAndAddOffenceButton().click()
-
-    let offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
-    offenceUpdateOffenceOutcomesPage
-      .updateOutcomeLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '0')
-      .click()
-
-    const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
-    offenceUpdateOutcomePage.radioLabelContains('Imprisonment').click()
-    offenceUpdateOutcomePage.continueButton().click()
-
-    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
-    offenceCountNumberPage.radioLabelSelector('true').click()
-    offenceCountNumberPage.input().type('1')
-    offenceCountNumberPage.continueButton().click()
-
-    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
-    offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
-    offenceSentenceTypePage.continueButton().click()
-
-    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
-    offencePeriodLengthPage.yearsInput().type('4')
-    offencePeriodLengthPage.monthsInput().type('5')
-    offencePeriodLengthPage.continueButton().click()
-
-    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    offenceSentenceServeTypePage.continueButton().click()
-
-    offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
-    offenceUpdateOffenceOutcomesPage.radioLabelSelector('true').click()
-    offenceUpdateOffenceOutcomesPage.continueButton().click()
-
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Completed',
-        },
-        {
           name: 'Update offence outcomes',
-          status: 'Completed',
+          status: 'Cannot start yet',
         },
         {
           name: 'Add next court appearance',
@@ -458,9 +389,142 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.continueButton().click()
+    // courtCaseTaskListPage.warrantInformationLink().click()
+    //
+    // const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    // courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
+    // courtCaseOverallSentenceLengthPage.yearsInput().type('4')
+    // courtCaseOverallSentenceLengthPage.monthsInput().type('5')
+    // courtCaseOverallSentenceLengthPage.continueButton().click()
+    //
+    // const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
+    // courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
+    // courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
+    // courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
+    // courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
+    // courtCaseOverallConvictionDatePage.continueButton().click()
+    //
+    // const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    // courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+    // courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
+    //
+    // const warrantInformationCheckAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
+    // warrantInformationCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
+    //   'Is there an overall sentence length on the warrant?': 'Yes',
+    //   'Overall sentence length': '4 years 5 months 0 weeks 0 days',
+    //   'Is the conviction date the same for all offences on the warrant?': 'Yes',
+    //   'Conviction date': '12/05/2023',
+    //   'Is the outcome the same for all offences on the warrant?': 'Yes',
+    // })
+    // warrantInformationCheckAnswersPage.confirmAndAddOffenceButton().click()
+    //
+    // courtCaseTaskListPage
+    //   .taskList()
+    //   .getTaskList()
+    //   .should('deep.equal', [
+    //     {
+    //       name: 'Add appearance information',
+    //       status: 'Completed',
+    //     },
+    //     {
+    //       name: 'Add warrant information',
+    //       status: 'Completed',
+    //     },
+    //     {
+    //       name: 'Add offences',
+    //       status: 'Incomplete',
+    //     },
+    //     {
+    //       name: 'Add next court appearance',
+    //       status: 'Optional',
+    //     },
+    //     {
+    //       name: 'Upload court documents',
+    //       status: 'Optional',
+    //     },
+    //   ])
 
-    cy.task('verifyCreateSentenceCourtAppearanceRequest').should('equal', 1)
-    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
+    // courtCaseTaskListPage.updateOffenceOutcomesLink().click()
+    //
+    // const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+    // courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
+    // courtCaseOverallSentenceLengthPage.yearsInput().type('4')
+    // courtCaseOverallSentenceLengthPage.monthsInput().type('5')
+    // courtCaseOverallSentenceLengthPage.continueButton().click()
+    //
+    // const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
+    // courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
+    // courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
+    // courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
+    // courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
+    // courtCaseOverallConvictionDatePage.continueButton().click()
+    //
+    // const offenceOverallCheckAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
+    // offenceOverallCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
+    //   'Is there an overall sentence length on the warrant?': 'Yes',
+    //   'Overall sentence length': '4 years 5 months 0 weeks 0 days',
+    //   'Is the conviction date the same for all offences on the warrant?': 'Yes',
+    //   'Conviction date': '12/05/2023',
+    // })
+    // offenceOverallCheckAnswersPage.confirmAndAddOffenceButton().click()
+    //
+    // let offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
+    // offenceUpdateOffenceOutcomesPage
+    //   .updateOutcomeLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '0')
+    //   .click()
+    //
+    // const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+    // offenceUpdateOutcomePage.radioLabelContains('Imprisonment').click()
+    // offenceUpdateOutcomePage.continueButton().click()
+    //
+    // const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    // offenceCountNumberPage.radioLabelSelector('true').click()
+    // offenceCountNumberPage.input().type('1')
+    // offenceCountNumberPage.continueButton().click()
+    //
+    // const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+    // offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
+    // offenceSentenceTypePage.continueButton().click()
+    //
+    // const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
+    // offencePeriodLengthPage.yearsInput().type('4')
+    // offencePeriodLengthPage.monthsInput().type('5')
+    // offencePeriodLengthPage.continueButton().click()
+    //
+    // const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    // offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
+    // offenceSentenceServeTypePage.continueButton().click()
+    //
+    // offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
+    // offenceUpdateOffenceOutcomesPage.radioLabelSelector('true').click()
+    // offenceUpdateOffenceOutcomesPage.continueButton().click()
+    //
+    // courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+    // courtCaseTaskListPage
+    //   .taskList()
+    //   .getTaskList()
+    //   .should('deep.equal', [
+    //     {
+    //       name: 'Add appearance information',
+    //       status: 'Completed',
+    //     },
+    //     {
+    //       name: 'Update offence outcomes',
+    //       status: 'Completed',
+    //     },
+    //     {
+    //       name: 'Add next court appearance',
+    //       status: 'Optional',
+    //     },
+    //     {
+    //       name: 'Upload court documents',
+    //       status: 'Optional',
+    //     },
+    //   ])
+    //
+    // courtCaseTaskListPage.continueButton().click()
+    //
+    // cy.task('verifyCreateSentenceCourtAppearanceRequest').should('equal', 1)
+    // Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
   })
 })

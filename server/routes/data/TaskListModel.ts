@@ -210,9 +210,11 @@ export default class TaskListModel {
         text: 'Upload court documents',
         classes: 'govuk-link--no-visited-state',
       },
-      href: this.allWarrantInformationFilledOut(courtAppearance)
-        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/document-type`
-        : null,
+      href:
+        (this.allAppearanceInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'REMAND') ||
+        (this.allWarrantInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'SENTENCING')
+          ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/document-type`
+          : null,
       status,
     }
   }
@@ -265,10 +267,18 @@ export default class TaskListModel {
   }
 
   private getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
+    const appearanceInfoComplete = this.allAppearanceInformationFilledOut(courtAppearance)
     const warrantInformationComplete = this.allWarrantInformationFilledOut(courtAppearance)
     let status
 
-    if (!this.allWarrantInformationFilledOut(courtAppearance)) {
+    if (courtAppearance.warrantType === 'REMAND' && !this.allAppearanceInformationFilledOut(courtAppearance)) {
+      return {
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
+      }
+    }
+
+    if (courtAppearance.warrantType === 'SENTENCING' && !this.allWarrantInformationFilledOut(courtAppearance)) {
       return {
         text: 'Cannot start yet',
         classes: 'govuk-task-list__status--cannot-start-yet',
@@ -279,12 +289,8 @@ export default class TaskListModel {
       status = {
         text: 'Completed',
       }
-    } else if (warrantInformationComplete) {
-      if (
-        !this.isAddCourtCase() &&
-        courtAppearance.warrantType === 'REMAND' &&
-        courtAppearance.caseOutcomeAppliedAll === 'true'
-      ) {
+    } else if (appearanceInfoComplete && courtAppearance.warrantType === 'REMAND') {
+      if (!this.isAddCourtCase() && courtAppearance.caseOutcomeAppliedAll === 'true') {
         status = {
           tag: {
             text: 'Optional',
@@ -299,6 +305,13 @@ export default class TaskListModel {
           },
         }
       }
+    } else if (warrantInformationComplete) {
+      status = {
+        tag: {
+          text: 'Incomplete',
+          classes: 'govuk-tag--blue',
+        },
+      }
     }
 
     return status
@@ -310,9 +323,12 @@ export default class TaskListModel {
         text: this.getNextCourtAppearanceTitleText(),
         classes: 'govuk-link--no-visited-state',
       },
-      href: this.allWarrantInformationFilledOut(courtAppearance)
-        ? this.getNextCourtAppearanceHref(courtAppearance)
-        : null,
+
+      href:
+        (this.allAppearanceInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'REMAND') ||
+        (this.allWarrantInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'SENTENCING')
+          ? this.getNextCourtAppearanceHref(courtAppearance)
+          : null,
       status: this.getNextCourtAppearanceStatus(courtAppearance),
     }
   }

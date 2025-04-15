@@ -73,7 +73,7 @@ context('Warrant Information Check Answers Page', () => {
   })
 
   it('clicking edit overall sentence length and submitting goes back to check answers page', () => {
-    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'overall-sentence-length').click()
+    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'SENTENCING/overall-sentence-length').click()
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().should('have.value', '4').clear().type('6')
@@ -85,6 +85,7 @@ context('Warrant Information Check Answers Page', () => {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '6 years 0 months 0 weeks 0 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
+      'Conviction date': '12/05/2023',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
   })

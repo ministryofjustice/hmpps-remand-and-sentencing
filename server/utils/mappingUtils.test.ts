@@ -1,5 +1,8 @@
-import type { PageCourtCaseAppearance } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import { pageCourtCaseAppearanceToCourtAppearance } from './mappingUtils'
+import type {
+  APISentence,
+  PageCourtCaseAppearance,
+} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { apiSentenceToSentence, pageCourtCaseAppearanceToCourtAppearance } from './mappingUtils'
 
 describe('mapping util tests', () => {
   it('correctly map next court appearance', () => {
@@ -25,5 +28,16 @@ describe('mapping util tests', () => {
     } as PageCourtCaseAppearance
     const result = pageCourtCaseAppearanceToCourtAppearance(appearance)
     expect(result.nextHearingSelect).toEqual(false)
+  })
+
+  it('correctly map fine amount', () => {
+    const apiSentence = {
+      fineAmount: {
+        fineAmount: 15,
+      },
+      periodLengths: [],
+    } as APISentence
+    const result = apiSentenceToSentence(apiSentence)
+    expect(result.fineAmount).toEqual(apiSentence.fineAmount.fineAmount)
   })
 })

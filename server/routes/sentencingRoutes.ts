@@ -23,15 +23,12 @@ export default class SentencingRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     let overallSentenceLengthForm = (req.flash('overallSentenceLengthForm')[0] || {}) as SentenceLengthForm
-    console.log('############# 0')
     if (Object.keys(overallSentenceLengthForm).length === 0) {
-      console.log('############# 1')
       overallSentenceLengthForm = sentenceLengthToSentenceLengthForm(
         this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
         this.courtAppearanceService.getHasOverallSentenceLength(req.session, nomsId),
       )
     }
-    console.log(`############# 2: ${JSON.stringify(overallSentenceLengthForm)}`)
     return res.render('pages/sentencing/overall-sentence-length', {
       nomsId,
       courtCaseReference,

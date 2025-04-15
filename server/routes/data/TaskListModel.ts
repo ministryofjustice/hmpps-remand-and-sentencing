@@ -150,15 +150,10 @@ export default class TaskListModel {
   }
 
   private allWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
-    console.log('Debugging allWarrantInformationFilledOut:')
-    console.log('overallSentenceLength:', courtAppearance.overallSentenceLength)
-    console.log('overallConvictionDateAppliedAll:', courtAppearance.overallConvictionDateAppliedAll)
-    console.log('caseOutcomeAppliedAll:', courtAppearance.caseOutcomeAppliedAll)
-    console.log('warrantInformationAccepted:', courtAppearance.warrantInformationAccepted)
     return (
       // Doesnt check courtAppearance.overallSentenceLength  because it gets deleted if set to NO
-      courtAppearance.overallConvictionDateAppliedAll && // Is the conviction date the same for all offences on the warrant
-      courtAppearance.caseOutcomeAppliedAll && // Is the outcome the same for all offences on the warrant?
+      courtAppearance.overallConvictionDateAppliedAll &&
+      courtAppearance.caseOutcomeAppliedAll &&
       courtAppearance.warrantInformationAccepted
     )
   }

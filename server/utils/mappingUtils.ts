@@ -32,7 +32,7 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, pris
   } as CreatePeriodLength
 }
 
-const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateSentence | undefined => {
+export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateSentence | undefined => {
   let createSentence
   if (sentence) {
     const periodLengths =
@@ -45,6 +45,8 @@ const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateS
       consecutiveToChargeNumber: sentence.consecutiveTo,
       prisonId,
       ...(sentence.convictionDate && { convictionDate: dayjs(sentence.convictionDate).format('YYYY-MM-DD') }),
+      ...(sentence.fineAmount && { fineAmount: { fineAmount: sentence.fineAmount } }),
+      ...(sentence.sentenceUuid && { sentenceUuid: sentence.sentenceUuid }),
     } as CreateSentence
   }
   return createSentence
@@ -154,7 +156,7 @@ export const periodLengthToSentenceLength = (periodLength: PeriodLength): Senten
   return null
 }
 
-const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
+export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
     countNumber: apiSentence.chargeNumber,
@@ -163,6 +165,7 @@ const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     sentenceTypeId: apiSentence.sentenceType?.sentenceTypeUuid,
     sentenceTypeClassification: apiSentence.sentenceType?.classification,
     consecutiveTo: apiSentence.consecutiveToChargeNumber,
+    fineAmount: apiSentence.fineAmount?.fineAmount,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
     ...(apiSentence.legacyData && { legacyData: { ...apiSentence.legacyData } }),
   } as Sentence

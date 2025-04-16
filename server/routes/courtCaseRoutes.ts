@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express'
 import type {
-  CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
   CourtCaseNextHearingCourtNameForm,
@@ -9,14 +8,12 @@ import type {
   CourtCaseNextHearingSelectForm,
   CourtCaseNextHearingTypeForm,
   CourtCaseOverallCaseOutcomeForm,
-  CourtCaseOverallConvictionDateForm,
   CourtCaseReferenceForm,
   CourtCaseSelectCourtNameForm,
   CourtCaseSelectReferenceForm,
   CourtCaseTaggedBailForm,
   CourtCaseWarrantDateForm,
   CourtCaseWarrantTypeForm,
-  SentenceLengthForm,
 } from 'forms'
 import type { CourtAppearance, CourtCase } from 'models'
 import dayjs from 'dayjs'
@@ -33,8 +30,6 @@ import {
   chargeToOffence,
   draftCourtAppearanceToCourtAppearance,
   pageCourtCaseAppearanceToCourtAppearance,
-  sentenceLengthToAlternativeSentenceLengthForm,
-  sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
 import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'

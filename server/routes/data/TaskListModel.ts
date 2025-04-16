@@ -38,9 +38,6 @@ export default class TaskListModel {
     if (courtAppearance.warrantType === 'SENTENCING') {
       this.items.splice(1, 0, this.getWarrantInformationItem(courtAppearance))
     }
-    console.log('Items: XXXXXXXXXXXXXXXXXXXXXXX')
-    console.log('Items: XXXXXXXXXXXXXXXXXXXXXXX')
-    console.log(`Items: XXXXXXXXXXXXXXXXXXXXXXX${JSON.stringify(this.items)}`)
   }
 
   private getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {

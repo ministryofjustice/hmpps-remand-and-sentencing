@@ -50,7 +50,7 @@
 {% block pageContent %}
     {{ super() }}
     <form method="post"
-          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/SENTENCING/submit-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <span class="govuk-caption-l" data-qa="warrant-information-caption">
             Add overall warrant information

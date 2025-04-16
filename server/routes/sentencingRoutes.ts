@@ -175,13 +175,13 @@ export default class SentencingRoutes {
       )
     }
 
-    if (submitToCheckAnswers) {
+    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !submitToCheckAnswers) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/case-outcome-applied-all`,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/case-outcome-applied-all`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`,
     )
   }
 

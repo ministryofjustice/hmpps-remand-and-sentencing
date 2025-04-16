@@ -409,17 +409,12 @@ context('Repeat Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
     const warrantInformationCheckAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
     warrantInformationCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '4 years 5 months 0 weeks 0 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
       'Conviction date': '12/05/2023',
-      'Is the outcome the same for all offences on the warrant?': 'No',
     })
     warrantInformationCheckAnswersPage.confirmAndAddOffenceButton().click()
 

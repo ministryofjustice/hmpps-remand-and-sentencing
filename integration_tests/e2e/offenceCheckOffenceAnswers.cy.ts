@@ -202,11 +202,7 @@ context('Check Offence Answers Page', () => {
           {
             offenceCardHeader: 'PS90037 An offence description',
             'Committed on': '12/05/2023',
-            'Consecutive or concurrent': 'Forthwith',
-            'Conviction date': '12/05/2023',
             Outcome: 'Lie on file',
-            'Sentence length': '4 years 5 months 0 weeks 0 days',
-            'Sentence type': 'SDS (Standard Determinate Sentence)',
           },
         ])
       offenceCheckOffenceAnswersPage

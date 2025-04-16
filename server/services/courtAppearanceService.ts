@@ -27,6 +27,7 @@ import {
 import RemandAndSentencingService from './remandAndSentencingService'
 import { toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
+import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class CourtAppearanceService {
   constructor(private readonly remandAndSentencingService: RemandAndSentencingService) {}
@@ -767,6 +768,26 @@ export default class CourtAppearanceService {
         delete sentence.countNumber
       }
       offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+  }
+
+  setOffenceOutcome(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+    offenceOutcome: OffenceOutcome,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      offence.outcomeUuid = offenceOutcome.outcomeUuid
+      offence.updatedOutcome = true
+      if (offenceOutcome.outcomeType !== 'SENTENCING') {
+        delete offence.sentence
+      }
       courtAppearance.offences[offenceReference] = offence
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance

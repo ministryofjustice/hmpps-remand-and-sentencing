@@ -333,7 +333,13 @@ export default class OffenceRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
-    const errors = this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm)
+    const { errors, outcome } = await this.offenceService.setOffenceOutcome(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceOutcomeForm,
+      req.user.username,
+    )
 
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -342,14 +348,13 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-outcome${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
-
+    this.courtAppearanceService.setOffenceOutcome(req.session, nomsId, parseInt(offenceReference, 10), outcome)
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    if (warrantType === 'SENTENCING') {
+    if (outcome.outcomeType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
       )
@@ -703,17 +708,23 @@ export default class OffenceRoutes {
     const { submitToEditOffence } = req.query
     const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId)
     if (caseOutcomeAppliedAll === 'true') {
-      this.offenceService.setOffenceOutcome(req.session, nomsId, courtCaseReference, {
-        offenceOutcome: this.courtAppearanceService.getRelatedOffenceOutcomeUuid(req.session, nomsId),
-      })
+      const { outcome } = await this.offenceService.setOffenceOutcome(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        {
+          offenceOutcome: this.courtAppearanceService.getRelatedOffenceOutcomeUuid(req.session, nomsId),
+        },
+        req.user.username,
+      )
+      this.courtAppearanceService.setOffenceOutcome(req.session, nomsId, parseInt(offenceReference, 10), outcome)
 
       if (submitToEditOffence) {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
         )
       }
-      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-      if (warrantType === 'SENTENCING') {
+      if (outcome.outcomeType === 'SENTENCING') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
         )

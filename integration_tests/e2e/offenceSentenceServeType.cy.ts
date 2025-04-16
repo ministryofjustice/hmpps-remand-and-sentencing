@@ -35,6 +35,11 @@ context('Add Offence Sentence Serve Type Page', () => {
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetAllChargeOutcomes')
+    cy.task('stubGetChargeOutcomeById', {
+      outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+      outcomeName: 'Imprisonment',
+      outcomeType: 'SENTENCING',
+    })
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/sentence-serve-type')
     offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)

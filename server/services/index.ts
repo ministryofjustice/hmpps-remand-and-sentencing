@@ -24,8 +24,6 @@ export const services = () => {
 
   const manageOffencesService = new ManageOffencesService()
 
-  const offenceService = new OffenceService(manageOffencesService)
-
   const feComponentsService = new FeComponentsService(feComponentsClient)
 
   const remandAndSentencingService = new RemandAndSentencingService(hmppsAuthClient)
@@ -42,6 +40,7 @@ export const services = () => {
   const appearanceOutcomeService = new AppearanceOutcomeService(hmppsAuthClient)
   const offenceOutcomeService = new OffenceOutcomeService(hmppsAuthClient)
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
+  const offenceService = new OffenceService(manageOffencesService, offenceOutcomeService)
 
   return {
     applicationInfo,

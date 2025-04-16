@@ -59,6 +59,11 @@ context('New Court Case journey', () => {
         outcomeType: 'REMAND',
       },
     ])
+    cy.task('stubGetChargeOutcomeById', {
+      outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+      outcomeName: 'Remanded in custody',
+      outcomeType: 'REMAND',
+    })
     cy.task('stubGetAppearanceTypeByUuid')
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
@@ -303,6 +308,11 @@ context('New Court Case journey', () => {
         outcomeType: 'SENTENCING',
       },
     ])
+    cy.task('stubGetChargeOutcomeById', {
+      outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+      outcomeName: 'Imprisonment',
+      outcomeType: 'SENTENCING',
+    })
     const caseRef = 'T12345678'
 
     const startPage = Page.verifyOnPage(StartPage)

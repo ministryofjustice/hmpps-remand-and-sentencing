@@ -27,9 +27,14 @@ import logger from '../../logger'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import OffenceOutcomeService from './offenceOutcomeService'
+import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class OffenceService {
-  constructor(private readonly manageOffencesService: ManageOffencesService) {}
+  constructor(
+    private readonly manageOffencesService: ManageOffencesService,
+    private readonly offenceOutcomeService: OffenceOutcomeService,
+  ) {}
 
   setOffenceDates(
     session: CookieSessionInterfaces.CookieSessionObject,
@@ -263,26 +268,39 @@ export default class OffenceService {
     return errors
   }
 
-  setOffenceOutcome(
+  async setOffenceOutcome(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
     offenceOutcomeForm: OffenceOffenceOutcomeForm,
-  ) {
+    username: string,
+  ): Promise<{
+    errors: {
+      text?: string
+      html?: string
+      href: string
+    }[]
+    outcome: OffenceOutcome
+  }> {
     const errors = validate(
       offenceOutcomeForm,
       { offenceOutcome: 'required' },
       { 'required.offenceOutcome': 'You must select the offence outcome' },
     )
+    let outcome: OffenceOutcome
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
       offence.updatedOutcome = true
+      outcome = await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, username)
+      if (outcome.outcomeType !== 'SENTENCING') {
+        delete offence.sentence
+      }
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-    return errors
+    return { errors, outcome }
   }
 
   updateOffenceOutcome(

@@ -460,7 +460,7 @@ export default class CourtCaseRoutes {
       }
     }
 
-    const lastCourtName = (await this.courtRegisterService.findCourtById(courtCode, req.user.username)).courtDescription
+    const lastCourtName = (await this.courtRegisterService.findCourtById(courtCode, req.user.username)).courtName
     return res.render('pages/courtAppearance/select-court-name', {
       nomsId,
       submitToCheckAnswers,
@@ -522,7 +522,7 @@ export default class CourtCaseRoutes {
     if (courtNameForm.courtCode && courtNameForm.courtName === undefined) {
       try {
         const court = await this.courtRegisterService.findCourtById(courtNameForm.courtCode, req.user.username)
-        courtNameForm.courtName = court.courtDescription
+        courtNameForm.courtName = court.courtName
       } catch (e) {
         logger.error(e)
       }
@@ -1325,7 +1325,7 @@ export default class CourtCaseRoutes {
           nextHearingCourtNameForm.courtCode,
           req.user.username,
         )
-        nextHearingCourtNameForm.nextHearingCourtName = court.courtDescription
+        nextHearingCourtNameForm.nextHearingCourtName = court.courtName
       } catch (e) {
         logger.error(e)
       }

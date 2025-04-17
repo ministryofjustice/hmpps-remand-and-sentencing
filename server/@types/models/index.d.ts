@@ -28,6 +28,7 @@ declare module 'models' {
     overallSentenceLength?: SentenceLength
     referenceNumberSelect?: string
     appearanceInformationAccepted?: boolean
+    warrantInformationAccepted?: boolean
     offenceSentenceAccepted?: boolean
     nextCourtAppearanceAccepted?: boolean
     overallConvictionDate?: Date

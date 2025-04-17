@@ -50,26 +50,6 @@
     }
 ] %}
 
-{% if appearance.warrantType === 'SENTENCING' %}
-    {% set appearanceSummaryRows = appearanceSummaryRows.concat({
-        key: {
-            text: "Conviction date"
-        },
-        value: {
-            text: appearance.overallConvictionDate | formatDate if appearance.overallConvictionDate else 'Not entered'
-        },
-        actions: {
-            items: [
-                {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-conviction-date",
-                    text: "Edit",
-                    visuallyHiddenText: "conviction date"
-                }
-            ]
-        }
-    }) %}
-{% endif %}
-
 {% set appearanceSummaryRows = appearanceSummaryRows.concat({
     key: {
         text: "Court name"
@@ -119,7 +99,7 @@
         actions: {
             items: [
                 {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-sentence-length",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/SENTENCING/overall-sentence-length",
                     text: "Edit",
                     visuallyHiddenText: "overall sentence length"
                 }

@@ -218,7 +218,6 @@ context('Court Case Appearance details Page', () => {
         'Warrant type': 'Sentencing',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
-        'Conviction date': '12/09/2024',
         'Court name': 'Southampton Magistrate Court',
         'Overall sentence length': '4 years 0 months 0 weeks 0 days',
       })
@@ -394,7 +393,6 @@ context('Court Case Appearance details Page', () => {
         'Warrant type': 'Sentencing',
         'Case reference': 'BB7937',
         'Warrant date': '27/01/2025',
-        'Conviction date': 'Not entered',
         'Court name': 'Southampton Magistrate Court',
       })
     })

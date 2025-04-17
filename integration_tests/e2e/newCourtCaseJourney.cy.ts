@@ -23,7 +23,7 @@ import CourtCaseNextHearingTypePage from '../pages/courtCaseNextHearingTypePage'
 import CourtCaseConfirmationPage from '../pages/courtCaseConfirmationPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
-import OffenceCheckOverallAnswersPage from '../pages/offenceCheckOverallAnswersPage'
+import SentencingWarrantInformationCheckAnswersPage from '../pages/sentencingWarrantInformationCheckAnswersPage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
@@ -321,8 +321,8 @@ context('New Court Case journey', () => {
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.continueButton().click()
-
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
+
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -330,6 +330,10 @@ context('New Court Case journey', () => {
         {
           name: 'Add appearance information',
           status: 'Incomplete',
+        },
+        {
+          name: 'Add warrant information',
+          status: 'Cannot start yet',
         },
         {
           name: 'Add offences',
@@ -385,8 +389,12 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add offences',
+          name: 'Add warrant information',
           status: 'Incomplete',
+        },
+        {
+          name: 'Add offences',
+          status: 'Cannot start yet',
         },
         {
           name: 'Add next court appearance',
@@ -397,8 +405,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-
-    courtCaseTaskListPage.offencesLink().click()
+    courtCaseTaskListPage.warrantInformationLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
@@ -425,15 +432,43 @@ context('New Court Case journey', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    const offenceOverallCheckAnswersPage = Page.verifyOnPage(OffenceCheckOverallAnswersPage)
-    offenceOverallCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
+    const warrantInformationCheckAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
+    warrantInformationCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '4 years 5 months 3 weeks 2 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
       'Conviction date': '12/05/2023',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
-    offenceOverallCheckAnswersPage.confirmAndAddOffenceButton().click()
+    warrantInformationCheckAnswersPage.confirmAndAddOffenceButton().click()
+
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add warrant information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add offences',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Add next court appearance',
+          status: 'Optional',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
+
+    courtCaseTaskListPage.offencesLink().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(
       OffenceOffenceDatePage,
@@ -486,6 +521,10 @@ context('New Court Case journey', () => {
       .should('deep.equal', [
         {
           name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add warrant information',
           status: 'Completed',
         },
         {

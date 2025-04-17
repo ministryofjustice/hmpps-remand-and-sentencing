@@ -8,6 +8,7 @@ import OffenceRoutes from './offenceRoutes'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
 import sentenceTypeRoutes from './sentenceTypesRoutes'
+import SentencingRoutes from './sentencingRoutes'
 
 const upload = multer({ dest: 'uploads/' })
 export default function routes(services: Services): Router {
@@ -47,6 +48,8 @@ export default function routes(services: Services): Router {
     services.appearanceOutcomeService,
     services.courtRegisterService,
   )
+
+  const sentencingRoutes = new SentencingRoutes(services.courtAppearanceService, services.appearanceOutcomeService)
 
   get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
@@ -187,16 +190,6 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/case-outcome-applied-all-sentencing',
-    courtCaseRoutes.getCaseOutcomeAppliedAllSentencing,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-case-outcome-applied-all-sentencing',
-    courtCaseRoutes.submitCaseOutcomeAppliedAllSentencing,
-  )
-
-  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/tagged-bail',
     courtCaseRoutes.getTaggedBail,
   )
@@ -207,36 +200,6 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/overall-sentence-length',
-    courtCaseRoutes.getOverallSentenceLength,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-overall-sentence-length',
-    courtCaseRoutes.submitOverallSentenceLength,
-  )
-
-  get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/alternative-overall-sentence-length',
-    courtCaseRoutes.getAlternativeSentenceLength,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-overall-alternative-sentence-length',
-    courtCaseRoutes.submitAlternativeSentenceLength,
-  )
-
-  get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/overall-conviction-date',
-    courtCaseRoutes.getOverallConvictionDate,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-overall-conviction-date',
-    courtCaseRoutes.submitOverallConvictionDate,
-  )
-
-  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/check-answers',
     courtCaseRoutes.getCheckAnswers,
   )
@@ -244,16 +207,6 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-answers',
     courtCaseRoutes.submitCheckAnswers,
-  )
-
-  get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/check-overall-answers',
-    offenceRoutes.getCheckOverallAnswers,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-overall-answers',
-    offenceRoutes.submitCheckOverallAnswers,
   )
 
   get(
@@ -544,6 +497,56 @@ export default function routes(services: Services): Router {
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/save-court-case',
     courtCaseRoutes.getDraftConfirmationPage,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/overall-sentence-length',
+    sentencingRoutes.getOverallSentenceLength,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-sentence-length',
+    sentencingRoutes.submitOverallSentenceLength,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/overall-conviction-date',
+    sentencingRoutes.getOverallConvictionDate,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-conviction-date',
+    sentencingRoutes.submitOverallConvictionDate,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/case-outcome-applied-all',
+    sentencingRoutes.getCaseOutcomeAppliedAll,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-case-outcome-applied-all',
+    sentencingRoutes.submitCaseOutcomeAppliedAll,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/check-overall-answers',
+    sentencingRoutes.getCheckOverallAnswers,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-check-overall-answers',
+    sentencingRoutes.submitCheckOverallAnswers,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/alternative-overall-sentence-length',
+    sentencingRoutes.getAlternativeSentenceLength,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-alternative-sentence-length',
+    sentencingRoutes.submitAlternativeSentenceLength,
   )
 
   return router

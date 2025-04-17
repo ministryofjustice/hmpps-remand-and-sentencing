@@ -13,5 +13,5 @@ export default class CourtCaseOverallSentenceLengthPage extends Page {
 
   daysInput = (): PageElement => cy.get('#sentenceLength-days')
 
-  offencesCaption = (): PageElement => cy.get('[data-qa=offences-caption]')
+  warrantInformationCaption = (): PageElement => cy.get('[data-qa=warrant-information-caption]')
 }

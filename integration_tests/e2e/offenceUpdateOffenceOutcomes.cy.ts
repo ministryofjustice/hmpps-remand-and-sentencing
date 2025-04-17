@@ -4,7 +4,7 @@ import OffenceUpdateOffenceOutcomesPage from '../pages/offenceUpdateOffenceOutco
 import Page from '../pages/page'
 import StartPage from '../pages/startPage'
 
-context('Updatge Offence Outcomes Page', () => {
+context('Update Offence Outcomes Page', () => {
   let offenceUpdateOffenceOutcomesPage: OffenceUpdateOffenceOutcomesPage
   beforeEach(() => {
     cy.task('happyPathStubs')
@@ -32,7 +32,7 @@ context('Updatge Offence Outcomes Page', () => {
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.continueButton().click()
       cy.visit(
-        '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/overall-sentence-length',
+        '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/SENTENCING/overall-sentence-length',
       )
       const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
       courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()

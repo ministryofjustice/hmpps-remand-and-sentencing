@@ -18,29 +18,29 @@
             classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
             label: "Years",
             name:"years",
-            value: courtCaseOverallSentenceLengthForm["sentenceLength-years"]
+            value: overallSentenceLengthForm["sentenceLength-years"]
         },
             {
                 classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
                 label: "Months",
                 name:"months",
-                value: courtCaseOverallSentenceLengthForm["sentenceLength-months"]
+                value: overallSentenceLengthForm["sentenceLength-months"]
             },
             {
                 classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
                 label: "Weeks",
                 name:"weeks",
-                value: courtCaseOverallSentenceLengthForm["sentenceLength-weeks"]
+                value: overallSentenceLengthForm["sentenceLength-weeks"]
             },
             {
                 classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
                 label: "Days",
                 name:"days",
-                value: courtCaseOverallSentenceLengthForm["sentenceLength-days"]
+                value: overallSentenceLengthForm["sentenceLength-days"]
             }]
     }) }}
     <p class="govuk-body govuk-!-margin-top-2">
-        <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/alternative-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">The
+        <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/SENTENCING/alternative-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">The
             sentence length is formatted differently</a>
     </p>
 {% endset %}
@@ -50,14 +50,15 @@
 {% block pageContent %}
     {{ super() }}
     <form method="post"
-          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/SENTENCING/submit-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        {% set isAddOffences = true %}
-        {% include "../../partials/offenceCaption.njk" %}
+        <span class="govuk-caption-l" data-qa="warrant-information-caption">
+            Add overall warrant information
+        </span>
 
         {{ govukRadios({
             name: "hasOverallSentenceLength",
-            value: courtCaseOverallSentenceLengthForm["hasOverallSentenceLength"],
+            value: overallSentenceLengthForm["hasOverallSentenceLength"],
             hint: {
                 text: "Select one option."
             },
@@ -72,14 +73,14 @@
             items: [{
                 value: "true",
                 text: "Yes",
-                checked: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true',
+                checked: overallSentenceLengthForm.hasOverallSentenceLength === 'true',
                 conditional: {
                     html: yesHtml
                 }
             },
                 {
                     value: "false",
-                    checked: courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'false',
+                    checked: overallSentenceLengthForm.hasOverallSentenceLength === 'false',
                     text: "No"
                 }]
         }) }}

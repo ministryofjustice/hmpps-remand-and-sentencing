@@ -317,7 +317,7 @@ context('Repeat Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Add warrant information',
+          name: 'Add overall warrant information',
           status: 'Cannot start yet',
         },
         {
@@ -377,7 +377,7 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add warrant information',
+          name: 'Add overall warrant information',
           status: 'Incomplete',
         },
         {
@@ -427,7 +427,7 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add warrant information',
+          name: 'Add overall warrant information',
           status: 'Completed',
         },
         {
@@ -487,7 +487,7 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add warrant information',
+          name: 'Add overall warrant information',
           status: 'Completed',
         },
         {

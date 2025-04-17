@@ -332,7 +332,7 @@ context('New Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Add warrant information',
+          name: 'Add overall warrant information',
           status: 'Cannot start yet',
         },
         {
@@ -389,7 +389,7 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add warrant information',
+          name: 'Add overall warrant information',
           status: 'Incomplete',
         },
         {
@@ -451,7 +451,7 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add warrant information',
+          name: 'Add overall warrant information',
           status: 'Completed',
         },
         {
@@ -524,7 +524,7 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add warrant information',
+          name: 'Add overall warrant information',
           status: 'Completed',
         },
         {

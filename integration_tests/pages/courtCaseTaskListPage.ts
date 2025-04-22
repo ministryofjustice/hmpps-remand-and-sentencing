@@ -11,7 +11,7 @@ export default class CourtCaseTaskListPage extends Page {
 
   offencesLink = (): PageElement => cy.get('a:contains("Add offences")')
 
-  warrantInformationLink = (): PageElement => cy.get('a:contains("Add warrant information")')
+  warrantInformationLink = (): PageElement => cy.get('a:contains("Add overall warrant information")')
 
   reviewOffencesLink = (): PageElement => cy.get('a:contains("Review offences")')
 

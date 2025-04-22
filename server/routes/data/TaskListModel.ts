@@ -34,7 +34,7 @@ export default class TaskListModel {
       this.getCourtDocumentsItem(courtAppearance),
     ]
 
-    // Add warrant information item only for SENTENCING warrantType
+    // Add a warrant information item only for SENTENCING warrantType
     if (courtAppearance.warrantType === 'SENTENCING') {
       this.items.splice(1, 0, this.getWarrantInformationItem(courtAppearance))
     }
@@ -186,7 +186,7 @@ export default class TaskListModel {
   private getWarrantInformationItem(courtAppearance: CourtAppearance): TaskListItem {
     return {
       title: {
-        text: 'Add warrant information',
+        text: 'Add overall warrant information',
         classes: 'govuk-link--no-visited-state',
       },
       href: this.getWarrantInformationHref(courtAppearance),

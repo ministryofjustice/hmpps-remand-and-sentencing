@@ -29,7 +29,7 @@ window.addEventListener('load', function () {
     },
     templates: {
       inputValue: function (result) {
-        return (result && result.courtDescription) ?? ''
+        return (result && result.courtName) ?? ''
       },
       suggestion: function (result) {
         if (result.unableToLoad) {
@@ -38,7 +38,7 @@ window.addEventListener('load', function () {
         if (typeof result === 'string') {
           return 'Clear the selection'
         }
-        return result && result.courtDescription
+        return result && result.courtName
       },
     },
     minLength: 3,

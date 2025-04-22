@@ -168,7 +168,7 @@
                         sentenceServeType: charge.sentence.sentenceServeType,
                         consecutiveTo: charge.sentence.consecutiveToChargeNumber,
                         sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
-                        fineAmount: charge.sentence.fineAmount,
+                        fineAmount: charge.sentence.fineAmount.fineAmount,
                         detailsClasses: 'govuk-!-padding-4'
                     }) }}
                 {% endfor %}

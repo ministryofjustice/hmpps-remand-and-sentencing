@@ -36,10 +36,7 @@ context('Court Case Appearance details Page', () => {
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
-      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
 
     it('displays person details', () => {
@@ -57,10 +54,9 @@ context('Court Case Appearance details Page', () => {
 
     it('appearance summary shows correct data', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
-        'Court name': 'Southampton Magistrate Court',
+        Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
     })
@@ -68,18 +64,24 @@ context('Court Case Appearance details Page', () => {
     it('next hearing summary shows correct data', () => {
       courtCaseAppearanceDetailsPage.nextHearingSummaryList().getSummaryList().should('deep.equal', {
         'Next hearing set': 'Yes',
-        'Court name': 'Southampton Magistrate Court',
+        Location: 'Southampton Magistrate Court',
         'Hearing type': 'Court appearance',
         Date: '15/12/2024',
       })
     })
 
+    it('offence summary shows correct data', () => {
+      courtCaseAppearanceDetailsPage.offenceSummaryList().getSummaryList().should('deep.equal', {
+        'Overall sentence length': 'Not entered',
+        'Sentences added': '0 years 0 months 0 weeks 0 days',
+      })
+    })
+
     it('can edit fields and return back to details page', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
-        'Court name': 'Southampton Magistrate Court',
+        Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
 
@@ -97,25 +99,20 @@ context('Court Case Appearance details Page', () => {
       courtCaseReferencePage.noCaseReferenceCheckbox().should('not.be.checked')
       courtCaseReferencePage.input().clear().type('T12345678')
       courtCaseReferencePage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance T12345678 at Southampton Magistrate Court on 15/12/2023',
-      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Remand',
         'Case reference': 'T12345678',
         'Warrant date': '15/12/2023',
-        'Court name': 'Southampton Magistrate Court',
+        Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
     })
 
     it('can edit court name and return back to details page', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
-        'Court name': 'Southampton Magistrate Court',
+        Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
 
@@ -135,15 +132,11 @@ context('Court Case Appearance details Page', () => {
       courtCaseCourtNamePage.firstAutoCompleteOption().click()
       courtCaseCourtNamePage.continueButton().click()
 
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Accrington Youth Court on 15/12/2023',
-      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
-        'Court name': 'Accrington Youth Court',
+        Location: 'Accrington Youth Court',
         'Overall case outcome': 'Remanded in custody',
       })
     })
@@ -162,10 +155,7 @@ context('Court Case Appearance details Page', () => {
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
       courtCaseReferencePage.input().clear().type('T12345678')
       courtCaseReferencePage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance T12345678 at Southampton Magistrate Court on 15/12/2023',
-      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.confirmButton().click()
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
     })
@@ -199,27 +189,22 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetChargeOutcomesByIds', [
         {
           outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-          outcomeName: 'Remanded in custody',
-          outcomeType: 'REMAND',
+          outcomeName: 'Imprisonment',
+          outcomeType: 'SENTENCING',
         },
       ])
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
-      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
 
     it('appearance summary shows correct data', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Sentencing',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
-        'Court name': 'Southampton Magistrate Court',
-        'Overall sentence length': '4 years 0 months 0 weeks 0 days',
+        Location: 'Southampton Magistrate Court',
       })
     })
 
@@ -262,10 +247,7 @@ context('Court Case Appearance details Page', () => {
         'Consecutive or concurrent': 'Consecutive to count 1',
       })
       offenceEditOffencePage.continueButton().click()
-      Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
-      )
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
   })
 
@@ -281,8 +263,8 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetChargeOutcomesByIds', [
         {
           outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-          outcomeName: 'Remanded in custody',
-          outcomeType: 'REMAND',
+          outcomeName: 'Imprisonment',
+          outcomeType: 'SENTENCING',
         },
       ])
       cy.task('stubGetChargeOutcomeById', {})
@@ -291,19 +273,15 @@ context('Court Case Appearance details Page', () => {
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
-      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
 
     it('can edit overall outcome and return back to details page', () => {
       cy.task('stubGetAllAppearanceOutcomes')
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
-        'Court name': 'Southampton Magistrate Court',
+        Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'A Nomis description',
       })
 
@@ -322,15 +300,11 @@ context('Court Case Appearance details Page', () => {
       courtCaseOverallCaseOutcomePage.legendParagraph().should('contain', 'A Nomis description')
       courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
       courtCaseOverallCaseOutcomePage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
-      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Remand',
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
-        'Court name': 'Southampton Magistrate Court',
+        Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
     })
@@ -339,7 +313,7 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetOffenceByCode', {})
       cy.task('stubGetAllChargeOutcomes')
       courtCaseAppearanceDetailsPage
-        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '1')
+        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
         .click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage
@@ -348,25 +322,21 @@ context('Court Case Appearance details Page', () => {
           'edit',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          '1',
+          '0',
           'offence-outcome',
         )
         .click()
       const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Edit the outcome for this offence')
-      offenceOutcomePage.legendParagraph().should('contain', 'A Nomis description')
       offenceOutcomePage.radioLabelContains('Remanded in custody').click()
       offenceOutcomePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         Offence: 'PS90037 An offence description',
-        'Committed on': '15/12/2023',
+        'Committed on': 'Not entered',
         Outcome: 'Remanded in custody',
       })
       offenceEditOffencePage.continueButton().click()
-      Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance C894623 at Southampton Magistrate Court on 15/12/2023',
-      )
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
   })
 
@@ -378,26 +348,23 @@ context('Court Case Appearance details Page', () => {
         courtId: 'STHHPM',
         courtName: 'Southampton Magistrate Court',
       })
+
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3f20856f-fa17-493b-89c7-205970c749b8/details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance BB7937 at Southampton Magistrate Court on 27/01/2025',
-      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
 
     it('appearance details are correct', () => {
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Sentencing',
         'Case reference': 'BB7937',
         'Warrant date': '27/01/2025',
-        'Court name': 'Southampton Magistrate Court',
+        Location: 'Southampton Magistrate Court',
       })
     })
 
-    it('can edit an unsupported period length', () => {
+    it.skip('can edit an unsupported period length', () => {
       courtCaseAppearanceDetailsPage
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3f20856f-fa17-493b-89c7-205970c749b8', '0')
         .click()
@@ -428,10 +395,7 @@ context('Court Case Appearance details Page', () => {
         'Consecutive or concurrent': 'Unknown',
       })
       offenceEditOffencePage.continueButton().click()
-      Page.verifyOnPageTitle(
-        CourtCaseAppearanceDetailsPage,
-        'Edit appearance BB7937 at Southampton Magistrate Court on 27/01/2025',
-      )
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
   })
 })

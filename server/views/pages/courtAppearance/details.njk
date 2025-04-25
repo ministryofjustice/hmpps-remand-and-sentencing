@@ -2,18 +2,12 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - Appearance details" %}
 
 {% set appearanceSummaryRows = [
-    {
-        key: {
-        text: "Warrant type"
-    },
-        value: {
-        text: appearance.warrantType | capitalize
-    }
-    },
+ 
     {
         key: {
         text: "Case reference"
@@ -52,7 +46,7 @@
 
 {% set appearanceSummaryRows = appearanceSummaryRows.concat({
     key: {
-        text: "Court name"
+        text: "Location"
     },
     value: {
         text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode
@@ -88,32 +82,12 @@
     }) %}
 {% endif %}
 
-{% if appearance.overallSentenceLength %}
-    {% set appearanceSummaryRows = appearanceSummaryRows.concat({
-        key: {
-            text: "Overall sentence length"
-        },
-        value: {
-            text: appearance.overallSentenceLength | formatLengths
-        },
-        actions: {
-            items: [
-                {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/SENTENCING/overall-sentence-length",
-                    text: "Edit",
-                    visuallyHiddenText: "overall sentence length"
-                }
-            ]
-        }
-    }) %}
-{% endif %}
-
 {% set nextHearingSummaryRows = [{
     key: {
         text: "Next hearing set"
     },
     value: {
-        text: "Yes" if appearance.nextHearingSelect else "No, date to be fixed"
+        text: "Yes" if appearance.nextHearingSelect else "No"
     },
     actions: {
         items: [
@@ -130,7 +104,7 @@
     {% set nextHearingSummaryRows = nextHearingSummaryRows.concat([
         {
             key: {
-            text: "Court name"
+            text: "Location"
         },
             value: {
             text: courtMap[appearance.nextHearingCourtCode]
@@ -181,12 +155,49 @@
         }
     ]) %}
 {% endif %}
+{% set overallSentenceLengthText = "Not entered" %}
+{% if appearance.overallSentenceLength %}
+    {% set overallSentenceLengthText = appearance.overallSentenceLength | formatLengths %}
+{% endif %}
+
+{% set offenceRows = [{
+        key: {
+            text: "Overall sentence length"
+        },
+        value: {
+            text: overallSentenceLengthText
+        },
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/SENTENCING/overall-sentence-length",
+                    text: "Edit",
+                    visuallyHiddenText: "overall sentence length"
+                }
+            ]
+        }
+    }, {
+        key: {
+                text: "Sentences added"
+            },
+        value: {
+                text: overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder
+            }
+    }
+    ] %}    
 
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">Edit appearance {{ appearance.caseReferenceNumber }} at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }} on {{ appearance.warrantDate | formatDate }}</h1>
+            <span class="govuk-caption-l">
+                {% if appearance.caseReferenceNumber %}
+                    {{ appearance.caseReferenceNumber }} at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }} on {{ appearance.warrantDate | formatDate }}
+                {% else %}
+                    Case held at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
+                {% endif %}
+            </span>
+            <h1 class="govuk-heading-l">Edit appearance</h1>
 
             {{ govukSummaryList({
                 rows: appearanceSummaryRows,
@@ -195,52 +206,102 @@
                 }
             }) }}
 
-            {% if appearance.warrantType === 'REMAND' %}
-                <h2 class="govuk-heading-m">Next hearing</h2>
-                {{ govukSummaryList({
+            <h2 class="govuk-heading-m">Next hearing</h2>
+            {{ govukSummaryList({
                     rows: nextHearingSummaryRows,
                     attributes: {
                         "data-qa": "nextHearingSummaryList"
                     }
                 }) }}
-            {% endif %}
 
             <h2 class="govuk-heading-m">Offences <span class="govuk-body">({{ appearance.offences | length }})</span></h2>
+            {{ govukSummaryList({
+                rows: offenceRows,
+                attributes: {
+                    "data-qa": "offenceSummaryList"
+                }
+            }) }}
 
-            {% for offence in appearance.offences %}
-                {{
-                offenceCard({
-                    offenceCode: offence.offenceCode,
-                    offenceName: offenceMap[offence.offenceCode],
-                    offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                    offenceEndDate: offence.offenceEndDate | formatDate,
-                    outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
-                    countNumber: offence.sentence.countNumber,
-                    convictionDate: offence.sentence.convictionDate | formatDate,
-                    terrorRelated: offence.terrorRelated,
-                    isSentenced: offence.sentence,
-                    periodLengths: offence.sentence.periodLengths,
-                    sentenceServeType: offence.sentence.sentenceServeType,
-                    consecutiveTo: offence.sentence.consecutiveTo,
-                    sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
-                    fineAmount: offence.sentence.fineAmount,
-                    actions: {
-                        items: [
-                            {
-                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + loop.index0 + "/edit-offence",
-                                text: "Edit",
-                                visuallyHiddenText: "edit"
-                            },
-                            {
-                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + loop.index0 + "/delete-offence",
-                                text: "Delete",
-                                visuallyHiddenText: "delete"
-                            }
-                        ]
-                    }
-                })
+            {{ govukButton({
+                text: "Add an offence" ,
+                classes: "govuk-button--link",
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
+                attributes: {
+                    "data-qa": "addAnotherOffence"
+                }
+            }) }}
+
+            <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with custodial outcomes</h3>
+
+    {% for offence in custodialChangedOffences %}
+        {{
+                    offenceCard({
+                        offenceCode: offence.offenceCode,
+                        offenceName: offenceMap[offence.offenceCode],
+                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
+                        offenceEndDate: offence.offenceEndDate | formatDate,
+                        outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
+                        outcomeUpdated: offence.updatedOutcome,
+                        countNumber: offence.sentence.countNumber,
+                        convictionDate: offence.sentence.convictionDate | formatDate,
+                        terrorRelated: offence.terrorRelated,
+                        isSentenced: offence.sentence,
+                        periodLengths: offence.sentence.periodLengths,
+                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+                        fineAmount: offence.sentence.fineAmount,
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/edit-offence",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit offence"
+                                }
+                            ]
+                        }
+                    })
                 }}
-            {% endfor %}
+    {% else %}
+        {{ govukInsetText({
+                    text: "There are no offences with custodial outcomes."
+                }) }}
+    {% endfor %}
+
+    <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with non-custodial outcomes</h3>
+
+    {% for offence in nonCustodialChangedOffences %}
+        {{
+                    offenceCard({
+                        offenceCode: offence.offenceCode,
+                        offenceName: offenceMap[offence.offenceCode],
+                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
+                        offenceEndDate: offence.offenceEndDate | formatDate,
+                        outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
+                        outcomeUpdated: offence.updatedOutcome,
+                        countNumber: offence.sentence.countNumber,
+                        convictionDate: offence.sentence.convictionDate | formatDate,
+                        terrorRelated: offence.terrorRelated,
+                        isSentenced: offence.sentence,
+                        periodLengths: offence.sentence.periodLengths,
+                        sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+                        fineAmount: offence.sentence.fineAmount,
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/edit-offence",
+                                    text: "Edit",
+                                    visuallyHiddenText: "edit offence"
+                                }
+                            ]
+                        }
+                    })
+                }}
+    {% else %}
+        {{ govukInsetText({
+                    text: "There are no offences with non-custodial outcomes."
+                }) }}
+    {% endfor %}
+
+            
 
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-details-edit">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">

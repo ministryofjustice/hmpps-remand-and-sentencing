@@ -32,6 +32,7 @@ export default function routes(services: Services): Router {
     services.appearanceOutcomeService,
     services.offenceOutcomeService,
     services.courtCasesReleaseDatesService,
+    services.calculateReleaseDatesService,
   )
   const apiRoutes = new ApiRoutes(
     services.prisonerService,

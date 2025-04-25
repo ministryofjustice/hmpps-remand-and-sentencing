@@ -41,6 +41,7 @@ import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandA
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import mojPaginationFromPageCourtCase from './data/pagination'
 import config from '../config'
+import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -52,6 +53,7 @@ export default class CourtCaseRoutes {
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
+    private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -181,15 +183,40 @@ export default class CourtCaseRoutes {
           .getAppearanceTypeByUuid(appearance.nextHearingTypeUuid, req.user.username)
           .then(appearanceType => appearanceType.description)
       : Promise.resolve('Not entered')
-    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap, appearanceTypeDescription] =
-      await Promise.all([
-        this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
-        this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
-        this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
-        outcomePromise,
-        this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
-        appearanceTypePromise,
-      ])
+    const { offences } = appearance
+    const [
+      offenceMap,
+      courtMap,
+      sentenceTypeMap,
+      overallCaseOutcome,
+      outcomeMap,
+      appearanceTypeDescription,
+      overallSentenceLengthComparison,
+    ] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
+      this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
+      this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
+      outcomePromise,
+      this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
+      appearanceTypePromise,
+      this.calculateReleaseDatesService.compareOverallSentenceLength(appearance, req.user.username),
+    ])
+
+    const [custodialChangedOffences, nonCustodialChangedOffences] = offences
+      .map((offence, index) => ({ ...offence, index })) // Add an index to each offence
+      .reduce(
+        ([custodialList, nonCustodialList], offence) => {
+          const outcome = outcomeMap[offence.outcomeUuid]
+          if (outcome?.outcomeType === 'SENTENCING') {
+            return [[...custodialList, offence], nonCustodialList]
+          }
+          if (outcome?.outcomeType === 'NON_CUSTODIAL') {
+            return [custodialList, [...nonCustodialList, offence]]
+          }
+          return [custodialList, nonCustodialList]
+        },
+        [[], []] as [typeof offences, typeof offences],
+      )
 
     return res.render('pages/courtAppearance/details', {
       nomsId,
@@ -204,6 +231,9 @@ export default class CourtCaseRoutes {
       overallCaseOutcome,
       outcomeMap,
       appearanceTypeDescription,
+      overallSentenceLengthComparison,
+      custodialChangedOffences,
+      nonCustodialChangedOffences,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

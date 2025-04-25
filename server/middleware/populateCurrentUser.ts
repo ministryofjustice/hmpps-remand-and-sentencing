@@ -32,7 +32,6 @@ export function populateCurrentUser(): RequestHandler {
 
       if (res.locals.user.authSource === 'nomis') {
         res.locals.user.staffId = parseInt(userId, 10) || undefined
-        res.locals.user.hasAdjustmentsAccess = userRoles.includes('ADJUSTMENTS_MAINTAINER')
         res.locals.user.hasInactiveBookingsAccess = userRoles.includes('INACTIVE_BOOKINGS')
       }
 

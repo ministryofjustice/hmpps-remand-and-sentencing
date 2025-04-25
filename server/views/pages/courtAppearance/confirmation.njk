@@ -16,13 +16,11 @@
             }) }}
             <div class="govuk-!-margin-top-6">
                 <h2 class="govuk-heading-l">What you can do next</h2>
-                {% if user.hasAdjustmentsAccess %}
                     <div class="govuk-body govuk-!-margin-top-6">
                         <a class="govuk-link" href="{{ adjustmentServiceUrl }}/{{ nomsId }}">Add adjustments</a>
                     </div>
-                {% endif %}
                 <div class="govuk-body govuk-!-margin-top-6">
-                    <span>You can {{ 'also' if user.hasAdjustmentsAccess else '' }} go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
+                    <span>You can also go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
                     <ul class="govuk-list govuk-!-margin-top-2">
                         <li><a class="govuk-link" href="/person/{{ nomsId }}">Court case information</a></li>
                         <li><a class="govuk-link" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ nomsId }}">Prisoner

@@ -7,14 +7,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set hideOffences = true %}
-{% set overallSummaryRows = [{
-                        key: {
-                            text: "Conviction date"
-                        },
-                        value: {
-                            text: courtAppearance.overallConvictionDate | formatDate if courtAppearance.overallConvictionDate else "Not entered"
-                        }
-                    },
+{% set overallSummaryRows = [
                     {
                         key: {
                             text: "Overall sentence length"

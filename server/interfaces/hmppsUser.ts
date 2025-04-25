@@ -28,7 +28,6 @@ export interface PrisonUser extends BaseUser {
   staffId: number
   activeCaseLoadId: string
   caseLoads: CaseLoad[]
-  hasAdjustmentsAccess: boolean
   hasInactiveBookingsAccess: boolean
 }
 

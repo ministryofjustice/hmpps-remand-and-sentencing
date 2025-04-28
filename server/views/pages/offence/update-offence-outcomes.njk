@@ -43,7 +43,7 @@
                 }
             }) }}
 
-    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that need updating</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that have not been updated</h2>
 
     {% for offence in unchangedOffences %}
         {{
@@ -163,7 +163,7 @@
                         name: "finishedReviewOffenceOutcomes",
                         fieldset: {
                             legend: {
-                            text: "Have you finished reviewing offences?",
+                            text: "Have you finished updating offence outcomes?",
                             isPageHeading: false,
                             classes: "govuk-fieldset__legend--m"
                             }

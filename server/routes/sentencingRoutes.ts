@@ -47,6 +47,7 @@ export default class SentencingRoutes {
   public submitOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
+    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const overallSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
     const errors = this.courtAppearanceService.setOverallSentenceLength(req.session, nomsId, overallSentenceLengthForm)
     if (errors.length > 0) {
@@ -62,6 +63,18 @@ export default class SentencingRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`,
       )
     }
+
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      if (warrantType === 'SENTENCING') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+        )
+      }
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+      )
+    }
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/overall-conviction-date`,
     )

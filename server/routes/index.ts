@@ -32,6 +32,7 @@ export default function routes(services: Services): Router {
     services.appearanceOutcomeService,
     services.offenceOutcomeService,
     services.courtCasesReleaseDatesService,
+    services.calculateReleaseDatesService,
   )
   const apiRoutes = new ApiRoutes(
     services.prisonerService,
@@ -65,13 +66,23 @@ export default function routes(services: Services): Router {
   get('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/details', courtCaseRoutes.getCourtCaseDetails)
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/details',
-    courtCaseRoutes.getAppearanceDetails,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing-details',
+    courtCaseRoutes.getSentencingAppearanceDetails,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-details-edit',
-    courtCaseRoutes.submitAppearanceDetailsEdit,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-sentencing-details-edit',
+    courtCaseRoutes.submitSentencingAppearanceDetailsEdit,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand-details',
+    courtCaseRoutes.getRemandAppearanceDetails,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-remand-details-edit',
+    courtCaseRoutes.submitRemandAppearanceDetailsEdit,
   )
 
   get(

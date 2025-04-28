@@ -2,18 +2,12 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - Appearance details" %}
 
 {% set appearanceSummaryRows = [
-    {
-        key: {
-        text: "Warrant type"
-    },
-        value: {
-        text: appearance.warrantType | capitalize
-    }
-    },
+ 
     {
         key: {
         text: "Case reference"
@@ -52,7 +46,7 @@
 
 {% set appearanceSummaryRows = appearanceSummaryRows.concat({
     key: {
-        text: "Court name"
+        text: "Location"
     },
     value: {
         text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode
@@ -67,8 +61,6 @@
         ]
     }
 }) %}
-
-{% if appearance.warrantType !== 'SENTENCING' %}
     {% set appearanceSummaryRows = appearanceSummaryRows.concat({
         key: {
             text: "Overall case outcome"
@@ -86,34 +78,13 @@
             ]
         }
     }) %}
-{% endif %}
-
-{% if appearance.overallSentenceLength %}
-    {% set appearanceSummaryRows = appearanceSummaryRows.concat({
-        key: {
-            text: "Overall sentence length"
-        },
-        value: {
-            text: appearance.overallSentenceLength | formatLengths
-        },
-        actions: {
-            items: [
-                {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/SENTENCING/overall-sentence-length",
-                    text: "Edit",
-                    visuallyHiddenText: "overall sentence length"
-                }
-            ]
-        }
-    }) %}
-{% endif %}
 
 {% set nextHearingSummaryRows = [{
     key: {
         text: "Next hearing set"
     },
     value: {
-        text: "Yes" if appearance.nextHearingSelect else "No, date to be fixed"
+        text: "Yes" if appearance.nextHearingSelect else "No"
     },
     actions: {
         items: [
@@ -130,7 +101,7 @@
     {% set nextHearingSummaryRows = nextHearingSummaryRows.concat([
         {
             key: {
-            text: "Court name"
+            text: "Location"
         },
             value: {
             text: courtMap[appearance.nextHearingCourtCode]
@@ -182,11 +153,19 @@
     ]) %}
 {% endif %}
 
+
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">Edit appearance {{ appearance.caseReferenceNumber }} at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }} on {{ appearance.warrantDate | formatDate }}</h1>
+            <span class="govuk-caption-l">
+                {% if appearance.caseReferenceNumber %}
+                    {{ appearance.caseReferenceNumber }} at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }} on {{ appearance.warrantDate | formatDate }}
+                {% else %}
+                    Case held at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
+                {% endif %}
+            </span>
+            <h1 class="govuk-heading-l">Edit appearance</h1>
 
             {{ govukSummaryList({
                 rows: appearanceSummaryRows,
@@ -195,19 +174,26 @@
                 }
             }) }}
 
-            {% if appearance.warrantType === 'REMAND' %}
-                <h2 class="govuk-heading-m">Next hearing</h2>
-                {{ govukSummaryList({
+            <h2 class="govuk-heading-m">Next hearing</h2>
+            {{ govukSummaryList({
                     rows: nextHearingSummaryRows,
                     attributes: {
                         "data-qa": "nextHearingSummaryList"
                     }
                 }) }}
-            {% endif %}
 
             <h2 class="govuk-heading-m">Offences <span class="govuk-body">({{ appearance.offences | length }})</span></h2>
 
-            {% for offence in appearance.offences %}
+            {{ govukButton({
+                text: "Add an offence" ,
+                classes: "govuk-button--link",
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
+                attributes: {
+                    "data-qa": "addAnotherOffence"
+                }
+            }) }}
+
+   {% for offence in appearance.offences %}
                 {{
                 offenceCard({
                     offenceCode: offence.offenceCode,
@@ -240,9 +226,11 @@
                     }
                 })
                 }}
-            {% endfor %}
+    {% endfor %}
 
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-details-edit">
+            
+
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-remand-details-edit">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <div class="govuk-button-group">
                     {{ govukButton({

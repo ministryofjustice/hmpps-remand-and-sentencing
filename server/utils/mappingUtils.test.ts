@@ -1,11 +1,14 @@
 import type { Sentence } from 'models'
+import type { CourtCaseAlternativeSentenceLengthForm, SentenceLengthForm } from 'forms'
 import type {
   APISentence,
   PageCourtCaseAppearance,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import {
+  alternativeSentenceLengthFormToSentenceLength,
   apiSentenceToSentence,
   pageCourtCaseAppearanceToCourtAppearance,
+  sentenceLengthFormToSentenceLength,
   sentenceToCreateSentence,
 } from './mappingUtils'
 
@@ -62,5 +65,29 @@ describe('mapping session to API util tests', () => {
     } as Sentence
     const result = sentenceToCreateSentence(sentence, 'PR123')
     expect(result.sentenceUuid).toEqual(sentence.sentenceUuid)
+  })
+
+  it('sets whole period order on alternative', () => {
+    const alternativeSentenceLengthForm = {
+      'firstSentenceLength-value': '6',
+      'firstSentenceLength-period': 'weeks',
+      'secondSentenceLength-value': '8',
+      'secondSentenceLength-period': 'months',
+    } as CourtCaseAlternativeSentenceLengthForm
+
+    const result = alternativeSentenceLengthFormToSentenceLength<CourtCaseAlternativeSentenceLengthForm>(
+      alternativeSentenceLengthForm,
+      'OVERALL_SENTENCE_LENGTH',
+    )
+    expect(result.periodOrder).toEqual(['weeks', 'months', 'years', 'days'])
+  })
+
+  it('sets default period order on sentence length form', () => {
+    const sentenceLengthForm = {
+      'sentenceLength-years': '3',
+      'sentenceLength-months': '8',
+    } as SentenceLengthForm
+    const result = sentenceLengthFormToSentenceLength(sentenceLengthForm, 'SENTENCE_LENGTH', '')
+    expect(result.periodOrder).toEqual(['years', 'months', 'weeks', 'days'])
   })
 })

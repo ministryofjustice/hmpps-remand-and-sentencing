@@ -966,7 +966,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "sentence": {"chargeNumber": "1", "periodLengths": [{"months": 5, "years": 4, "periodOrder": "years,months", "type":"SENTENCE_LENGTH", "prisonId": "MDI" }], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12", "prisonId": "MDI"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months", "type":"OVERALL_SENTENCE_LENGTH", "prisonId": "MDI" }, "overallConvictionDate" : "2023-05-12"}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "sentence": {"chargeNumber": "1", "periodLengths": [{"months": 5, "years": 4, "periodOrder": "years,months,weeks,days", "type":"SENTENCE_LENGTH", "prisonId": "MDI" }], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12", "prisonId": "MDI"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months,weeks,days", "type":"OVERALL_SENTENCE_LENGTH", "prisonId": "MDI" }, "overallConvictionDate" : "2023-05-12"}',
           },
         ],
       },
@@ -1004,7 +1004,7 @@ export default {
                 {
                   months: 5,
                   years: 4,
-                  periodOrder: 'years,months',
+                  periodOrder: 'years,months,weeks,days',
                   type: 'SENTENCE_LENGTH',
                   prisonId: 'MDI',
                 },
@@ -1021,7 +1021,7 @@ export default {
         overallSentenceLength: {
           months: 5,
           years: 4,
-          periodOrder: 'years,months',
+          periodOrder: 'years,months,weeks,days',
           type: 'OVERALL_SENTENCE_LENGTH',
           prisonId: 'MDI',
         },

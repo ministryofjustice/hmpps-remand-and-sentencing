@@ -464,7 +464,6 @@ export default class OffenceService {
       const index = periodLengths.findIndex(periodLength => periodLength.periodLengthType === periodLengthType)
       if (index !== -1) {
         periodLengths[index] = {
-          ...periodLengths[index],
           ...sentenceLength,
           description: sentenceLength.description ?? periodLengths[index].description,
           legacyData: periodLengths[index].legacyData,

@@ -241,6 +241,11 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(
       alternativeSentenceLengthForm['fourthSentenceLength-value']
     sentenceLength.periodOrder.push(alternativeSentenceLengthForm['fourthSentenceLength-period'])
   }
+  ;['years', 'months', 'weeks', 'days'].forEach(unit => {
+    if (!sentenceLength.periodOrder.includes(unit)) {
+      sentenceLength.periodOrder.push(unit)
+    }
+  })
   return sentenceLength
 }
 
@@ -273,12 +278,7 @@ export function sentenceLengthFormToSentenceLength(
     ...(sentenceLengthForm['sentenceLength-months'] ? { months: sentenceLengthForm['sentenceLength-months'] } : {}),
     ...(sentenceLengthForm['sentenceLength-weeks'] ? { weeks: sentenceLengthForm['sentenceLength-weeks'] } : {}),
     ...(sentenceLengthForm['sentenceLength-days'] ? { days: sentenceLengthForm['sentenceLength-days'] } : {}),
-    periodOrder: [
-      ...(sentenceLengthForm['sentenceLength-years'] ? ['years'] : []),
-      ...(sentenceLengthForm['sentenceLength-months'] ? ['months'] : []),
-      ...(sentenceLengthForm['sentenceLength-weeks'] ? ['weeks'] : []),
-      ...(sentenceLengthForm['sentenceLength-days'] ? ['days'] : []),
-    ],
+    periodOrder: ['years', 'months', 'weeks', 'days'],
     periodLengthType,
     hasOverallSentenceLength: sentenceLengthForm.hasOverallSentenceLength === 'true',
     description,

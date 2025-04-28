@@ -91,12 +91,18 @@
                         </a>
                     {% else %}
                         <a class="govuk-link--no-visited-state"
-                           href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/details">
+                            href="{% if appearance.warrantType == 'REMAND' %}
+                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand-details
+                                {% else %}
+                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing-details
+                                {% endif %}">
                             Edit
                         </a>
                     {% endif %}
                 </li>
-                <li class="offence-card-action-link"><a href="?" class="govuk-link--no-visited-state">Delete</a></li>
+                <li class="offence-card-action-link">
+                    <a href="?" class="govuk-link--no-visited-state">Delete</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -142,7 +148,7 @@
                     No documents uploaded
                 {% else %}
                     {# This will need to be documents array on object #}
-                    {% for document in ['Remand warrant'] %}
+                    {% for document in['Remand warrant'] %}
                         <li>
                             {{ documentLink(document) }}
                         </li>
@@ -153,8 +159,8 @@
         <div class="govuk-grid-column-full govuk-!-margin-top-4">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Offences</h3>
             {% set offenceDetailsHtml %}
-                {% for charge in appearance.charges %}
-                    {{ offenceCard({
+            {% for charge in appearance.charges %}
+                {{ offenceCard({
                         offenceCode: charge.offenceCode,
                         offenceName: offenceMap[charge.offenceCode],
                         offenceStartDate: charge.offenceStartDate | formatDate if charge.offenceStartDate else 'Not entered',
@@ -171,7 +177,7 @@
                         fineAmount: charge.sentence.fineAmount.fineAmount,
                         detailsClasses: 'govuk-!-padding-4'
                     }) }}
-                {% endfor %}
+            {% endfor %}
             {% endset %}
             {{ govukDetails({
                 summaryText: 'Offences (' + appearance.charges | length  + ')',

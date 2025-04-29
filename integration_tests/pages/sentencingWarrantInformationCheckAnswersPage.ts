@@ -5,7 +5,7 @@ export default class SentencingWarrantInformationCheckAnswersPage extends Page {
     super('Check your answers')
   }
 
-  confirmAndAddOffenceButton = (): PageElement => cy.get('[data-qa=confirm-and-add-offence]')
+  confirmAndContinueButton = (): PageElement => cy.get('[data-qa=confirm-and-continue]')
 
   checkOverallAnswersSummaryList = (): PageElement => cy.get('[data-qa=check-overall-answers-summary-list]')
 }

@@ -417,11 +417,14 @@ export default class CourtAppearanceService {
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       if (courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true') {
-        courtAppearance.overallSentenceLength = sentenceLengthFormToSentenceLength(
-          courtCaseOverallSentenceLengthForm,
-          'OVERALL_SENTENCE_LENGTH',
-          periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
-        )
+        courtAppearance.overallSentenceLength = {
+          ...sentenceLengthFormToSentenceLength(
+            courtCaseOverallSentenceLengthForm,
+            'OVERALL_SENTENCE_LENGTH',
+            periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
+          ),
+          uuid: courtAppearance.overallSentenceLength?.uuid,
+        }
       } else {
         delete courtAppearance.overallSentenceLength
       }

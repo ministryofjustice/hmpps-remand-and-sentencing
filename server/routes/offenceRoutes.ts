@@ -1661,7 +1661,7 @@ export default class OffenceRoutes {
     if (deleteOffenceForm.deleteOffence === 'true') {
       this.courtAppearanceService.deleteOffence(req.session, nomsId, parseInt(offenceReference, 10))
     }
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
@@ -1702,11 +1702,12 @@ export default class OffenceRoutes {
     }
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/check-offence-answers`
-
-    if (warrantType === 'SENTENCING') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
-    } else {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      if (warrantType === 'SENTENCING') {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+      } else {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+      }
     }
 
     return res.render('pages/offence/edit-offence', {
@@ -1740,7 +1741,7 @@ export default class OffenceRoutes {
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
 
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
@@ -1964,6 +1965,16 @@ export default class OffenceRoutes {
       )
     }
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      if (warrantType === 'SENTENCING') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+        )
+      }
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+      )
+    }
     if (warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
@@ -1976,6 +1987,10 @@ export default class OffenceRoutes {
 
   private isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
     return addOrEditCourtCase === 'add-court-case' && addOrEditCourtAppearance === 'add-court-appearance'
+  }
+
+  private isEditJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
+    return addOrEditCourtCase === 'edit-court-case' && addOrEditCourtAppearance === 'edit-court-appearance'
   }
 
   private saveOffenceInAppearance(

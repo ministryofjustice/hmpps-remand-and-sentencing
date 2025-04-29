@@ -5,8 +5,6 @@ export default class OffenceReviewOffencesPage extends Page {
     super('Review offences')
   }
 
-  addAnotherButton = (): PageElement => cy.get('[data-qa="addAnotherOffence"]')
-
   updateOutcomeLink = (
     personId: string,
     courtCaseReference: string,

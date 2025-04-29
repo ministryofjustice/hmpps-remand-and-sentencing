@@ -187,46 +187,47 @@
             {{ govukButton({
                 text: "Add an offence" ,
                 classes: "govuk-button--link",
-                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + courtAppearance.offences | length + "/add-another-offence",
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + appearance.offences | length + "/add-another-offence",
                 attributes: {
                     "data-qa": "addAnotherOffence"
                 }
             }) }}
-
-   {% for offence in appearance.offences %}
-                {{
-                offenceCard({
-                    offenceCode: offence.offenceCode,
-                    offenceName: offenceMap[offence.offenceCode],
-                    offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                    offenceEndDate: offence.offenceEndDate | formatDate,
-                    outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
-                    countNumber: offence.sentence.countNumber,
-                    convictionDate: offence.sentence.convictionDate | formatDate,
-                    terrorRelated: offence.terrorRelated,
-                    isSentenced: offence.sentence,
-                    periodLengths: offence.sentence.periodLengths,
-                    sentenceServeType: offence.sentence.sentenceServeType,
-                    consecutiveTo: offence.sentence.consecutiveTo,
-                    sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
-                    fineAmount: offence.sentence.fineAmount,
-                    actions: {
-                        items: [
-                            {
-                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + loop.index0 + "/edit-offence",
-                                text: "Edit",
-                                visuallyHiddenText: "edit"
-                            },
-                            {
-                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + loop.index0 + "/delete-offence",
-                                text: "Delete",
-                                visuallyHiddenText: "delete"
+    <span data-qa="allOffences">  
+        {% for offence in appearance.offences %}
+                        {{
+                        offenceCard({
+                            offenceCode: offence.offenceCode,
+                            offenceName: offenceMap[offence.offenceCode],
+                            offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
+                            offenceEndDate: offence.offenceEndDate | formatDate,
+                            outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
+                            countNumber: offence.sentence.countNumber,
+                            convictionDate: offence.sentence.convictionDate | formatDate,
+                            terrorRelated: offence.terrorRelated,
+                            isSentenced: offence.sentence,
+                            periodLengths: offence.sentence.periodLengths,
+                            sentenceServeType: offence.sentence.sentenceServeType,
+                            consecutiveTo: offence.sentence.consecutiveTo,
+                            sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
+                            fineAmount: offence.sentence.fineAmount,
+                            actions: {
+                                items: [
+                                    {
+                                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + loop.index0 + "/edit-offence",
+                                        text: "Edit",
+                                        visuallyHiddenText: "edit"
+                                    },
+                                    {
+                                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + loop.index0 + "/delete-offence",
+                                        text: "Delete",
+                                        visuallyHiddenText: "delete"
+                                    }
+                                ]
                             }
-                        ]
-                    }
-                })
-                }}
-    {% endfor %}
+                        })
+                        }}
+            {% endfor %}
+        </span>
 
             
 

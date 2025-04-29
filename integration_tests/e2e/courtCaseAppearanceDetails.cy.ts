@@ -3,6 +3,9 @@ import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
+import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
+import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
+import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import Page from '../pages/page'
@@ -13,6 +16,8 @@ context('Court Case Appearance details Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffencesByCodes', {})
+    cy.task('stubGetOffenceByCode', {})
+    cy.task('stubGetAllChargeOutcomes')
   })
 
   context('remand appearance', () => {
@@ -31,6 +36,11 @@ context('Court Case Appearance details Page', () => {
           outcomeType: 'REMAND',
         },
       ])
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+        outcomeName: 'Remanded in custody',
+        outcomeType: 'REMAND',
+      })
       cy.task('stubGetAppearanceTypeByUuid')
       cy.signIn()
       cy.visit(
@@ -68,6 +78,19 @@ context('Court Case Appearance details Page', () => {
         'Hearing type': 'Court appearance',
         Date: '15/12/2024',
       })
+    })
+
+    it('displays offences correctly', () => {
+      courtCaseAppearanceDetailsPage
+        .allOffences()
+        .getOffenceCards()
+        .should('deep.equal', [
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Remanded in custody',
+          },
+        ])
     })
 
     it('can edit fields and return back to details page', () => {
@@ -152,6 +175,46 @@ context('Court Case Appearance details Page', () => {
       courtCaseAppearanceDetailsPage.confirmButton().click()
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
     })
+
+    it('can add another offence and go back to appearance details', () => {
+      courtCaseAppearanceDetailsPage.addAnotherButton().click()
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+      offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+      offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
+      offenceOffenceDatePage.continueButton().click()
+
+      const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+      offenceOffenceCodePage.input().type('PS90037')
+      offenceOffenceCodePage.continueButton().click()
+
+      const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+      offenceOffenceCodeConfirmPage.continueButton().click()
+
+      const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+        OffenceOffenceOutcomePage,
+        'Select the outcome for this offence',
+      )
+      offenceOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
+      offenceOffenceOutcomePage.continueButton().click()
+
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseAppearanceDetailsPage
+        .allOffences()
+        .getOffenceCards()
+        .should('deep.equal', [
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Remanded in custody',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '12/05/2024',
+            Outcome: 'Remanded in custody',
+          },
+        ])
+    })
   })
 
   context('sentence appearance', () => {
@@ -201,6 +264,43 @@ context('Court Case Appearance details Page', () => {
       })
     })
 
+    it('displays offences correctly', () => {
+      courtCaseAppearanceDetailsPage
+        .custodialOffences()
+        .getOffenceCards()
+        .should('deep.equal', [
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Imprisonment',
+            'Custodial term': '1 years 0 months 0 weeks 0 days',
+            'Licence period': '2 years 0 months 0 weeks 0 days',
+            'Sentence type': 'EDS (Extended Determinate Sentence)',
+            'Consecutive or concurrent': 'Consecutive to count 1',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence length': '4 years 0 months 0 weeks 0 days',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Consecutive or concurrent': 'Forthwith',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '14/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'A Nomis sentence type',
+            'Sentence length': '1 years 2 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Unknown',
+          },
+        ])
+      courtCaseAppearanceDetailsPage
+        .noNonCustodialOutcomeInset()
+        .trimTextContent()
+        .should('equal', 'There are no offences with non-custodial outcomes.')
+    })
+
     it('can edit sentence information', () => {
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
@@ -235,7 +335,6 @@ context('Court Case Appearance details Page', () => {
         'Conviction date': 'N/A',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Custodial term': '2 years 0 months 0 weeks 0 days',
-        'Overall sentence length': '2 years 0 months 0 weeks 0 days',
         'Licence period': '2 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Consecutive to count 1',
       })
@@ -319,7 +418,10 @@ context('Court Case Appearance details Page', () => {
           'offence-outcome',
         )
         .click()
-      const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Edit the outcome for this offence')
+      const offenceOutcomePage = Page.verifyOnPageTitle(
+        OffenceOffenceOutcomePage,
+        'Select the outcome for this offence',
+      )
       offenceOutcomePage.radioLabelContains('Remanded in custody').click()
       offenceOutcomePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')

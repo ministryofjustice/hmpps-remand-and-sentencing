@@ -440,7 +440,7 @@ context('New Court Case journey', () => {
       'Conviction date': '12/05/2023',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
-    warrantInformationCheckAnswersPage.confirmAndAddOffenceButton().click()
+    warrantInformationCheckAnswersPage.confirmAndContinueButton().click()
 
     courtCaseTaskListPage
       .taskList()

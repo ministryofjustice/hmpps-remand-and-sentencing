@@ -78,4 +78,10 @@ export default abstract class Page {
     )
 
   offenceParagraph = (): PageElement => cy.get('[data-qa=offenceParagraph]')
+
+  addAnotherButton = (): PageElement => cy.get('[data-qa="addAnotherOffence"]')
+
+  custodialOffences = (): PageElement => cy.get('[data-qa="custodialOffences"]')
+
+  noNonCustodialOutcomeInset = (): PageElement => cy.get('[data-qa="noNonCustodialOutcomeInset"]')
 }

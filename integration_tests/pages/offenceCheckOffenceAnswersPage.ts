@@ -31,15 +31,11 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
 
   notFinishedRadio = (): PageElement => cy.get('[data-qa="notFinishedRadio"]')
 
-  addAnotherButton = (): PageElement => cy.get('[data-qa="addAnotherOffence"]')
-
   overallSentenceLength = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"] > :nth-child(1)')
 
   sentencesAdded = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"] > :nth-child(2)')
 
   offencesSummaryCard = (): PageElement => cy.get('[data-qa="offences-summary-card"]')
-
-  custodialOffences = (): PageElement => cy.get('[data-qa="custodialOffences"]')
 
   nonCustodialOffences = (): PageElement => cy.get('[data-qa="nonCustodialOffences"]')
 

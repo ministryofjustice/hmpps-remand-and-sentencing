@@ -13,6 +13,8 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
 
   offenceSummaryList = (): PageElement => cy.get('[data-qa=offenceSummaryList]')
 
+  allOffences = (): PageElement => cy.get('[data-qa=allOffences]')
+
   editFieldLink = (
     personId: string,
     courtCaseReference: string,

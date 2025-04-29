@@ -201,7 +201,7 @@ export default class CourtCaseRoutes {
       appearanceTypePromise,
       this.calculateReleaseDatesService.compareOverallSentenceLength(appearance, req.user.username),
     ])
-    const [custodialChangedOffences, nonCustodialChangedOffences] = offences
+    const [custodialOffences, nonCustodialOffences] = offences
       .map((offence, index) => ({ ...offence, index })) // Add an index to each offence
       .reduce(
         ([custodialList, nonCustodialList], offence) => {
@@ -231,8 +231,8 @@ export default class CourtCaseRoutes {
       outcomeMap,
       appearanceTypeDescription,
       overallSentenceLengthComparison,
-      custodialChangedOffences,
-      nonCustodialChangedOffences,
+      custodialOffences,
+      nonCustodialOffences,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

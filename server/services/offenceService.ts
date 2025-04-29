@@ -467,6 +467,7 @@ export default class OffenceService {
           ...sentenceLength,
           description: sentenceLength.description ?? periodLengths[index].description,
           legacyData: periodLengths[index].legacyData,
+          uuid: periodLengths[index].uuid,
         }
       } else {
         periodLengths.push(sentenceLength)

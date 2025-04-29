@@ -23,7 +23,7 @@ export default abstract class Page {
 
   continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
-  confirmAndAddOffenceButton = (): PageElement => cy.get('[data-qa=confirm-and-add-offence]')
+  confirmAndContinueButton = (): PageElement => cy.get('[data-qa=confirm-and-add-offence]')
 
   saveDraftButton = (): PageElement => cy.get('[data-qa=save-draft-button]')
 

@@ -58,8 +58,8 @@ context('Warrant Information Check Answers Page', () => {
       .and('contain.text', 'Cell numberCELL-1')
   })
 
-  it('button to confirm and add offences is displayed', () => {
-    offenceCheckOverallAnswersPage.confirmAndAddOffenceButton().should('contain.text', 'Confirm and add offences')
+  it('button to confirm and continue is displayed', () => {
+    offenceCheckOverallAnswersPage.confirmAndContinueButton().should('contain.text', 'Confirm and continue')
   })
 
   it('displays overall details', () => {

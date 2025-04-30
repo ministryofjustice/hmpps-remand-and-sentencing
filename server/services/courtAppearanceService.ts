@@ -735,6 +735,11 @@ export default class CourtAppearanceService {
     return courtAppearance.offences.some(offence => offence.sentence?.sentenceServeType === 'FORTHWITH')
   }
 
+  hasNoSentences(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    return !courtAppearance.offences.some(offence => offence.sentence)
+  }
+
   addOffence(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

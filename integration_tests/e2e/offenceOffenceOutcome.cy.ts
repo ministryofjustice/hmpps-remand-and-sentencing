@@ -72,6 +72,10 @@ context('Add Offence Outcome Page', () => {
       offenceOffenceOutcomePage.offenceParagraph().should('contain.text', 'PS90037 - An offence description')
     })
 
+    it('should not display legacy paragraph when first on page', () => {
+      offenceOffenceOutcomePage.legendParagraph().should('not.exist')
+    })
+
     it('submitting without selecting anything results in an error', () => {
       offenceOffenceOutcomePage.continueButton().click()
       offenceOffenceOutcomePage

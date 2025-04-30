@@ -302,6 +302,7 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('can edit sentence information', () => {
+      cy.task('stubUpdateSentenceCourtAppearance')
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
         description: 'EDS (Extended Determinate Sentence)',
@@ -339,7 +340,9 @@ context('Court Case Appearance details Page', () => {
         'Consecutive or concurrent': 'Consecutive to count 1',
       })
       offenceEditOffencePage.continueButton().click()
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseAppearanceDetailsPage.confirmButton().click()
+      cy.task('verifyUpdateSentenceCourtAppearanceRequest').should('equal', 1)
     })
   })
 

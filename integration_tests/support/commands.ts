@@ -7,7 +7,6 @@ import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
-import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
@@ -322,9 +321,5 @@ Cypress.Commands.add(
     offencePeriodLengthPage.monthsInput().clear()
     offencePeriodLengthPage.monthsInput().type('5')
     offencePeriodLengthPage.continueButton().click()
-
-    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    offenceSentenceServeTypePage.continueButton().click()
   },
 )

@@ -21,7 +21,6 @@ import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceReviewOffencesPage from '../pages/offenceReviewOffencesPage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
-import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import Page from '../pages/page'
 import StartPage from '../pages/startPage'
@@ -468,10 +467,6 @@ context('Repeat Court Case journey', () => {
     offencePeriodLengthPage.yearsInput().type('4')
     offencePeriodLengthPage.monthsInput().type('5')
     offencePeriodLengthPage.continueButton().click()
-
-    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    offenceSentenceServeTypePage.continueButton().click()
 
     offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
     offenceUpdateOffenceOutcomesPage.radioLabelSelector('true').click()

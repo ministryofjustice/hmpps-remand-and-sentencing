@@ -26,7 +26,6 @@ import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvict
 import SentencingWarrantInformationCheckAnswersPage from '../pages/sentencingWarrantInformationCheckAnswersPage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
-import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 
@@ -503,10 +502,6 @@ context('New Court Case journey', () => {
     offencePeriodLengthPage.daysInput().type('4')
     offencePeriodLengthPage.continueButton().click()
 
-    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
-    offenceSentenceServeTypePage.continueButton().click()
-
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
@@ -540,5 +535,9 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
+    courtCaseTaskListPage.continueButton().click()
+
+    cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
+    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 })

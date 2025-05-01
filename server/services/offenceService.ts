@@ -9,6 +9,7 @@ import type {
   OffenceOffenceDateForm,
   OffenceOffenceNameForm,
   OffenceOffenceOutcomeForm,
+  OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
   SentenceLengthForm,
   SentenceSelectCaseForm,
@@ -531,15 +532,27 @@ export default class OffenceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    sentenceServeType: string,
+    offenceSentenceServeTypeForm: OffenceSentenceServeTypeForm,
   ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    const sentence = offence.sentence ?? {}
-    sentence.sentenceServeType = sentenceServeType
-    offence.sentence = sentence
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
+    const errors = validate(
+      offenceSentenceServeTypeForm,
+      {
+        sentenceServeType: 'required',
+      },
+      {
+        'required.sentenceServeType': `You must select the consecutive or concurrent`,
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.sentenceServeType = offenceSentenceServeTypeForm.sentenceServeType
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
   }
 
   setConsecutiveTo(

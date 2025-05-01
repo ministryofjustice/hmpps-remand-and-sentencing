@@ -956,7 +956,22 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-
+    const isFirstSentence = this.courtAppearanceService.hasNoSentences(req.session, nomsId)
+    if (isFirstSentence) {
+      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
+        sentenceServeType: 'FORTHWITH',
+      })
+      return this.saveSessionOffenceInAppearance(
+        req,
+        res,
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        offenceReference,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     )
@@ -1163,27 +1178,20 @@ export default class OffenceRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const offenceSentenceServeTypeForm = trimForm<OffenceSentenceServeTypeForm>(req.body)
-    const errors = validate(
+    const errors = this.offenceService.setSentenceServeType(
+      req.session,
+      nomsId,
+      courtCaseReference,
       offenceSentenceServeTypeForm,
-      {
-        sentenceServeType: 'required',
-      },
-      {
-        'required.sentenceServeType': `You must select the consecutive or concurrent`,
-      },
     )
+
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
       )
     }
-    this.offenceService.setSentenceServeType(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      offenceSentenceServeTypeForm.sentenceServeType,
-    )
+
     const { submitToEditOffence } = req.query
 
     if (offenceSentenceServeTypeForm.sentenceServeType === 'CONSECUTIVE') {

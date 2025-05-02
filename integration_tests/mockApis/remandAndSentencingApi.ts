@@ -1,5 +1,4 @@
 import { SuperAgentRequest } from 'superagent'
-import { query } from 'express'
 import { stubFor, verifyRequest } from './wiremock'
 
 export default {
@@ -2643,7 +2642,7 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
-          hasSentenceToChainTo: false,
+          hasSentenceToChainTo: true,
         },
       },
     })

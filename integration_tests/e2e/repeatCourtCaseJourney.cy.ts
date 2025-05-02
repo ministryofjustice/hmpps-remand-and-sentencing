@@ -28,6 +28,7 @@ import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvict
 import OffenceUpdateOutcomePage from '../pages/offenceUpdateOutcomePage'
 import OffenceUpdateOffenceOutcomesPage from '../pages/offenceUpdateOffenceOutcomesPage'
 import SentencingWarrantInformationCheckAnswersPage from '../pages/sentencingWarrantInformationCheckAnswersPage'
+import SentenceIsSentenceConsecutiveToPage from '../pages/sentenceIsSentenceConsecutiveToPage'
 
 context('Repeat Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -467,6 +468,10 @@ context('Repeat Court Case journey', () => {
     offencePeriodLengthPage.yearsInput().type('4')
     offencePeriodLengthPage.monthsInput().type('5')
     offencePeriodLengthPage.continueButton().click()
+
+    const sentenceIsConsecutiveToPage = Page.verifyOnPage(SentenceIsSentenceConsecutiveToPage)
+    sentenceIsConsecutiveToPage.radioLabelSelector('false').click()
+    sentenceIsConsecutiveToPage.continueButton().click()
 
     offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
     offenceUpdateOffenceOutcomesPage.radioLabelSelector('true').click()

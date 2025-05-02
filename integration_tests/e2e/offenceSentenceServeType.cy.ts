@@ -1,3 +1,4 @@
+import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import Page from '../pages/page'
 
@@ -40,6 +41,12 @@ context('Add Offence Sentence Serve Type Page', () => {
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.continueButton().click()
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/sentence-serve-type')
     offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)

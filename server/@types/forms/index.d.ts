@@ -177,6 +177,6 @@ declare module 'forms' {
   }
 
   export interface SentenceIsSentenceConsecutiveToForm {
-    isSentenceConsecutiveTo?: string
+    isSentenceConsecutiveToAnotherCase?: string
   }
 }

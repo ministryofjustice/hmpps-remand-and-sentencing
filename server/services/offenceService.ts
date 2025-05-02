@@ -709,7 +709,12 @@ export default class OffenceService {
     return errors
   }
 
-  validateIsSentenceConsecutiveTo(sentenceIsSentenceConsecutiveToForm: SentenceIsSentenceConsecutiveToForm): {
+  setIsSentenceConsecutiveTo(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    sentenceIsSentenceConsecutiveToForm: SentenceIsSentenceConsecutiveToForm,
+  ): {
     text?: string
     html?: string
     href: string
@@ -717,12 +722,23 @@ export default class OffenceService {
     const errors = validate(
       sentenceIsSentenceConsecutiveToForm,
       {
-        isSentenceConsecutiveTo: 'required',
+        isSentenceConsecutiveToAnotherCase: 'required',
       },
       {
-        'required.isSentenceConsecutiveTo': 'Select Yes if the sentence is consecutive to a sentence on another case',
+        'required.isSentenceConsecutiveToAnotherCase':
+          'Select Yes if the sentence is consecutive to a sentence on another case',
       },
     )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.isSentenceConsecutiveToAnotherCase =
+        sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
     return errors
   }
 

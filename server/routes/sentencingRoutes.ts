@@ -34,10 +34,19 @@ export default class SentencingRoutes extends BaseRoutes {
     const expectedPeriodLengthsSize =
       sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths?.length
 
+    let sentenceIsSentenceConsecutiveToForm = (req.flash('sentenceIsSentenceConsecutiveToForm')[0] ||
+      {}) as SentenceIsSentenceConsecutiveToForm
+
+    if (Object.keys(sentenceIsSentenceConsecutiveToForm).length === 0) {
+      sentenceIsSentenceConsecutiveToForm = {
+        isSentenceConsecutiveToAnotherCase: sentence?.isSentenceConsecutiveToAnotherCase,
+      }
+    }
+
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-    } else if (sentence.sentenceTypeClassification === 'FINE') {
+    } else if (sentence?.sentenceTypeClassification === 'FINE') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount`
     } else if (expectedPeriodLengthsSize) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${
@@ -53,6 +62,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       offenceDetails,
       offence,
+      sentenceIsSentenceConsecutiveToForm,
       errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       submitToEditOffence,
@@ -71,16 +81,22 @@ export default class SentencingRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const sentenceIsSentenceConsecutiveToForm = trimForm<SentenceIsSentenceConsecutiveToForm>(req.body)
-    const errors = this.offenceService.validateIsSentenceConsecutiveTo(sentenceIsSentenceConsecutiveToForm)
+    const errors = this.offenceService.setIsSentenceConsecutiveTo(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      sentenceIsSentenceConsecutiveToForm,
+    )
 
     if (errors.length > 0) {
       req.flash('errors', errors)
+      req.flash('sentenceIsSentenceConsecutiveToForm', { ...sentenceIsSentenceConsecutiveToForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${offenceReference}/is-sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
-    if (sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveTo === 'true') {
+    if (sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase === 'true') {
       this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
         sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE),
       })

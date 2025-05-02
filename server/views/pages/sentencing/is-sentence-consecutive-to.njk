@@ -10,8 +10,8 @@
                 {% include "../../partials/offenceCaption.njk" %}
 
                 {{ govukRadios({
-                    id: "isSentenceConsecutiveTo",
-                    name: "isSentenceConsecutiveTo",
+                    id: "isSentenceConsecutiveToAnotherCase",
+                    name: "isSentenceConsecutiveToAnotherCase",
                     fieldset: {
                         legend: {
                             text: "Is this sentence consecutive to a sentence on another case?",
@@ -19,18 +19,20 @@
                             classes: "govuk-fieldset__legend--l"
                         }
                     },
-                    errorMessage:  errors | findError('isSentenceConsecutiveTo'),
+                    errorMessage:  errors | findError('isSentenceConsecutiveToAnotherCase'),
                     hint: {
                         text: offenceDetails.code + " " + offenceDetails.description + " committed on " + offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else "")
                     },
                     items: [
                         {
                             value: "true",
-                            text: "Yes"
+                            text: "Yes",
+                            checked: sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase === 'true'
                         },
                         {
                             value: "false",
-                            text: "No"
+                            text: "No",
+                            checked: sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase === 'false'
                         }
                     ]
                 }) }}

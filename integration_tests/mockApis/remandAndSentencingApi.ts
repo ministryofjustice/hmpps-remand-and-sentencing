@@ -1,4 +1,5 @@
 import { SuperAgentRequest } from 'superagent'
+import { query } from 'express'
 import { stubFor, verifyRequest } from './wiremock'
 
 export default {
@@ -2622,6 +2623,27 @@ export default {
               ],
             },
           ],
+        },
+      },
+    })
+  },
+
+  stubGetHasSentenceToChainTo: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/person/A1234AB/has-sentence-to-chain-to',
+        queryParameters: {
+          beforeOrOnAppearanceDate: {
+            equalTo: '2023-05-12',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          hasSentenceToChainTo: false,
         },
       },
     })

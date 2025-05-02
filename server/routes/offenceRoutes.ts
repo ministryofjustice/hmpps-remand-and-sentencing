@@ -35,6 +35,7 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import {
   allPeriodLengthTypesEntered,
+  extractKeyValue,
   getNextPeriodLengthType,
   outcomeValueOrLegacy,
   sentenceTypeValueOrLegacy,
@@ -43,6 +44,7 @@ import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import CourtRegisterService from '../services/courtRegisterService'
 import BaseRoutes from './baseRoutes'
+import sentenceServeTypes from '../resources/sentenceServeTypes'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -1978,7 +1980,7 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
       this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
-        sentenceServeType: 'FORTHWITH',
+        sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
       })
       return this.saveSessionOffenceInAppearance(
         req,

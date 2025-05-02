@@ -240,7 +240,7 @@ export default class RemandAndSentencingApiClient {
     beforeOrOnAppearanceDate: string,
   ): Promise<HasSentenceToChainToResponse> {
     return (await this.restClient.get({
-      path: `/person/${prisonerId}/sentenced-court-cases`,
+      path: `/person/${prisonerId}/has-sentence-to-chain-to`,
       query: {
         beforeOrOnAppearanceDate,
       },

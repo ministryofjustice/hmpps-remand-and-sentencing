@@ -124,3 +124,7 @@ export const sortByOffenceStartDate = (a: string | undefined | Date, b: string |
   }
   return -1
 }
+
+export const extractKeyValue = (object, value: string) => {
+  return Object.keys(object)[Object.values(object).indexOf(value)]
+}

@@ -5,7 +5,7 @@ import {
   PageCourtCaseContent,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
-import { draftCourtAppearanceToPageCourtAppearance, periodLengthToSentenceLength } from '../../utils/mappingUtils'
+import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
 import { sortByOffenceStartDate } from '../../utils/utils'
 
 export default class CourtCaseDetailsModel {
@@ -69,9 +69,6 @@ export default class CourtCaseDetailsModel {
         return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
       })
       return { ...appearance, charges: sortedCharges }
-    })
-    this.draftAppearances = pageCourtCaseContent.draftAppearances?.map(appearance => {
-      return draftCourtAppearanceToPageCourtAppearance(appearance)
     })
   }
 }

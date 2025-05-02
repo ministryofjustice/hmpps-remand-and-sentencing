@@ -61,3 +61,5 @@ export type LegacySentenceTypeGroupingSummary = components['schemas']['LegacySen
 export type RecallType = components['schemas']['RecallType']
 
 export type CourtCases = components['schemas']['CourtCases']
+
+export type HasSentenceToChainToResponse = components['schemas']['HasSentenceToChainToResponse']

@@ -63,6 +63,7 @@ declare module 'models' {
     convictionDate?: Date
     fineAmount?: number
     legacyData?: SentenceLegacyData
+    isSentenceConsecutiveToAnotherCase?: string
   }
 
   export interface SentenceLength {

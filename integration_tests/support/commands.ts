@@ -10,6 +10,7 @@ import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
+import SentenceIsSentenceConsecutiveToPage from '../pages/sentenceIsSentenceConsecutiveToPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
@@ -321,5 +322,9 @@ Cypress.Commands.add(
     offencePeriodLengthPage.monthsInput().clear()
     offencePeriodLengthPage.monthsInput().type('5')
     offencePeriodLengthPage.continueButton().click()
+
+    const sentenceIsConsecutiveToPage = Page.verifyOnPage(SentenceIsSentenceConsecutiveToPage)
+    sentenceIsConsecutiveToPage.radioLabelSelector('false').click()
+    sentenceIsConsecutiveToPage.continueButton().click()
   },
 )

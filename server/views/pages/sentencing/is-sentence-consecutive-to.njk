@@ -1,0 +1,46 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Is sentence consecutive to" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/SENTENCING/offences/{{ offenceReference }}/submit-is-sentence-consecutive-to{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {{ govukRadios({
+                    id: "isSentenceConsecutiveToAnotherCase",
+                    name: "isSentenceConsecutiveToAnotherCase",
+                    fieldset: {
+                        legend: {
+                            text: "Is this sentence consecutive to a sentence on another case?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    errorMessage:  errors | findError('isSentenceConsecutiveToAnotherCase'),
+                    hint: {
+                        text: offenceDetails.code + " " + offenceDetails.description + " committed on " + offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else "")
+                    },
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes",
+                            checked: sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase === 'true'
+                        },
+                        {
+                            value: "false",
+                            text: "No",
+                            checked: sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase === 'false'
+                        }
+                    ]
+                }) }}
+
+
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+            </form>
+{% endblock %}

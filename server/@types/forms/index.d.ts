@@ -175,4 +175,8 @@ declare module 'forms' {
     'convictionDate-month'?: string
     'convictionDate-year'?: string
   }
+
+  export interface SentenceIsSentenceConsecutiveToForm {
+    isSentenceConsecutiveToAnotherCase?: string
+  }
 }

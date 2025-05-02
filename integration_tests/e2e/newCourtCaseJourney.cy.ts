@@ -28,6 +28,7 @@ import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import OffenceSentenceLengthMismatchPage from '../pages/offenceSentenceLengthMismatchPage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
+import SentenceIsSentenceConsecutiveToPage from '../pages/sentenceIsSentenceConsecutiveToPage'
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -501,6 +502,10 @@ context('New Court Case journey', () => {
     offencePeriodLengthPage.weeksInput().type('3')
     offencePeriodLengthPage.daysInput().type('4')
     offencePeriodLengthPage.continueButton().click()
+
+    const sentenceIsConsecutiveToPage = Page.verifyOnPage(SentenceIsSentenceConsecutiveToPage)
+    sentenceIsConsecutiveToPage.radioLabelSelector('false').click()
+    sentenceIsConsecutiveToPage.continueButton().click()
 
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()

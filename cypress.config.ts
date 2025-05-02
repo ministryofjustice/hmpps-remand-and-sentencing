@@ -50,6 +50,7 @@ export default defineConfig({
               },
             ]),
             courtCasesReleaseDatesApi.stubGetServiceDefinitions(),
+            remandAndSentencingApi.stubGetHasSentenceToChainTo(),
           ])
         },
         ...auth,

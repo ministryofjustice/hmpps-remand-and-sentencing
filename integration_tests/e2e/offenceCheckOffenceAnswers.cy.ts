@@ -1,3 +1,4 @@
+import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import OffenceCountNumberPage from '../pages/offenceCountNumberPage'
@@ -120,6 +121,12 @@ context('Check Offence Answers Page', () => {
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+      courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+      courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+      courtCaseWarrantDatePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
       cy.createSentencedOffence('A1234AB', '0', '0', '0')

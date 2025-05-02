@@ -19,7 +19,6 @@ import type {
   SentenceSelectCaseForm,
   UpdateOffenceOutcomesForm,
 } from 'forms'
-import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
 import trimForm from '../utils/trim'
@@ -36,26 +35,29 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import {
   allPeriodLengthTypesEntered,
+  extractKeyValue,
   getNextPeriodLengthType,
   outcomeValueOrLegacy,
   sentenceTypeValueOrLegacy,
 } from '../utils/utils'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtRegisterService from '../services/courtRegisterService'
+import BaseRoutes from './baseRoutes'
+import sentenceServeTypes from '../resources/sentenceServeTypes'
 
-export default class OffenceRoutes {
+export default class OffenceRoutes extends BaseRoutes {
   constructor(
-    private readonly offenceService: OffenceService,
+    offenceService: OffenceService,
     private readonly manageOffencesService: ManageOffencesService,
-    private readonly courtAppearanceService: CourtAppearanceService,
+    courtAppearanceService: CourtAppearanceService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly courtRegisterService: CourtRegisterService,
-  ) {}
+  ) {
+    super(courtAppearanceService, offenceService)
+  }
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const {
@@ -853,8 +855,15 @@ export default class OffenceRoutes {
       )
     }
 
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+    return this.determineSentenceServeType(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      offenceReference,
     )
   }
 
@@ -956,24 +965,15 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-    const isFirstSentence = this.courtAppearanceService.hasNoSentences(req.session, nomsId)
-    if (isFirstSentence) {
-      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
-        sentenceServeType: 'FORTHWITH',
-      })
-      return this.saveSessionOffenceInAppearance(
-        req,
-        res,
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-        offenceReference,
-      )
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+    return this.determineSentenceServeType(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      offenceReference,
     )
   }
 
@@ -1046,8 +1046,15 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+    return this.determineSentenceServeType(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      offenceReference,
     )
   }
 
@@ -1118,8 +1125,15 @@ export default class OffenceRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+    return this.determineSentenceServeType(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      offenceReference,
     )
   }
 
@@ -1147,6 +1161,8 @@ export default class OffenceRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+    } else if (sentence?.sentenceTypeClassification === 'FINE') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount`
     } else if (expectedPeriodLengthsSize) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${
         sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths[expectedPeriodLengthsSize - 1].type
@@ -1177,6 +1193,7 @@ export default class OffenceRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const { submitToEditOffence } = req.query
     const offenceSentenceServeTypeForm = trimForm<OffenceSentenceServeTypeForm>(req.body)
     const errors = this.offenceService.setSentenceServeType(
       req.session,
@@ -1188,11 +1205,9 @@ export default class OffenceRoutes {
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
-
-    const { submitToEditOffence } = req.query
 
     if (offenceSentenceServeTypeForm.sentenceServeType === 'CONSECUTIVE') {
       return res.redirect(
@@ -1940,22 +1955,7 @@ export default class OffenceRoutes {
     )
   }
 
-  private getSessionOffenceOrAppearanceOffence(
-    req,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceReference: string,
-  ): Offence {
-    const appearanceOffence = this.courtAppearanceService.getOffence(
-      req.session,
-      nomsId,
-      parseInt(offenceReference, 10),
-    )
-    const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    return deepmerge(appearanceOffence, sessionOffence, { arrayMerge: (_target, source, _options) => source })
-  }
-
-  private saveSessionOffenceInAppearance(
+  private async determineSentenceServeType(
     req,
     res,
     nomsId: string,
@@ -1965,50 +1965,36 @@ export default class OffenceRoutes {
     appearanceReference: string,
     offenceReference: string,
   ) {
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
-    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+    const isFirstSentence = this.courtAppearanceService.hasNoSentences(req.session, nomsId)
+
+    if (isFirstSentence) {
+      const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId)
+      const { hasSentenceToChainTo } = await this.remandAndSentencingService.hasSentenceToChainTo(
+        nomsId,
+        dayjs(warrantDate),
+        req.user.username,
       )
-    }
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      if (warrantType === 'SENTENCING') {
+      if (hasSentenceToChainTo) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${offenceReference}/is-sentence-consecutive-to`,
         )
       }
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
-      )
-    }
-    if (warrantType === 'SENTENCING') {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
+        sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
+      })
+      return this.saveSessionOffenceInAppearance(
+        req,
+        res,
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        offenceReference,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     )
-  }
-
-  private isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
-    return addOrEditCourtCase === 'add-court-case' && addOrEditCourtAppearance === 'add-court-appearance'
-  }
-
-  private isEditJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
-    return addOrEditCourtCase === 'edit-court-case' && addOrEditCourtAppearance === 'edit-court-appearance'
-  }
-
-  private saveOffenceInAppearance(
-    req,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceReference: string,
-    offence: Offence,
-  ) {
-    this.courtAppearanceService.addOffence(req.session, nomsId, parseInt(offenceReference, 10), offence)
-    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
   }
 }

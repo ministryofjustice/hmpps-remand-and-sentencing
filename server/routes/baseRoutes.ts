@@ -17,7 +17,7 @@ export default abstract class BaseRoutes {
     return addOrEditCourtCase === 'add-court-case' && addOrEditCourtAppearance === 'add-court-appearance'
   }
 
-  private isEditJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
+  protected isEditJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
     return addOrEditCourtCase === 'edit-court-case' && addOrEditCourtAppearance === 'edit-court-appearance'
   }
 
@@ -36,7 +36,7 @@ export default abstract class BaseRoutes {
     return deepmerge(appearanceOffence, sessionOffence, { arrayMerge: (_target, source, _options) => source })
   }
 
-  private saveOffenceInAppearance(
+  protected saveOffenceInAppearance(
     req,
     nomsId: string,
     courtCaseReference: string,

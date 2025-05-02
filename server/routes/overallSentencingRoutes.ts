@@ -22,6 +22,7 @@ export default class OverallSentencingRoutes {
   public getOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
+    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     let overallSentenceLengthForm = (req.flash('overallSentenceLengthForm')[0] || {}) as SentenceLengthForm
     if (Object.keys(overallSentenceLengthForm).length === 0) {
       overallSentenceLengthForm = sentenceLengthToSentenceLengthForm(
@@ -29,6 +30,20 @@ export default class OverallSentencingRoutes {
         this.courtAppearanceService.getHasOverallSentenceLength(req.session, nomsId),
       )
     }
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
+
+    if (submitToCheckAnswers) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`
+    }
+
+    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+      if (warrantType === 'SENTENCING') {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+      } else {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+      }
+    }
+
     return res.render('pages/overallSentencing/overall-sentence-length', {
       nomsId,
       courtCaseReference,
@@ -38,9 +53,7 @@ export default class OverallSentencingRoutes {
       submitToCheckAnswers,
       overallSentenceLengthForm,
       errors: req.flash('errors') || [],
-      backLink: submitToCheckAnswers
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/check-overall-answers`
-        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      backLink,
     })
   }
 

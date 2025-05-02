@@ -8,6 +8,7 @@ import OffenceRoutes from './offenceRoutes'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
 import sentenceTypeRoutes from './sentenceTypesRoutes'
+import OverallSentencingRoutes from './overallSentencingRoutes'
 import SentencingRoutes from './sentencingRoutes'
 
 const upload = multer({ dest: 'uploads/' })
@@ -50,7 +51,16 @@ export default function routes(services: Services): Router {
     services.courtRegisterService,
   )
 
-  const sentencingRoutes = new SentencingRoutes(services.courtAppearanceService, services.appearanceOutcomeService)
+  const overallSentencingRoutes = new OverallSentencingRoutes(
+    services.courtAppearanceService,
+    services.appearanceOutcomeService,
+  )
+
+  const sentencingRoutes = new SentencingRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.manageOffencesService,
+  )
 
   get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
@@ -376,6 +386,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/is-sentence-consecutive-to',
+    sentencingRoutes.getIsSentenceConsecutiveTo,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/submit-is-sentence-consecutive-to',
+    sentencingRoutes.submitIsSentenceConsecutiveTo,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/sentence-select-case',
     offenceRoutes.getSentenceSelectCase,
   )
@@ -512,52 +532,52 @@ export default function routes(services: Services): Router {
 
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/overall-sentence-length',
-    sentencingRoutes.getOverallSentenceLength,
+    overallSentencingRoutes.getOverallSentenceLength,
   )
 
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-sentence-length',
-    sentencingRoutes.submitOverallSentenceLength,
+    overallSentencingRoutes.submitOverallSentenceLength,
   )
 
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/overall-conviction-date',
-    sentencingRoutes.getOverallConvictionDate,
+    overallSentencingRoutes.getOverallConvictionDate,
   )
 
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-conviction-date',
-    sentencingRoutes.submitOverallConvictionDate,
+    overallSentencingRoutes.submitOverallConvictionDate,
   )
 
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/case-outcome-applied-all',
-    sentencingRoutes.getCaseOutcomeAppliedAll,
+    overallSentencingRoutes.getCaseOutcomeAppliedAll,
   )
 
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-case-outcome-applied-all',
-    sentencingRoutes.submitCaseOutcomeAppliedAll,
+    overallSentencingRoutes.submitCaseOutcomeAppliedAll,
   )
 
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/check-overall-answers',
-    sentencingRoutes.getCheckOverallAnswers,
+    overallSentencingRoutes.getCheckOverallAnswers,
   )
 
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-check-overall-answers',
-    sentencingRoutes.submitCheckOverallAnswers,
+    overallSentencingRoutes.submitCheckOverallAnswers,
   )
 
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/alternative-overall-sentence-length',
-    sentencingRoutes.getAlternativeSentenceLength,
+    overallSentencingRoutes.getAlternativeSentenceLength,
   )
 
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-alternative-sentence-length',
-    sentencingRoutes.submitAlternativeSentenceLength,
+    overallSentencingRoutes.submitAlternativeSentenceLength,
   )
 
   return router

@@ -70,8 +70,5 @@ export default class CourtCaseDetailsModel {
       })
       return { ...appearance, charges: sortedCharges }
     })
-    this.draftAppearances = pageCourtCaseContent.draftAppearances?.map(appearance => {
-      return draftCourtAppearanceToPageCourtAppearance(appearance)
-    })
   }
 }

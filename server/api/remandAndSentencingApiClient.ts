@@ -11,6 +11,7 @@ import {
   DraftCourtCaseCreatedResponse,
   DraftCreateCourtAppearance,
   DraftCreateCourtCase,
+  HasSentenceToChainToResponse,
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
   OffenceOutcome,
@@ -232,5 +233,17 @@ export default class RemandAndSentencingApiClient {
     return (await this.restClient.get({
       path: `/person/${prisonerId}/sentenced-court-cases`,
     })) as unknown as Promise<CourtCases>
+  }
+
+  async hasSentenceToChainTo(
+    prisonerId: string,
+    beforeOrOnAppearanceDate: string,
+  ): Promise<HasSentenceToChainToResponse> {
+    return (await this.restClient.get({
+      path: `/person/${prisonerId}/sentenced-court-cases`,
+      query: {
+        beforeOrOnAppearanceDate,
+      },
+    })) as unknown as Promise<HasSentenceToChainToResponse>
   }
 }

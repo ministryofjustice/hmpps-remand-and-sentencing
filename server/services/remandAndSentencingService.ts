@@ -8,6 +8,7 @@ import {
   DraftCourtAppearance,
   DraftCourtAppearanceCreatedResponse,
   DraftCourtCaseCreatedResponse,
+  HasSentenceToChainToResponse,
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
   PageCourtCase,
@@ -181,6 +182,17 @@ export default class RemandAndSentencingService {
   async getSentencedCourtCases(prisonerId: string, username: string): Promise<CourtCases> {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getSentencedCourtCases(
       prisonerId,
+    )
+  }
+
+  async hasSentenceToChainTo(
+    prisonerId: string,
+    warrantDate: Dayjs,
+    username: string,
+  ): Promise<HasSentenceToChainToResponse> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).hasSentenceToChainTo(
+      prisonerId,
+      warrantDate.format('YYYY-MM-DD'),
     )
   }
 

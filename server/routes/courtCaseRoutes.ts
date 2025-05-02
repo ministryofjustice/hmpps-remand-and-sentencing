@@ -131,7 +131,6 @@ export default class CourtCaseRoutes {
           appearance.nextCourtAppearance?.courtCode,
         ]),
       )
-      .concat(courtCaseDetails.draftAppearances?.map(draft => draft.sessionBlob.courtCode))
       .filter(courtId => courtId !== undefined && courtId !== null)
 
     const [offenceMap, courtMap] = await Promise.all([

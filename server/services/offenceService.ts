@@ -11,6 +11,7 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
+  SentenceIsSentenceConsecutiveToForm,
   SentenceLengthForm,
   SentenceSelectCaseForm,
   UpdateOffenceOutcomesForm,
@@ -705,6 +706,23 @@ export default class OffenceService {
       },
     )
 
+    return errors
+  }
+
+  validateIsSentenceConsecutiveTo(sentenceIsSentenceConsecutiveToForm: SentenceIsSentenceConsecutiveToForm): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      sentenceIsSentenceConsecutiveToForm,
+      {
+        isSentenceConsecutiveTo: 'required',
+      },
+      {
+        'required.isSentenceConsecutiveTo': 'Select Yes if the sentence is consecutive to a sentence on another case',
+      },
+    )
     return errors
   }
 

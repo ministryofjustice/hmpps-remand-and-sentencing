@@ -158,11 +158,7 @@ export interface paths {
      */
     put: operations['update_3']
     post?: never
-    /**
-     * Delete Charge
-     * @description Synchronise a deletion of charge from NOMIS offender charges into remand and sentencing API.
-     */
-    delete: operations['delete_3']
+    delete?: never
     options?: never
     head?: never
     patch?: never
@@ -210,7 +206,7 @@ export interface paths {
      * deletes a draft court appearance
      * @description deletes a draft court appearance
      */
-    delete: operations['delete_4']
+    delete: operations['delete_3']
     options?: never
     head?: never
     patch?: never
@@ -624,6 +620,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/person/{prisonerId}/has-sentence-to-chain-to': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Determine if there can be a sentence to chain to
+     * @description This endpoint will determine whether there can be a sentence which can be selected for a consecutive to chain
+     */
+    get: operations['hasSentenceToChainTo']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/sentence-type/summary': {
     parameters: {
       query?: never
@@ -699,6 +715,30 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/legacy/period-length/{periodLengthUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * retrieve a period-length
+     * @description This endpoint will retrieve period-length details.
+     */
+    get: operations['get_5']
+    put?: never
+    post?: never
+    /**
+     * Delete Period Length
+     * @description This endpoint will soft-delete a period-length from RAS.
+     */
+    delete: operations['delete_4']
     options?: never
     head?: never
     patch?: never
@@ -924,10 +964,28 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/legacy/charge/{chargeUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Delete Charge
+     * @description Synchronise a deletion of charge from NOMIS offender charges into remand and sentencing API.
+     */
+    delete: operations['delete_5']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     CreateRecall: {
@@ -964,8 +1022,7 @@ export interface components {
       legacyData: components['schemas']['PeriodLengthLegacyData']
     }
     LegacyCreateSentence: {
-      /** Format: uuid */
-      chargeLifetimeUuid: string
+      chargeUuids: string[]
       chargeNumber?: string
       fine?: components['schemas']['LegacyCreateFine']
       /** Format: uuid */
@@ -993,6 +1050,7 @@ export interface components {
       sentenceCategory?: string
       sentenceTypeDesc?: string
       postedDate: string
+      active?: boolean
     }
     LegacyCreateCourtCase: {
       prisonerId: string
@@ -1388,7 +1446,7 @@ export interface components {
       /** Format: date-time */
       createdAt: string
       createdByUsername: string
-      createdByPrison: string
+      createdByPrison?: string
       sentences?: components['schemas']['Sentence'][]
       courtCaseIds?: string[]
     }
@@ -1468,19 +1526,13 @@ export interface components {
       prisonerId: string
       courtCaseUuid: string
       /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE' | 'EDITED' | 'DELETED' | 'DRAFT' | 'FUTURE' | 'MERGED'
+      status: 'ACTIVE' | 'INACTIVE' | 'EDITED' | 'DELETED' | 'DRAFT' | 'FUTURE' | 'MERGED' | 'MANY_CHARGES_DATA_FIX'
       latestAppearance?: components['schemas']['CourtAppearance']
       appearances: components['schemas']['CourtAppearance'][]
       legacyData?: components['schemas']['CourtCaseLegacyData']
-      draftAppearances: components['schemas']['DraftCourtAppearance'][]
     }
     CourtCases: {
       courtCases: components['schemas']['CourtCase'][]
-    }
-    DraftCourtAppearance: {
-      /** Format: uuid */
-      draftUuid: string
-      sessionBlob: components['schemas']['JsonNode']
     }
     NextCourtAppearance: {
       /** Format: date */
@@ -1490,19 +1542,8 @@ export interface components {
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
     }
-    LegacyPeriodLength: {
-      /** Format: int32 */
-      periodYears?: number
-      /** Format: int32 */
-      periodMonths?: number
-      /** Format: int32 */
-      periodWeeks?: number
-      /** Format: int32 */
-      periodDays?: number
-      isLifeSentence?: boolean
-      sentenceTermCode: string
-      /** Format: uuid */
-      periodLengthUuid: string
+    HasSentenceToChainToResponse: {
+      hasSentenceToChainTo: boolean
     }
     LegacySentence: {
       prisonerId: string
@@ -1520,7 +1561,6 @@ export interface components {
       consecutiveToLifetimeUuid?: string
       chargeNumber?: string
       fineAmount?: number
-      periodLengths: components['schemas']['LegacyPeriodLength'][]
       /** Format: date */
       sentenceStartDate: string
     }
@@ -1644,6 +1684,28 @@ export interface components {
     SentenceTypePeriodDefinitions: {
       periodDefinitions: components['schemas']['Period'][]
     }
+    LegacyPeriodLength: {
+      /** Format: int32 */
+      periodYears?: number
+      /** Format: int32 */
+      periodMonths?: number
+      /** Format: int32 */
+      periodWeeks?: number
+      /** Format: int32 */
+      periodDays?: number
+      isLifeSentence?: boolean
+      sentenceTermCode: string
+      /** Format: uuid */
+      periodLengthUuid: string
+      /** Format: uuid */
+      sentenceUuid: string
+      prisonerId: string
+      /** Format: uuid */
+      courtChargeId: string
+      courtCaseId: string
+      /** Format: uuid */
+      courtAppearanceId: string
+    }
     LegacyCourtCase: {
       courtCaseUuid: string
       prisonerId: string
@@ -1699,6 +1761,11 @@ export interface components {
       caseReferences: components['schemas']['CaseReferenceLegacyData'][]
       appearances: components['schemas']['LegacyCourtAppearance'][]
     }
+    DraftCourtAppearance: {
+      /** Format: uuid */
+      draftUuid: string
+      sessionBlob: components['schemas']['JsonNode']
+    }
     Pageable: {
       /** Format: int32 */
       page?: number
@@ -1707,10 +1774,10 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
@@ -1747,9 +1814,7 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
 export interface operations {
   getRecall: {
     parameters: {
@@ -1933,8 +1998,8 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description OK */
-      200: {
+      /** @description No Content */
+      204: {
         headers: {
           [name: string]: unknown
         }
@@ -2391,40 +2456,6 @@ export interface operations {
       }
     }
   }
-  delete_3: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        lifetimeUuid: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
   updateInAppearance: {
     parameters: {
       query?: never
@@ -2542,7 +2573,7 @@ export interface operations {
       }
     }
   }
-  delete_4: {
+  delete_3: {
     parameters: {
       query?: never
       header?: never
@@ -3541,6 +3572,48 @@ export interface operations {
       }
     }
   }
+  hasSentenceToChainTo: {
+    parameters: {
+      query: {
+        beforeOrOnAppearanceDate: string
+      }
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns whether there is a sentence for a consecutive to chain */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HasSentenceToChainToResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HasSentenceToChainToResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HasSentenceToChainToResponse']
+        }
+      }
+    }
+  }
   getLegacySentenceTypeSummary: {
     parameters: {
       query: {
@@ -3730,6 +3803,89 @@ export interface operations {
         content: {
           'application/json': components['schemas']['LegacySentenceType'][]
         }
+      }
+    }
+  }
+  get_5: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        periodLengthUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns period-length details */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLength']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLength']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLength']
+        }
+      }
+      /** @description Not found: Period length either doesn't exist, has no sentence, or is deleted */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLength']
+        }
+      }
+    }
+  }
+  delete_4: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        periodLengthUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
@@ -4207,6 +4363,47 @@ export interface operations {
         content: {
           'application/json': components['schemas']['CourtAppearanceOutcome'][]
         }
+      }
+    }
+  }
+  delete_5: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        chargeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }

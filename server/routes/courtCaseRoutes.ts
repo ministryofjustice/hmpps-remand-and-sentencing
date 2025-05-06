@@ -713,14 +713,9 @@ export default class CourtCaseRoutes {
       )
     }
     const { submitToCheckAnswers } = req.query
-    if (submitToCheckAnswers) {
+    if (submitToCheckAnswers || warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
-      )
-    }
-    if (warrantType === 'SENTENCING') {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`,
       )
     }
     return res.redirect(
@@ -1173,7 +1168,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       backLink:
         courtAppearance.warrantType === 'SENTENCING'
-          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
           : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all`,
     })
   }

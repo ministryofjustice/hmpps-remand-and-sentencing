@@ -64,27 +64,7 @@
     }
 ] %}
 
-{% if courtAppearance.warrantType == 'SENTENCING' %}
-    {% set checkAnswersRows = checkAnswersRows.concat([
-        {
-            key: {
-                text: "Tagged bail"
-            },
-            value: {
-                text: courtAppearance.taggedBail + " days" if courtAppearance.taggedBail else "None"
-            },
-            actions: {
-                items: [
-                    {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/tagged-bail?submitToCheckAnswers=true",
-                        text: "Edit",
-                        visuallyHiddenText: "tagged bail"
-                    }
-                ]
-            }
-        }
-    ]) %}
-{% else %}
+{% if courtAppearance.warrantType == 'REMAND' %}
     {% set checkAnswersRows = checkAnswersRows.concat([
         {
             key: {

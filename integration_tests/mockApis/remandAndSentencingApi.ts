@@ -53,7 +53,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"prisonerId": "A1234AB", "draftAppearances": [{"sessionBlob": {"offences": [], "warrantType": "SENTENCING", "caseReferenceNumber": "T12345678", "warrantDate": "2023-05-12", "courtCode": "ACCRYC", "appearanceOutcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "relatedOffenceOutcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "caseOutcomeAppliedAll": "true", "taggedBail": "5", "hasTaggedBail": "true", "appearanceInformationAccepted": true}}]}',
+              '{"prisonerId": "A1234AB", "draftAppearances": [{"sessionBlob": {"offences": [], "warrantType": "SENTENCING", "caseReferenceNumber": "T12345678", "warrantDate": "2023-05-12", "courtCode": "ACCRYC", "appearanceOutcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "relatedOffenceOutcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "caseOutcomeAppliedAll": "true", "appearanceInformationAccepted": true}}]}',
           },
         ],
       },
@@ -75,7 +75,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{ "prisonerId" : "A1234AB", "appearances" : [ { "outcomeUuid" : "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode" : "ACCRYC", "courtCaseReference" : "T12345678", "appearanceDate" : "2023-05-12", "charges" : [ { "offenceCode" : "PS90037", "offenceStartDate" : "2023-05-12", "outcomeUuid" : "f17328cf-ceaa-43c2-930a-26cf74480e18", "prisonId" : "MDI", "sentence" : { "chargeNumber" : "1", "periodLengths" : [ { "days" : 4, "weeks" : 3, "months" : 2, "years" : 1, "periodOrder" : "years,months,weeks,days", "type" : "SENTENCE_LENGTH", "prisonId" : "MDI" } ], "sentenceServeType" : "FORTHWITH", "sentenceTypeId" : "467e2fa8-fce1-41a4-8110-b378c727eed3", "prisonId" : "MDI", "convictionDate" : "2023-05-12" } } ], "warrantType" : "SENTENCING", "prisonId" : "MDI", "taggedBail" : 5, "overallSentenceLength" : { "days" : 2, "weeks" : 3, "months" : 5, "years" : 4, "periodOrder" : "years,months,weeks,days", "type" : "OVERALL_SENTENCE_LENGTH", "prisonId" : "MDI" }, "overallConvictionDate" : "2023-05-12" } ], "prisonId" : "MDI" }',
+              '{ "prisonerId" : "A1234AB", "appearances" : [ { "outcomeUuid" : "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode" : "ACCRYC", "courtCaseReference" : "T12345678", "appearanceDate" : "2023-05-12", "charges" : [ { "offenceCode" : "PS90037", "offenceStartDate" : "2023-05-12", "outcomeUuid" : "f17328cf-ceaa-43c2-930a-26cf74480e18", "prisonId" : "MDI", "sentence" : { "chargeNumber" : "1", "periodLengths" : [ { "days" : 4, "weeks" : 3, "months" : 2, "years" : 1, "periodOrder" : "years,months,weeks,days", "type" : "SENTENCE_LENGTH", "prisonId" : "MDI" } ], "sentenceServeType" : "FORTHWITH", "sentenceTypeId" : "467e2fa8-fce1-41a4-8110-b378c727eed3", "prisonId" : "MDI", "convictionDate" : "2023-05-12" } } ], "warrantType" : "SENTENCING", "prisonId" : "MDI", "overallSentenceLength" : { "days" : 2, "weeks" : 3, "months" : 5, "years" : 4, "periodOrder" : "years,months,weeks,days", "type" : "OVERALL_SENTENCE_LENGTH", "prisonId" : "MDI" }, "overallConvictionDate" : "2023-05-12" } ], "prisonId" : "MDI" }',
           },
         ],
       },
@@ -371,7 +371,6 @@ export default {
                 appearanceDate: '2024-01-23',
                 warrantId: null,
                 warrantType: 'SENTENCING',
-                taggedBail: null,
                 nextCourtAppearance: null,
                 charges: [
                   {
@@ -486,7 +485,6 @@ export default {
                   appearanceDate: '2024-01-23',
                   warrantId: null,
                   warrantType: 'SENTENCING',
-                  taggedBail: null,
                   nextCourtAppearance: null,
                   charges: [
                     {
@@ -886,7 +884,6 @@ export default {
             ],
             warrantType: 'SENTENCING',
             prisonId: 'MDI',
-            taggedBail: 5,
             overallSentenceLength: {
               days: 2,
               weeks: 3,
@@ -970,7 +967,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "sentence": {"chargeNumber": "1", "periodLengths": [{"months": 5, "years": 4, "periodOrder": "years,months,weeks,days", "type":"SENTENCE_LENGTH", "prisonId": "MDI" }], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12", "prisonId": "MDI"}}], "warrantType": "SENTENCING", "taggedBail": 5, "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months,weeks,days", "type":"OVERALL_SENTENCE_LENGTH", "prisonId": "MDI" }, "overallConvictionDate" : "2023-05-12"}',
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-12", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "sentence": {"chargeNumber": "1", "periodLengths": [{"months": 5, "years": 4, "periodOrder": "years,months,weeks,days", "type":"SENTENCE_LENGTH", "prisonId": "MDI" }], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "convictionDate": "2023-05-12", "prisonId": "MDI"}}], "warrantType": "SENTENCING", "overallSentenceLength": {"months": 5, "years": 4, "periodOrder": "years,months,weeks,days", "type":"OVERALL_SENTENCE_LENGTH", "prisonId": "MDI" }, "overallConvictionDate" : "2023-05-12"}',
           },
         ],
       },
@@ -1021,7 +1018,6 @@ export default {
           },
         ],
         warrantType: 'SENTENCING',
-        taggedBail: 5,
         overallSentenceLength: {
           months: 5,
           years: 4,
@@ -1776,7 +1772,6 @@ export default {
             courtCaseReference: 'C894623',
             warrantType: 'SENTENCING',
             appearanceDate: '2023-12-15',
-            taggedBail: 5,
             overallSentenceLength: {
               months: 5,
               years: 4,
@@ -2375,7 +2370,6 @@ export default {
                 courtCaseReference: 'C894623',
                 warrantType: 'SENTENCING',
                 appearanceDate: '2023-12-15',
-                taggedBail: 5,
                 overallSentenceLength: {
                   months: 5,
                   years: 4,

@@ -364,18 +364,12 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.continueButton().click()
 
-    const courtCaseTaggedBailPage = Page.verifyOnPage(CourtCaseTaggedBailPage)
-    courtCaseTaggedBailPage.radioLabelSelector('true').click()
-    courtCaseTaggedBailPage.input().type('5')
-    courtCaseTaggedBailPage.continueButton().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
       'Case reference': caseRef,
       'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
-      'Tagged bail': '5 days',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 

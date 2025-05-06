@@ -103,11 +103,6 @@ declare module 'forms' {
     warrantType?: string
   }
 
-  export interface CourtCaseTaggedBailForm {
-    taggedBail?: string
-    hasTaggedBail?: string
-  }
-
   export interface OffenceCountNumberForm {
     countNumber?: string
     hasCountNumber?: string

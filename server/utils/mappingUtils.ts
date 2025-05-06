@@ -103,7 +103,6 @@ export const courtAppearanceToCreateCourtAppearance = (
     warrantType: courtAppearance.warrantType,
     warrantId: courtAppearance.warrantId,
     prisonId,
-    ...(courtAppearance.taggedBail && { taggedBail: parseInt(courtAppearance.taggedBail, 10) }),
     ...(nextCourtAppearance && { nextCourtAppearance }),
     ...(courtAppearance.overallSentenceLength && {
       overallSentenceLength: sentenceLengthToCreatePeriodLength(courtAppearance.overallSentenceLength, prisonId),
@@ -298,8 +297,6 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     relatedOffenceOutcomeUuid: pageCourtCaseAppearance.outcome?.relatedChargeOutcomeUuid,
     warrantType: pageCourtCaseAppearance.warrantType,
     warrantId: pageCourtCaseAppearance.warrantId,
-    taggedBail: pageCourtCaseAppearance.taggedBail?.toLocaleString(),
-    hasTaggedBail: pageCourtCaseAppearance.taggedBail ? 'true' : 'false',
     ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
     offences: pageCourtCaseAppearance.charges.map(chargeToOffence).sort((a, b) => {
       return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)

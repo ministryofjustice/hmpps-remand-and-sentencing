@@ -63,3 +63,5 @@ export type RecallType = components['schemas']['RecallType']
 export type CourtCases = components['schemas']['CourtCases']
 
 export type HasSentenceToChainToResponse = components['schemas']['HasSentenceToChainToResponse']
+
+export type SentencesToChainToResponse = components['schemas']['SentencesToChainToResponse']

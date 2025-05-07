@@ -56,6 +56,34 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/legacy/period-length/{periodLengthUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * retrieve a period-length
+     * @description This endpoint will retrieve period-length details.
+     */
+    get: operations['get_1']
+    /**
+     * Updates one or more period lengths related to a period-length UUID
+     * @description Updates one or more period lengths related to a period-length UUID
+     */
+    put: operations['update_1']
+    post?: never
+    /**
+     * Delete Period Length
+     * @description This endpoint will soft-delete a period-length from RAS.
+     */
+    delete: operations['delete_1']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/court-case/{courtCaseUuid}': {
     parameters: {
       query?: never
@@ -67,18 +95,18 @@ export interface paths {
      * Retrieve court case details
      * @description This endpoint will retrieve court case details
      */
-    get: operations['get_1']
+    get: operations['get_2']
     /**
      * Updates a court case
      * @description Synchronise an update of court case from NOMIS into remand and sentencing API.
      */
-    put: operations['update_1']
+    put: operations['update_2']
     post?: never
     /**
      * Deletes a court case
      * @description Synchronise a deletion of court case from NOMIS into remand and sentencing API.
      */
-    delete: operations['delete_1']
+    delete: operations['delete_2']
     options?: never
     head?: never
     patch?: never
@@ -95,18 +123,18 @@ export interface paths {
      * Retrieve court appearance details
      * @description This endpoint will retrieve court appearance details
      */
-    get: operations['get_2']
+    get: operations['get_3']
     /**
      * Updates a court appearance
      * @description Synchronise an update of court appearance from NOMIS court events into remand and sentencing API.
      */
-    put: operations['update_2']
+    put: operations['update_3']
     post?: never
     /**
      * Delete Appearance
      * @description Synchronise a deletion of court appearance from NOMIS court events into remand and sentencing API.
      */
-    delete: operations['delete_2']
+    delete: operations['delete_3']
     options?: never
     head?: never
     patch?: never
@@ -151,12 +179,12 @@ export interface paths {
      * retrieve a charge
      * @description This endpoint will retrieve charge details.
      */
-    get: operations['get_3']
+    get: operations['get_4']
     /**
      * Update a charge in all appearances
      * @description Synchronise an update of charge in all appearances from NOMIS Offender charges into remand and sentencing API.
      */
-    put: operations['update_3']
+    put: operations['update_4']
     post?: never
     delete?: never
     options?: never
@@ -195,18 +223,18 @@ export interface paths {
      * Retrieves a draft court appearance
      * @description Retrieves a draft court appearance
      */
-    get: operations['get_4']
+    get: operations['get_5']
     /**
      * Updates a draft court appearance
      * @description Updates a draft court appearance for when a user wants to pause inputting a warrant and come back later
      */
-    put: operations['update_4']
+    put: operations['update_5']
     post?: never
     /**
      * deletes a draft court appearance
      * @description deletes a draft court appearance
      */
-    delete: operations['delete_3']
+    delete: operations['delete_4']
     options?: never
     head?: never
     patch?: never
@@ -320,6 +348,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/legacy/period-length': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates one or more period lengths for a single sentence
+     * @description Creates one or more period lengths for a single sentence
+     */
+    post: operations['create_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/court-case': {
     parameters: {
       query?: never
@@ -333,7 +381,7 @@ export interface paths {
      * Create a court case
      * @description Synchronise a creation of court case from NOMIS into remand and sentencing API.
      */
-    post: operations['create_1']
+    post: operations['create_2']
     delete?: never
     options?: never
     head?: never
@@ -353,7 +401,7 @@ export interface paths {
      * Creates a court case
      * @description Migrates a court case, court appearance and charge from NOMIS into remand and sentencing API.
      */
-    post: operations['create_2']
+    post: operations['create_3']
     delete?: never
     options?: never
     head?: never
@@ -373,7 +421,7 @@ export interface paths {
      * Create a court appearance
      * @description Synchronise a creation of court appearance from NOMIS court events into remand and sentencing API.
      */
-    post: operations['create_3']
+    post: operations['create_4']
     delete?: never
     options?: never
     head?: never
@@ -393,7 +441,7 @@ export interface paths {
      * Create a charge
      * @description Synchronise a creation of charge from NOMIS Offender charges into remand and sentencing API.
      */
-    post: operations['create_4']
+    post: operations['create_5']
     delete?: never
     options?: never
     head?: never
@@ -413,7 +461,7 @@ export interface paths {
      * Create a draft court case
      * @description Creates a draft court case for when a user wants to pause inputting a warrant and come back later
      */
-    post: operations['create_5']
+    post: operations['create_6']
     delete?: never
     options?: never
     head?: never
@@ -600,6 +648,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/person/{prisonerId}/sentences-to-chain-to': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * retrieve all sentences to chain to
+     * @description This endpoint will retrieve all sentences which can be used in a consecutive to chain
+     */
+    get: operations['sentencesToChainTo']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/person/{prisonerId}/sentenced-court-cases': {
     parameters: {
       query?: never
@@ -715,30 +783,6 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/legacy/period-length/{periodLengthUuid}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * retrieve a period-length
-     * @description This endpoint will retrieve period-length details.
-     */
-    get: operations['get_5']
-    put?: never
-    post?: never
-    /**
-     * Delete Period Length
-     * @description This endpoint will soft-delete a period-length from RAS.
-     */
-    delete: operations['delete_4']
     options?: never
     head?: never
     patch?: never
@@ -1007,20 +1051,6 @@ export interface components {
     LegacyCreateFine: {
       fineAmount: number
     }
-    LegacyCreatePeriodLength: {
-      periodLengthId: components['schemas']['NomisPeriodLengthId']
-      /** Format: uuid */
-      periodLengthUuid?: string
-      /** Format: int32 */
-      periodYears?: number
-      /** Format: int32 */
-      periodMonths?: number
-      /** Format: int32 */
-      periodWeeks?: number
-      /** Format: int32 */
-      periodDays?: number
-      legacyData: components['schemas']['PeriodLengthLegacyData']
-    }
     LegacyCreateSentence: {
       chargeUuids: string[]
       chargeNumber?: string
@@ -1030,20 +1060,6 @@ export interface components {
       active: boolean
       prisonId: string
       legacyData: components['schemas']['SentenceLegacyData']
-      periodLengths: components['schemas']['LegacyCreatePeriodLength'][]
-    }
-    NomisPeriodLengthId: {
-      /** Format: int64 */
-      offenderBookingId: number
-      /** Format: int32 */
-      sentenceSequence: number
-      /** Format: int32 */
-      termSequence: number
-    }
-    PeriodLengthLegacyData: {
-      lifeSentence?: boolean
-      sentenceTermCode?: string
-      sentenceTermDescription?: string
     }
     SentenceLegacyData: {
       sentenceCalcType?: string
@@ -1051,6 +1067,30 @@ export interface components {
       sentenceTypeDesc?: string
       postedDate: string
       active?: boolean
+    }
+    /** @description Used for creating or updating period length records (aka sentence-terms in NOMIS). */
+    LegacyCreatePeriodLength: {
+      /** Format: uuid */
+      sentenceUuid: string
+      /** Format: int32 */
+      periodYears?: number
+      /** Format: int32 */
+      periodMonths?: number
+      /** Format: int32 */
+      periodWeeks?: number
+      /** Format: int32 */
+      periodDays?: number
+      legacyData: components['schemas']['PeriodLengthLegacyData']
+      /**
+       * @description Prison identifier where create/update originated from.
+       * @example MDI
+       */
+      prisonId: string
+    }
+    PeriodLengthLegacyData: {
+      lifeSentence?: boolean
+      sentenceTermCode?: string
+      sentenceTermDescription?: string
     }
     LegacyCreateCourtCase: {
       prisonerId: string
@@ -1214,11 +1254,6 @@ export interface components {
       appearances: components['schemas']['CreateCourtAppearanceResponse'][]
       charges: components['schemas']['CreateChargeResponse'][]
     }
-    LegacyPeriodLengthCreatedResponse: {
-      /** Format: uuid */
-      uuid: string
-      sentenceTermNOMISId: components['schemas']['NomisPeriodLengthId']
-    }
     LegacySentenceCreatedResponse: {
       prisonerId: string
       /** Format: uuid */
@@ -1228,7 +1263,18 @@ export interface components {
       /** Format: uuid */
       appearanceUuid: string
       courtCaseId: string
-      createdPeriodLengths: components['schemas']['LegacyPeriodLengthCreatedResponse'][]
+    }
+    LegacyPeriodLengthCreatedResponse: {
+      /** Format: uuid */
+      periodLengthUuid: string
+      prisonerId: string
+      /** Format: uuid */
+      sentenceUuid: string
+      /** Format: uuid */
+      chargeUuid: string
+      /** Format: uuid */
+      appearanceUuid: string
+      courtCaseId: string
     }
     LegacyCourtCaseCreatedResponse: {
       courtCaseUuid: string
@@ -1303,6 +1349,14 @@ export interface components {
       offenderBookingId: number
       /** Format: int32 */
       sequence: number
+    }
+    NomisPeriodLengthId: {
+      /** Format: int64 */
+      offenderBookingId: number
+      /** Format: int32 */
+      sentenceSequence: number
+      /** Format: int32 */
+      termSequence: number
     }
     MigrationCreateChargeResponse: {
       /** Format: uuid */
@@ -1460,6 +1514,26 @@ export interface components {
       dateOfBirth: string
       pncNumber?: string
       status?: string
+    }
+    AppearanceToChainTo: {
+      courtCode: string
+      courtCaseReference?: string
+      /** Format: date */
+      appearanceDate: string
+      sentences: components['schemas']['SentenceToChainTo'][]
+    }
+    SentenceToChainTo: {
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string
+      /** Format: date */
+      offenceEndDate?: string
+      /** Format: uuid */
+      sentenceUuid: string
+      countNumber?: string
+    }
+    SentencesToChainToResponse: {
+      appearances: components['schemas']['AppearanceToChainTo'][]
     }
     AppearanceType: {
       /** Format: uuid */
@@ -2026,6 +2100,134 @@ export interface operations {
       query?: never
       header?: never
       path: {
+        periodLengthUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns period-length details */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLength']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLength']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLength']
+        }
+      }
+      /** @description Not found: Period length either doesn't exist, has no sentence, or is deleted */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLength']
+        }
+      }
+    }
+  }
+  update_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        periodLengthUuid: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LegacyCreatePeriodLength']
+      }
+    }
+    responses: {
+      /** @description No content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Period length or sentence not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  delete_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        periodLengthUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  get_2: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
         courtCaseUuid: string
       }
       cookie?: never
@@ -2070,7 +2272,7 @@ export interface operations {
       }
     }
   }
-  update_1: {
+  update_2: {
     parameters: {
       query?: never
       header?: never
@@ -2108,7 +2310,7 @@ export interface operations {
       }
     }
   }
-  delete_1: {
+  delete_2: {
     parameters: {
       query?: never
       header?: never
@@ -2142,7 +2344,7 @@ export interface operations {
       }
     }
   }
-  get_2: {
+  get_3: {
     parameters: {
       query?: never
       header?: never
@@ -2191,7 +2393,7 @@ export interface operations {
       }
     }
   }
-  update_2: {
+  update_3: {
     parameters: {
       query?: never
       header?: never
@@ -2229,7 +2431,7 @@ export interface operations {
       }
     }
   }
-  delete_2: {
+  delete_3: {
     parameters: {
       query?: never
       header?: never
@@ -2378,7 +2580,7 @@ export interface operations {
       }
     }
   }
-  get_3: {
+  get_4: {
     parameters: {
       query?: never
       header?: never
@@ -2418,7 +2620,7 @@ export interface operations {
       }
     }
   }
-  update_3: {
+  update_4: {
     parameters: {
       query?: never
       header?: never
@@ -2495,7 +2697,7 @@ export interface operations {
       }
     }
   }
-  get_4: {
+  get_5: {
     parameters: {
       query?: never
       header?: never
@@ -2535,7 +2737,7 @@ export interface operations {
       }
     }
   }
-  update_4: {
+  update_5: {
     parameters: {
       query?: never
       header?: never
@@ -2573,7 +2775,7 @@ export interface operations {
       }
     }
   }
-  delete_3: {
+  delete_4: {
     parameters: {
       query?: never
       header?: never
@@ -2942,6 +3144,48 @@ export interface operations {
     }
     requestBody: {
       content: {
+        'application/json': components['schemas']['LegacyCreatePeriodLength']
+      }
+    }
+    responses: {
+      /** @description period length created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLengthCreatedResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLengthCreatedResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyPeriodLengthCreatedResponse']
+        }
+      }
+    }
+  }
+  create_2: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
         'application/json': components['schemas']['LegacyCreateCourtCase']
       }
     }
@@ -2975,7 +3219,7 @@ export interface operations {
       }
     }
   }
-  create_2: {
+  create_3: {
     parameters: {
       query?: never
       header?: never
@@ -3017,7 +3261,7 @@ export interface operations {
       }
     }
   }
-  create_3: {
+  create_4: {
     parameters: {
       query?: never
       header?: never
@@ -3059,7 +3303,7 @@ export interface operations {
       }
     }
   }
-  create_4: {
+  create_5: {
     parameters: {
       query?: never
       header?: never
@@ -3101,7 +3345,7 @@ export interface operations {
       }
     }
   }
-  create_5: {
+  create_6: {
     parameters: {
       query?: never
       header?: never
@@ -3532,6 +3776,48 @@ export interface operations {
       }
     }
   }
+  sentencesToChainTo: {
+    parameters: {
+      query: {
+        beforeOrOnAppearanceDate: string
+      }
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns all sentences for a consecutive to chain */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentencesToChainToResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentencesToChainToResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentencesToChainToResponse']
+        }
+      }
+    }
+  }
   getSentencedCourtCases: {
     parameters: {
       query?: never
@@ -3803,89 +4089,6 @@ export interface operations {
         content: {
           'application/json': components['schemas']['LegacySentenceType'][]
         }
-      }
-    }
-  }
-  get_5: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        periodLengthUuid: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Returns period-length details */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['LegacyPeriodLength']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['LegacyPeriodLength']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['LegacyPeriodLength']
-        }
-      }
-      /** @description Not found: Period length either doesn't exist, has no sentence, or is deleted */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['LegacyPeriodLength']
-        }
-      }
-    }
-  }
-  delete_4: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        periodLengthUuid: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
       }
     }
   }

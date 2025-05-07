@@ -18,6 +18,7 @@ import {
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  SentencesToChainToResponse,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config, { ApiConfig } from '../config'
@@ -245,5 +246,14 @@ export default class RemandAndSentencingApiClient {
         beforeOrOnAppearanceDate,
       },
     })) as unknown as Promise<HasSentenceToChainToResponse>
+  }
+
+  async sentencesToChainTo(prisonerId: string, beforeOrOnAppearanceDate: string): Promise<SentencesToChainToResponse> {
+    return (await this.restClient.get({
+      path: `/person/${prisonerId}/sentences-to-chain-to`,
+      query: {
+        beforeOrOnAppearanceDate,
+      },
+    })) as unknown as Promise<SentencesToChainToResponse>
   }
 }

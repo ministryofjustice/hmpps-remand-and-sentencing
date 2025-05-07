@@ -1,4 +1,5 @@
 import type {
+  FirstSentenceConsecutiveToForm,
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConsecutiveToForm,
@@ -735,6 +736,37 @@ export default class OffenceService {
       const sentence = offence.sentence ?? {}
       sentence.isSentenceConsecutiveToAnotherCase =
         sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
+  setFirstSentenceConsecutiveTo(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    firstSentenceConsecutiveToForm: FirstSentenceConsecutiveToForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      firstSentenceConsecutiveToForm,
+      {
+        consecutiveToSentenceUuid: 'required',
+      },
+      {
+        'required.consecutiveToSentenceUuid': 'Select the sentence that this sentence is consecutive to',
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.consecutiveToSentenceUuid = firstSentenceConsecutiveToForm.consecutiveToSentenceUuid
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

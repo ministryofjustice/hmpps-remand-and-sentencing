@@ -26,6 +26,7 @@ import config from '../config'
 import { periodLengthsToSentenceLengths } from './mappingUtils'
 import type {
   AppearanceOutcome,
+  AppearanceToChainTo,
   NextCourtAppearance,
   OffenceOutcome,
   SentenceToChainTo,
@@ -158,6 +159,18 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       return 'Not entered'
     },
   )
+
+  njkEnv.addFilter('sortByAppearanceDate', (appearances: AppearanceToChainTo[]) => {
+    return appearances.sort((a, b) => {
+      const aAppearanceDate = dayjs(a.appearanceDate)
+      const bAppearanceDate = dayjs(b.appearanceDate)
+      if (aAppearanceDate.isSame(bAppearanceDate)) {
+        return 0
+      }
+
+      return aAppearanceDate.isBefore(bAppearanceDate) ? 1 : -1
+    })
+  })
 
   njkEnv.addFilter('sortByCountNumber', (sentences: SentenceToChainTo[]) => {
     return sentences.sort((a, b) => {

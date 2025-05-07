@@ -66,4 +66,6 @@ export type HasSentenceToChainToResponse = components['schemas']['HasSentenceToC
 
 export type SentencesToChainToResponse = components['schemas']['SentencesToChainToResponse']
 
+export type AppearanceToChainTo = components['schemas']['AppearanceToChainTo']
+
 export type SentenceToChainTo = components['schemas']['SentenceToChainTo']

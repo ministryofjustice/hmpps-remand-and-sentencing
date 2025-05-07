@@ -2680,18 +2680,18 @@ export default {
             {
               courtCode: 'BCC',
               courtCaseReference: 'B34345',
-              appearanceDate: '2023-02-23',
+              appearanceDate: '2022-06-13',
               sentences: [
                 {
                   offenceCode: 'PS90037',
-                  offenceStartDate: '2023-01-17',
+                  offenceStartDate: '2022-02-17',
                   sentenceUuid: '1d59ec87-b732-463d-b17e-4c489a52f233',
                   countNumber: '1',
                 },
                 {
                   offenceCode: 'PS90037',
-                  offenceStartDate: '2023-01-05',
-                  sentenceUuid: '10ea37b9-4dc6-4d5a-86ea-2dafc590d12e',
+                  offenceStartDate: '2022-01-25',
+                  sentenceUuid: 'b2d12149-8497-481c-beaa-4413c4f37a2f',
                   countNumber: '2',
                 },
               ],

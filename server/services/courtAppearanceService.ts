@@ -13,7 +13,6 @@ import type {
   CourtCaseReferenceForm,
   CourtCaseSelectCourtNameForm,
   CourtCaseSelectReferenceForm,
-  CourtCaseTaggedBailForm,
   CourtCaseWarrantDateForm,
   OffenceCountNumberForm,
   SentenceLengthForm,
@@ -336,38 +335,6 @@ export default class CourtAppearanceService {
 
   getCaseOutcomeAppliedAll(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).caseOutcomeAppliedAll
-  }
-
-  setTaggedBail(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    taggedBailForm: CourtCaseTaggedBailForm,
-  ) {
-    const errors = validate(
-      taggedBailForm,
-      { taggedBail: 'required_if:hasTaggedBail,true|minWholeNumber:1', hasTaggedBail: 'required' },
-      {
-        'required_if.taggedBail': 'Enter the number of days for the tagged bail',
-        'minWholeNumber.taggedBail': 'Enter a whole number for the number of days on tagged bail',
-        'required.hasTaggedBail': 'Enter the number of days for the tagged bail',
-      },
-    )
-    if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
-      if (taggedBailForm.hasTaggedBail === 'true') {
-        courtAppearance.taggedBail = taggedBailForm.taggedBail
-      } else {
-        delete courtAppearance.taggedBail
-      }
-      courtAppearance.hasTaggedBail = taggedBailForm.hasTaggedBail
-      // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
-    }
-    return errors
-  }
-
-  getTaggedBail(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).taggedBail
   }
 
   getOverallCustodialSentenceLength(

@@ -11,7 +11,6 @@ import type {
   CourtCaseReferenceForm,
   CourtCaseSelectCourtNameForm,
   CourtCaseSelectReferenceForm,
-  CourtCaseTaggedBailForm,
   CourtCaseWarrantDateForm,
   CourtCaseWarrantTypeForm,
 } from 'forms'
@@ -623,7 +622,7 @@ export default class CourtCaseRoutes {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
         )
       }
 
@@ -713,14 +712,9 @@ export default class CourtCaseRoutes {
       )
     }
     const { submitToCheckAnswers } = req.query
-    if (submitToCheckAnswers) {
+    if (submitToCheckAnswers || warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
-      )
-    }
-    if (warrantType === 'SENTENCING') {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`,
       )
     }
     return res.redirect(
@@ -1091,55 +1085,6 @@ export default class CourtCaseRoutes {
     )
   }
 
-  public getTaggedBail: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
-    let taggedBailForm = (req.flash('taggedBailForm')[0] || {}) as CourtCaseTaggedBailForm
-    if (Object.keys(taggedBailForm).length === 0) {
-      const taggedBail = this.courtAppearanceService.getTaggedBail(req.session, nomsId)
-      const hasTaggedBail = taggedBail ? 'true' : 'false'
-      taggedBailForm = {
-        taggedBail,
-        hasTaggedBail: submitToCheckAnswers ? hasTaggedBail : '',
-      }
-    }
-
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
-    if (submitToCheckAnswers) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-    }
-
-    return res.render('pages/courtAppearance/tagged-bail', {
-      nomsId,
-      submitToCheckAnswers,
-      courtCaseReference,
-      appearanceReference,
-      errors: req.flash('errors') || [],
-      taggedBailForm,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      backLink,
-    })
-  }
-
-  public submitTaggedBail: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
-    const taggedBailForm = trimForm<CourtCaseTaggedBailForm>(req.body)
-    const errors = this.courtAppearanceService.setTaggedBail(req.session, nomsId, taggedBailForm)
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      req.flash('taggedBailForm', { ...taggedBailForm })
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
-      )
-    }
-
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
-    )
-  }
-
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
@@ -1173,7 +1118,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       backLink:
         courtAppearance.warrantType === 'SENTENCING'
-          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/tagged-bail`
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
           : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all`,
     })
   }

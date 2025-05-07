@@ -86,8 +86,7 @@ export default class TaskListModel {
   private allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     let typeSpecificInformationFilledOut = false
     if (courtAppearance.warrantType === 'SENTENCING') {
-      typeSpecificInformationFilledOut =
-        courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined
+      typeSpecificInformationFilledOut = courtAppearance.courtCode !== undefined
     } else {
       typeSpecificInformationFilledOut =
         courtAppearance.appearanceOutcomeUuid && courtAppearance.caseOutcomeAppliedAll !== undefined
@@ -103,8 +102,7 @@ export default class TaskListModel {
   private anyAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     let typeSpecificInformationFilledOut = false
     if (courtAppearance.warrantType === 'SENTENCING') {
-      typeSpecificInformationFilledOut =
-        courtAppearance.taggedBail !== undefined || courtAppearance.hasTaggedBail !== undefined
+      typeSpecificInformationFilledOut = courtAppearance.courtCode !== undefined
     } else {
       typeSpecificInformationFilledOut =
         courtAppearance.appearanceOutcomeUuid !== undefined || courtAppearance.caseOutcomeAppliedAll !== undefined

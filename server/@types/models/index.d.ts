@@ -23,8 +23,6 @@ declare module 'models' {
     offences?: Offence[]
     warrantType?: string
     warrantId?: string
-    taggedBail?: string
-    hasTaggedBail?: string
     overallSentenceLength?: SentenceLength
     referenceNumberSelect?: string
     appearanceInformationAccepted?: boolean

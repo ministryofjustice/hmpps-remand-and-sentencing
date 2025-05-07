@@ -2684,15 +2684,19 @@ export default {
               sentences: [
                 {
                   offenceCode: 'PS90037',
-                  offenceStartDate: '2022-02-17',
-                  sentenceUuid: '1d59ec87-b732-463d-b17e-4c489a52f233',
-                  countNumber: '1',
+                  offenceStartDate: '2022-01-25',
+                  sentenceUuid: 'b2d12149-8497-481c-beaa-4413c4f37a2f',
+                  countNumber: '6',
                 },
                 {
                   offenceCode: 'PS90037',
-                  offenceStartDate: '2022-01-25',
-                  sentenceUuid: 'b2d12149-8497-481c-beaa-4413c4f37a2f',
-                  countNumber: '2',
+                  sentenceUuid: '223d297b-3052-4b6b-a321-02f8413d9043',
+                },
+                {
+                  offenceCode: 'PS90037',
+                  offenceStartDate: '2022-02-17',
+                  sentenceUuid: '1d59ec87-b732-463d-b17e-4c489a52f233',
+                  countNumber: '1',
                 },
               ],
             },

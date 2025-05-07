@@ -30,7 +30,7 @@
                         {% for appearance in sentencesToChainTo.appearances %}
                             <div class="govuk-!-margin-bottom-6">
                                 <h3 class="govuk-heading-s"> {{appearance.courtCaseReference + ' at ' if appearance.courtCaseReference}}{{courtMap[appearance.courtCode]}} on {{appearance.appearanceDate | formatDate}}</h3>
-                                {% for sentence in appearance.sentences %}
+                                {% for sentence in appearance.sentences | sortByCountNumber %}
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="consecutiveToSentenceUuid" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceUuid}}">
                                         <label class="govuk-label govuk-radios__label" for="consecutiveToSentenceUuid">

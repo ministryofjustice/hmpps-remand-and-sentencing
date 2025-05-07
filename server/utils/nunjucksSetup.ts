@@ -28,6 +28,7 @@ import type {
   AppearanceOutcome,
   NextCourtAppearance,
   OffenceOutcome,
+  SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 const production = process.env.NODE_ENV === 'production'
@@ -158,6 +159,23 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     },
   )
 
+  njkEnv.addFilter('sortByCountNumber', (sentences: SentenceToChainTo[]) => {
+    return sentences.sort((a, b) => {
+      const aCountNumber = a.countNumber
+      const bCountNumber = b.countNumber
+      if (aCountNumber === bCountNumber) {
+        return 0
+      }
+      if (!aCountNumber) {
+        return 1
+      }
+      if (!bCountNumber) {
+        return -1
+      }
+      return aCountNumber < bCountNumber ? -1 : 1
+    })
+  })
+
   njkEnv.addFilter('periodLengthValueOrLegacy', periodLengthValueOrLegacy)
 
   njkEnv.addFilter('outcomeValueOrLegacy', outcomeValueOrLegacy)
@@ -173,5 +191,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatLengthsWithoutPeriodOrder', formatLengthsWithoutPeriodOrder)
 
   njkEnv.addFilter('periodLengthsToSentenceLengths', periodLengthsToSentenceLengths)
+
   njkEnv.addGlobal('featureToggles', config.featureToggles)
 }

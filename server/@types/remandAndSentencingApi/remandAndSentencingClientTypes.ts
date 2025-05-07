@@ -65,3 +65,5 @@ export type CourtCases = components['schemas']['CourtCases']
 export type HasSentenceToChainToResponse = components['schemas']['HasSentenceToChainToResponse']
 
 export type SentencesToChainToResponse = components['schemas']['SentencesToChainToResponse']
+
+export type SentenceToChainTo = components['schemas']['SentenceToChainTo']

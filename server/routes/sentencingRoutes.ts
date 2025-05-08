@@ -235,7 +235,8 @@ export default class SentencingRoutes extends BaseRoutes {
     )
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
-    
+  }
+
   public getFirstSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,

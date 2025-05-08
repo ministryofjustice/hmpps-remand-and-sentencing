@@ -150,7 +150,7 @@
         actions: {
             items: [
                 {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/SENTENCING/overall-sentence-length",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/overall-sentence-length",
                     text: "Edit",
                     visuallyHiddenText: "overall sentence length"
                 }
@@ -294,7 +294,7 @@
                         }) }}
             {% endfor %}
             
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-sentencing-details-edit">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-details-edit">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <div class="govuk-button-group">
                     {{ govukButton({

@@ -25,22 +25,16 @@ import ManageOffencesService from '../services/manageOffencesService'
 import { getAsStringOrDefault, outcomeValueOrLegacy, sortByOffenceStartDate } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
-import {
-  chargeToOffence,
-  draftCourtAppearanceToCourtAppearance,
-  pageCourtCaseAppearanceToCourtAppearance,
-} from '../utils/mappingUtils'
+import { chargeToOffence, draftCourtAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
-import OffenceOutcomeService from '../services/offenceOutcomeService'
 import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import mojPaginationFromPageCourtCase from './data/pagination'
 import config from '../config'
-import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 
 export default class CourtCaseRoutes {
   constructor(
@@ -50,9 +44,7 @@ export default class CourtCaseRoutes {
     private readonly documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
-    private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
-    private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
   ) {}
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -147,188 +139,6 @@ export default class CourtCaseRoutes {
     })
   }
 
-  public getSentencingAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { token } = res.locals.user
-    if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId, appearanceReference)) {
-      const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
-        appearanceReference,
-        token,
-      )
-      this.courtAppearanceService.setSessionCourtAppearance(
-        req.session,
-        nomsId,
-        pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
-      )
-    }
-
-    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const chargeCodes = appearance.offences.map(offences => offences.offenceCode)
-    const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode].filter(
-      courtId => courtId !== undefined && courtId !== null,
-    )
-    const sentenceTypeIds = appearance.offences
-      .filter(offence => offence.sentence?.sentenceTypeId)
-      .map(offence => offence.sentence?.sentenceTypeId)
-    const offenceOutcomeIds = appearance.offences.map(offence => offence.outcomeUuid)
-    const outcomePromise = appearance.appearanceOutcomeUuid
-      ? this.appearanceOutcomeService
-          .getOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
-          .then(outcome => outcome.outcomeName)
-      : Promise.resolve(appearance.legacyData?.outcomeDescription ?? 'Not entered')
-    const appearanceTypePromise = appearance.nextHearingTypeUuid
-      ? this.remandAndSentencingService
-          .getAppearanceTypeByUuid(appearance.nextHearingTypeUuid, req.user.username)
-          .then(appearanceType => appearanceType.description)
-      : Promise.resolve('Not entered')
-    const { offences } = appearance
-    const [
-      offenceMap,
-      courtMap,
-      sentenceTypeMap,
-      overallCaseOutcome,
-      outcomeMap,
-      appearanceTypeDescription,
-      overallSentenceLengthComparison,
-    ] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
-      this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
-      this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
-      outcomePromise,
-      this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
-      appearanceTypePromise,
-      this.calculateReleaseDatesService.compareOverallSentenceLength(appearance, req.user.username),
-    ])
-    const [custodialOffences, nonCustodialOffences] = offences
-      .map((offence, index) => ({ ...offence, index })) // Add an index to each offence
-      .reduce(
-        ([custodialList, nonCustodialList], offence) => {
-          const outcome = outcomeMap[offence.outcomeUuid]
-          if (outcome?.outcomeType === 'SENTENCING') {
-            return [[...custodialList, offence], nonCustodialList]
-          }
-          if (outcome?.outcomeType === 'NON_CUSTODIAL') {
-            return [custodialList, [...nonCustodialList, offence]]
-          }
-          return [custodialList, nonCustodialList]
-        },
-        [[], []] as [typeof offences, typeof offences],
-      )
-
-    return res.render('pages/courtAppearance/sentencing-appearance-details', {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      appearance,
-      offenceMap,
-      courtMap,
-      sentenceTypeMap,
-      overallCaseOutcome,
-      outcomeMap,
-      appearanceTypeDescription,
-      overallSentenceLengthComparison,
-      custodialOffences,
-      nonCustodialOffences,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
-    })
-  }
-
-  public submitSentencingAppearanceDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const { token } = res.locals.user
-    const { prisonId } = res.locals.prisoner
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    await this.remandAndSentencingService.updateCourtAppearance(
-      token,
-      courtCaseReference,
-      appearanceReference,
-      courtAppearance,
-      prisonId,
-    )
-    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
-  }
-
-  public getRemandAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { token } = res.locals.user
-    if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId, appearanceReference)) {
-      const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
-        appearanceReference,
-        token,
-      )
-      this.courtAppearanceService.setSessionCourtAppearance(
-        req.session,
-        nomsId,
-        pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
-      )
-    }
-
-    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const chargeCodes = appearance.offences.map(offences => offences.offenceCode)
-    const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode].filter(
-      courtId => courtId !== undefined && courtId !== null,
-    )
-    const sentenceTypeIds = appearance.offences
-      .filter(offence => offence.sentence?.sentenceTypeId)
-      .map(offence => offence.sentence?.sentenceTypeId)
-    const offenceOutcomeIds = appearance.offences.map(offence => offence.outcomeUuid)
-    const outcomePromise = appearance.appearanceOutcomeUuid
-      ? this.appearanceOutcomeService
-          .getOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
-          .then(outcome => outcome.outcomeName)
-      : Promise.resolve(appearance.legacyData?.outcomeDescription ?? 'Not entered')
-    const appearanceTypePromise = appearance.nextHearingTypeUuid
-      ? this.remandAndSentencingService
-          .getAppearanceTypeByUuid(appearance.nextHearingTypeUuid, req.user.username)
-          .then(appearanceType => appearanceType.description)
-      : Promise.resolve('Not entered')
-
-    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap, appearanceTypeDescription] =
-      await Promise.all([
-        this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
-        this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
-        this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
-        outcomePromise,
-        this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
-        appearanceTypePromise,
-      ])
-
-    return res.render('pages/courtAppearance/remand-appearance-details', {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      appearance,
-      offenceMap,
-      courtMap,
-      sentenceTypeMap,
-      overallCaseOutcome,
-      outcomeMap,
-      appearanceTypeDescription,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
-    })
-  }
-
-  public submitRemandAppearanceDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const { token } = res.locals.user
-    const { prisonId } = res.locals.prisoner
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    await this.remandAndSentencingService.updateCourtAppearance(
-      token,
-      courtCaseReference,
-      appearanceReference,
-      courtAppearance,
-      prisonId,
-    )
-    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
-  }
-
   public getReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
@@ -345,9 +155,9 @@ export default class CourtCaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
@@ -383,11 +193,11 @@ export default class CourtCaseRoutes {
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
     const { submitToCheckAnswers } = req.query
@@ -486,9 +296,9 @@ export default class CourtCaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/reference`
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
@@ -524,11 +334,11 @@ export default class CourtCaseRoutes {
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
     const { submitToCheckAnswers } = req.query
@@ -659,9 +469,9 @@ export default class CourtCaseRoutes {
 
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
@@ -704,11 +514,11 @@ export default class CourtCaseRoutes {
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
     const { submitToCheckAnswers } = req.query
@@ -937,7 +747,7 @@ export default class CourtCaseRoutes {
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
     } else if (backTo === 'SELECT') {
@@ -1015,7 +825,7 @@ export default class CourtCaseRoutes {
     }
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
 
@@ -1144,9 +954,9 @@ export default class CourtCaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
@@ -1181,11 +991,11 @@ export default class CourtCaseRoutes {
       if (addOrEditCourtAppearance === 'edit-court-appearance') {
         if (warrantType === 'SENTENCING') {
           return res.redirect(
-            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
           )
         }
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
         )
       }
       return res.redirect(
@@ -1211,9 +1021,9 @@ export default class CourtCaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-select`
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
@@ -1263,11 +1073,11 @@ export default class CourtCaseRoutes {
     ) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
 
@@ -1304,9 +1114,9 @@ export default class CourtCaseRoutes {
 
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     }
 
@@ -1345,11 +1155,11 @@ export default class CourtCaseRoutes {
     ) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
     const { submitToCheckAnswers } = req.query
@@ -1383,9 +1193,9 @@ export default class CourtCaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-date`
     } else if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     }
     return res.render('pages/courtAppearance/next-hearing-court-select', {
@@ -1424,11 +1234,11 @@ export default class CourtCaseRoutes {
       ) {
         if (warrantType === 'SENTENCING') {
           return res.redirect(
-            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
           )
         }
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
         )
       }
       return res.redirect(
@@ -1466,9 +1276,9 @@ export default class CourtCaseRoutes {
 
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
@@ -1505,11 +1315,11 @@ export default class CourtCaseRoutes {
     ) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
     return res.redirect(
@@ -1552,11 +1362,11 @@ export default class CourtCaseRoutes {
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
     return res.redirect(

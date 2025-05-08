@@ -25,17 +25,12 @@ import ManageOffencesService from '../services/manageOffencesService'
 import { getAsStringOrDefault, outcomeValueOrLegacy, sortByOffenceStartDate } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
-import {
-  chargeToOffence,
-  draftCourtAppearanceToCourtAppearance,
-  pageCourtCaseAppearanceToCourtAppearance,
-} from '../utils/mappingUtils'
+import { chargeToOffence, draftCourtAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
-import OffenceOutcomeService from '../services/offenceOutcomeService'
 import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import mojPaginationFromPageCourtCase from './data/pagination'
@@ -49,7 +44,6 @@ export default class CourtCaseRoutes {
     private readonly documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
-    private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
   ) {}
 

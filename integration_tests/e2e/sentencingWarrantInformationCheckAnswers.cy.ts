@@ -29,7 +29,7 @@ context('Warrant Information Check Answers Page', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/SENTENCING/overall-sentence-length')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-sentence-length')
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
@@ -44,7 +44,7 @@ context('Warrant Information Check Answers Page', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/SENTENCING/check-overall-answers')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/check-overall-answers')
 
     offenceCheckOverallAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
   })
@@ -73,7 +73,7 @@ context('Warrant Information Check Answers Page', () => {
   })
 
   it('clicking edit overall sentence length and submitting goes back to check answers page', () => {
-    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'SENTENCING/overall-sentence-length').click()
+    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'sentencing/overall-sentence-length').click()
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.yearsInput().should('have.value', '4').clear().type('6')
@@ -91,7 +91,7 @@ context('Warrant Information Check Answers Page', () => {
   })
 
   it('clicking edit conviction date and submitting goes back to check answers page', () => {
-    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'SENTENCING/overall-conviction-date').click()
+    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'sentencing/overall-conviction-date').click()
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
     courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
     courtCaseOverallConvictionDatePage

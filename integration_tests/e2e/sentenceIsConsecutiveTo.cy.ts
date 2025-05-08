@@ -13,7 +13,7 @@ context('Is sentence consecutive to Page', () => {
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
     offenceOffenceCodePage.input().type('PS90037')
     offenceOffenceCodePage.continueButton().click()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/SENTENCING/offences/0/is-sentence-consecutive-to')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/0/is-sentence-consecutive-to')
     sentenceIsSentenceConsecutiveToPage = Page.verifyOnPage(SentenceIsSentenceConsecutiveToPage)
   })
 

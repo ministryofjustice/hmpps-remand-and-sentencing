@@ -92,9 +92,9 @@
                     {% else %}
                         <a class="govuk-link--no-visited-state"
                             href="{% if appearance.warrantType == 'REMAND' %}
-                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand-details
+                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand/appearance-details
                                 {% else %}
-                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing-details
+                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing/appearance-details
                                 {% endif %}">
                             Edit
                         </a>

@@ -13,7 +13,7 @@ context('Add Court Case Sentence Length Page', () => {
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.continueButton().click()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/SENTENCING/overall-sentence-length')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-sentence-length')
     courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
   })
 

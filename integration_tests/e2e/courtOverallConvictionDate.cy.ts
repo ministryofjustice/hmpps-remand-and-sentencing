@@ -7,7 +7,7 @@ context('Court Case Overall Conviction Date Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/SENTENCING/overall-conviction-date')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-conviction-date')
     courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
   })
 

@@ -16,7 +16,6 @@ import type {
   OffenceSentenceTypeForm,
   ReviewOffencesForm,
   SentenceLengthForm,
-  SentenceSelectCaseForm,
   UpdateOffenceOutcomesForm,
 } from 'forms'
 import type { Offence } from 'models'
@@ -1228,80 +1227,6 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       appearanceReference,
       offenceReference,
-    )
-  }
-
-  public getSentenceSelectCase: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const { submitToEditOffence } = req.query
-    let sentenceSelectCaseForm = (req.flash('sentenceSelectCaseForm')[0] || {}) as SentenceSelectCaseForm
-    if (Object.keys(sentenceSelectCaseForm).length === 0) {
-      sentenceSelectCaseForm = {
-        appearanceSelectedUuid: this.getSessionOffenceOrAppearanceOffence(
-          req,
-          nomsId,
-          courtCaseReference,
-          offenceReference,
-        )?.sentence?.consecutiveToAppearanceUuid,
-      }
-    }
-    const courtCases = await this.remandAndSentencingService.getSentencedCourtCases(nomsId, req.user.username)
-    const sentencedCourtAppearances = courtCases.courtCases
-      .flatMap(courtCase => courtCase.appearances)
-      .filter(appearance => appearance.charges.some(charge => charge.sentence))
-      .sort((a, b) => new Date(b.appearanceDate).getTime() - new Date(a.appearanceDate).getTime())
-    const courtCodes = Array.from(new Set(sentencedCourtAppearances.map(appearance => appearance.courtCode)))
-    const courtMap = await this.courtRegisterService.getCourtMap(courtCodes, req.user.username)
-    return res.render('pages/offence/select-case', {
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      errors: req.flash('errors') || [],
-      sentenceSelectCaseForm,
-      submitToEditOffence,
-      courtMap,
-      sentencedCourtAppearances,
-      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
-    })
-  }
-
-  public submitSentenceSelectCase: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const { submitToEditOffence } = req.query
-    const sentenceSelectCaseForm = trimForm<SentenceSelectCaseForm>(req.body)
-    const errors = this.offenceService.setConsecutiveToAppearanceUuid(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      sentenceSelectCaseForm,
-    )
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      req.flash('sentenceSelectCaseForm', { ...sentenceSelectCaseForm })
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-select-case${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-      )
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
     )
   }
 

@@ -397,13 +397,13 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/sentence-select-case',
-    offenceRoutes.getSentenceSelectCase,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/sentence-consecutive-to',
+    sentencingRoutes.getSentenceConsecutiveTo,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-sentence-select-case',
-    offenceRoutes.submitSentenceSelectCase,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-sentence-consecutive-to',
+    sentencingRoutes.submitSentenceConsecutiveTo,
   )
 
   get(

@@ -62,6 +62,7 @@ declare module 'models' {
     fineAmount?: number
     legacyData?: SentenceLegacyData
     isSentenceConsecutiveToAnotherCase?: string
+    consecutiveToSentenceUuid?: string
   }
 
   export interface SentenceLength {

@@ -62,7 +62,7 @@ export default function routes(services: Services): Router {
     services.appearanceOutcomeService,
     services.courtRegisterService,
     services.calculateReleaseDatesService,
-    services.offenceOutcomeService,
+    services.offenceOutcomeService
   )
 
   get('/', async (req, res, next) => {
@@ -386,6 +386,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/submit-is-sentence-consecutive-to',
     sentencingRoutes.submitIsSentenceConsecutiveTo,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/first-sentence-consecutive-to',
+    sentencingRoutes.getFirstSentenceConsecutiveTo,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/submit-first-sentence-consecutive-to',
+    sentencingRoutes.submitFirstSentenceConsecutiveTo,
   )
 
   get(

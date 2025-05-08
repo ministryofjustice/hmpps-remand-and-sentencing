@@ -10,6 +10,7 @@ import { Page } from '../services/auditService'
 import sentenceTypeRoutes from './sentenceTypesRoutes'
 import OverallSentencingRoutes from './overallSentencingRoutes'
 import SentencingRoutes from './sentencingRoutes'
+import RemandRoutes from './remandRoutes'
 
 const upload = multer({ dest: 'uploads/' })
 export default function routes(services: Services): Router {
@@ -65,6 +66,16 @@ export default function routes(services: Services): Router {
     services.offenceOutcomeService,
   )
 
+  const remandRoutes = new RemandRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.appearanceOutcomeService,
+    services.courtRegisterService,
+    services.offenceOutcomeService,
+  )
+
   get('/', async (req, res, next) => {
     await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
     res.render('pages/index')
@@ -90,12 +101,12 @@ export default function routes(services: Services): Router {
 
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/appearance-details',
-    courtCaseRoutes.getAppearanceDetails,
+    remandRoutes.getAppearanceDetails,
   )
 
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/submit-details-edit',
-    courtCaseRoutes.submitAppearanceDetailsEdit,
+    remandRoutes.submitAppearanceDetailsEdit,
   )
 
   get(

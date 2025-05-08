@@ -33,7 +33,6 @@ export default function routes(services: Services): Router {
     services.appearanceOutcomeService,
     services.offenceOutcomeService,
     services.courtCasesReleaseDatesService,
-    services.calculateReleaseDatesService,
   )
   const apiRoutes = new ApiRoutes(
     services.prisonerService,
@@ -58,7 +57,12 @@ export default function routes(services: Services): Router {
   const sentencingRoutes = new SentencingRoutes(
     services.courtAppearanceService,
     services.offenceService,
+    services.remandAndSentencingService,
     services.manageOffencesService,
+    services.appearanceOutcomeService,
+    services.courtRegisterService,
+    services.calculateReleaseDatesService,
+    services.offenceOutcomeService,
   )
 
   get('/', async (req, res, next) => {
@@ -75,23 +79,23 @@ export default function routes(services: Services): Router {
   get('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/details', courtCaseRoutes.getCourtCaseDetails)
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing-details',
-    courtCaseRoutes.getSentencingAppearanceDetails,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/appearance-details',
+    sentencingRoutes.getAppearanceDetails,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-sentencing-details-edit',
-    courtCaseRoutes.submitSentencingAppearanceDetailsEdit,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-details-edit',
+    sentencingRoutes.submitAppearanceDetailsEdit,
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand-details',
-    courtCaseRoutes.getRemandAppearanceDetails,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/appearance-details',
+    courtCaseRoutes.getAppearanceDetails,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-remand-details-edit',
-    courtCaseRoutes.submitRemandAppearanceDetailsEdit,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/submit-details-edit',
+    courtCaseRoutes.submitAppearanceDetailsEdit,
   )
 
   get(
@@ -375,12 +379,12 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/is-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/is-sentence-consecutive-to',
     sentencingRoutes.getIsSentenceConsecutiveTo,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/submit-is-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/submit-is-sentence-consecutive-to',
     sentencingRoutes.submitIsSentenceConsecutiveTo,
   )
 
@@ -520,52 +524,52 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/overall-sentence-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/overall-sentence-length',
     overallSentencingRoutes.getOverallSentenceLength,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-sentence-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-overall-sentence-length',
     overallSentencingRoutes.submitOverallSentenceLength,
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/overall-conviction-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/overall-conviction-date',
     overallSentencingRoutes.getOverallConvictionDate,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-conviction-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-overall-conviction-date',
     overallSentencingRoutes.submitOverallConvictionDate,
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/case-outcome-applied-all',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/case-outcome-applied-all',
     overallSentencingRoutes.getCaseOutcomeAppliedAll,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-case-outcome-applied-all',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-case-outcome-applied-all',
     overallSentencingRoutes.submitCaseOutcomeAppliedAll,
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/check-overall-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/check-overall-answers',
     overallSentencingRoutes.getCheckOverallAnswers,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-check-overall-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-check-overall-answers',
     overallSentencingRoutes.submitCheckOverallAnswers,
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/alternative-overall-sentence-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/alternative-overall-sentence-length',
     overallSentencingRoutes.getAlternativeSentenceLength,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/submit-overall-alternative-sentence-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-overall-alternative-sentence-length',
     overallSentencingRoutes.submitAlternativeSentenceLength,
   )
 

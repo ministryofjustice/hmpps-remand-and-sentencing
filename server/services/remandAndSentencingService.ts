@@ -14,6 +14,7 @@ import {
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  SentencesToChainToResponse,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
@@ -191,6 +192,17 @@ export default class RemandAndSentencingService {
     username: string,
   ): Promise<HasSentenceToChainToResponse> {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).hasSentenceToChainTo(
+      prisonerId,
+      warrantDate.format('YYYY-MM-DD'),
+    )
+  }
+
+  async getSentencesToChainTo(
+    prisonerId: string,
+    warrantDate: Dayjs,
+    username: string,
+  ): Promise<SentencesToChainToResponse> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).sentencesToChainTo(
       prisonerId,
       warrantDate.format('YYYY-MM-DD'),
     )

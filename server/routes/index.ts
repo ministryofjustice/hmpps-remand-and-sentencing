@@ -399,43 +399,33 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/first-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/first-sentence-consecutive-to',
     sentencingRoutes.getFirstSentenceConsecutiveTo,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/submit-first-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/submit-first-sentence-consecutive-to',
     sentencingRoutes.submitFirstSentenceConsecutiveTo,
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/first-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/first-sentence-consecutive-to',
     sentencingRoutes.getFirstSentenceConsecutiveTo,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/submit-first-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/submit-first-sentence-consecutive-to',
     sentencingRoutes.submitFirstSentenceConsecutiveTo,
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/SENTENCING/offences/:offenceReference/sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/sentence-consecutive-to',
     sentencingRoutes.getSentenceConsecutiveTo,
   )
 
   post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-sentence-consecutive-to',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/submit-sentence-consecutive-to',
     sentencingRoutes.submitSentenceConsecutiveTo,
-  )
-
-  get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/consecutive-to',
-    offenceRoutes.getConsecutiveTo,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-consecutive-to',
-    offenceRoutes.submitConsecutiveTo,
   )
 
   get(

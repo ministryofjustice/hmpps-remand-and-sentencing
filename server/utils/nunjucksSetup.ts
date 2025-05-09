@@ -20,6 +20,7 @@ import {
   periodLengthValueOrLegacy,
   pluraliseName,
   sentenceTypeValueOrLegacy,
+  sortByOffenceStartDate,
 } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -177,7 +178,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       const aCountNumber = a.countNumber
       const bCountNumber = b.countNumber
       if (aCountNumber === bCountNumber) {
-        return 0
+        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
       }
       if (!aCountNumber) {
         return 1

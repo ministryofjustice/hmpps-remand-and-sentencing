@@ -20,6 +20,7 @@ import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
+import { SentenceToChainTo } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -285,113 +286,7 @@ export default class SentencingRoutes extends BaseRoutes {
       this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${offenceReference}/is-sentence-consecutive-to`
-    if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-    }
-    return res.render('pages/sentencing/first-sentence-consecutive-to', {
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      offenceDetails,
-      offence,
-      firstSentenceConsecutiveToForm,
-      sentencesToChainTo,
-      offenceMap,
-      courtMap,
-      errors: req.flash('errors') || [],
-      isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      submitToEditOffence,
-      backLink,
-    })
-  }
-
-  public submitFirstSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const { submitToEditOffence } = req.query
-    const firstSentenceConsecutiveToForm = trimForm<FirstSentenceConsecutiveToForm>(req.body)
-    const errors = this.offenceService.setFirstSentenceConsecutiveTo(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      firstSentenceConsecutiveToForm,
-    )
-
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      req.flash('firstSentenceConsecutiveToForm', { ...firstSentenceConsecutiveToForm })
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${offenceReference}/first-sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-      )
-    }
-
-    return this.saveSessionOffenceInAppearance(
-      req,
-      res,
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      addOrEditCourtAppearance,
-      appearanceReference,
-      offenceReference,
-    )
-  }
-
-  public getFirstSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      offenceReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const { submitToEditOffence } = req.query
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-    const { sentence } = offence
-    const [offenceDetails, sentencesToChainTo] = await Promise.all([
-      this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.token),
-      this.remandAndSentencingService.getSentencesToChainTo(
-        nomsId,
-        dayjs(courtAppearance.warrantDate),
-        req.user.username,
-      ),
-    ])
-
-    let firstSentenceConsecutiveToForm = (req.flash('firstSentenceConsecutiveToForm')[0] ||
-      {}) as FirstSentenceConsecutiveToForm
-    if (Object.keys(firstSentenceConsecutiveToForm).length === 0) {
-      firstSentenceConsecutiveToForm = {
-        consecutiveToSentenceUuid: sentence?.consecutiveToSentenceUuid,
-      }
-    }
-
-    const offenceCodes = Array.from(
-      new Set(
-        sentencesToChainTo.appearances
-          .flatMap(appearance => appearance.sentences)
-          .map(chainToSentence => chainToSentence.offenceCode),
-      ),
-    )
-    const courtCodes = Array.from(new Set(sentencesToChainTo.appearances.map(appearance => appearance.courtCode)))
-
-    const [offenceMap, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
-      this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
-    ])
-
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${offenceReference}/is-sentence-consecutive-to`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/is-sentence-consecutive-to`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     }
@@ -478,7 +373,7 @@ export default class SentencingRoutes extends BaseRoutes {
     let sentenceConsecutiveToForm = (req.flash('sentenceConsecutiveToForm')[0] || {}) as SentenceConsecutiveToForm
     if (Object.keys(sentenceConsecutiveToForm).length === 0) {
       sentenceConsecutiveToForm = {
-        consecutiveToSentence: sentence?.consecutiveToSentenceUuid,
+        consecutiveToSentenceUuid: sentence?.consecutiveToSentenceUuid,
       }
     }
 
@@ -501,7 +396,19 @@ export default class SentencingRoutes extends BaseRoutes {
       this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${offenceReference}/sentence-serve-type`
+    const sentencesOnSameCase = courtAppearance.offences
+      .filter((sessionOffence, index) => index !== parseInt(offenceReference, 10) && sessionOffence.sentence)
+      .map(sessionOffence => {
+        return {
+          countNumber: sessionOffence.sentence.countNumber,
+          offenceStartDate: sessionOffence.offenceStartDate,
+          offenceEndDate: sessionOffence.offenceEndDate,
+          offenceCode: sessionOffence.offenceCode,
+          sentenceUuid: sessionOffence.sentence.sentenceUuid,
+        } as unknown as SentenceToChainTo
+      })
+
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     }
@@ -516,6 +423,7 @@ export default class SentencingRoutes extends BaseRoutes {
       offence,
       sentenceConsecutiveToForm,
       sentencesToChainTo,
+      sentencesOnSameCase,
       offenceMap,
       courtMap,
       errors: req.flash('errors') || [],
@@ -523,5 +431,43 @@ export default class SentencingRoutes extends BaseRoutes {
       submitToEditOffence,
       backLink,
     })
+  }
+
+  public submitSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence } = req.query
+    const sentenceConsecutiveToForm = trimForm<SentenceConsecutiveToForm>(req.body)
+    const errors = this.offenceService.setSentenceConsecutiveTo(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      sentenceConsecutiveToForm,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('sentenceConsecutiveToForm', { ...sentenceConsecutiveToForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${offenceReference}/sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+
+    return this.saveSessionOffenceInAppearance(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      offenceReference,
+    )
   }
 }

@@ -123,10 +123,6 @@ declare module 'forms' {
     sentenceServeType?: string
   }
 
-  export interface OffenceConsecutiveToForm {
-    consecutiveTo?: string
-  }
-
   export interface CourtCaseAlternativeSentenceLengthForm {
     'firstSentenceLength-value'?: string
     'firstSentenceLength-period'?: string
@@ -176,6 +172,6 @@ declare module 'forms' {
   }
 
   export interface SentenceConsecutiveToForm {
-    consecutiveToSentence?: string
+    consecutiveToSentenceUuid?: string
   }
 }

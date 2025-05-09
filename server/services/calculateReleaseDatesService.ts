@@ -42,11 +42,7 @@ export default class CalculateReleaseDatesService {
         return skippedValidationResponse
       }
 
-      const consecutive = sentences.filter(
-        sentence =>
-          sentence.sentenceServeType === 'CONSECUTIVE' ||
-          sentences.some(it => it.consecutiveTo === sentence.countNumber),
-      )
+      const consecutive = sentences.filter(sentence => sentence.sentenceServeType === 'CONSECUTIVE')
       const concurrent = sentences.filter(it => !consecutive.includes(it))
 
       const request = {

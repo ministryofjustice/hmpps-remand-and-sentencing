@@ -2,7 +2,6 @@ import type {
   FirstSentenceConsecutiveToForm,
   OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
-  OffenceConsecutiveToForm,
   OffenceConvictionDateForm,
   OffenceCountNumberForm,
   OffenceFineAmountForm,
@@ -12,9 +11,9 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
+  SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
   SentenceLengthForm,
-  SentenceSelectCaseForm,
   UpdateOffenceOutcomesForm,
 } from 'forms'
 import type { Offence, SentenceLength } from 'models'
@@ -557,64 +556,6 @@ export default class OffenceService {
     return errors
   }
 
-  setConsecutiveTo(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceConsecutiveToForm: OffenceConsecutiveToForm,
-  ) {
-    const errors = validate(
-      offenceConsecutiveToForm,
-      {
-        consecutiveTo: 'required|minWholeNumber:1',
-      },
-      {
-        'required.consecutiveTo': `You must enter the consecutive to`,
-        'minWholeNumber.consecutiveTo': 'Enter a whole number for the count number.',
-      },
-    )
-
-    if (errors.length === 0) {
-      const id = this.getOffenceId(nomsId, courtCaseReference)
-      const offence = this.getOffence(session.offences, id)
-      const sentence = offence.sentence ?? {}
-      sentence.consecutiveTo = offenceConsecutiveToForm.consecutiveTo
-      offence.sentence = sentence
-      // eslint-disable-next-line no-param-reassign
-      session.offences[id] = offence
-    }
-
-    return errors
-  }
-
-  setConsecutiveToAppearanceUuid(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    sentenceSelectCaseForm: SentenceSelectCaseForm,
-  ) {
-    const errors = validate(
-      sentenceSelectCaseForm,
-      {
-        appearanceSelectedUuid: 'required',
-      },
-      {
-        'required.appearanceSelectedUuid': `You must select the case`,
-      },
-    )
-
-    if (errors.length === 0) {
-      const id = this.getOffenceId(nomsId, courtCaseReference)
-      const offence = this.getOffence(session.offences, id)
-      const sentence = offence.sentence ?? {}
-      sentence.consecutiveToAppearanceUuid = sentenceSelectCaseForm.appearanceSelectedUuid
-      offence.sentence = sentence
-      // eslint-disable-next-line no-param-reassign
-      session.offences[id] = offence
-    }
-    return errors
-  }
-
   getConvictionDate(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
@@ -767,6 +708,37 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
       const sentence = offence.sentence ?? {}
       sentence.consecutiveToSentenceUuid = firstSentenceConsecutiveToForm.consecutiveToSentenceUuid
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
+  setSentenceConsecutiveTo(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    sentenceConsecutiveToForm: SentenceConsecutiveToForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      sentenceConsecutiveToForm,
+      {
+        consecutiveToSentenceUuid: 'required',
+      },
+      {
+        'required.consecutiveToSentenceUuid': 'Select the sentence that this sentence is consecutive to',
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = offence.sentence ?? {}
+      sentence.consecutiveToSentenceUuid = sentenceConsecutiveToForm.consecutiveToSentenceUuid
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

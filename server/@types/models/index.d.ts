@@ -54,7 +54,6 @@ declare module 'models' {
     hasCountNumber?: string
     periodLengths?: SentenceLength[]
     sentenceServeType?: string
-    consecutiveToAppearanceUuid?: string
     consecutiveTo?: string
     sentenceTypeId?: string
     sentenceTypeClassification?: string

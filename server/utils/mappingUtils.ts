@@ -42,8 +42,9 @@ export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): 
       periodLengths,
       sentenceServeType: sentence.sentenceServeType,
       sentenceTypeId: sentence.sentenceTypeId,
-      consecutiveToChargeNumber: sentence.consecutiveTo,
       prisonId,
+      sentenceReference: sentence.sentenceReference,
+      consecutiveToSentenceReference: sentence.consecutiveToSentenceReference,
       ...(sentence.convictionDate && { convictionDate: dayjs(sentence.convictionDate).format('YYYY-MM-DD') }),
       ...(sentence.fineAmount && { fineAmount: { fineAmount: sentence.fineAmount } }),
       ...(sentence.sentenceUuid && { sentenceUuid: sentence.sentenceUuid }),
@@ -156,22 +157,23 @@ export const periodLengthToSentenceLength = (periodLength: PeriodLength): Senten
   return null
 }
 
-export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
+export const apiSentenceToSentence = (apiSentence: APISentence, index: number): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
+    sentenceReference: index.toString(),
     countNumber: apiSentence.chargeNumber,
     periodLengths: apiSentence.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
     sentenceServeType: apiSentence.sentenceServeType,
     sentenceTypeId: apiSentence.sentenceType?.sentenceTypeUuid,
     sentenceTypeClassification: apiSentence.sentenceType?.classification,
-    consecutiveTo: apiSentence.consecutiveToChargeNumber,
+    consecutiveToSentenceUuid: apiSentence.consecutiveToSentenceUuid,
     fineAmount: apiSentence.fineAmount?.fineAmount,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
     ...(apiSentence.legacyData && { legacyData: { ...apiSentence.legacyData } }),
   } as Sentence
 }
 
-export const chargeToOffence = (charge: Charge): Offence => {
+export const chargeToOffence = (charge: Charge, index: number): Offence => {
   return {
     offenceCode: charge.offenceCode,
     outcomeUuid: charge.outcome?.outcomeUuid,
@@ -179,7 +181,7 @@ export const chargeToOffence = (charge: Charge): Offence => {
     terrorRelated: charge.terrorRelated,
     ...(charge.offenceStartDate && { offenceStartDate: dayjs(charge.offenceStartDate).toDate() }),
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
-    ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
+    ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence, index) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
   } as Offence
 }
@@ -299,9 +301,11 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     warrantType: pageCourtCaseAppearance.warrantType,
     warrantId: pageCourtCaseAppearance.warrantId,
     ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
-    offences: pageCourtCaseAppearance.charges.map(chargeToOffence).sort((a, b) => {
-      return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
-    }),
+    offences: pageCourtCaseAppearance.charges
+      .sort((a, b) => {
+        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+      })
+      .map(chargeToOffence),
     ...(pageCourtCaseAppearance.overallSentenceLength && {
       overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),
     }),

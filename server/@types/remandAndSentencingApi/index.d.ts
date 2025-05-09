@@ -1060,6 +1060,8 @@ export interface components {
       active: boolean
       prisonId: string
       legacyData: components['schemas']['SentenceLegacyData']
+      /** Format: date */
+      returnToCustodyDate?: string
     }
     SentenceLegacyData: {
       sentenceCalcType?: string
@@ -1102,7 +1104,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 14:30:00 */
+      /** @example 14:15:55.595895 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1135,7 +1137,7 @@ export interface components {
     DraftCreateCourtAppearance: {
       sessionBlob: components['schemas']['JsonNode']
     }
-    JsonNode: Record<string, never>
+    JsonNode: unknown
     CaseReferenceLegacyData: {
       offenderCaseReference: string
       /** Format: date-time */
@@ -1173,8 +1175,6 @@ export interface components {
       appearanceDate: string
       warrantId?: string
       warrantType: string
-      /** Format: int32 */
-      taggedBail?: number
       overallSentenceLength?: components['schemas']['CreatePeriodLength']
       nextCourtAppearance?: components['schemas']['CreateNextCourtAppearance']
       charges: components['schemas']['CreateCharge'][]
@@ -1195,7 +1195,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:30:00 */
+      /** @example 14:15:55.595895 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -1231,7 +1231,6 @@ export interface components {
       chargeNumber?: string
       periodLengths: components['schemas']['CreatePeriodLength'][]
       sentenceServeType: string
-      consecutiveToChargeNumber?: string
       /** Format: uuid */
       consecutiveToSentenceUuid?: string
       /** Format: uuid */
@@ -1240,6 +1239,8 @@ export interface components {
       convictionDate?: string
       fineAmount?: components['schemas']['CreateFineAmount']
       prisonId?: string
+      sentenceReference: string
+      consecutiveToSentenceReference?: string
     }
     CreateChargeResponse: {
       /** Format: uuid */
@@ -1343,6 +1344,8 @@ export interface components {
       legacyData: components['schemas']['SentenceLegacyData']
       consecutiveToSentenceId?: components['schemas']['MigrationSentenceId']
       periodLengths: components['schemas']['MigrationCreatePeriodLength'][]
+      /** Format: date */
+      returnToCustodyDate?: string
     }
     MigrationSentenceId: {
       /** Format: int64 */
@@ -1458,12 +1461,13 @@ export interface components {
       chargeNumber?: string
       periodLengths: components['schemas']['PeriodLength'][]
       sentenceServeType: string
-      consecutiveToChargeNumber?: string
       sentenceType?: components['schemas']['SentenceType']
       /** Format: date */
       convictionDate?: string
       fineAmount?: components['schemas']['FineAmount']
       legacyData?: components['schemas']['SentenceLegacyData']
+      /** Format: uuid */
+      consecutiveToSentenceUuid?: string
     }
     SentenceType: {
       /** Format: uuid */
@@ -1575,8 +1579,6 @@ export interface components {
       appearanceDate: string
       warrantId?: string
       warrantType: string
-      /** Format: int32 */
-      taggedBail?: number
       nextCourtAppearance?: components['schemas']['NextCourtAppearance']
       charges: components['schemas']['Charge'][]
       overallSentenceLength?: components['schemas']['PeriodLength']
@@ -1611,7 +1613,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:30:00 */
+      /** @example 14:15:55.595895 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -1637,6 +1639,8 @@ export interface components {
       fineAmount?: number
       /** Format: date */
       sentenceStartDate: string
+      /** Format: date */
+      returnToCustodyDate?: string
     }
     LegacySentenceTypeGroupingSummary: {
       nomisSentenceTypeReference: string
@@ -1812,7 +1816,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 14:30:00 */
+      /** @example 14:15:55.595895 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -1820,7 +1824,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:30:00 */
+      /** @example 14:15:55.595895 */
       appearanceTime?: string
       courtId: string
     }
@@ -1852,29 +1856,29 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      number?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
-      number?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
+      sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
+      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      unpaged?: boolean
+      /** Format: int32 */
+      pageSize?: number
     }
     SortObject: {
       empty?: boolean

@@ -28,7 +28,6 @@ describe('mapping API to session util tests', () => {
       appearanceDate: '2024-08-29',
       warrantId: null,
       warrantType: 'REMAND',
-      taggedBail: null,
       nextCourtAppearance: null,
       charges: [],
       overallSentenceLength: null,
@@ -45,7 +44,7 @@ describe('mapping API to session util tests', () => {
       },
       periodLengths: [],
     } as APISentence
-    const result = apiSentenceToSentence(apiSentence)
+    const result = apiSentenceToSentence(apiSentence, 1)
     expect(result.fineAmount).toEqual(apiSentence.fineAmount.fineAmount)
   })
 })

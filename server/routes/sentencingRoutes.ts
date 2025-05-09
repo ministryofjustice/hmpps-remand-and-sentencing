@@ -103,6 +103,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       sentenceIsSentenceConsecutiveToForm,
     )
 
@@ -115,7 +116,7 @@ export default class SentencingRoutes extends BaseRoutes {
     }
 
     if (sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase === 'true') {
-      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
+      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, offenceReference, {
         sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE),
       })
       return res.redirect(
@@ -123,7 +124,7 @@ export default class SentencingRoutes extends BaseRoutes {
       )
     }
 
-    this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
+    this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, offenceReference, {
       sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
     })
     return this.saveSessionOffenceInAppearance(
@@ -325,6 +326,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       firstSentenceConsecutiveToForm,
     )
 
@@ -448,6 +450,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       sentenceConsecutiveToForm,
     )
 

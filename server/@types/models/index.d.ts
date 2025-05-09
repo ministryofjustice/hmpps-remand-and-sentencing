@@ -54,7 +54,6 @@ declare module 'models' {
     hasCountNumber?: string
     periodLengths?: SentenceLength[]
     sentenceServeType?: string
-    consecutiveTo?: string
     sentenceTypeId?: string
     sentenceTypeClassification?: string
     convictionDate?: Date
@@ -62,6 +61,8 @@ declare module 'models' {
     legacyData?: SentenceLegacyData
     isSentenceConsecutiveToAnotherCase?: string
     consecutiveToSentenceUuid?: string
+    sentenceReference: string
+    consecutiveToSentenceReference?: string
   }
 
   export interface SentenceLength {

@@ -42,6 +42,7 @@ export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): 
       periodLengths,
       sentenceServeType: sentence.sentenceServeType,
       sentenceTypeId: sentence.sentenceTypeId,
+      consecutiveToChargeNumber: sentence.consecutiveTo,
       prisonId,
       ...(sentence.convictionDate && { convictionDate: dayjs(sentence.convictionDate).format('YYYY-MM-DD') }),
       ...(sentence.fineAmount && { fineAmount: { fineAmount: sentence.fineAmount } }),

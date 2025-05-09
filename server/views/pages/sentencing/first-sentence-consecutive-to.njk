@@ -24,7 +24,7 @@
                     }) %}
                      {{
                         govukHint({
-                            id: 'consecutiveToSentenceUuid-hint'
+                            id: 'consecutiveToSentenceUuid-hint',
                             text: offenceDetails.code + " " + offenceDetails.description + (" committed on " + offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else "") if offence.offenceStartDate)
                         })
                     }}

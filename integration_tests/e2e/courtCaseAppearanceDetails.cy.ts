@@ -276,7 +276,7 @@ context('Court Case Appearance details Page', () => {
             'Custodial term': '1 years 0 months 0 weeks 0 days',
             'Licence period': '2 years 0 months 0 weeks 0 days',
             'Sentence type': 'EDS (Extended Determinate Sentence)',
-            'Consecutive or concurrent': 'Consecutive to count 1',
+            'Consecutive or concurrent': 'Consecutive',
           },
           {
             offenceCardHeader: 'PS90037 An offence description',
@@ -337,7 +337,7 @@ context('Court Case Appearance details Page', () => {
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Custodial term': '2 years 0 months 0 weeks 0 days',
         'Licence period': '2 years 0 months 0 weeks 0 days',
-        'Consecutive or concurrent': 'Consecutive to count 1',
+        'Consecutive or concurrent': 'Consecutive',
       })
       offenceEditOffencePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')

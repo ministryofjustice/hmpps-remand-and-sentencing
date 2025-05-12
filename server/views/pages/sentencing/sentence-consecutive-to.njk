@@ -39,7 +39,7 @@
                         <h2 class="govuk-heading-m">Sentences on this case</h2>
                         {% for sentence in sentencesOnSameCase | sortByCountNumber %}
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceUuid}}">
+                                <input class="govuk-radios__input" id="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceReference}}|SAME">
                                 <label class="govuk-label govuk-radios__label" for="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}">
                                     {% if sentence.countNumber%}
                                         Count {{sentence.countNumber}}<br>
@@ -62,7 +62,7 @@
                                 <h3 class="govuk-heading-s"> {{appearance.courtCaseReference + ' at ' if appearance.courtCaseReference}}{{courtMap[appearance.courtCode]}} on {{appearance.appearanceDate | formatDate}}</h3>
                                 {% for sentence in appearance.sentences | sortByCountNumber %}
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceUuid}}">
+                                        <input class="govuk-radios__input" id="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceUuid}}|OTHER">
                                         <label class="govuk-label govuk-radios__label" for="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}">
                                             {% if sentence.countNumber%}
                                                 Count {{sentence.countNumber}}<br>

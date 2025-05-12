@@ -20,7 +20,7 @@ import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { SentenceToChainTo } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import SameCaseSentenceToChainTo from './data/SameCaseSentenceToChainTo'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -103,6 +103,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       sentenceIsSentenceConsecutiveToForm,
     )
 
@@ -115,7 +116,7 @@ export default class SentencingRoutes extends BaseRoutes {
     }
 
     if (sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase === 'true') {
-      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
+      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, offenceReference, {
         sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE),
       })
       return res.redirect(
@@ -123,7 +124,7 @@ export default class SentencingRoutes extends BaseRoutes {
       )
     }
 
-    this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
+    this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, offenceReference, {
       sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
     })
     return this.saveSessionOffenceInAppearance(
@@ -325,6 +326,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       firstSentenceConsecutiveToForm,
     )
 
@@ -405,7 +407,8 @@ export default class SentencingRoutes extends BaseRoutes {
           offenceEndDate: sessionOffence.offenceEndDate,
           offenceCode: sessionOffence.offenceCode,
           sentenceUuid: sessionOffence.sentence.sentenceUuid,
-        } as unknown as SentenceToChainTo
+          sentenceReference: sessionOffence.sentence.sentenceReference,
+        } as unknown as SameCaseSentenceToChainTo
       })
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`
@@ -448,6 +451,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       sentenceConsecutiveToForm,
     )
 

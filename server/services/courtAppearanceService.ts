@@ -732,7 +732,7 @@ export default class CourtAppearanceService {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
-      const sentence = offence.sentence ?? {}
+      const sentence = offence.sentence ?? { sentenceReference: offenceReference.toString() }
       sentence.hasCountNumber = countNumberForm.hasCountNumber
       if (countNumberForm.hasCountNumber === 'true') {
         sentence.countNumber = countNumberForm.countNumber

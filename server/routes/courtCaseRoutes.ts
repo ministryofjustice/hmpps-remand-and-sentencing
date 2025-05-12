@@ -545,10 +545,10 @@ export default class CourtCaseRoutes {
           const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
           return !dispositionCode || dispositionCode === 'INTERIM'
         })
-        .map(charge => chargeToOffence(charge))
         .sort((a, b) => {
           return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
         })
+        .map((charge, index) => chargeToOffence(charge, index))
         .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))
     }
     return res.redirect(

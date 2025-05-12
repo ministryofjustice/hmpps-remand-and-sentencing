@@ -155,23 +155,6 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-    // courtCaseTaskListPage.courtDocumentsLink().click()
-
-    // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
-    // courtCaseDocumentTypePage.radioLabelSelector('Custodial warrant').click()
-    // courtCaseDocumentTypePage.button().click()
-
-    // const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
-    // courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
-    // courtCaseWarrantUploadPage.button().click()
-
-    // const courtCaseDocumentsPage = Page.verifyOnPage(CourtCaseDocumentsPage) - not built yet
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'Custodial warrant 1': 'uploaded',
-    // })
-    // courtCaseDocumentsPage.button().click()
-
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.offencesLink().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(

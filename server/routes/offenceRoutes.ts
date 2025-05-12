@@ -422,7 +422,13 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const countNumberForm = trimForm<OffenceCountNumberForm>(req.body)
-    const errors = this.offenceService.setCountNumber(req.session, nomsId, courtCaseReference, countNumberForm)
+    const errors = this.offenceService.setCountNumber(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      countNumberForm,
+    )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('countNumberForm', { ...countNumberForm })
@@ -443,6 +449,7 @@ export default class OffenceRoutes extends BaseRoutes {
         req.session,
         nomsId,
         courtCaseReference,
+        offenceReference,
         courtAppearance.overallConvictionDate,
       )
       return res.redirect(
@@ -823,7 +830,13 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceSentenceTypeForm = trimForm<OffenceSentenceTypeForm>(req.body)
-    const errors = this.offenceService.setSentenceType(req.session, nomsId, courtCaseReference, offenceSentenceTypeForm)
+    const errors = this.offenceService.setSentenceType(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      offenceSentenceTypeForm,
+    )
 
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -834,10 +847,12 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-    this.offenceService.updatePeriodLengths(req.session, nomsId, courtCaseReference, offence)
+    this.offenceService.updatePeriodLengths(req.session, nomsId, courtCaseReference, offenceReference, offence)
 
     const nextPeriodLengthType = getNextPeriodLengthType(
-      this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {},
+      this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference).sentence ?? {
+        sentenceReference: '',
+      },
       null,
     )
 
@@ -929,11 +944,18 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, periodLengthType } = req.query
     const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
     const { sentence } = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-    this.offenceService.setInitialPeriodLengths(req.session, nomsId, courtCaseReference, sentence?.periodLengths ?? [])
+    this.offenceService.setInitialPeriodLengths(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      sentence?.periodLengths ?? [],
+    )
     const errors = this.offenceService.setPeriodLength(
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       offenceSentenceLengthForm,
       periodLengthType as string,
     )
@@ -1028,6 +1050,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       offenceFineAmountForm,
     )
 
@@ -1108,6 +1131,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       offenceAlternativeSentenceLengthForm,
     )
     if (errors.length > 0) {
@@ -1197,6 +1221,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       offenceSentenceServeTypeForm,
     )
 
@@ -1289,6 +1314,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
+      offenceReference,
       offenceConvictionDateForm,
     )
     if (errors.length > 0) {
@@ -1827,7 +1853,7 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/is-sentence-consecutive-to`,
         )
       }
-      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, {
+      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, offenceReference, {
         sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
       })
       return this.saveSessionOffenceInAppearance(

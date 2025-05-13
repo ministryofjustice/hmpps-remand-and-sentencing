@@ -1,0 +1,70 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "../../components/alternativeSentenceLength/macro.njk" import alternativeSentenceLength%}
+{% set pageTitle = applicationName + " - Add " + periodLengthHeader %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-alternative-period-length?periodLengthType={{periodLengthType}}{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {% call govukFieldset({
+                    legend: {
+                        text: "Enter the " + periodLengthHeader,
+                        classes: "govuk-fieldset__legend--l",
+                        isPageHeading: true
+                    }
+                }) %}
+
+                
+                {{
+                    alternativeSentenceLength({
+                        id: "firstSentenceLength",
+                        name: "firstSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('firstSentenceLength'),
+                        selectedItem: offenceAlternativeSentenceLengthForm['firstSentenceLength-period'],
+                        value: offenceAlternativeSentenceLengthForm['firstSentenceLength-value']
+                    })
+                }}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "secondSentenceLength",
+                        name: "secondSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('secondSentenceLength'),
+                        selectedItem: offenceAlternativeSentenceLengthForm['secondSentenceLength-period'],
+                        value: offenceAlternativeSentenceLengthForm['secondSentenceLength-value']
+                    })
+                }}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "thirdSentenceLength",
+                        name: "thirdSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('thirdSentenceLength'),
+                        selectedItem: offenceAlternativeSentenceLengthForm['thirdSentenceLength-period'],
+                        value: offenceAlternativeSentenceLengthForm['thirdSentenceLength-value']
+                    })
+                }}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "fourthSentenceLength",
+                        name: "fourthSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('fourthSentenceLength'),
+                        selectedItem: offenceAlternativeSentenceLengthForm['fourthSentenceLength-period'],
+                        value: offenceAlternativeSentenceLengthForm['fourthSentenceLength-value']
+                    })
+                }}
+
+
+                {% endcall %}
+
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+            </form>
+
+{% endblock %}

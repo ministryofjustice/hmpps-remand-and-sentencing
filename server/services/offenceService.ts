@@ -517,12 +517,63 @@ export default class OffenceService {
       const sentenceLength = alternativeSentenceLengthFormToSentenceLength<OffenceAlternativeSentenceLengthForm>(
         offenceAlternativeSentenceLengthForm,
         'SENTENCE_LENGTH',
+        periodLengthTypeHeadings.SENTENCE_LENGTH,
       )
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, offenceReference)
       const periodLengths = sentence.periodLengths ?? []
       const index = periodLengths.findIndex(periodLength => periodLength.periodLengthType === 'SENTENCE_LENGTH')
+      if (index !== -1) {
+        periodLengths[index] = sentenceLength
+      } else {
+        periodLengths.push(sentenceLength)
+      }
+      sentence.periodLengths = periodLengths
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
+  setAlternativePeriodLength(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+    offenceAlternativeSentenceLengthForm: OffenceAlternativeSentenceLengthForm,
+    periodLengthType: string,
+  ) {
+    const errors = validate(
+      offenceAlternativeSentenceLengthForm,
+      {
+        'firstSentenceLength-value':
+          'requireAlternativeSentenceLength|minWholeNumber:0|requireOneNonZeroAlternativeSentenceLength',
+        'secondSentenceLength-value': 'minWholeNumber:0',
+        'thirdSentenceLength-value': 'minWholeNumber:0',
+        'fourthSentenceLength-value': 'minWholeNumber:0',
+      },
+      {
+        'requireAlternativeSentenceLength.firstSentenceLength-value': 'You must enter the sentence length',
+        'minWholeNumber.firstSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.fourthSentenceLength-value': 'The number must be a whole number, or 0',
+        'requireOneNonZeroAlternativeSentenceLength.firstSentenceLength-value': 'The sentence length cannot be 0',
+      },
+    )
+    if (errors.length === 0) {
+      const sentenceLength = alternativeSentenceLengthFormToSentenceLength<OffenceAlternativeSentenceLengthForm>(
+        offenceAlternativeSentenceLengthForm,
+        periodLengthType,
+        periodLengthTypeHeadings[periodLengthType],
+      )
+      const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
+      const sentence = this.getSentence(offence, offenceReference)
+      const periodLengths = sentence.periodLengths ?? []
+      const index = periodLengths.findIndex(periodLength => periodLength.periodLengthType === periodLengthType)
       if (index !== -1) {
         periodLengths[index] = sentenceLength
       } else {

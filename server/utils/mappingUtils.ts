@@ -214,15 +214,10 @@ export function sentenceLengthToAlternativeSentenceLengthForm<T>(sentenceLength:
 
 export function alternativeSentenceLengthFormToSentenceLength<T>(
   alternativeSentenceLengthForm: T,
-  periodLengthType:
-    | 'SENTENCE_LENGTH'
-    | 'CUSTODIAL_TERM'
-    | 'LICENCE_PERIOD'
-    | 'TARIFF_LENGTH'
-    | 'TERM_LENGTH'
-    | 'OVERALL_SENTENCE_LENGTH',
+  periodLengthType: string,
+  description: string,
 ): SentenceLength {
-  const sentenceLength = { periodOrder: [], description: periodLengthTypeHeadings[periodLengthType], periodLengthType }
+  const sentenceLength = { periodOrder: [], description, periodLengthType }
   if (alternativeSentenceLengthForm['firstSentenceLength-value']) {
     sentenceLength[alternativeSentenceLengthForm['firstSentenceLength-period']] =
       alternativeSentenceLengthForm['firstSentenceLength-value']
@@ -248,7 +243,7 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(
       sentenceLength.periodOrder.push(unit)
     }
   })
-  return sentenceLength
+  return sentenceLength as SentenceLength
 }
 
 export function sentenceLengthToSentenceLengthForm(

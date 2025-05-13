@@ -11,6 +11,7 @@ import {
   sentenceLengthFormToSentenceLength,
   sentenceToCreateSentence,
 } from './mappingUtils'
+import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 
 describe('mapping API to session util tests', () => {
   it('correctly map next court appearance', () => {
@@ -77,6 +78,7 @@ describe('mapping session to API util tests', () => {
     const result = alternativeSentenceLengthFormToSentenceLength<CourtCaseAlternativeSentenceLengthForm>(
       alternativeSentenceLengthForm,
       'OVERALL_SENTENCE_LENGTH',
+      periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
     )
     expect(result.periodOrder).toEqual(['weeks', 'months', 'years', 'days'])
   })

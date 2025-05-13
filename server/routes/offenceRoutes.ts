@@ -1229,7 +1229,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceAlternativeSentenceLengthForm', { ...offenceAlternativeSentenceLengthForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/alternative-period-length?periodLengthType=${periodLengthType}?${submitToEditOffence ? 'submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/alternative-period-length?periodLengthType=${periodLengthType}&${submitToEditOffence ? 'submitToEditOffence=true' : ''}`,
       )
     }
     if (submitToEditOffence) {

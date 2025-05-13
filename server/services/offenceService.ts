@@ -792,7 +792,14 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, offenceReference)
-      sentence.consecutiveToSentenceUuid = sentenceConsecutiveToForm.consecutiveToSentenceUuid
+      const [sentenceReference, sameOrOther] = sentenceConsecutiveToForm.consecutiveToSentenceUuid.split('|')
+      if (sameOrOther === 'SAME') {
+        sentence.consecutiveToSentenceReference = sentenceReference
+        delete sentence.consecutiveToSentenceUuid
+      } else {
+        sentence.consecutiveToSentenceUuid = sentenceReference
+        delete sentence.consecutiveToSentenceReference
+      }
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

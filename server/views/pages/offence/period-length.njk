@@ -50,7 +50,7 @@
                 }) }}
 
                 <p class="govuk-body">
-                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/alternative-sentence-length{{ "?submitToEditOffence=true" if submitToEditOffence }}">The sentence length is formatted differently</a>
+                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/alternative-period-length?periodLengthType={{periodLengthType}}{{ "&submitToEditOffence=true" if submitToEditOffence }}">The {{ periodLengthHeader }} is formatted differently</a>
                 </p>
 
                 {% if sentenceTypeClassification === 'SOPC' %}

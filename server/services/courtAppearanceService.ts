@@ -434,6 +434,7 @@ export default class CourtAppearanceService {
       const sentenceLength = alternativeSentenceLengthFormToSentenceLength<CourtCaseAlternativeSentenceLengthForm>(
         courtCaseAlternativeSentenceLengthForm,
         'OVERALL_SENTENCE_LENGTH',
+        periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
       )
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.overallSentenceLength = sentenceLength

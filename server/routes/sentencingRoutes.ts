@@ -20,7 +20,7 @@ import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import { SentenceToChainTo } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import SameCaseSentenceToChainTo from './data/SameCaseSentenceToChainTo'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -407,7 +407,8 @@ export default class SentencingRoutes extends BaseRoutes {
           offenceEndDate: sessionOffence.offenceEndDate,
           offenceCode: sessionOffence.offenceCode,
           sentenceUuid: sessionOffence.sentence.sentenceUuid,
-        } as unknown as SentenceToChainTo
+          sentenceReference: sessionOffence.sentence.sentenceReference,
+        } as unknown as SameCaseSentenceToChainTo
       })
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`

@@ -901,7 +901,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths
       .map(periodLength => periodLength.type)
       .indexOf(periodLengthType as string)
-    const sentenceTypeClassification = sentence?.sentenceTypeClassification
+
     const periodLengthHeader =
       periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
       currentPeriodLength?.legacyData?.sentenceTermDescription
@@ -914,6 +914,12 @@ export default class OffenceRoutes extends BaseRoutes {
           .type
       }`
     }
+    let sentenceTypeHint
+    if (sentence?.sentenceTypeId) {
+      sentenceTypeHint = (
+        await this.remandAndSentencingService.getSentenceTypeById(sentence.sentenceTypeId, req.user.username)
+      ).hintText
+    }
     return res.render('pages/offence/period-length', {
       nomsId,
       courtCaseReference,
@@ -925,7 +931,7 @@ export default class OffenceRoutes extends BaseRoutes {
       periodLengthType,
       periodLengthForm,
       periodLengthHeader,
-      sentenceTypeClassification,
+      sentenceTypeHint,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink,

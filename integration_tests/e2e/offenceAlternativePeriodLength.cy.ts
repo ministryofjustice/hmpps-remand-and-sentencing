@@ -1,4 +1,3 @@
-import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import OffenceAlternativePeriodLengthPage from '../pages/offenceAlternativePeriodLengthPage'
 import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'

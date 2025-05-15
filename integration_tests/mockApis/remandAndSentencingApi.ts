@@ -497,6 +497,48 @@ export default {
                     },
                     legacyData: null,
                   },
+                  {
+                    chargeUuid: '585a194f-1263-42a8-910a-2a11cd156260',
+                    offenceCode: 'PS90037',
+                    offenceStartDate: '2024-01-07',
+                    offenceEndDate: null,
+                    outcome: {
+                      outcomeUuid: 'f4617346-3b8e-467b-acc4-a4fab809ed3b',
+                      outcomeName: 'Imprisonment',
+                      nomisCode: '1002',
+                      outcomeType: 'SENTENCING',
+                      displayOrder: 10,
+                      dispositionCode: 'FINAL',
+                    },
+                    sentence: {
+                      sentenceUuid: 'f8fb24e0-aef2-4cab-ab39-23ba9429579d',
+                      chargeNumber: '4',
+                      periodLengths: [
+                        {
+                          years: null,
+                          months: 3,
+                          weeks: null,
+                          days: null,
+                          periodOrder: 'years,months,weeks,days',
+                          periodLengthType: 'TERM_LENGTH',
+                          legacyData: null,
+                        },
+                      ],
+                      sentenceServeType: 'CONSECUTIVE',
+                      consecutiveToSentenceUuid: '29fa8c7f-7ba1-4033-ac4d-83ff0c125a45',
+                      sentenceType: null,
+                      convictionDate: '2024-05-11',
+                      fineAmount: {
+                        fineAmount: 10,
+                      },
+                      legacyData: {
+                        sentenceCalcType: 'C',
+                        sentenceCategory: 'D',
+                        sentenceTypeDesc: 'A NOMIS Fine Sentence Type',
+                      },
+                    },
+                    legacyData: null,
+                  },
                 ],
                 overallSentenceLength: {
                   years: 1,
@@ -2482,7 +2524,7 @@ export default {
         urlPath: '/remand-and-sentencing-api/sentence/consecutive-to-details',
         queryParameters: {
           sentenceUuids: {
-            equalTo: '8e33074a-3240-4073-923a-b69b642e037c',
+            equalTo: '8e33074a-3240-4073-923a-b69b642e037c,29fa8c7f-7ba1-4033-ac4d-83ff0c125a45',
           },
         },
       },
@@ -2498,6 +2540,15 @@ export default {
               offenceCode: 'PS90037',
               offenceStartDate: '2023-01-17',
               sentenceUuid: '8e33074a-3240-4073-923a-b69b642e037c',
+              countNumber: '1',
+            },
+            {
+              courtCode: 'ACCRYC',
+              courtCaseReference: 'XX1234',
+              appearanceDate: '2024-01-23',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-10-11',
+              sentenceUuid: '29fa8c7f-7ba1-4033-ac4d-83ff0c125a45',
               countNumber: '1',
             },
           ],

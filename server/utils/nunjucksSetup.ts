@@ -10,8 +10,9 @@ import {
   formatLengths,
   consecutiveToDetailsToDescription,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
-import type { SentenceLength } from 'models'
+import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
+import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
   formatDate,
   formatDateTime,
@@ -207,6 +208,23 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('periodLengthsToSentenceLengths', periodLengthsToSentenceLengths)
   njkEnv.addFilter('consecutiveToDetailsToDescription', consecutiveToDetailsToDescription)
+  njkEnv.addFilter(
+    'checkConsecutiveToSameCase',
+    (consecutiveToDetails: ConsecutiveToDetails, offences: Offence[], consecutiveToSentenceUuid: string) => {
+      let consecutiveToDetailsResponse = consecutiveToDetails
+      if (
+        consecutiveToSentenceUuid &&
+        offences.find(offence => offence.sentence?.sentenceUuid === consecutiveToSentenceUuid)
+      ) {
+        consecutiveToDetailsResponse = {
+          countNumber: consecutiveToDetails.countNumber,
+          offenceCode: consecutiveToDetails.offenceCode,
+          offenceDescription: consecutiveToDetails.offenceDescription,
+        }
+      }
+      return consecutiveToDetailsResponse
+    },
+  )
 
   njkEnv.addGlobal('featureToggles', config.featureToggles)
 }

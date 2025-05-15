@@ -548,6 +548,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sentence/consecutive-to-details': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve sentence consecutive to details
+     * @description This endpoint will retrieve consecutive to sentence details
+     */
+    get: operations['getConsecutiveToSentenceDetails']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sentence-type/{sentenceTypeUuid}': {
     parameters: {
       query?: never
@@ -1058,7 +1078,6 @@ export interface components {
       /** Format: uuid */
       consecutiveToLifetimeUuid?: string
       active: boolean
-      prisonId: string
       legacyData: components['schemas']['SentenceLegacyData']
       /** Format: date */
       returnToCustodyDate?: string
@@ -1083,11 +1102,6 @@ export interface components {
       /** Format: int32 */
       periodDays?: number
       legacyData: components['schemas']['PeriodLengthLegacyData']
-      /**
-       * @description Prison identifier where create/update originated from.
-       * @example MDI
-       */
-      prisonId: string
     }
     PeriodLengthLegacyData: {
       lifeSentence?: boolean
@@ -1104,7 +1118,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 14:15:55.595895 */
+      /** @example 13:20:38.599087 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1123,6 +1137,7 @@ export interface components {
       nomisOutcomeCode?: string
       outcomeDescription?: string
       outcomeDispositionCode?: string
+      outcomeConvictionFlag?: boolean
     }
     LegacyUpdateCharge: {
       /** Format: date */
@@ -1195,7 +1210,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:15:55.595895 */
+      /** @example 13:20:38.599087 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -1297,6 +1312,8 @@ export interface components {
       mergedFromEventId?: number
       /** Format: int64 */
       mergedChargeNOMISId?: number
+      /** Format: date */
+      mergedFromDate?: string
     }
     MigrationCreateCourtAppearance: {
       /** Format: int64 */
@@ -1491,6 +1508,23 @@ export interface components {
       /** Format: int32 */
       displayOrder: number
     }
+    SentenceConsecutiveToDetails: {
+      courtCaseReference?: string
+      courtCode: string
+      /** Format: date */
+      appearanceDate: string
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string
+      /** Format: date */
+      offenceEndDate?: string
+      /** Format: uuid */
+      sentenceUuid: string
+      countNumber?: string
+    }
+    SentenceConsecutiveToDetailsResponse: {
+      sentences: components['schemas']['SentenceConsecutiveToDetails'][]
+    }
     Recall: {
       /** Format: uuid */
       recallUuid: string
@@ -1613,7 +1647,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:15:55.595895 */
+      /** @example 13:20:38.599087 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -1816,7 +1850,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 14:15:55.595895 */
+      /** @example 13:20:38.599087 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -1824,7 +1858,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:15:55.595895 */
+      /** @example 13:20:38.599087 */
       appearanceTime?: string
       courtId: string
     }
@@ -1852,21 +1886,21 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
+      /** Format: int32 */
+      totalPages?: number
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
-      totalPages?: number
+      size?: number
       sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      number?: number
       first?: boolean
       last?: boolean
-      /** Format: int32 */
-      size?: number
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
-      numberOfElements?: number
+      number?: number
       pageable?: components['schemas']['PageableObject']
+      /** Format: int32 */
+      numberOfElements?: number
       empty?: boolean
     }
     PageableObject: {
@@ -3564,6 +3598,46 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['Sentence']
+        }
+      }
+    }
+  }
+  getConsecutiveToSentenceDetails: {
+    parameters: {
+      query: {
+        sentenceUuids: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns consecutive to sentence details */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SentenceConsecutiveToDetailsResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SentenceConsecutiveToDetailsResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SentenceConsecutiveToDetailsResponse']
         }
       }
     }

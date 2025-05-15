@@ -8,6 +8,7 @@ import {
   personStatus,
   firstNameSpaceLastName,
   formatLengths,
+  consecutiveToDetailsToDescription,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { SentenceLength } from 'models'
 import dayjs from 'dayjs'
@@ -205,6 +206,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatLengthsWithoutPeriodOrder', formatLengthsWithoutPeriodOrder)
 
   njkEnv.addFilter('periodLengthsToSentenceLengths', periodLengthsToSentenceLengths)
+  njkEnv.addFilter('consecutiveToDetailsToDescription', consecutiveToDetailsToDescription)
 
   njkEnv.addGlobal('featureToggles', config.featureToggles)
 }

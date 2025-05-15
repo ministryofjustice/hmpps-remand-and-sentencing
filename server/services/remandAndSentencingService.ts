@@ -13,6 +13,7 @@ import {
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  SentenceConsecutiveToDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -198,6 +199,15 @@ export default class RemandAndSentencingService {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).sentencesToChainTo(
       prisonerId,
       warrantDate.format('YYYY-MM-DD'),
+    )
+  }
+
+  async getConsecutiveToDetails(
+    sentenceUuids: string[],
+    username: string,
+  ): Promise<SentenceConsecutiveToDetailsResponse> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).consecutiveToDetails(
+      sentenceUuids,
     )
   }
 

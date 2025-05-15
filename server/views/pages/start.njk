@@ -149,7 +149,7 @@
                                                                 isSentenced: offence.sentence,
                                                                 periodLengths: offence.sentence.periodLengths,
                                                                 sentenceServeType: offence.sentence.sentenceServeType,
-                                                                consecutiveTo: offence.sentence.consecutiveTo,
+                                                                consecutiveTo: consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
                                                                 sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
                                                                 fineAmount: offence.sentence.fineAmount,
                                                                 detailsClasses: 'govuk-!-padding-4'

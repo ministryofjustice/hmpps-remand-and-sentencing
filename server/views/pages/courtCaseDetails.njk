@@ -172,7 +172,7 @@
                         isSentenced: charge.sentence,
                         periodLengths: charge.sentence.periodLengths | periodLengthsToSentenceLengths,
                         sentenceServeType: charge.sentence.sentenceServeType,
-                        consecutiveTo: charge.sentence.consecutiveToChargeNumber,
+                        consecutiveTo: consecutiveToSentenceDetailsMap[charge.sentence.consecutiveToSentenceUuid],
                         sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
                         fineAmount: charge.sentence.fineAmount.fineAmount,
                         detailsClasses: 'govuk-!-padding-4'

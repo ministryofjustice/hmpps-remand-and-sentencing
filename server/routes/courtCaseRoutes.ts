@@ -64,9 +64,10 @@ export default class CourtCaseRoutes {
       .map(charge => charge.sentence?.consecutiveToSentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
 
-    const consecutiveToSentenceDetails = consecutiveToSentenceUuids.length
-      ? await this.remandAndSentencingService.getConsecutiveToDetails(consecutiveToSentenceUuids, req.user.username)
-      : { sentences: [] }
+    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
+      consecutiveToSentenceUuids,
+      req.user.username,
+    )
 
     const chargeCodes = courtCases.content
       .map(courtCase => courtCase.appearances.map(appearance => appearance.charges.map(charge => charge.offenceCode)))

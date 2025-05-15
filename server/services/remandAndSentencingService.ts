@@ -206,9 +206,9 @@ export default class RemandAndSentencingService {
     sentenceUuids: string[],
     username: string,
   ): Promise<SentenceConsecutiveToDetailsResponse> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).consecutiveToDetails(
-      sentenceUuids,
-    )
+    return sentenceUuids.length
+      ? new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).consecutiveToDetails(sentenceUuids)
+      : { sentences: [] }
   }
 
   private async getSystemClientToken(username: string): Promise<string> {

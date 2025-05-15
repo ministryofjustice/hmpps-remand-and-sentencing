@@ -56,6 +56,7 @@ export default defineConfig({
               description: 'SDS (Standard Determinate Sentence)',
               classification: 'STANDARD',
             }),
+            remandAndSentencingApi.stubGetConsecutiveToDetails(),
           ])
         },
         ...auth,

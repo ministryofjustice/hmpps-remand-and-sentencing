@@ -9,6 +9,7 @@ context('Start Page', () => {
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetServiceDefinitions')
+    cy.task('stubGetConsecutiveToDetails')
     cy.signIn()
     cy.visit('/person/A1234AB')
     startPage = Page.verifyOnPage(StartPage)
@@ -125,6 +126,17 @@ context('Start Page', () => {
           'Conviction date': '12/10/2023',
           'Sentence type': 'A NOMIS Sentence Type',
           'Tariff length': '1 years 0 months 0 weeks 0 days',
+        },
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '11/05/2023',
+          Outcome: 'Imprisonment',
+          'Consecutive or concurrent':
+            'Consecutive to count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
+          'Conviction date': '11/05/2024',
+          'Sentence type': 'A NOMIS Fine Sentence Type',
+          'Fine amount': '£10',
+          'Term length': '0 years 2 months 0 weeks 0 days',
         },
       ])
   })

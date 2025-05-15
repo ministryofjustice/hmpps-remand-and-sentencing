@@ -14,13 +14,13 @@ export default class RemandRoutes extends BaseRoutes {
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
-    private readonly remandAndSentencingService: RemandAndSentencingService,
+    remandAndSentencingService: RemandAndSentencingService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
   ) {
-    super(courtAppearanceService, offenceService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
 
   public getAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
@@ -39,10 +39,13 @@ export default class RemandRoutes extends BaseRoutes {
     }
 
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const chargeCodes = appearance.offences.map(offences => offences.offenceCode)
-    const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode].filter(
-      courtId => courtId !== undefined && courtId !== null,
-    )
+    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
+    const chargeCodes = appearance.offences
+      .map(offences => offences.offenceCode)
+      .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
+    const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode]
+      .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
+      .filter(courtId => courtId !== undefined && courtId !== null)
     const sentenceTypeIds = appearance.offences
       .filter(offence => offence.sentence?.sentenceTypeId)
       .map(offence => offence.sentence?.sentenceTypeId)
@@ -67,7 +70,15 @@ export default class RemandRoutes extends BaseRoutes {
         this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
         appearanceTypePromise,
       ])
-
+    const allSentenceUuids = appearance.offences
+      .map(offence => offence.sentence?.sentenceUuid)
+      .filter(sentenceUuid => sentenceUuid)
+    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
+      allSentenceUuids,
+      consecutiveToSentenceDetails,
+      offenceMap,
+      courtMap,
+    )
     return res.render('pages/courtAppearance/appearance-details', {
       nomsId,
       courtCaseReference,
@@ -81,6 +92,7 @@ export default class RemandRoutes extends BaseRoutes {
       overallCaseOutcome,
       outcomeMap,
       appearanceTypeDescription,
+      consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

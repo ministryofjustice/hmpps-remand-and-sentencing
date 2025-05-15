@@ -5,7 +5,6 @@ import type {
   SentenceIsSentenceConsecutiveToForm,
 } from 'forms'
 import dayjs from 'dayjs'
-import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OffenceService from '../services/offenceService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import BaseRoutes from './baseRoutes'
@@ -22,20 +21,19 @@ import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import SameCaseSentenceToChainTo from './data/SameCaseSentenceToChainTo'
-import config from '../config'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
-    private readonly remandAndSentencingService: RemandAndSentencingService,
+    remandAndSentencingService: RemandAndSentencingService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
   ) {
-    super(courtAppearanceService, offenceService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
 
   public getIsSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
@@ -157,13 +155,7 @@ export default class SentencingRoutes extends BaseRoutes {
     }
 
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const consecutiveToSentenceUuids = appearance.offences
-      .map(offence => offence.sentence?.consecutiveToSentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
-      consecutiveToSentenceUuids,
-      req.user.username,
-    )
+    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
     const chargeCodes = appearance.offences
       .map(offences => offences.offenceCode)
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
@@ -220,25 +212,11 @@ export default class SentencingRoutes extends BaseRoutes {
     const allSentenceUuids = appearance.offences
       .map(offence => offence.sentence?.sentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = Object.fromEntries(
-      consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => {
-        let consecutiveToDetailsEntry = {
-          countNumber: consecutiveToDetails.countNumber,
-          offenceCode: consecutiveToDetails.offenceCode,
-          offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
-          courtCaseReference: consecutiveToDetails.courtCaseReference,
-          courtName: courtMap[consecutiveToDetails.courtCode],
-          warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
-        } as ConsecutiveToDetails
-        if (allSentenceUuids.includes(consecutiveToDetails.sentenceUuid)) {
-          consecutiveToDetailsEntry = {
-            countNumber: consecutiveToDetails.countNumber,
-            offenceCode: consecutiveToDetails.offenceCode,
-            offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
-          }
-        }
-        return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
-      }),
+    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
+      allSentenceUuids,
+      consecutiveToSentenceDetails,
+      offenceMap,
+      courtMap,
     )
     return res.render('pages/sentencing/appearance-details', {
       nomsId,

@@ -1,16 +1,28 @@
 import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
+import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import dayjs from 'dayjs'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
+import RemandAndSentencingService from '../services/remandAndSentencingService'
+import { SentenceConsecutiveToDetailsResponse } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import config from '../config'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
 
   offenceService: OffenceService
 
-  constructor(courtAppearanceService: CourtAppearanceService, offenceService: OffenceService) {
+  remandAndSentencingService: RemandAndSentencingService
+
+  constructor(
+    courtAppearanceService: CourtAppearanceService,
+    offenceService: OffenceService,
+    remandAndSentencingService: RemandAndSentencingService,
+  ) {
     this.courtAppearanceService = courtAppearanceService
     this.offenceService = offenceService
+    this.remandAndSentencingService = remandAndSentencingService
   }
 
   protected isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
@@ -82,6 +94,75 @@ export default abstract class BaseRoutes {
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+    )
+  }
+
+  protected async getSessionConsecutiveToSentenceDetails(
+    req,
+    nomsId: string,
+  ): Promise<SentenceConsecutiveToDetailsResponse> {
+    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const consecutiveToSentenceUuids = appearance.offences
+      .map(offence => offence.sentence?.consecutiveToSentenceUuid)
+      .filter(sentenceUuid => sentenceUuid)
+    return this.remandAndSentencingService.getConsecutiveToDetails(consecutiveToSentenceUuids, req.user.username)
+  }
+
+  protected getConsecutiveToSentenceDetailsMap(
+    allSentenceUuids: string[],
+    consecutiveToSentenceDetails: SentenceConsecutiveToDetailsResponse,
+    offenceMap: { [key: string]: string },
+    courtMap: { [key: string]: string },
+  ): {
+    [key: string]: ConsecutiveToDetails
+  } {
+    return Object.fromEntries(
+      consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => {
+        let consecutiveToDetailsEntry = {
+          countNumber: consecutiveToDetails.countNumber,
+          offenceCode: consecutiveToDetails.offenceCode,
+          offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
+          courtCaseReference: consecutiveToDetails.courtCaseReference,
+          courtName: courtMap[consecutiveToDetails.courtCode],
+          warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
+        } as ConsecutiveToDetails
+        if (allSentenceUuids.includes(consecutiveToDetails.sentenceUuid)) {
+          consecutiveToDetailsEntry = {
+            countNumber: consecutiveToDetails.countNumber,
+            offenceCode: consecutiveToDetails.offenceCode,
+            offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
+          }
+        }
+        return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
+      }),
+    )
+  }
+
+  protected getSessionConsecutiveToSentenceDetailsMap(
+    req,
+    nomsId: string,
+    offenceMap: { [key: string]: string },
+  ): {
+    [key: string]: ConsecutiveToDetails
+  } {
+    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req, nomsId)
+    return Object.fromEntries(
+      offences
+        .filter(offence => offence.sentence?.consecutiveToSentenceReference)
+        .map(consecutiveOffence => {
+          const consecutiveToOffence = offences.find(
+            offence =>
+              offence.sentence?.sentenceReference === consecutiveOffence.sentence.consecutiveToSentenceReference,
+          )
+          return [
+            consecutiveOffence.sentence.consecutiveToSentenceReference,
+            {
+              countNumber: consecutiveToOffence.sentence.countNumber,
+              offenceCode: consecutiveToOffence.offenceCode,
+              offenceDescription: offenceMap[consecutiveToOffence.offenceCode],
+            } as ConsecutiveToDetails,
+          ]
+        }),
     )
   }
 }

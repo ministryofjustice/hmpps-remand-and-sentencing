@@ -19,7 +19,6 @@ import type {
 } from 'forms'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
-import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -44,19 +43,18 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import CourtRegisterService from '../services/courtRegisterService'
 import BaseRoutes from './baseRoutes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
-import config from '../config'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
     offenceService: OffenceService,
     private readonly manageOffencesService: ManageOffencesService,
     courtAppearanceService: CourtAppearanceService,
-    private readonly remandAndSentencingService: RemandAndSentencingService,
+    remandAndSentencingService: RemandAndSentencingService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly courtRegisterService: CourtRegisterService,
   ) {
-    super(courtAppearanceService, offenceService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -1436,13 +1434,7 @@ export default class OffenceRoutes extends BaseRoutes {
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const consecutiveToSentenceUuids = courtAppearance.offences
-      .map(offence => offence.sentence?.consecutiveToSentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
-      consecutiveToSentenceUuids,
-      req.user.username,
-    )
+    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
     const sentenceTypeIds = Array.from(
       new Set(
         courtAppearance.offences
@@ -1486,44 +1478,16 @@ export default class OffenceRoutes extends BaseRoutes {
     const allSentenceUuids = offences
       .map(offence => offence.sentence?.sentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = Object.fromEntries(
-      consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => {
-        let consecutiveToDetailsEntry = {
-          countNumber: consecutiveToDetails.countNumber,
-          offenceCode: consecutiveToDetails.offenceCode,
-          offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
-          courtCaseReference: consecutiveToDetails.courtCaseReference,
-          courtName: courtMap[consecutiveToDetails.courtCode],
-          warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
-        } as ConsecutiveToDetails
-        if (allSentenceUuids.includes(consecutiveToDetails.sentenceUuid)) {
-          consecutiveToDetailsEntry = {
-            countNumber: consecutiveToDetails.countNumber,
-            offenceCode: consecutiveToDetails.offenceCode,
-            offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
-          }
-        }
-        return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
-      }),
+    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
+      allSentenceUuids,
+      consecutiveToSentenceDetails,
+      offenceMap,
+      courtMap,
     )
-
-    const sessionConsecutiveToSentenceDetailsMap = Object.fromEntries(
-      offences
-        .filter(offence => offence.sentence?.consecutiveToSentenceReference)
-        .map(consecutiveOffence => {
-          const consecutiveToOffence = offences.find(
-            offence =>
-              offence.sentence?.sentenceReference === consecutiveOffence.sentence.consecutiveToSentenceReference,
-          )
-          return [
-            consecutiveOffence.sentence.consecutiveToSentenceReference,
-            {
-              countNumber: consecutiveToOffence.sentence.countNumber,
-              offenceCode: consecutiveToOffence.offenceCode,
-              offenceDescription: offenceMap[consecutiveToOffence.offenceCode],
-            } as ConsecutiveToDetails,
-          ]
-        }),
+    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
+      req,
+      nomsId,
+      offenceMap,
     )
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
@@ -1883,13 +1847,7 @@ export default class OffenceRoutes extends BaseRoutes {
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
 
-    const consecutiveToSentenceUuids = offences
-      .map(offence => offence.sentence?.consecutiveToSentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
-      consecutiveToSentenceUuids,
-      req.user.username,
-    )
+    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
 
     const sentenceTypeIds = Array.from(
       new Set(
@@ -1938,44 +1896,16 @@ export default class OffenceRoutes extends BaseRoutes {
     const allSentenceUuids = offences
       .map(offence => offence.sentence?.sentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
-    const consecutiveToSentenceDetailsMap = Object.fromEntries(
-      consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => {
-        let consecutiveToDetailsEntry = {
-          countNumber: consecutiveToDetails.countNumber,
-          offenceCode: consecutiveToDetails.offenceCode,
-          offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
-          courtCaseReference: consecutiveToDetails.courtCaseReference,
-          courtName: courtMap[consecutiveToDetails.courtCode],
-          warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
-        } as ConsecutiveToDetails
-        if (allSentenceUuids.includes(consecutiveToDetails.sentenceUuid)) {
-          consecutiveToDetailsEntry = {
-            countNumber: consecutiveToDetails.countNumber,
-            offenceCode: consecutiveToDetails.offenceCode,
-            offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
-          }
-        }
-        return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
-      }),
+    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
+      allSentenceUuids,
+      consecutiveToSentenceDetails,
+      offenceMap,
+      courtMap,
     )
-
-    const sessionConsecutiveToSentenceDetailsMap = Object.fromEntries(
-      offences
-        .filter(offence => offence.sentence?.consecutiveToSentenceReference)
-        .map(consecutiveOffence => {
-          const consecutiveToOffence = offences.find(
-            offence =>
-              offence.sentence?.sentenceReference === consecutiveOffence.sentence.consecutiveToSentenceReference,
-          )
-          return [
-            consecutiveOffence.sentence.consecutiveToSentenceReference,
-            {
-              countNumber: consecutiveToOffence.sentence.countNumber,
-              offenceCode: consecutiveToOffence.offenceCode,
-              offenceDescription: offenceMap[consecutiveToOffence.offenceCode],
-            } as ConsecutiveToDetails,
-          ]
-        }),
+    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
+      req,
+      nomsId,
+      offenceMap,
     )
 
     return res.render('pages/offence/update-offence-outcomes', {

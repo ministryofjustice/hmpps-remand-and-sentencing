@@ -59,7 +59,8 @@ export default class CourtCaseRoutes {
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
     const consecutiveToSentenceUuids = courtCases.content
-      .flatMap(courtCase => courtCase.appearances.flatMap(appearance => appearance.charges))
+      .filter(courtCase => courtCase.latestAppearance)
+      .flatMap(courtCase => courtCase.latestAppearance.charges)
       .map(charge => charge.sentence?.consecutiveToSentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
 

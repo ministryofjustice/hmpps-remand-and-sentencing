@@ -16,6 +16,7 @@ import type {
 } from 'forms'
 import type { CourtAppearance, CourtCase } from 'models'
 import dayjs from 'dayjs'
+import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -57,11 +58,20 @@ export default class CourtCaseRoutes {
       this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy, pageNumber),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
+    const consecutiveToSentenceUuids = courtCases.content
+      .flatMap(courtCase => courtCase.appearances.flatMap(appearance => appearance.charges))
+      .map(charge => charge.sentence?.consecutiveToSentenceUuid)
+      .filter(sentenceUuid => sentenceUuid)
+
+    const consecutiveToSentenceDetails = consecutiveToSentenceUuids.length
+      ? await this.remandAndSentencingService.getConsecutiveToDetails(consecutiveToSentenceUuids, req.user.username)
+      : { sentences: [] }
 
     const chargeCodes = courtCases.content
       .map(courtCase => courtCase.appearances.map(appearance => appearance.charges.map(charge => charge.offenceCode)))
       .flat()
       .flat()
+      .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
     const courtIds = courtCases.content
       .map(courtCase =>
         courtCase.appearances.map(appearance =>
@@ -75,10 +85,26 @@ export default class CourtCaseRoutes {
       )
       .flat()
       .flat()
+      .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
     const [offenceMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
     ])
+    const consecutiveToSentenceDetailsMap = Object.fromEntries(
+      consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => {
+        return [
+          consecutiveToDetails.sentenceUuid,
+          {
+            countNumber: consecutiveToDetails.countNumber,
+            offenceCode: consecutiveToDetails.offenceCode,
+            offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
+            courtCaseReference: consecutiveToDetails.courtCaseReference,
+            courtName: courtMap[consecutiveToDetails.courtCode],
+            warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
+          } as ConsecutiveToDetails,
+        ]
+      }),
+    )
     const courtCaseDetailModels = courtCases.content.map(
       pageCourtCaseContent => new CourtCasesDetailsModel(pageCourtCaseContent, courtMap),
     )
@@ -103,6 +129,7 @@ export default class CourtCaseRoutes {
       offenceOutcomeMap,
       serviceDefinitions,
       pagination,
+      consecutiveToSentenceDetailsMap,
     })
   }
 

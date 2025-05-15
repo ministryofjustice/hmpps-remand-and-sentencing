@@ -17,6 +17,7 @@ import {
   PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  SentenceConsecutiveToDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -248,5 +249,14 @@ export default class RemandAndSentencingApiClient {
         beforeOrOnAppearanceDate,
       },
     })) as unknown as Promise<SentencesToChainToResponse>
+  }
+
+  async consecutiveToDetails(sentenceUuids: string[]): Promise<SentenceConsecutiveToDetailsResponse> {
+    return (await this.restClient.get({
+      path: '/sentence/consecutive-to-details',
+      query: {
+        sentenceUuids: sentenceUuids.join(','),
+      },
+    })) as unknown as Promise<SentenceConsecutiveToDetailsResponse>
   }
 }

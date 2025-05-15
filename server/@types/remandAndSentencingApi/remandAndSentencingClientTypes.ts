@@ -67,3 +67,7 @@ export type SentencesToChainToResponse = components['schemas']['SentencesToChain
 export type AppearanceToChainTo = components['schemas']['AppearanceToChainTo']
 
 export type SentenceToChainTo = components['schemas']['SentenceToChainTo']
+
+export type SentenceConsecutiveToDetailsResponse = components['schemas']['SentenceConsecutiveToDetailsResponse']
+
+export type SentenceConsecutiveToDetails = components['schemas']['SentenceConsecutiveToDetails']

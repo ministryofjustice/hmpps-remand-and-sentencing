@@ -226,7 +226,7 @@
             isSentenced: offence.sentence,
             periodLengths: offence.sentence.periodLengths,
             sentenceServeType: offence.sentence.sentenceServeType,
-            consecutiveTo: offence.sentence.consecutiveTo,
+            consecutiveTo: consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
             sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
             fineAmount: offence.sentence.fineAmount,
             actions: {
@@ -266,7 +266,7 @@
                     isSentenced: offence.sentence,
                     periodLengths: offence.sentence.periodLengths,
                     sentenceServeType: offence.sentence.sentenceServeType,
-                    consecutiveTo: offence.sentence.consecutiveTo,
+                    consecutiveTo: consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
                     sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
                     fineAmount: offence.sentence.fineAmount,
                     actions: {

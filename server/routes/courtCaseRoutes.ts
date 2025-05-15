@@ -64,9 +64,10 @@ export default class CourtCaseRoutes {
       .map(charge => charge.sentence?.consecutiveToSentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
 
-    const consecutiveToSentenceDetails = consecutiveToSentenceUuids.length
-      ? await this.remandAndSentencingService.getConsecutiveToDetails(consecutiveToSentenceUuids, req.user.username)
-      : { sentences: [] }
+    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
+      consecutiveToSentenceUuids,
+      req.user.username,
+    )
 
     const chargeCodes = courtCases.content
       .map(courtCase => courtCase.appearances.map(appearance => appearance.charges.map(charge => charge.offenceCode)))
@@ -139,9 +140,19 @@ export default class CourtCaseRoutes {
     const { token } = res.locals.user
     const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
 
+    const consecutiveToUuids = courtCaseDetails.appearances
+      .flatMap(appearance => appearance.charges.map(charge => charge.sentence?.consecutiveToSentenceUuid))
+      .filter(sentenceUuid => sentenceUuid)
+
+    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
+      consecutiveToUuids,
+      req.user.username,
+    )
+
     const chargeCodes = courtCaseDetails.appearances
       .map(appearance => appearance.charges.map(charge => charge.offenceCode))
       .flat()
+      .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
 
     const courtIds = [courtCaseDetails.latestAppearance?.courtCode]
       .concat(
@@ -149,6 +160,7 @@ export default class CourtCaseRoutes {
           appearance.courtCode,
           appearance.nextCourtAppearance?.courtCode,
         ]),
+        consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode),
       )
       .filter(courtId => courtId !== undefined && courtId !== null)
 
@@ -156,6 +168,29 @@ export default class CourtCaseRoutes {
       this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
     ])
+    const allSentenceUuids = courtCaseDetails.appearances
+      .flatMap(appearance => appearance.charges.map(charge => charge.sentence?.sentenceUuid))
+      .filter(sentenceUuid => sentenceUuid)
+    const consecutiveToSentenceDetailsMap = Object.fromEntries(
+      consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => {
+        let consecutiveToDetailsEntry = {
+          countNumber: consecutiveToDetails.countNumber,
+          offenceCode: consecutiveToDetails.offenceCode,
+          offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
+          courtCaseReference: consecutiveToDetails.courtCaseReference,
+          courtName: courtMap[consecutiveToDetails.courtCode],
+          warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
+        } as ConsecutiveToDetails
+        if (allSentenceUuids.includes(consecutiveToDetails.sentenceUuid)) {
+          consecutiveToDetailsEntry = {
+            countNumber: consecutiveToDetails.countNumber,
+            offenceCode: consecutiveToDetails.offenceCode,
+            offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
+          }
+        }
+        return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
+      }),
+    )
     return res.render('pages/courtCaseDetails', {
       nomsId,
       courtCaseReference,
@@ -163,6 +198,7 @@ export default class CourtCaseRoutes {
       courtCaseDetails: new CourtCaseDetailsModel(courtCaseDetails),
       offenceMap,
       courtMap,
+      consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}`,
     })
   }

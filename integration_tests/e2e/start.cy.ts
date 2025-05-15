@@ -120,6 +120,16 @@ context('Start Page', () => {
         },
         {
           offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '07/01/2024',
+          Outcome: 'Imprisonment',
+          'Conviction date': '11/05/2024',
+          'Sentence type': 'A NOMIS Fine Sentence Type',
+          'Fine amount': '£10',
+          'Consecutive or concurrent': 'Consecutive to count 1',
+          'Term length': '0 years 3 months 0 weeks 0 days',
+        },
+        {
+          offenceCardHeader: 'PS90037 An offence description',
           'Committed on': '11/10/2023',
           Outcome: 'Imprisonment',
           'Consecutive or concurrent': 'Forthwith',

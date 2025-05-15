@@ -102,7 +102,15 @@ context('Court Case details Page', () => {
             Outcome: 'Imprisonment',
             'Court documents': 'No documents uploaded',
             Offences: {
-              'Offences (2)': [
+              'Offences (4)': [
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': '15/02/2024',
+                  Outcome: 'Imprisonment',
+                  'Sentence type': 'SDS (Standard Determinate Sentence)',
+                  'Sentence length': '4 years 5 months 0 weeks 0 days',
+                  'Consecutive or concurrent': 'Consecutive to count 1',
+                },
                 {
                   offenceCardHeader: 'PS90037 An offence description',
                   'Committed on': '16/12/2023',
@@ -118,6 +126,15 @@ context('Court Case details Page', () => {
                   'Sentence type': 'SDS (Standard Determinate Sentence)',
                   'Sentence length': '4 years 5 months 0 weeks 0 days',
                   'Consecutive or concurrent': 'Forthwith',
+                },
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': '03/06/2023',
+                  Outcome: 'Imprisonment',
+                  'Sentence type': 'SDS (Standard Determinate Sentence)',
+                  'Sentence length': '4 years 5 months 0 weeks 0 days',
+                  'Consecutive or concurrent':
+                    'Consecutive to count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
                 },
               ],
             },

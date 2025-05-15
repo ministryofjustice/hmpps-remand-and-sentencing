@@ -1436,7 +1436,13 @@ export default class OffenceRoutes extends BaseRoutes {
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-
+    const consecutiveToSentenceUuids = courtAppearance.offences
+      .map(offence => offence.sentence?.consecutiveToSentenceUuid)
+      .filter(sentenceUuid => sentenceUuid)
+    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
+      consecutiveToSentenceUuids,
+      req.user.username,
+    )
     const sentenceTypeIds = Array.from(
       new Set(
         courtAppearance.offences
@@ -1444,14 +1450,23 @@ export default class OffenceRoutes extends BaseRoutes {
           .map(offence => offence.sentence?.sentenceTypeId),
       ),
     )
-    const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
+    const offenceCodes = Array.from(
+      new Set(
+        courtAppearance.offences
+          .map(offence => offence.offenceCode)
+          .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
+      ),
+    )
     const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
-
-    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison] = await Promise.all([
+    const courtIds = Array.from(
+      new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
+    )
+    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(offenceCodes, req.user.token),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
       this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
+      this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
 
     const offences = courtAppearance.offences.map((offence, index) => {
@@ -1468,7 +1483,48 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     const showCountWarning = custodialOffences.some(offence => !offence.sentence?.countNumber)
+    const allSentenceUuids = offences
+      .map(offence => offence.sentence?.sentenceUuid)
+      .filter(sentenceUuid => sentenceUuid)
+    const consecutiveToSentenceDetailsMap = Object.fromEntries(
+      consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => {
+        let consecutiveToDetailsEntry = {
+          countNumber: consecutiveToDetails.countNumber,
+          offenceCode: consecutiveToDetails.offenceCode,
+          offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
+          courtCaseReference: consecutiveToDetails.courtCaseReference,
+          courtName: courtMap[consecutiveToDetails.courtCode],
+          warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
+        } as ConsecutiveToDetails
+        if (allSentenceUuids.includes(consecutiveToDetails.sentenceUuid)) {
+          consecutiveToDetailsEntry = {
+            countNumber: consecutiveToDetails.countNumber,
+            offenceCode: consecutiveToDetails.offenceCode,
+            offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
+          }
+        }
+        return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
+      }),
+    )
 
+    const sessionConsecutiveToSentenceDetailsMap = Object.fromEntries(
+      offences
+        .filter(offence => offence.sentence?.consecutiveToSentenceReference)
+        .map(consecutiveOffence => {
+          const consecutiveToOffence = offences.find(
+            offence =>
+              offence.sentence?.sentenceReference === consecutiveOffence.sentence.consecutiveToSentenceReference,
+          )
+          return [
+            consecutiveOffence.sentence.consecutiveToSentenceReference,
+            {
+              countNumber: consecutiveToOffence.sentence.countNumber,
+              offenceCode: consecutiveToOffence.offenceCode,
+              offenceDescription: offenceMap[consecutiveToOffence.offenceCode],
+            } as ConsecutiveToDetails,
+          ]
+        }),
+    )
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,
@@ -1484,6 +1540,8 @@ export default class OffenceRoutes extends BaseRoutes {
       custodialOffences,
       nonCustodialOffences,
       showCountWarning,
+      consecutiveToSentenceDetailsMap,
+      sessionConsecutiveToSentenceDetailsMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,

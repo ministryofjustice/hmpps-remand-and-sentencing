@@ -130,15 +130,6 @@ export default class TaskListModel {
       }
     }
 
-    if (this.anyWarrantInformationFilledOut(courtAppearance)) {
-      return {
-        tag: {
-          text: 'In progress',
-          classes: 'govuk-tag--light-blue',
-        },
-      }
-    }
-
     return {
       tag: {
         text: 'Incomplete',
@@ -158,15 +149,6 @@ export default class TaskListModel {
 
   private allWarrantInformationFilledOutEditJourney(courtAppearance: CourtAppearance): boolean {
     return courtAppearance.overallConvictionDateAppliedAll && courtAppearance.warrantInformationAccepted
-  }
-
-  private anyWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
-    return (
-      courtAppearance.overallSentenceLength !== undefined ||
-      courtAppearance.overallConvictionDateAppliedAll !== undefined ||
-      courtAppearance.caseOutcomeAppliedAll !== undefined ||
-      courtAppearance.warrantInformationAccepted
-    )
   }
 
   private getWarrantInformationHref(courtAppearance: CourtAppearance): string {

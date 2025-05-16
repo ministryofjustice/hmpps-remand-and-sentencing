@@ -212,11 +212,9 @@ export default class TaskListModel {
         text: 'Upload court documents',
         classes: 'govuk-link--no-visited-state',
       },
-      href:
-        (this.allAppearanceInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'REMAND') ||
-        (this.allWarrantInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'SENTENCING')
-          ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/upload-court-documents`
-          : null,
+      href: this.allAppearanceInformationFilledOut(courtAppearance)
+        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/upload-court-documents`
+        : null,
       status,
     }
   }

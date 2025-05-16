@@ -145,7 +145,7 @@ export default abstract class BaseRoutes {
   ): {
     [key: string]: ConsecutiveToDetails
   } {
-    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req, nomsId)
+    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     return Object.fromEntries(
       offences
         .filter(offence => offence.sentence?.consecutiveToSentenceReference)

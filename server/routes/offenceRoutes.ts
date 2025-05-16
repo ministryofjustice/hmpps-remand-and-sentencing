@@ -19,6 +19,7 @@ import type {
 } from 'forms'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
+import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -1618,8 +1619,32 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10))
-    const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const offence = courtAppearance.offences[parseInt(offenceReference, 10)]
+    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
+      [offence.sentence?.consecutiveToSentenceUuid],
+      req.user.username,
+    )
+    let sessionConsecutiveTo
+    if (offence.sentence?.consecutiveToSentenceReference) {
+      sessionConsecutiveTo = courtAppearance.offences.find(
+        appearanceOffence =>
+          appearanceOffence.sentence?.sentenceReference === offence.sentence?.consecutiveToSentenceReference,
+      )
+    }
+
+    const [offenceMap, courtMap] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(
+        [offence.offenceCode, sessionConsecutiveTo?.offenceCode].concat(
+          consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode),
+        ),
+        req.user.token,
+      ),
+      this.courtRegisterService.getCourtMap(
+        consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode),
+        req.user.username,
+      ),
+    ])
     let sentenceType
     if (offence.sentence?.sentenceTypeId) {
       sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
@@ -1631,6 +1656,26 @@ export default class OffenceRoutes extends BaseRoutes {
     if (offence.outcomeUuid) {
       outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
     }
+    const allSentenceUuids = courtAppearance.offences
+      .map(appearanceOffence => appearanceOffence.sentence?.sentenceUuid)
+      .filter(sentenceUuid => sentenceUuid)
+    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
+      allSentenceUuids,
+      consecutiveToSentenceDetails,
+      offenceMap,
+      courtMap,
+    )
+    let sessionConsecutiveToSentenceDetailsMap = {}
+    if (sessionConsecutiveTo) {
+      sessionConsecutiveToSentenceDetailsMap = {
+        [offence.sentence?.consecutiveToSentenceReference]: {
+          countNumber: sessionConsecutiveTo.sentence.countNumber,
+          offenceCode: sessionConsecutiveTo.offenceCode,
+          offenceDescription: offenceMap[sessionConsecutiveTo.offenceCode],
+        } as ConsecutiveToDetails,
+      }
+    }
+
     return res.render('pages/offence/delete-offence', {
       nomsId,
       courtCaseReference,
@@ -1642,6 +1687,8 @@ export default class OffenceRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       offenceMap,
       sentenceType,
+      consecutiveToSentenceDetailsMap,
+      sessionConsecutiveToSentenceDetailsMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       outcome,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,

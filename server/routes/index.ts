@@ -603,5 +603,10 @@ export default function routes(services: Services): Router {
     overallSentencingRoutes.submitAlternativeSentenceLength,
   )
 
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/upload-court-documents',
+    courtCaseRoutes.getCourtDocumentsPage,
+  )
+
   return router
 }

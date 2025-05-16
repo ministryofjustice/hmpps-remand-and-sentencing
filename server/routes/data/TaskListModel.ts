@@ -149,10 +149,10 @@ export default class TaskListModel {
 
   private allWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     return (
-      // Doesnt check courtAppearance.overallSentenceLength because it gets deleted if set to NO
-      courtAppearance.overallConvictionDateAppliedAll &&
-      courtAppearance.caseOutcomeAppliedAll &&
-      courtAppearance.warrantInformationAccepted
+      /* Doesnt check courtAppearance.overallSentenceLength because it gets deleted if set to NO
+      caseOutcomeAppliedAll is not checked because it is not checked in Remand to Sentencing journey
+       */
+      courtAppearance.overallConvictionDateAppliedAll && courtAppearance.warrantInformationAccepted
     )
   }
 
@@ -212,11 +212,9 @@ export default class TaskListModel {
         text: 'Upload court documents',
         classes: 'govuk-link--no-visited-state',
       },
-      href:
-        (this.allAppearanceInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'REMAND') ||
-        (this.allWarrantInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'SENTENCING')
-          ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/document-type`
-          : null,
+      href: this.allAppearanceInformationFilledOut(courtAppearance)
+        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/upload-court-documents`
+        : null,
       status,
     }
   }

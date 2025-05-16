@@ -1446,6 +1446,19 @@ export default class CourtCaseRoutes {
     })
   }
 
+  public getCourtDocumentsPage: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    return res.render('pages/courtAppearance/upload-court-documents', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      courtAppearance,
+    })
+  }
+
   public getDraftConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference } = req.params
     const { courtAppearanceCourtName } = res.locals

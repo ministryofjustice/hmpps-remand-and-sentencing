@@ -322,11 +322,9 @@ export default class TaskListModel {
         classes: 'govuk-link--no-visited-state',
       },
 
-      href:
-        (this.allAppearanceInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'REMAND') ||
-        (this.allWarrantInformationFilledOut(courtAppearance) && courtAppearance.warrantType === 'SENTENCING')
-          ? this.getNextCourtAppearanceHref(courtAppearance)
-          : null,
+      href: this.allAppearanceInformationFilledOut(courtAppearance)
+        ? this.getNextCourtAppearanceHref(courtAppearance)
+        : null,
       status: this.getNextCourtAppearanceStatus(courtAppearance),
     }
   }

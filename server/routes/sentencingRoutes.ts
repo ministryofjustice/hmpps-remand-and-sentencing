@@ -199,13 +199,13 @@ export default class SentencingRoutes extends BaseRoutes {
       .reduce(
         ([custodialList, nonCustodialList], offence) => {
           const outcome = outcomeMap[offence.outcomeUuid]
-          if (outcome?.outcomeType === 'SENTENCING') {
+          if (
+            outcome?.outcomeType === 'SENTENCING' ||
+            (offence.legacyData?.outcomeConvictionFlag === true && offence.sentence)
+          ) {
             return [[...custodialList, offence], nonCustodialList]
           }
-          if (outcome?.outcomeType === 'NON_CUSTODIAL') {
-            return [custodialList, [...nonCustodialList, offence]]
-          }
-          return [custodialList, nonCustodialList]
+          return [custodialList, [...nonCustodialList, offence]]
         },
         [[], []] as [typeof offences, typeof offences],
       )

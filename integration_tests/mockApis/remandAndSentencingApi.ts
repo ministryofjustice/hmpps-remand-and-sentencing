@@ -1311,7 +1311,8 @@ export default {
                 postedDate: '10-10-2015',
                 nomisOutcomeCode: 'NOMISCODE',
                 outcomeDescription: 'A Nomis description',
-                outcomeDispositionCode: 'I',
+                outcomeDispositionCode: 'F',
+                outcomeConvictionFlag: true,
               },
               sentence: {
                 sentenceUuid: '4fec0281-ec54-4a15-b588-dee8fab6c250',

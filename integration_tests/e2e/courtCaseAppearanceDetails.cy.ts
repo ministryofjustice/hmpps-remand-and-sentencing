@@ -462,7 +462,7 @@ context('Court Case Appearance details Page', () => {
       })
     })
 
-    it.skip('can edit an unsupported period length', () => {
+    it('can edit an unsupported period length', () => {
       courtCaseAppearanceDetailsPage
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3f20856f-fa17-493b-89c7-205970c749b8', '0')
         .click()

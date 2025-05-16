@@ -130,15 +130,6 @@ export default class TaskListModel {
       }
     }
 
-    if (this.anyWarrantInformationFilledOut(courtAppearance)) {
-      return {
-        tag: {
-          text: 'In progress',
-          classes: 'govuk-tag--light-blue',
-        },
-      }
-    }
-
     return {
       tag: {
         text: 'Incomplete',

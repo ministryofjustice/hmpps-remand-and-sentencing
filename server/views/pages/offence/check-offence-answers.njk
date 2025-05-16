@@ -13,7 +13,7 @@
                             text: "Overall sentence length"
                         },
                         value: {
-                            text: courtAppearance.overallSentenceLength | formatLengths if courtAppearance.overallConvictionDate else "Not entered"
+                            text: courtAppearance.overallSentenceLength | formatLengths if courtAppearance.overallSentenceLength else "Not entered"
                         }
                     }]%}
 

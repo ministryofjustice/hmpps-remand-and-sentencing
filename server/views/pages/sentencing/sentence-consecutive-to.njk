@@ -3,7 +3,6 @@
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
 {% from "govuk/components/hint/macro.njk" import govukHint %}
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - sentence consecutive to" %}
 
@@ -78,12 +77,6 @@
                                     {% set radioIdIndex=radioIdIndex + 1 %}
                                 {% endfor %}
                             </div>
-                        {% else %}
-                            {{
-                                govukInsetText({
-                                    text: 'There are no available sentences on other cases to select'
-                                })
-                            }}
                         {% endfor %}
                         </div>
                     {% endcall %}

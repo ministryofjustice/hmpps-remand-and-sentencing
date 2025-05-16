@@ -60,6 +60,7 @@
             isSentenced: offence.sentence,
             periodLengths: offence.sentence.periodLengths,
             sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+            consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
             fineAmount: offence.sentence.fineAmount,
             actions: {
                 items: [
@@ -104,6 +105,7 @@
                         isSentenced: offence.sentence,
                         periodLengths: offence.sentence.periodLengths,
                         sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+                        consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
                         fineAmount: offence.sentence.fineAmount,
                         actions: {
                             items: [
@@ -139,6 +141,7 @@
                         isSentenced: offence.sentence,
                         periodLengths: offence.sentence.periodLengths,
                         sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+                        consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
                         fineAmount: offence.sentence.fineAmount,
                         actions: {
                             items: [

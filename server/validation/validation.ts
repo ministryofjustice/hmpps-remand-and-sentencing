@@ -16,6 +16,7 @@ import requireOneNonZeroSentenceLengthIf from './requireOneNonZeroSentenceLength
 import isAfterDate from './isAfterDate'
 import isFutureDate from './isFutureDate'
 import isUniqueTimePeriod from './isUniqueTimePeriod'
+import atLeastOneNumberInString from './atLeastOneNumberInString'
 
 export default function validate<T>(
   form: T,
@@ -74,3 +75,4 @@ Validator.register(
 Validator.register('wholeNumber', wholeNumberValidate, 'must be a whole number')
 Validator.register('minNumber', minNumberValidate, 'must be greater than number')
 Validator.register('isUniqueTimePeriod', isUniqueTimePeriod, 'More than one of the same type of date is not allowed')
+Validator.register('atLeastOneNumberInString', atLeastOneNumberInString, 'Must enter at least one number')

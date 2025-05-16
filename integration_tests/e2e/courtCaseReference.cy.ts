@@ -42,4 +42,13 @@ context('Court Case Reference Page', () => {
         "There is a problem You can only use spaces, letters, numbers and symbols '/', '.' and '-' when entering a Case referenceYou can only use spaces, letters, numbers, hyphens, forward slashes and full stops when entering a case reference.",
       )
   })
+
+  it('submitting without at least 1 number results in an error', () => {
+    courtCaseReferencePage.input().type('ABC-DEF')
+    courtCaseReferencePage.continueButton().click()
+    courtCaseReferencePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Case references should include at least one number')
+  })
 })

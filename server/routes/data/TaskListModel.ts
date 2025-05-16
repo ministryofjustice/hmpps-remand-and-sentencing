@@ -151,15 +151,6 @@ export default class TaskListModel {
     return courtAppearance.overallConvictionDateAppliedAll && courtAppearance.warrantInformationAccepted
   }
 
-  private anyWarrantInformationFilledOut(courtAppearance: CourtAppearance): boolean {
-    return (
-      courtAppearance.overallSentenceLength !== undefined ||
-      courtAppearance.overallConvictionDateAppliedAll !== undefined ||
-      courtAppearance.caseOutcomeAppliedAll !== undefined ||
-      courtAppearance.warrantInformationAccepted
-    )
-  }
-
   private getWarrantInformationHref(courtAppearance: CourtAppearance): string {
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
       return undefined

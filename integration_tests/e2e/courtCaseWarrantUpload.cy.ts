@@ -13,7 +13,7 @@ context('Warrant upload page', () => {
   it('displays person details', () => {
     courtCaseWarrantUploadPage
       .prisonerBanner()
-      .should('contain.text', 'Haggler, Marvin')
+      .should('contain.text', 'Meza, Cormac')
       .and('contain.text', 'A1234AB')
       .and('contain.text', 'EstablishmentHMP Bedford')
       .and('contain.text', 'Cell numberCELL-1')

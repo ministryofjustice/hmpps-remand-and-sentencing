@@ -14,7 +14,7 @@ context('Court Case Overall Conviction Date Page', () => {
   it('displays person details', () => {
     courtCaseOverallConvictionDatePage
       .prisonerBanner()
-      .should('contain.text', 'Haggler, Marvin')
+      .should('contain.text', 'Meza, Cormac')
       .and('contain.text', 'A1234AB')
       .and('contain.text', 'EstablishmentHMP Bedford')
       .and('contain.text', 'Cell numberCELL-1')

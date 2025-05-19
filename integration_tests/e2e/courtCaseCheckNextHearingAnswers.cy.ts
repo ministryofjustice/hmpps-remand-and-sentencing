@@ -47,7 +47,7 @@ context('Check Next Hearing Answers page', () => {
   it('displays person details', () => {
     courtCaseNextHearingAnswersPage
       .prisonerBanner()
-      .should('contain.text', 'Haggler, Marvin')
+      .should('contain.text', 'Meza, Cormac')
       .and('contain.text', 'A1234AB')
       .and('contain.text', 'EstablishmentHMP Bedford')
       .and('contain.text', 'Cell numberCELL-1')

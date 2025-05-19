@@ -18,7 +18,7 @@ context('Start Page', () => {
   it('displays person details', () => {
     startPage
       .prisonerBanner()
-      .should('contain.text', 'Haggler, Marvin')
+      .should('contain.text', 'Meza, Cormac')
       .and('contain.text', 'A1234AB')
       .and('contain.text', 'Date of birth03/02/1965')
       .and('contain.text', 'StatusSentenced with a sentence c')

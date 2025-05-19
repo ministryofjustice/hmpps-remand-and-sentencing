@@ -32,7 +32,7 @@ context('First sentence consecutive to Page', () => {
   it('displays person details', () => {
     sentenceFirstSentenceConsecutiveToPage
       .prisonerBanner()
-      .should('contain.text', 'Haggler, Marvin')
+      .should('contain.text', 'Meza, Cormac')
       .and('contain.text', 'A1234AB')
       .and('contain.text', 'EstablishmentHMP Bedford')
       .and('contain.text', 'Cell numberCELL-1')

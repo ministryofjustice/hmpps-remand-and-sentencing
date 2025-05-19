@@ -154,6 +154,6 @@ context('Start Page', () => {
   it('displays empty content when no court cases', () => {
     cy.task('stubEmptySearchCourtCases', {})
     cy.reload()
-    startPage.courtCasesContent().should('contain.text', 'There are no court cases recorded for Marvin Haggler')
+    startPage.courtCasesContent().should('contain.text', 'There are no court cases recorded for Cormac Meza')
   })
 })

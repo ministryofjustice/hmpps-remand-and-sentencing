@@ -22,7 +22,11 @@ export interface paths {
      */
     put: operations['updateRecall']
     post?: never
-    delete?: never
+    /**
+     * Delete a recall
+     * @description This endpoint will delete a recall
+     */
+    delete: operations['deleteRecall']
     options?: never
     head?: never
     patch?: never
@@ -342,6 +346,26 @@ export interface paths {
      * @description Synchronise a creation of sentence from NOMIS Offender sentences into remand and sentencing API.
      */
     post: operations['create']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/legacy/sentence/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Search for multiple sentences
+     * @description This endpoint will retrieve multiple sentences by search parameters.
+     */
+    post: operations['search']
     delete?: never
     options?: never
     head?: never
@@ -808,6 +832,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/legacy/recall/{uuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * retrieve a recall
+     * @description This endpoint will retrieve legacy recall details.
+     */
+    get: operations['get_6']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/court-case/{courtCaseUuid}/test': {
     parameters: {
       query?: never
@@ -1118,7 +1162,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 13:20:38.599087 */
+      /** @example 12:06:24.840347185 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1210,7 +1254,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:20:38.599087 */
+      /** @example 12:06:24.840347185 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -1279,6 +1323,30 @@ export interface components {
       /** Format: uuid */
       appearanceUuid: string
       courtCaseId: string
+    }
+    LegacySearchSentence: {
+      lifetimeUuids: string[]
+    }
+    LegacySentence: {
+      prisonerId: string
+      courtCaseId: string
+      /** Format: uuid */
+      chargeLifetimeUuid: string
+      /** Format: uuid */
+      lifetimeUuid: string
+      /** Format: uuid */
+      appearanceUuid: string
+      active: boolean
+      sentenceCalcType: string
+      sentenceCategory: string
+      /** Format: uuid */
+      consecutiveToLifetimeUuid?: string
+      chargeNumber?: string
+      fineAmount?: number
+      /** Format: date */
+      sentenceStartDate: string
+      /** Format: date */
+      returnToCustodyDate?: string
     }
     LegacyPeriodLengthCreatedResponse: {
       /** Format: uuid */
@@ -1485,6 +1553,7 @@ export interface components {
       legacyData?: components['schemas']['SentenceLegacyData']
       /** Format: uuid */
       consecutiveToSentenceUuid?: string
+      hasRecall: boolean
     }
     SentenceType: {
       /** Format: uuid */
@@ -1647,34 +1716,13 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:20:38.599087 */
+      /** @example 12:06:24.840347185 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
     }
     HasSentenceToChainToResponse: {
       hasSentenceToChainTo: boolean
-    }
-    LegacySentence: {
-      prisonerId: string
-      courtCaseId: string
-      /** Format: uuid */
-      chargeLifetimeUuid: string
-      /** Format: uuid */
-      lifetimeUuid: string
-      /** Format: uuid */
-      appearanceUuid: string
-      active: boolean
-      sentenceCalcType: string
-      sentenceCategory: string
-      /** Format: uuid */
-      consecutiveToLifetimeUuid?: string
-      chargeNumber?: string
-      fineAmount?: number
-      /** Format: date */
-      sentenceStartDate: string
-      /** Format: date */
-      returnToCustodyDate?: string
     }
     LegacySentenceTypeGroupingSummary: {
       nomisSentenceTypeReference: string
@@ -1796,6 +1844,17 @@ export interface components {
     SentenceTypePeriodDefinitions: {
       periodDefinitions: components['schemas']['Period'][]
     }
+    LegacyRecall: {
+      /** Format: uuid */
+      recallUuid: string
+      prisonerId: string
+      /** Format: date */
+      returnToCustodyDate?: string
+      sentenceIds: string[]
+      /** @enum {string} */
+      recallType: 'LR' | 'FTR_14' | 'FTR_28' | 'LR_HDC' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC'
+      recallBy: string
+    }
     LegacyPeriodLength: {
       /** Format: int32 */
       periodYears?: number
@@ -1850,7 +1909,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 13:20:38.599087 */
+      /** @example 12:06:24.840347185 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -1858,7 +1917,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:20:38.599087 */
+      /** @example 12:06:24.840347185 */
       appearanceTime?: string
       courtId: string
     }
@@ -1886,38 +1945,42 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
+      totalPages?: number
+      /** Format: int32 */
       size?: number
-      sort?: components['schemas']['SortObject']
-      first?: boolean
-      last?: boolean
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
-      pageable?: components['schemas']['PageableObject']
+      sort?: components['schemas']['SortObject']
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
-      sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
-      unpaged?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      /** Format: int32 */
-      pageSize?: number
+      unpaged?: boolean
     }
     SortObject: {
       empty?: boolean
       sorted?: boolean
       unsorted?: boolean
+    }
+    DeleteRecallResponse: {
+      /** Format: uuid */
+      recallUuid: string
     }
   }
   responses: never
@@ -2017,6 +2080,46 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['SaveRecallResponse']
+        }
+      }
+    }
+  }
+  deleteRecall: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        recallUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Recall deleted */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeleteRecallResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeleteRecallResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeleteRecallResponse']
         }
       }
     }
@@ -3173,6 +3276,48 @@ export interface operations {
       }
     }
   }
+  search: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LegacySearchSentence']
+      }
+    }
+    responses: {
+      /** @description Returns matching sentence details */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacySentence'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacySentence'][]
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacySentence'][]
+        }
+      }
+    }
+  }
   create_1: {
     parameters: {
       query?: never
@@ -4166,6 +4311,46 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['LegacySentenceType'][]
+        }
+      }
+    }
+  }
+  get_6: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        uuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns recall details */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyRecall']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyRecall']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LegacyRecall']
         }
       }
     }

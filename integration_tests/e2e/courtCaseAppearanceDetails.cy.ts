@@ -249,6 +249,7 @@ context('Court Case Appearance details Page', () => {
           outcomeType: 'SENTENCING',
         },
       ])
+      cy.task('stubOverallSentenceLengthPass')
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/appearance-details',
@@ -261,6 +262,13 @@ context('Court Case Appearance details Page', () => {
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
+      })
+    })
+
+    it('overall displays correctly', () => {
+      courtCaseAppearanceDetailsPage.overallSummaryList().getSummaryList().should('deep.equal', {
+        'Overall sentence length': '4 years 0 months 0 weeks 0 days',
+        'Sentences added': '4 years 5 months 0 weeks 0 days',
       })
     })
 

@@ -45,6 +45,8 @@ export default class CourtCasesDetailsModel {
 
   offenceOutcomeMap: { [key: string]: string }
 
+  hasARecall: boolean
+
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     let titleValue = courtMap[pageCourtCaseContent.latestAppearance?.courtCode]
     if (pageCourtCaseContent.latestAppearance?.courtCaseReference) {
@@ -127,5 +129,8 @@ export default class CourtCasesDetailsModel {
         ?.filter(charge => charge.outcome)
         .map(charge => [charge.outcome.outcomeUuid, charge.outcome.outcomeName]) ?? [],
     )
+    this.hasARecall = pageCourtCaseContent.appearances
+      .flatMap(appearance => appearance.charges)
+      .some(charge => charge.sentence?.hasRecall)
   }
 }

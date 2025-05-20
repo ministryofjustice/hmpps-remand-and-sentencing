@@ -151,6 +151,13 @@ context('Start Page', () => {
       ])
   })
 
+  it('displays recalled tag when there is a recalled sentence', () => {
+    startPage
+      .courtCaseCard('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
+      .getActions()
+      .should('equal', 'RECALLED Recalled (XX1234 at Accrington Youth Court)')
+  })
+
   it('displays empty content when no court cases', () => {
     cy.task('stubEmptySearchCourtCases', {})
     cy.reload()

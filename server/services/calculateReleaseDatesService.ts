@@ -1,4 +1,5 @@
 import type { CourtAppearance, Sentence, SentenceLength } from 'models'
+import dayjs from 'dayjs'
 import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
 import { HmppsAuthClient } from '../data'
 import {
@@ -49,7 +50,7 @@ export default class CalculateReleaseDatesService {
         concurrentSentences: concurrent.map(it => this.mapSentenceToOverallSentenceLengthSentence(it)),
         consecutiveSentences: consecutive.map(it => this.mapSentenceToOverallSentenceLengthSentence(it)),
         overallSentenceLength: this.mapAppearanceToOverallSentenceLength(appearance),
-        warrantDate: appearance.warrantDate.toString(),
+        warrantDate: dayjs(appearance.warrantDate).format('YYYY-MM-DD'),
       } as OverallSentenceLengthRequest
 
       return new CalculateReleaseDatesApiClient(await this.getSystemClientToken(username)).compareOverallSentenceLength(

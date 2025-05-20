@@ -302,6 +302,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
       })
       .map(chargeToOffence),
     ...(pageCourtCaseAppearance.overallSentenceLength && {
+      hasOverallSentenceLength: 'true',
       overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),
     }),
     ...(pageCourtCaseAppearance.overallConvictionDate && {

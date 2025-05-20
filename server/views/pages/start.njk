@@ -47,7 +47,6 @@
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full" data-qa="court-cases">
                 {% for courtCaseDetails in courtCaseDetailModels %}
-                    {% if courtCaseDetails.overallCaseStatus != 'DELETED' %}
                         {% set courtCaseSummary %}
 
                             {% set nextHearingHtml %}
@@ -191,18 +190,26 @@
                                     actions: {
                                         items: [
                                             {
-                                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + courtCaseDetails.appearanceTotal + "/new-journey",
-                                                text: "Add appearance",
-                                                visuallyHiddenText: "Add appearance"
-                                            }
-                                            if courtCaseDetails.overallCaseStatus != "INACTIVE" else
-                                            {
                                                 href: null,
                                                 html: govukTag({
                                                     text: "Inactive"
                                                 }),
                                                 visuallyHiddenText: "Inactive"
                                             }
+                                             if courtCaseDetails.overallCaseStatus == "INACTIVE" else ({
+                                                href: null,
+                                                html: govukTag({
+                                                    text: "RECALLED",
+                                                    classes: "govuk-tag--purple"
+                                                }),
+                                                visuallyHiddenText: "Recalled"
+                                            } if courtCaseDetails.hasARecall else {
+                                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + courtCaseDetails.appearanceTotal + "/new-journey",
+                                                text: "Add appearance",
+                                                visuallyHiddenText: "Add appearance"
+                                            })
+                                            
+                                            
                                         ]
                                     },
                                     attributes: {
@@ -216,7 +223,7 @@
                                 }]
                             })
                         }}
-                    {%  endif %}
+                    
                 {% else %}
                     <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
                     <p class="gouk-body"><a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/0/new-journey">Add a court case now</a>

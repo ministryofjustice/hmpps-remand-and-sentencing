@@ -155,7 +155,7 @@ context('Start Page', () => {
     startPage
       .courtCaseCard('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
       .getActions()
-      .should('equal', 'RECALLED Recalled (XX1234 at Accrington Youth Court)')
+      .should('equal', 'Recalled Recalled (XX1234 at Accrington Youth Court)')
   })
 
   it('displays empty content when no court cases', () => {

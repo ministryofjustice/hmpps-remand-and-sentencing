@@ -7,6 +7,8 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {%- from "moj/components/pagination/macro.njk" import mojPagination -%}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
 
 {% set pageTitle = applicationName + " - Home" %}
 
@@ -91,6 +93,17 @@
                                         value: { html: nextHearingHtml }
                                     }
                             ))%}
+
+                            {% if courtCaseDetails.hasARecall and not user.hasRecallsAccess %}
+
+                            {{ govukInsetText({
+                                text: "The court case was part of a recall. To make any changes to the recall, update the details in NOMIS then reload this page.",
+                                attributes: {
+                                    "data-qa": "recallInset-" + courtCaseDetails.courtCaseUuid
+                                }
+                            }) }}
+                            
+                            {% endif %}
 
                             {{
                                 govukSummaryList({

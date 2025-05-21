@@ -1866,6 +1866,44 @@ export default {
           },
           appearances: [
             {
+              appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
+              outcome: {
+                outcomeUuid: '7fd9efee-200e-4579-a766-e6bf9a499096',
+                outcomeName: 'Lie on file',
+                nomisCode: '7863',
+                outcomeType: 'REMAND',
+                displayOrder: 20,
+              },
+              courtCode: 'BCC',
+              courtCaseReference: 'F23325',
+              appearanceDate: '2022-10-15',
+              warrantType: 'REMAND',
+              nextCourtAppearance: {
+                appearanceDate: '2023-12-15',
+                courtCode: 'BCC',
+                appearanceType: {
+                  appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                  description: 'Court appearance',
+                  displayOrder: 10,
+                },
+              },
+              charges: [
+                {
+                  chargeUuid: '9056c1f3-b090-4d1e-bc6e-4f66ebed2ed5',
+                  offenceCode: 'PS90037',
+                  offenceStartDate: '2023-12-15',
+                  legacyData: {
+                    offenderChargeId: '1',
+                    bookingId: '1',
+                    postedDate: '1-1-2010',
+                    nomisOutcomeCode: '678324',
+                    outcomeDescription: 'A Nomis Outcome',
+                    outcomeDispositionCode: 'INTERIM',
+                  },
+                },
+              ],
+            },
+            {
               appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
               outcome: {
                 outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
@@ -1911,44 +1949,6 @@ export default {
                     outcomeType: 'REMAND',
                     displayOrder: 20,
                     dispositionCode: 'INTERIM',
-                  },
-                },
-              ],
-            },
-            {
-              appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
-              outcome: {
-                outcomeUuid: '7fd9efee-200e-4579-a766-e6bf9a499096',
-                outcomeName: 'Lie on file',
-                nomisCode: '7863',
-                outcomeType: 'REMAND',
-                displayOrder: 20,
-              },
-              courtCode: 'BCC',
-              courtCaseReference: 'F23325',
-              appearanceDate: '2022-10-15',
-              warrantType: 'REMAND',
-              nextCourtAppearance: {
-                appearanceDate: '2023-12-15',
-                courtCode: 'BCC',
-                appearanceType: {
-                  appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
-                  description: 'Court appearance',
-                  displayOrder: 10,
-                },
-              },
-              charges: [
-                {
-                  chargeUuid: '9056c1f3-b090-4d1e-bc6e-4f66ebed2ed5',
-                  offenceCode: 'PS90037',
-                  offenceStartDate: '2023-12-15',
-                  legacyData: {
-                    offenderChargeId: '1',
-                    bookingId: '1',
-                    postedDate: '1-1-2010',
-                    nomisOutcomeCode: '678324',
-                    outcomeDescription: 'A Nomis Outcome',
-                    outcomeDispositionCode: 'INTERIM',
                   },
                 },
               ],

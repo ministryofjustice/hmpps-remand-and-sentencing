@@ -23,7 +23,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtCasesDetailsModel from './data/CourtCasesDetailsModel'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
-import { getAsStringOrDefault, outcomeValueOrLegacy, sortByOffenceStartDate } from '../utils/utils'
+import { getAsStringOrDefault, outcomeValueOrLegacy, sortByDateDesc } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
 import { chargeToOffence, draftCourtAppearanceToCourtAppearance } from '../utils/mappingUtils'
@@ -610,7 +610,7 @@ export default class CourtCaseRoutes {
           return !dispositionCode || dispositionCode === 'INTERIM'
         })
         .sort((a, b) => {
-          return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+          return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
         })
         .map((charge, index) => chargeToOffence(charge, index))
         .forEach((offence, index) => this.courtAppearanceService.addOffence(req.session, nomsId, index, offence))

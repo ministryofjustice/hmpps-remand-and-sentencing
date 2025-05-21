@@ -16,7 +16,7 @@ import {
   PageCourtCaseAppearance,
   PeriodLength,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import { sortByOffenceStartDate } from './utils'
+import { sortByDateDesc } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, prisonId: string): CreatePeriodLength => {
@@ -298,7 +298,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
     offences: pageCourtCaseAppearance.charges
       .sort((a, b) => {
-        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+        return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
       })
       .map(chargeToOffence),
     ...(pageCourtCaseAppearance.overallSentenceLength && {

@@ -8,7 +8,7 @@ import {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { chargeToOffence, periodLengthToSentenceLength } from '../../utils/mappingUtils'
-import { outcomeValueOrLegacy, sortByOffenceStartDate } from '../../utils/utils'
+import { outcomeValueOrLegacy, sortByDateDesc } from '../../utils/utils'
 
 export default class CourtCasesDetailsModel {
   courtCaseUuid: string
@@ -115,7 +115,7 @@ export default class CourtCasesDetailsModel {
     }
     const charges = pageCourtCaseContent.latestAppearance?.charges
       .sort((a, b) => {
-        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+        return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
       })
       .slice(0, 6)
     this.offences = charges?.map((charge, index) => chargeToOffence(charge, index))

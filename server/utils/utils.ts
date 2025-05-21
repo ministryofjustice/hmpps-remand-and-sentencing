@@ -118,7 +118,7 @@ export const formatLengthsWithoutPeriodOrder = (length: {
   return `${length.years || 0} years ${length.months || 0} months ${length.weeks || 0} weeks ${length.days || 0} days`
 }
 
-export const sortByOffenceStartDate = (a: string | undefined | Date, b: string | undefined | Date) => {
+export const sortByDateDesc = (a: string | undefined | Date, b: string | undefined | Date) => {
   if (a && b) {
     return dayjs(a).isBefore(b) ? 1 : -1
   }

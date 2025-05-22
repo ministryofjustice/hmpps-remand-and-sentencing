@@ -1,7 +1,7 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-
+{% set isRemandWarrant = courtAppearance.warrantType == 'REMAND'%}
 {% set checkAnswersRows = [
     {
         key: {
@@ -41,7 +41,7 @@
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
                     text: "Edit",
                     visuallyHiddenText: "warrant date"
-                }
+                } if courtAppearance.appearanceInformationAccepted !== true or isRemandWarrant
             ]
         }
     },
@@ -64,7 +64,7 @@
     }
 ] %}
 
-{% if courtAppearance.warrantType == 'REMAND' %}
+{% if isRemandWarrant %}
     {% set checkAnswersRows = checkAnswersRows.concat([
         {
             key: {

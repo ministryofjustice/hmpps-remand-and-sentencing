@@ -116,6 +116,7 @@ export default class CourtAppearanceService {
     html?: string
     href: string
   }[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
     let isValidWarrantDateRule = ''
     if (
       courtCaseWarrantDateForm['warrantDate-day'] &&
@@ -131,11 +132,12 @@ export default class CourtAppearanceService {
     }
 
     const errors = validate(
-      courtCaseWarrantDateForm,
+      { ...courtCaseWarrantDateForm, appearanceInformationAccepted: courtAppearance.appearanceInformationAccepted },
       {
         'warrantDate-day': `required${isValidWarrantDateRule}`,
         'warrantDate-month': `required`,
         'warrantDate-year': `required`,
+        ...(courtAppearance.warrantType === 'SENTENCING' && { appearanceInformationAccepted: 'isNotTrue' }),
       },
       {
         'required.warrantDate-year': 'Warrant date must include year',
@@ -143,6 +145,7 @@ export default class CourtAppearanceService {
         'required.warrantDate-day': 'Warrant date must include day',
         'isValidDate.warrantDate-day': 'This date does not exist.',
         'isPastDate.warrantDate-day': 'Warrant date must be in the past',
+        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
       },
     )
     if (errors.length === 0) {
@@ -151,7 +154,7 @@ export default class CourtAppearanceService {
         month: parseInt(courtCaseWarrantDateForm['warrantDate-month'], 10) - 1,
         day: courtCaseWarrantDateForm['warrantDate-day'],
       })
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+
       courtAppearance.warrantDate = warrantDate.toDate()
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance

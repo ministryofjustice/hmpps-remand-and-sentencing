@@ -317,7 +317,7 @@ export default class CourtAppearanceService {
       { ...caseOutcomeAppliedAllForm, appearanceInformationAccepted: courtAppearance.appearanceInformationAccepted },
       {
         caseOutcomeAppliedAll: 'required',
-        appearanceInformationAccepted: 'isNotTrue',
+        ...(courtAppearance.warrantType === 'REMAND' && { appearanceInformationAccepted: 'isNotTrue' }),
       },
       {
         'required.caseOutcomeAppliedAll': 'Select ‘Yes’ if this outcome applies to all offences on the warrant.',

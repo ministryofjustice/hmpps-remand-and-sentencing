@@ -80,7 +80,7 @@
                         text: "Edit",
                         visuallyHiddenText: "overall case outcome"
                     }
-                ]
+                ] if courtAppearance.appearanceInformationAccepted !== true
             }
         },
         {
@@ -97,7 +97,7 @@
                         text: "Edit",
                         visuallyHiddenText: "Is the outcome the same for all offences on the warrant?"
                     }
-                ]
+                ] if courtAppearance.appearanceInformationAccepted !== true
             }
         }
     ]) %}

@@ -53,7 +53,7 @@
                 text: "Edit",
                 visuallyHiddenText: "conviction date the same for all offences on the warrant"
             }
-        ]
+        ] if courtAppearance.warrantInformationAccepted !== true
     }
     },
     {
@@ -70,7 +70,7 @@
                 text: "Edit",
                 visuallyHiddenText: "conviction date"
             }
-        ]
+        ] if courtAppearance.warrantInformationAccepted !== true
     }
     }
 ] %}

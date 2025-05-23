@@ -116,6 +116,7 @@ export default class CourtAppearanceService {
     html?: string
     href: string
   }[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
     let isValidWarrantDateRule = ''
     if (
       courtCaseWarrantDateForm['warrantDate-day'] &&
@@ -131,11 +132,12 @@ export default class CourtAppearanceService {
     }
 
     const errors = validate(
-      courtCaseWarrantDateForm,
+      { ...courtCaseWarrantDateForm, appearanceInformationAccepted: courtAppearance.appearanceInformationAccepted },
       {
         'warrantDate-day': `required${isValidWarrantDateRule}`,
         'warrantDate-month': `required`,
         'warrantDate-year': `required`,
+        ...(courtAppearance.warrantType === 'SENTENCING' && { appearanceInformationAccepted: 'isNotTrue' }),
       },
       {
         'required.warrantDate-year': 'Warrant date must include year',
@@ -143,6 +145,7 @@ export default class CourtAppearanceService {
         'required.warrantDate-day': 'Warrant date must include day',
         'isValidDate.warrantDate-day': 'This date does not exist.',
         'isPastDate.warrantDate-day': 'Warrant date must be in the past',
+        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
       },
     )
     if (errors.length === 0) {
@@ -151,7 +154,7 @@ export default class CourtAppearanceService {
         month: parseInt(courtCaseWarrantDateForm['warrantDate-month'], 10) - 1,
         day: courtCaseWarrantDateForm['warrantDate-day'],
       })
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+
       courtAppearance.warrantDate = warrantDate.toDate()
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
@@ -279,14 +282,18 @@ export default class CourtAppearanceService {
     nomsId: string,
     overallCaseOutcomeForm: CourtCaseOverallCaseOutcomeForm,
   ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
     const errors = validate(
-      overallCaseOutcomeForm,
-      { overallCaseOutcome: 'required' },
-      { 'required.overallCaseOutcome': 'You must select the overall case outcome' },
+      { ...overallCaseOutcomeForm, appearanceInformationAccepted: courtAppearance.appearanceInformationAccepted },
+      { overallCaseOutcome: 'required', appearanceInformationAccepted: 'isNotTrue' },
+      {
+        'required.overallCaseOutcome': 'You must select the overall case outcome',
+        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
+      },
     )
     if (errors.length === 0) {
       const [appearanceOutcomeUuid, relatedOffenceOutcomeUuid] = overallCaseOutcomeForm.overallCaseOutcome.split('|')
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+
       courtAppearance.appearanceOutcomeUuid = appearanceOutcomeUuid
       courtAppearance.relatedOffenceOutcomeUuid = relatedOffenceOutcomeUuid
       // eslint-disable-next-line no-param-reassign
@@ -308,17 +315,19 @@ export default class CourtAppearanceService {
     nomsId: string,
     caseOutcomeAppliedAllForm: CourtCaseCaseOutcomeAppliedAllForm,
   ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
     const errors = validate(
-      caseOutcomeAppliedAllForm,
+      { ...caseOutcomeAppliedAllForm, appearanceInformationAccepted: courtAppearance.appearanceInformationAccepted },
       {
         caseOutcomeAppliedAll: 'required',
+        ...(courtAppearance.warrantType === 'REMAND' && { appearanceInformationAccepted: 'isNotTrue' }),
       },
       {
         'required.caseOutcomeAppliedAll': 'Select ‘Yes’ if this outcome applies to all offences on the warrant.',
+        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
       },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.caseOutcomeAppliedAll = caseOutcomeAppliedAllForm.caseOutcomeAppliedAll
       if (caseOutcomeAppliedAllForm.caseOutcomeAppliedAll === 'true') {
         courtAppearance.offences = courtAppearance.offences.map(offence => {

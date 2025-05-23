@@ -639,14 +639,15 @@ export default class CourtAppearanceService {
       )
       isValidOverallConvictionDateRule = `|isValidDate:${overallConvictionDateString}|isPastDate:${overallConvictionDateString}`
     }
-
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
     const errors = validate(
-      overallConvictionDateForm,
+      { ...overallConvictionDateForm, warrantInformationAccepted: courtAppearance.warrantInformationAccepted },
       {
         'overallConvictionDate-day': `required_if:overallConvictionDateAppliedAll,true${isValidOverallConvictionDateRule}`,
         'overallConvictionDate-month': `required_if:overallConvictionDateAppliedAll,true`,
         'overallConvictionDate-year': `required_if:overallConvictionDateAppliedAll,true`,
         overallConvictionDateAppliedAll: 'required',
+        warrantInformationAccepted: 'isNotTrue',
       },
       {
         'required_if.overallConvictionDate-year': 'Conviction date must include year',
@@ -656,10 +657,10 @@ export default class CourtAppearanceService {
         'isPastDate.overallConvictionDate-day': 'Conviction date must be in the past',
         'required.overallConvictionDateAppliedAll':
           'Select yes if the conviction date is the same for all offences on the warrant',
+        'isNotTrue.warrantInformationAccepted': 'You cannot submit after confirming overall warrant information',
       },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.overallConvictionDateAppliedAll = overallConvictionDateForm.overallConvictionDateAppliedAll
       if (overallConvictionDateForm.overallConvictionDateAppliedAll === 'true') {
         const overallConvictionDate = dayjs({

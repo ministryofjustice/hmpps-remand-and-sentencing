@@ -214,7 +214,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       let consecutiveToDetailsResponse = consecutiveToDetails
       if (
         consecutiveToSentenceUuid &&
-        offences.find(offence => offence.sentence?.sentenceUuid === consecutiveToSentenceUuid)
+        offences.find(offence => offence.sentence?.sentenceUuid === consecutiveToSentenceUuid) &&
+        consecutiveToDetails
       ) {
         consecutiveToDetailsResponse = {
           countNumber: consecutiveToDetails.countNumber,

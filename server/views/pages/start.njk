@@ -155,15 +155,15 @@
                                                                 offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
                                                                 offenceEndDate: offence.offenceEndDate | formatDate,
                                                                 outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
-                                                                countNumber: offence.sentence.countNumber,
-                                                                convictionDate: offence.sentence.convictionDate | formatDate,
+                                                                countNumber: offence.sentence.countNumber if offence.sentence,
+                                                                convictionDate: (offence.sentence.convictionDate | formatDate) if offence.sentence,
                                                                 terrorRelated: offence.terrorRelated,
                                                                 isSentenced: offence.sentence,
-                                                                periodLengths: offence.sentence.periodLengths,
-                                                                sentenceServeType: offence.sentence.sentenceServeType,
-                                                                consecutiveTo: consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] | checkConsecutiveToSameCase(courtCaseDetails.offences, offence.sentence.consecutiveToSentenceUuid),
-                                                                sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
-                                                                fineAmount: offence.sentence.fineAmount,
+                                                                periodLengths: offence.sentence.periodLengths if offence.sentence,
+                                                                sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
+                                                                consecutiveTo: (consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] | checkConsecutiveToSameCase(courtCaseDetails.offences, offence.sentence.consecutiveToSentenceUuid))  if offence.sentence,
+                                                                sentenceType: (courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData))  if offence.sentence,
+                                                                fineAmount: offence.sentence.fineAmount  if offence.sentence,
                                                                 detailsClasses: 'govuk-!-padding-4'
                                                             })
                                                         }}

@@ -83,6 +83,15 @@
         },
             value: {
             text: "Yes" if courtAppearance.caseOutcomeAppliedAll === 'true' else 'No'
+        },
+            actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/case-outcome-applied-all?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "is the outcome the same for all offences on the warrant"
+                }
+            ] if courtAppearance.warrantInformationAccepted !== true
         }
         }
     ]) %}

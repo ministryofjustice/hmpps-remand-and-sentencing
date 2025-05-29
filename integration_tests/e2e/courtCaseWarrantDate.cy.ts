@@ -1,6 +1,8 @@
 import dayjs from 'dayjs'
 import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import Page from '../pages/page'
+import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
+import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 
 context('Court Case Warrant Date Page', () => {
   let courtCaseWarrantDatePage: CourtCaseWarrantDatePage
@@ -59,5 +61,28 @@ context('Court Case Warrant Date Page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem Warrant date must be in the past')
+  })
+
+  it('after confirm and continue check answers this becomes uneditable', () => {
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-answers')
+    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    courtCaseCheckAnswersPage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    courtCaseWarrantDatePage.continueButton().click()
+    courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You cannot submit after confirming appearance information')
   })
 })

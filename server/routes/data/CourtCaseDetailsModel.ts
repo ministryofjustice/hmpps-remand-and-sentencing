@@ -6,7 +6,7 @@ import {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
-import { sortByOffenceStartDate } from '../../utils/utils'
+import { sortByDateDesc } from '../../utils/utils'
 
 export default class CourtCaseDetailsModel {
   courtCaseUuid: string
@@ -64,11 +64,13 @@ export default class CourtCaseDetailsModel {
     }
     this.overallCaseStatus = pageCourtCaseContent.status
     this.appearanceTotal = pageCourtCaseContent.appearances.length
-    this.appearances = pageCourtCaseContent.appearances.map(appearance => {
-      const sortedCharges = appearance.charges.sort((a, b) => {
-        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+    this.appearances = pageCourtCaseContent.appearances
+      .map(appearance => {
+        const sortedCharges = appearance.charges.sort((a, b) => {
+          return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
+        })
+        return { ...appearance, charges: sortedCharges }
       })
-      return { ...appearance, charges: sortedCharges }
-    })
+      .sort((a, b) => sortByDateDesc(a.appearanceDate, b.appearanceDate))
   }
 }

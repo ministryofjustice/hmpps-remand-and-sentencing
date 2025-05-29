@@ -4,6 +4,7 @@ import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeApp
 import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
+import CourtCaseTaskListPage from '../pages/courtCaseTaskListPage'
 
 context('Warrant Information Check Answers Page', () => {
   let offenceCheckOverallAnswersPage: SentencingWarrantInformationCheckAnswersPage
@@ -109,5 +110,15 @@ context('Warrant Information Check Answers Page', () => {
       'Conviction date': '20/05/2023',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
+  })
+
+  it('after confirm and continue conviction date is no longer editable', () => {
+    offenceCheckOverallAnswersPage.confirmAndContinueButton().click()
+    Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/check-overall-answers')
+    offenceCheckOverallAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
+    offenceCheckOverallAnswersPage
+      .changeLink('A1234AB', '0', '0', 'sentencing/overall-conviction-date')
+      .should('not.exist')
   })
 })

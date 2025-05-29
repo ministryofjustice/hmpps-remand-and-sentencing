@@ -22,7 +22,7 @@ import {
   periodLengthValueOrLegacy,
   pluraliseName,
   sentenceTypeValueOrLegacy,
-  sortByOffenceStartDate,
+  sortByDateDesc,
 } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -180,7 +180,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       const aCountNumber = a.countNumber
       const bCountNumber = b.countNumber
       if (aCountNumber === bCountNumber) {
-        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+        return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
       }
       if (!aCountNumber) {
         return 1
@@ -214,7 +214,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       let consecutiveToDetailsResponse = consecutiveToDetails
       if (
         consecutiveToSentenceUuid &&
-        offences.find(offence => offence.sentence?.sentenceUuid === consecutiveToSentenceUuid)
+        offences.find(offence => offence.sentence?.sentenceUuid === consecutiveToSentenceUuid) &&
+        consecutiveToDetails
       ) {
         consecutiveToDetailsResponse = {
           countNumber: consecutiveToDetails.countNumber,

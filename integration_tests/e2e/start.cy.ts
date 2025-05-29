@@ -151,6 +151,30 @@ context('Start Page', () => {
       ])
   })
 
+  it('displays recalled tag when there is a recalled sentence', () => {
+    startPage
+      .courtCaseCard('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
+      .getActions()
+      .should('equal', 'Recalled Recalled (XX1234 at Accrington Youth Court)')
+
+    startPage
+      .recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
+      .should(
+        'contain.text',
+        'The court case was part of a recall. To make any changes to the recall, update the details in NOMIS then reload this page.',
+      )
+  })
+
+  it('do not display recall inset when user has access to recalls', () => {
+    cy.visit('/sign-out')
+    cy.task('stubSignIn', {
+      roles: ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR', 'ROLE_RECALL_MAINTAINER'],
+    })
+    cy.signIn()
+    cy.visit('/person/A1234AB')
+    startPage.recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7').should('not.exist')
+  })
+
   it('displays empty content when no court cases', () => {
     cy.task('stubEmptySearchCourtCases', {})
     cy.reload()

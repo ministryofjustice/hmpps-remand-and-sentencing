@@ -8,7 +8,7 @@ import {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { chargeToOffence, periodLengthToSentenceLength } from '../../utils/mappingUtils'
-import { outcomeValueOrLegacy, sortByOffenceStartDate } from '../../utils/utils'
+import { outcomeValueOrLegacy, sortByDateDesc } from '../../utils/utils'
 
 export default class CourtCasesDetailsModel {
   courtCaseUuid: string
@@ -44,6 +44,8 @@ export default class CourtCasesDetailsModel {
   sentenceTypeMap: { [key: string]: string }
 
   offenceOutcomeMap: { [key: string]: string }
+
+  hasARecall: boolean
 
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     let titleValue = courtMap[pageCourtCaseContent.latestAppearance?.courtCode]
@@ -113,7 +115,7 @@ export default class CourtCasesDetailsModel {
     }
     const charges = pageCourtCaseContent.latestAppearance?.charges
       .sort((a, b) => {
-        return sortByOffenceStartDate(a.offenceStartDate, b.offenceStartDate)
+        return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
       })
       .slice(0, 6)
     this.offences = charges?.map((charge, index) => chargeToOffence(charge, index))
@@ -127,5 +129,8 @@ export default class CourtCasesDetailsModel {
         ?.filter(charge => charge.outcome)
         .map(charge => [charge.outcome.outcomeUuid, charge.outcome.outcomeName]) ?? [],
     )
+    this.hasARecall = pageCourtCaseContent.appearances
+      .flatMap(appearance => appearance.charges)
+      .some(charge => charge.sentence?.hasRecall)
   }
 }

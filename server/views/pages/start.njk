@@ -7,6 +7,8 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {%- from "moj/components/pagination/macro.njk" import mojPagination -%}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
 
 {% set pageTitle = applicationName + " - Home" %}
 
@@ -47,7 +49,6 @@
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full" data-qa="court-cases">
                 {% for courtCaseDetails in courtCaseDetailModels %}
-                    {% if courtCaseDetails.overallCaseStatus != 'DELETED' %}
                         {% set courtCaseSummary %}
 
                             {% set nextHearingHtml %}
@@ -92,6 +93,17 @@
                                         value: { html: nextHearingHtml }
                                     }
                             ))%}
+
+                            {% if courtCaseDetails.hasARecall and not user.hasRecallsAccess %}
+
+                            {{ govukInsetText({
+                                text: "The court case was part of a recall. To make any changes to the recall, update the details in NOMIS then reload this page.",
+                                attributes: {
+                                    "data-qa": "recallInset-" + courtCaseDetails.courtCaseUuid
+                                }
+                            }) }}
+                            
+                            {% endif %}
 
                             {{
                                 govukSummaryList({
@@ -143,15 +155,15 @@
                                                                 offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
                                                                 offenceEndDate: offence.offenceEndDate | formatDate,
                                                                 outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
-                                                                countNumber: offence.sentence.countNumber,
-                                                                convictionDate: offence.sentence.convictionDate | formatDate,
+                                                                countNumber: offence.sentence.countNumber if offence.sentence,
+                                                                convictionDate: (offence.sentence.convictionDate | formatDate) if offence.sentence,
                                                                 terrorRelated: offence.terrorRelated,
                                                                 isSentenced: offence.sentence,
-                                                                periodLengths: offence.sentence.periodLengths,
-                                                                sentenceServeType: offence.sentence.sentenceServeType,
-                                                                consecutiveTo: consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] | checkConsecutiveToSameCase(courtCaseDetails.offences, offence.sentence.consecutiveToSentenceUuid),
-                                                                sentenceType: courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
-                                                                fineAmount: offence.sentence.fineAmount,
+                                                                periodLengths: offence.sentence.periodLengths if offence.sentence,
+                                                                sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
+                                                                consecutiveTo: (consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] | checkConsecutiveToSameCase(courtCaseDetails.offences, offence.sentence.consecutiveToSentenceUuid))  if offence.sentence,
+                                                                sentenceType: (courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData))  if offence.sentence,
+                                                                fineAmount: offence.sentence.fineAmount  if offence.sentence,
                                                                 detailsClasses: 'govuk-!-padding-4'
                                                             })
                                                         }}
@@ -191,18 +203,26 @@
                                     actions: {
                                         items: [
                                             {
-                                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + courtCaseDetails.appearanceTotal + "/new-journey",
-                                                text: "Add appearance",
-                                                visuallyHiddenText: "Add appearance"
-                                            }
-                                            if courtCaseDetails.overallCaseStatus != "INACTIVE" else
-                                            {
                                                 href: null,
                                                 html: govukTag({
                                                     text: "Inactive"
                                                 }),
                                                 visuallyHiddenText: "Inactive"
                                             }
+                                             if courtCaseDetails.overallCaseStatus == "INACTIVE" else ({
+                                                href: null,
+                                                html: govukTag({
+                                                    text: "Recalled",
+                                                    classes: "govuk-tag--purple"
+                                                }),
+                                                visuallyHiddenText: "Recalled"
+                                            } if courtCaseDetails.hasARecall else {
+                                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + courtCaseDetails.appearanceTotal + "/new-journey",
+                                                text: "Add appearance",
+                                                visuallyHiddenText: "Add appearance"
+                                            })
+                                            
+                                            
                                         ]
                                     },
                                     attributes: {
@@ -216,7 +236,7 @@
                                 }]
                             })
                         }}
-                    {%  endif %}
+                    
                 {% else %}
                     <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
                     <p class="gouk-body"><a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/0/new-journey">Add a court case now</a>

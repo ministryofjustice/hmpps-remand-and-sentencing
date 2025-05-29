@@ -1,6 +1,8 @@
 import dayjs from 'dayjs'
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
 import Page from '../pages/page'
+import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
+import SentencingWarrantInformationCheckAnswersPage from '../pages/sentencingWarrantInformationCheckAnswersPage'
 
 context('Court Case Overall Conviction Date Page', () => {
   let courtCaseOverallConvictionDatePage: CourtCaseOverallConvictionDatePage
@@ -83,5 +85,27 @@ context('Court Case Overall Conviction Date Page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem Conviction date must be in the past')
+  })
+
+  it('after confirm and continue check answers this becomes uneditable', () => {
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-conviction-date')
+    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
+    courtCaseOverallConvictionDatePage.dayDateInput('overallConvictionDate').clear().type('12')
+    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
+    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
+    courtCaseOverallConvictionDatePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/check-overall-answers')
+    const offenceCheckOverallAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
+    offenceCheckOverallAnswersPage.confirmAndContinueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-conviction-date')
+    courtCaseOverallConvictionDatePage.continueButton().click()
+    courtCaseOverallConvictionDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You cannot submit after confirming overall warrant information')
   })
 })

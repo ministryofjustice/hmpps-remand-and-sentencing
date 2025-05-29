@@ -121,4 +121,14 @@ context('Warrant Information Check Answers Page', () => {
       .changeLink('A1234AB', '0', '0', 'sentencing/overall-conviction-date')
       .should('not.exist')
   })
+
+  it('after confirm and continue overall case outcome is no longer editable', () => {
+    offenceCheckOverallAnswersPage.confirmAndContinueButton().click()
+    Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/check-overall-answers')
+    offenceCheckOverallAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
+    offenceCheckOverallAnswersPage
+      .changeLink('A1234AB', '0', '0', 'sentencing/case-outcome-applied-all')
+      .should('not.exist')
+  })
 })

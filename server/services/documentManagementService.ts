@@ -24,4 +24,30 @@ export default class DocumentManagementService {
     fs.unlinkSync(fileToUpload.path)
     return documentId
   }
+
+  async uploadDocument(
+    prisonerId: string,
+    fileToUpload: Express.Multer.File,
+    username: string,
+    activeCaseLoadId: string,
+    documentType: string,
+  ): Promise<string> {
+    const documentId = crypto.randomUUID()
+    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+
+    try {
+      await new DocumentManagementApiClient(token).uploadDocument(
+        prisonerId,
+        documentId,
+        fileToUpload,
+        username,
+        activeCaseLoadId,
+        documentType,
+      )
+      fs.unlinkSync(fileToUpload.path)
+      return documentId
+    } catch (error) {
+      throw new Error(`Failed to upload document: ${error.message}`)
+    }
+  }
 }

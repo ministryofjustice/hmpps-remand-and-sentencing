@@ -1,0 +1,84 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - upload court documents" %}
+
+{% block content %}
+  {% set uploadedType = uploadedDocument.type %}
+  {% set uploadedFileName = uploadedDocument.fileName %}
+  {% set uploadedDocType = uploadedDocument.documentType %}
+
+  <div class="govuk-grid-row govuk-!-margin-top-4">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Upload court documents</h1>
+      <p class="govuk-caption-l">
+        Uploading documents is optional. The selected file type should be among .PDF, .JPG, .DOC and .DOCX under 50MB.
+      </p>
+      <br>
+
+      {# === Sentencing Warrant === #}
+      {% if uploadedType == "HMCTS_WARRANT" %}
+        <p class="govuk-body">
+          <div>
+            <span>{{ uploadedFileName }}</span>
+            <span class="tag">Uploaded</span>
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDocType }}/remove-document">Remove</a>
+          </div>
+        </p>
+      {% else %}
+        <p class="govuk-body">
+          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/warrant/upload-documents">Upload sentencing warrant</a>
+        </p>
+      {% endif %}
+      <hr>
+
+      {# === Trial Record Sheet === #}
+      {% if uploadedType == "TRIAL_RECORD_SHEET" %}
+        <p class="govuk-body">
+          <div>
+            <span>{{ uploadedFileName }}</span>
+            <span class="tag">Uploaded</span>
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDocType }}/remove-document">Remove</a>
+          </div>
+        </p>
+      {% else %}
+        <p class="govuk-body">
+          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/trial-record-sheet/upload-documents">Upload trial record sheet</a>
+        </p>
+      {% endif %}
+      <hr>
+
+      {# === Indictment === #}
+      {% if uploadedType == "INDICTMENT" %}
+        <p class="govuk-body">
+          <div>
+            <span>{{ uploadedFileName }}</span>
+            <span class="tag">Uploaded</span>
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDocType }}/remove-document">Remove</a>
+          </div>
+        </p>
+      {% else %}
+        <p class="govuk-body">
+          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/indictment/upload-documents">Upload indictment</a>
+        </p>
+      {% endif %}
+      <hr>
+
+      {# === Prison Court Register === #}
+      {% if uploadedType == "PRISON_COURT_REGISTER" %}
+        <p class="govuk-body">
+          <div>
+            <span>{{ uploadedFileName }}</span>
+            <span class="tag">Uploaded</span>
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDocType }}/remove-document">Remove</a>
+          </div>
+        </p>
+      {% else %}
+        <p class="govuk-body">
+          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/prison-court-register/upload-documents">Upload prison court register</a>
+        </p>
+      {% endif %}
+
+    </div>
+  </div>
+{% endblock %}

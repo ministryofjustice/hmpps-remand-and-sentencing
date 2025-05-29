@@ -1,4 +1,4 @@
-import type { CourtAppearance, Offence, SentenceLength } from 'models'
+import type { CourtAppearance, Offence, SentenceLength, UploadedDocument } from 'models'
 import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
@@ -779,6 +779,20 @@ export default class CourtAppearanceService {
   getOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     return courtAppearance.offences[offenceReference]
+  }
+
+  addUploadedDocument(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    document: UploadedDocument,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const uploadedDocuments = courtAppearance.uploadedDocuments ?? []
+    uploadedDocuments.push(document)
+  }
+
+  getUploadedDocuments(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): UploadedDocument[] {
+    return this.getCourtAppearance(session, nomsId).uploadedDocuments ?? []
   }
 
   clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {

@@ -1,0 +1,37 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+
+{% set pageTitle = applicationName + " - Upload a document" %}
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" enctype="multipart/form-data" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentType}}/upload-documents">
+                {% include "../../partials/appearanceCaption.njk" %}
+                {{ govukFileUpload({
+                    id: "document-upload",
+                    name: "documentUpload",
+                    errorMessage: errors,
+                    label: {
+                        text: "Upload the "+documentName,
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                    },
+                    hint: {
+                        text: "You can upload .pdf, .jpg, .doc or .docx files."
+                    },
+                    attributes: {
+                        accept: "image/*,.pdf, .doc,.docx"
+                    }
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

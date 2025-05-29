@@ -608,5 +608,15 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.getCourtDocumentsPage,
   )
 
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/upload-documents',
+    courtCaseRoutes.getUploadCourtDocuments,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/submit-upload-documents',
+    courtCaseRoutes.submitUploadCourtDocuments,
+  )
+
   return router
 }

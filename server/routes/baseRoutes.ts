@@ -68,12 +68,13 @@ export default abstract class BaseRoutes {
     addOrEditCourtAppearance: string,
     appearanceReference: string,
     offenceReference: string,
+    isConsecutive: boolean = false,
   ) {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/${isConsecutive}/check-offence-answers`,
       )
     }
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)

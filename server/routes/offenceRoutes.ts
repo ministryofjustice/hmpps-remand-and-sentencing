@@ -1433,7 +1433,15 @@ export default class OffenceRoutes extends BaseRoutes {
   }
 
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offenceReference,
+      isConsecutive,
+    } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
     const sentenceTypeIds = Array.from(
@@ -1490,6 +1498,14 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       offenceMap,
     )
+
+    let backLink: string
+
+    if (isConsecutive === 'true') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/first-sentence-consecutive-to`
+    } else {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/is-sentence-consecutive-to`
+    }
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,
@@ -1509,7 +1525,7 @@ export default class OffenceRoutes extends BaseRoutes {
       sessionConsecutiveToSentenceDetailsMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      backLink,
     })
   }
 

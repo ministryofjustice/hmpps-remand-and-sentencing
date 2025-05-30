@@ -419,16 +419,6 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/first-sentence-consecutive-to',
-    sentencingRoutes.getFirstSentenceConsecutiveTo,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/submit-first-sentence-consecutive-to',
-    sentencingRoutes.submitFirstSentenceConsecutiveTo,
-  )
-
-  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/sentence-consecutive-to',
     sentencingRoutes.getSentenceConsecutiveTo,
   )
@@ -439,7 +429,7 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/check-offence-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/:isConsecutive/check-offence-answers',
     offenceRoutes.getCheckOffenceAnswers,
   )
 

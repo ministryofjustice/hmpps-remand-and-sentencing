@@ -359,6 +359,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       appearanceReference,
       offenceReference,
+      true,
     )
   }
 

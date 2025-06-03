@@ -17,7 +17,7 @@ import type {
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
 } from 'forms'
-import type { Offence } from 'models'
+import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import trimForm from '../utils/trim'
@@ -1490,6 +1490,11 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       offenceMap,
     )
+
+    const overallSentenceLengthToCustodialLength = this.translateSentenceLengthToCustodialLength(
+      courtAppearance.overallSentenceLength,
+    )
+
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,
@@ -1507,6 +1512,7 @@ export default class OffenceRoutes extends BaseRoutes {
       showCountWarning,
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
+      overallSentenceLengthToCustodialLength,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
     })
@@ -1573,6 +1579,10 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
     }
 
+    const overallSentenceLengthToCustodialLength = this.translateSentenceLengthToCustodialLength(
+      courtAppearance.overallSentenceLength,
+    )
+
     return res.render('pages/offence/sentence-length-mismatch', {
       nomsId,
       courtCaseReference,
@@ -1581,6 +1591,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       overallSentenceLengthComparison,
+      overallSentenceLengthToCustodialLength,
       backLink,
       isAddJourney,
     })
@@ -2062,5 +2073,23 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
     )
+  }
+
+  private translateSentenceLengthToCustodialLength(sentenceLength: SentenceLength | undefined): {
+    years: number
+    months: number
+    weeks: number
+    days: number
+  } {
+    if (!sentenceLength) {
+      return { years: 0, months: 0, weeks: 0, days: 0 }
+    }
+
+    return {
+      years: parseInt(sentenceLength.years ?? '0', 10),
+      months: parseInt(sentenceLength.months ?? '0', 10),
+      weeks: parseInt(sentenceLength.weeks ?? '0', 10),
+      days: parseInt(sentenceLength.days ?? '0', 10),
+    }
   }
 }

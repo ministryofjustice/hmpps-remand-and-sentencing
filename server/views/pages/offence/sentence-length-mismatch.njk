@@ -23,7 +23,7 @@
                 <p class="govuk-body">The sentence lengths you have entered total:</p> 
                 <p class="govuk-body govuk-!-font-weight-bold">{{ overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder }}</p>
                 <p>This does not match the overall sentence length from the warrant, which is:</p>
-                <p class="govuk-body govuk-!-font-weight-bold">{{ courtAppearance.overallSentenceLength | formatLengths }}</p>
+                <p class="govuk-body govuk-!-font-weight-bold">{{ overallSentenceLengthToCustodialLength | formatLengthsWithoutPeriodOrder }}</p>
                 <p class="govuk-body">You can go back and review offences, or you can continue with sentence length mismatch.</p>
                 <p class="govuk-body">If you continue, only a provisional calculation can be made.</p>
                 <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-6">Do you want to continue?</p>

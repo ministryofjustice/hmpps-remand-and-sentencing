@@ -110,12 +110,17 @@ export const periodLengthValueOrLegacy = (periodLengthValue: string, legacyData:
 }
 
 export const formatLengthsWithoutPeriodOrder = (length: {
-  years: number
-  months: number
-  weeks: number
-  days: number
-}) => {
-  return `${length.years || 0} years ${length.months || 0} months ${length.weeks || 0} weeks ${length.days || 0} days`
+  years?: number
+  months?: number
+  weeks?: number
+  days?: number
+}): string => {
+  const periods = ['years', 'months', 'weeks', 'days']
+    .map(period => ({ period, value: length[period] ?? 0 }))
+    .sort((a, b) => (b.value !== 0 ? 1 : -1) - (a.value !== 0 ? 1 : -1))
+    .map(({ period, value }) => `${value} ${period}`)
+
+  return periods.join(' ')
 }
 
 export const sortByDateDesc = (a: string | undefined | Date, b: string | undefined | Date) => {

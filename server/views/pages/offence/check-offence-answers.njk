@@ -13,7 +13,7 @@
                             text: "Overall sentence length"
                         },
                         value: {
-                            text: courtAppearance.overallSentenceLength | formatLengths if courtAppearance.overallSentenceLength else "Not entered"
+                            text: overallSentenceLengthToCustodialLength | formatLengthsWithoutPeriodOrder if courtAppearance.overallSentenceLength else "Not entered"
                         }
                     }]%}
 

@@ -25,16 +25,16 @@
                         <div>
                             <span class="govuk-body govuk-!-font-weight-bold">Sort by:</span>
                             <span class="govuk-body govuk-!-margin-left-2">
-                                {% if sortBy === 'desc' %}
+                                {% if sortBy === 'DESC' %}
                                     Most recent 
                                 {% else %}
-                                    <a href="/person/{{nomsId}}?sortBy=desc">Most recent</a>
+                                    <a href="/person/{{nomsId}}?sortBy=DESC">Most recent</a>
                                 {% endif %}
                                 <span class="seperator">|</span>
-                                {% if sortBy === 'asc'%}
+                                {% if sortBy === 'ASC'%}
                                     Earliest
                                 {% else %}
-                                    <a href="/person/{{nomsId}}?sortBy=asc">Earliest</a>
+                                    <a href="/person/{{nomsId}}?sortBy=ASC">Earliest</a>
                                 {% endif %}
 
                             </span>
@@ -122,70 +122,59 @@
                                     </div>
                                 </div>
                                 <div class="govuk-grid-row govuk-!-padding-bottom-2 govuk-!-margin-top-2">
-                                    {% if courtCaseDetails.latestAppearance %}
-
+                                    <div class="govuk-grid-column-one-third">
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Case reference</h3>
+                                        <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceCourtCaseReference-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.caseReference if courtCaseDetails.latestAppearance.caseReference else 'Not entered'}}</p>
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant date</h3>
+                                        <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.warrantDate | formatDate }}</p>
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
+                                        <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceOutcome-{{courtCaseDetails.courtCaseUuid}}"> {{ courtCaseDetails.latestAppearance.outcome if courtCaseDetails.latestAppearance.outcome else 'Not entered' }}</p>
+                                    </div>
+                                    <div class="govuk-grid-column-two-thirds">
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
+                                        <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceLocation-{{courtCaseDetails.courtCaseUuid}}">{{ courtMap[courtCaseDetails.latestAppearance.courtCode] }}</p>
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant type</h3>
+                                        <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantType-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.warrantType | capitalize }}</p>
+                                        {% if courtCaseDetails.latestAppearance.warrantType === 'SENTENCING' %}
+                                            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
+                                            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceConvictionDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.convictionDate | formatDate if courtCaseDetails.latestAppearance.convictionDate else 'Not entered' }}</p>
+                                        {% endif %}
                                         
-                                            <div class="govuk-grid-column-one-third">
-                                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Case reference</h3>
-                                                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceCourtCaseReference-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.courtCaseReference if courtCaseDetails.latestAppearance.courtCaseReference else 'Not entered'}}</p>
-                                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant date</h3>
-                                                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.appearanceDate | formatDate }}</p>
-                                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
-                                                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceOutcome-{{courtCaseDetails.courtCaseUuid}}"> {{ courtCaseDetails.latestAppearance.outcome | appearanceOutcomeOrLegacy(courtCaseDetails.latestAppearance.legacyData) }}</p>
-                                                
-                                            </div>
-                                            <div class="govuk-grid-column-two-thirds">
-                                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
-                                                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceLocation-{{courtCaseDetails.courtCaseUuid}}">{{ courtMap[courtCaseDetails.latestAppearance.courtCode] }}</p>
-                                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant type</h3>
-                                                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantType-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.warrantType | capitalize }}</p>
-                                                {% if courtCaseDetails.latestAppearance.warrantType === 'SENTENCING' %}
-                                                    <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
-                                                    <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceConvictionDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.overallConvictionDate | formatDate if courtCaseDetails.latestAppearance.overallConvictionDate else 'Not entered' }}</p>
-                                                {% endif %}
-                                                
-                                            </div>
-                                            <div class="govuk-grid-column-full govuk-!-margin-top-2">
-                                                {% set offenceDetailsHtml %}
-                                                    {% for offence in courtCaseDetails.offences %}
-                                                        {{
-                                                            offenceCard({
-                                                                offenceCode: offence.offenceCode,
-                                                                offenceName: offenceMap[offence.offenceCode],
-                                                                offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-                                                                offenceEndDate: offence.offenceEndDate | formatDate,
-                                                                outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
-                                                                countNumber: offence.sentence.countNumber if offence.sentence,
-                                                                convictionDate: (offence.sentence.convictionDate | formatDate) if offence.sentence,
-                                                                terrorRelated: offence.terrorRelated,
-                                                                isSentenced: offence.sentence,
-                                                                periodLengths: offence.sentence.periodLengths if offence.sentence,
-                                                                sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
-                                                                consecutiveTo: (consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] | checkConsecutiveToSameCase(courtCaseDetails.offences, offence.sentence.consecutiveToSentenceUuid))  if offence.sentence,
-                                                                sentenceType: (courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData))  if offence.sentence,
-                                                                fineAmount: offence.sentence.fineAmount  if offence.sentence,
-                                                                detailsClasses: 'govuk-!-padding-4'
-                                                            })
-                                                        }}
-                                                    {% endfor %}
-                                                {% endset %}
-
-                                                {{ govukDetails({
-                                                    summaryText: "Show offences (" + (courtCaseDetails.showingChargeTotal + " of " if courtCaseDetails.showingChargeTotal else "") + courtCaseDetails.chargeTotal + ")",
-                                                    html: offenceDetailsHtml,
-                                                        attributes: {
-                                                            "data-qa": "courtCaseDetailsComponent-" + courtCaseDetails.courtCaseUuid
-                                                        }
+                                    </div>
+                                    <div class="govuk-grid-column-full govuk-!-margin-top-2">
+                                        {% set offenceDetailsHtml %}
+                                            {% for offence in courtCaseDetails.offences %}
+                                                {{
+                                                    offenceCard({
+                                                        offenceCode: offence.offenceCode,
+                                                        offenceName: offenceMap[offence.offenceCode],
+                                                        offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
+                                                        offenceEndDate: offence.offenceEndDate | formatDate,
+                                                        outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
+                                                        countNumber: offence.sentence.countNumber if offence.sentence,
+                                                        convictionDate: (offence.sentence.convictionDate | formatDate) if offence.sentence,
+                                                        terrorRelated: offence.terrorRelated,
+                                                        isSentenced: offence.sentence,
+                                                        periodLengths: offence.sentence.periodLengths if offence.sentence,
+                                                        sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
+                                                        consecutiveTo: (consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] | checkConsecutiveToSameCase(courtCaseDetails.offences, offence.sentence.consecutiveToSentenceUuid))  if offence.sentence,
+                                                        sentenceType: (courtCaseDetails.sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData))  if offence.sentence,
+                                                        fineAmount: offence.sentence.fineAmount  if offence.sentence,
+                                                        detailsClasses: 'govuk-!-padding-4'
                                                     })
                                                 }}
-                                            </div>
-                                        
-                                    {% else %}
-                                        <div class="govuk-grid-column-full govuk-!-margin-top-2">
-                                            <p class="govuk-body govuk-!-margin-bottom-2">No appearances have been entered</p>
-                                        </div>
+                                            {% endfor %}
+                                        {% endset %}
 
-                                    {% endif %}
+                                        {{ govukDetails({
+                                            summaryText: "Show offences (" + (courtCaseDetails.showingChargeTotal + " of " if courtCaseDetails.showingChargeTotal else "") + courtCaseDetails.chargeTotal + ")",
+                                            html: offenceDetailsHtml,
+                                                attributes: {
+                                                    "data-qa": "courtCaseDetailsComponent-" + courtCaseDetails.courtCaseUuid
+                                                }
+                                            })
+                                        }}
+                                    </div>
                             </div>
                             <hr class="govuk-section-break govuk-!-margin-top-4 govuk-section-break--visible">
                             <p class="govuk-body govuk-!-margin-top-6">

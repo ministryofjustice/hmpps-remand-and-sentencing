@@ -25,16 +25,16 @@
                         <div>
                             <span class="govuk-body govuk-!-font-weight-bold">Sort by:</span>
                             <span class="govuk-body govuk-!-margin-left-2">
-                                {% if sortBy === 'desc' %}
+                                {% if sortBy === 'DESC' %}
                                     Most recent 
                                 {% else %}
-                                    <a href="/person/{{nomsId}}?sortBy=desc">Most recent</a>
+                                    <a href="/person/{{nomsId}}?sortBy=DESC">Most recent</a>
                                 {% endif %}
                                 <span class="seperator">|</span>
-                                {% if sortBy === 'asc'%}
+                                {% if sortBy === 'ASC'%}
                                     Earliest
                                 {% else %}
-                                    <a href="/person/{{nomsId}}?sortBy=asc">Earliest</a>
+                                    <a href="/person/{{nomsId}}?sortBy=ASC">Earliest</a>
                                 {% endif %}
 
                             </span>

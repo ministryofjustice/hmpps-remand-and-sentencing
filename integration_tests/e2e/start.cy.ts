@@ -43,7 +43,10 @@ context('Start Page', () => {
   })
 
   it('displays inactive tag on inactive case', () => {
-    startPage.courtCaseCard('d316d5b7-022f-40e5-98ab-aebe8ac4abf4').getActions().should('equal', 'Inactive Inactive ()')
+    startPage
+      .courtCaseCard('84ab3dc4-7bd7-4b14-a1ae-6434f7e2cc8b')
+      .getActions()
+      .should('equal', 'Inactive Inactive (C894623 at Accrington Youth Court)')
   })
 
   it('displays add appearance link on inactive case', () => {
@@ -87,8 +90,8 @@ context('Start Page', () => {
   })
 
   it('can sort by earliest', () => {
-    cy.task('stubSearchCourtCases', { sortBy: 'asc' })
-    startPage.sortLink('asc').click()
+    cy.task('stubSearchCourtCases', { sortBy: 'ASC' })
+    startPage.sortLink('ASC').click()
     Page.verifyOnPage(StartPage)
   })
 
@@ -116,7 +119,7 @@ context('Start Page', () => {
           'Sentence type': 'A NOMIS Fine Sentence Type',
           'Fine amount': '£10',
           'Consecutive or concurrent': 'Concurrent',
-          'Term length': '6 months 0 years 0 weeks 0 days',
+          'Term length': '0 years 6 months 0 weeks 0 days',
         },
         {
           offenceCardHeader: 'PS90037 An offence description',

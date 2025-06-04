@@ -228,6 +228,7 @@ export const pagedChargeToOffence = (pagedCharge: PagedCharge, index: number): O
 
 export const pagedSentenceToSentence = (pagedSentence: PagedSentence, index: number): Sentence => {
   return {
+    sentenceUuid: pagedSentence.sentenceUuid,
     sentenceReference: index.toString(),
     countNumber: pagedSentence.chargeNumber,
     periodLengths: pagedSentence.periodLengths.map(periodLength =>

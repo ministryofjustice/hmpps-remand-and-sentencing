@@ -10,9 +10,9 @@ import {
   HasSentenceToChainToResponse,
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
-  PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  PagePagedCourtCase,
   SentenceConsecutiveToDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
@@ -39,8 +39,17 @@ export default class RemandAndSentencingService {
     return new RemandAndSentencingApiClient(token).createCourtCase(createCourtCase)
   }
 
-  async searchCourtCases(prisonerId: string, token: string, sortBy: string, page: number): Promise<PageCourtCase> {
-    return new RemandAndSentencingApiClient(token).searchCourtCases(prisonerId, sortBy, page)
+  async searchCourtCases(
+    prisonerId: string,
+    username: string,
+    sortBy: string,
+    page: number,
+  ): Promise<PagePagedCourtCase> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).searchCourtCases(
+      prisonerId,
+      sortBy,
+      page,
+    )
   }
 
   async createCourtAppearance(

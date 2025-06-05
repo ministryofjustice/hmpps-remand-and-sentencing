@@ -89,7 +89,7 @@ export default {
     })
   },
 
-  stubSearchCourtCases: ({ sortBy = 'DESC' }: { sortBy: string }): SuperAgentRequest => {
+  stubSearchCourtCases: ({ sortBy = 'STATUS_APPEARANCE_DATE_DESC' }: { sortBy: string }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -98,7 +98,7 @@ export default {
           prisonerId: {
             equalTo: 'A1234AB',
           },
-          appearanceDateSortDirection: {
+          pagedCourtCaseOrderBy: {
             equalTo: sortBy,
           },
         },

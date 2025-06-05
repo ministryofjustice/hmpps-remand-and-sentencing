@@ -51,7 +51,7 @@ export default class CourtCaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { token, username } = res.locals.user
-    const sortBy = getAsStringOrDefault(req.query.sortBy, 'DESC')
+    const sortBy = getAsStringOrDefault(req.query.sortBy, 'STATUS_APPEARANCE_DATE_DESC')
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
 
     const [courtCases, serviceDefinitions] = await Promise.all([

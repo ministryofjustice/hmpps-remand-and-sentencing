@@ -87,8 +87,8 @@ context('Start Page', () => {
   })
 
   it('can sort by earliest', () => {
-    cy.task('stubSearchCourtCases', { sortBy: 'ASC' })
-    startPage.sortLink('ASC').click()
+    cy.task('stubSearchCourtCases', { sortBy: 'APPEARANCE_DATE_ASC' })
+    startPage.sortLink('APPEARANCE_DATE_ASC').click()
     Page.verifyOnPage(StartPage)
   })
 

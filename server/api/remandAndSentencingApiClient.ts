@@ -74,7 +74,7 @@ export default class RemandAndSentencingApiClient {
       path: `/court-case/paged/search`,
       query: {
         prisonerId,
-        appearanceDateSortDirection: sortBy,
+        pagedCourtCaseOrderBy: sortBy,
         page,
       },
     })) as unknown as Promise<PagePagedCourtCase>

@@ -49,11 +49,8 @@ context('Start Page', () => {
       .should('equal', 'Inactive Inactive (C894623 at Accrington Youth Court)')
   })
 
-  it('displays add appearance link on inactive case', () => {
-    startPage
-      .courtCaseCard('3fa85f64-5717-4562-b3fc-2c963f66afa6')
-      .getActions()
-      .should('equal', 'Add appearance Add appearance (C894623 at Accrington Youth Court)')
+  it('does not show merged from inset on case with no merged from cases', () => {
+    startPage.mergedCaseInset('261911e2-6346-42e0-b025-a806048f4d04').should('not.exist')
   })
 
   it('displays latest appearance', () => {

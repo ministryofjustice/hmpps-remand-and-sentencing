@@ -21,7 +21,7 @@ export default function routes(services: Services): Router {
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
   const postWithFileUpload = (path: string | string[], handler: RequestHandler) =>
-    router.post(path, upload.single('warrantUpload'), asyncMiddleware(handler))
+    router.post(path, upload.single('documentUpload'), asyncMiddleware(handler))
 
   router.use('/sentence-types', sentenceTypeRoutes(services))
 
@@ -613,7 +613,7 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.getUploadCourtDocuments,
   )
 
-  post(
+  postWithFileUpload(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/submit-upload-documents',
     courtCaseRoutes.submitUploadCourtDocuments,
   )

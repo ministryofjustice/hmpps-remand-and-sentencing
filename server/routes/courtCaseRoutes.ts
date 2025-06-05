@@ -1512,6 +1512,9 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       documentType,
     } = req.params
+
+    console.log('Submitting upload for document type:', documentType)
+
     const { username, activeCaseLoadId } = res.locals.user as PrisonUser
 
     try {

@@ -232,6 +232,7 @@ export default {
                 order: 'years,months,weeks,days',
                 type: 'OVERALL_SENTENCE_LENGTH',
               },
+              mergedFromCases: null,
               latestCourtAppearance: {
                 caseReference: 'XX1234',
                 courtCode: 'ACCRYC',

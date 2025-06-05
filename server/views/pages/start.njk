@@ -106,7 +106,7 @@
                             
                             {% endif %}
 
-                            {% if courtCaseDetails.mergedFromCases %}
+                            {% if courtCaseDetails.mergedFromCases and courtCaseDetails.mergedFromCases.length %}
                                 {% set mergedFromCasesHtml = '' %}
 
                                 {% for mergeFromCase in courtCaseDetails.mergedFromCases%}

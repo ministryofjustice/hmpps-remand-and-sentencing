@@ -39,6 +39,7 @@ export default class DocumentManagementApiClient {
     documentType: string,
   ): Promise<void> {
     try {
+      console.log('The file is being uploaded:', file.originalname)
       await this.restClient.postMultiPart({
         path: `/documents/${documentType}/${documentId}`,
         fileToUpload: file,

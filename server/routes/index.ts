@@ -1,5 +1,5 @@
 import { type RequestHandler, Router } from 'express'
-import multer from 'multer'
+// import multer from 'multer'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import CourtCaseRoutes from './courtCaseRoutes'
@@ -12,7 +12,7 @@ import OverallSentencingRoutes from './overallSentencingRoutes'
 import SentencingRoutes from './sentencingRoutes'
 import RemandRoutes from './remandRoutes'
 
-const upload = multer({ dest: 'uploads/' })
+// const upload = multer({ dest: 'uploads/' })
 export default function routes(services: Services): Router {
   const router = Router()
 
@@ -21,7 +21,7 @@ export default function routes(services: Services): Router {
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
   const postWithFileUpload = (path: string | string[], handler: RequestHandler) =>
-    router.post(path, upload.single('documentUpload'), asyncMiddleware(handler))
+    router.post(path, asyncMiddleware(handler))
 
   router.use('/sentence-types', sentenceTypeRoutes(services))
 

@@ -4,10 +4,6 @@
 {% set pageTitle = applicationName + " - upload court documents" %}
 
 {% block content %}
-  {% set uploadedType = uploadedDocument.type %}
-  {% set uploadedFileName = uploadedDocument.fileName %}
-  {% set uploadedDocType = uploadedDocument.documentType %}
-
   <div class="govuk-grid-row govuk-!-margin-top-4">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Upload court documents</h1>
@@ -16,76 +12,51 @@
       </p>
       <br>
 
-      {# === Sentencing Warrant === #}
-      {% if uploadedType == "HMCTS_WARRANT" %}
-        <p class="govuk-body">
-          <div>
-            <span>{{ uploadedFileName }}</span>
-            <span class="tag">Uploaded</span>
-            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDocType }}/remove-document">Remove</a>
-          </div>
-        </p>
-      {% else %}
-        <p class="govuk-body">
-          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/warrant/upload-documents?_csrf={{ csrfToken }}">Upload sentencing warrant</a>
-        </p>
-      {% endif %}
-      <hr>
+      {# Define the list of document types you want to display on this page #}
+      {% set documentTypesToDisplay = [
+        { type: "HMCTS_WARRANT", name: "Sentencing warrant", uploadLinkSegment: "warrant" },
+        { type: "TRIAL_RECORD_SHEET", name: "Trial record sheet", uploadLinkSegment: "trial-record-sheet" },
+        { type: "INDICTMENT", name: "Indictment", uploadLinkSegment: "indictment" },
+        { type: "PRISON_COURT_REGISTER", name: "Prison court register", uploadLinkSegment: "prison-court-register" }
+      ] %}
 
-      {# === Trial Record Sheet === #}
-      {% if uploadedType == "TRIAL_RECORD_SHEET" %}
-        <p class="govuk-body">
-          <div>
-            <span>{{ uploadedFileName }}</span>
-            <span class="tag">Uploaded</span>
-            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDocType }}/remove-document">Remove</a>
-          </div>
-        </p>
-      {% else %}
-        <p class="govuk-body">
-          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/trial-record-sheet/upload-documents">Upload trial record sheet</a>
-        </p>
-      {% endif %}
-      <hr>
+      {# Loop through each defined document type #}
+      {% for docTypeInfo in documentTypesToDisplay %}
+        {#
+          Find the matching uploaded document using a Nunjucks filter or a simple check.
+          Nunjucks doesn't have a direct 'find' method like JavaScript arrays.
+          A common pattern is to filter and then take the first item, or to iterate and use a flag.
+          However, for a simple check, we can rely on the `first` filter after a `selectattr` filter.
+        #}
+        {% set uploadedDoc = uploadedDocuments | selectattr('type', 'equalto', docTypeInfo.type) | first %}
 
-      {# === Indictment === #}
-      {% if uploadedType == "INDICTMENT" %}
-        <p class="govuk-body">
-          <div>
-            <span>{{ uploadedFileName }}</span>
-            <span class="tag">Uploaded</span>
-            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDocType }}/remove-document">Remove</a>
-          </div>
-        </p>
-      {% else %}
-        <p class="govuk-body">
-          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/indictment/upload-documents">Upload indictment</a>
-        </p>
-      {% endif %}
-      <hr>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-2">{{ docTypeInfo.name }}</h2>
 
-      {# === Prison Court Register === #}
-      {% if uploadedType == "PRISON_COURT_REGISTER" %}
-        <p class="govuk-body">
-          <div>
-            <span>{{ uploadedFileName }}</span>
-            <span class="tag">Uploaded</span>
-            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDocType }}/remove-document">Remove</a>
-          </div>
-        </p>
-      {% else %}
-        <p class="govuk-body">
-          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/prison-court-register/upload-documents">Upload prison court register</a>
-        </p>
-      {% endif %}
+        {% if uploadedDoc %}
+          {# Document of this type has been uploaded #}
+          <p class="govuk-body">
+            <div>
+              <span>{{ uploadedDoc.fileName }}</span>
+              <span class="govuk-tag govuk-!-margin-left-2">Uploaded</span>
+              <a class="govuk-link govuk-!-margin-left-2" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDoc.documentType }}/remove-document">Remove</a>
+            </div>
+          </p>
+        {% else %}
+          {# Document of this type has NOT been uploaded #}
+          <p class="govuk-body">
+            <a class="govuk-link" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ docTypeInfo.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">Upload {{ docTypeInfo.name | lower }}</a>
+          </p>
+        {% endif %}
+        <hr class="govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+      {% endfor %}
 
       <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
-                      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                      {{ govukButton({
-                          text: "Confirm and continue",
-                          attributes: {  'data-qa': 'continue-button' }
-                      }) }}
-                  </form>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {{ govukButton({
+            text: "Confirm and continue",
+            attributes: { 'data-qa': 'continue-button' }
+        }) }}
+      </form>
 
     </div>
   </div>

@@ -1490,6 +1490,8 @@ export default class CourtCaseRoutes {
 
     console.log('documentName', documentName)
 
+    const documents = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId)
+
     return res.render('pages/courtAppearance/document-upload', {
       nomsId,
       courtCaseReference,
@@ -1499,10 +1501,12 @@ export default class CourtCaseRoutes {
       documentType,
       documentName,
       courtAppearance,
+      documents,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
     })
   }
 
+  // Your controller file (e.g., courtCaseRoutes.ts handler)
   public submitUploadCourtDocuments: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
@@ -1512,41 +1516,50 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       documentType,
     } = req.params
+    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
 
     console.log('Submitting upload for document type:', documentType)
 
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    // --- CRUCIAL CHANGE HERE: Access the file from req.files as an array ---
+    const uploadedFile = (req.files as Express.Multer.File[])?.[0] // Cast to array of Multer files
 
     try {
-      if (!req.file) {
+      if (!uploadedFile) {
+        // Check uploadedFile instead of req.file
+        console.log('No file uploaded')
         req.flash('errors', [{ text: 'No file uploaded. Please select a file to upload.' }])
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
         )
       }
 
-      // Check file size (example: max size 50MB)
-      const maxFileSize = 50 * 1024 * 1024 // 5MB
-      if (req.file.size > maxFileSize) {
+      // Check file size
+      const maxFileSize = 50 * 1024 * 1024 // 50MB
+      if (uploadedFile.size > maxFileSize) {
+        // Use uploadedFile.size
+        console.log('File size exceeds the maximum limit')
         req.flash('errors', [{ text: 'File size exceeds the maximum limit of 50MB.' }])
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
         )
       }
       const documentTypeName = this.getDocumentType(documentType)
+      console.log('Document type name:', documentTypeName)
 
       // Upload the document
       const documentId = await this.documentManagementService.uploadDocument(
         nomsId,
-        req.file,
+        uploadedFile, // Pass uploadedFile
         username,
         activeCaseLoadId,
         documentTypeName,
       )
+
+      console.log('Document uploaded with ID:', documentId)
       const uploadedDocument: UploadedDocument = {
         documentId,
         documentType: documentTypeName,
-        fileName: req.file.originalname,
+        fileName: uploadedFile.originalname, // Use uploadedFile.originalname
       }
       this.courtAppearanceService.addUploadedDocument(req.session, nomsId, uploadedDocument)
 
@@ -1554,6 +1567,7 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
       )
     } catch (error) {
+      console.log('Error uploading document:', error)
       logger.error(`Error uploading document: ${error.message}`)
       req.flash('errors', [{ text: 'An error occurred while uploading the document. Please try again later.' }])
       return res.redirect(
@@ -1595,6 +1609,7 @@ export default class CourtCaseRoutes {
   }
 
   private getDocumentType(documentName: string): string {
+    console.log(`doc name${documentName}`)
     switch (documentName) {
       case 'sentencing warrant':
         return 'HMCTS_WARRANT'

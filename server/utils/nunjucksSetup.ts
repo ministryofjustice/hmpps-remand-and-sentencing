@@ -9,6 +9,7 @@ import {
   firstNameSpaceLastName,
   formatLengths,
   consecutiveToDetailsToDescription,
+  formatMergedFromCase,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
@@ -32,6 +33,7 @@ import type {
   AppearanceToChainTo,
   NextCourtAppearance,
   OffenceOutcome,
+  PagedMergedFromCase,
   SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
@@ -208,6 +210,17 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('periodLengthsToSentenceLengths', periodLengthsToSentenceLengths)
   njkEnv.addFilter('consecutiveToDetailsToDescription', consecutiveToDetailsToDescription)
+  njkEnv.addFilter('formatMergedFromCase', formatMergedFromCase)
+  njkEnv.addFilter(
+    'formatOverallMergedFromCase',
+    (mergedFromCase: PagedMergedFromCase, courtDetails: { [key: string]: string }) => {
+      let description = `the case at ${courtDetails[mergedFromCase.courtCode]} on ${formatDate(mergedFromCase.warrantDate)} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}`
+      if (mergedFromCase.caseReference) {
+        description = `${mergedFromCase.caseReference} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}`
+      }
+      return description
+    },
+  )
   njkEnv.addFilter(
     'checkConsecutiveToSameCase',
     (consecutiveToDetails: ConsecutiveToDetails, offences: Offence[], consecutiveToSentenceUuid: string) => {

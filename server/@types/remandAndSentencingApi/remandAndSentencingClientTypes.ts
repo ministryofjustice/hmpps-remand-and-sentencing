@@ -85,3 +85,5 @@ export type PagedCharge = components['schemas']['PagedCharge']
 export type PagedSentence = components['schemas']['PagedSentence']
 
 export type PagedSentencePeriodLength = components['schemas']['PagedSentencePeriodLength']
+
+export type PagedMergedFromCase = components['schemas']['PagedMergedFromCase']

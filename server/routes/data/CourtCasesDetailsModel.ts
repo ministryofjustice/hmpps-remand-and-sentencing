@@ -4,6 +4,7 @@ import { SentenceLength } from '@ministryofjustice/hmpps-court-cases-release-dat
 import {
   PagedCourtCase,
   PagedLatestCourtAppearance,
+  PagedMergedFromCase,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { pagedAppearancePeriodLengthToSentenceLength, pagedChargeToOffence } from '../../utils/mappingUtils'
@@ -43,6 +44,8 @@ export default class CourtCasesDetailsModel {
   sentenceTypeMap: { [key: string]: string }
 
   hasARecall: boolean
+
+  mergedFromCases: PagedMergedFromCase[]
 
   constructor(pagedCourtCase: PagedCourtCase, courtMap: { [key: string]: string }) {
     let titleValue = courtMap[pagedCourtCase.latestCourtAppearance?.courtCode]
@@ -99,5 +102,6 @@ export default class CourtCasesDetailsModel {
         .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]) ?? [],
     )
     this.hasARecall = pagedCourtCase.latestCourtAppearance.charges.some(charge => charge.sentence?.hasRecall)
+    this.mergedFromCases = pagedCourtCase.mergedFromCases
   }
 }

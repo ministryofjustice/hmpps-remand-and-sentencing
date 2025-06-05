@@ -183,4 +183,21 @@ context('Start Page', () => {
     cy.reload()
     startPage.courtCasesContent().should('contain.text', 'There are no court cases recorded for Cormac Meza')
   })
+
+  it('displays merged from cases correctly', () => {
+    startPage
+      .mergedCaseInset('c0f90a3c-f1c5-4e2e-9360-2a9d7bd33dda')
+      .should('contain.text', 'NOMIS123 was merged with this case on 05/06/2019')
+    startPage
+      .courtCaseDetailsComponent('c0f90a3c-f1c5-4e2e-9360-2a9d7bd33dda')
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '05/06/2025',
+          Outcome: 'Outcome Description',
+          'Merged from': 'NOMIS123 at Accrington Youth Court',
+        },
+      ])
+  })
 })

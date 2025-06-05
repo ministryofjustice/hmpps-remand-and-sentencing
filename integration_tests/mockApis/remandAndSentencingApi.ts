@@ -446,6 +446,71 @@ export default {
                 ],
               },
             },
+            {
+              prisonerId: 'PRI123',
+              courtCaseUuid: 'c0f90a3c-f1c5-4e2e-9360-2a9d7bd33dda',
+              courtCaseStatus: 'ACTIVE',
+              legacyData: {
+                caseReferences: [
+                  {
+                    offenderCaseReference: 'NOMIS123',
+                    updatedDate: '2025-06-05T07:23:16.79636',
+                  },
+                ],
+              },
+              appearanceCount: 1,
+              caseReferences: ['NOMIS123'],
+              firstDayInCustody: '2025-06-05',
+              overallSentenceLength: null,
+              latestCourtAppearance: {
+                caseReference: 'NOMIS123',
+                courtCode: 'ACCRYC',
+                warrantDate: '2025-06-05',
+                warrantType: 'REMAND',
+                outcome: 'Outcome Description',
+                convictionDate: null,
+                legacyData: {
+                  postedDate: '2025-06-05',
+                  nomisOutcomeCode: '1',
+                  outcomeDescription: 'Outcome Description',
+                  nextEventDateTime: '2025-06-15T07:23:16.796353',
+                  appearanceTime: '07:23:16',
+                  outcomeDispositionCode: 'I',
+                  outcomeConvictionFlag: false,
+                },
+                nextCourtAppearance: null,
+                charges: [
+                  {
+                    offenceCode: 'PS90037',
+                    offenceStartDate: '2025-06-05',
+                    offenceEndDate: null,
+                    outcome: null,
+                    legacyData: {
+                      postedDate: '2025-06-05',
+                      nomisOutcomeCode: '1',
+                      outcomeDescription: 'Outcome Description',
+                      outcomeDispositionCode: 'INTERIM',
+                      outcomeConvictionFlag: false,
+                    },
+                    sentence: null,
+                    mergedFromCase: {
+                      caseReference: 'NOMIS123',
+                      courtCode: 'ACCRYC',
+                      warrantDate: '2025-06-05',
+                      mergedFromDate: '2019-06-05',
+                    },
+                  },
+                ],
+              },
+              mergedFromCases: [
+                {
+                  caseReference: 'NOMIS123',
+                  courtCode: 'ACCRYC',
+                  warrantDate: '2025-06-05',
+                  mergedFromDate: '2019-06-05',
+                },
+              ],
+            },
           ],
           number: 0,
           sort: {

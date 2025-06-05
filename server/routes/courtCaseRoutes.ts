@@ -74,10 +74,9 @@ export default class CourtCaseRoutes {
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
     const courtIds = courtCases.content
       .flatMap(courtCase =>
-        [
-          courtCase.latestCourtAppearance.courtCode,
-          courtCase.latestCourtAppearance.nextCourtAppearance?.courtCode,
-        ].filter(courtCode => courtCode !== undefined && courtCode !== null),
+        [courtCase.latestCourtAppearance.courtCode, courtCase.latestCourtAppearance.nextCourtAppearance?.courtCode]
+          .concat(courtCase.latestCourtAppearance.charges.map(charge => charge.mergedFromCase?.courtCode))
+          .filter(courtCode => courtCode !== undefined && courtCode !== null),
       )
       .flat()
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
@@ -111,7 +110,9 @@ export default class CourtCaseRoutes {
         .map(outcome => [outcome.outcomeUuid, outcome.outcomeName]),
     )
     const newCourtCaseId = courtCases.totalElements
-    const pagination = mojPaginationFromPageCourtCase(courtCases, new URL(`/person/${nomsId}`, config.domain))
+    const paginationUrl = new URL(`/person/${nomsId}`, config.domain)
+    paginationUrl.searchParams.set('sortBy', sortBy)
+    const pagination = mojPaginationFromPageCourtCase(courtCases, paginationUrl)
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,

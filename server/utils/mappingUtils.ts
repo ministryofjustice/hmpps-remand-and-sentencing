@@ -223,6 +223,7 @@ export const pagedChargeToOffence = (pagedCharge: PagedCharge, index: number): O
     ...(pagedCharge.offenceEndDate && { offenceEndDate: dayjs(pagedCharge.offenceEndDate).toDate() }),
     ...(pagedCharge.legacyData && { legacyData: { ...pagedCharge.legacyData } }),
     ...(pagedCharge.sentence && { sentence: pagedSentenceToSentence(pagedCharge.sentence, index) }),
+    ...(pagedCharge.mergedFromCase && { mergedFromCase: pagedCharge.mergedFromCase }),
   } as Offence
 }
 

@@ -24,9 +24,6 @@ import setupCurrentCourtAppearance from './middleware/setUpCurrentCourtAppearanc
 import setupCurrentCourtCase from './middleware/setUpCurrentCourtCase'
 import setupCurrentOffence from './middleware/setupCurrentOffence'
 
-// Initialize Multer globally.
-// This instance will handle parsing of 'multipart/form-data' requests for ALL routes.
-// `multer()` without `dest` or `storage` options means files are stored in memory (as buffers).
 const upload = multer({ dest: 'uploads/' })
 
 export default function createApp(services: Services): express.Application {
@@ -40,33 +37,15 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
-
-  // --- Static resources FIRST (so CSS, JS, images are served directly) ---
   app.use(setUpStaticResources())
-
-  // --- Body Parsers (order matters!) ---
-  // 1. Standard URL-encoded and JSON body parsing
-  app.use(setUpWebRequestParsing()) // Handles application/x-www-form-urlencoded and application/json
-
-  // 2. Multipart form data parsing (for file uploads).
-  //    This MUST come AFTER other body parsers (if any) and BEFORE CSRF,
-  //    so req.body is populated with _csrf from multipart forms.
-  //    `upload.any()` will parse all fields and files in a multipart request.
+  app.use(setUpWebRequestParsing())
   app.use(upload.any())
 
-  // --- Nunjucks view engine setup (usually before routes) ---
   nunjucksSetup(app, services.applicationInfo)
 
-  // --- Authentication & Authorization ---
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware(['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']))
-
-  // --- CSRF Protection ---
-  // This now runs AFTER all body parsers (setUpWebRequestParsing and multer.any())
-  // so that req.body._csrf is correctly populated when csrf-sync looks for it.
   app.use(setUpCsrf())
-
-  // --- Current User and other context-setting middlewares ---
   app.use(setUpCurrentUser(services))
   app.use('/person/:nomsId', populateCurrentPrisoner(services.prisonerSearchService))
   app.use('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference', setupCurrentCourtCase())

@@ -1,4 +1,3 @@
-// setUpCsrf.ts (revert to original or very close to it)
 import { Router } from 'express'
 import { csrfSync } from 'csrf-sync'
 

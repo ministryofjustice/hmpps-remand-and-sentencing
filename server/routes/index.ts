@@ -1,6 +1,4 @@
 import { type RequestHandler, Router } from 'express'
-// import multer from 'multer'
-
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import CourtCaseRoutes from './courtCaseRoutes'
 import ApiRoutes from './apiRoutes'
@@ -12,7 +10,6 @@ import OverallSentencingRoutes from './overallSentencingRoutes'
 import SentencingRoutes from './sentencingRoutes'
 import RemandRoutes from './remandRoutes'
 
-// const upload = multer({ dest: 'uploads/' })
 export default function routes(services: Services): Router {
   const router = Router()
 

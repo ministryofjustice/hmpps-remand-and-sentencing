@@ -1492,12 +1492,10 @@ export default class CourtCaseRoutes {
       documentType,
       documentName,
       courtAppearance,
-      errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
     })
   }
 
-  // Your controller file (e.g., courtCaseRoutes.ts handler)
   public submitUploadCourtDocuments: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
@@ -1508,10 +1506,7 @@ export default class CourtCaseRoutes {
       documentType,
     } = req.params
     const { username, activeCaseLoadId } = res.locals.user as PrisonUser
-
     const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
-
-    // --- CRUCIAL CHANGE HERE: Access the file from req.files as an array ---
     const uploadedFile = (req.files as Express.Multer.File[])?.[0] // Cast to array of Multer files
 
     try {

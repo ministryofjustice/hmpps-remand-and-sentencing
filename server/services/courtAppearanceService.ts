@@ -803,17 +803,6 @@ export default class CourtAppearanceService {
       courtAppearance.uploadedDocuments = [] // Initialize if null/undefined
     }
     courtAppearance.uploadedDocuments.push(document)
-
-    // IMPORTANT: For cookie-session, direct modification of nested properties
-    // might not always trigger a re-save of the session cookie if the top-level
-    // object reference doesn't change. It's often safer to explicitly mark the session
-    // as dirty, or reassign a top-level property.
-    // Cookie-session's documentation mentions `session.isChanged` or reassigning a top-level
-    // property if changes aren't propagating.
-    // For now, let's assume direct mutation works if getCourtAppearance gives a reference.
-
-    // Optional: If you want to confirm the size of the array now attached to the session
-    console.log('uploadedDocuments size', courtAppearance.uploadedDocuments.length) // Log the actual session array length
   }
 
   getUploadedDocuments(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): UploadedDocument[] {

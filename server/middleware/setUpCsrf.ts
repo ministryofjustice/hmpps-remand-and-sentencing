@@ -12,8 +12,6 @@ export default function setUpCsrf(): Router {
     const { csrfSynchronisedProtection } = csrfSync({
       getTokenFromRequest: req => {
         // eslint-disable-next-line no-underscore-dangle
-        console.log('CSRF token from request body (in setUpCsrf):', req.body._csrf) // This log should now show the token
-        // eslint-disable-next-line no-underscore-dangle
         return req.body._csrf
       },
     })

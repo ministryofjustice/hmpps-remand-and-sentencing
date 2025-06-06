@@ -1447,9 +1447,6 @@ export default class CourtCaseRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId)
 
-    console.log('uploadedDocuments', uploadedDocuments)
-
-    console.log('warrantType', warrantType)
     if (warrantType === 'SENTENCING') {
       return res.render('pages/sentencing/upload-court-documents', {
         nomsId,
@@ -1485,7 +1482,6 @@ export default class CourtCaseRoutes {
     } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const documentName = this.getDocumentName(documentType)
-    const uploadedDocumentForm = (req.flash('uploadedDocumentForm')[0] || {}) as UploadedDocumentForm
 
     return res.render('pages/courtAppearance/document-upload', {
       nomsId,
@@ -1607,7 +1603,6 @@ export default class CourtCaseRoutes {
   }
 
   private getDocumentType(documentName: string): string {
-    console.log(`doc name${documentName}`)
     switch (documentName) {
       case 'sentencing warrant':
         return 'HMCTS_WARRANT'

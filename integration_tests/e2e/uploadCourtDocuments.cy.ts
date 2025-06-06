@@ -12,7 +12,7 @@ context('Upload court document page', () => {
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.continueButton().click()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/upload-court-documents')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/upload-court-documents')
     uploadCourtDocumentsPage = Page.verifyOnPage(UploadCourtDocumentsPage)
   })
 

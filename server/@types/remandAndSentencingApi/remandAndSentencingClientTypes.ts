@@ -71,3 +71,19 @@ export type SentenceToChainTo = components['schemas']['SentenceToChainTo']
 export type SentenceConsecutiveToDetailsResponse = components['schemas']['SentenceConsecutiveToDetailsResponse']
 
 export type SentenceConsecutiveToDetails = components['schemas']['SentenceConsecutiveToDetails']
+
+export type PagePagedCourtCase = components['schemas']['PagePagedCourtCase']
+
+export type PagedCourtCase = components['schemas']['PagedCourtCase']
+
+export type PagedLatestCourtAppearance = components['schemas']['PagedLatestCourtAppearance']
+
+export type PagedAppearancePeriodLength = components['schemas']['PagedAppearancePeriodLength']
+
+export type PagedCharge = components['schemas']['PagedCharge']
+
+export type PagedSentence = components['schemas']['PagedSentence']
+
+export type PagedSentencePeriodLength = components['schemas']['PagedSentencePeriodLength']
+
+export type PagedMergedFromCase = components['schemas']['PagedMergedFromCase']

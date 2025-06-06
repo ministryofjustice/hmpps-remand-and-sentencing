@@ -14,9 +14,9 @@ import {
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
   OffenceOutcome,
-  PageCourtCase,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  PagePagedCourtCase,
   SentenceConsecutiveToDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
@@ -69,15 +69,15 @@ export default class RemandAndSentencingApiClient {
     })) as unknown as Promise<void>
   }
 
-  async searchCourtCases(prisonerId: string, sortBy: string, page: number): Promise<PageCourtCase> {
+  async searchCourtCases(prisonerId: string, sortBy: string, page: number): Promise<PagePagedCourtCase> {
     return (await this.restClient.get({
-      path: `/court-case/search`,
+      path: `/court-case/paged/search`,
       query: {
         prisonerId,
-        sort: `latestCourtAppearance_appearanceDate,${sortBy}`,
+        pagedCourtCaseOrderBy: sortBy,
         page,
       },
-    })) as unknown as Promise<PageCourtCase>
+    })) as unknown as Promise<PagePagedCourtCase>
   }
 
   async createCourtAppearance(createCourtAppearance: CreateCourtAppearance): Promise<CreateCourtAppearanceResponse> {

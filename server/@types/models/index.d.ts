@@ -1,3 +1,5 @@
+import { PagedMergedFromCase } from '../remandAndSentencingApi/remandAndSentencingClientTypes'
+
 declare module 'models' {
   export interface CourtCase {
     uniqueIdentifier?: string
@@ -47,6 +49,7 @@ declare module 'models' {
     terrorRelated?: boolean
     legacyData?: Record<string, never>
     updatedOutcome?: boolean
+    mergedFromCase?: PagedMergedFromCase
   }
 
   export interface Sentence {

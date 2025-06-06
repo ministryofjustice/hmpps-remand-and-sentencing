@@ -52,17 +52,16 @@ export default class CourtCaseRoutes {
 
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const { token } = res.locals.user
-    const sortBy = getAsStringOrDefault(req.query.sortBy, 'desc')
+    const { token, username } = res.locals.user
+    const sortBy = getAsStringOrDefault(req.query.sortBy, 'STATUS_APPEARANCE_DATE_DESC')
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
 
     const [courtCases, serviceDefinitions] = await Promise.all([
-      this.remandAndSentencingService.searchCourtCases(nomsId, token, sortBy, pageNumber),
+      this.remandAndSentencingService.searchCourtCases(nomsId, username, sortBy, pageNumber),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
     const consecutiveToSentenceUuids = courtCases.content
-      .filter(courtCase => courtCase.latestAppearance)
-      .flatMap(courtCase => courtCase.latestAppearance.charges)
+      .flatMap(courtCase => courtCase.latestCourtAppearance.charges)
       .map(charge => charge.sentence?.consecutiveToSentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
 
@@ -72,22 +71,15 @@ export default class CourtCaseRoutes {
     )
 
     const chargeCodes = courtCases.content
-      .map(courtCase => courtCase.appearances.map(appearance => appearance.charges.map(charge => charge.offenceCode)))
-      .flat()
-      .flat()
+      .flatMap(courtCase => courtCase.latestCourtAppearance.charges)
+      .map(charge => charge.offenceCode)
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
     const courtIds = courtCases.content
-      .map(courtCase =>
-        courtCase.appearances.map(appearance =>
-          [
-            appearance.courtCode,
-            appearance.nextCourtAppearance?.courtCode,
-            courtCase.latestAppearance?.courtCode,
-            courtCase.latestAppearance?.nextCourtAppearance?.courtCode,
-          ].filter(courtCode => courtCode !== undefined && courtCode !== null),
-        ),
+      .flatMap(courtCase =>
+        [courtCase.latestCourtAppearance.courtCode, courtCase.latestCourtAppearance.nextCourtAppearance?.courtCode]
+          .concat(courtCase.latestCourtAppearance.charges.map(charge => charge.mergedFromCase?.courtCode))
+          .filter(courtCode => courtCode !== undefined && courtCode !== null),
       )
-      .flat()
       .flat()
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
     const [offenceMap, courtMap] = await Promise.all([
@@ -114,14 +106,15 @@ export default class CourtCaseRoutes {
     )
     const offenceOutcomeMap = Object.fromEntries(
       courtCases.content
-        .filter(courtCase => courtCase.latestAppearance)
         .flatMap(courtCase =>
-          courtCase.latestAppearance.charges.filter(charge => charge.outcome).map(charge => charge.outcome),
+          courtCase.latestCourtAppearance.charges.filter(charge => charge.outcome).map(charge => charge.outcome),
         )
         .map(outcome => [outcome.outcomeUuid, outcome.outcomeName]),
     )
     const newCourtCaseId = courtCases.totalElements
-    const pagination = mojPaginationFromPageCourtCase(courtCases, new URL(`/person/${nomsId}`, config.domain))
+    const paginationUrl = new URL(`/person/${nomsId}`, config.domain)
+    paginationUrl.searchParams.set('sortBy', sortBy)
+    const pagination = mojPaginationFromPageCourtCase(courtCases, paginationUrl)
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,

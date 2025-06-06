@@ -43,14 +43,14 @@ context('Start Page', () => {
   })
 
   it('displays inactive tag on inactive case', () => {
-    startPage.courtCaseCard('d316d5b7-022f-40e5-98ab-aebe8ac4abf4').getActions().should('equal', 'Inactive Inactive ()')
+    startPage
+      .courtCaseCard('84ab3dc4-7bd7-4b14-a1ae-6434f7e2cc8b')
+      .getActions()
+      .should('equal', 'Inactive Inactive (C894623 at Accrington Youth Court)')
   })
 
-  it('displays add appearance link on inactive case', () => {
-    startPage
-      .courtCaseCard('3fa85f64-5717-4562-b3fc-2c963f66afa6')
-      .getActions()
-      .should('equal', 'Add appearance Add appearance (C894623 at Accrington Youth Court)')
+  it('does not show merged from inset on case with no merged from cases', () => {
+    startPage.mergedCaseInset('261911e2-6346-42e0-b025-a806048f4d04').should('not.exist')
   })
 
   it('displays latest appearance', () => {
@@ -87,8 +87,8 @@ context('Start Page', () => {
   })
 
   it('can sort by earliest', () => {
-    cy.task('stubSearchCourtCases', { sortBy: 'asc' })
-    startPage.sortLink('asc').click()
+    cy.task('stubSearchCourtCases', { sortBy: 'APPEARANCE_DATE_ASC' })
+    startPage.sortLink('APPEARANCE_DATE_ASC').click()
     Page.verifyOnPage(StartPage)
   })
 
@@ -116,7 +116,7 @@ context('Start Page', () => {
           'Sentence type': 'A NOMIS Fine Sentence Type',
           'Fine amount': '£10',
           'Consecutive or concurrent': 'Concurrent',
-          'Term length': '6 months 0 years 0 weeks 0 days',
+          'Term length': '0 years 6 months 0 weeks 0 days',
         },
         {
           offenceCardHeader: 'PS90037 An offence description',
@@ -179,5 +179,22 @@ context('Start Page', () => {
     cy.task('stubEmptySearchCourtCases', {})
     cy.reload()
     startPage.courtCasesContent().should('contain.text', 'There are no court cases recorded for Cormac Meza')
+  })
+
+  it('displays merged from cases correctly', () => {
+    startPage
+      .mergedCaseInset('c0f90a3c-f1c5-4e2e-9360-2a9d7bd33dda')
+      .should('contain.text', 'NOMIS123 was merged with this case on 05/06/2019')
+    startPage
+      .courtCaseDetailsComponent('c0f90a3c-f1c5-4e2e-9360-2a9d7bd33dda')
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '05/06/2025',
+          Outcome: 'Outcome Description',
+          'Merged from': 'NOMIS123 at Accrington Youth Court',
+        },
+      ])
   })
 })

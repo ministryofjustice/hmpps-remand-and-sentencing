@@ -1885,6 +1885,7 @@ export default {
                       sentenceTypeDesc: 'A Nomis sentence type',
                       postedDate: '10-10-2024',
                     },
+                    hasRecall: true,
                   },
                 },
                 {

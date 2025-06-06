@@ -81,28 +81,30 @@
                 on {{ appearance.appearanceDate | formatDate }}</h2>
         </div>
         <div class="govuk-grid-column-one-half">
-            <ul class="offence-card-actions-list">
-                <li class="offence-card-action-link">
+            <ul class="offence-card-actions-list" data-qa="appearanceActionList-{{appearance.appearanceUuid}}">
+                {% if not appearance.hasAnyRecalls %}
+                    <li class="offence-card-action-link">
 
-                    {% if draft == 'true' %}
-                        <a class="govuk-link--no-visited-state"
-                           href="/person/{{ nomsId }}/add-court-case/{{ courtCaseDetails.courtCaseUuid }}/add-court-appearance/{{ appearance.appearanceUuid }}/resume-draft">
-                            Continue adding appearance information
-                        </a>
-                    {% else %}
-                        <a class="govuk-link--no-visited-state"
-                            href="{% if appearance.warrantType == 'REMAND' %}
-                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand/appearance-details
-                                {% else %}
-                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing/appearance-details
-                                {% endif %}">
-                            Edit
-                        </a>
-                    {% endif %}
-                </li>
-                <li class="offence-card-action-link">
-                    <a href="?" class="govuk-link--no-visited-state">Delete</a>
-                </li>
+                        {% if draft == 'true' %}
+                            <a class="govuk-link--no-visited-state"
+                            href="/person/{{ nomsId }}/add-court-case/{{ courtCaseDetails.courtCaseUuid }}/add-court-appearance/{{ appearance.appearanceUuid }}/resume-draft">
+                                Continue adding appearance information
+                            </a>
+                        {% else %}
+                            <a class="govuk-link--no-visited-state"
+                                href="{% if appearance.warrantType == 'REMAND' %}
+                                            /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand/appearance-details
+                                    {% else %}
+                                            /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing/appearance-details
+                                    {% endif %}">
+                                Edit
+                            </a>
+                        {% endif %}
+                    </li>
+                    <li class="offence-card-action-link">
+                        <a href="?" class="govuk-link--no-visited-state">Delete</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

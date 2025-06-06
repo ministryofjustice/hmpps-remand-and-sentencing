@@ -30,11 +30,14 @@
           {# Document of this type has been uploaded #}
           <p class="govuk-body">
             <div>
-              <span>{{ uploadedDoc.fileName }}</span>
-              <span class="govuk-tag govuk-!-margin-left-2">Uploaded</span>
-              <a class="govuk-link govuk-!-margin-left-2" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ uploadedDoc.documentType | lower }}/remove-document">Remove</a>
+            <a class="govuk-link govuk-!-margin-left-0" href=""><strong>{{ uploadedDoc.fileName }}</strong></a>
+            <span class="govuk-tag--green govuk-!-margin-left-4">Uploaded</span>
+            <a class="govuk-link govuk-!-margin-left-4" href="">Remove</a>
             </div>
           </p>
+          <p class="govuk-body">
+                      <span> {{docTypeInfo.name}} </span>
+                    </p>
         {% else %}
           {# Document of this type has NOT been uploaded #}
           <p class="govuk-body">

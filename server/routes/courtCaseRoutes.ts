@@ -1492,8 +1492,7 @@ export default class CourtCaseRoutes {
     } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const documentName = this.getDocumentName(documentType)
-
-    console.log('documentName', documentName)
+    const uploadedDocumentForm = (req.flash('uploadedDocumentForm')[0] || {}) as UploadedDocumentForm
 
     return res.render('pages/courtAppearance/document-upload', {
       nomsId,
@@ -1521,8 +1520,6 @@ export default class CourtCaseRoutes {
     } = req.params
     const { username, activeCaseLoadId } = res.locals.user as PrisonUser
 
-    console.log('Submitting upload for document type:', documentType)
-
     const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
 
     // --- CRUCIAL CHANGE HERE: Access the file from req.files as an array ---
@@ -1531,7 +1528,6 @@ export default class CourtCaseRoutes {
     try {
       if (!uploadedFile) {
         // Check uploadedFile instead of req.file
-        console.log('No file uploaded')
         req.flash('errors', [{ text: 'No file uploaded. Please select a file to upload.' }])
         req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
         return res.redirect(
@@ -1543,7 +1539,6 @@ export default class CourtCaseRoutes {
       const maxFileSize = 50 * 1024 * 1024 // 50MB
       if (uploadedFile.size > maxFileSize) {
         // Use uploadedFile.size
-        console.log('File size exceeds the maximum limit')
         req.flash('errors', [{ text: 'File size exceeds the maximum limit of 50MB.' }])
         req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
         return res.redirect(
@@ -1551,8 +1546,6 @@ export default class CourtCaseRoutes {
         )
       }
       const documentTypeName = this.getDocumentType(documentType)
-      console.log('Document type name:', documentTypeName)
-
       // Upload the document
       const documentId = await this.documentManagementService.uploadDocument(
         nomsId,
@@ -1562,11 +1555,10 @@ export default class CourtCaseRoutes {
         documentTypeName,
       )
 
-      console.log('Document uploaded with ID:', documentId)
       const uploadedDocument: UploadedDocument = {
         documentId,
         documentType: documentTypeName,
-        fileName: uploadedFile.originalname, // Use uploadedFile.originalname
+        fileName: uploadedFile.originalname,
       }
       this.courtAppearanceService.addUploadedDocument(req.session, nomsId, uploadedDocument)
 
@@ -1574,7 +1566,6 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
       )
     } catch (error) {
-      console.log('Error uploading document:', error)
       logger.error(`Error uploading document: ${error.message}`)
       req.flash('errors', [{ text: 'An error occurred while uploading the document. Please try again later.' }])
       req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
@@ -1583,14 +1574,9 @@ export default class CourtCaseRoutes {
       )
     } finally {
       if (req.file && req.file.path) {
-        // Or uploadedFile.path if using req.files[0]
-        // Use fs.unlink (Node.js built-in fs module) to delete the temporary file
-        // import * as fs from 'fs/promises' for async unlink
-        // import * as fs from 'fs' for sync unlink
         fs.unlink(req.file.path, err => {
-          if (err) console.error('Error deleting temp file:', err)
+          if (err) logger.error('Error deleting temp file:', err)
         })
-        // Or await fs.promises.unlink(req.file.path); for async
       }
     }
   }

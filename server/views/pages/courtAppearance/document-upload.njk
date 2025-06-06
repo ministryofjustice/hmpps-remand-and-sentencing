@@ -1,9 +1,9 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 
 {% set pageTitle = applicationName + " - Upload a document" %}
-{% block content %}
+{% block pageContent %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" enctype="multipart/form-data" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentType}}/submit-upload-documents">

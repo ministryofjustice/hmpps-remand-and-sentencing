@@ -17,6 +17,7 @@ import type {
 import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
 import dayjs from 'dayjs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import fs from 'fs'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -1452,6 +1453,8 @@ export default class CourtCaseRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId)
 
+    console.log('uploadedDocuments', uploadedDocuments)
+
     console.log('warrantType', warrantType)
     if (warrantType === 'SENTENCING') {
       return res.render('pages/sentencing/upload-court-documents', {
@@ -1472,6 +1475,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       courtAppearance,
+      uploadedDocuments,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
@@ -1490,8 +1494,6 @@ export default class CourtCaseRoutes {
 
     console.log('documentName', documentName)
 
-    const documents = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId)
-
     return res.render('pages/courtAppearance/document-upload', {
       nomsId,
       courtCaseReference,
@@ -1501,7 +1503,6 @@ export default class CourtCaseRoutes {
       documentType,
       documentName,
       courtAppearance,
-      documents,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
     })
   }
@@ -1573,6 +1574,17 @@ export default class CourtCaseRoutes {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
       )
+    } finally {
+      if (req.file && req.file.path) {
+        // Or uploadedFile.path if using req.files[0]
+        // Use fs.unlink (Node.js built-in fs module) to delete the temporary file
+        // import * as fs from 'fs/promises' for async unlink
+        // import * as fs from 'fs' for sync unlink
+        fs.unlink(req.file.path, err => {
+          if (err) console.error('Error deleting temp file:', err)
+        })
+        // Or await fs.promises.unlink(req.file.path); for async
+      }
     }
   }
 
@@ -1613,11 +1625,11 @@ export default class CourtCaseRoutes {
     switch (documentName) {
       case 'sentencing warrant':
         return 'HMCTS_WARRANT'
-      case 'trial record sheet':
+      case 'trial-record-sheet':
         return 'TRIAL_RECORD_SHEET'
-      case 'indictment document':
+      case 'indictment':
         return 'INDICTMENT'
-      case 'Transcript Document':
+      case 'prison-court-register':
         return 'PRISON_COURT_REGISTER'
       default:
         return 'HMCTS_WARRANT'

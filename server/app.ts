@@ -27,7 +27,7 @@ import setupCurrentOffence from './middleware/setupCurrentOffence'
 // Initialize Multer globally.
 // This instance will handle parsing of 'multipart/form-data' requests for ALL routes.
 // `multer()` without `dest` or `storage` options means files are stored in memory (as buffers).
-const upload = multer()
+const upload = multer({ dest: 'uploads/' })
 
 export default function createApp(services: Services): express.Application {
   const app = express()

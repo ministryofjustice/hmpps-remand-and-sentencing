@@ -606,6 +606,11 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/upload-court-documents',
+    sentencingRoutes.getCourtDocumentsPage,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/upload-documents',
     courtCaseRoutes.getUploadCourtDocuments,
   )

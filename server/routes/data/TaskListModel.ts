@@ -195,7 +195,7 @@ export default class TaskListModel {
         classes: 'govuk-link--no-visited-state',
       },
       href: this.allAppearanceInformationFilledOut(courtAppearance)
-        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/upload-court-documents`
+        ? `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/${courtAppearance.warrantType === 'SENTENCING' ? 'sentencing/' : ''}upload-court-documents`
         : null,
       status,
     }

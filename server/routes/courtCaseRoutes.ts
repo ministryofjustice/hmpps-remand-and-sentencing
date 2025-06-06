@@ -1444,21 +1444,7 @@ export default class CourtCaseRoutes {
   public getCourtDocumentsPage: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId)
-
-    if (warrantType === 'SENTENCING') {
-      return res.render('pages/sentencing/upload-court-documents', {
-        nomsId,
-        courtCaseReference,
-        appearanceReference,
-        addOrEditCourtCase,
-        addOrEditCourtAppearance,
-        courtAppearance,
-        uploadedDocuments,
-        backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
-      })
-    }
     return res.render('pages/courtAppearance/upload-court-documents', {
       nomsId,
       courtCaseReference,
@@ -1482,6 +1468,11 @@ export default class CourtCaseRoutes {
     } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const documentName = this.getDocumentName(documentType)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+
+    // Only pass errors if they exist
+    const errors = req.flash('errors') || []
+    const hasErrors = errors.length > 0
 
     return res.render('pages/courtAppearance/document-upload', {
       nomsId,
@@ -1492,7 +1483,11 @@ export default class CourtCaseRoutes {
       documentType,
       documentName,
       courtAppearance,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
+      errors: hasErrors ? errors : [],
+      backLink:
+        warrantType === 'SENTENCING'
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
     })
   }
 
@@ -1507,7 +1502,8 @@ export default class CourtCaseRoutes {
     } = req.params
     const { username, activeCaseLoadId } = res.locals.user as PrisonUser
     const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
-    const uploadedFile = (req.files as Express.Multer.File[])?.[0] // Cast to array of Multer files
+    const uploadedFile = (req.files as Express.Multer.File[])?.[0]
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
 
     try {
       if (!uploadedFile) {
@@ -1547,7 +1543,9 @@ export default class CourtCaseRoutes {
       this.courtAppearanceService.addUploadedDocument(req.session, nomsId, uploadedDocument)
 
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
+        warrantType === 'SENTENCING'
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
       )
     } catch (error) {
       logger.error(`Error uploading document: ${error.message}`)

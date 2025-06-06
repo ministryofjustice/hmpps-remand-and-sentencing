@@ -13,6 +13,7 @@ import type {
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
   CourtCaseWarrantTypeForm,
+  UploadedDocumentForm,
 } from 'forms'
 import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
 import dayjs from 'dayjs'
@@ -1503,6 +1504,7 @@ export default class CourtCaseRoutes {
       documentType,
       documentName,
       courtAppearance,
+      errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
     })
   }
@@ -1521,6 +1523,8 @@ export default class CourtCaseRoutes {
 
     console.log('Submitting upload for document type:', documentType)
 
+    const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
+
     // --- CRUCIAL CHANGE HERE: Access the file from req.files as an array ---
     const uploadedFile = (req.files as Express.Multer.File[])?.[0] // Cast to array of Multer files
 
@@ -1529,6 +1533,7 @@ export default class CourtCaseRoutes {
         // Check uploadedFile instead of req.file
         console.log('No file uploaded')
         req.flash('errors', [{ text: 'No file uploaded. Please select a file to upload.' }])
+        req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
         )
@@ -1540,6 +1545,7 @@ export default class CourtCaseRoutes {
         // Use uploadedFile.size
         console.log('File size exceeds the maximum limit')
         req.flash('errors', [{ text: 'File size exceeds the maximum limit of 50MB.' }])
+        req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
         )
@@ -1571,6 +1577,7 @@ export default class CourtCaseRoutes {
       console.log('Error uploading document:', error)
       logger.error(`Error uploading document: ${error.message}`)
       req.flash('errors', [{ text: 'An error occurred while uploading the document. Please try again later.' }])
+      req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
       )

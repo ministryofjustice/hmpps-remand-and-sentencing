@@ -16,7 +16,16 @@ context('Is Upload Court Documents have', () => {
     uploadCourtDocumentsPage = Page.verifyOnPage(UploadCourtDocumentsPage)
   })
 
-  it('displays correct text', () => {
-    // uploadCourtDocumentsPage.subtText('contain.text', 'Meza, Cormac')
+  it('displays person details', () => {
+    uploadCourtDocumentsPage
+      .prisonerBanner()
+      .should('contain.text', 'Meza, Cormac')
+      .and('contain.text', 'A1234AB')
+      .and('contain.text', 'EstablishmentHMP Bedford')
+      .and('contain.text', 'Cell numberCELL-1')
+  })
+
+  it('button to continue is displayed', () => {
+    uploadCourtDocumentsPage.continueButton().should('contain.text', 'Continue')
   })
 })

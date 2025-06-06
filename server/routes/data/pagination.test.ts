@@ -1,5 +1,5 @@
-import { PageCourtCase } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import mojPaginationFromPageCourtCase from './pagination'
+import { PagePagedCourtCase } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import mojPaginationFromPagePagedCourtCase from './pagination'
 
 describe('pagination tests', () => {
   const baseUrl = new URL('http://localhost/')
@@ -31,8 +31,8 @@ describe('pagination tests', () => {
       },
       numberOfElements: 1,
       empty: false,
-    } as PageCourtCase
-    const result = mojPaginationFromPageCourtCase(pageCourtCase, baseUrl)
+    } as PagePagedCourtCase
+    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result).toBeNull()
   })
 
@@ -65,7 +65,7 @@ describe('pagination tests', () => {
       numberOfElements: 14,
       empty: false,
     }
-    const result = mojPaginationFromPageCourtCase(pageCourtCase, baseUrl)
+    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.previous).toEqual({
       text: 'Previous',
       href: `http://localhost/?pageNumber=1`,
@@ -100,8 +100,8 @@ describe('pagination tests', () => {
       first: true,
       numberOfElements: 20,
       empty: false,
-    } as PageCourtCase
-    const result = mojPaginationFromPageCourtCase(pageCourtCase, baseUrl)
+    } as PagePagedCourtCase
+    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.next).toEqual({
       text: 'Next',
       href: `http://localhost/?pageNumber=2`,
@@ -137,7 +137,7 @@ describe('pagination tests', () => {
       numberOfElements: 14,
       empty: false,
     }
-    const result = mojPaginationFromPageCourtCase(pageCourtCase, baseUrl)
+    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.results).toEqual({
       from: 21,
       to: 34,
@@ -173,8 +173,8 @@ describe('pagination tests', () => {
       },
       numberOfElements: 8,
       empty: false,
-    } as PageCourtCase
-    const result = mojPaginationFromPageCourtCase(pageCourtCase, baseUrl)
+    } as PagePagedCourtCase
+    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.items).toEqual([
       {
         text: '1',
@@ -225,8 +225,8 @@ describe('pagination tests', () => {
       },
       numberOfElements: 8,
       empty: false,
-    } as PageCourtCase
-    const result = mojPaginationFromPageCourtCase(pageCourtCase, baseUrl)
+    } as PagePagedCourtCase
+    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.items).toEqual([
       {
         text: '1',
@@ -284,8 +284,8 @@ describe('pagination tests', () => {
       },
       numberOfElements: 8,
       empty: false,
-    } as PageCourtCase
-    const result = mojPaginationFromPageCourtCase(pageCourtCase, baseUrl)
+    } as PagePagedCourtCase
+    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.items).toEqual([
       {
         text: '1',

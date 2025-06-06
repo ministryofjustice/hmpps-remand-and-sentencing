@@ -14,6 +14,10 @@ import {
   DraftCreateCourtCase,
   NextCourtAppearance,
   PageCourtCaseAppearance,
+  PagedAppearancePeriodLength,
+  PagedCharge,
+  PagedSentence,
+  PagedSentencePeriodLength,
   PeriodLength,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import { sortByDateDesc } from './utils'
@@ -157,6 +161,31 @@ export const periodLengthToSentenceLength = (periodLength: PeriodLength): Senten
   return null
 }
 
+export const pagedAppearancePeriodLengthToSentenceLength = (
+  pagedAppearancePeriodLength: PagedAppearancePeriodLength,
+): SentenceLength => {
+  if (pagedAppearancePeriodLength) {
+    return {
+      ...(typeof pagedAppearancePeriodLength.days === 'number'
+        ? { days: String(pagedAppearancePeriodLength.days) }
+        : {}),
+      ...(typeof pagedAppearancePeriodLength.weeks === 'number'
+        ? { weeks: String(pagedAppearancePeriodLength.weeks) }
+        : {}),
+      ...(typeof pagedAppearancePeriodLength.months === 'number'
+        ? { months: String(pagedAppearancePeriodLength.months) }
+        : {}),
+      ...(typeof pagedAppearancePeriodLength.years === 'number'
+        ? { years: String(pagedAppearancePeriodLength.years) }
+        : {}),
+      periodOrder: pagedAppearancePeriodLength.order.split(','),
+      periodLengthType: pagedAppearancePeriodLength.type,
+      description: periodLengthTypeHeadings[pagedAppearancePeriodLength.type],
+    } as SentenceLength
+  }
+  return null
+}
+
 export const apiSentenceToSentence = (apiSentence: APISentence, index: number): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
@@ -184,6 +213,62 @@ export const chargeToOffence = (charge: Charge, index: number): Offence => {
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence, index) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
   } as Offence
+}
+
+export const pagedChargeToOffence = (pagedCharge: PagedCharge, index: number): Offence => {
+  return {
+    offenceCode: pagedCharge.offenceCode,
+    outcomeUuid: pagedCharge.outcome?.outcomeUuid,
+    ...(pagedCharge.offenceStartDate && { offenceStartDate: dayjs(pagedCharge.offenceStartDate).toDate() }),
+    ...(pagedCharge.offenceEndDate && { offenceEndDate: dayjs(pagedCharge.offenceEndDate).toDate() }),
+    ...(pagedCharge.legacyData && { legacyData: { ...pagedCharge.legacyData } }),
+    ...(pagedCharge.sentence && { sentence: pagedSentenceToSentence(pagedCharge.sentence, index) }),
+    ...(pagedCharge.mergedFromCase && { mergedFromCase: pagedCharge.mergedFromCase }),
+  } as Offence
+}
+
+export const pagedSentenceToSentence = (pagedSentence: PagedSentence, index: number): Sentence => {
+  return {
+    sentenceUuid: pagedSentence.sentenceUuid,
+    sentenceReference: index.toString(),
+    countNumber: pagedSentence.chargeNumber,
+    periodLengths: pagedSentence.periodLengths.map(periodLength =>
+      pagedSentencePeriodLengthToSentenceLength(periodLength),
+    ),
+    sentenceServeType: pagedSentence.sentenceServeType,
+    sentenceTypeId: pagedSentence.sentenceType?.sentenceTypeUuid,
+    sentenceTypeClassification: pagedSentence.sentenceType?.classification,
+    consecutiveToSentenceUuid: pagedSentence.consecutiveToSentenceUuid,
+    fineAmount: pagedSentence.fineAmount,
+    ...(pagedSentence.convictionDate && { convictionDate: dayjs(pagedSentence.convictionDate).toDate() }),
+    ...(pagedSentence.legacyData && { legacyData: { ...pagedSentence.legacyData } }),
+  } as Sentence
+}
+
+export const pagedSentencePeriodLengthToSentenceLength = (
+  pagedSentencePeriodLength: PagedSentencePeriodLength,
+): SentenceLength => {
+  if (pagedSentencePeriodLength) {
+    return {
+      ...(typeof pagedSentencePeriodLength.days === 'number' ? { days: String(pagedSentencePeriodLength.days) } : {}),
+      ...(typeof pagedSentencePeriodLength.weeks === 'number'
+        ? { weeks: String(pagedSentencePeriodLength.weeks) }
+        : {}),
+      ...(typeof pagedSentencePeriodLength.months === 'number'
+        ? { months: String(pagedSentencePeriodLength.months) }
+        : {}),
+      ...(typeof pagedSentencePeriodLength.years === 'number'
+        ? { years: String(pagedSentencePeriodLength.years) }
+        : {}),
+      periodOrder: pagedSentencePeriodLength.order.split(','),
+      periodLengthType: pagedSentencePeriodLength.type,
+      legacyData: pagedSentencePeriodLength.legacyData,
+      description:
+        periodLengthTypeHeadings[pagedSentencePeriodLength.type] ??
+        pagedSentencePeriodLength.legacyData?.sentenceTermDescription,
+    } as SentenceLength
+  }
+  return null
 }
 
 export function sentenceLengthToAlternativeSentenceLengthForm<T>(sentenceLength: SentenceLength): T {

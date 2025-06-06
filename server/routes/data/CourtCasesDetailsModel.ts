@@ -2,13 +2,13 @@ import dayjs from 'dayjs'
 import type { Offence } from 'models'
 import { SentenceLength } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
-  CourtCaseLegacyData,
-  PageCourtCaseAppearance,
-  PageCourtCaseContent,
+  PagedCourtCase,
+  PagedLatestCourtAppearance,
+  PagedMergedFromCase,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
-import { chargeToOffence, periodLengthToSentenceLength } from '../../utils/mappingUtils'
-import { outcomeValueOrLegacy, sortByDateDesc } from '../../utils/utils'
+import { pagedAppearancePeriodLengthToSentenceLength, pagedChargeToOffence } from '../../utils/mappingUtils'
+import { sortByDateDesc } from '../../utils/utils'
 
 export default class CourtCasesDetailsModel {
   courtCaseUuid: string
@@ -33,7 +33,7 @@ export default class CourtCasesDetailsModel {
 
   appearanceTotal: number
 
-  latestAppearance: PageCourtCaseAppearance
+  latestAppearance: PagedLatestCourtAppearance
 
   chargeTotal: number
 
@@ -43,94 +43,65 @@ export default class CourtCasesDetailsModel {
 
   sentenceTypeMap: { [key: string]: string }
 
-  offenceOutcomeMap: { [key: string]: string }
-
   hasARecall: boolean
 
-  constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
-    let titleValue = courtMap[pageCourtCaseContent.latestAppearance?.courtCode]
-    if (pageCourtCaseContent.latestAppearance?.courtCaseReference) {
-      titleValue = `${pageCourtCaseContent.latestAppearance.courtCaseReference} at ${titleValue}`
+  mergedFromCases: PagedMergedFromCase[]
+
+  constructor(pagedCourtCase: PagedCourtCase, courtMap: { [key: string]: string }) {
+    let titleValue = courtMap[pagedCourtCase.latestCourtAppearance?.courtCode]
+    if (pagedCourtCase.latestCourtAppearance?.caseReference) {
+      titleValue = `${pagedCourtCase.latestCourtAppearance.caseReference} at ${titleValue}`
     }
     this.title = titleValue
-    this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
-    let references = pageCourtCaseContent.appearances
-      .filter(appearance => appearance.courtCaseReference)
-      .map(appearance => appearance.courtCaseReference)
-    if (pageCourtCaseContent.legacyData) {
-      const courtCaseLegacyData = pageCourtCaseContent.legacyData as unknown as CourtCaseLegacyData
-      references = references.concat(
-        courtCaseLegacyData.caseReferences.map(caseReference => caseReference.offenderCaseReference),
-      )
-    }
-    this.caseReferences = Array.from(new Set(references)).join(', ')
-    this.firstDayInCustody = 'Not entered'
-    if (pageCourtCaseContent.appearances.length) {
-      this.firstDayInCustody = pageCourtCaseContent.appearances
-        .map(appearance => dayjs(appearance.appearanceDate))
-        .reduce((a, b) => (a.isBefore(b) ? a : b))
-        .format(config.dateFormat)
-    }
+    this.courtCaseUuid = pagedCourtCase.courtCaseUuid
+    this.caseReferences = pagedCourtCase.caseReferences.join(', ')
+    this.firstDayInCustody = dayjs(pagedCourtCase.firstDayInCustody).format(config.dateFormat)
 
-    this.overallCaseOutcome = outcomeValueOrLegacy(
-      pageCourtCaseContent.latestAppearance?.outcome?.outcomeName,
-      pageCourtCaseContent.latestAppearance?.legacyData,
-    )
-    if (pageCourtCaseContent.latestAppearance?.overallSentenceLength) {
-      this.overallSentenceLength = periodLengthToSentenceLength(
-        pageCourtCaseContent.latestAppearance?.overallSentenceLength,
-      )
+    this.overallCaseOutcome = pagedCourtCase.latestCourtAppearance.outcome ?? 'Not entered'
+    if (pagedCourtCase.overallSentenceLength) {
+      this.overallSentenceLength = pagedAppearancePeriodLengthToSentenceLength(pagedCourtCase.overallSentenceLength)
     }
     this.convictionDate = 'Not entered'
-    if (pageCourtCaseContent.latestAppearance?.overallConvictionDate) {
-      this.convictionDate = dayjs(pageCourtCaseContent.latestAppearance?.overallConvictionDate).format(
-        config.dateFormat,
-      )
+    if (pagedCourtCase.latestCourtAppearance.convictionDate) {
+      this.convictionDate = dayjs(pagedCourtCase.latestCourtAppearance.convictionDate).format(config.dateFormat)
     }
-    this.warrantType = pageCourtCaseContent.latestAppearance?.warrantType
-    this.overallCaseStatus = pageCourtCaseContent.status
+    this.warrantType = pagedCourtCase.latestCourtAppearance?.warrantType
+    this.overallCaseStatus = pagedCourtCase.courtCaseStatus
 
-    if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance) {
+    if (pagedCourtCase.latestCourtAppearance?.nextCourtAppearance) {
       const appearanceDate = dayjs(
-        `${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceDate}${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime ? `T${pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime}` : ''}`,
+        `${pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceDate}${pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceTime ? `T${pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceTime}` : ''}`,
       )
       let appearanceDateFormatted = appearanceDate.format(config.dateFormat)
-      if (pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceTime) {
+      if (pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceTime) {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)
       }
       this.nextHearing = [
-        courtMap[pageCourtCaseContent.latestAppearance.nextCourtAppearance.courtCode] ??
-          pageCourtCaseContent.latestAppearance.nextCourtAppearance.courtCode,
-        pageCourtCaseContent.latestAppearance.nextCourtAppearance.appearanceType.description,
+        courtMap[pagedCourtCase.latestCourtAppearance.nextCourtAppearance.courtCode],
+        pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceTypeDescription,
         appearanceDateFormatted,
       ]
     } else {
       this.nextHearing = ['No future appearance scheduled']
     }
-    this.appearanceTotal = pageCourtCaseContent.appearances.length
-    this.latestAppearance = pageCourtCaseContent.latestAppearance
-    this.chargeTotal = pageCourtCaseContent.latestAppearance?.charges.length
+    this.appearanceTotal = pagedCourtCase.appearanceCount
+    this.latestAppearance = pagedCourtCase.latestCourtAppearance
+    this.chargeTotal = pagedCourtCase.latestCourtAppearance?.charges.length
     if (this.chargeTotal > 6) {
       this.showingChargeTotal = 6
     }
-    const charges = pageCourtCaseContent.latestAppearance?.charges
+    const charges = pagedCourtCase.latestCourtAppearance?.charges
       .sort((a, b) => {
         return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
       })
       .slice(0, 6)
-    this.offences = charges?.map((charge, index) => chargeToOffence(charge, index))
+    this.offences = charges?.map((charge, index) => pagedChargeToOffence(charge, index))
     this.sentenceTypeMap = Object.fromEntries(
       charges
         ?.filter(charge => charge.sentence?.sentenceType)
         .map(charge => [charge.sentence.sentenceType.sentenceTypeUuid, charge.sentence.sentenceType.description]) ?? [],
     )
-    this.offenceOutcomeMap = Object.fromEntries(
-      charges
-        ?.filter(charge => charge.outcome)
-        .map(charge => [charge.outcome.outcomeUuid, charge.outcome.outcomeName]) ?? [],
-    )
-    this.hasARecall = pageCourtCaseContent.appearances
-      .flatMap(appearance => appearance.charges)
-      .some(charge => charge.sentence?.hasRecall)
+    this.hasARecall = pagedCourtCase.latestCourtAppearance.charges.some(charge => charge.sentence?.hasRecall)
+    this.mergedFromCases = pagedCourtCase.mergedFromCases
   }
 }

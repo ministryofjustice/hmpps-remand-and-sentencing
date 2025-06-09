@@ -7,7 +7,7 @@ context('Select court name page', () => {
   let courtCaseSelectCourtNamePage: CourtCaseSelectCourtNamePage
   beforeEach(() => {
     cy.task('happyPathStubs')
-    cy.task('stubGetLatestCourtAppearance')
+    cy.task('stubGetLatestCourtAppearance', {})
     cy.task('stubGetCourtById', {})
     cy.signIn()
     cy.visit(

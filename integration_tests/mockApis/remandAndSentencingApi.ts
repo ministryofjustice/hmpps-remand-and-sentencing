@@ -589,11 +589,15 @@ export default {
     })
   },
 
-  stubGetLatestCourtAppearance: (): SuperAgentRequest => {
+  stubGetLatestCourtAppearance: ({
+    courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+  }: {
+    courtCaseUuid: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/remand-and-sentencing-api/court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/latest-appearance',
+        urlPattern: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/latest-appearance`,
       },
       response: {
         status: 200,
@@ -640,11 +644,15 @@ export default {
     })
   },
 
-  stubGetLatestCourtAppearanceWithSentencing: (): SuperAgentRequest => {
+  stubGetLatestCourtAppearanceWithSentencing: ({
+    courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+  }: {
+    courtCaseUuid: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/remand-and-sentencing-api/court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/latest-appearance',
+        urlPattern: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/latest-appearance`,
       },
       response: {
         status: 200,

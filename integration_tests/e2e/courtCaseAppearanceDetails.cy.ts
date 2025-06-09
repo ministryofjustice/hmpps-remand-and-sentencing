@@ -1,3 +1,4 @@
+import AppearanceUpdatedConfirmationPage from '../pages/appearanceUpdatedConfirmationPage'
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseAppearanceDetailsPage'
 import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
@@ -158,6 +159,8 @@ context('Court Case Appearance details Page', () => {
 
     it('edit fields and submit stores in RAS API', () => {
       cy.task('stubUpdateCourtAppearance')
+      cy.task('stubGetLatestCourtAppearance', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
+      cy.task('stubGetCourtById', {})
       courtCaseAppearanceDetailsPage
         .editFieldLink(
           'A1234AB',
@@ -172,6 +175,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseReferencePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.confirmButton().click()
+      Page.verifyOnPage(AppearanceUpdatedConfirmationPage)
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
     })
 

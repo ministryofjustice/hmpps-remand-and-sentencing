@@ -165,4 +165,19 @@ export default abstract class BaseRoutes {
         }),
     )
   }
+
+  protected async updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference) {
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const { token } = res.locals.user
+    const { prisonId } = res.locals.prisoner
+    await this.remandAndSentencingService.updateCourtAppearance(
+      token,
+      courtCaseReference,
+      appearanceReference,
+      courtAppearance,
+      prisonId,
+    )
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`)
+  }
 }

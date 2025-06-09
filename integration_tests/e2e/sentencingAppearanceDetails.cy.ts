@@ -3,6 +3,7 @@ import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import Page from '../pages/page'
 import SentencingSentenceLengthMismatchPage from '../pages/sentencingSentenceLengthMismatchPage'
+import AppearanceUpdatedConfirmationPage from '../pages/appearanceUpdatedConfirmationPage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -113,6 +114,8 @@ context('Sentencing appearance details Page', () => {
         classification: 'EXTENDED',
       })
       cy.task('stubGetChargeOutcomeById', {})
+      cy.task('stubGetLatestCourtAppearanceWithSentencing', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
+      cy.task('stubGetCourtById', {})
       courtCaseAppearanceDetailsPage
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
         .click()
@@ -146,6 +149,7 @@ context('Sentencing appearance details Page', () => {
       offenceEditOffencePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.confirmButton().click()
+      Page.verifyOnPage(AppearanceUpdatedConfirmationPage)
       cy.task('verifyUpdateSentenceCourtAppearanceRequest').should('equal', 1)
     })
 

@@ -99,17 +99,6 @@ export default class RemandRoutes extends BaseRoutes {
 
   public submitAppearanceDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    const { token } = res.locals.user
-    const { prisonId } = res.locals.prisoner
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    await this.remandAndSentencingService.updateCourtAppearance(
-      token,
-      courtCaseReference,
-      appearanceReference,
-      courtAppearance,
-      prisonId,
-    )
-    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+    return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference)
   }
 }

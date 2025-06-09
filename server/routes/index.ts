@@ -89,6 +89,11 @@ export default function routes(services: Services): Router {
   get('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/details', courtCaseRoutes.getCourtCaseDetails)
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance-updated-confirmation',
+    courtCaseRoutes.getAppearanceUpdatedConfirmation,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/appearance-details',
     sentencingRoutes.getAppearanceDetails,
   )

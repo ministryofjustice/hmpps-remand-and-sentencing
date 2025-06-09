@@ -2,6 +2,7 @@ import CourtCaseAppearanceDetailsPage from '../pages/courtCaseAppearanceDetailsP
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import Page from '../pages/page'
+import SentencingSentenceLengthMismatchPage from '../pages/sentencingSentenceLengthMismatchPage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -146,6 +147,12 @@ context('Sentencing appearance details Page', () => {
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.confirmButton().click()
       cy.task('verifyUpdateSentenceCourtAppearanceRequest').should('equal', 1)
+    })
+
+    it('display sentence mismatch when sentence length comparison fails', () => {
+      cy.task('stubOverallSentenceLengthFail')
+      courtCaseAppearanceDetailsPage.confirmButton().click()
+      Page.verifyOnPage(SentencingSentenceLengthMismatchPage)
     })
   })
 

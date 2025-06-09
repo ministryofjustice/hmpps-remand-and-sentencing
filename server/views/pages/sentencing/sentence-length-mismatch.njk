@@ -1,0 +1,33 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "moj/components/interruption-card/macro.njk" import interruptionCard %}
+
+{% set pageTitle = "sentencing - sentence length mismatch" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% call interruptionCard({
+                heading: "Sentence length mismatch",
+                primaryAction: {
+                    text: "Yes, continue",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/sentencing/continue-sentence-length-mismatch",
+                    attributes: {
+                        "data-qa": "continue-button"
+                    }
+                },
+                secondaryAction: {
+                    text: "Go back to Edit appearance details",
+                    href: backLink
+                }
+            })%}
+                <p class="govuk-body">The sentence lengths you have entered total:</p> 
+                <p class="govuk-body govuk-!-font-weight-bold">{{ overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder }}</p>
+                <p>This does not match the overall sentence length from the warrant, which is:</p>
+                <p class="govuk-body govuk-!-font-weight-bold">{{ courtAppearance.overallSentenceLength | formatLengths }}</p>
+                <p class="govuk-body">You can go back and review offences, or you can continue with sentence length mismatch.</p>
+                <p class="govuk-body">If you continue, only a provisional calculation can be made.</p>
+                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-6">Do you want to continue?</p>
+            {%- endcall %}
+        </div>
+    </div>
+{% endblock %}

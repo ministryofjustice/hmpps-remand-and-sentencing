@@ -174,4 +174,8 @@ declare module 'forms' {
   export interface SentenceConsecutiveToForm {
     consecutiveToSentenceUuid?: string
   }
+
+  export interface UploadedDocumentForm {
+    _csrf?: string
+  }
 }

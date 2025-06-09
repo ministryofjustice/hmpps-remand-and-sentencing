@@ -36,6 +36,7 @@ declare module 'models' {
     legacyData?: Record<string, never>
     hasOverallSentenceLength?: string
     existingDraft?: boolean
+    uploadedDocuments?: UploadedDocument[]
   }
 
   export interface Offence {
@@ -85,6 +86,7 @@ declare module 'models' {
     description?: string
     uuid?: string
   }
+
   export interface TaskListItem {
     title: { text: string; classes?: string }
     href: string
@@ -98,5 +100,11 @@ declare module 'models' {
       text: string
       classes?: string
     }
+  }
+
+  export interface UploadedDocument {
+    documentId: string
+    documentType: string
+    fileName: string
   }
 }

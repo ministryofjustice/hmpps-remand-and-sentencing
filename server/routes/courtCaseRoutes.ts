@@ -13,10 +13,12 @@ import type {
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
   CourtCaseWarrantTypeForm,
+  UploadedDocumentForm,
 } from 'forms'
-import type { CourtAppearance, CourtCase } from 'models'
+import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
 import dayjs from 'dayjs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import fs from 'fs'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -1442,6 +1444,7 @@ export default class CourtCaseRoutes {
   public getCourtDocumentsPage: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId)
     return res.render('pages/courtAppearance/upload-court-documents', {
       nomsId,
       courtCaseReference,
@@ -1449,7 +1452,115 @@ export default class CourtCaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       courtAppearance,
+      uploadedDocuments,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
+  }
+
+  public getUploadCourtDocuments: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      documentType,
+    } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const documentName = this.getDocumentName(documentType)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+
+    // Only pass errors if they exist
+    const errors = req.flash('errors') || []
+    const hasErrors = errors.length > 0
+
+    return res.render('pages/courtAppearance/document-upload', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      documentType,
+      documentName,
+      courtAppearance,
+      errors: hasErrors ? errors : [],
+      backLink:
+        warrantType === 'SENTENCING'
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
+    })
+  }
+
+  public submitUploadCourtDocuments: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      documentType,
+    } = req.params
+    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
+    const uploadedFile = (req.files as Express.Multer.File[])?.[0]
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+
+    try {
+      if (!uploadedFile) {
+        // Check uploadedFile instead of req.file
+        req.flash('errors', [{ text: 'No file uploaded. Please select a file to upload.' }])
+        req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
+        )
+      }
+
+      // Check file size
+      const maxFileSize = 50 * 1024 * 1024 // 50MB
+      if (uploadedFile.size > maxFileSize) {
+        // Use uploadedFile.size
+        req.flash('errors', [{ text: 'File size exceeds the maximum limit of 50MB.' }])
+        req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
+        )
+      }
+      const documentTypeName = this.getDocumentType(documentType)
+      // Upload the document
+      const documentId = await this.documentManagementService.uploadDocument(
+        nomsId,
+        uploadedFile, // Pass uploadedFile
+        username,
+        activeCaseLoadId,
+        documentTypeName,
+      )
+
+      const uploadedDocument: UploadedDocument = {
+        documentId,
+        documentType: documentTypeName,
+        fileName: uploadedFile.originalname,
+      }
+      this.courtAppearanceService.addUploadedDocument(req.session, nomsId, uploadedDocument)
+
+      return res.redirect(
+        warrantType === 'SENTENCING'
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
+      )
+    } catch (error) {
+      logger.error(`Error uploading document: ${error.message}`)
+      req.flash('errors', [{ text: 'An error occurred while uploading the document. Please try again later.' }])
+      req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
+      )
+    } finally {
+      if (req.file && req.file.path) {
+        fs.unlink(req.file.path, err => {
+          if (err) logger.error('Error deleting temp file:', err)
+        })
+      }
+    }
   }
 
   public getDraftConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
@@ -1467,6 +1578,36 @@ export default class CourtCaseRoutes {
       courtAppearanceCourtName,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
+  }
+
+  private getDocumentName(documentType: string): string {
+    switch (documentType) {
+      case 'warrant':
+        return 'sentencing warrant'
+      case 'trial-record-sheet':
+        return 'trial record sheet'
+      case 'indictment':
+        return 'indictment document'
+      case 'prison-court-register':
+        return 'prison court register'
+      default:
+        return 'court document'
+    }
+  }
+
+  private getDocumentType(documentName: string): string {
+    switch (documentName) {
+      case 'sentencing warrant':
+        return 'HMCTS_WARRANT'
+      case 'trial-record-sheet':
+        return 'TRIAL_RECORD_SHEET'
+      case 'indictment':
+        return 'INDICTMENT'
+      case 'prison-court-register':
+        return 'PRISON_COURT_REGISTER'
+      default:
+        return 'HMCTS_WARRANT'
+    }
   }
 
   private isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {

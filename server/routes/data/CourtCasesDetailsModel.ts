@@ -45,6 +45,8 @@ export default class CourtCasesDetailsModel {
 
   hasARecall: boolean
 
+  allAppearancesHaveRecall: boolean
+
   mergedFromCases: PagedMergedFromCase[]
 
   constructor(pagedCourtCase: PagedCourtCase, courtMap: { [key: string]: string }) {
@@ -103,5 +105,6 @@ export default class CourtCasesDetailsModel {
     )
     this.hasARecall = pagedCourtCase.latestCourtAppearance.charges.some(charge => charge.sentence?.hasRecall)
     this.mergedFromCases = pagedCourtCase.mergedFromCases
+    this.allAppearancesHaveRecall = pagedCourtCase.allAppearancesHaveRecall
   }
 }

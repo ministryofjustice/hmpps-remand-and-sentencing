@@ -3,6 +3,7 @@ import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import Page from '../pages/page'
 import SentencingSentenceLengthMismatchPage from '../pages/sentencingSentenceLengthMismatchPage'
+import AppearanceUpdatedConfirmationPage from '../pages/appearanceUpdatedConfirmationPage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -146,6 +147,7 @@ context('Sentencing appearance details Page', () => {
       offenceEditOffencePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.confirmButton().click()
+      Page.verifyOnPage(AppearanceUpdatedConfirmationPage)
       cy.task('verifyUpdateSentenceCourtAppearanceRequest').should('equal', 1)
     })
 

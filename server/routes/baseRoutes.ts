@@ -178,6 +178,6 @@ export default abstract class BaseRoutes {
       prisonId,
     )
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`)
   }
 }

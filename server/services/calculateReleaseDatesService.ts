@@ -20,7 +20,9 @@ export default class CalculateReleaseDatesService {
     appearance: CourtAppearance,
     username: string,
   ): Promise<OverallSentenceLengthComparison> {
-    const sentences = appearance.offences.filter(it => it.sentence).map(it => it.sentence)
+    const sentences = appearance.offences
+      .filter(it => it.sentence && it.sentence.periodLengths?.length)
+      .map(it => it.sentence)
 
     const skippedValidationResponse = {
       custodialLength: this.emptySentenceLength,
@@ -43,7 +45,9 @@ export default class CalculateReleaseDatesService {
         return skippedValidationResponse
       }
 
-      const consecutive = sentences.filter(sentence => sentence.sentenceServeType === 'CONSECUTIVE')
+      const consecutive = sentences.filter(
+        sentence => sentence.sentenceServeType === 'CONSECUTIVE' || sentence.sentenceServeType === 'FORTHWITH',
+      )
       const concurrent = sentences.filter(it => !consecutive.includes(it))
 
       const request = {

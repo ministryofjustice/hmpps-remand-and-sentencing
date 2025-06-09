@@ -240,10 +240,24 @@ export default class SentencingRoutes extends BaseRoutes {
   }
 
   public submitAppearanceDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { token } = res.locals.user
     const { prisonId } = res.locals.prisoner
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    if (courtAppearance.hasOverallSentenceLength === 'true') {
+      const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
+        courtAppearance,
+        req.user.username,
+      )
+      if (
+        overallSentenceComparison.custodialLengthMatches === false ||
+        overallSentenceComparison.licenseLengthMatches === false
+      ) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/sentence-length-mismatch`,
+        )
+      }
+    }
     await this.remandAndSentencingService.updateCourtAppearance(
       token,
       courtCaseReference,
@@ -485,5 +499,42 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
       offenceReference,
     )
+  }
+
+  public getSentenceLengthMismatch: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+
+    const overallSentenceLengthComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
+      courtAppearance,
+      req.user.username,
+    )
+
+    return res.render('pages/sentencing/sentence-length-mismatch', {
+      nomsId,
+      courtCaseReference,
+      courtAppearance,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      overallSentenceLengthComparison,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+    })
+  }
+
+  public continueSentenceLengthMismatch: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { token } = res.locals.user
+    const { prisonId } = res.locals.prisoner
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    await this.remandAndSentencingService.updateCourtAppearance(
+      token,
+      courtCaseReference,
+      appearanceReference,
+      courtAppearance,
+      prisonId,
+    )
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
   }
 }

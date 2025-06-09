@@ -196,6 +196,23 @@ export default class CourtCaseRoutes {
     })
   }
 
+  public getAppearanceUpdatedConfirmation: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { token, username } = res.locals.user
+    const latestAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+      token,
+      courtCaseReference,
+    )
+    const courtDetails = await this.courtRegisterService.findCourtById(latestAppearance.courtCode, username)
+    return res.render('paged/appearanceUpdatedConfirmation', {
+      nomsId,
+      courtCaseReference,
+      addOrEditCourtCase,
+      latestAppearance,
+      courtDetails,
+    })
+  }
+
   public getReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query

@@ -204,7 +204,7 @@ export default class CourtCaseRoutes {
       courtCaseReference,
     )
     const courtDetails = await this.courtRegisterService.findCourtById(latestAppearance.courtCode, username)
-    return res.render('paged/appearanceUpdatedConfirmation', {
+    return res.render('pages/appearanceUpdatedConfirmation', {
       nomsId,
       courtCaseReference,
       addOrEditCourtCase,

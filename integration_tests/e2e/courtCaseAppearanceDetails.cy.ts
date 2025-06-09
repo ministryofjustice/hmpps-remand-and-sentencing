@@ -159,6 +159,8 @@ context('Court Case Appearance details Page', () => {
 
     it('edit fields and submit stores in RAS API', () => {
       cy.task('stubUpdateCourtAppearance')
+      cy.task('stubGetLatestCourtAppearance', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
+      cy.task('stubGetCourtById', {})
       courtCaseAppearanceDetailsPage
         .editFieldLink(
           'A1234AB',

@@ -7,7 +7,6 @@ import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPag
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
 import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
-import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import Page from '../pages/page'
 
 context('Court Case Appearance details Page', () => {

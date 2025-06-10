@@ -214,9 +214,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter(
     'formatOverallMergedFromCase',
     (mergedFromCase: PagedMergedFromCase, courtDetails: { [key: string]: string }) => {
-      let description = `the case at ${courtDetails[mergedFromCase.courtCode]} on ${formatDate(mergedFromCase.warrantDate)} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}`
+      let description = `The case at ${courtDetails[mergedFromCase.courtCode]} on ${formatDate(mergedFromCase.warrantDate)} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}.`
       if (mergedFromCase.caseReference) {
-        description = `${mergedFromCase.caseReference} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}`
+        description = `${mergedFromCase.caseReference} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}.`
       }
       return description
     },

@@ -10,6 +10,7 @@ import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
 import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
+import SentenceSentenceConsecutiveToPage from '../pages/sentenceSentenceConsecutiveToPage'
 import Page from '../pages/page'
 
 context('Add Offence Edit offence Page', () => {
@@ -244,6 +245,30 @@ context('Add Offence Edit offence Page', () => {
         'Custodial term': '4 years 4 months 0 weeks 0 days',
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+      })
+    })
+
+    it('can edit consecutive to and return to edit page', () => {
+      cy.task('stubGetSentencesToChainTo')
+      cy.task('stubGetCourtsByIds')
+      cy.task('stubGetOffencesByCodes', {})
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'sentence-serve-type').click()
+      const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+      offenceSentenceServeTypePage.radioSelector('FORTHWITH').should('be.checked')
+      offenceSentenceServeTypePage.radioLabelSelector('CONSECUTIVE').click()
+      offenceSentenceServeTypePage.continueButton().click()
+      const sentenceSentenceConsecutiveToPage = Page.verifyOnPage(SentenceSentenceConsecutiveToPage)
+      sentenceSentenceConsecutiveToPage.radioSelector('328fa693-3f99-46bf-9a94-d8578dc399af|OTHER').click()
+      sentenceSentenceConsecutiveToPage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        'Committed on': '12/05/2023',
+        'Conviction date': '12/05/2023',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Consecutive',
       })
     })
   })

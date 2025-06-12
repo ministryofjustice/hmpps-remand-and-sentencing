@@ -168,6 +168,7 @@
                                                         offenceEndDate: offence.offenceEndDate | formatDate,
                                                         outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
                                                         countNumber: offence.sentence.countNumber if offence.sentence,
+                                                        lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
                                                         convictionDate: (offence.sentence.convictionDate | formatDate) if offence.sentence,
                                                         terrorRelated: offence.terrorRelated,
                                                         isSentenced: offence.sentence,

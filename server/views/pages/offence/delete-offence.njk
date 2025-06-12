@@ -17,6 +17,7 @@
             offenceEndDate: offence.offenceEndDate | formatDate,
             outcome: outcome | outcomeValueOrLegacy(offence.legacyData),
             countNumber: offence.sentence.countNumber,
+            lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
             convictionDate: offence.sentence.convictionDate | formatDate,
             terrorRelated: offence.terrorRelated,
             isSentenced: offence.sentence,

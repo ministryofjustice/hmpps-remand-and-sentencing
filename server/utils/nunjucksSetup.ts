@@ -185,10 +185,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       if (aCountNumber === bCountNumber) {
         return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
       }
-      if (!aCountNumber) {
+      if (!aCountNumber || aCountNumber === '-1') {
         return 1
       }
-      if (!bCountNumber) {
+      if (!bCountNumber || bCountNumber === '-1') {
         return -1
       }
       return aCountNumber < bCountNumber ? -1 : 1

@@ -42,7 +42,7 @@
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceUuid}}">
                                         <label class="govuk-label govuk-radios__label" for="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}">
-                                            {% if sentence.countNumber%}
+                                            {% if sentence.countNumber and sentence.countNumber !== '-1'%}
                                                 Count {{sentence.countNumber}}<br>
                                             {% endif %}
                                             {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}

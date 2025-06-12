@@ -261,7 +261,7 @@ export default class OffenceService {
       if (countNumberForm.hasCountNumber === 'true') {
         sentence.countNumber = countNumberForm.countNumber
       } else {
-        delete sentence.countNumber
+        sentence.countNumber = '-1'
       }
 
       offence.sentence = sentence

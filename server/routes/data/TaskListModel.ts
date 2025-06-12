@@ -156,7 +156,7 @@ export default class TaskListModel {
       return undefined
     }
 
-    if (!this.allWarrantInformationFilledOut(courtAppearance) || !this.isAddCourtCase()) {
+    if (courtAppearance.warrantInformationAccepted !== true || !this.isAddCourtCase()) {
       return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/overall-sentence-length`
     }
 

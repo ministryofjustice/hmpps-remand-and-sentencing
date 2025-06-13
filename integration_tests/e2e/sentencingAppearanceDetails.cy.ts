@@ -4,6 +4,8 @@ import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import Page from '../pages/page'
 import SentencingSentenceLengthMismatchPage from '../pages/sentencingSentenceLengthMismatchPage'
 import AppearanceUpdatedConfirmationPage from '../pages/appearanceUpdatedConfirmationPage'
+import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
+import CourtCaseAlternativeSentenceLengthPage from '../pages/courtCaseAlternativeSentenceLengthPage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -157,6 +159,28 @@ context('Sentencing appearance details Page', () => {
       cy.task('stubOverallSentenceLengthFail')
       courtCaseAppearanceDetailsPage.confirmButton().click()
       Page.verifyOnPage(SentencingSentenceLengthMismatchPage)
+    })
+
+    it('can edit alternative overall sentence length', () => {
+      courtCaseAppearanceDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'sentencing/overall-sentence-length',
+        )
+        .click()
+      const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
+      courtCaseOverallSentenceLengthPage
+        .editAlternativeLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6')
+        .click()
+      const courtCaseAlternativeSentenceLengthPage = Page.verifyOnPage(CourtCaseAlternativeSentenceLengthPage)
+      courtCaseAlternativeSentenceLengthPage.sentenceLengthInput('first').clear().type('2')
+      courtCaseAlternativeSentenceLengthPage.sentenceLengthDropDown('first').select('months')
+      courtCaseAlternativeSentenceLengthPage.sentenceLengthInput('second').clear().type('2')
+      courtCaseAlternativeSentenceLengthPage.sentenceLengthDropDown('second').select('years')
+      courtCaseAlternativeSentenceLengthPage.continueButton().click()
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
   })
 

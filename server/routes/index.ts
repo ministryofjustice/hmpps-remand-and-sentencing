@@ -51,6 +51,8 @@ export default function routes(services: Services): Router {
 
   const overallSentencingRoutes = new OverallSentencingRoutes(
     services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
     services.appearanceOutcomeService,
   )
 

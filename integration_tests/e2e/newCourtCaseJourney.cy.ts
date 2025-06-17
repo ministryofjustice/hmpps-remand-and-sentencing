@@ -421,6 +421,7 @@ context('New Court Case journey', () => {
       'Overall sentence length': '4 years 5 months 3 weeks 2 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
       'Conviction date': '12/05/2023',
+      'Overall case outcome': 'Imprisonment',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
     warrantInformationCheckAnswersPage.confirmAndContinueButton().click()

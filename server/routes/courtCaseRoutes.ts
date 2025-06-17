@@ -32,7 +32,6 @@ import { PrisonUser } from '../interfaces/hmppsUser'
 import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
-import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import mojPaginationFromPageCourtCase from './data/pagination'
 import config from '../config'
@@ -667,14 +666,9 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-type`,
       )
     }
+
     const { warrantType } = warrantTypeForm
     this.courtAppearanceService.setWarrantType(req.session, nomsId, warrantType)
-    if (warrantType === 'SENTENCING') {
-      const overallCaseOutcomeForm = {
-        overallCaseOutcome: '62412083-9892-48c9-bf01-7864af4a8b3c|f17328cf-ceaa-43c2-930a-26cf74480e18',
-      }
-      this.courtAppearanceService.setAppearanceOutcomeUuid(req.session, nomsId, overallCaseOutcomeForm)
-    }
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -860,14 +854,6 @@ export default class CourtCaseRoutes {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, courtAppearance.legacyData)
     }
 
-    if (mainOutcomes.length === 1 && subListOutcomes.length === 0) {
-      const outcome: AppearanceOutcome = mainOutcomes[0]
-      overallCaseOutcomeForm.overallCaseOutcome = `${outcome.outcomeUuid}|${outcome.relatedChargeOutcomeUuid}`
-      req.body = overallCaseOutcomeForm
-      req.flash('skippedOutcome', 'true')
-      return this.submitOverallCaseOutcome(req, res, null)
-    }
-
     return res.render('pages/courtAppearance/overall-case-outcome', {
       nomsId,
       submitToCheckAnswers,
@@ -887,14 +873,13 @@ export default class CourtCaseRoutes {
   public submitOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const skippedOutcome = req.flash('skippedOutcome')[0] === 'true' || false
     const overallCaseOutcomeForm = trimForm<CourtCaseOverallCaseOutcomeForm>(req.body)
     const errors = this.courtAppearanceService.setAppearanceOutcomeUuid(req.session, nomsId, overallCaseOutcomeForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('overallCaseOutcomeForm', { ...overallCaseOutcomeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}${skippedOutcome ? '?skippedOutcome=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome${submitToCheckAnswers ? '?submitToCheckAnswers=true' : ''}`,
       )
     }
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
@@ -907,9 +892,6 @@ export default class CourtCaseRoutes {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
       )
-    }
-    if (skippedOutcome) {
-      req.flash('skippedOutcome', 'true')
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all`,

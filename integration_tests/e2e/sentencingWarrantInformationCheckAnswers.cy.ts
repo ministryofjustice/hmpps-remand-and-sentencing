@@ -5,14 +5,15 @@ import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenc
 import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import CourtCaseTaskListPage from '../pages/courtCaseTaskListPage'
+import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 
 context('Warrant Information Check Answers Page', () => {
   let offenceCheckOverallAnswersPage: SentencingWarrantInformationCheckAnswersPage
   beforeEach(() => {
     cy.task('happyPathStubs')
-    cy.task('stubGetAllAppearanceOutcomesWithSingleResults')
+    cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetAppearanceOutcomeById', {
-      outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+      outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })
@@ -22,13 +23,6 @@ context('Warrant Information Check Answers Page', () => {
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.continueButton().click()
-
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
-
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-sentence-length')
 
@@ -44,6 +38,18 @@ context('Warrant Information Check Answers Page', () => {
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
+
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
+
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/check-overall-answers')
 
@@ -69,6 +75,7 @@ context('Warrant Information Check Answers Page', () => {
       'Overall sentence length': '4 years 5 months 0 weeks 0 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
       'Conviction date': '12/05/2023',
+      'Overall case outcome': 'Imprisonment',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
   })
@@ -87,6 +94,7 @@ context('Warrant Information Check Answers Page', () => {
       'Overall sentence length': '6 years 0 months 0 weeks 0 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
       'Conviction date': '12/05/2023',
+      'Overall case outcome': 'Imprisonment',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
   })
@@ -108,6 +116,30 @@ context('Warrant Information Check Answers Page', () => {
       'Overall sentence length': '4 years 5 months 0 weeks 0 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
       'Conviction date': '20/05/2023',
+      'Overall case outcome': 'Imprisonment',
+      'Is the outcome the same for all offences on the warrant?': 'Yes',
+    })
+  })
+
+  it('clicking edit overall case outcome and submitting goes back to check answers page', () => {
+    cy.task('stubGetAppearanceOutcomeById', {
+      outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d11',
+      outcomeName: 'Another option',
+      outcomeType: 'SENTENCING',
+    })
+    offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'sentencing/overall-case-outcome').click()
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Another option').click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
+    offenceCheckOverallAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
+      'Is there an overall sentence length on the warrant?': 'Yes',
+      'Overall sentence length': '4 years 5 months 0 weeks 0 days',
+      'Is the conviction date the same for all offences on the warrant?': 'Yes',
+      'Conviction date': '12/05/2023',
+      'Overall case outcome': 'Another option',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
   })

@@ -44,6 +44,7 @@ context('Repeat Court Case journey', () => {
     cy.task('stubGetAllChargeOutcomes')
     cy.task('stubOverallSentenceLengthPass')
     cy.task('stubGetServiceDefinitions')
+    cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetChargeOutcomesByIds', [
       {
         outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
@@ -56,7 +57,6 @@ context('Repeat Court Case journey', () => {
   })
 
   it('repeat remand journey', () => {
-    cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetAppearanceOutcomeById', {})
     cy.task('stubGetAppearanceTypeByUuid')
     cy.task('stubGetChargeOutcomeById', {
@@ -283,7 +283,7 @@ context('Repeat Court Case journey', () => {
       },
     ])
     cy.task('stubGetAppearanceOutcomeById', {
-      outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+      outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })
@@ -402,12 +402,20 @@ context('Repeat Court Case journey', () => {
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
 
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
+
     const warrantInformationCheckAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
     warrantInformationCheckAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '4 years 5 months 0 weeks 0 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
       'Conviction date': '12/05/2023',
+      'Overall case outcome': 'Imprisonment',
     })
     warrantInformationCheckAnswersPage.confirmAndContinueButton().click()
 

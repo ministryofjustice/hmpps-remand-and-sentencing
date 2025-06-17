@@ -666,6 +666,9 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-type`,
       )
     }
+
+    const { warrantType } = warrantTypeForm
+    this.courtAppearanceService.setWarrantType(req.session, nomsId, warrantType)
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(

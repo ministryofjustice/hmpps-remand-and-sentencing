@@ -229,7 +229,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
     }
 
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing//overall-case-outcome`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/overall-case-outcome`,
     )
   }
 
@@ -295,7 +295,11 @@ export default class OverallSentencingRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     const overallCaseOutcomeForm = trimForm<CourtCaseOverallCaseOutcomeForm>(req.body)
-    const errors = this.courtAppearanceService.setAppearanceOutcomeUuid(req.session, nomsId, overallCaseOutcomeForm)
+    const errors = this.courtAppearanceService.setSentencingAppearanceOutcomeUuid(
+      req.session,
+      nomsId,
+      overallCaseOutcomeForm,
+    )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('overallCaseOutcomeForm', { ...overallCaseOutcomeForm })

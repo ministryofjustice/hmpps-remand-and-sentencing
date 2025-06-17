@@ -2136,7 +2136,7 @@ export default {
             relatedChargeOutcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
           },
           {
-            outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+            outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
             outcomeName: 'Imprisonment',
             nomisCode: '1002',
             outcomeType: 'SENTENCING',
@@ -2148,7 +2148,7 @@ export default {
             outcomeName: 'Another option',
             nomisCode: '09753',
             outcomeType: 'SENTENCING',
-            displayOrder: 10,
+            displayOrder: 20,
             relatedChargeOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
           },
         ],

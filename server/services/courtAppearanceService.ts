@@ -302,6 +302,31 @@ export default class CourtAppearanceService {
     return errors
   }
 
+  setSentencingAppearanceOutcomeUuid(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    overallCaseOutcomeForm: CourtCaseOverallCaseOutcomeForm,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const errors = validate(
+      { ...overallCaseOutcomeForm, warrantInformationAccepted: courtAppearance.warrantInformationAccepted },
+      { overallCaseOutcome: 'required', warrantInformationAccepted: 'isNotTrue' },
+      {
+        'required.overallCaseOutcome': 'You must select the overall case outcome',
+        'isNotTrue.warrantInformationAccepted': 'You cannot submit after confirming overall warrant information',
+      },
+    )
+    if (errors.length === 0) {
+      const [appearanceOutcomeUuid, relatedOffenceOutcomeUuid] = overallCaseOutcomeForm.overallCaseOutcome.split('|')
+
+      courtAppearance.appearanceOutcomeUuid = appearanceOutcomeUuid
+      courtAppearance.relatedOffenceOutcomeUuid = relatedOffenceOutcomeUuid
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
   getAppearanceOutcomeUuid(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).appearanceOutcomeUuid
   }

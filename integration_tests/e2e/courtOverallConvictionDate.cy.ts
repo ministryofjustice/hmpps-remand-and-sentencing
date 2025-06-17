@@ -3,6 +3,7 @@ import CourtCaseOverallConvictionDatePage from '../pages/courtCaseOverallConvict
 import Page from '../pages/page'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import SentencingWarrantInformationCheckAnswersPage from '../pages/sentencingWarrantInformationCheckAnswersPage'
+import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 
 context('Court Case Overall Conviction Date Page', () => {
   let courtCaseOverallConvictionDatePage: CourtCaseOverallConvictionDatePage
@@ -88,6 +89,7 @@ context('Court Case Overall Conviction Date Page', () => {
   })
 
   it('after confirm and continue check answers this becomes uneditable', () => {
+    cy.task('stubGetAllAppearanceOutcomes')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
@@ -98,6 +100,12 @@ context('Court Case Overall Conviction Date Page', () => {
     courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').clear().type('5')
     courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').clear().type('2023')
     courtCaseOverallConvictionDatePage.continueButton().click()
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/check-overall-answers')
     const offenceCheckOverallAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
     offenceCheckOverallAnswersPage.confirmAndContinueButton().click()

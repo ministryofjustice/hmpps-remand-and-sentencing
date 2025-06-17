@@ -1,5 +1,4 @@
 import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
-import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import Page from '../pages/page'

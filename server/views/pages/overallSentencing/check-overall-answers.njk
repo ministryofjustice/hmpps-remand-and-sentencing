@@ -72,6 +72,23 @@
             }
         ] if courtAppearance.warrantInformationAccepted !== true
     }
+    },
+    {
+        key: {
+        text: "Overall case outcome"
+    },
+        value: {
+        text: overallCaseOutcome
+    },
+        actions: {
+        items: [
+            {
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/overall-case-outcome?submitToCheckAnswers=true",
+                text: "Edit",
+                visuallyHiddenText: "overall case outcome"
+            }
+        ] if courtAppearance.warrantInformationAccepted !== true
+    }
     }
 ] %}
 

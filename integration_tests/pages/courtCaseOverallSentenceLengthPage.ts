@@ -14,4 +14,9 @@ export default class CourtCaseOverallSentenceLengthPage extends Page {
   daysInput = (): PageElement => cy.get('#sentenceLength-days')
 
   warrantInformationCaption = (): PageElement => cy.get('[data-qa=warrant-information-caption]')
+
+  editAlternativeLink = (personId: string, courtCaseReference: string, appearanceReference: string): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/edit-court-case/${courtCaseReference}/edit-court-appearance/${appearanceReference}/sentencing/alternative-overall-sentence-length"]`,
+    )
 }

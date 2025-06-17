@@ -48,6 +48,8 @@ export default function routes(services: Services): Router {
 
   const overallSentencingRoutes = new OverallSentencingRoutes(
     services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
     services.appearanceOutcomeService,
   )
 
@@ -86,6 +88,11 @@ export default function routes(services: Services): Router {
   get('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/details', courtCaseRoutes.getCourtCaseDetails)
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance-updated-confirmation',
+    courtCaseRoutes.getAppearanceUpdatedConfirmation,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/appearance-details',
     sentencingRoutes.getAppearanceDetails,
   )
@@ -93,6 +100,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-details-edit',
     sentencingRoutes.submitAppearanceDetailsEdit,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/sentence-length-mismatch',
+    sentencingRoutes.getSentenceLengthMismatch,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/continue-sentence-length-mismatch',
+    sentencingRoutes.continueSentenceLengthMismatch,
   )
 
   get(

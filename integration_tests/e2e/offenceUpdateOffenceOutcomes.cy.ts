@@ -15,7 +15,7 @@ context('Update Offence Outcomes Page', () => {
 
   context('Remand to Sentence', () => {
     beforeEach(() => {
-      cy.task('stubGetLatestCourtAppearance')
+      cy.task('stubGetLatestCourtAppearance', {})
       cy.task('stubGetOffencesByCodes', {})
       cy.task('stubGetChargeOutcomesByIds', [
         {

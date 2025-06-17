@@ -168,6 +168,7 @@
                                                         offenceEndDate: offence.offenceEndDate | formatDate,
                                                         outcome: offenceOutcomeMap[offence.outcomeUuid] | outcomeValueOrLegacy(offence.legacyData),
                                                         countNumber: offence.sentence.countNumber if offence.sentence,
+                                                        lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
                                                         convictionDate: (offence.sentence.convictionDate | formatDate) if offence.sentence,
                                                         terrorRelated: offence.terrorRelated,
                                                         isSentenced: offence.sentence,
@@ -196,7 +197,14 @@
                             </div>
                             <hr class="govuk-section-break govuk-!-margin-top-4 govuk-section-break--visible">
                             <p class="govuk-body govuk-!-margin-top-6">
-                                <a class="govuk-link--no-visited-state govuk-!-font-weight-bold" href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}/details">View and edit all appearances for this court case ({{ courtCaseDetails.appearanceTotal }})</a>
+                                <a class="govuk-link--no-visited-state govuk-!-font-weight-bold" href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}/details">
+                                    {% if courtCaseDetails.allAppearancesHaveRecall %}
+                                        View all appearances for this court case ({{ courtCaseDetails.appearanceTotal }})
+                                    {% else %}
+                                        View and edit all appearances for this court case ({{ courtCaseDetails.appearanceTotal }})
+                                    {% endif %}
+                                    
+                                </a>
                             </p>
 
                         {% endset %}

@@ -198,6 +198,23 @@ export default class CourtCaseRoutes {
     })
   }
 
+  public getAppearanceUpdatedConfirmation: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
+    const { token, username } = res.locals.user
+    const latestAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+      token,
+      courtCaseReference,
+    )
+    const courtDetails = await this.courtRegisterService.findCourtById(latestAppearance.courtCode, username)
+    return res.render('pages/appearanceUpdatedConfirmation', {
+      nomsId,
+      courtCaseReference,
+      addOrEditCourtCase,
+      latestAppearance,
+      courtDetails,
+    })
+  }
+
   public getReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
@@ -985,10 +1002,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      backLink:
-        courtAppearance.warrantType === 'SENTENCING'
-          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
-          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all`,
     })
   }
 
@@ -1408,9 +1421,6 @@ export default class CourtCaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      backLink: courtAppearance.nextCourtAppearanceAccepted
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
-        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-court-select`,
     })
   }
 

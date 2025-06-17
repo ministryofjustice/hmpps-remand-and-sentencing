@@ -33,7 +33,7 @@
                 }] %}
 
 {% if offence.sentence %}
-    {% if offence.sentence.countNumber %}
+    {% if offence.sentence.countNumber and offence.sentence.countNumber !== '-1' %}
         {% set countNumber = "Count " + offence.sentence.countNumber %}
     {% else %}
         {% set countNumber = "Not entered" %}

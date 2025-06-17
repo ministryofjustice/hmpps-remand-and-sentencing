@@ -156,11 +156,11 @@ export default class TaskListModel {
       return undefined
     }
 
-    if (!this.allWarrantInformationFilledOut(courtAppearance) || !this.isAddCourtCase()) {
-      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/overall-sentence-length`
+    if (courtAppearance.warrantInformationAccepted) {
+      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/check-overall-answers`
     }
 
-    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/check-overall-answers`
+    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/overall-sentence-length`
   }
 
   private getWarrantInformationItem(courtAppearance: CourtAppearance): TaskListItem {

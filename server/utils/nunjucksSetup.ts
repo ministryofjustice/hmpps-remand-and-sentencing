@@ -10,6 +10,7 @@ import {
   formatLengths,
   consecutiveToDetailsToDescription,
   formatMergedFromCase,
+  formatCountNumber,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
@@ -184,10 +185,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       if (aCountNumber === bCountNumber) {
         return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
       }
-      if (!aCountNumber) {
+      if (!aCountNumber || aCountNumber === '-1') {
         return 1
       }
-      if (!bCountNumber) {
+      if (!bCountNumber || bCountNumber === '-1') {
         return -1
       }
       return aCountNumber < bCountNumber ? -1 : 1
@@ -211,12 +212,13 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('periodLengthsToSentenceLengths', periodLengthsToSentenceLengths)
   njkEnv.addFilter('consecutiveToDetailsToDescription', consecutiveToDetailsToDescription)
   njkEnv.addFilter('formatMergedFromCase', formatMergedFromCase)
+  njkEnv.addFilter('formatCountNumber', formatCountNumber)
   njkEnv.addFilter(
     'formatOverallMergedFromCase',
     (mergedFromCase: PagedMergedFromCase, courtDetails: { [key: string]: string }) => {
-      let description = `the case at ${courtDetails[mergedFromCase.courtCode]} on ${formatDate(mergedFromCase.warrantDate)} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}`
+      let description = `The case at ${courtDetails[mergedFromCase.courtCode]} on ${formatDate(mergedFromCase.warrantDate)} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}.`
       if (mergedFromCase.caseReference) {
-        description = `${mergedFromCase.caseReference} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}`
+        description = `${mergedFromCase.caseReference} was merged with this case on ${formatDate(mergedFromCase.mergedFromDate)}.`
       }
       return description
     },

@@ -15,7 +15,7 @@ context('Review Offences Page', () => {
 
   context('repeat remand', () => {
     beforeEach(() => {
-      cy.task('stubGetLatestCourtAppearance')
+      cy.task('stubGetLatestCourtAppearance', {})
       cy.task('stubGetOffencesByCodes', {})
       cy.task('stubGetChargeOutcomesByIds', [
         {

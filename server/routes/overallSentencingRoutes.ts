@@ -12,12 +12,19 @@ import {
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
+import BaseRoutes from './baseRoutes'
+import OffenceService from '../services/offenceService'
+import RemandAndSentencingService from '../services/remandAndSentencingService'
 
-export default class OverallSentencingRoutes {
+export default class OverallSentencingRoutes extends BaseRoutes {
   constructor(
-    private readonly courtAppearanceService: CourtAppearanceService,
+    courtAppearanceService: CourtAppearanceService,
+    offenceService: OffenceService,
+    remandAndSentencingService: RemandAndSentencingService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
-  ) {}
+  ) {
+    super(courtAppearanceService, offenceService, remandAndSentencingService)
+  }
 
   public getOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
@@ -141,6 +148,18 @@ export default class OverallSentencingRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/check-overall-answers`,
       )
     }
+    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      if (warrantType === 'SENTENCING') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+        )
+      }
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
+      )
+    }
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/overall-conviction-date`,
     )
@@ -273,10 +292,6 @@ export default class OverallSentencingRoutes {
       await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName
     const isAddJourney = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/overall-conviction-date`
-    if (isAddJourney) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/case-outcome-applied-all`
-    }
     return res.render('pages/overallSentencing/check-overall-answers', {
       nomsId,
       courtAppearance,
@@ -286,7 +301,6 @@ export default class OverallSentencingRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       isAddJourney,
-      backLink,
     })
   }
 
@@ -296,9 +310,5 @@ export default class OverallSentencingRoutes {
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
-  }
-
-  private isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
-    return addOrEditCourtCase === 'add-court-case' && addOrEditCourtAppearance === 'add-court-appearance'
   }
 }

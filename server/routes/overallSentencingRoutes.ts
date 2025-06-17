@@ -292,10 +292,6 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName
     const isAddJourney = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/overall-conviction-date`
-    if (isAddJourney) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/case-outcome-applied-all`
-    }
     return res.render('pages/overallSentencing/check-overall-answers', {
       nomsId,
       courtAppearance,
@@ -305,7 +301,6 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       isAddJourney,
-      backLink,
     })
   }
 

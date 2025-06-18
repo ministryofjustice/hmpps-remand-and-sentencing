@@ -22,22 +22,30 @@
 
       {# Loop through each defined document type #}
       {% for docTypeInfo in documentTypesToDisplay %}
-        {% set uploadedDoc = uploadedDocuments | selectattr('documentType', 'equalto', docTypeInfo.type) | first %}
+        {% set foundDoc = none %} {# Initialize to nothing found #}
+
+        {# Loop through all uploaded documents to find a match for the current docTypeInfo #}
+        {% for uploadedItem in uploadedDocuments %}
+          {% if uploadedItem.documentType == docTypeInfo.type %}
+            {% set foundDoc = uploadedItem %}
+            {# Cannot use 'break' here in Nunjucks.
+               The loop will continue, but 'foundDoc' will retain the first match. #}
+          {% endif %}
+        {% endfor %}
 
         <h2 class="govuk-heading-m govuk-!-margin-bottom-2">{{ docTypeInfo.name }}</h2>
-
-        {% if uploadedDoc and uploadedDoc.documentType == docTypeInfo.type %}
+        {% if foundDoc %}
           {# Document of this type has been uploaded #}
           <p class="govuk-body">
             <div>
-            <a class="govuk-link govuk-!-margin-left-0" href=""><strong>{{ uploadedDoc.fileName }}</strong></a>
+            <a class="govuk-link govuk-!-margin-left-0" href=""><strong>{{ foundDoc.fileName }}</strong></a>
             <span class="govuk-tag--green govuk-!-margin-left-8">Uploaded</span>
             <a class="govuk-link govuk-!-margin-left-4" href="">Remove</a>
             </div>
           </p>
           <p class="govuk-body">
-                      <span> {{docTypeInfo.name}} </span>
-                    </p>
+            <span> {{docTypeInfo.name}} </span>
+          </p>
         {% else %}
           {# Document of this type has NOT been uploaded #}
           <p class="govuk-body">

@@ -1480,9 +1480,7 @@ export default class CourtCaseRoutes {
     const documentName = this.getDocumentName(documentType)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
 
-    // Only pass errors if they exist
-    const errors = req.flash('errors') || []
-    const hasErrors = errors.length > 0
+    const errors = req.flash('errors')
 
     return res.render('pages/courtAppearance/document-upload', {
       nomsId,
@@ -1493,7 +1491,7 @@ export default class CourtCaseRoutes {
       documentType,
       documentName,
       courtAppearance,
-      errors: hasErrors ? errors : [],
+      errors: errors.length > 0 ? errors : undefined,
       backLink:
         warrantType === 'SENTENCING'
           ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`

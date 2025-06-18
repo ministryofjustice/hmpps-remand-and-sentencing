@@ -1512,21 +1512,9 @@ export default class CourtCaseRoutes {
     const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
     const uploadedFile = (req.files as Express.Multer.File[])?.[0]
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-
-    const errors: { text: string; href?: string }[] = []
-
     try {
       if (!uploadedFile) {
-        errors.push({ text: 'No file uploaded. Please select a file to upload.', href: '#document-upload' })
-      } else {
-        const maxFileSize = 50 * 1024 * 1024 // 50MB
-        if (uploadedFile.size > maxFileSize) {
-          errors.push({ text: 'File size exceeds the maximum limit of 50MB.', href: '#document-upload' })
-        }
-      }
-
-      if (errors.length > 0) {
-        req.flash('errors', errors)
+        req.flash('errors', [{ text: 'No file uploaded. Please select a file to upload.', href: '#document-upload' }])
         req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
@@ -1556,7 +1544,7 @@ export default class CourtCaseRoutes {
       )
     } catch (error) {
       logger.error(`Error uploading document: ${error.message}`)
-      req.flash('errors', [{ text: 'An error occurred while uploading the document. Please try again later.' }])
+      req.flash('errors', [{ text: error.message, href: '#document-upload' }])
       req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,

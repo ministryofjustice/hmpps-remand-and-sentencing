@@ -1,9 +1,7 @@
-import Page, { PageElement } from './page'
+import Page from './page'
 
 export default class UploadCourtDocumentsPage extends Page {
   constructor() {
     super('Upload court documents')
   }
-
-  subtText = (): PageElement => cy.get('.govuk-body-l')
 }

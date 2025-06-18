@@ -177,5 +177,6 @@ declare module 'forms' {
 
   export interface UploadedDocumentForm {
     _csrf?: string
+    'document-Upload'?: string
   }
 }

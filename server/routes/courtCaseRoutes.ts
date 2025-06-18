@@ -1514,7 +1514,7 @@ export default class CourtCaseRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     try {
       if (!uploadedFile) {
-        req.flash('errors', [{ text: 'No file uploaded. Please select a file to upload.', href: '#document-upload' }])
+        req.flash('errors', [{ text: 'Select a document to upload.', href: '#document-upload' }])
         req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,

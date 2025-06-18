@@ -31,6 +31,6 @@ context('document upload page', () => {
 
   it('shows an error when no document is uploaded and continue is clicked', () => {
     documentUploadPage.continueButton().click()
-    documentUploadPage.errorSummary().should('contain.text', 'No file uploaded. Please select a file to upload.')
+    documentUploadPage.errorSummary().should('contain.text', 'Select a document to upload.')
   })
 })

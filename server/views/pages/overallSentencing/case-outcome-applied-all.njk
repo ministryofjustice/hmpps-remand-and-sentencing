@@ -14,9 +14,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-case-outcome-applied-all{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <span class="govuk-caption-l" data-qa="warrant-information-caption">
-                    Add overall warrant information
-                </span>
+                {% include "../../partials/overallWarrantInformationCaption.njk" %}
                 {{ govukRadios({
                     name: "caseOutcomeAppliedAll",
                     fieldset: {

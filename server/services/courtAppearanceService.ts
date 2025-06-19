@@ -816,6 +816,21 @@ export default class CourtAppearanceService {
     return courtAppearance.offences[offenceReference]
   }
 
+  getCountNumbers(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    excludeOffenceReference: number,
+  ): string[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const { offences } = courtAppearance
+    return offences
+      .filter(
+        (offence, index) =>
+          offence.sentence?.countNumber && offence.sentence?.countNumber !== '-1' && excludeOffenceReference !== index,
+      )
+      .map(offence => offence.sentence.countNumber)
+  }
+
   clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]

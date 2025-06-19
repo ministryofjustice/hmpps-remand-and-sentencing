@@ -31,11 +31,13 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import OffenceOutcomeService from './offenceOutcomeService'
 import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import RemandAndSentencingService from './remandAndSentencingService'
 
 export default class OffenceService {
   constructor(
     private readonly manageOffencesService: ManageOffencesService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
+    private readonly remandAndSentencingService: RemandAndSentencingService,
   ) {}
 
   setOffenceDates(
@@ -233,17 +235,34 @@ export default class OffenceService {
     return this.getOffence(session.offences, id).sentence?.countNumber
   }
 
-  setCountNumber(
+  async setCountNumber(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
     countNumberForm: OffenceCountNumberForm,
+    isRepeatJourney: boolean,
+    existingCountNumbers: string[],
+    username: string,
   ) {
+    let checkCountNumbers = existingCountNumbers
+    if (isRepeatJourney) {
+      const courtCaseCountNumbers = await this.remandAndSentencingService.getCourtCaseCountNumbers(
+        courtCaseReference,
+        username,
+      )
+      checkCountNumbers = checkCountNumbers.concat(
+        courtCaseCountNumbers.countNumbers.map(countNumber => countNumber.countNumber),
+      )
+    }
+    let notInRule = ''
+    if (checkCountNumbers.length && countNumberForm.countNumber && countNumberForm.hasCountNumber === 'true') {
+      notInRule = `|not_in:${checkCountNumbers.join(',')}`
+    }
     const errors = validate(
       countNumberForm,
       {
-        countNumber: 'required_if:hasCountNumber,true|minNumber:1|wholeNumber',
+        countNumber: `required_if:hasCountNumber,true|minNumber:1|wholeNumber${notInRule}`,
         hasCountNumber: 'required',
       },
       {
@@ -251,6 +270,7 @@ export default class OffenceService {
         'minNumber.countNumber': 'You must enter a number greater than zero.',
         'wholeNumber.countNumber': 'Enter a whole number for the count number.',
         'required.hasCountNumber': 'You must enter a count number.',
+        'not_in.countNumber': 'You must enter a unique count number',
       },
     )
     if (errors.length === 0) {

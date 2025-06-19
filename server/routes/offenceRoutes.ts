@@ -423,12 +423,20 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const countNumberForm = trimForm<OffenceCountNumberForm>(req.body)
-    const errors = this.offenceService.setCountNumber(
+    const existingCountNumbers = this.courtAppearanceService.getCountNumbers(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+    )
+    const errors = await this.offenceService.setCountNumber(
       req.session,
       nomsId,
       courtCaseReference,
       offenceReference,
       countNumberForm,
+      this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      existingCountNumbers,
+      req.user.username,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)

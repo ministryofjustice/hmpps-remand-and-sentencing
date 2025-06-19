@@ -2502,4 +2502,31 @@ export default {
       },
     })
   },
+
+  stubGetCountNumbersForCourtCase({
+    courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    countNumbers = [],
+  }: {
+    courtCaseUuid: string
+    countNumbers: string[]
+  }) {
+    const countNumbersResponse = countNumbers.map(countNumber => {
+      return {
+        countNumber,
+      }
+    })
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/count-numbers`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          countNumbers: countNumbersResponse,
+        },
+      },
+    })
+  },
 }

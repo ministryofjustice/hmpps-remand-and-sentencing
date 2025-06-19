@@ -88,6 +88,46 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/legacy/court-case/{sourceCourtCaseUuid}/unlink/{targetCourtCaseUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Unlinks a court case to another court case
+     * @description Synchronise a unlink of a court case from NOMIS into remand and sentencing API.
+     */
+    put: operations['unlinkCourtCase']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/legacy/court-case/{sourceCourtCaseUuid}/link/{targetCourtCaseUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Links a court case to another court case
+     * @description Synchronise a link of a court case from NOMIS into remand and sentencing API.
+     */
+    put: operations['linkCourtCase']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/court-case/{courtCaseUuid}': {
     parameters: {
       query?: never
@@ -167,6 +207,26 @@ export interface paths {
      * @description Synchronise a deletion of link between court appearance and charge from NOMIS into remand and sentencing API.
      */
     delete: operations['unlinkAppearanceWithCharge']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/legacy/court-appearance/{courtAppearanceUuid}/charge/{chargeUuid}/link': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * link a charge with a case
+     * @description Synchronise a link between charge and court case from NOMIS into remand and sentencing API.
+     */
+    put: operations['linkChargeToCaseInAppearance']
+    post?: never
+    delete?: never
     options?: never
     head?: never
     patch?: never
@@ -932,6 +992,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/court-case/{courtCaseUuid}/count-numbers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve count numbers for case
+     * @description This endpoint will retrieve all unique count numbers for a case
+     */
+    get: operations['getAllCountNumbers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/court-case/search': {
     parameters: {
       query?: never
@@ -1163,7 +1243,7 @@ export interface components {
       /** Format: date */
       returnToCustodyDate?: string
       /** @enum {string} */
-      recallTypeCode: 'LR' | 'FTR_14' | 'FTR_28' | 'LR_HDC' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC'
+      recallTypeCode: 'LR' | 'FTR_14' | 'FTR_28' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC'
       createdByUsername: string
       createdByPrison: string
       sentenceIds?: string[]
@@ -1177,6 +1257,8 @@ export interface components {
     }
     LegacyCreateSentence: {
       chargeUuids: string[]
+      /** Format: uuid */
+      appearanceUuid: string
       fine?: components['schemas']['LegacyCreateFine']
       /** Format: uuid */
       consecutiveToLifetimeUuid?: string
@@ -1212,6 +1294,48 @@ export interface components {
       sentenceTermCode?: string
       sentenceTermDescription?: string
     }
+    EventMetadata: {
+      prisonerId: string
+      courtCaseId?: string
+      courtAppearanceId?: string
+      chargeId?: string
+      sentenceId?: string
+      recallId?: string
+      /** @enum {string} */
+      eventType:
+        | 'COURT_CASE_INSERTED'
+        | 'COURT_CASE_UPDATED'
+        | 'COURT_CASE_DELETED'
+        | 'CHARGE_INSERTED'
+        | 'CHARGE_UPDATED'
+        | 'CHARGE_DELETED'
+        | 'COURT_APPEARANCE_INSERTED'
+        | 'COURT_APPEARANCE_UPDATED'
+        | 'COURT_APPEARANCE_DELETED'
+        | 'SENTENCE_INSERTED'
+        | 'SENTENCE_UPDATED'
+        | 'SENTENCE_DELETED'
+        | 'LEGACY_COURT_CASE_REFERENCES_UPDATED'
+        | 'RECALL_INSERTED'
+        | 'RECALL_UPDATED'
+        | 'RECALL_DELETED'
+        | 'PERIOD_LENGTH_INSERTED'
+        | 'PERIOD_LENGTH_UPDATED'
+        | 'PERIOD_LENGTH_DELETED'
+        | 'METADATA_ONLY'
+      periodLengthId?: string
+      sentenceIds?: string[]
+      previousRecallId?: string
+      previousSentenceIds?: string[]
+    }
+    UnlinkEventsToEmit: {
+      courtCaseEventMetadata?: components['schemas']['EventMetadata']
+      chargesEventMetadata: components['schemas']['EventMetadata'][]
+    }
+    PairStringString: {
+      first: string
+      second: string
+    }
     LegacyCreateCourtCase: {
       prisonerId: string
       active: boolean
@@ -1222,7 +1346,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 16:34:07.217207268 */
+      /** @example 09:21:28.463493765 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1249,6 +1373,22 @@ export interface components {
       /** Format: date */
       offenceEndDate?: string
       legacyData: components['schemas']['ChargeLegacyData']
+    }
+    LegacyLinkChargeToCase: {
+      sourceCourtCaseUuid: string
+      /** Format: date */
+      linkedDate: string
+    }
+    LegacyChargeCreatedResponse: {
+      /** Format: uuid */
+      lifetimeUuid: string
+      courtCaseUuid: string
+      prisonerId: string
+    }
+    PairEntityChangeStatusLegacyChargeCreatedResponse: {
+      /** @enum {string} */
+      first: 'NO_CHANGE' | 'CREATED' | 'EDITED' | 'DELETED'
+      second: components['schemas']['LegacyChargeCreatedResponse']
     }
     LegacyUpdateWholeCharge: {
       offenceCode: string
@@ -1314,7 +1454,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 16:34:07.217207268 */
+      /** @example 09:21:28.463493765 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -1448,8 +1588,6 @@ export interface components {
       mergedFromCaseId?: number
       /** Format: int64 */
       mergedFromEventId?: number
-      /** Format: int64 */
-      mergedChargeNOMISId?: number
       /** Format: date */
       mergedFromDate?: string
     }
@@ -1565,12 +1703,6 @@ export interface components {
       offenceEndDate?: string
       legacyData: components['schemas']['ChargeLegacyData']
     }
-    LegacyChargeCreatedResponse: {
-      /** Format: uuid */
-      lifetimeUuid: string
-      courtCaseUuid: string
-      prisonerId: string
-    }
     DraftCreateCourtCase: {
       prisonerId: string
       draftAppearances: components['schemas']['DraftCreateCourtAppearance'][]
@@ -1672,7 +1804,7 @@ export interface components {
       /** Format: date */
       returnToCustodyDate?: string
       /** @enum {string} */
-      recallType: 'LR' | 'FTR_14' | 'FTR_28' | 'LR_HDC' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC'
+      recallType: 'LR' | 'FTR_14' | 'FTR_28' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC'
       /** Format: date-time */
       createdAt: string
       createdByUsername: string
@@ -1785,7 +1917,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 16:34:07.217207268 */
+      /** @example 09:21:28.463493765 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -1919,9 +2051,11 @@ export interface components {
       prisonerId: string
       /** Format: date */
       returnToCustodyDate?: string
+      /** Format: date */
+      revocationDate?: string
       sentenceIds: string[]
       /** @enum {string} */
-      recallType: 'LR' | 'FTR_14' | 'FTR_28' | 'LR_HDC' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC'
+      recallType: 'LR' | 'FTR_14' | 'FTR_28' | 'FTR_HDC_14' | 'FTR_HDC_28' | 'CUR_HDC' | 'IN_HDC'
       recallBy: string
     }
     LegacyPeriodLength: {
@@ -1978,7 +2112,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 16:34:07.217207268 */
+      /** @example 09:21:28.463493765 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -1986,7 +2120,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 16:34:07.217207268 */
+      /** @example 09:21:28.463493765 */
       appearanceTime?: string
       courtId: string
     }
@@ -2019,7 +2153,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 16:34:07.217207268 */
+      /** @example 09:21:28.463493765 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -2037,7 +2171,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 16:34:07.217207268 */
+      /** @example 09:21:28.463493765 */
       appearanceTime?: string
       courtId: string
     }
@@ -2075,6 +2209,12 @@ export interface components {
       draftUuid: string
       sessionBlob: components['schemas']['JsonNode']
     }
+    CourtCaseCountNumber: {
+      countNumber: string
+    }
+    CourtCaseCountNumbers: {
+      countNumbers: components['schemas']['CourtCaseCountNumber'][]
+    }
     Pageable: {
       /** Format: int32 */
       page?: number
@@ -2087,14 +2227,14 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -2121,14 +2261,14 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['PagedCourtCase'][]
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -2220,7 +2360,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 16:34:07.217207268 */
+      /** @example 09:21:28.463493765 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -2668,6 +2808,88 @@ export interface operations {
       }
     }
   }
+  unlinkCourtCase: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        sourceCourtCaseUuid: string
+        targetCourtCaseUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description No content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnlinkEventsToEmit']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnlinkEventsToEmit']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnlinkEventsToEmit']
+        }
+      }
+    }
+  }
+  linkCourtCase: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        sourceCourtCaseUuid: string
+        targetCourtCaseUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description No content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PairStringString']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PairStringString']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PairStringString']
+        }
+      }
+    }
+  }
   get_2: {
     parameters: {
       query?: never
@@ -3022,6 +3244,51 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+    }
+  }
+  linkChargeToCaseInAppearance: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        courtAppearanceUuid: string
+        chargeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LegacyLinkChargeToCase']
+      }
+    }
+    responses: {
+      /** @description No content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PairEntityChangeStatusLegacyChargeCreatedResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PairEntityChangeStatusLegacyChargeCreatedResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PairEntityChangeStatusLegacyChargeCreatedResponse']
+        }
       }
     }
   }
@@ -4838,6 +5105,46 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+    }
+  }
+  getAllCountNumbers: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        courtCaseUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns all count numbers */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtCaseCountNumbers']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtCaseCountNumbers']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtCaseCountNumbers']
         }
       }
     }

@@ -2,6 +2,7 @@ import type { CourtAppearance, CourtCase } from 'models'
 import { Dayjs } from 'dayjs'
 import {
   AppearanceType,
+  CourtCaseCountNumbers,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
   DraftCourtAppearance,
@@ -218,6 +219,12 @@ export default class RemandAndSentencingService {
     return sentenceUuids.filter(sentenceUuid => sentenceUuid).length
       ? new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).consecutiveToDetails(sentenceUuids)
       : { sentences: [] }
+  }
+
+  async getCourtCaseCountNumbers(courtCaseUuid: string, username: string): Promise<CourtCaseCountNumbers> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).courtCaseCountNumbers(
+      courtCaseUuid,
+    )
   }
 
   private async getSystemClientToken(username: string): Promise<string> {

@@ -299,6 +299,7 @@ context('Repeat Court Case journey', () => {
         outcomeType: 'SENTENCING',
       },
     ])
+    cy.task('stubGetCountNumbersForCourtCase', {})
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
 

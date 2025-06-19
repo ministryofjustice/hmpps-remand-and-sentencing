@@ -40,7 +40,7 @@ export const services = () => {
   const appearanceOutcomeService = new AppearanceOutcomeService(hmppsAuthClient)
   const offenceOutcomeService = new OffenceOutcomeService(hmppsAuthClient)
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
-  const offenceService = new OffenceService(manageOffencesService, offenceOutcomeService)
+  const offenceService = new OffenceService(manageOffencesService, offenceOutcomeService, remandAndSentencingService)
 
   return {
     applicationInfo,

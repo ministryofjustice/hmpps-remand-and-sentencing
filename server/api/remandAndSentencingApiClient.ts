@@ -1,6 +1,7 @@
 import {
   AppearanceOutcome,
   AppearanceType,
+  CourtCaseCountNumbers,
   CreateCourtAppearance,
   CreateCourtAppearanceResponse,
   CreateCourtCase,
@@ -258,5 +259,11 @@ export default class RemandAndSentencingApiClient {
         sentenceUuids: sentenceUuids.join(','),
       },
     })) as unknown as Promise<SentenceConsecutiveToDetailsResponse>
+  }
+
+  async courtCaseCountNumbers(courtCaseUuid: string): Promise<CourtCaseCountNumbers> {
+    return (await this.restClient.get({
+      path: `/court-case/${courtCaseUuid}/count-numbers`,
+    })) as unknown as Promise<CourtCaseCountNumbers>
   }
 }

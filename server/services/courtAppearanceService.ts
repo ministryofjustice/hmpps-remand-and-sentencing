@@ -822,12 +822,12 @@ export default class CourtAppearanceService {
     excludeOffenceReference: number,
   ): string[] {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
-    let { offences } = courtAppearance
-    if (excludeOffenceReference < offences.length) {
-      offences = offences.splice(excludeOffenceReference, 1)
-    }
+    const { offences } = courtAppearance
     return offences
-      .filter(offence => offence.sentence?.countNumber && offence.sentence?.countNumber !== '-1')
+      .filter(
+        (offence, index) =>
+          offence.sentence?.countNumber && offence.sentence?.countNumber !== '-1' && excludeOffenceReference !== index,
+      )
       .map(offence => offence.sentence.countNumber)
   }
 

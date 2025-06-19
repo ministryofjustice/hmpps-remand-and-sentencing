@@ -256,7 +256,7 @@ export default class OffenceService {
       )
     }
     let notInRule = ''
-    if (checkCountNumbers.length) {
+    if (checkCountNumbers.length && countNumberForm.countNumber && countNumberForm.hasCountNumber === 'true') {
       notInRule = `|not_in:${checkCountNumbers.join(',')}`
     }
     const errors = validate(

@@ -1,14 +1,13 @@
-{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitle = applicationName + " - Add a court case Outcome applied to all" %}      
-{% set hideOffences = true %}
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading govuk-!-static-margin-bottom-3">Is the outcome the same for all offences on the warrant?</h1>
     <p class="govuk-body-l govuk-!-static-margin-bottom-3">{{ overallCaseOutcome }}</p>
 {% endset %}
-{% block pageContent %}
+{% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">

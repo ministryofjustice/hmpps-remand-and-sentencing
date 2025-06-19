@@ -1,6 +1,4 @@
 import { type RequestHandler, Router } from 'express'
-import multer from 'multer'
-
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import CourtCaseRoutes from './courtCaseRoutes'
 import ApiRoutes from './apiRoutes'
@@ -12,7 +10,6 @@ import OverallSentencingRoutes from './overallSentencingRoutes'
 import SentencingRoutes from './sentencingRoutes'
 import RemandRoutes from './remandRoutes'
 
-const upload = multer({ dest: 'uploads/' })
 export default function routes(services: Services): Router {
   const router = Router()
 
@@ -21,7 +18,7 @@ export default function routes(services: Services): Router {
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
   const postWithFileUpload = (path: string | string[], handler: RequestHandler) =>
-    router.post(path, upload.single('warrantUpload'), asyncMiddleware(handler))
+    router.post(path, asyncMiddleware(handler))
 
   router.use('/sentence-types', sentenceTypeRoutes(services))
 
@@ -633,6 +630,21 @@ export default function routes(services: Services): Router {
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/upload-court-documents',
     courtCaseRoutes.getCourtDocumentsPage,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/upload-court-documents',
+    sentencingRoutes.getCourtDocumentsPage,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/upload-documents',
+    courtCaseRoutes.getUploadCourtDocuments,
+  )
+
+  postWithFileUpload(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/submit-upload-documents',
+    courtCaseRoutes.submitUploadCourtDocuments,
   )
 
   return router

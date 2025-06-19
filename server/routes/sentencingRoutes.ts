@@ -504,6 +504,22 @@ export default class SentencingRoutes extends BaseRoutes {
     )
   }
 
+  public getCourtDocumentsPage: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId)
+    return res.render('pages/sentencing/upload-court-documents', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      courtAppearance,
+      uploadedDocuments,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+    })
+  }
+
   public getSentenceLengthMismatch: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)

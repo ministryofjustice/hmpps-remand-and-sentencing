@@ -29,4 +29,30 @@ export default class DocumentManagementApiClient {
       },
     })) as void
   }
+
+  async uploadDocument(
+    prisonerId: string,
+    documentId: string,
+    file: Express.Multer.File,
+    username: string,
+    activeCaseLoadId: string,
+    documentType: string,
+  ): Promise<void> {
+    try {
+      await this.restClient.postMultiPart({
+        path: `/documents/${documentType}/${documentId}`,
+        fileToUpload: file,
+        metadata: {
+          prisonerId,
+        },
+        headers: {
+          'Service-Name': 'Remand and Sentencing',
+          Username: username,
+          ...(activeCaseLoadId && { 'Active-Case-Load-Id': activeCaseLoadId }),
+        },
+      })
+    } catch (error) {
+      throw new Error(`Error in Document Management API: ${error.message}`)
+    }
+  }
 }

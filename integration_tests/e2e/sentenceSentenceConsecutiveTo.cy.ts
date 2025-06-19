@@ -62,4 +62,10 @@ context('Sentence consecutive to Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem Select the sentence that this sentence is consecutive to')
   })
+
+  it('no sentences on other cases does not show section', () => {
+    cy.task('stubGetEmptySentencesToChainTo')
+    cy.reload()
+    sentenceSentenceConsecutiveToPage.sentencesOnOtherCasesHeader().should('not.exist')
+  })
 })

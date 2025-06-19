@@ -29,6 +29,10 @@ export default abstract class BaseRoutes {
     return addOrEditCourtCase === 'add-court-case' && addOrEditCourtAppearance === 'add-court-appearance'
   }
 
+  protected isRepeatJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
+    return addOrEditCourtCase === 'edit-court-case' && addOrEditCourtAppearance === 'add-court-appearance'
+  }
+
   protected isEditJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
     return addOrEditCourtCase === 'edit-court-case' && addOrEditCourtAppearance === 'edit-court-appearance'
   }

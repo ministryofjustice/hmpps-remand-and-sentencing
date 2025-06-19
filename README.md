@@ -42,7 +42,7 @@ Fallback html must be included for all imported components for instances when th
    COMMON_COMPONENTS_ENABLED="true"
    REMAND_AND_SENTENCING_API_URL="https://remand-and-sentencing-api-dev.hmpps.service.justice.gov.uk"
    DOCUMENT_MANAGEMENT_API_URL="https://document-api-dev.hmpps.service.justice.gov.uk"
-   ADJUSTMENTS_UI_URL="https://adjust-release-dates-dev.hmpps.service.justice.gov.uk"
+   ADJUSTMENTS_UI_URL="https://adjustments-dev.hmpps.service.justice.gov.uk"
    CALCULATE_RELEASE_DATES_API_URL="https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk"
    AUDIT_ENABLED="false"
    ```

@@ -2136,7 +2136,7 @@ export default {
             relatedChargeOutcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
           },
           {
-            outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+            outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
             outcomeName: 'Imprisonment',
             nomisCode: '1002',
             outcomeType: 'SENTENCING',
@@ -2148,7 +2148,7 @@ export default {
             outcomeName: 'Another option',
             nomisCode: '09753',
             outcomeType: 'SENTENCING',
-            displayOrder: 10,
+            displayOrder: 20,
             relatedChargeOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
           },
         ],
@@ -2498,6 +2498,33 @@ export default {
               countNumber: '1',
             },
           ],
+        },
+      },
+    })
+  },
+
+  stubGetCountNumbersForCourtCase({
+    courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    countNumbers = [],
+  }: {
+    courtCaseUuid: string
+    countNumbers: string[]
+  }) {
+    const countNumbersResponse = countNumbers.map(countNumber => {
+      return {
+        countNumber,
+      }
+    })
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/count-numbers`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          countNumbers: countNumbersResponse,
         },
       },
     })

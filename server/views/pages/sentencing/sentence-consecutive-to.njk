@@ -54,32 +54,33 @@
                             </div>
                             {% set radioIdIndex=radioIdIndex + 1 %}
                         {% endfor %}
+                        {% if sentencesToChainTo.appearances.length %}
+                            <h2 class="govuk-heading-m" data-qa="sentencesOnOtherCasesHeader">Sentences on other cases</h2>
 
-                        <h2 class="govuk-heading-m">Sentences on other cases</h2>
-
-                        {% for appearance in sentencesToChainTo.appearances | sortByAppearanceDate %}
-                            <div class="govuk-!-margin-bottom-6">
-                                <h3 class="govuk-heading-s"> {{appearance.courtCaseReference + ' at ' if appearance.courtCaseReference}}{{courtMap[appearance.courtCode]}} on {{appearance.appearanceDate | formatDate}}</h3>
-                                {% for sentence in appearance.sentences | sortByCountNumber %}
-                                    <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceUuid}}|OTHER">
-                                        <label class="govuk-label govuk-radios__label" for="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}">
-                                            {% if sentence.countNumber and sentence.countNumber !== '-1' %}
-                                                Count {{sentence.countNumber}}<br>
-                                            {% endif %}
-                                            {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}
-                                            {% if sentence.offenceStartDate %}
-                                                <br><span class="govuk-hint">
-                                                    Committed on {{ sentence.offenceStartDate | formatDate }}{{' to ' + sentence.offenceEndDate | formatDate if sentence.offenceEndDate }}
-                                                </span>
-                                            {% endif %}
-                                        </label>
-                                    </div>
-                                    {% set radioIdIndex=radioIdIndex + 1 %}
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                        </div>
+                            {% for appearance in sentencesToChainTo.appearances | sortByAppearanceDate %}
+                                <div class="govuk-!-margin-bottom-6">
+                                    <h3 class="govuk-heading-s"> {{appearance.courtCaseReference + ' at ' if appearance.courtCaseReference}}{{courtMap[appearance.courtCode]}} on {{appearance.appearanceDate | formatDate}}</h3>
+                                    {% for sentence in appearance.sentences | sortByCountNumber %}
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input" id="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceUuid}}|OTHER">
+                                            <label class="govuk-label govuk-radios__label" for="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}">
+                                                {% if sentence.countNumber and sentence.countNumber !== '-1' %}
+                                                    Count {{sentence.countNumber}}<br>
+                                                {% endif %}
+                                                {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}
+                                                {% if sentence.offenceStartDate %}
+                                                    <br><span class="govuk-hint">
+                                                        Committed on {{ sentence.offenceStartDate | formatDate }}{{' to ' + sentence.offenceEndDate | formatDate if sentence.offenceEndDate }}
+                                                    </span>
+                                                {% endif %}
+                                            </label>
+                                        </div>
+                                        {% set radioIdIndex=radioIdIndex + 1 %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                     {% endcall %}
                 </div>
 

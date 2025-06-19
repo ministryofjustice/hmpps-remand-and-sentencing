@@ -2463,6 +2463,27 @@ export default {
     })
   },
 
+  stubGetEmptySentencesToChainTo: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/person/A1234AB/sentences-to-chain-to',
+        queryParameters: {
+          beforeOrOnAppearanceDate: {
+            equalTo: '2023-05-12',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearances: [],
+        },
+      },
+    })
+  },
+
   stubGetConsecutiveToDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {

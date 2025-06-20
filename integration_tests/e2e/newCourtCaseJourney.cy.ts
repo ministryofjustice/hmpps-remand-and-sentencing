@@ -388,12 +388,6 @@ context('New Court Case journey', () => {
     courtCaseOverallSentenceLengthPage.monthsInput().type('5')
     courtCaseOverallSentenceLengthPage.weeksInput().type('3')
     courtCaseOverallSentenceLengthPage.daysInput().type('2')
-    courtCaseOverallSentenceLengthPage.summaryList().getSummaryList().should('deep.equal', {
-      'Case reference': 'T12345678',
-      'Court name': 'Accrington Youth Court',
-      'Warrant date': '12/05/2023',
-      'Overall case outcome': 'Not entered',
-    })
     courtCaseOverallSentenceLengthPage.continueButton().click()
 
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)

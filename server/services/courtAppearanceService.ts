@@ -849,6 +849,54 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).uploadedDocuments ?? []
   }
 
+  async checkOffenceDatesHaveInvalidatedOffence(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+    offenceStartDate: Date,
+    offenceEndDate: Date,
+    dateOfBirth: string,
+    username: string,
+  ): Promise<boolean> {
+    let hasInvalidated: boolean = false
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      if (offence.sentence && offence.sentence.convictionDate) {
+        const { sentence } = offence
+        const offenceDate = dayjs(offenceEndDate ?? offenceStartDate)
+        const convictionDate = dayjs(sentence.convictionDate)
+        if (offenceDate.isAfter(convictionDate)) {
+          hasInvalidated = true
+          delete sentence.convictionDate
+          delete sentence.sentenceTypeClassification
+          delete sentence.sentenceTypeId
+          delete sentence.periodLengths
+        } else if (sentence.sentenceTypeId) {
+          const prisonerDateOfBirth = dayjs(dateOfBirth)
+          const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
+          const sentenceTypeStillValid = await this.remandAndSentencingService.getIsSentenceTypeStillValid(
+            sentence.sentenceTypeId,
+            ageAtConviction,
+            convictionDate,
+            offenceDate,
+            username,
+          )
+          if (!sentenceTypeStillValid.isStillValid) {
+            hasInvalidated = true
+            delete sentence.convictionDate
+            delete sentence.sentenceTypeClassification
+            delete sentence.sentenceTypeId
+            delete sentence.periodLengths
+          }
+        }
+        offence.sentence = sentence
+        courtAppearance.offences[offenceReference] = offence
+      }
+    }
+    return hasInvalidated
+  }
+
   clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]

@@ -17,6 +17,7 @@ import {
   SentenceConsecutiveToDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
+  SentenceTypeIsValid,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
 import {
@@ -224,6 +225,21 @@ export default class RemandAndSentencingService {
   async getCourtCaseCountNumbers(courtCaseUuid: string, username: string): Promise<CourtCaseCountNumbers> {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).courtCaseCountNumbers(
       courtCaseUuid,
+    )
+  }
+
+  async getIsSentenceTypeStillValid(
+    sentenceTypeId: string,
+    age: number,
+    convictionDate: Dayjs,
+    offenceDate: Dayjs,
+    username: string,
+  ): Promise<SentenceTypeIsValid> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).isSentenceTypeStillValid(
+      sentenceTypeId,
+      age,
+      convictionDate.format('YYYY-MM-DD'),
+      offenceDate.format('YYYY-MM-DD'),
     )
   }
 

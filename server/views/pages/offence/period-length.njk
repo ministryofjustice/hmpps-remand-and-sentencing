@@ -6,7 +6,7 @@
 {% set pageTitle = applicationName + " - Add " + periodLengthHeader %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-period-length?periodLengthType={{periodLengthType}}{{ "&submitToEditOffence=true" if submitToEditOffence }}">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-period-length{{ submitQuery }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 
@@ -50,7 +50,7 @@
                 }) }}
 
                 <p class="govuk-body">
-                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/alternative-period-length?periodLengthType={{periodLengthType}}{{ "&submitToEditOffence=true" if submitToEditOffence }}">The {{ periodLengthHeader }} is formatted differently</a>
+                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/alternative-period-length{{ submitQuery }}">The {{ periodLengthHeader }} is formatted differently</a>
                 </p>
 
                 {% if sentenceTypeHint %}

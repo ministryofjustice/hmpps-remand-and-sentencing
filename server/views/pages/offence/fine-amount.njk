@@ -5,7 +5,7 @@
 {% set pageTitle = applicationName + " - Add the fine amount" %}
 
 {% block pageContent %}
-  <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/fine-amount"?submitToEditOffence=true" if submitToEditOffence }}>
+  <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/fine-amount{{ submitQuery }}">
   <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% include "../../partials/offenceCaption.njk" %}
     {{ govukInput({

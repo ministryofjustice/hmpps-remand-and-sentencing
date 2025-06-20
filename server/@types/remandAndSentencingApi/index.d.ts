@@ -692,6 +692,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sentence-type/{sentenceTypeUuid}/is-still-valid': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Check the sentence type is still valid
+     * @description This endpoint will determine if the sentence type is still valid with the age, conviction date, statuses, offence date parameters
+     */
+    get: operations['sentenceTypeStillValid']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sentence-type/uuid/multiple': {
     parameters: {
       query?: never
@@ -1346,7 +1366,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 09:21:28.463493765 */
+      /** @example 13:10:02.529059 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1454,7 +1474,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:21:28.463493765 */
+      /** @example 13:10:02.529059 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -1795,6 +1815,9 @@ export interface components {
     SentenceConsecutiveToDetailsResponse: {
       sentences: components['schemas']['SentenceConsecutiveToDetails'][]
     }
+    SentenceTypeIsValid: {
+      isStillValid: boolean
+    }
     Recall: {
       /** Format: uuid */
       recallUuid: string
@@ -1917,7 +1940,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:21:28.463493765 */
+      /** @example 13:10:02.529059 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -2112,7 +2135,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:21:28.463493765 */
+      /** @example 13:10:02.529059 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -2120,7 +2143,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:21:28.463493765 */
+      /** @example 13:10:02.529059 */
       appearanceTime?: string
       courtId: string
     }
@@ -2153,7 +2176,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:21:28.463493765 */
+      /** @example 13:10:02.529059 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -2171,7 +2194,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:21:28.463493765 */
+      /** @example 13:10:02.529059 */
       appearanceTime?: string
       courtId: string
     }
@@ -2223,55 +2246,55 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
+      /** Format: int32 */
+      totalPages?: number
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
-      totalPages?: number
-      /** Format: int32 */
       size?: number
-      content?: components['schemas']['CourtCase'][]
+      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       number?: number
-      sort?: components['schemas']['SortObject']
       first?: boolean
       last?: boolean
+      content?: components['schemas']['CourtCase'][]
+      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
+      sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
+      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      unpaged?: boolean
+      /** Format: int32 */
+      pageSize?: number
     }
     SortObject: {
       empty?: boolean
-      sorted?: boolean
       unsorted?: boolean
+      sorted?: boolean
     }
     PagePagedCourtCase: {
+      /** Format: int32 */
+      totalPages?: number
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
-      totalPages?: number
-      /** Format: int32 */
       size?: number
-      content?: components['schemas']['PagedCourtCase'][]
+      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       number?: number
-      sort?: components['schemas']['SortObject']
       first?: boolean
       last?: boolean
+      content?: components['schemas']['PagedCourtCase'][]
+      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -2360,7 +2383,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:21:28.463493765 */
+      /** @example 13:10:02.529059 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -4439,6 +4462,42 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['SentenceType']
+        }
+      }
+    }
+  }
+  sentenceTypeStillValid: {
+    parameters: {
+      query: {
+        age: number
+        convictionDate: string
+        statuses?: ('ACTIVE' | 'INACTIVE')[]
+        offenceDate: string
+      }
+      header?: never
+      path: {
+        sentenceTypeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns whether the sentence type is still valid */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceTypeIsValid']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceTypeIsValid']
         }
       }
     }

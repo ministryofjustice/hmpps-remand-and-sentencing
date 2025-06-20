@@ -1,10 +1,11 @@
-{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "../../components/alternativeSentenceLength/macro.njk" import alternativeSentenceLength%}
+
 {% set pageTitle = applicationName + " - Add alternative sentence length" %}
 
-{% block pageContent %}
+{% block content %}
     {{ super() }}
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-overall-alternative-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">

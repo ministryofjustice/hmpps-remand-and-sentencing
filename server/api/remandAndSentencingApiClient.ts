@@ -21,6 +21,7 @@ import {
   SentenceConsecutiveToDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
+  SentenceTypeIsValid,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config, { ApiConfig } from '../config'
 import RestClient from '../data/restClient'
@@ -265,5 +266,22 @@ export default class RemandAndSentencingApiClient {
     return (await this.restClient.get({
       path: `/court-case/${courtCaseUuid}/count-numbers`,
     })) as unknown as Promise<CourtCaseCountNumbers>
+  }
+
+  async isSentenceTypeStillValid(
+    sentenceTypeId: string,
+    age: number,
+    convictionDate: string,
+    offenceDate: string,
+  ): Promise<SentenceTypeIsValid> {
+    return (await this.restClient.get({
+      path: `/sentence-type/${sentenceTypeId}/is-still-valid`,
+      query: {
+        age,
+        convictionDate,
+        statuses: 'ACTIVE',
+        offenceDate,
+      },
+    })) as unknown as Promise<SentenceTypeIsValid>
   }
 }

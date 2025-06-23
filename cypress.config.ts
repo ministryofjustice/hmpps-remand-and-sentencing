@@ -35,7 +35,10 @@ export default defineConfig({
             prisonApi.stubGetPrisonerImage(),
             prisonApi.stubGetUserCaseload(),
             courtRegisterApi.stubSearchCourt(),
-            remandAndSentencingApi.stubSearchSentenceTypes(),
+            remandAndSentencingApi.stubSearchSentenceTypes({
+              convictionDate: '2023-05-12',
+              offenceDate: '2023-05-12',
+            }),
             remandAndSentencingApi.stubGetAllAppearanceTypes(),
             remandAndSentencingApi.stubGetAppearanceOutcomeById({
               outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',

@@ -12,6 +12,7 @@ import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceSentenceTypePage from '../pages/offenceSentenceTypePage'
 import SentenceSentenceConsecutiveToPage from '../pages/sentenceSentenceConsecutiveToPage'
 import Page from '../pages/page'
+import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 
 context('Add Offence Edit offence Page', () => {
   let offenceEditOffencePage: OffenceEditOffencePage
@@ -129,14 +130,15 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit offence date and return to edit page', () => {
+      cy.task('stubIsSentenceTypeStillValid', {})
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'offence-date').click()
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '12')
       offenceOffenceDatePage.monthDateInput('offenceStartDate').should('have.value', '5')
       offenceOffenceDatePage.yearDateInput('offenceStartDate').should('have.value', '2023')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
-      offenceOffenceDatePage.dayDateInput('offenceStartDate').type('25')
-      offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('28')
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').type('1')
+      offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('5')
       offenceOffenceDatePage.monthDateInput('offenceEndDate').clear().type('5')
       offenceOffenceDatePage.yearDateInput('offenceEndDate').clear().type('2023')
       offenceOffenceDatePage.continueButton().click()
@@ -144,7 +146,7 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
-        'Committed on': '25/05/2023 to 28/05/2023',
+        'Committed on': '01/05/2023 to 05/05/2023',
         'Conviction date': '12/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
@@ -269,6 +271,52 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Consecutive',
+      })
+    })
+
+    it('editing offence date and invalidating means entering conviction date, sentence type and period lengths again', () => {
+      cy.task('stubIsSentenceTypeStillValid', {
+        sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        isStillValid: false,
+      })
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
+        description: 'EDS (Extended Determinate Sentence)',
+      })
+      cy.task('stubSearchSentenceTypes', {
+        convictionDate: '2023-05-18',
+        offenceDate: '2023-05-08',
+      })
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'offence-date').click()
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '12').clear().type('8')
+      offenceOffenceDatePage.continueButton().click()
+      const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
+      offenceConvictionDatePage.dayDateInput('convictionDate').type('18')
+      offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
+      offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
+      offenceConvictionDatePage.continueButton().click()
+      const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+      offenceSentenceTypePage.radioLabelContains('EDS (Extended Determinate Sentence)').click()
+      offenceSentenceTypePage.continueButton().click()
+      let offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'custodial term')
+      offencePeriodLengthPage.yearsInput().type('4')
+      offencePeriodLengthPage.monthsInput().type('4')
+      offencePeriodLengthPage.continueButton().click()
+      offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'licence period')
+      offencePeriodLengthPage.yearsInput().type('2')
+      offencePeriodLengthPage.monthsInput().type('2')
+      offencePeriodLengthPage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        'Committed on': '08/05/2023',
+        'Conviction date': '18/05/2023',
+        'Sentence type': 'EDS (Extended Determinate Sentence)',
+        'Custodial term': '4 years 4 months 0 weeks 0 days',
+        'Licence period': '2 years 2 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Forthwith',
       })
     })
   })

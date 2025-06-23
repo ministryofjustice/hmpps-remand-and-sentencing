@@ -1,9 +1,9 @@
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import Page from '../pages/page'
-import UploadCourtDocumentsPage from '../pages/uploadCourtDocumentsPage'
+import UploadSentencingCourtDocumentsPage from '../pages/uploadSentencingCourtDocumentsPage'
 
-context('Upload court document page', () => {
-  let uploadCourtDocumentsPage: UploadCourtDocumentsPage
+context('Upload sentencing court document page', () => {
+  let uploadSentencingCourtDocumentsPage: UploadSentencingCourtDocumentsPage
   beforeEach(() => {
     cy.task('happyPathStubs')
 
@@ -13,11 +13,11 @@ context('Upload court document page', () => {
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/upload-court-documents')
-    uploadCourtDocumentsPage = Page.verifyOnPage(UploadCourtDocumentsPage)
+    uploadSentencingCourtDocumentsPage = Page.verifyOnPage(UploadSentencingCourtDocumentsPage)
   })
 
   it('displays person details', () => {
-    uploadCourtDocumentsPage
+    uploadSentencingCourtDocumentsPage
       .prisonerBanner()
       .should('contain.text', 'Meza, Cormac')
       .and('contain.text', 'A1234AB')
@@ -26,6 +26,6 @@ context('Upload court document page', () => {
   })
 
   it('button to continue is displayed', () => {
-    uploadCourtDocumentsPage.continueButton().should('contain.text', 'Continue')
+    uploadSentencingCourtDocumentsPage.continueButton().should('contain.text', 'Continue')
   })
 })

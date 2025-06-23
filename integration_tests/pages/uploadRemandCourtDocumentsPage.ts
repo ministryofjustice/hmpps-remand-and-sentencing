@@ -1,6 +1,6 @@
 import Page from './page'
 
-export default class UploadCourtDocumentsPage extends Page {
+export default class UploadSentencingCourtDocumentsPage extends Page {
   constructor() {
     super('Upload court documents')
   }

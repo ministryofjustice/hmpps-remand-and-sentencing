@@ -1541,7 +1541,6 @@ export default class CourtCaseRoutes {
   }
 
   public deleteUploadedDocuments: RequestHandler = async (req, res): Promise<void> => {
-    console.log('Deleting uploaded documents')
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const documentId = req.query.documentId as string
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)

@@ -1449,7 +1449,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`
     if (invalidatedFrom) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date${submitQuery}`
+      const invalidatedFromType = InvalidatedFrom[invalidatedFrom as keyof typeof InvalidatedFrom]
+      if (invalidatedFromType === InvalidatedFrom.OFFENCE_DATE) {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date${submitQuery}`
+      } else {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      }
     } else if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     }
@@ -1504,6 +1509,21 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
     if (submitToEditOffence) {
+      const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+      const hasInvalidatedOffence = this.courtAppearanceService.checkConvictionDateHasInvalidatedOffence(
+        req.session,
+        nomsId,
+        parseInt(offenceReference, 10),
+        offence.sentence.convictionDate,
+        res.locals.prisoner.dateOfBirth,
+        req.user.username,
+      )
+      if (hasInvalidatedOffence) {
+        this.offenceService.invalidateFromConvictionDate(req.session, nomsId, courtCaseReference, offenceReference)
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type?invalidatedFrom=${InvalidatedFrom.CONVICTION_DATE}`,
+        )
+      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )

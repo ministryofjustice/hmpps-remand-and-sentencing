@@ -906,6 +906,44 @@ export default class CourtAppearanceService {
     return hasInvalidated
   }
 
+  async checkConvictionDateHasInvalidatedOffence(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+    convictionDate: Date,
+    dateOfBirth: string,
+    username: string,
+  ): Promise<boolean> {
+    let hasInvalidated: boolean = false
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const { sentence } = offence
+      const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
+      const potentialConvictionDate = dayjs(convictionDate)
+      if (sentence.sentenceTypeId) {
+        const prisonerDateOfBirth = dayjs(dateOfBirth)
+        const ageAtConviction = potentialConvictionDate.diff(prisonerDateOfBirth, 'years')
+        const sentenceTypeStillValid = await this.remandAndSentencingService.getIsSentenceTypeStillValid(
+          sentence.sentenceTypeId,
+          ageAtConviction,
+          potentialConvictionDate,
+          offenceDate,
+          username,
+        )
+        if (!sentenceTypeStillValid.isStillValid) {
+          hasInvalidated = true
+          delete sentence.sentenceTypeClassification
+          delete sentence.sentenceTypeId
+          delete sentence.periodLengths
+        }
+      }
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+    }
+    return hasInvalidated
+  }
+
   clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]

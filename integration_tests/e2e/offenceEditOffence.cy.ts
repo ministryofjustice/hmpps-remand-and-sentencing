@@ -319,6 +319,49 @@ context('Add Offence Edit offence Page', () => {
         'Consecutive or concurrent': 'Forthwith',
       })
     })
+
+    it('editing conviction date and invalidating means entering sentence type and period lengths again', () => {
+      cy.task('stubIsSentenceTypeStillValid', {
+        sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+        isStillValid: false,
+      })
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
+        description: 'EDS (Extended Determinate Sentence)',
+      })
+      cy.task('stubSearchSentenceTypes', {
+        convictionDate: '2023-05-18',
+        offenceDate: '2023-05-12',
+      })
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', '0', '0', 'conviction-date').click()
+      const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
+      offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('18')
+      offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('5')
+      offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('2023')
+      offenceConvictionDatePage.continueButton().click()
+      const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+      offenceSentenceTypePage.radioLabelContains('EDS (Extended Determinate Sentence)').click()
+      offenceSentenceTypePage.continueButton().click()
+      let offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'custodial term')
+      offencePeriodLengthPage.yearsInput().type('4')
+      offencePeriodLengthPage.monthsInput().type('4')
+      offencePeriodLengthPage.continueButton().click()
+      offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'licence period')
+      offencePeriodLengthPage.yearsInput().type('2')
+      offencePeriodLengthPage.monthsInput().type('2')
+      offencePeriodLengthPage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        'Committed on': '12/05/2023',
+        'Conviction date': '18/05/2023',
+        'Sentence type': 'EDS (Extended Determinate Sentence)',
+        'Custodial term': '4 years 4 months 0 weeks 0 days',
+        'Licence period': '2 years 2 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Forthwith',
+      })
+    })
   })
 
   context('edit', () => {

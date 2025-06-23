@@ -2,7 +2,7 @@ import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import Page from '../pages/page'
 import UploadSentencingCourtDocumentsPage from '../pages/uploadSentencingCourtDocumentsPage'
 
-context('Upload court document page', () => {
+context('Upload sentencing court document page', () => {
   let uploadSentencingCourtDocumentsPage: UploadSentencingCourtDocumentsPage
   beforeEach(() => {
     cy.task('happyPathStubs')

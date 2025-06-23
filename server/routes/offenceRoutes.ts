@@ -44,6 +44,7 @@ import CalculateReleaseDatesService from '../services/calculateReleaseDatesServi
 import CourtRegisterService from '../services/courtRegisterService'
 import BaseRoutes from './baseRoutes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
+import InvalidatedFrom from '../resources/invalidatedFromTypes'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -67,7 +68,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence, invalidatedFrom } = req.query
     const offenceDateForm = (req.flash('offenceDateForm')[0] || {}) as OffenceOffenceDateForm
     let offenceStartDateDay: number | string = offenceDateForm['offenceStartDate-day']
     let offenceStartDateMonth: number | string = offenceDateForm['offenceStartDate-month']
@@ -92,7 +93,8 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
     const { warrantType, offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const isFirstOffence = offences.length === 0
-    if (submitToEditOffence) {
+    const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
+    if (submitToEditOffence || invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     } else if (!this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && warrantType === 'REMAND') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
@@ -107,7 +109,6 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      submitToEditOffence,
       offenceStartDateDay,
       offenceStartDateMonth,
       offenceStartDateYear,
@@ -118,6 +119,7 @@ export default class OffenceRoutes extends BaseRoutes {
       isFirstOffence,
       errors: req.flash('errors') || [],
       backLink,
+      submitQuery,
     })
   }
 
@@ -130,14 +132,15 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence, invalidatedFrom } = req.query
+    const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const offenceDateForm = trimForm<OffenceOffenceDateForm>(req.body)
     const errors = this.offenceService.setOffenceDates(req.session, nomsId, courtCaseReference, offenceDateForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('offenceDateForm', { ...offenceDateForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date${submitQuery}`,
       )
     }
 
@@ -155,7 +158,7 @@ export default class OffenceRoutes extends BaseRoutes {
       if (hasInvalidatedOffence) {
         this.offenceService.invalidateFromOffenceDate(req.session, nomsId, courtCaseReference, offenceReference)
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date?invalidatedFrom=OFFENCE_DATE`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date?invalidatedFrom=${InvalidatedFrom.OFFENCE_DATE}`,
         )
       }
       return res.redirect(
@@ -833,11 +836,10 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
-    if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-    }
     if (invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date${submitQuery}`
+    } else if (submitToEditOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     }
 
     return res.render('pages/offence/sentence-type', {
@@ -897,7 +899,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (nextPeriodLengthType) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${nextPeriodLengthType}${submitQuery ? `&${submitQuery.slice(1)}` : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
       )
     }
 
@@ -929,6 +931,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { submitToEditOffence, periodLengthType, invalidatedFrom } = req.query
+    const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
     const { sentence } = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const currentPeriodLength = sentence.periodLengths?.find(
       periodLength => periodLength.periodLengthType === periodLengthType,
@@ -944,18 +947,17 @@ export default class OffenceRoutes extends BaseRoutes {
     const periodLengthHeader =
       periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
       currentPeriodLength?.legacyData?.sentenceTermDescription
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
-    let submitQuery = ''
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type${this.queryParametersToString(submitToEditOffence, invalidatedFrom)}`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     } else if (expectedPeriodLengthTypeIndex >= 1) {
-      submitQuery = this.periodLengthQueryParameterToString(
+      const backSubmitQuery = this.periodLengthQueryParameterToString(
         sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths[expectedPeriodLengthTypeIndex - 1]
           .type,
         submitToEditOffence,
         invalidatedFrom,
       )
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${submitQuery}`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${backSubmitQuery}`
     }
     let sentenceTypeHint
     if (sentence?.sentenceTypeId) {
@@ -1030,7 +1032,7 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    if (submitToEditOffence) {
+    if (submitToEditOffence || invalidatedFrom) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
@@ -1446,11 +1448,10 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`
-    if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-    }
     if (invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date${submitQuery}`
+    } else if (submitToEditOffence) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     }
 
     return res.render('pages/offence/offence-conviction-date', {
@@ -1502,7 +1503,6 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type${submitQuery}`,
       )
     }
-
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,

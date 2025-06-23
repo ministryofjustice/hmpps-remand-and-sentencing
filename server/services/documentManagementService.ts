@@ -50,4 +50,13 @@ export default class DocumentManagementService {
       throw new Error(`Failed to upload document: ${error.message}`)
     }
   }
+
+  async deleteDocument(documentId: string, username: string, activeCaseLoadId: string): Promise<void> {
+    const token = await this.hmppsAuthClient.getSystemClientToken(username)
+    try {
+      await new DocumentManagementApiClient(token).deleteDocument(documentId, username, activeCaseLoadId)
+    } catch (error) {
+      throw new Error(`Failed to delete document: ${error.message}`)
+    }
+  }
 }

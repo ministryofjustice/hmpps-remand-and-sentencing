@@ -849,6 +849,15 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).uploadedDocuments ?? []
   }
 
+  removeUploadedDocument(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, documentId: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.uploadedDocuments) {
+      courtAppearance.uploadedDocuments = courtAppearance.uploadedDocuments.filter(doc => doc.documentId !== documentId)
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+  }
+
   async checkOffenceDatesHaveInvalidatedOffence(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

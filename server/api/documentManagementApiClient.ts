@@ -55,4 +55,19 @@ export default class DocumentManagementApiClient {
       throw new Error(`Error in Document Management API: ${error.message}`)
     }
   }
+
+  async deleteDocument(documentId: string, username: string, activeCaseLoadId: string): Promise<void> {
+    try {
+      await this.restClient.delete({
+        path: `/documents/${documentId}`,
+        headers: {
+          'Service-Name': 'Remand and Sentencing',
+          Username: username,
+          'Active-Case-Load-Id': activeCaseLoadId,
+        },
+      })
+    } catch (error) {
+      throw new Error(`Error deleting document: ${error.message}`)
+    }
+  }
 }

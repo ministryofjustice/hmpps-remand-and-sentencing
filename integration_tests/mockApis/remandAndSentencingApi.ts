@@ -2004,7 +2004,13 @@ export default {
       },
     })
   },
-  stubSearchSentenceTypes: (): SuperAgentRequest => {
+  stubSearchSentenceTypes: ({
+    convictionDate = '2023-05-12',
+    offenceDate = '2023-05-12',
+  }: {
+    convictionDate: string
+    offenceDate: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -2014,13 +2020,13 @@ export default {
             equalTo: '58',
           },
           convictionDate: {
-            equalTo: '2023-05-12',
+            equalTo: convictionDate,
           },
           statuses: {
             equalTo: 'ACTIVE',
           },
           offenceDate: {
-            equalTo: '2023-05-12',
+            equalTo: offenceDate,
           },
         },
       },
@@ -2546,6 +2552,28 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           countNumbers: countNumbersResponse,
+        },
+      },
+    })
+  },
+
+  stubIsSentenceTypeStillValid({
+    sentenceTypeUuid = '467e2fa8-fce1-41a4-8110-b378c727eed3',
+    isStillValid = true,
+  }: {
+    sentenceTypeUuid: string
+    isStillValid: boolean
+  }) {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/sentence-type/${sentenceTypeUuid}/is-still-valid`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          isStillValid,
         },
       },
     })

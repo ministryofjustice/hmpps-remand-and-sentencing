@@ -50,6 +50,7 @@ declare module 'models' {
     legacyData?: Record<string, never>
     updatedOutcome?: boolean
     mergedFromCase?: PagedMergedFromCase
+    onFinishGoToEdit?: boolean
   }
 
   export interface Sentence {

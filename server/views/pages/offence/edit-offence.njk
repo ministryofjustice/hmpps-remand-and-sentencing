@@ -30,6 +30,20 @@
                             visuallyHiddenText: "committed on"
                         }]
                     }
+                },
+                {
+                    key: {
+                        text: "Outcome"
+                    }, value: {
+                        text: outcome | outcomeValueOrLegacy(offence.legacyData)
+                    },
+                    actions: {
+                        items: [{
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-outcome?submitToEditOffence=true",
+                            text: "Edit",
+                            visuallyHiddenText: "outcome"
+                        }]
+                    }
                 }] %}
 
 {% if offence.sentence %}
@@ -115,21 +129,6 @@
                     }]
                 }
             })) %}
-{% else %}
-    {% set summaryRows = (summaryRows.concat({
-                    key: {
-                        text: "Outcome"
-                    }, value: {
-                        text: outcome | outcomeValueOrLegacy(offence.legacyData)
-                    },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-outcome?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "outcome"
-                        }]
-                    }
-                    })) %}
 {% endif %}
 
 {% set pageTitle = applicationName + " - Edit an offence" %}

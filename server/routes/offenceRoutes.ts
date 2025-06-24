@@ -316,7 +316,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-    } else if (addOrEditCourtCase === 'edit-court-case') {
+    } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
       } else {
@@ -354,6 +354,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
+    const existingOffence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const { errors, outcome } = await this.offenceService.setOffenceOutcome(
       req.session,
       nomsId,
@@ -370,6 +371,17 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
     this.courtAppearanceService.setOffenceOutcome(req.session, nomsId, parseInt(offenceReference, 10), outcome)
+    if (
+      existingOffence.outcomeUuid &&
+      existingOffence.outcomeUuid !== outcome.outcomeUuid &&
+      !existingOffence.sentence &&
+      outcome.outcomeType === 'SENTENCING'
+    ) {
+      this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
+      )
+    }
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,

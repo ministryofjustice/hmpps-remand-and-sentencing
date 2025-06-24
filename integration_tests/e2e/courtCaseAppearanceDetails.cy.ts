@@ -290,6 +290,7 @@ context('Court Case Appearance details Page', () => {
           'A1234AB',
           'edit',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
+          'edit',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
           '0',
           'offence-outcome',

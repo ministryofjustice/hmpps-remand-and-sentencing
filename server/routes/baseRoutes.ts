@@ -74,6 +74,11 @@ export default abstract class BaseRoutes {
     offenceReference: string,
   ) {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    if (offence.onFinishGoToEdit) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+      )
+    }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(

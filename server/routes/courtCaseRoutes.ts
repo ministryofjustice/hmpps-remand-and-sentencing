@@ -1613,27 +1613,6 @@ export default class CourtCaseRoutes {
     )
   }
 
-  public deleteUploadedDocuments: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const documentId = req.query.documentId as string
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
-
-    try {
-      await this.documentManagementService.deleteDocument(documentId, username, activeCaseLoadId)
-      this.courtAppearanceService.removeUploadedDocument(req.session, nomsId, documentId)
-    } catch (error) {
-      logger.error(`Error deleting document: ${error.message}`)
-      req.flash('errors', [{ text: 'File could not be deleted', href: '#document-upload' }])
-    }
-
-    return res.redirect(
-      warrantType === 'SENTENCING'
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
-        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
-    )
-  }
-
   public getDraftConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference } = req.params
     const { courtAppearanceCourtName } = res.locals

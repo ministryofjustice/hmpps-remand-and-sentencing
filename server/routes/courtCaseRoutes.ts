@@ -13,6 +13,7 @@ import type {
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
   CourtCaseWarrantTypeForm,
+  DeleteDocumentForm,
   UploadedDocumentForm,
 } from 'forms'
 import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
@@ -1538,6 +1539,78 @@ export default class CourtCaseRoutes {
         })
       }
     }
+  }
+
+  public confirmDeleteUploadedDocument: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      documentId,
+    } = req.params
+    const document = this.courtAppearanceService.getUploadedDocument(req.session, nomsId, documentId)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    return res.render('pages/courtAppearance/delete-document', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      document,
+      errors: req.flash('errors') || [],
+      backLink:
+        warrantType === 'SENTENCING'
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
+    })
+  }
+
+  public submitConfirmDeleteUploadedDocument: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      documentId,
+    } = req.params
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const deleteDocumentForm = trimForm<DeleteDocumentForm>(req.body)
+    const errors = validate(
+      deleteDocumentForm,
+      {
+        deleteDocument: 'required',
+      },
+      {
+        'required.deleteDocument': 'You must select an option.',
+      },
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentId}/delete-document`,
+      )
+    }
+
+    if (deleteDocumentForm.deleteDocument === 'true') {
+      try {
+        await this.documentManagementService.deleteDocument(documentId, username, activeCaseLoadId)
+        this.courtAppearanceService.removeUploadedDocument(req.session, nomsId, documentId)
+        req.flash('success', [{ text: 'File deleted successfully' }])
+      } catch (error) {
+        logger.error(`Error deleting document: ${error.message}`)
+        req.flash('errors', [{ text: 'File could not be deleted', href: '#document-upload' }])
+      }
+    }
+
+    return res.redirect(
+      warrantType === 'SENTENCING'
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
+    )
   }
 
   public deleteUploadedDocuments: RequestHandler = async (req, res): Promise<void> => {

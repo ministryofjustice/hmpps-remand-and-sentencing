@@ -849,6 +849,15 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).uploadedDocuments ?? []
   }
 
+  getUploadedDocument(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    documentId: string,
+  ): UploadedDocument | undefined {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    return courtAppearance.uploadedDocuments?.find(doc => doc.documentId === documentId)
+  }
+
   removeUploadedDocument(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, documentId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.uploadedDocuments) {

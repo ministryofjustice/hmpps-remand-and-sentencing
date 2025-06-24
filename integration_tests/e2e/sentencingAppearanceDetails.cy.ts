@@ -141,6 +141,7 @@ context('Sentencing appearance details Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 3',
         Offence: 'PS90037 An offence description',
+        Outcome: 'Remanded in custody',
         'Committed on': '15/12/2023',
         'Conviction date': 'N/A',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
@@ -232,6 +233,7 @@ context('Sentencing appearance details Page', () => {
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
+        Outcome: 'A Nomis description',
         'Committed on': '15/12/2023',
         'Conviction date': 'N/A',
         'Sentence type': 'A Nomis sentence type description',

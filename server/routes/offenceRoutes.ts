@@ -1395,12 +1395,14 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceSentenceServeTypeForm = trimForm<OffenceSentenceServeTypeForm>(req.body)
+    const existingOffence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const errors = this.offenceService.setSentenceServeType(
       req.session,
       nomsId,
       courtCaseReference,
       offenceReference,
       offenceSentenceServeTypeForm,
+      existingOffence.sentence?.sentenceServeType,
     )
 
     if (errors.length > 0) {
@@ -1416,6 +1418,20 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
     if (submitToEditOffence) {
+      const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
+        req.session,
+        nomsId,
+        parseInt(offenceReference, 10),
+      )
+      if (
+        sentenceIsInChain &&
+        existingOffence.sentence.sentenceServeType !== offenceSentenceServeTypeForm.sentenceServeType &&
+        offenceSentenceServeTypeForm.sentenceServeType === 'CONCURRENT'
+      ) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-concurrent${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        )
+      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
@@ -2182,9 +2198,16 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/is-sentence-consecutive-to`,
         )
       }
-      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, offenceReference, {
-        sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
-      })
+      this.offenceService.setSentenceServeType(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        offenceReference,
+        {
+          sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
+        },
+        null,
+      )
       return this.saveSessionOffenceInAppearance(
         req,
         res,

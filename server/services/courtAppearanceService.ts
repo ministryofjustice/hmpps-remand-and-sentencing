@@ -935,6 +935,42 @@ export default class CourtAppearanceService {
     return hasInvalidated
   }
 
+  sentenceIsInChain(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ): boolean {
+    let sentenceInChain: boolean = false
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const { sentence } = offence
+      if (sentence) {
+        sentenceInChain = courtAppearance.offences.some(
+          otherOffence => otherOffence.sentence?.consecutiveToSentenceReference === sentence.sentenceReference,
+        )
+      }
+    }
+    return sentenceInChain
+  }
+
+  setSentenceToConcurrent(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const { sentence } = offence
+      sentence.sentenceServeType = 'CONCURRENT'
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+    }
+  }
+
   clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]

@@ -613,6 +613,7 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceReference: string,
     offenceSentenceServeTypeForm: OffenceSentenceServeTypeForm,
+    existingSentenceServeType: string,
   ) {
     const errors = validate(
       offenceSentenceServeTypeForm,
@@ -627,7 +628,10 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, offenceReference)
-      sentence.sentenceServeType = offenceSentenceServeTypeForm.sentenceServeType
+      if (!existingSentenceServeType && offenceSentenceServeTypeForm.sentenceServeType !== 'CONCURRENT') {
+        sentence.sentenceServeType = offenceSentenceServeTypeForm.sentenceServeType
+      }
+
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
@@ -890,6 +894,23 @@ export default class OffenceService {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
     offence.onFinishGoToEdit = true
+  }
+
+  setSentenceToConcurrent(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = this.getSentence(offence, offenceReference)
+    sentence.sentenceServeType = 'CONCURRENT'
+    delete sentence.consecutiveToSentenceReference
+    delete sentence.consecutiveToSentenceUuid
+    offence.sentence = sentence
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
   }
 
   clearOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtCaseReference: string) {

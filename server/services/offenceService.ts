@@ -628,7 +628,7 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, offenceReference)
-      if (!existingSentenceServeType && offenceSentenceServeTypeForm.sentenceServeType !== 'CONCURRENT') {
+      if (!existingSentenceServeType || offenceSentenceServeTypeForm.sentenceServeType !== 'CONCURRENT') {
         sentence.sentenceServeType = offenceSentenceServeTypeForm.sentenceServeType
       }
 

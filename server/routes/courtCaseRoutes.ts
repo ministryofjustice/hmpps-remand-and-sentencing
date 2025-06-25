@@ -1460,8 +1460,8 @@ export default class CourtCaseRoutes {
       documentType,
     } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const documentName = this.getDocumentName(documentType)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    const documentName = this.getDocumentName(documentType, warrantType)
 
     const errors = req.flash('errors')
 
@@ -1630,10 +1630,10 @@ export default class CourtCaseRoutes {
     })
   }
 
-  private getDocumentName(documentType: string): string {
+  private getDocumentName(documentType: string, warrantType: string): string {
     switch (documentType) {
       case 'warrant':
-        return 'sentencing warrant'
+        return warrantType === 'SENTENCING' ? 'sentencing warrant' : 'remand warrant'
       case 'trial-record-sheet':
         return 'trial record sheet'
       case 'indictment':

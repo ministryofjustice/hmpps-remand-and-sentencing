@@ -24,9 +24,10 @@ import {
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import RemandAndSentencingService from './remandAndSentencingService'
-import { toDateString } from '../utils/utils'
+import { extractKeyValue, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import sentenceServeTypes from '../resources/sentenceServeTypes'
 
 export default class CourtAppearanceService {
   constructor(private readonly remandAndSentencingService: RemandAndSentencingService) {}
@@ -963,7 +964,7 @@ export default class CourtAppearanceService {
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
-      sentence.sentenceServeType = 'CONCURRENT'
+      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
       delete sentence.consecutiveToSentenceReference
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence

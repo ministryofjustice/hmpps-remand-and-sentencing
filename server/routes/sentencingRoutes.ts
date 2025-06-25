@@ -125,6 +125,7 @@ export default class SentencingRoutes extends BaseRoutes {
           sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE),
         },
         null,
+        false,
       )
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/first-sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
@@ -140,6 +141,7 @@ export default class SentencingRoutes extends BaseRoutes {
         sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
       },
       null,
+      false,
     )
     if (submitToEditOffence) {
       return res.redirect(

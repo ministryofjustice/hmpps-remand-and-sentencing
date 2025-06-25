@@ -116,17 +116,33 @@ export default class SentencingRoutes extends BaseRoutes {
     }
 
     if (sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase === 'true') {
-      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, offenceReference, {
-        sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE),
-      })
+      this.offenceService.setSentenceServeType(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        offenceReference,
+        {
+          sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE),
+        },
+        null,
+        false,
+      )
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/first-sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
-    this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, offenceReference, {
-      sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
-    })
+    this.offenceService.setSentenceServeType(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      {
+        sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
+      },
+      null,
+      false,
+    )
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
@@ -501,6 +517,49 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       appearanceReference,
       offenceReference,
+    )
+  }
+
+  public getMakingSentenceConcurrent: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence } = req.query
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.token)
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
+    return res.render('pages/sentencing/making-sentence-concurrent', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offenceDetails,
+      offence,
+      submitToEditOffence,
+      backLink,
+    })
+  }
+
+  public continueMakingSentenceConcurrent: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    this.offenceService.setSentenceToConcurrent(req.session, nomsId, courtCaseReference, offenceReference)
+    this.courtAppearanceService.setSentenceToConcurrent(req.session, nomsId, parseInt(offenceReference, 10))
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
     )
   }
 

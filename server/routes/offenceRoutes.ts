@@ -1395,12 +1395,20 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceSentenceServeTypeForm = trimForm<OffenceSentenceServeTypeForm>(req.body)
+    const existingOffence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+    )
     const errors = this.offenceService.setSentenceServeType(
       req.session,
       nomsId,
       courtCaseReference,
       offenceReference,
       offenceSentenceServeTypeForm,
+      existingOffence.sentence?.sentenceServeType,
+      sentenceIsInChain,
     )
 
     if (errors.length > 0) {
@@ -1410,12 +1418,25 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    if (offenceSentenceServeTypeForm.sentenceServeType === 'CONSECUTIVE') {
+    if (
+      offenceSentenceServeTypeForm.sentenceServeType ===
+      extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
+    ) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
     if (submitToEditOffence) {
+      if (
+        sentenceIsInChain &&
+        existingOffence.sentence.sentenceServeType !== offenceSentenceServeTypeForm.sentenceServeType &&
+        offenceSentenceServeTypeForm.sentenceServeType ===
+          extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
+      ) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-concurrent${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        )
+      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
@@ -2182,9 +2203,17 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/is-sentence-consecutive-to`,
         )
       }
-      this.offenceService.setSentenceServeType(req.session, nomsId, courtCaseReference, offenceReference, {
-        sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
-      })
+      this.offenceService.setSentenceServeType(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        offenceReference,
+        {
+          sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
+        },
+        null,
+        false,
+      )
       return this.saveSessionOffenceInAppearance(
         req,
         res,

@@ -1579,31 +1579,20 @@ export default class CourtCaseRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const { username, activeCaseLoadId } = res.locals.user as PrisonUser
     const deleteDocumentForm = trimForm<DeleteDocumentForm>(req.body)
-    const errors = validate(
+    const errors = await this.courtAppearanceService.removeUploadedDocument(
+      req.session,
+      nomsId,
+      documentId,
       deleteDocumentForm,
-      {
-        deleteDocument: 'required',
-      },
-      {
-        'required.deleteDocument': 'You must select an option.',
-      },
+      username,
+      activeCaseLoadId,
     )
+
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentId}/delete-document`,
       )
-    }
-
-    if (deleteDocumentForm.deleteDocument === 'true') {
-      try {
-        await this.documentManagementService.deleteDocument(documentId, username, activeCaseLoadId)
-        this.courtAppearanceService.removeUploadedDocument(req.session, nomsId, documentId)
-        req.flash('success', [{ text: 'File deleted successfully' }])
-      } catch (error) {
-        logger.error(`Error deleting document: ${error.message}`)
-        req.flash('errors', [{ text: 'File could not be deleted', href: '#document-upload' }])
-      }
     }
 
     return res.redirect(

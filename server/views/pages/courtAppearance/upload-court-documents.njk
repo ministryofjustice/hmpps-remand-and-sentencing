@@ -1,5 +1,7 @@
 {% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
 
 {% set pageTitle = applicationName + " - upload court documents" %}
 
@@ -28,28 +30,38 @@
         {% endif %}
 
         {% if foundDoc %}
-        <dl class="govuk-summary-list govuk-summary-list--long-key govuk-!-margin-bottom-0">
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  <a class="govuk-link" href=""><strong>{{ foundDoc.fileName }}</strong></a>
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <strong class="govuk-tag govuk-tag--green">Uploaded</strong>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ foundDoc.documentId }}/delete-document">Remove</a>
-                </dd>
-              </div>
-        </dl>
-            {% else %}
-              <p class="govuk-body">
-                <a class="govuk-link" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ docTypeInfo.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">Upload {{ docTypeInfo.name | lower }}</a>
-              </p>
-            {% endif %}
+          {{ govukSummaryList({
+            rows: [
+              {
+                key: {
+                  html: '<a class="govuk-link" href="#"><strong>' + foundDoc.fileName + '</strong></a><br><span class="govuk-body-s">' + docTypeInfo.name + '</span>'
+                },
+                value: {
+                  html: govukTag({text: "Uploaded", classes: "govuk-tag--green"})
+                },
+                actions: {
+                  items: [
+                    {
+                      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/" + foundDoc.documentId + "/delete-document",
+                      text: "Remove",
+                      visuallyHiddenText: "document"
+                    }
+                  ]
+                }
+              }
+            ]
+          }) }}
+        {% else %}
+          <p class="govuk-body">
+            <a class="govuk-link" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ docTypeInfo.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">
+              Upload {{ docTypeInfo.name | lower }}
+            </a>
+          </p>
+        {% endif %}
 
-            {% if not loop.last %}
-              <hr class="govuk-!-margin-top-4 govuk-!-margin-bottom-4">
-            {% endif %}
+        {% if not loop.last %}
+          <hr class="govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+        {% endif %}
           {% endfor %}
 
       <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">

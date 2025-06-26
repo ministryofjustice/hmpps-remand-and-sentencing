@@ -14,6 +14,7 @@ import type {
   CourtCaseSelectCourtNameForm,
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
+  DeleteDocumentForm,
   OffenceCountNumberForm,
   SentenceLengthForm,
 } from 'forms'
@@ -28,9 +29,14 @@ import { extractKeyValue, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
+import logger from '../../logger'
+import DocumentManagementService from './documentManagementService'
 
 export default class CourtAppearanceService {
-  constructor(private readonly remandAndSentencingService: RemandAndSentencingService) {}
+  constructor(
+    private readonly remandAndSentencingService: RemandAndSentencingService,
+    private readonly documentManagementService: DocumentManagementService,
+  ) {}
 
   setCaseReferenceNumber(
     session: CookieSessionInterfaces.CookieSessionObject,
@@ -848,6 +854,57 @@ export default class CourtAppearanceService {
 
   getUploadedDocuments(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): UploadedDocument[] {
     return this.getCourtAppearance(session, nomsId).uploadedDocuments ?? []
+  }
+
+  getUploadedDocument(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    documentId: string,
+  ): UploadedDocument | undefined {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    return courtAppearance.uploadedDocuments?.find(doc => doc.documentId === documentId)
+  }
+
+  async removeUploadedDocument(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    documentId: string,
+    deleteDocumentForm: DeleteDocumentForm,
+    username: string,
+    activeCaseLoadId: string,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    let errors = validate(
+      deleteDocumentForm,
+      {
+        deleteDocument: 'required',
+      },
+      {
+        'required.deleteDocument': 'You must select an option.',
+      },
+    )
+    if (deleteDocumentForm.deleteDocument === 'true') {
+      try {
+        await this.documentManagementService.deleteDocument(documentId, username, activeCaseLoadId)
+        const courtAppearance = this.getCourtAppearance(session, nomsId)
+        if (courtAppearance.uploadedDocuments) {
+          courtAppearance.uploadedDocuments = courtAppearance.uploadedDocuments.filter(
+            doc => doc.documentId !== documentId,
+          )
+          // eslint-disable-next-line no-param-reassign
+          session.courtAppearances[nomsId] = courtAppearance
+        }
+      } catch (error) {
+        logger.error(`Error deleting document: ${error.message}`)
+        errors = [{ text: 'File could not be deleted', href: '#document-upload' }]
+      }
+    }
+    return errors
   }
 
   async checkOffenceDatesHaveInvalidatedOffence(

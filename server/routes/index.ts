@@ -652,6 +652,16 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.getUploadCourtDocuments,
   )
 
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentId/delete-document',
+    courtCaseRoutes.confirmDeleteUploadedDocument,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentId/submit-delete-document',
+    courtCaseRoutes.submitConfirmDeleteUploadedDocument,
+  )
+
   postWithFileUpload(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/submit-upload-documents',
     courtCaseRoutes.submitUploadCourtDocuments,

@@ -888,7 +888,6 @@ export default class CourtAppearanceService {
         'required.deleteDocument': 'You must select an option.',
       },
     )
-    console.log('errors', errors)
     if (deleteDocumentForm.deleteDocument === 'true') {
       try {
         await this.documentManagementService.deleteDocument(documentId, username, activeCaseLoadId)

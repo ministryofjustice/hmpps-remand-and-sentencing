@@ -20,6 +20,7 @@ import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
 import dayjs from 'dayjs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import fs from 'fs'
+import { Readable } from 'stream'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -1538,6 +1539,68 @@ export default class CourtCaseRoutes {
           if (err) logger.error('Error deleting temp file:', err)
         })
       }
+    }
+  }
+
+  // eslint-disable-next-line consistent-return
+  public downloadUploadedDocument: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, documentId } = req.params
+    const document: UploadedDocument | undefined = this.courtAppearanceService.getUploadedDocument(
+      req.session,
+      nomsId,
+      documentId,
+    )
+    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+
+    if (!document) {
+      req.flash('errors', [{ text: 'Document not found.' }])
+      return res.redirect(`/person/${nomsId}/court-appearance/upload-court-documents`)
+    }
+
+    let fileStream: Readable | undefined
+
+    try {
+      const result = await this.documentManagementService.downloadDocument(
+        document.documentId,
+        username,
+        activeCaseLoadId,
+      )
+
+      if (result instanceof Readable) {
+        fileStream = result
+      } else if (Buffer.isBuffer(result)) {
+        fileStream = new Readable()
+        fileStream.push(result)
+        fileStream.push(null)
+      } else {
+        logger.error(`Document management service returned unexpected type for documentId: ${document.documentId}`)
+        req.flash('errors', [{ text: 'Failed to retrieve document content.' }])
+        return res.redirect(`/person/${nomsId}/court-appearance/upload-court-documents`)
+      }
+
+      res.setHeader('Content-Disposition', `attachment; filename="${document.fileName}"`)
+      fileStream.pipe(res)
+
+      fileStream.on('error', (streamError: Error) => {
+        logger.error(`Stream error during document download for ${document.documentId}: ${streamError.message}`)
+        if (!res.headersSent) {
+          req.flash('errors', [{ text: 'Error transferring document.' }])
+          res.redirect(`/person/${nomsId}/court-appearance/upload-court-documents`)
+        } else {
+          res.end()
+        }
+      })
+
+      fileStream.on('end', () => {
+        logger.info(`Successfully streamed document ${document.documentId} to client.`)
+      })
+    } catch (error) {
+      logger.error(`Error downloading document ${documentId}: ${error.message}`)
+      if (!res.headersSent) {
+        req.flash('errors', [{ text: 'Error downloading document.' }])
+        return res.redirect(`/person/${nomsId}/court-appearance/upload-court-documents`)
+      }
+      res.end()
     }
   }
 

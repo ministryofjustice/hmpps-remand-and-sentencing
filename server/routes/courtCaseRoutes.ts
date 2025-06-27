@@ -1582,7 +1582,7 @@ export default class CourtCaseRoutes {
         fileStream.push(null)
       } else {
         logger.error(`Document management service returned unexpected type for documentId: ${document.documentId}`)
-        errors = [{ text: 'Failed to retrieve document content.' }]
+        throw new Error('Failed to retrieve document content.')
       }
 
       res.setHeader('Content-Disposition', `attachment; filename="${document.fileName}"`)

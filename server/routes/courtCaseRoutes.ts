@@ -1544,17 +1544,25 @@ export default class CourtCaseRoutes {
 
   // eslint-disable-next-line consistent-return
   public downloadUploadedDocument: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, documentId } = req.params
+    const {
+      nomsId,
+      documentId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
     const document: UploadedDocument | undefined = this.courtAppearanceService.getUploadedDocument(
       req.session,
       nomsId,
       documentId,
     )
     const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    let errors = []
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
 
     if (!document) {
-      req.flash('errors', [{ text: 'Document not found.' }])
-      return res.redirect(`/person/${nomsId}/court-appearance/upload-court-documents`)
+      errors = [{ text: 'Document not found.' }]
     }
 
     let fileStream: Readable | undefined
@@ -1574,8 +1582,7 @@ export default class CourtCaseRoutes {
         fileStream.push(null)
       } else {
         logger.error(`Document management service returned unexpected type for documentId: ${document.documentId}`)
-        req.flash('errors', [{ text: 'Failed to retrieve document content.' }])
-        return res.redirect(`/person/${nomsId}/court-appearance/upload-court-documents`)
+        errors = [{ text: 'Failed to retrieve document content.' }]
       }
 
       res.setHeader('Content-Disposition', `attachment; filename="${document.fileName}"`)
@@ -1584,8 +1591,7 @@ export default class CourtCaseRoutes {
       fileStream.on('error', (streamError: Error) => {
         logger.error(`Stream error during document download for ${document.documentId}: ${streamError.message}`)
         if (!res.headersSent) {
-          req.flash('errors', [{ text: 'Error transferring document.' }])
-          res.redirect(`/person/${nomsId}/court-appearance/upload-court-documents`)
+          errors = [{ text: 'Error transferring document.' }]
         } else {
           res.end()
         }
@@ -1597,10 +1603,17 @@ export default class CourtCaseRoutes {
     } catch (error) {
       logger.error(`Error downloading document ${documentId}: ${error.message}`)
       if (!res.headersSent) {
-        req.flash('errors', [{ text: 'Error downloading document.' }])
-        return res.redirect(`/person/${nomsId}/court-appearance/upload-court-documents`)
+        errors = [{ text: 'Error downloading document.' }]
       }
       res.end()
+    }
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        warrantType === 'SENTENCING'
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
+      )
     }
   }
 

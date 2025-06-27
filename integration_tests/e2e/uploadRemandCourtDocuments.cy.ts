@@ -2,7 +2,6 @@ import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import Page from '../pages/page'
 import UploadRemandCourtDocumentsPage from '../pages/uploadRemandCourtDocumentsPage'
 import DocumentUploadPage from '../pages/documentUpload'
-import UploadSentencingCourtDocumentsPage from '../pages/uploadSentencingCourtDocumentsPage'
 
 context('Upload remand court document page', () => {
   let uploadRemandCourtDocumentsPage: UploadRemandCourtDocumentsPage

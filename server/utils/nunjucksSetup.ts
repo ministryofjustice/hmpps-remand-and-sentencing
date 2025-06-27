@@ -35,6 +35,7 @@ import type {
   NextCourtAppearance,
   OffenceOutcome,
   PagedMergedFromCase,
+  PagedMergedToCase,
   SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
@@ -223,6 +224,13 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       return description
     },
   )
+  njkEnv.addFilter('formatMergedToCase', (mergedToCase: PagedMergedToCase, courtDetails: { [key: string]: string }) => {
+    let description = `This court case was merged on ${formatDate(mergedToCase.mergedToDate)} with the case at ${courtDetails[mergedToCase.courtCode]} on ${formatDate(mergedToCase.warrantDate)}`
+    if (mergedToCase.caseReference) {
+      description = `This court case was merged on ${formatDate(mergedToCase.mergedToDate)} with ${mergedToCase.caseReference} at ${courtDetails[mergedToCase.courtCode]}`
+    }
+    return description
+  })
   njkEnv.addFilter(
     'checkConsecutiveToSameCase',
     (consecutiveToDetails: ConsecutiveToDetails, offences: Offence[], consecutiveToSentenceUuid: string) => {

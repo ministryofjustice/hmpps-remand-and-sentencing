@@ -106,6 +106,16 @@
                             
                             {% endif %}
 
+                            {% if courtCaseDetails.mergedToCase %}
+                                {{ govukInsetText({
+                                    text: courtCaseDetails.mergedToCase | formatMergedToCase(courtMap),
+                                    classes: "govuk-!-margin-top-2",
+                                    attributes: {
+                                        "data-qa": "mergedToCaseInset-" + courtCaseDetails.courtCaseUuid
+                                    }
+                                }) }}
+                            {% endif %}
+
                             {% if courtCaseDetails.mergedFromCases and courtCaseDetails.mergedFromCases.length %}
                                 {% set mergedFromCasesHtml = '' %}
 

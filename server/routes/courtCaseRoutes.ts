@@ -77,7 +77,11 @@ export default class CourtCaseRoutes {
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
     const courtIds = courtCases.content
       .flatMap(courtCase =>
-        [courtCase.latestCourtAppearance.courtCode, courtCase.latestCourtAppearance.nextCourtAppearance?.courtCode]
+        [
+          courtCase.latestCourtAppearance.courtCode,
+          courtCase.latestCourtAppearance.nextCourtAppearance?.courtCode,
+          courtCase.mergedToCase?.courtCode,
+        ]
           .concat(courtCase.latestCourtAppearance.charges.map(charge => charge.mergedFromCase?.courtCode))
           .filter(courtCode => courtCode !== undefined && courtCode !== null),
       )

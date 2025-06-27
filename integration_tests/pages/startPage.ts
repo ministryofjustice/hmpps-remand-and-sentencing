@@ -13,6 +13,8 @@ export default class StartPage extends Page {
 
   mergedCaseInset = (courtCaseUuid: string): PageElement => cy.get(`[data-qa=mergedCaseInset-${courtCaseUuid}]`)
 
+  mergedToCaseInset = (courtCaseUuid: string): PageElement => cy.get(`[data-qa=mergedToCaseInset-${courtCaseUuid}]`)
+
   courtCaseLatestAppearanceCaseReference = (courtCaseUuid: string): PageElement =>
     cy.get(`[data-qa=latestAppearanceCourtCaseReference-${courtCaseUuid}]`)
 

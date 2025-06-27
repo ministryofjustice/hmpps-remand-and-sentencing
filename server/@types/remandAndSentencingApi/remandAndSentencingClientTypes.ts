@@ -88,6 +88,8 @@ export type PagedSentencePeriodLength = components['schemas']['PagedSentencePeri
 
 export type PagedMergedFromCase = components['schemas']['PagedMergedFromCase']
 
+export type PagedMergedToCase = components['schemas']['PagedMergedToCase']
+
 export type CourtCaseCountNumbers = components['schemas']['CourtCaseCountNumbers']
 
 export type SentenceTypeIsValid = components['schemas']['SentenceTypeIsValid']

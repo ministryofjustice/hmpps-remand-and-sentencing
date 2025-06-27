@@ -20,6 +20,7 @@ import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
 import dayjs from 'dayjs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import fs from 'fs'
+import { Readable } from 'stream'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -1538,6 +1539,81 @@ export default class CourtCaseRoutes {
           if (err) logger.error('Error deleting temp file:', err)
         })
       }
+    }
+  }
+
+  // eslint-disable-next-line consistent-return
+  public downloadUploadedDocument: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      documentId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const document: UploadedDocument | undefined = this.courtAppearanceService.getUploadedDocument(
+      req.session,
+      nomsId,
+      documentId,
+    )
+    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    let errors = []
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+
+    if (!document) {
+      errors = [{ text: 'Document not found.' }]
+    }
+
+    let fileStream: Readable | undefined
+
+    try {
+      const result = await this.documentManagementService.downloadDocument(
+        document.documentId,
+        username,
+        activeCaseLoadId,
+      )
+
+      if (result instanceof Readable) {
+        fileStream = result
+      } else if (Buffer.isBuffer(result)) {
+        fileStream = new Readable()
+        fileStream.push(result)
+        fileStream.push(null)
+      } else {
+        logger.error(`Document management service returned unexpected type for documentId: ${document.documentId}`)
+        throw new Error('Failed to retrieve document content.')
+      }
+
+      res.setHeader('Content-Disposition', `attachment; filename="${document.fileName}"`)
+      fileStream.pipe(res)
+
+      fileStream.on('error', (streamError: Error) => {
+        logger.error(`Stream error during document download for ${document.documentId}: ${streamError.message}`)
+        if (!res.headersSent) {
+          errors = [{ text: 'Error transferring document.' }]
+        } else {
+          res.end()
+        }
+      })
+
+      fileStream.on('end', () => {
+        logger.info(`Successfully streamed document ${document.documentId} to client.`)
+      })
+    } catch (error) {
+      logger.error(`Error downloading document ${documentId}: ${error.message}`)
+      if (!res.headersSent) {
+        errors = [{ text: 'Error downloading document.' }]
+      }
+      res.end()
+    }
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        warrantType === 'SENTENCING'
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
+      )
     }
   }
 

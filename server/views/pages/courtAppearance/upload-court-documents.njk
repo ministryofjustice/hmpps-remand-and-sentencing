@@ -34,7 +34,7 @@
             rows: [
               {
                 key: {
-                  html: '<a class="govuk-link" href="#"><strong>' + foundDoc.fileName + '</strong></a><br><span class="govuk-body-s">' + docTypeInfo.name + '</span>'
+                  html: '<a class="govuk-link" target="_blank"   href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/' + foundDoc.documentId + '/download-document"><strong>' + foundDoc.fileName + '</strong></a><br><span class="govuk-body-s">' + docTypeInfo.name + '</span>'
                 },
                 value: {
                   html: govukTag({text: "Uploaded", classes: "govuk-tag--green"})

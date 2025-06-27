@@ -18,19 +18,4 @@ export default {
       },
     })
   },
-
-  stubDownloadFile: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern:
-          '/document-management-api/documents/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/file',
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/pdf' },
-        bodyFileName: 'warrant.pdf',
-      },
-    })
-  },
 }

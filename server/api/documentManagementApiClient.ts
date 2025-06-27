@@ -79,7 +79,7 @@ export default class DocumentManagementApiClient {
         headers: {
           'Service-Name': 'Remand and Sentencing',
           Username: username,
-          'Active-Case-Load-Id': activeCaseLoadId,
+          ...(activeCaseLoadId && { 'Active-Case-Load-Id': activeCaseLoadId }),
         },
       })
     } catch (error) {

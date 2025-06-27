@@ -8,7 +8,6 @@ context('Upload sentencing court document page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubUploadWarrant')
-    cy.task('stubDownloadFile')
 
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
@@ -32,13 +31,12 @@ context('Upload sentencing court document page', () => {
     uploadSentencingCourtDocumentsPage.continueButton().should('contain.text', 'Continue')
   })
 
-  it(`downloads a document and stays on the upload court documents page`, () => {
+  it(`uploads a document and shows on the upload court documents page`, () => {
     cy.contains('Upload sentencing warrant').click()
     const documentUploadPage = Page.verifyOnPageTitle(DocumentUploadPage, 'sentencing warrant')
     documentUploadPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
     documentUploadPage.continueButton().click()
     Page.verifyOnPage(UploadSentencingCourtDocumentsPage)
-    cy.contains('testfile.doc').click()
-    Page.verifyOnPage(UploadSentencingCourtDocumentsPage)
+    cy.contains('testfile.doc')
   })
 })

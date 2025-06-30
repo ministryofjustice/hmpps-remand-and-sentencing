@@ -1,68 +1,76 @@
 {% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
 
 {% set pageTitle = applicationName + " - upload court documents" %}
 
 {% block pageContent %}
-  <div class="govuk-grid-row govuk-!-margin-top-4">
-    <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Upload court documents</h1>
-      <p class="govuk-caption-l">
-        Uploading documents is optional. The selected file type should be among .PDF, .JPG, .DOC and .DOCX under 50MB.
-      </p>
-      <br>
+  <h1 class="govuk-heading-l">Upload court documents</h1>
+  <p class="govuk-caption-l">
+    Uploading documents is optional. The selected file type should be among .PDF, .JPG, .DOC and .DOCX under 50MB.
+  </p>
 
-      {# Define the list of document types you want to display on this page #}
-      {% set documentTypesToDisplay = [
-        { type: "HMCTS_WARRANT", name: "Sentencing warrant", uploadLinkSegment: "warrant" },
-        { type: "TRIAL_RECORD_SHEET", name: "Trial record sheet", uploadLinkSegment: "trial-record-sheet" },
-        { type: "INDICTMENT", name: "Indictment", uploadLinkSegment: "indictment" },
-        { type: "PRISON_COURT_REGISTER", name: "Prison court register", uploadLinkSegment: "prison-court-register" }
-      ] %}
+  {% set documentTypesToDisplay = [
+    { type: "HMCTS_WARRANT", name: "Sentencing warrant", uploadLinkSegment: "warrant" },
+    { type: "TRIAL_RECORD_SHEET", name: "Trial record sheet", uploadLinkSegment: "trial-record-sheet" },
+    { type: "INDICTMENT", name: "Indictment", uploadLinkSegment: "indictment" },
+    { type: "PRISON_COURT_REGISTER", name: "Prison court register", uploadLinkSegment: "prison-court-register" }
+  ] %}
 
-      {# Loop through each defined document type #}
-      {% for docTypeInfo in documentTypesToDisplay %}
-        {% set foundDoc = none %} {# Initialize to nothing found #}
+  {% for docTypeInfo in documentTypesToDisplay %}
+    {% set foundDoc = none %}
 
-        {# Loop through all uploaded documents to find a match for the current docTypeInfo #}
-        {% for uploadedItem in uploadedDocuments %}
-          {% if uploadedItem.documentType == docTypeInfo.type %}
-            {% set foundDoc = uploadedItem %}
-            {# Cannot use 'break' here in Nunjucks.
-               The loop will continue, but 'foundDoc' will retain the first match. #}
-          {% endif %}
-        {% endfor %}
+    {% for uploadedItem in uploadedDocuments %}
+      {% if uploadedItem.documentType == docTypeInfo.type %}
+        {% set foundDoc = uploadedItem %}
+      {% endif %}
+    {% endfor %}
 
-        <h2 class="govuk-heading-m govuk-!-margin-bottom-2">{{ docTypeInfo.name }}</h2>
-        {% if foundDoc %}
-          {# Document of this type has been uploaded #}
-          <p class="govuk-body">
-            <div>
-            <a class="govuk-link govuk-!-margin-left-0" href=""><strong>{{ foundDoc.fileName }}</strong></a>
-            <span class="govuk-tag--green govuk-!-margin-left-8">Uploaded</span>
-            <a class="govuk-link govuk-!-margin-left-4" href="">Remove</a>
-            </div>
-          </p>
-          <p class="govuk-body">
-            <span> {{docTypeInfo.name}} </span>
-          </p>
-        {% else %}
-          {# Document of this type has NOT been uploaded #}
-          <p class="govuk-body">
-            <a class="govuk-link" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ docTypeInfo.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">Upload {{ docTypeInfo.name | lower }}</a>
-          </p>
-        {% endif %}
-        <hr class="govuk-!-margin-top-4 govuk-!-margin-bottom-4">
-      {% endfor %}
+{% if not foundDoc %}
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">{{ docTypeInfo.name }}</h2>
+{% endif %}
 
-      <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        {{ govukButton({
-            text: "Continue",
-            attributes: { 'data-qa': 'continue-button' }
-        }) }}
-      </form>
+    {% if foundDoc %}
+              {{ govukSummaryList({
+                rows: [
+                  {
+                    key: {
+                      html: '<a class="govuk-link" target="_blank"   href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/' + foundDoc.documentId + '/download-document"><strong>' + foundDoc.fileName + '</strong></a><br><span class="govuk-body-s">' + docTypeInfo.name + '</span>'
+                    },
+                    value: {
+                      html: govukTag({text: "Uploaded", classes: "govuk-tag--green"})
+                    },
+                    actions: {
+                      items: [
+                        {
+                          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/" + foundDoc.documentId + "/delete-document",
+                          text: "Remove",
+                          visuallyHiddenText: "document"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }) }}
+            {% else %}
+              <p class="govuk-body">
+                <a class="govuk-link" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ docTypeInfo.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">
+                  Upload {{ docTypeInfo.name | lower }}
+                </a>
+              </p>
+            {% endif %}
 
-    </div>
-  </div>
+            {% if not loop.last %}
+              <hr class="govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+            {% endif %}
+  {% endfor %}
+
+  <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukButton({
+        text: "Continue",
+        attributes: { 'data-qa': 'continue-button' }
+    }) }}
+  </form>
 {% endblock %}

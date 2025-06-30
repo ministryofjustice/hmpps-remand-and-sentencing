@@ -14,6 +14,7 @@ import type {
   CourtCaseSelectCourtNameForm,
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
+  DeleteDocumentForm,
   OffenceCountNumberForm,
   SentenceLengthForm,
 } from 'forms'
@@ -24,12 +25,18 @@ import {
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import RemandAndSentencingService from './remandAndSentencingService'
-import { toDateString } from '../utils/utils'
+import { extractKeyValue, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import sentenceServeTypes from '../resources/sentenceServeTypes'
+import logger from '../../logger'
+import DocumentManagementService from './documentManagementService'
 
 export default class CourtAppearanceService {
-  constructor(private readonly remandAndSentencingService: RemandAndSentencingService) {}
+  constructor(
+    private readonly remandAndSentencingService: RemandAndSentencingService,
+    private readonly documentManagementService: DocumentManagementService,
+  ) {}
 
   setCaseReferenceNumber(
     session: CookieSessionInterfaces.CookieSessionObject,
@@ -849,6 +856,57 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).uploadedDocuments ?? []
   }
 
+  getUploadedDocument(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    documentId: string,
+  ): UploadedDocument | undefined {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    return courtAppearance.uploadedDocuments?.find(doc => doc.documentId === documentId)
+  }
+
+  async removeUploadedDocument(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    documentId: string,
+    deleteDocumentForm: DeleteDocumentForm,
+    username: string,
+    activeCaseLoadId: string,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    let errors = validate(
+      deleteDocumentForm,
+      {
+        deleteDocument: 'required',
+      },
+      {
+        'required.deleteDocument': 'You must select an option.',
+      },
+    )
+    if (deleteDocumentForm.deleteDocument === 'true') {
+      try {
+        await this.documentManagementService.deleteDocument(documentId, username, activeCaseLoadId)
+        const courtAppearance = this.getCourtAppearance(session, nomsId)
+        if (courtAppearance.uploadedDocuments) {
+          courtAppearance.uploadedDocuments = courtAppearance.uploadedDocuments.filter(
+            doc => doc.documentId !== documentId,
+          )
+          // eslint-disable-next-line no-param-reassign
+          session.courtAppearances[nomsId] = courtAppearance
+        }
+      } catch (error) {
+        logger.error(`Error deleting document: ${error.message}`)
+        errors = [{ text: 'File could not be deleted', href: '#document-upload' }]
+      }
+    }
+    return errors
+  }
+
   async checkOffenceDatesHaveInvalidatedOffence(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
@@ -933,6 +991,42 @@ export default class CourtAppearanceService {
       courtAppearance.offences[offenceReference] = offence
     }
     return hasInvalidated
+  }
+
+  sentenceIsInChain(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ): boolean {
+    let sentenceInChain: boolean = false
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const { sentence } = offence
+      if (sentence) {
+        sentenceInChain = courtAppearance.offences.some(
+          otherOffence => otherOffence.sentence?.consecutiveToSentenceReference === sentence.sentenceReference,
+        )
+      }
+    }
+    return sentenceInChain
+  }
+
+  setSentenceToConcurrent(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const { sentence } = offence
+      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+    }
   }
 
   clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {

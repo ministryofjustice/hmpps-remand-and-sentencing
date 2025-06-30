@@ -28,8 +28,6 @@ export const services = () => {
 
   const remandAndSentencingService = new RemandAndSentencingService(hmppsAuthClient)
 
-  const courtAppearanceService = new CourtAppearanceService(remandAndSentencingService)
-
   const documentManagementService = new DocumentManagementService(hmppsAuthClient)
 
   const calculateReleaseDatesService = new CalculateReleaseDatesService(hmppsAuthClient)
@@ -39,6 +37,7 @@ export const services = () => {
   const courtRegisterService = new CourtRegisterService(hmppsAuthClient)
   const appearanceOutcomeService = new AppearanceOutcomeService(hmppsAuthClient)
   const offenceOutcomeService = new OffenceOutcomeService(hmppsAuthClient)
+  const courtAppearanceService = new CourtAppearanceService(remandAndSentencingService, documentManagementService)
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
   const offenceService = new OffenceService(manageOffencesService, offenceOutcomeService, remandAndSentencingService)
 

@@ -19,7 +19,7 @@ import type {
 import type { Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import validate from '../validation/validation'
-import { toDateString } from '../utils/utils'
+import { extractKeyValue, toDateString } from '../utils/utils'
 import {
   alternativeSentenceLengthFormToSentenceLength,
   sentenceLengthFormToSentenceLength,
@@ -32,6 +32,7 @@ import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOf
 import OffenceOutcomeService from './offenceOutcomeService'
 import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingService from './remandAndSentencingService'
+import sentenceServeTypes from '../resources/sentenceServeTypes'
 
 export default class OffenceService {
   constructor(
@@ -613,6 +614,8 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceReference: string,
     offenceSentenceServeTypeForm: OffenceSentenceServeTypeForm,
+    existingSentenceServeType: string,
+    sentenceIsInChain: boolean,
   ) {
     const errors = validate(
       offenceSentenceServeTypeForm,
@@ -627,7 +630,15 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, offenceReference)
-      sentence.sentenceServeType = offenceSentenceServeTypeForm.sentenceServeType
+      if (
+        !existingSentenceServeType ||
+        !sentenceIsInChain ||
+        offenceSentenceServeTypeForm.sentenceServeType !==
+          extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
+      ) {
+        sentence.sentenceServeType = offenceSentenceServeTypeForm.sentenceServeType
+      }
+
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
@@ -890,6 +901,23 @@ export default class OffenceService {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
     offence.onFinishGoToEdit = true
+  }
+
+  setSentenceToConcurrent(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = this.getSentence(offence, offenceReference)
+    sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
+    delete sentence.consecutiveToSentenceReference
+    delete sentence.consecutiveToSentenceUuid
+    offence.sentence = sentence
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
   }
 
   clearOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtCaseReference: string) {

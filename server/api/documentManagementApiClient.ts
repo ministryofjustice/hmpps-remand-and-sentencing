@@ -55,4 +55,35 @@ export default class DocumentManagementApiClient {
       throw new Error(`Error in Document Management API: ${error.message}`)
     }
   }
+
+  async deleteDocument(documentId: string, username: string, activeCaseLoadId: string): Promise<void> {
+    try {
+      await this.restClient.delete({
+        path: `/documents/${documentId}`,
+        headers: {
+          'Service-Name': 'Remand and Sentencing',
+          Username: username,
+          'Active-Case-Load-Id': activeCaseLoadId,
+        },
+      })
+    } catch (error) {
+      throw new Error(`Error deleting document: ${error.message}`)
+    }
+  }
+
+  async downloadDocument(documentId: string, username: string, activeCaseLoadId: string): Promise<Buffer> {
+    try {
+      return await this.restClient.get({
+        path: `/documents/${documentId}/file`,
+        responseType: 'arraybuffer',
+        headers: {
+          'Service-Name': 'Remand and Sentencing',
+          Username: username,
+          ...(activeCaseLoadId && { 'Active-Case-Load-Id': activeCaseLoadId }),
+        },
+      })
+    } catch (error) {
+      throw new Error(`Error downloading document: ${error.message}`)
+    }
+  }
 }

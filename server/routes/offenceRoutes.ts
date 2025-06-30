@@ -419,7 +419,9 @@ export default class OffenceRoutes extends BaseRoutes {
       const countNumber = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
         ?.sentence?.countNumber
       countNumberForm = {
-        ...(countNumber && countNumber !== '-1' ? { countNumber } : {}),
+        ...(countNumber && countNumber !== '-1'
+          ? { countNumber, hasCountNumber: 'true' }
+          : { hasCountNumber: 'false' }),
       }
     }
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)

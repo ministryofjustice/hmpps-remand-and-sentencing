@@ -416,9 +416,11 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence } = req.query
     let countNumberForm = (req.flash('countNumberForm')[0] || {}) as OffenceCountNumberForm
     if (Object.keys(countNumberForm).length === 0) {
+      const { countNumber, hasCountNumber } =
+        this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)?.sentence || {}
       countNumberForm = {
-        countNumber: this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-          ?.sentence?.countNumber,
+        hasCountNumber,
+        ...(countNumber && countNumber !== '-1' ? { countNumber } : {}),
       }
     }
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)

@@ -9,7 +9,7 @@
 {% endset %}
 {% block pageContent %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentId }}/submit-delete-document">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 

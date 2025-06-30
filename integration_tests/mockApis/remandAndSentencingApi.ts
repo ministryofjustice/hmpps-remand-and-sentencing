@@ -511,6 +511,12 @@ export default {
                   mergedFromDate: '2019-06-05',
                 },
               ],
+              mergedToCase: {
+                caseReference: 'NOMIS897',
+                courtCode: 'ACCRYC',
+                warrantDate: '2025-06-26',
+                mergedToDate: '2024-02-25',
+              },
             },
           ],
           number: 0,

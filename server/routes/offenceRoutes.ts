@@ -1423,6 +1423,7 @@ export default class OffenceRoutes extends BaseRoutes {
       const newType = offenceSentenceServeTypeForm.sentenceServeType
       const oldType = existingOffence.sentence?.sentenceServeType
 
+      // consider changing
       if (sentenceIsInChain && oldType !== newType) {
         if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)) {
           // AC 2

@@ -5,6 +5,7 @@ import {
   PagedCourtCase,
   PagedLatestCourtAppearance,
   PagedMergedFromCase,
+  PagedMergedToCase,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { pagedAppearancePeriodLengthToSentenceLength, pagedChargeToOffence } from '../../utils/mappingUtils'
@@ -48,6 +49,8 @@ export default class CourtCasesDetailsModel {
   allAppearancesHaveRecall: boolean
 
   mergedFromCases: PagedMergedFromCase[]
+
+  mergedToCase: PagedMergedToCase
 
   constructor(pagedCourtCase: PagedCourtCase, courtMap: { [key: string]: string }) {
     let titleValue = courtMap[pagedCourtCase.latestCourtAppearance?.courtCode]
@@ -106,5 +109,6 @@ export default class CourtCasesDetailsModel {
     this.hasARecall = pagedCourtCase.latestCourtAppearance.charges.some(charge => charge.sentence?.hasRecall)
     this.mergedFromCases = pagedCourtCase.mergedFromCases
     this.allAppearancesHaveRecall = pagedCourtCase.allAppearancesHaveRecall
+    this.mergedToCase = pagedCourtCase.mergedToCase
   }
 }

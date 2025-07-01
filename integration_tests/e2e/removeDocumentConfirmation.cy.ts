@@ -21,7 +21,7 @@ context('Remove document confirmation page', () => {
     uploadDocumentPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
     uploadDocumentPage.continueButton().click()
     Page.verifyOnPage(UploadRemandCourtDocumentsPage)
-    cy.contains('Remove').click()
+    cy.contains('Delete').click()
     removeDocumentConfirmationPage = Page.verifyOnPage(RemoveDocumentConfirmationPage)
   })
 

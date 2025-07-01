@@ -333,7 +333,14 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'createSentencedOffenceConsecutiveTo',
-  (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
+  (
+    personId: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+    offenceReference: string,
+    countNumber: string = '2',
+    consecutiveToSelect: string = '0|SAME',
+  ) => {
     cy.visit(
       `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
     )
@@ -364,7 +371,7 @@ Cypress.Commands.add(
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().clear()
-    offenceCountNumberPage.input().type('2')
+    offenceCountNumberPage.input().type(countNumber)
     offenceCountNumberPage.continueButton().click()
 
     const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
@@ -390,7 +397,7 @@ Cypress.Commands.add(
     offenceSentenceServeTypePage.radioLabelSelector('CONSECUTIVE').click()
     offenceSentenceServeTypePage.continueButton().click()
     const sentenceSentenceConsecutiveToPage = Page.verifyOnPage(SentenceSentenceConsecutiveToPage)
-    sentenceSentenceConsecutiveToPage.radioLabelSelector('0|SAME').click()
+    sentenceSentenceConsecutiveToPage.radioLabelSelector(consecutiveToSelect).click()
     sentenceSentenceConsecutiveToPage.continueButton().click()
   },
 )

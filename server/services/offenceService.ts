@@ -637,6 +637,8 @@ export default class OffenceService {
           extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
       ) {
         sentence.sentenceServeType = offenceSentenceServeTypeForm.sentenceServeType
+        sentence.consecutiveToSentenceReference = null
+        sentence.consecutiveToSentenceUuid = null
       }
 
       offence.sentence = sentence
@@ -644,6 +646,17 @@ export default class OffenceService {
       session.offences[id] = offence
     }
     return errors
+  }
+
+  getSentenceFromOffenceRef(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    return this.getSentence(offence, offenceReference)
   }
 
   setConvictionDate(
@@ -909,7 +922,7 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceReference: string,
   ) {
-    this.updateSentenceType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONCURRENT)
+    this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONCURRENT)
   }
 
   setSentenceToForthwith(
@@ -918,7 +931,7 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceReference: string,
   ) {
-    this.updateSentenceType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.FORTHWITH)
+    this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.FORTHWITH)
   }
 
   setSentenceToConsecutive(
@@ -927,10 +940,10 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceReference: string,
   ) {
-    this.updateSentenceType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONSECUTIVE)
+    this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONSECUTIVE)
   }
 
-  private updateSentenceType(
+  private updateSentenceServType(
     nomsId: string,
     courtCaseReference: string,
     session: CookieSessionInterfaces.CookieSessionObject,

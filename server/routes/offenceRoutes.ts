@@ -1419,7 +1419,9 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
+
     if (submitToEditOffence) {
+      this.courtAppearanceService.resetConsecFields(req.session, nomsId, parseInt(offenceReference, 10))
       const newType = offenceSentenceServeTypeForm.sentenceServeType
       const oldType = existingOffence.sentence?.sentenceServeType
 

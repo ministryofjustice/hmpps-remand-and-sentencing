@@ -1,4 +1,4 @@
-import type { CourtAppearance, Offence, SentenceLength, UploadedDocument } from 'models'
+import type { CourtAppearance, Offence, SentenceLength, UploadedDocument, Sentence } from 'models'
 import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
@@ -1026,6 +1026,20 @@ export default class CourtAppearanceService {
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence
+    }
+  }
+
+  resetConsecFields(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const sentence = offence.sentence ?? { sentenceReference: offenceReference.toString() }
+      sentence.consecutiveToSentenceReference = null
+      sentence.consecutiveToSentenceUuid = null
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
     }
   }
 

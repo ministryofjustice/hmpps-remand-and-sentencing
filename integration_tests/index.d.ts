@@ -35,6 +35,8 @@ declare namespace Cypress {
       courtCaseReference: string,
       appearanceReference: string,
       offenceReference: string,
+      countNumber?: string,
+      consecutiveToSelect?: string,
     ): Chainable<AUTWindow>
   }
 }

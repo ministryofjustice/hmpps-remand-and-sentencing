@@ -1532,8 +1532,8 @@ export default class CourtCaseRoutes {
       )
     } catch (error) {
       logger.error(`Error uploading document: ${error.message}`)
-      req.flash('errors', [{ text: error.message, href: '#document-upload' }])
-      req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
+
+      req.flash('errors', [{ text: this.getErrorMessage(error.message), href: '#document-upload' }])
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents`,
       )
@@ -1544,6 +1544,14 @@ export default class CourtCaseRoutes {
         })
       }
     }
+  }
+
+  getErrorMessage(errorMessage: string): string {
+    const match = Object.keys(CourtCaseRoutes.errorMessages).find(key => errorMessage.includes(key))
+    if (match) {
+      return CourtCaseRoutes.errorMessages[match]
+    }
+    return 'The selected file could not be uploaded - try again.'
   }
 
   // eslint-disable-next-line consistent-return
@@ -1727,6 +1735,11 @@ export default class CourtCaseRoutes {
       default:
         return 'HMCTS_WARRANT'
     }
+  }
+
+  private static readonly errorMessages: Record<string, string> = {
+    'Payload Too Large': 'The selected document must be smaller than 50MB.',
+    'virus scan': 'The selected file contains a virus',
   }
 
   private isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {

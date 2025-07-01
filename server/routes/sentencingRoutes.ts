@@ -652,7 +652,7 @@ export default class SentencingRoutes extends BaseRoutes {
     this.offenceService.setSentenceToConsecutive(req.session, nomsId, courtCaseReference, offenceReference)
     this.courtAppearanceService.setSentenceToConsecutive(req.session, nomsId, parseInt(offenceReference, 10))
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/sentence-consecutive-to`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/sentence-consecutive-to?submitToEditOffence=true`,
     )
   }
 

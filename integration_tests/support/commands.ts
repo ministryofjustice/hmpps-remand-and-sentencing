@@ -13,6 +13,7 @@ import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../pages/sentenceIsSentenceConsecutiveToPage'
 import SentenceSentenceConsecutiveToPage from '../pages/sentenceSentenceConsecutiveToPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
+import SentencingMakingSentenceConcurrentPage from '../pages/sentencingMakingSentenceConcurrentPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
@@ -264,7 +265,13 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'createSentencedOffence',
-  (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
+  (
+    personId: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+    offenceReference: string,
+    countNumber: string = '1',
+  ) => {
     cy.visit(
       `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/warrant-type`,
     )
@@ -302,7 +309,7 @@ Cypress.Commands.add(
     const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
     offenceCountNumberPage.radioLabelSelector('true').click()
     offenceCountNumberPage.input().clear()
-    offenceCountNumberPage.input().type('1')
+    offenceCountNumberPage.input().type(countNumber)
     offenceCountNumberPage.continueButton().click()
 
     const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
@@ -328,6 +335,81 @@ Cypress.Commands.add(
     const sentenceIsConsecutiveToPage = Page.verifyOnPage(SentenceIsSentenceConsecutiveToPage)
     sentenceIsConsecutiveToPage.radioLabelSelector('false').click()
     sentenceIsConsecutiveToPage.continueButton().click()
+  },
+)
+
+Cypress.Commands.add(
+  'createSentencedConcurrentOffence',
+  (
+    personId: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+    offenceReference: string,
+    countNumber: string,
+  ) => {
+    cy.visit(
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/warrant-type`,
+    )
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
+    courtCaseWarrantTypePage.continueButton().click()
+
+    cy.visit(
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+    )
+
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.continueButton().click()
+
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.input().clear()
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.continueButton().click()
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.continueButton().click()
+
+    const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+      OffenceOffenceOutcomePage,
+      'Select the outcome for this offence',
+    )
+    offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
+    offenceOffenceOutcomePage.continueButton().click()
+
+    const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+    offenceCountNumberPage.radioLabelSelector('true').click()
+    offenceCountNumberPage.input().clear()
+    offenceCountNumberPage.input().type(countNumber)
+    offenceCountNumberPage.continueButton().click()
+
+    const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear()
+    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
+    offenceConvictionDatePage.monthDateInput('convictionDate').clear()
+    offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
+    offenceConvictionDatePage.yearDateInput('convictionDate').clear()
+    offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
+    offenceConvictionDatePage.continueButton().click()
+
+    const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+    offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
+    offenceSentenceTypePage.continueButton().click()
+
+    const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
+    offencePeriodLengthPage.yearsInput().clear()
+    offencePeriodLengthPage.yearsInput().type('4')
+    offencePeriodLengthPage.monthsInput().clear()
+    offencePeriodLengthPage.monthsInput().type('5')
+    offencePeriodLengthPage.continueButton().click()
+
+    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
+    offenceSentenceServeTypePage.continueButton().click()
   },
 )
 

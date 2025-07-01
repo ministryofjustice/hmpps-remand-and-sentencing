@@ -83,7 +83,7 @@ context('Sentencing appearance details Page', () => {
             'Custodial term': '1 years 0 months 0 weeks 0 days',
             'Licence period': '2 years 0 months 0 weeks 0 days',
             'Sentence type': 'EDS (Extended Determinate Sentence)',
-            'Consecutive or concurrent': 'Consecutive',
+            'Consecutive or concurrent': 'Consecutive to count 1',
           },
           {
             offenceCardHeader: 'PS90037 An offence description',

@@ -456,6 +456,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const { submitToEditOffence } = req.query
     const countNumberForm = trimForm<OffenceCountNumberForm>(req.body)
     const existingCountNumbers = this.courtAppearanceService.getCountNumbers(
       req.session,
@@ -476,10 +477,10 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('countNumberForm', { ...countNumberForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
-    const { submitToEditOffence } = req.query
+
     if (submitToEditOffence) {
       this.courtAppearanceService.setCountNumber(req.session, nomsId, parseInt(offenceReference, 10), countNumberForm)
       return res.redirect(

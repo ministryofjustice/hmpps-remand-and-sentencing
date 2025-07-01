@@ -367,9 +367,31 @@ export function sentenceLengthFormToSentenceLength(
   } as SentenceLength
 }
 
+const populateConsecutiveToSentenceReference = (offences: Offence[]) => {
+  offences
+    .filter(offence => offence.sentence?.consecutiveToSentenceUuid)
+    .forEach(offence => {
+      const consecutiveToSentence = offences.find(
+        toFindOffence => toFindOffence.sentence?.sentenceUuid === offence.sentence?.consecutiveToSentenceUuid,
+      )
+      if (consecutiveToSentence) {
+        // eslint-disable-next-line no-param-reassign
+        offence.sentence.consecutiveToSentenceReference = consecutiveToSentence.sentence.sentenceReference
+        // eslint-disable-next-line no-param-reassign
+        delete offence.sentence.consecutiveToSentenceUuid
+      }
+    })
+}
+
 export function pageCourtCaseAppearanceToCourtAppearance(
   pageCourtCaseAppearance: PageCourtCaseAppearance,
 ): CourtAppearance {
+  const offences = pageCourtCaseAppearance.charges
+    .sort((a, b) => {
+      return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
+    })
+    .map(chargeToOffence)
+  populateConsecutiveToSentenceReference(offences)
   return {
     appearanceReference: pageCourtCaseAppearance.appearanceUuid,
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
@@ -381,11 +403,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     warrantType: pageCourtCaseAppearance.warrantType,
     warrantId: pageCourtCaseAppearance.warrantId,
     ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
-    offences: pageCourtCaseAppearance.charges
-      .sort((a, b) => {
-        return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
-      })
-      .map(chargeToOffence),
+    offences,
     ...(pageCourtCaseAppearance.overallSentenceLength && {
       hasOverallSentenceLength: 'true',
       overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),

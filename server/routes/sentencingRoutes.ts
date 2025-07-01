@@ -239,6 +239,12 @@ export default class SentencingRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
+
+    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
+      req,
+      nomsId,
+      offenceMap,
+    )
     return res.render('pages/sentencing/appearance-details', {
       nomsId,
       courtCaseReference,
@@ -256,6 +262,7 @@ export default class SentencingRoutes extends BaseRoutes {
       custodialOffences,
       nonCustodialOffences,
       consecutiveToSentenceDetailsMap,
+      sessionConsecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

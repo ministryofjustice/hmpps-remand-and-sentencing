@@ -393,16 +393,6 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/alternative-sentence-length',
-    offenceRoutes.getAlternativeSentenceLength,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-alternative-sentence-length',
-    offenceRoutes.submitAlternativeSentenceLength,
-  )
-
-  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/sentence-serve-type',
     offenceRoutes.getSentenceServeType,
   )

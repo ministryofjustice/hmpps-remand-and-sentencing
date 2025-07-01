@@ -112,7 +112,7 @@ declare module 'forms' {
     hasCountNumber?: string
   }
 
-  export interface OffenceAlternativeSentenceLengthForm {
+  export interface OffenceAlternativePeriodLengthForm {
     'firstSentenceLength-value'?: string
     'firstSentenceLength-period'?: string
     'secondSentenceLength-value'?: string

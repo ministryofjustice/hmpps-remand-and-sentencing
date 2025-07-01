@@ -59,7 +59,9 @@ export default defineConfig({
               description: 'SDS (Standard Determinate Sentence)',
               classification: 'STANDARD',
             }),
-            remandAndSentencingApi.stubGetConsecutiveToDetails(),
+            remandAndSentencingApi.stubGetConsecutiveToDetails({
+              sentenceUuids: ['8e33074a-3240-4073-923a-b69b642e037c', '29fa8c7f-7ba1-4033-ac4d-83ff0c125a45'],
+            }),
           ])
         },
         ...auth,

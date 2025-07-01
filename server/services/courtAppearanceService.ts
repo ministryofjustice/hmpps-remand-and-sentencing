@@ -16,6 +16,7 @@ import type {
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
   OffenceCountNumberForm,
+  OffenceDeleteOffenceForm,
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
@@ -811,11 +812,32 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.offences.splice(offenceReference, 1)
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+  deleteOffence(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+    deleteOffenceForm: OffenceDeleteOffenceForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      deleteOffenceForm,
+      {
+        deleteOffence: 'required',
+      },
+      {
+        'required.deleteOffence': `You must select whether you want to delete this offence`,
+      },
+    )
+    if (errors.length === 0 && deleteOffenceForm.deleteOffence === 'true') {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.offences.splice(offenceReference, 1)
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   getOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number): Offence {

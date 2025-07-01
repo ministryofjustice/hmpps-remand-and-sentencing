@@ -1386,7 +1386,7 @@ export default class OffenceRoutes extends BaseRoutes {
     })
   }
 
-  public submitSentenceServeType: RequestHandler = async (req, res): Promise<void> => {
+  submitSentenceServeType: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
       courtCaseReference,
@@ -1419,6 +1419,34 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
+    if (submitToEditOffence) {
+      const newType = offenceSentenceServeTypeForm.sentenceServeType
+      const oldType = existingOffence.sentence?.sentenceServeType
+
+      if (sentenceIsInChain && oldType !== newType) {
+        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)) {
+          // AC 2
+          return res.redirect(
+            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-concurrent${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+          )
+        }
+        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)) {
+          // AC 3
+          return res.redirect(
+            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-forthwith${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+          )
+        }
+        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)) {
+          // AC4
+          return res.redirect(
+            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-consecutive${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+          )
+        }
+      }
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+      )
+    }
 
     if (
       offenceSentenceServeTypeForm.sentenceServeType ===
@@ -1428,21 +1456,7 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
-    if (submitToEditOffence) {
-      if (
-        sentenceIsInChain &&
-        existingOffence.sentence.sentenceServeType !== offenceSentenceServeTypeForm.sentenceServeType &&
-        offenceSentenceServeTypeForm.sentenceServeType ===
-          extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
-      ) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-concurrent${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-        )
-      }
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
-      )
-    }
+
     return this.saveSessionOffenceInAppearance(
       req,
       res,

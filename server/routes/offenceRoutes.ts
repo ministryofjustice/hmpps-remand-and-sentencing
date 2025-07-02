@@ -1350,7 +1350,6 @@ export default class OffenceRoutes extends BaseRoutes {
     if (submitToEditOffence) {
       const newType = serveType
       const oldType = existingOffence.sentence?.sentenceServeType
-      this.courtAppearanceService.resetConsecutiveFields(req.session, nomsId, parseInt(offenceReference, 10))
 
       if (sentenceIsInChain && oldType !== newType) {
         if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)) {
@@ -1366,6 +1365,8 @@ export default class OffenceRoutes extends BaseRoutes {
       if (isConsecutive) {
         return res.redirect(`${redirectBase}/sentence-consecutive-to${queryString}`)
       }
+
+      this.courtAppearanceService.resetConsecutiveFields(req.session, nomsId, parseInt(offenceReference, 10))
 
       // Go back to edit screen as fallback
       return res.redirect(

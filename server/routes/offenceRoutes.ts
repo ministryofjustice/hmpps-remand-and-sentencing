@@ -1308,7 +1308,7 @@ export default class OffenceRoutes extends BaseRoutes {
     })
   }
 
-  submitSentenceServeType: RequestHandler = async (req, res): Promise<void> => {
+  public submitSentenceServeType: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
       courtCaseReference,

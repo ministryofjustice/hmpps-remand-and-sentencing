@@ -3,8 +3,6 @@ import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersP
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import Page from '../pages/page'
-import SentencingMakingSentenceConcurrentPage from '../pages/sentencingMakingSentenceConcurrentPage'
-import SentencingMakingSentenceForthwithPage from '../pages/sentencingMakingSentenceForthwithPage'
 import SentencingMakingSentenceConsecutivePage from '../pages/sentencingMakingSentenceConsecutivePage'
 import SentenceSentenceConsecutiveToPage from '../pages/sentenceSentenceConsecutiveToPage'
 
@@ -47,7 +45,7 @@ context('Check offence answers page after making forthwith', () => {
     cy.createSentencedConcurrentOffence('A1234AB', '0', '0', '1', '2')
   })
 
-  it('Check offence answers page after last sentence is made consecutive', () => {
+  it('Check that intercept fires after changing sentence to consecutive (and subsequent flow) - also check offence card displays correctly', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
 
@@ -64,15 +62,5 @@ context('Check offence answers page after making forthwith', () => {
     sentenceSentenceConsecutiveToPage.continueButton().click()
     offenceEditOffencePage.continueButton().click()
     offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(2, 'Consecutive to count 1')
-    //
-    // offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-serve-type').click()
-    // offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    // offenceSentenceServeTypePage.continueButton().click()
-    // TODO check, changinging the first sentence maybe shouldnt trigger the intercept
-    // TODO also you can end up in a infinite loop
-    // const sentencingMakingSentenceForthwithPage = Page.verifyOnPage(SentencingMakingSentenceForthwithPage)
-    // sentencingMakingSentenceForthwithPage.continueButton().click()
-    // offenceEditOffencePage.continueButton().click()
-    // offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(1, 'Forthwith')
   })
 })

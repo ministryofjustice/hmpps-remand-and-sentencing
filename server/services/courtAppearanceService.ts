@@ -1,4 +1,4 @@
-import type { CourtAppearance, Offence, SentenceLength, UploadedDocument, Sentence } from 'models'
+import type { CourtAppearance, Offence, SentenceLength, UploadedDocument } from 'models'
 import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,

@@ -106,7 +106,7 @@ context('Check offence answers page after making concurrent', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1')
   })
 
-  it('Check offence answers page after last sentence is made concurrent', () => {
+  it('Check offence answers page after the last sentence is made concurrent', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
     offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '2').click()

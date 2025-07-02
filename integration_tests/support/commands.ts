@@ -13,7 +13,6 @@ import OffencePeriodLengthPage from '../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../pages/sentenceIsSentenceConsecutiveToPage'
 import SentenceSentenceConsecutiveToPage from '../pages/sentenceSentenceConsecutiveToPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
-import SentencingMakingSentenceConcurrentPage from '../pages/sentencingMakingSentenceConcurrentPage'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')

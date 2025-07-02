@@ -45,7 +45,7 @@ context('Check offence answers page after making forthwith', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1', '0|SAME')
   })
 
-  it('Check offence answers page after last sentence is made forthwith', () => {
+  it('Check that intercept fires after changing sentence to forthwith - also check offence card displays correctly', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
 
@@ -61,11 +61,10 @@ context('Check offence answers page after making forthwith', () => {
     offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-serve-type').click()
     offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     offenceSentenceServeTypePage.continueButton().click()
-    // TODO check, changinging the first sentence maybe shouldnt trigger the intercept
-    // TODO also you can end up in a infinite loop
+
     const sentencingMakingSentenceForthwithPage = Page.verifyOnPage(SentencingMakingSentenceForthwithPage)
-    // sentencingMakingSentenceForthwithPage.continueButton().click()
-    // offenceEditOffencePage.continueButton().click()
-    // offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(1, 'Forthwith')
+    sentencingMakingSentenceForthwithPage.continueButton().click()
+    offenceEditOffencePage.continueButton().click()
+    offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(1, 'Forthwith')
   })
 })

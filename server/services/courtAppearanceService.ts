@@ -1034,8 +1034,8 @@ export default class CourtAppearanceService {
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const sentence = offence.sentence ?? { sentenceReference: offenceReference.toString() }
-      sentence.consecutiveToSentenceReference = null
-      sentence.consecutiveToSentenceUuid = null
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence
       // eslint-disable-next-line no-param-reassign

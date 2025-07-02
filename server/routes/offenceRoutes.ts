@@ -151,8 +151,7 @@ export default class OffenceRoutes extends BaseRoutes {
         req.session,
         nomsId,
         parseInt(offenceReference, 10),
-        offence.offenceStartDate,
-        offence.offenceEndDate,
+        offence,
         res.locals.prisoner.dateOfBirth,
         req.user.username,
       )
@@ -1468,11 +1467,11 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     if (submitToEditOffence) {
       const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-      const hasInvalidatedOffence = this.courtAppearanceService.checkConvictionDateHasInvalidatedOffence(
+      const hasInvalidatedOffence = await this.courtAppearanceService.checkConvictionDateHasInvalidatedOffence(
         req.session,
         nomsId,
         parseInt(offenceReference, 10),
-        offence.sentence.convictionDate,
+        offence,
         res.locals.prisoner.dateOfBirth,
         req.user.username,
       )

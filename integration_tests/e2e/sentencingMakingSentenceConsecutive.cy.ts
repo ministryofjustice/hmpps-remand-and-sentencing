@@ -6,7 +6,7 @@ import Page from '../pages/page'
 import SentencingMakingSentenceConsecutivePage from '../pages/sentencingMakingSentenceConsecutivePage'
 import SentenceSentenceConsecutiveToPage from '../pages/sentenceSentenceConsecutiveToPage'
 
-context('Check offence answers page after making forthwith', () => {
+context('Check offence answers page after making consecutive', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})

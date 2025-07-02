@@ -929,22 +929,27 @@ export default class CourtAppearanceService {
     return errors
   }
 
+  setDocumentUploadedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    courtAppearance.documentUploadAccepted = true
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   async checkOffenceDatesHaveInvalidatedOffence(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     offenceReference: number,
-    offenceStartDate: Date,
-    offenceEndDate: Date,
+    offence: Offence,
     dateOfBirth: string,
     username: string,
   ): Promise<boolean> {
     let hasInvalidated: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
       if (offence.sentence && offence.sentence.convictionDate) {
         const { sentence } = offence
-        const offenceDate = dayjs(offenceEndDate ?? offenceStartDate)
+        const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
         const convictionDate = dayjs(sentence.convictionDate)
         if (offenceDate.isAfter(convictionDate)) {
           hasInvalidated = true
@@ -970,8 +975,11 @@ export default class CourtAppearanceService {
             delete sentence.periodLengths
           }
         }
-        offence.sentence = sentence
-        courtAppearance.offences[offenceReference] = offence
+        const appearanceOffence = courtAppearance.offences[offenceReference]
+        appearanceOffence.sentence = sentence
+        courtAppearance.offences[offenceReference] = appearanceOffence
+        // eslint-disable-next-line no-param-reassign
+        session.courtAppearances[nomsId] = courtAppearance
       }
     }
     return hasInvalidated
@@ -981,17 +989,16 @@ export default class CourtAppearanceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     offenceReference: number,
-    convictionDate: Date,
+    offence: Offence,
     dateOfBirth: string,
     username: string,
   ): Promise<boolean> {
     let hasInvalidated: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
       const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
-      const potentialConvictionDate = dayjs(convictionDate)
+      const potentialConvictionDate = dayjs(offence.sentence.convictionDate)
       if (sentence.sentenceTypeId) {
         const prisonerDateOfBirth = dayjs(dateOfBirth)
         const ageAtConviction = potentialConvictionDate.diff(prisonerDateOfBirth, 'years')
@@ -1009,8 +1016,11 @@ export default class CourtAppearanceService {
           delete sentence.periodLengths
         }
       }
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
+      const appearanceOffence = courtAppearance.offences[offenceReference]
+      appearanceOffence.sentence = sentence
+      courtAppearance.offences[offenceReference] = appearanceOffence
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
     }
     return hasInvalidated
   }

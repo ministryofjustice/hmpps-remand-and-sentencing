@@ -1455,6 +1455,14 @@ export default class CourtCaseRoutes {
     })
   }
 
+  public submitCourtDocuments: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+    )
+  }
+
   public getUploadCourtDocuments: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
@@ -1487,7 +1495,7 @@ export default class CourtCaseRoutes {
     })
   }
 
-  public submitUploadCourtDocuments: RequestHandler = async (req, res): Promise<void> => {
+  public submitUploadDocuments: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
       courtCaseReference,

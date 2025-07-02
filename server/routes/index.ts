@@ -657,9 +657,19 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.submitConfirmDeleteUploadedDocument,
   )
 
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-upload-court-documents',
+    sentencingRoutes.submitCourtDocuments,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-upload-court-documents',
+    courtCaseRoutes.submitCourtDocuments,
+  )
+
   postWithFileUpload(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/submit-upload-documents',
-    courtCaseRoutes.submitUploadCourtDocuments,
+    courtCaseRoutes.submitUploadDocuments,
   )
 
   return router

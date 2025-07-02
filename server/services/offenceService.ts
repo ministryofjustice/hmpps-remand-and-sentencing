@@ -588,8 +588,8 @@ export default class OffenceService {
           extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
       ) {
         sentence.sentenceServeType = offenceSentenceServeTypeForm.sentenceServeType
-        sentence.consecutiveToSentenceReference = null
-        sentence.consecutiveToSentenceUuid = null
+        delete sentence.consecutiveToSentenceReference
+        delete sentence.consecutiveToSentenceUuid
       }
 
       offence.sentence = sentence
@@ -597,17 +597,6 @@ export default class OffenceService {
       session.offences[id] = offence
     }
     return errors
-  }
-
-  getSentenceFromOffenceRef(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceReference: string,
-  ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference)
-    const offence = this.getOffence(session.offences, id)
-    return this.getSentence(offence, offenceReference)
   }
 
   setConvictionDate(

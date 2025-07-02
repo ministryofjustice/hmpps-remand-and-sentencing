@@ -1344,6 +1344,10 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     if (submitToEditOffence) {
+      console.log('In submit to Edirt')
+      console.log('In submit to Edirt')
+      console.log('In submit to Edirt')
+      console.log('In submit to Edirt')
       this.courtAppearanceService.resetConsecFields(req.session, nomsId, parseInt(offenceReference, 10))
       const newType = offenceSentenceServeTypeForm.sentenceServeType
       const oldType = existingOffence.sentence?.sentenceServeType
@@ -1351,6 +1355,10 @@ export default class OffenceRoutes extends BaseRoutes {
       // consider changing
       if (sentenceIsInChain && oldType !== newType) {
         if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)) {
+          // TODO remove xxxx xomments ac XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          // TODO remove xxxx xomments ac XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          // TODO remove xxxx xomments ac XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          // TODO remove xxxx xomments ac XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
           // AC 2
           return res.redirect(
             `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-concurrent${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
@@ -1368,11 +1376,22 @@ export default class OffenceRoutes extends BaseRoutes {
             `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-consecutive${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
           )
         }
+      } else if (
+        offenceSentenceServeTypeForm.sentenceServeType ===
+        extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
+      ) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        )
       }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
+
+    console.log('NOT In submit to Edirt')
+    console.log('NOT In submit to Edirt')
+    console.log('NOT In submit to Edirt')
 
     if (
       offenceSentenceServeTypeForm.sentenceServeType ===

@@ -353,6 +353,7 @@ context('Add Offence Edit offence Page', () => {
       offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('2023')
       offenceConvictionDatePage.continueButton().click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+      offenceSentenceTypePage.radioSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').should('not.be.checked')
       offenceSentenceTypePage.radioLabelContains('EDS (Extended Determinate Sentence)').click()
       offenceSentenceTypePage.continueButton().click()
       let offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'custodial term')

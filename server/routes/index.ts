@@ -393,16 +393,6 @@ export default function routes(services: Services): Router {
   )
 
   get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/alternative-sentence-length',
-    offenceRoutes.getAlternativeSentenceLength,
-  )
-
-  post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/submit-alternative-sentence-length',
-    offenceRoutes.submitAlternativeSentenceLength,
-  )
-
-  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:offenceReference/sentence-serve-type',
     offenceRoutes.getSentenceServeType,
   )
@@ -697,9 +687,19 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.submitConfirmDeleteUploadedDocument,
   )
 
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-upload-court-documents',
+    sentencingRoutes.submitCourtDocuments,
+  )
+
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-upload-court-documents',
+    courtCaseRoutes.submitCourtDocuments,
+  )
+
   postWithFileUpload(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/submit-upload-documents',
-    courtCaseRoutes.submitUploadCourtDocuments,
+    courtCaseRoutes.submitUploadDocuments,
   )
 
   return router

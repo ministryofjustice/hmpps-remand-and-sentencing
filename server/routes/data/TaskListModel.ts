@@ -189,6 +189,12 @@ export default class TaskListModel {
       }
     }
 
+    if (courtAppearance.documentUploadAccepted) {
+      status = {
+        text: 'Completed',
+      }
+    }
+
     return {
       title: {
         text: 'Upload court documents',

@@ -907,6 +907,13 @@ export default class CourtAppearanceService {
     return errors
   }
 
+  setDocumentUploadedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    courtAppearance.documentUploadAccepted = true
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   async checkOffenceDatesHaveInvalidatedOffence(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

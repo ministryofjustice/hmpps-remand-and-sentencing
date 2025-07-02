@@ -909,7 +909,7 @@ export default class CourtAppearanceService {
 
   setDocumentUploadedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.documentUploaded = true
+    courtAppearance.documentUploadAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

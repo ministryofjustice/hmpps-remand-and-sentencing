@@ -189,7 +189,7 @@ export default class TaskListModel {
       }
     }
 
-    if (courtAppearance.documentUploaded) {
+    if (courtAppearance.documentUploadAccepted) {
       status = {
         text: 'Completed',
       }

@@ -1036,7 +1036,11 @@ export default class CourtAppearanceService {
     }
   }
 
-  resetConsecFields(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number) {
+  resetConsecutiveFields(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]

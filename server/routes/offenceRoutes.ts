@@ -1342,29 +1342,42 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    if (
-      offenceSentenceServeTypeForm.sentenceServeType ===
-      extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
-    ) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-      )
-    }
+    const serveType = offenceSentenceServeTypeForm.sentenceServeType
+    const isConsecutive = serveType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
+    const redirectBase = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}`
+    const queryString = submitToEditOffence ? '?submitToEditOffence=true' : ''
+
     if (submitToEditOffence) {
-      if (
-        sentenceIsInChain &&
-        existingOffence.sentence.sentenceServeType !== offenceSentenceServeTypeForm.sentenceServeType &&
-        offenceSentenceServeTypeForm.sentenceServeType ===
-          extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
-      ) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-concurrent${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-        )
+      const newType = serveType
+      const oldType = existingOffence.sentence?.sentenceServeType
+
+      if (sentenceIsInChain && oldType !== newType) {
+        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)) {
+          return res.redirect(`${redirectBase}/making-sentence-concurrent${queryString}`)
+        }
+        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)) {
+          return res.redirect(`${redirectBase}/making-sentence-forthwith${queryString}`)
+        }
+        if (isConsecutive) {
+          return res.redirect(`${redirectBase}/making-sentence-consecutive${queryString}`)
+        }
       }
+      if (isConsecutive) {
+        return res.redirect(`${redirectBase}/sentence-consecutive-to${queryString}`)
+      }
+
+      this.courtAppearanceService.resetConsecutiveFields(req.session, nomsId, parseInt(offenceReference, 10))
+
+      // Go back to edit screen as fallback
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
+
+    if (isConsecutive) {
+      return res.redirect(`${redirectBase}/sentence-consecutive-to${queryString}`)
+    }
+
     return this.saveSessionOffenceInAppearance(
       req,
       res,

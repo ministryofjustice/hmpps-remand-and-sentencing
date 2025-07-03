@@ -453,6 +453,36 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/making-sentence-forthwith',
+    sentencingRoutes.getMakingSentenceForthwith,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/continue-making-sentence-forthwith',
+    sentencingRoutes.continueMakingSentenceForthwith,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/making-sentence-consecutive',
+    sentencingRoutes.getMakingSentenceConsecutive,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/continue-making-sentence-consecutive',
+    sentencingRoutes.continueMakingSentenceConsecutive,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/making-sentence-concurrent',
+    sentencingRoutes.getMakingSentenceConcurrent,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/continue-making-sentence-concurrent',
+    sentencingRoutes.continueMakingSentenceConcurrent,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/check-offence-answers',
     offenceRoutes.getCheckOffenceAnswers,
   )

@@ -588,6 +588,8 @@ export default class OffenceService {
           extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
       ) {
         sentence.sentenceServeType = offenceSentenceServeTypeForm.sentenceServeType
+        delete sentence.consecutiveToSentenceReference
+        delete sentence.consecutiveToSentenceUuid
       }
 
       offence.sentence = sentence
@@ -860,10 +862,38 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceReference: string,
   ) {
+    this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONCURRENT)
+  }
+
+  setSentenceToForthwith(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+  ) {
+    this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.FORTHWITH)
+  }
+
+  setSentenceToConsecutive(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+  ) {
+    this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONSECUTIVE)
+  }
+
+  private updateSentenceServType(
+    nomsId: string,
+    courtCaseReference: string,
+    session: CookieSessionInterfaces.CookieSessionObject,
+    offenceReference: string,
+    sentenceServeType: string,
+  ) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence, offenceReference)
-    sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
+    sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeType)
     delete sentence.consecutiveToSentenceReference
     delete sentence.consecutiveToSentenceUuid
     offence.sentence = sentence

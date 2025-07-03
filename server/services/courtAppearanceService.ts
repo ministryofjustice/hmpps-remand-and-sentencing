@@ -1061,6 +1061,58 @@ export default class CourtAppearanceService {
     }
   }
 
+  resetConsecutiveFields(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const sentence = offence.sentence ?? { sentenceReference: offenceReference.toString() }
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+  }
+
+  setSentenceToForthwith(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const { sentence } = offence
+      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+    }
+  }
+
+  setSentenceToConsecutive(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const { sentence } = offence
+      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+    }
+  }
+
   clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]

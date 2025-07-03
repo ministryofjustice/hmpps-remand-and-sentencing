@@ -62,4 +62,23 @@ context('Sentencing delete sentence in chain Page', () => {
   it('button to continue is displayed', () => {
     sentencingDeleteSentenceInChainPage.continueButton().should('contain.text', 'Yes, delete the sentence')
   })
+
+  it('continuing clears the whole chain', () => {
+    sentencingDeleteSentenceInChainPage.continueButton().click()
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+    offenceCheckOffenceAnswersPage
+      .custodialOffences()
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '12/05/2023',
+          'Conviction date': '12/05/2023',
+          Outcome: 'Imprisonment',
+          'Sentence type': 'SDS (Standard Determinate Sentence)',
+          'Sentence length': '4 years 5 months 0 weeks 0 days',
+        },
+      ])
+    // this will change in RASS-1058 for consecutive or concurrent to be a link to update
+  })
 })

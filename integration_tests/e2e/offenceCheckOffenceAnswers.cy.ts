@@ -152,7 +152,7 @@ context('Check Offence Answers Page', () => {
       offenceDeleteOffencePage
         .errorSummary()
         .trimTextContent()
-        .should('equal', 'There is a problem You must select whether you want to delete this sentence')
+        .should('equal', 'There is a problem You must select whether you want to delete this offence')
     })
 
     it('custodial offences appear in custodial offences heading', () => {

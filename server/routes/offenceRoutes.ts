@@ -1807,16 +1807,27 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
 
     const deleteOffenceForm = trimForm<OffenceDeleteOffenceForm>(req.body)
+    const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+    )
     const errors = this.courtAppearanceService.deleteOffence(
       req.session,
       nomsId,
       parseInt(offenceReference, 10),
       deleteOffenceForm,
+      sentenceIsInChain,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/delete-offence`,
+      )
+    }
+    if (sentenceIsInChain) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/delete-sentence-in-chain`,
       )
     }
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {

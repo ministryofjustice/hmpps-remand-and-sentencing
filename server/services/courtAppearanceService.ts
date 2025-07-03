@@ -817,6 +817,7 @@ export default class CourtAppearanceService {
     nomsId: string,
     offenceReference: number,
     deleteOffenceForm: OffenceDeleteOffenceForm,
+    sentenceIsInChain: boolean,
   ): {
     text?: string
     html?: string
@@ -831,7 +832,7 @@ export default class CourtAppearanceService {
         'required.deleteOffence': `You must select whether you want to delete this offence`,
       },
     )
-    if (errors.length === 0 && deleteOffenceForm.deleteOffence === 'true') {
+    if (errors.length === 0 && deleteOffenceForm.deleteOffence === 'true' && !sentenceIsInChain) {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       courtAppearance.offences.splice(offenceReference, 1)
       // eslint-disable-next-line no-param-reassign
@@ -1110,6 +1111,39 @@ export default class CourtAppearanceService {
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence
+    }
+  }
+
+  deleteSentenceInChain(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const { offences } = courtAppearance
+    if (courtAppearance.offences.length > offenceReference) {
+      const { sentenceReference } = courtAppearance.offences[offenceReference].sentence
+      offences.splice(offenceReference, 1)
+      let nextSentenceInChainIndex = offences.findIndex(
+        offence => offence.sentence.consecutiveToSentenceReference === sentenceReference,
+      )
+      while (nextSentenceInChainIndex !== -1) {
+        const nextChainOffence = courtAppearance.offences[nextSentenceInChainIndex]
+        const { sentence } = nextChainOffence
+        const nextSentenceInChainSentenceReference = sentence.sentenceReference
+        delete sentence.consecutiveToSentenceReference
+        delete sentence.consecutiveToSentenceUuid
+        delete sentence.sentenceServeType
+        delete sentence.isSentenceConsecutiveToAnotherCase
+        nextChainOffence.sentence = sentence
+        offences[nextSentenceInChainIndex] = nextChainOffence
+        nextSentenceInChainIndex = offences.findIndex(
+          offence => offence.sentence.consecutiveToSentenceReference === nextSentenceInChainSentenceReference,
+        )
+      }
+      courtAppearance.offences = offences
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
     }
   }
 

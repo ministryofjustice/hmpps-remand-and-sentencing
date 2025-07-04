@@ -60,7 +60,7 @@ context('Validation for warrant date page', () => {
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
     })
 
-    it('Run validation on edit journey', () => {
+    it('Run validation on add journey', () => {
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('01')

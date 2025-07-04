@@ -15,6 +15,16 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
       `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${offenceId}/delete-offence"]`,
     )
 
+  selectConsecutiveConcurrentLink = (
+    personId: string,
+    courtCaseId: string,
+    appearanceReference: string,
+    offenceId: string,
+  ): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${offenceId}/select-consecutive-concurrent"]`,
+    )
+
   editOffenceLink = (
     personId: string,
     courtCaseId: string,
@@ -44,4 +54,18 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
   noCustodialOutcomeInset = (): PageElement => cy.get('[data-qa="noCustodialOutcomeInset"]')
 
   countWarning = (): PageElement => cy.get('[data-qa="countWarning"]')
+
+  checkConsecutiveOrConcurrentForCount(countNumber: number, expectedText: string): void {
+    cy.get('[data-qa="custodialOffences"]')
+      .contains('.offence-card', `Count ${countNumber}`)
+      .within(() => {
+        cy.get('.govuk-summary-list__row')
+          .contains('Consecutive or concurrent')
+          .siblings('.govuk-summary-list__value')
+          .invoke('text')
+          .then(text => {
+            expect(text.trim()).to.eq(expectedText)
+          })
+      })
+  }
 }

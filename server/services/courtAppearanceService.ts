@@ -16,6 +16,7 @@ import type {
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
   OffenceCountNumberForm,
+  OffenceDeleteOffenceForm,
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
@@ -811,11 +812,33 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
-    courtAppearance.offences.splice(offenceReference, 1)
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
+  deleteOffence(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+    deleteOffenceForm: OffenceDeleteOffenceForm,
+    sentenceIsInChain: boolean,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      deleteOffenceForm,
+      {
+        deleteOffence: 'required',
+      },
+      {
+        'required.deleteOffence': `You must select whether you want to delete this offence`,
+      },
+    )
+    if (errors.length === 0 && deleteOffenceForm.deleteOffence === 'true' && !sentenceIsInChain) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      courtAppearance.offences.splice(offenceReference, 1)
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   getOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number): Offence {
@@ -907,22 +930,27 @@ export default class CourtAppearanceService {
     return errors
   }
 
+  setDocumentUploadedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    courtAppearance.documentUploadAccepted = true
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   async checkOffenceDatesHaveInvalidatedOffence(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     offenceReference: number,
-    offenceStartDate: Date,
-    offenceEndDate: Date,
+    offence: Offence,
     dateOfBirth: string,
     username: string,
   ): Promise<boolean> {
     let hasInvalidated: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
       if (offence.sentence && offence.sentence.convictionDate) {
         const { sentence } = offence
-        const offenceDate = dayjs(offenceEndDate ?? offenceStartDate)
+        const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
         const convictionDate = dayjs(sentence.convictionDate)
         if (offenceDate.isAfter(convictionDate)) {
           hasInvalidated = true
@@ -948,8 +976,11 @@ export default class CourtAppearanceService {
             delete sentence.periodLengths
           }
         }
-        offence.sentence = sentence
-        courtAppearance.offences[offenceReference] = offence
+        const appearanceOffence = courtAppearance.offences[offenceReference]
+        appearanceOffence.sentence = sentence
+        courtAppearance.offences[offenceReference] = appearanceOffence
+        // eslint-disable-next-line no-param-reassign
+        session.courtAppearances[nomsId] = courtAppearance
       }
     }
     return hasInvalidated
@@ -959,17 +990,16 @@ export default class CourtAppearanceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     offenceReference: number,
-    convictionDate: Date,
+    offence: Offence,
     dateOfBirth: string,
     username: string,
   ): Promise<boolean> {
     let hasInvalidated: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
       const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
-      const potentialConvictionDate = dayjs(convictionDate)
+      const potentialConvictionDate = dayjs(offence.sentence.convictionDate)
       if (sentence.sentenceTypeId) {
         const prisonerDateOfBirth = dayjs(dateOfBirth)
         const ageAtConviction = potentialConvictionDate.diff(prisonerDateOfBirth, 'years')
@@ -987,8 +1017,11 @@ export default class CourtAppearanceService {
           delete sentence.periodLengths
         }
       }
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
+      const appearanceOffence = courtAppearance.offences[offenceReference]
+      appearanceOffence.sentence = sentence
+      courtAppearance.offences[offenceReference] = appearanceOffence
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
     }
     return hasInvalidated
   }
@@ -1026,6 +1059,91 @@ export default class CourtAppearanceService {
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence
+    }
+  }
+
+  resetConsecutiveFields(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const sentence = offence.sentence ?? { sentenceReference: offenceReference.toString() }
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+  }
+
+  setSentenceToForthwith(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const { sentence } = offence
+      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+    }
+  }
+
+  setSentenceToConsecutive(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (courtAppearance.offences.length > offenceReference) {
+      const offence = courtAppearance.offences[offenceReference]
+      const { sentence } = offence
+      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
+      offence.sentence = sentence
+      courtAppearance.offences[offenceReference] = offence
+    }
+  }
+
+  deleteSentenceInChain(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    offenceReference: number,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const { offences } = courtAppearance
+    if (courtAppearance.offences.length > offenceReference) {
+      const { sentenceReference } = courtAppearance.offences[offenceReference].sentence
+      offences.splice(offenceReference, 1)
+      let nextSentenceInChainIndex = offences.findIndex(
+        offence => offence.sentence.consecutiveToSentenceReference === sentenceReference,
+      )
+      while (nextSentenceInChainIndex !== -1) {
+        const nextChainOffence = courtAppearance.offences[nextSentenceInChainIndex]
+        const { sentence } = nextChainOffence
+        const nextSentenceInChainSentenceReference = sentence.sentenceReference
+        delete sentence.consecutiveToSentenceReference
+        delete sentence.consecutiveToSentenceUuid
+        delete sentence.sentenceServeType
+        delete sentence.isSentenceConsecutiveToAnotherCase
+        nextChainOffence.sentence = sentence
+        offences[nextSentenceInChainIndex] = nextChainOffence
+        nextSentenceInChainIndex = offences.findIndex(
+          offence => offence.sentence.consecutiveToSentenceReference === nextSentenceInChainSentenceReference,
+        )
+      }
+      courtAppearance.offences = offences
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
     }
   }
 

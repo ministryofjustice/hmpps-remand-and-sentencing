@@ -6,8 +6,11 @@
 {% set pageTitle = applicationName + " - upload court documents" %}
 
 {% block pageContent %}
+<div class="govuk-!-margin-right-8">
+<form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-upload-court-documents">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       <h1 class="govuk-heading-l">Upload court documents</h1>
-      <p class="govuk-caption-l">
+      <p class="govuk-hint">
         Uploading documents is optional. The selected file type should be among .PDF, .JPG, .DOC and .DOCX under 50MB.
       </p>
 
@@ -60,15 +63,15 @@
         {% endif %}
 
         {% if not loop.last %}
-          <hr class="govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
         {% endif %}
           {% endfor %}
 
-      <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
         {{ govukButton({
             text: "Continue",
             attributes: { 'data-qa': 'continue-button' }
         }) }}
       </form>
+      </div>
 {% endblock %}

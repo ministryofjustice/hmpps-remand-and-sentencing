@@ -15,6 +15,16 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
       `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${offenceId}/delete-offence"]`,
     )
 
+  selectConsecutiveConcurrentLink = (
+    personId: string,
+    courtCaseId: string,
+    appearanceReference: string,
+    offenceId: string,
+  ): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${offenceId}/select-consecutive-concurrent"]`,
+    )
+
   editOffenceLink = (
     personId: string,
     courtCaseId: string,

@@ -407,7 +407,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence, invalidatedFrom } = req.query
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const { sentence } = offence
@@ -458,8 +458,8 @@ export default class SentencingRoutes extends BaseRoutes {
           sentenceReference: sessionOffence.sentence.sentenceReference,
         } as unknown as SameCaseSentenceToChainTo
       })
-
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`
+    const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitQuery}`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     }
@@ -479,7 +479,7 @@ export default class SentencingRoutes extends BaseRoutes {
       courtMap,
       errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      submitToEditOffence,
+      submitQuery,
       backLink,
     })
   }
@@ -493,7 +493,8 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence, invalidatedFrom } = req.query
+    const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const sentenceConsecutiveToForm = trimForm<SentenceConsecutiveToForm>(req.body)
     const errors = this.offenceService.setSentenceConsecutiveTo(
       req.session,
@@ -507,7 +508,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('sentenceConsecutiveToForm', { ...sentenceConsecutiveToForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${offenceReference}/sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${offenceReference}/sentence-consecutive-to${submitQuery}`,
       )
     }
     if (submitToEditOffence) {

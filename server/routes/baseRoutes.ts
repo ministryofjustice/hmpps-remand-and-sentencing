@@ -189,4 +189,15 @@ export default abstract class BaseRoutes {
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`)
   }
+
+  protected queryParametersToString(submitToEditOffence, invalidatedFrom): string {
+    const submitQueries: string[] = []
+    if (submitToEditOffence) {
+      submitQueries.push('submitToEditOffence=true')
+    }
+    if (invalidatedFrom) {
+      submitQueries.push(`invalidatedFrom=${invalidatedFrom}`)
+    }
+    return submitQueries.length ? `?${submitQueries.join('&')}` : ''
+  }
 }

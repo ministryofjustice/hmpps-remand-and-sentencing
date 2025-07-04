@@ -1,6 +1,7 @@
 import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 import OffenceCheckOffenceAnswersPage from '../pages/offenceCheckOffenceAnswersPage'
 import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
+import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import Page from '../pages/page'
 import SentencingDeleteSentenceInChainPage from '../pages/sentencingDeleteSentenceInChainPage'
 
@@ -65,7 +66,7 @@ context('Sentencing delete sentence in chain Page', () => {
 
   it('continuing clears the whole chain', () => {
     sentencingDeleteSentenceInChainPage.continueButton().click()
-    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage
       .custodialOffences()
       .getOffenceCards()
@@ -77,8 +78,27 @@ context('Sentencing delete sentence in chain Page', () => {
           Outcome: 'Imprisonment',
           'Sentence type': 'SDS (Standard Determinate Sentence)',
           'Sentence length': '4 years 5 months 0 weeks 0 days',
+          'Consecutive or concurrent': 'Select consecutive or current',
         },
       ])
-    // this will change in RASS-1058 for consecutive or concurrent to be a link to update
+    offenceCheckOffenceAnswersPage.selectConsecutiveConcurrentLink('A1234AB', '0', '0', '0').click()
+    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
+    offenceSentenceServeTypePage.continueButton().click()
+    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+    offenceCheckOffenceAnswersPage
+      .custodialOffences()
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '12/05/2023',
+          'Conviction date': '12/05/2023',
+          Outcome: 'Imprisonment',
+          'Sentence type': 'SDS (Standard Determinate Sentence)',
+          'Sentence length': '4 years 5 months 0 weeks 0 days',
+          'Consecutive or concurrent': 'Concurrent',
+        },
+      ])
   })
 })

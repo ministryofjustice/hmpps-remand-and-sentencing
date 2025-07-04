@@ -31,6 +31,10 @@
             consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
             sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
             fineAmount: offence.sentence.fineAmount,
+            consecutiveConcurrentLink: {
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/select-consecutive-concurrent",
+                text: 'Select consecutive or current'
+            },
             actions: {
                 items: [
                     {

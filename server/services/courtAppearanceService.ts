@@ -115,15 +115,20 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).caseReferenceNumber
   }
 
-  setWarrantDate(
+  async setWarrantDate(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseWarrantDateForm: CourtCaseWarrantDateForm,
-  ): {
-    text?: string
-    html?: string
-    href: string
-  }[] {
+    courtCaseReference: string,
+    addOrEditCourtCase: string,
+    username: string,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     let isValidWarrantDateRule = ''
     if (
@@ -136,7 +141,7 @@ export default class CourtAppearanceService {
         courtCaseWarrantDateForm['warrantDate-month'],
         courtCaseWarrantDateForm['warrantDate-day'],
       )
-      isValidWarrantDateRule = `|isValidDate:${warrantDateString}|isPastDate:${warrantDateString}`
+      isValidWarrantDateRule = `|isValidDate:${warrantDateString}|isPastDate:${warrantDateString}|isWithinLast100Years:${warrantDateString}`
     }
 
     const errors = validate(
@@ -156,12 +161,22 @@ export default class CourtAppearanceService {
         'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
       },
     )
+
     if (errors.length === 0) {
       const warrantDate = dayjs({
         year: courtCaseWarrantDateForm['warrantDate-year'],
         month: parseInt(courtCaseWarrantDateForm['warrantDate-month'], 10) - 1,
         day: courtCaseWarrantDateForm['warrantDate-day'],
       })
+
+      if (addOrEditCourtCase === 'edit-court-case') {
+        const offenceDateErrors = await this.validateWarrantDateAgainstOffences(
+          warrantDate,
+          courtCaseReference,
+          username,
+        )
+        if (offenceDateErrors) return offenceDateErrors
+      }
 
       courtAppearance.warrantDate = warrantDate.toDate()
       // eslint-disable-next-line no-param-reassign
@@ -1154,5 +1169,28 @@ export default class CourtAppearanceService {
 
   private getCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
     return session.courtAppearances[nomsId] ?? { offences: [] }
+  }
+
+  private async validateWarrantDateAgainstOffences(
+    warrantDate: dayjs.Dayjs,
+    courtCaseReference: string,
+    username: string,
+  ): Promise<{ text: string; href: string }[] | null> {
+    const latestOffenceDateStr = await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
+      courtCaseReference,
+      username,
+    )
+    if (latestOffenceDateStr) {
+      const latestOffenceDate = dayjs(latestOffenceDateStr)
+      if (!warrantDate.isAfter(latestOffenceDate)) {
+        return [
+          {
+            text: 'Warrant date must be after the latest offence date',
+            href: '#warrantDate-day',
+          },
+        ]
+      }
+    }
+    return null
   }
 }

@@ -96,8 +96,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     if (submitToEditOffence || invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-    } else if (!this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && warrantType === 'REMAND') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+    } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      if (warrantType === 'REMAND') {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+      } else {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
+      }
     } else if (isFirstOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
     }

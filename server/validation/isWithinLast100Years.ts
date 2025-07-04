@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 
-export default function isWithinLast100Years(value: string | Date): boolean {
-  const date = dayjs(value)
-  return date.isAfter(dayjs().subtract(100, 'years'))
+export default function validate(value, options): boolean {
+  const compare = dayjs(options, 'YYYY-MM-DD', true).startOf('date')
+  const hundredYearsAgo = dayjs().subtract(100, 'years')
+  return compare.isAfter(hundredYearsAgo)
 }

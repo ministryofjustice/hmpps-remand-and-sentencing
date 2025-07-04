@@ -159,9 +159,9 @@ export default class CourtAppearanceService {
         'isValidDate.warrantDate-day': 'This date does not exist.',
         'isPastDate.warrantDate-day': 'Warrant date must be in the past',
         'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
+        'isWithinLast100Years.warrantDate-day': 'Date must be within the last 100 years',
       },
     )
-
     if (errors.length === 0) {
       const warrantDate = dayjs({
         year: courtCaseWarrantDateForm['warrantDate-year'],
@@ -183,6 +183,29 @@ export default class CourtAppearanceService {
       session.courtAppearances[nomsId] = courtAppearance
     }
     return errors
+  }
+
+  private async validateWarrantDateAgainstOffences(
+    warrantDate: dayjs.Dayjs,
+    courtCaseReference: string,
+    username: string,
+  ): Promise<{ text: string; href: string }[] | null> {
+    const latestOffenceDateStr = await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
+      courtCaseReference,
+      username,
+    )
+    if (latestOffenceDateStr) {
+      const latestOffenceDate = dayjs(latestOffenceDateStr)
+      if (!warrantDate.isAfter(latestOffenceDate)) {
+        return [
+          {
+            text: `Warrant date must be after the latest offence date`,
+            href: '#warrantDate',
+          },
+        ]
+      }
+    }
+    return null
   }
 
   getWarrantDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {
@@ -1169,28 +1192,5 @@ export default class CourtAppearanceService {
 
   private getCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
     return session.courtAppearances[nomsId] ?? { offences: [] }
-  }
-
-  private async validateWarrantDateAgainstOffences(
-    warrantDate: dayjs.Dayjs,
-    courtCaseReference: string,
-    username: string,
-  ): Promise<{ text: string; href: string }[] | null> {
-    const latestOffenceDateStr = await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
-      courtCaseReference,
-      username,
-    )
-    if (latestOffenceDateStr) {
-      const latestOffenceDate = dayjs(latestOffenceDateStr)
-      if (!warrantDate.isAfter(latestOffenceDate)) {
-        return [
-          {
-            text: 'Warrant date must be after the latest offence date',
-            href: '#warrantDate-day',
-          },
-        ]
-      }
-    }
-    return null
   }
 }

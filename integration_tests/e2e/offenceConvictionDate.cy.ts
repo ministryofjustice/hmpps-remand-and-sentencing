@@ -46,7 +46,7 @@ context('Add Offence Conviction Date Page', () => {
     offenceConvictionDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem Conviction date must be in the past')
+      .should('equal', 'There is a problem Conviction date cannot be a date in the future')
   })
 
   it('submitting an  invalid start date results in an error', () => {

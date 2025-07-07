@@ -284,4 +284,11 @@ export default class RemandAndSentencingApiClient {
       },
     })) as unknown as Promise<SentenceTypeIsValid>
   }
+
+  async getLatestOffenceDateForCourtCase(courtCaseUuid: string): Promise<string | null> {
+    const result = await this.restClient.get<string>({
+      path: `/court-case/${courtCaseUuid}/latest-offence-date`,
+    })
+    return result ?? null
+  }
 }

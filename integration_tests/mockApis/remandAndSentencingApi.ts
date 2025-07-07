@@ -1,4 +1,5 @@
 import { SuperAgentRequest } from 'superagent'
+import { UUID } from 'node:crypto'
 import { stubFor, verifyRequest } from './wiremock'
 
 export default {
@@ -2620,6 +2621,26 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: latestOffenceDate,
+      },
+    })
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  stubUploadDocument: ({ documents = [] } = {}): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: '/remand-and-sentencing-api/uploaded-documents',
+        bodyPatterns: [
+          {
+            matchesJsonPath: '$.documents[*].documentUUID',
+          },
+        ],
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        // No jsonBody, as the endpoint returns void
       },
     })
   },

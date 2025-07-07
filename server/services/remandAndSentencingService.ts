@@ -243,6 +243,12 @@ export default class RemandAndSentencingService {
     )
   }
 
+  async getLatestOffenceDateForCourtCase(courtCaseUuid: string, username: string): Promise<string | null> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getLatestOffenceDateForCourtCase(
+      courtCaseUuid,
+    )
+  }
+
   private async getSystemClientToken(username: string): Promise<string> {
     return this.hmppsAuthClient.getSystemClientToken(username)
   }

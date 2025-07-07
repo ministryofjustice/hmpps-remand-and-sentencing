@@ -18,6 +18,7 @@ import isFutureDate from './isFutureDate'
 import isUniqueTimePeriod from './isUniqueTimePeriod'
 import atLeastOneNumberInString from './atLeastOneNumberInString'
 import isNotTrue from './isNotTrue'
+import isWithinLast100Years from './isWithinLast100Years'
 
 export default function validate<T>(
   form: T,
@@ -78,3 +79,4 @@ Validator.register('minNumber', minNumberValidate, 'must be greater than number'
 Validator.register('isUniqueTimePeriod', isUniqueTimePeriod, 'More than one of the same type of date is not allowed')
 Validator.register('atLeastOneNumberInString', atLeastOneNumberInString, 'Must enter at least one number')
 Validator.register('isNotTrue', isNotTrue, 'Cannot be true')
+Validator.register('isWithinLast100Years', isWithinLast100Years, 'Date must be within the last 100 years')

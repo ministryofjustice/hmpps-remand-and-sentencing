@@ -1516,6 +1516,7 @@ export default class CourtCaseRoutes {
     const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
     const uploadedFile = (req.files as Express.Multer.File[])?.[0]
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+
     try {
       if (!uploadedFile) {
         req.flash('errors', [{ text: 'Select a document to upload.', href: '#document-upload' }])
@@ -1535,10 +1536,11 @@ export default class CourtCaseRoutes {
       )
 
       const uploadedDocument: UploadedDocument = {
-        documentId,
+        documentUUID: documentId,
         documentType: documentTypeName,
         fileName: uploadedFile.originalname,
       }
+      await this.remandAndSentencingService.createUploadDocument(uploadedDocument, username)
       this.courtAppearanceService.addUploadedDocument(req.session, nomsId, uploadedDocument)
 
       return res.redirect(
@@ -1597,7 +1599,7 @@ export default class CourtCaseRoutes {
 
     try {
       const result = await this.documentManagementService.downloadDocument(
-        document.documentId,
+        document.documentUUID,
         username,
         activeCaseLoadId,
       )
@@ -1609,7 +1611,7 @@ export default class CourtCaseRoutes {
         fileStream.push(result)
         fileStream.push(null)
       } else {
-        logger.error(`Document management service returned unexpected type for documentId: ${document.documentId}`)
+        logger.error(`Document management service returned unexpected type for documentId: ${document.documentUUID}`)
         throw new Error('Failed to retrieve document content.')
       }
 
@@ -1617,7 +1619,7 @@ export default class CourtCaseRoutes {
       fileStream.pipe(res)
 
       fileStream.on('error', (streamError: Error) => {
-        logger.error(`Stream error during document download for ${document.documentId}: ${streamError.message}`)
+        logger.error(`Stream error during document download for ${document.documentUUID}: ${streamError.message}`)
         if (!res.headersSent) {
           errors = [{ text: 'Error transferring document.' }]
         } else {
@@ -1626,7 +1628,7 @@ export default class CourtCaseRoutes {
       })
 
       fileStream.on('end', () => {
-        logger.info(`Successfully streamed document ${document.documentId} to client.`)
+        logger.info(`Successfully streamed document ${document.documentUUID} to client.`)
       })
     } catch (error) {
       logger.error(`Error downloading document ${documentId}: ${error.message}`)

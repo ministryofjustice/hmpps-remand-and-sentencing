@@ -108,6 +108,7 @@ export const courtAppearanceToCreateCourtAppearance = (
     charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence, prisonId)),
     warrantType: courtAppearance.warrantType,
     warrantId: courtAppearance.warrantId,
+    documents: courtAppearance.uploadedDocuments,
     prisonId,
     ...(nextCourtAppearance && { nextCourtAppearance }),
     ...(courtAppearance.overallSentenceLength && {

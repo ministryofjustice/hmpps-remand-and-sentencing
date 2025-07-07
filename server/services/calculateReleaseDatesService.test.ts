@@ -95,6 +95,7 @@ const baseAppearance: CourtAppearance = {
   appearanceInformationAccepted: false,
   offenceSentenceAccepted: false,
   nextCourtAppearanceAccepted: false,
+  uploadedDocuments: [],
 }
 
 const singleTermLengthSentence: CourtAppearance = {

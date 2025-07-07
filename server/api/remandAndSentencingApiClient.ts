@@ -22,7 +22,9 @@ import {
   SentencesToChainToResponse,
   SentenceType,
   SentenceTypeIsValid,
+  UploadedDocument,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+
 import config, { ApiConfig } from '../config'
 import RestClient from '../data/restClient'
 
@@ -283,6 +285,15 @@ export default class RemandAndSentencingApiClient {
         offenceDate,
       },
     })) as unknown as Promise<SentenceTypeIsValid>
+  }
+
+  async createUploadedDocument(documents: UploadedDocument[]): Promise<void> {
+    return (await this.restClient.post({
+      path: `/uploaded-documents`,
+      data: {
+        documents,
+      },
+    })) as unknown as Promise<void>
   }
 
   async getLatestOffenceDateForCourtCase(courtCaseUuid: string): Promise<string | null> {

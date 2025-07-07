@@ -9,6 +9,8 @@ context('Remove document confirmation page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubUploadWarrant')
+    cy.task('stubUploadDocument')
+
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)

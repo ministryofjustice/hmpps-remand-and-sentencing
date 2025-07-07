@@ -1,5 +1,4 @@
 import { SuperAgentRequest } from 'superagent'
-import { UUID } from 'node:crypto'
 import { stubFor, verifyRequest } from './wiremock'
 
 export default {

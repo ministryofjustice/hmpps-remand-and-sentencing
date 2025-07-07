@@ -121,6 +121,7 @@ context('Court Case Warrant Date Page', () => {
     })
 
     it('Run validation on edit journey - check for appropriate error messages', () => {
+      // Latest offence date has been mocked to return 01-01-2000
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('01')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('12')

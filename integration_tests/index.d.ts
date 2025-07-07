@@ -29,12 +29,22 @@ declare namespace Cypress {
       courtCaseReference: string,
       appearanceReference: string,
       offenceReference: string,
+      countNumber?: string,
+    ): Chainable<AUTWindow>
+    createSentencedConcurrentOffence(
+      personId: string,
+      courtCaseReference: string,
+      appearanceReference: string,
+      offenceReference: string,
+      countNumber?: string,
     ): Chainable<AUTWindow>
     createSentencedOffenceConsecutiveTo(
       personId: string,
       courtCaseReference: string,
       appearanceReference: string,
       offenceReference: string,
+      countNumber?: string,
+      consecutiveToSelect?: string,
     ): Chainable<AUTWindow>
   }
 }

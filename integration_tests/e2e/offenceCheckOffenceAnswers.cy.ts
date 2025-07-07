@@ -61,7 +61,7 @@ context('Check Offence Answers Page', () => {
       cy.createOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
-      const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
+      const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
       offenceDeleteOffencePage.radioLabelSelector('true').click()
       offenceDeleteOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
@@ -135,7 +135,7 @@ context('Check Offence Answers Page', () => {
 
     it('deleting sentence removes from list and goes back to check answers page', () => {
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
-      const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
+      const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
       offenceDeleteOffencePage.radioLabelSelector('true').click()
       offenceDeleteOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
@@ -147,12 +147,12 @@ context('Check Offence Answers Page', () => {
 
     it('deleting sentence and not selecting yes or no results in error', () => {
       offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
-      const offenceDeleteOffencePage = Page.verifyOnPageTitle(OffenceDeleteOffencePage, 'offence')
+      const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
       offenceDeleteOffencePage.continueButton().click()
       offenceDeleteOffencePage
         .errorSummary()
         .trimTextContent()
-        .should('equal', 'There is a problem You must select whether you want to delete this sentence')
+        .should('equal', 'There is a problem You must select whether you want to delete this offence')
     })
 
     it('custodial offences appear in custodial offences heading', () => {

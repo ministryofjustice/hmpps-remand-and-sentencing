@@ -353,6 +353,7 @@ context('Add Offence Edit offence Page', () => {
       offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('2023')
       offenceConvictionDatePage.continueButton().click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+      offenceSentenceTypePage.radioSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').should('not.be.checked')
       offenceSentenceTypePage.radioLabelContains('EDS (Extended Determinate Sentence)').click()
       offenceSentenceTypePage.continueButton().click()
       let offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'custodial term')
@@ -433,6 +434,7 @@ context('Add Offence Edit offence Page', () => {
           outcomeType: 'REMAND',
         },
       ])
+      cy.task('stubGetLatestOffenceDate', {})
       cy.visit('/person/A1234AB')
       const startPage = Page.verifyOnPage(StartPage)
       startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()

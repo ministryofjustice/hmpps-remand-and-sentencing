@@ -404,7 +404,15 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantDateForm = trimForm<CourtCaseWarrantDateForm>(req.body)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    const errors = this.courtAppearanceService.setWarrantDate(req.session, nomsId, warrantDateForm)
+    const { username } = res.locals.user
+    const errors = await this.courtAppearanceService.setWarrantDate(
+      req.session,
+      nomsId,
+      warrantDateForm,
+      courtCaseReference,
+      addOrEditCourtCase,
+      username,
+    )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('warrantDateForm', { ...warrantDateForm })

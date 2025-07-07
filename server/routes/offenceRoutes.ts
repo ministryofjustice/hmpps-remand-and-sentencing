@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express'
 import type {
   OffenceAlternativePeriodLengthForm,
-  // OffenceAlternativeSentenceLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
   OffenceCountNumberForm,
@@ -97,8 +96,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     if (submitToEditOffence || invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-    } else if (!this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && warrantType === 'REMAND') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+    } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      if (warrantType === 'REMAND') {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+      } else {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
+      }
     } else if (isFirstOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
     }
@@ -151,8 +154,7 @@ export default class OffenceRoutes extends BaseRoutes {
         req.session,
         nomsId,
         parseInt(offenceReference, 10),
-        offence.offenceStartDate,
-        offence.offenceEndDate,
+        offence,
         res.locals.prisoner.dateOfBirth,
         req.user.username,
       )
@@ -1262,6 +1264,23 @@ export default class OffenceRoutes extends BaseRoutes {
     )
   }
 
+  public getSelectConsecutiveConcurrent: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+
+    const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
+    this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type?invalidatedFrom=${InvalidatedFrom.DELETE_CHAIN}`,
+    )
+  }
+
   public getSentenceServeType: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
@@ -1271,7 +1290,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence, invalidatedFrom } = req.query
     const forthwithAlreadySelected = this.courtAppearanceService.isForwithAlreadySelected(req.session, nomsId)
     const sentence = this.getSessionOffenceOrAppearanceOffence(
       req,
@@ -1282,9 +1301,11 @@ export default class OffenceRoutes extends BaseRoutes {
     const sentenceServeType = sentence?.sentenceServeType
     const expectedPeriodLengthsSize =
       sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths?.length
-
+    const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
-    if (submitToEditOffence) {
+    if (invalidatedFrom) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+    } else if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     } else if (sentence?.sentenceTypeClassification === 'FINE') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount`
@@ -1304,7 +1325,7 @@ export default class OffenceRoutes extends BaseRoutes {
       showForthwith: sentenceServeType === 'FORTHWITH' || !forthwithAlreadySelected,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       sentenceServeType,
-      submitToEditOffence,
+      submitQuery,
       backLink,
     })
   }
@@ -1318,7 +1339,8 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence, invalidatedFrom } = req.query
+    const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const offenceSentenceServeTypeForm = trimForm<OffenceSentenceServeTypeForm>(req.body)
     const existingOffence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
@@ -1339,33 +1361,45 @@ export default class OffenceRoutes extends BaseRoutes {
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitQuery}`,
       )
     }
 
-    if (
-      offenceSentenceServeTypeForm.sentenceServeType ===
-      extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
-    ) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-      )
-    }
+    const serveType = offenceSentenceServeTypeForm.sentenceServeType
+    const isConsecutive = serveType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
+    const redirectBase = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}`
+
     if (submitToEditOffence) {
-      if (
-        sentenceIsInChain &&
-        existingOffence.sentence.sentenceServeType !== offenceSentenceServeTypeForm.sentenceServeType &&
-        offenceSentenceServeTypeForm.sentenceServeType ===
-          extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
-      ) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/making-sentence-concurrent${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-        )
+      const newType = serveType
+      const oldType = existingOffence.sentence?.sentenceServeType
+
+      if (sentenceIsInChain && oldType !== newType) {
+        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)) {
+          return res.redirect(`${redirectBase}/making-sentence-concurrent${submitQuery}`)
+        }
+        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)) {
+          return res.redirect(`${redirectBase}/making-sentence-forthwith${submitQuery}`)
+        }
+        if (isConsecutive) {
+          return res.redirect(`${redirectBase}/making-sentence-consecutive${submitQuery}`)
+        }
       }
+      if (isConsecutive) {
+        return res.redirect(`${redirectBase}/sentence-consecutive-to${submitQuery}`)
+      }
+
+      this.courtAppearanceService.resetConsecutiveFields(req.session, nomsId, parseInt(offenceReference, 10))
+
+      // Go back to edit screen as fallback
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
+
+    if (isConsecutive) {
+      return res.redirect(`${redirectBase}/sentence-consecutive-to${submitQuery}`)
+    }
+
     return this.saveSessionOffenceInAppearance(
       req,
       res,
@@ -1468,11 +1502,11 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     if (submitToEditOffence) {
       const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
-      const hasInvalidatedOffence = this.courtAppearanceService.checkConvictionDateHasInvalidatedOffence(
+      const hasInvalidatedOffence = await this.courtAppearanceService.checkConvictionDateHasInvalidatedOffence(
         req.session,
         nomsId,
         parseInt(offenceReference, 10),
-        offence.sentence.convictionDate,
+        offence,
         res.locals.prisoner.dateOfBirth,
         req.user.username,
       )
@@ -1489,17 +1523,6 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
     )
-  }
-
-  private queryParametersToString(submitToEditOffence, invalidatedFrom): string {
-    const submitQueries: string[] = []
-    if (submitToEditOffence) {
-      submitQueries.push('submitToEditOffence=true')
-    }
-    if (invalidatedFrom) {
-      submitQueries.push(`invalidatedFrom=${invalidatedFrom}`)
-    }
-    return submitQueries.length ? `?${submitQueries.join('&')}` : ''
   }
 
   private periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom): string {
@@ -1757,6 +1780,14 @@ export default class OffenceRoutes extends BaseRoutes {
         } as ConsecutiveToDetails,
       }
     }
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      if (courtAppearance.warrantType === 'SENTENCING') {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+      } else {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+      }
+    }
 
     return res.render('pages/offence/delete-offence', {
       nomsId,
@@ -1773,7 +1804,7 @@ export default class OffenceRoutes extends BaseRoutes {
       sessionConsecutiveToSentenceDetailsMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       outcome,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      backLink,
     })
   }
 
@@ -1786,17 +1817,19 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    const sentenceOffence = warrantType === 'SENTENCING' ? 'Sentence' : 'Offence'
+
     const deleteOffenceForm = trimForm<OffenceDeleteOffenceForm>(req.body)
-    const errors = validate(
+    const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+    )
+    const errors = this.courtAppearanceService.deleteOffence(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
       deleteOffenceForm,
-      {
-        deleteOffence: 'required',
-      },
-      {
-        'required.deleteOffence': `You must select whether you want to delete this ${sentenceOffence.toLowerCase()}`,
-      },
+      sentenceIsInChain,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -1804,10 +1837,13 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/delete-offence`,
       )
     }
-    if (deleteOffenceForm.deleteOffence === 'true') {
-      this.courtAppearanceService.deleteOffence(req.session, nomsId, parseInt(offenceReference, 10))
+    if (sentenceIsInChain) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/delete-sentence-in-chain`,
+      )
     }
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
       if (warrantType === 'SENTENCING') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,

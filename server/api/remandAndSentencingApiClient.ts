@@ -1,4 +1,3 @@
-import type { UploadedDocument } from 'models'
 import {
   AppearanceOutcome,
   AppearanceType,
@@ -23,7 +22,9 @@ import {
   SentencesToChainToResponse,
   SentenceType,
   SentenceTypeIsValid,
+  UploadedDocument,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+
 import config, { ApiConfig } from '../config'
 import RestClient from '../data/restClient'
 

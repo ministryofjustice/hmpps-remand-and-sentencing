@@ -2624,8 +2624,8 @@ export default {
     })
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  stubUploadDocument: ({ documents = [] } = {}): SuperAgentRequest => {
+  // eslint-disable-next-line no-empty-pattern
+  stubUploadDocument: ({} = {}): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',

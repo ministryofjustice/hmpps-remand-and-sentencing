@@ -199,7 +199,7 @@ export default class CourtAppearanceService {
       if (!warrantDate.isAfter(latestOffenceDate)) {
         return [
           {
-            text: `The warrant date must be after any existing offence dates in the court case.`,
+            text: `The warrant date must be after any existing offence dates in the court case`,
             href: '#warrantDate',
           },
         ]

@@ -132,7 +132,7 @@ context('Court Case Warrant Date Page', () => {
         .trimTextContent()
         .should(
           'equal',
-          'There is a problem The warrant date must be after any existing offence dates in the court case.',
+          'There is a problem The warrant date must be after any existing offence dates in the court case',
         )
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
@@ -144,7 +144,7 @@ context('Court Case Warrant Date Page', () => {
         .trimTextContent()
         .should(
           'equal',
-          'There is a problem The warrant date must be after any existing offence dates in the court case.',
+          'There is a problem The warrant date must be after any existing offence dates in the court case',
         )
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')

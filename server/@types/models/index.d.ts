@@ -105,7 +105,7 @@ declare module 'models' {
   }
 
   export interface UploadedDocument {
-    documentId: string
+    documentUUID: UUID
     documentType: string
     fileName: string
   }

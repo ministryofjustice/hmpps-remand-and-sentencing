@@ -2623,4 +2623,23 @@ export default {
       },
     })
   },
+
+  stubUploadDocument: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: '/remand-and-sentencing-api/uploaded-documents',
+        bodyPatterns: [
+          {
+            matchesJsonPath: '$.documents[*].documentUUID',
+          },
+        ],
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        // No jsonBody, as the endpoint returns void
+      },
+    })
+  },
 }

@@ -93,3 +93,5 @@ export type PagedMergedToCase = components['schemas']['PagedMergedToCase']
 export type CourtCaseCountNumbers = components['schemas']['CourtCaseCountNumbers']
 
 export type SentenceTypeIsValid = components['schemas']['SentenceTypeIsValid']
+
+export type UploadedDocument = components['schemas']['UploadedDocument']

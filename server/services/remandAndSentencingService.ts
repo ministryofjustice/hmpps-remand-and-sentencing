@@ -1,4 +1,4 @@
-import type { CourtAppearance, CourtCase } from 'models'
+import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
 import {
   AppearanceType,
@@ -241,6 +241,12 @@ export default class RemandAndSentencingService {
       convictionDate.format('YYYY-MM-DD'),
       offenceDate.format('YYYY-MM-DD'),
     )
+  }
+
+  async createUploadDocument(uploadedDocument: UploadedDocument, username: string): Promise<void> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createUploadedDocument([
+      uploadedDocument,
+    ])
   }
 
   private async getSystemClientToken(username: string): Promise<string> {

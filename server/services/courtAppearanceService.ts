@@ -844,7 +844,6 @@ export default class CourtAppearanceService {
     document: UploadedDocument,
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
-
     // Ensure courtAppearance.uploadedDocuments is an array, then push
     if (!courtAppearance.uploadedDocuments) {
       courtAppearance.uploadedDocuments = [] // Initialize if null/undefined
@@ -862,7 +861,7 @@ export default class CourtAppearanceService {
     documentId: string,
   ): UploadedDocument | undefined {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
-    return courtAppearance.uploadedDocuments?.find(doc => doc.documentId === documentId)
+    return courtAppearance.uploadedDocuments?.find(doc => doc.documentUUID === documentId)
   }
 
   async removeUploadedDocument(
@@ -894,7 +893,7 @@ export default class CourtAppearanceService {
         const courtAppearance = this.getCourtAppearance(session, nomsId)
         if (courtAppearance.uploadedDocuments) {
           courtAppearance.uploadedDocuments = courtAppearance.uploadedDocuments.filter(
-            doc => doc.documentId !== documentId,
+            doc => doc.documentUUID !== documentId,
           )
           // eslint-disable-next-line no-param-reassign
           session.courtAppearances[nomsId] = courtAppearance

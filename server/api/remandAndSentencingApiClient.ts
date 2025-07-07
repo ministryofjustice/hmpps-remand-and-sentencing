@@ -1,3 +1,4 @@
+import type { UploadedDocument } from 'models'
 import {
   AppearanceOutcome,
   AppearanceType,
@@ -283,5 +284,14 @@ export default class RemandAndSentencingApiClient {
         offenceDate,
       },
     })) as unknown as Promise<SentenceTypeIsValid>
+  }
+
+  async createUploadedDocument(documents: UploadedDocument[]): Promise<void> {
+    return (await this.restClient.post({
+      path: `/uploaded-documents`,
+      data: {
+        documents,
+      },
+    })) as unknown as Promise<void>
   }
 }

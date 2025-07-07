@@ -63,7 +63,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
-        .should('equal', 'There is a problem Warrant date must be in the past')
+        .should('equal', 'There is a problem The warrant date cannot be a date in the future')
     })
 
     it('after confirm and continue check answers this becomes uneditable', () => {
@@ -98,7 +98,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
-        .should('equal', 'There is a problem Date must be within the last 100 years')
+        .should('equal', 'There is a problem All dates must be within the last 100 years from today’s date')
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('12')
@@ -130,7 +130,10 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
-        .should('equal', 'There is a problem Warrant date must be after the latest offence date')
+        .should(
+          'equal',
+          'There is a problem The warrant date must be after any existing offence dates in the court case',
+        )
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('01')
@@ -139,7 +142,10 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
-        .should('equal', 'There is a problem Warrant date must be after the latest offence date')
+        .should(
+          'equal',
+          'There is a problem The warrant date must be after any existing offence dates in the court case',
+        )
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('01')
@@ -148,7 +154,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
-        .should('equal', 'There is a problem Date must be within the last 100 years')
+        .should('equal', 'There is a problem All dates must be within the last 100 years from today’s date')
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('02')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('01')

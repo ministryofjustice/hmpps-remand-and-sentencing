@@ -85,7 +85,7 @@ context('Court Case Overall Conviction Date Page', () => {
     courtCaseOverallConvictionDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem Conviction date must be in the past')
+      .should('equal', 'There is a problem Conviction date cannot be a date in the future')
   })
 
   it('after confirm and continue check answers this becomes uneditable', () => {

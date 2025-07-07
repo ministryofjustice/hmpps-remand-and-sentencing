@@ -49,7 +49,7 @@ Validator.register('minWholeNumber', minWholeNumberValidate, 'must be greater th
 Validator.register('minCurrency', minCurrencyValidate, 'must be entered in a valid format')
 Validator.register('isValidDate', isValidDate, 'This date does not exist.')
 Validator.registerImplicit('requiredFieldWith', requiredFieldWith, 'This field is required.')
-Validator.register('isPastDate', isPastDate, 'date must be in the past')
+Validator.register('isPastDate', isPastDate, 'date cannot be a date in the future')
 Validator.register('isAfterDate', isAfterDate, 'date must be after')
 Validator.register('isFutureDate', isFutureDate, 'date must be in the future')
 Validator.registerImplicit(
@@ -79,4 +79,8 @@ Validator.register('minNumber', minNumberValidate, 'must be greater than number'
 Validator.register('isUniqueTimePeriod', isUniqueTimePeriod, 'More than one of the same type of date is not allowed')
 Validator.register('atLeastOneNumberInString', atLeastOneNumberInString, 'Must enter at least one number')
 Validator.register('isNotTrue', isNotTrue, 'Cannot be true')
-Validator.register('isWithinLast100Years', isWithinLast100Years, 'Date must be within the last 100 years')
+Validator.register(
+  'isWithinLast100Years',
+  isWithinLast100Years,
+  'All dates must be within the last 100 years from today’s date',
+)

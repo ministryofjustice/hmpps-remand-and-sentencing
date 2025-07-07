@@ -157,9 +157,9 @@ export default class CourtAppearanceService {
         'required.warrantDate-month': 'Warrant date must include month',
         'required.warrantDate-day': 'Warrant date must include day',
         'isValidDate.warrantDate-day': 'This date does not exist.',
-        'isPastDate.warrantDate-day': 'Warrant date must be in the past',
+        'isPastDate.warrantDate-day': 'The warrant date cannot be a date in the future',
         'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
-        'isWithinLast100Years.warrantDate-day': 'Date must be within the last 100 years',
+        'isWithinLast100Years.warrantDate-day': 'All dates must be within the last 100 years from today’s date',
       },
     )
     if (errors.length === 0) {
@@ -199,7 +199,7 @@ export default class CourtAppearanceService {
       if (!warrantDate.isAfter(latestOffenceDate)) {
         return [
           {
-            text: `Warrant date must be after the latest offence date`,
+            text: `The warrant date must be after any existing offence dates in the court case`,
             href: '#warrantDate',
           },
         ]
@@ -725,7 +725,7 @@ export default class CourtAppearanceService {
         'required_if.overallConvictionDate-month': 'Conviction date must include month',
         'required_if.overallConvictionDate-day': 'Conviction date must include day',
         'isValidDate.overallConvictionDate-day': 'This date does not exist.',
-        'isPastDate.overallConvictionDate-day': 'Conviction date must be in the past',
+        'isPastDate.overallConvictionDate-day': 'Conviction date cannot be a date in the future',
         'required.overallConvictionDateAppliedAll':
           'Select yes if the conviction date is the same for all offences on the warrant',
         'isNotTrue.warrantInformationAccepted': 'You cannot submit after confirming overall warrant information',

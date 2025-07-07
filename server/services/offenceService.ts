@@ -652,7 +652,7 @@ export default class OffenceService {
         'required.convictionDate-month': 'Conviction date must include month',
         'required.convictionDate-day': 'Conviction date must include day',
         'isValidDate.convictionDate-day': 'This date does not exist.',
-        'isPastDate.convictionDate-day': 'Conviction date must be in the past',
+        'isPastDate.convictionDate-day': 'Conviction date cannot be a date in the future',
       },
     )
     if (errors.length === 0) {

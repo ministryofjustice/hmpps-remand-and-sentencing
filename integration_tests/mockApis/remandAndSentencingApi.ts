@@ -2624,8 +2624,7 @@ export default {
     })
   },
 
-  // eslint-disable-next-line no-empty-pattern
-  stubUploadDocument: ({} = {}): SuperAgentRequest => {
+  stubUploadDocument: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',

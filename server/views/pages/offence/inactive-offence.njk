@@ -10,7 +10,7 @@
                 heading: "You have entered an inactive offence",
                 primaryAction: {
                     text: "Yes, continue",
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offenceReference + "/confirm-offence-code" + ("&submitToEditOffence=true" if submitToEditOffence else ''),
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offenceReference + "/confirm-offence-code" + ("?submitToEditOffence=true" if submitToEditOffence else ''),
                     attributes: {
                         "data-qa": "continue-button"
                     }

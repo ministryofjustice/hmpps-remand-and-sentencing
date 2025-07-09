@@ -93,6 +93,11 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/load-appearance-details',
+    sentencingRoutes.loadAppearanceDetails,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/appearance-details',
     sentencingRoutes.getAppearanceDetails,
   )
@@ -110,6 +115,11 @@ export default function routes(services: Services): Router {
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/continue-sentence-length-mismatch',
     sentencingRoutes.continueSentenceLengthMismatch,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/load-appearance-details',
+    remandRoutes.loadAppearanceDetails,
   )
 
   get(

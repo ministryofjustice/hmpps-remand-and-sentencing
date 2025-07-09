@@ -610,6 +610,7 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
+          warrantType: 'REMAND',
           outcome: {
             outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
             outcomeName: 'Remanded in custody',

@@ -160,6 +160,25 @@ export default class SentencingRoutes extends BaseRoutes {
     )
   }
 
+  public loadAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { token } = res.locals.user
+    const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+      appearanceReference,
+      token,
+    )
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+    this.courtAppearanceService.setSessionCourtAppearance(
+      req.session,
+      nomsId,
+      pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
+    )
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+    )
+  }
+
   public getAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { token } = res.locals.user
@@ -168,6 +187,7 @@ export default class SentencingRoutes extends BaseRoutes {
         appearanceReference,
         token,
       )
+      this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
       this.courtAppearanceService.setSessionCourtAppearance(
         req.session,
         nomsId,

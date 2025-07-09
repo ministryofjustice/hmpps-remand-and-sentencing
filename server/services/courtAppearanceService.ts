@@ -782,7 +782,8 @@ export default class CourtAppearanceService {
           ]
         }
 
-        // This validation only applies to the REMAND-to-SENTENCING journey, interpreted as being the latest court appearance is REMAND and the new one being created is SENTENCING
+        // This validation related to the latestOffenceDate only applies in the REMAND-to-SENTENCING journey
+        // That was defined as being when latest court appearance is REMAND and the new appearance being created is SENTENCING
         if (
           addOrEditCourtCase === 'edit-court-case' &&
           addOrEditCourtAppearance === 'add-court-appearance' &&

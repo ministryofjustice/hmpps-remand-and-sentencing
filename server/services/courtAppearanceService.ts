@@ -32,11 +32,13 @@ import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSenten
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
+import { HmppsAuthClient } from '../data'
 
 export default class CourtAppearanceService {
   constructor(
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly documentManagementService: DocumentManagementService,
+    private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
   setCaseReferenceNumber(
@@ -201,6 +203,29 @@ export default class CourtAppearanceService {
           {
             text: `The warrant date must be after any existing offence dates in the court case`,
             href: '#warrantDate',
+          },
+        ]
+      }
+    }
+    return null
+  }
+
+  private async validateOverallConvictionDateAgainstOffences(
+    overallConvictionDate: dayjs.Dayjs,
+    courtCaseReference: string,
+    username: string,
+  ): Promise<{ text: string; href: string }[] | null> {
+    const latestOffenceDateStr = await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
+      courtCaseReference,
+      username,
+    )
+    if (latestOffenceDateStr) {
+      const latestOffenceDate = dayjs(latestOffenceDateStr)
+      if (!overallConvictionDate.isAfter(latestOffenceDate)) {
+        return [
+          {
+            text: `The conviction date must be after any existing offence dates in the court case`,
+            href: '#overallConvictionDate',
           },
         ]
       }
@@ -688,15 +713,21 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setOverallConvictionDate(
+  async setOverallConvictionDate(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     overallConvictionDateForm: CourtCaseOverallConvictionDateForm,
-  ): {
-    text?: string
-    html?: string
-    href: string
-  }[] {
+    courtCaseReference: string,
+    addOrEditCourtCase: string,
+    addOrEditCourtAppearance: string,
+    username: string,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
     let isValidOverallConvictionDateRule = ''
     if (
       overallConvictionDateForm['overallConvictionDate-day'] &&
@@ -708,7 +739,7 @@ export default class CourtAppearanceService {
         overallConvictionDateForm['overallConvictionDate-month'],
         overallConvictionDateForm['overallConvictionDate-day'],
       )
-      isValidOverallConvictionDateRule = `|isValidDate:${overallConvictionDateString}|isPastDate:${overallConvictionDateString}`
+      isValidOverallConvictionDateRule = `|isValidDate:${overallConvictionDateString}|isPastDate:${overallConvictionDateString}|isWithinLast100Years:${overallConvictionDateString}`
     }
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     const errors = validate(
@@ -725,7 +756,9 @@ export default class CourtAppearanceService {
         'required_if.overallConvictionDate-month': 'Conviction date must include month',
         'required_if.overallConvictionDate-day': 'Conviction date must include day',
         'isValidDate.overallConvictionDate-day': 'This date does not exist.',
-        'isPastDate.overallConvictionDate-day': 'Conviction date cannot be a date in the future',
+        'isPastDate.overallConvictionDate-day': 'The conviction date cannot be a date in the future',
+        'isWithinLast100Years.overallConvictionDate-day':
+          'All dates must be within the last 100 years from today’s date',
         'required.overallConvictionDateAppliedAll':
           'Select yes if the conviction date is the same for all offences on the warrant',
         'isNotTrue.warrantInformationAccepted': 'You cannot submit after confirming overall warrant information',
@@ -739,6 +772,37 @@ export default class CourtAppearanceService {
           month: parseInt(overallConvictionDateForm['overallConvictionDate-month'], 10) - 1,
           day: overallConvictionDateForm['overallConvictionDate-day'],
         })
+        const warrantDate = dayjs(courtAppearance.warrantDate)
+        if (courtAppearance.warrantDate && overallConvictionDate.isAfter(warrantDate)) {
+          return [
+            {
+              text: 'The conviction date must be on or before the warrant date',
+              href: '#overallConvictionDate',
+            },
+          ]
+        }
+
+        // This validation related to the latestOffenceDate only applies in the REMAND-to-SENTENCING journey
+        // That was defined as being when latest court appearance is REMAND and the new appearance being created is SENTENCING
+        if (
+          addOrEditCourtCase === 'edit-court-case' &&
+          addOrEditCourtAppearance === 'add-court-appearance' &&
+          this.getCourtAppearance(session, nomsId).warrantType === 'SENTENCING'
+        ) {
+          const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+            await this.getSystemClientToken(username),
+            courtCaseReference,
+          )
+
+          if (latestCourtAppearance.warrantType === 'REMAND') {
+            const offenceDateErrors = await this.validateOverallConvictionDateAgainstOffences(
+              overallConvictionDate,
+              courtCaseReference,
+              username,
+            )
+            if (offenceDateErrors) return offenceDateErrors
+          }
+        }
 
         courtAppearance.overallConvictionDate = overallConvictionDate.toDate()
       }
@@ -1191,5 +1255,9 @@ export default class CourtAppearanceService {
 
   private getCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
     return session.courtAppearances[nomsId] ?? { offences: [] }
+  }
+
+  private async getSystemClientToken(username: string): Promise<string> {
+    return this.hmppsAuthClient.getSystemClientToken(username)
   }
 }

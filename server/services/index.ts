@@ -37,7 +37,11 @@ export const services = () => {
   const courtRegisterService = new CourtRegisterService(hmppsAuthClient)
   const appearanceOutcomeService = new AppearanceOutcomeService(hmppsAuthClient)
   const offenceOutcomeService = new OffenceOutcomeService(hmppsAuthClient)
-  const courtAppearanceService = new CourtAppearanceService(remandAndSentencingService, documentManagementService)
+  const courtAppearanceService = new CourtAppearanceService(
+    remandAndSentencingService,
+    documentManagementService,
+    hmppsAuthClient,
+  )
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
   const offenceService = new OffenceService(manageOffencesService, offenceOutcomeService, remandAndSentencingService)
 

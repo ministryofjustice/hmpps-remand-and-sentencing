@@ -212,8 +212,17 @@ export default class OverallSentencingRoutes extends BaseRoutes {
   public submitOverallConvictionDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
+    const { username } = res.locals.user
     const overallConvictionDateForm = trimForm<CourtCaseOverallConvictionDateForm>(req.body)
-    const errors = this.courtAppearanceService.setOverallConvictionDate(req.session, nomsId, overallConvictionDateForm)
+    const errors = await this.courtAppearanceService.setOverallConvictionDate(
+      req.session,
+      nomsId,
+      overallConvictionDateForm,
+      courtCaseReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      username,
+    )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('overallConvictionDateForm', { ...overallConvictionDateForm })

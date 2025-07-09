@@ -18,6 +18,11 @@ generic-service:
     host: app-hostname.local # override per environment
     tlsSecretName: hmpps-remand-and-sentencing-cert
 
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 500m
+      nginx.ingress.kubernetes.io/server-snippet: |
+        client_max_body_size 500m;
+
   livenessProbe:
     httpGet:
       path: /ping

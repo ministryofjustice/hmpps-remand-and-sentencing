@@ -721,6 +721,7 @@ export default class CourtAppearanceService {
     addOrEditCourtCase: string,
     addOrEditCourtAppearance: string,
     username: string,
+    authToken: string,
   ): Promise<
     {
       text?: string
@@ -790,7 +791,7 @@ export default class CourtAppearanceService {
           this.getCourtAppearance(session, nomsId).warrantType === 'SENTENCING'
         ) {
           const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-            await this.getSystemClientToken(username),
+            authToken,
             courtCaseReference,
           )
 
@@ -1255,9 +1256,5 @@ export default class CourtAppearanceService {
 
   private getCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
     return session.courtAppearances[nomsId] ?? { offences: [] }
-  }
-
-  private async getSystemClientToken(username: string): Promise<string> {
-    return this.hmppsAuthClient.getSystemClientToken(username)
   }
 }

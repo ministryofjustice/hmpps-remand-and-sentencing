@@ -222,6 +222,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       username,
+      req.user.token,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)

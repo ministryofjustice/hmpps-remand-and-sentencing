@@ -271,6 +271,10 @@ Cypress.Commands.add(
     offenceReference: string,
     countNumber: string = '1',
   ) => {
+    cy.task('stubSearchSentenceTypes', {
+      convictionDate: '2023-05-13',
+      offenceDate: '2023-05-12',
+    })
     cy.visit(
       `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/warrant-type`,
     )
@@ -313,7 +317,7 @@ Cypress.Commands.add(
 
     const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage.dayDateInput('convictionDate').clear()
-    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
+    offenceConvictionDatePage.dayDateInput('convictionDate').type('13')
     offenceConvictionDatePage.monthDateInput('convictionDate').clear()
     offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
     offenceConvictionDatePage.yearDateInput('convictionDate').clear()
@@ -359,7 +363,7 @@ Cypress.Commands.add(
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
@@ -428,7 +432,7 @@ Cypress.Commands.add(
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()

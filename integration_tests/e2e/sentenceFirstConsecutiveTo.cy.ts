@@ -8,7 +8,7 @@ context('First sentence consecutive to Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})
-    cy.task('stubGetSentencesToChainTo')
+    cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-12' })
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetOffencesByCodes', {})
 

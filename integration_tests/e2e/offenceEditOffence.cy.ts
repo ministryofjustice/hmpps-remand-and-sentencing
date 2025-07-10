@@ -85,13 +85,14 @@ context('Add Offence Edit offence Page', () => {
           outcomeType: 'SENTENCING',
         },
       ])
+      cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-      courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
       courtCaseWarrantDatePage.continueButton().click()
@@ -128,7 +129,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'PS90037 An offence description',
         'Committed on': '12/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '12/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -154,7 +155,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'PS90037 An offence description',
         'Committed on': '01/05/2023 to 05/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '12/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -180,7 +181,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'AB11000 Another offence description',
         'Committed on': '12/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '12/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -203,7 +204,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'PS90037 An offence description',
         'Committed on': '12/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '12/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
@@ -222,7 +223,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'PS90037 An offence description',
         'Committed on': '12/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '12/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
@@ -253,7 +254,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'PS90037 An offence description',
         'Committed on': '12/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '12/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Custodial term': '4 years 4 months 0 weeks 0 days',
         'Licence period': '2 years 2 months 0 weeks 0 days',
@@ -262,7 +263,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit consecutive to and return to edit page', () => {
-      cy.task('stubGetSentencesToChainTo')
+      cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
       cy.task('stubGetCourtsByIds')
       cy.task('stubGetOffencesByCodes', {})
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-serve-type').click()
@@ -279,7 +280,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'PS90037 An offence description',
         'Committed on': '12/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '12/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Consecutive',
@@ -296,7 +297,7 @@ context('Add Offence Edit offence Page', () => {
         description: 'EDS (Extended Determinate Sentence)',
       })
       cy.task('stubSearchSentenceTypes', {
-        convictionDate: '2023-05-18',
+        convictionDate: '2023-05-13',
         offenceDate: '2023-05-08',
       })
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'offence-date').click()
@@ -304,7 +305,7 @@ context('Add Offence Edit offence Page', () => {
       offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '12').clear().type('8')
       offenceOffenceDatePage.continueButton().click()
       const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
-      offenceConvictionDatePage.dayDateInput('convictionDate').type('18')
+      offenceConvictionDatePage.dayDateInput('convictionDate').type('13')
       offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
       offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
       offenceConvictionDatePage.continueButton().click()
@@ -325,7 +326,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'PS90037 An offence description',
         'Committed on': '08/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '18/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Custodial term': '4 years 4 months 0 weeks 0 days',
         'Licence period': '2 years 2 months 0 weeks 0 days',
@@ -343,12 +344,15 @@ context('Add Offence Edit offence Page', () => {
         description: 'EDS (Extended Determinate Sentence)',
       })
       cy.task('stubSearchSentenceTypes', {
-        convictionDate: '2023-05-18',
+        convictionDate: '2023-05-13',
         offenceDate: '2023-05-12',
       })
-      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'conviction-date').click()
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'offence-date').click()
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('12')
+      offenceOffenceDatePage.continueButton().click()
       const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
-      offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('18')
+      offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('13')
       offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('5')
       offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('2023')
       offenceConvictionDatePage.continueButton().click()
@@ -370,7 +374,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'PS90037 An offence description',
         'Committed on': '12/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '18/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Custodial term': '4 years 4 months 0 weeks 0 days',
         'Licence period': '2 years 2 months 0 weeks 0 days',
@@ -418,7 +422,6 @@ context('Add Offence Edit offence Page', () => {
       })
     })
   })
-
   context('remand to sentencing', () => {
     beforeEach(() => {
       cy.task('stubSearchCourtCases', {})
@@ -435,6 +438,11 @@ context('Add Offence Edit offence Page', () => {
         },
       ])
       cy.task('stubGetLatestOffenceDate', {})
+      cy.task('stubSearchSentenceTypes', {
+        convictionDate: '2023-05-13',
+        offenceDate: '2023-05-12',
+      })
+      cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
       cy.visit('/person/A1234AB')
       const startPage = Page.verifyOnPage(StartPage)
       startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
@@ -446,7 +454,7 @@ context('Add Offence Edit offence Page', () => {
         '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/warrant-date',
       )
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-      courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
       courtCaseWarrantDatePage.continueButton().click()
@@ -481,6 +489,12 @@ context('Add Offence Edit offence Page', () => {
 
     it('editing outcome from remand to sentence leads to entering sentence information', () => {
       offenceEditOffencePage
+        .editFieldLink('A1234AB', 'edit', '3fa85f64-5717-4562-b3fc-2c963f66afa6', 'add', '2', '0', 'offence-date')
+        .click()
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('12')
+      offenceOffenceDatePage.continueButton().click()
+      offenceEditOffencePage
         .editFieldLink('A1234AB', 'edit', '3fa85f64-5717-4562-b3fc-2c963f66afa6', 'add', '2', '0', 'offence-outcome')
         .click()
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
@@ -498,7 +512,7 @@ context('Add Offence Edit offence Page', () => {
 
       const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
       offenceConvictionDatePage.dayDateInput('convictionDate').clear()
-      offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
+      offenceConvictionDatePage.dayDateInput('convictionDate').type('13')
       offenceConvictionDatePage.monthDateInput('convictionDate').clear()
       offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
       offenceConvictionDatePage.yearDateInput('convictionDate').clear()
@@ -525,7 +539,7 @@ context('Add Offence Edit offence Page', () => {
         Offence: 'PS90037 An offence description',
         'Committed on': '12/05/2023',
         Outcome: 'Imprisonment',
-        'Conviction date': '12/05/2023',
+        'Conviction date': '13/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',

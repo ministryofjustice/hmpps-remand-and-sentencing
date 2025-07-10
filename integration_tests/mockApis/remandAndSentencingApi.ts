@@ -2490,7 +2490,7 @@ export default {
         urlPath: '/remand-and-sentencing-api/person/A1234AB/sentences-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: '2023-05-12',
+            equalTo: '2023-05-13',
           },
         },
       },

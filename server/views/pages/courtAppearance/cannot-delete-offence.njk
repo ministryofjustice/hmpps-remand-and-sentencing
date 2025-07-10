@@ -21,12 +21,17 @@
                 {% endif %}
             </p>
             <p class="govuk-body">This sentence is linked to sentences on other cases, as part of a consecutive chain. Deleting this sentence breaks the chain, which could mean it does not reflect the information on the warrant.</p>
-            <p class="govuk-body">This affects cases:  
-                <ul class="govuk-list govuk-list-bullet">
-                    {% for appearanceDetails in sentencesAfterDetails.appearances %}
-                        <li>{% if appearanceDetails.caseReference %}<strong>{{ appearanceDetails.caseReference }}</strong> at {% endif %}<strong>{{courtMap[appearanceDetails.courtCode]}}</strong> on <strong>{{ appearanceDetails.appearanceDate | formatDate }}</strong></li>
-                    {% endfor %}
-                </ul>
+            <p class="govuk-body">
+                {% if sentencesAfterDetails.appearances.length === 1%}
+                    This affects case {{formatAppearanceDetails(sentencesAfterDetails.appearances[0])}}
+                {% else %}
+                    This affects:  
+                    <ul class="govuk-list govuk-list-bullet">
+                        {% for appearanceDetails in sentencesAfterDetails.appearances %}
+                            <li>Case {{formatAppearanceDetails(appearanceDetails) }}</strong></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </p>
             <p class="govuk-body govuk-!-margin-top-6">You will need to update the consecutive details on the other cases before deleting this sentence.</p>
             {{ govukButton({
@@ -36,3 +41,8 @@
         </div>
     </div>
 {% endblock %}
+
+
+{% macro formatAppearanceDetails(appearanceDetails) %}
+    {% if appearanceDetails.caseReference %}<strong>{{ appearanceDetails.caseReference }}</strong> at {% endif %}<strong>{{courtMap[appearanceDetails.courtCode]}}</strong> on <strong>{{ appearanceDetails.appearanceDate | formatDate }}</strong>
+{% endmacro %}

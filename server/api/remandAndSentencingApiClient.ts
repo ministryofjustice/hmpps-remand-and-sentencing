@@ -40,6 +40,10 @@ export default class RemandAndSentencingApiClient {
   }
 
   async createCourtCase(createCourtCase: CreateCourtCase): Promise<CreateCourtCaseResponse> {
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    console.log(`~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ${JSON.stringify(createCourtCase)}`)
+
     return (await this.restClient.post({
       data: createCourtCase,
       path: '/court-case',

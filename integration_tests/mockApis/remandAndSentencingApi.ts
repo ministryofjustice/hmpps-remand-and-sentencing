@@ -803,7 +803,7 @@ export default {
             charges: [
               {
                 offenceCode: 'PS90037',
-                offenceStartDate: '2023-05-12',
+                offenceStartDate: '2023-05-10',
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 prisonId: 'MDI',
               },

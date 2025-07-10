@@ -265,7 +265,7 @@ context('New Court Case journey', () => {
       ])
     courtCaseTaskListPage.continueButton().click()
 
-    // cy.task('verifyCreateCourtCaseRequest', { nextHearingDate: futureDate.format('YYYY-MM-DD') }).should('equal', 1)
+    cy.task('verifyCreateCourtCaseRequest', { nextHearingDate: futureDate.format('YYYY-MM-DD') }).should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 

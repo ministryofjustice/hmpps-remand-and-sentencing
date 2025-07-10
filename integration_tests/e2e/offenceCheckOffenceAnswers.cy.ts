@@ -130,7 +130,7 @@ context('Check Offence Answers Page', () => {
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
-      // offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     })
 
     it('deleting sentence removes from list and goes back to check answers page', () => {

@@ -75,7 +75,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{ "prisonerId" : "A1234AB", "appearances" : [ { "outcomeUuid" : "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode" : "ACCRYC", "courtCaseReference" : "T12345678", "appearanceDate" : "2023-05-12", "charges" : [ { "offenceCode" : "PS90037", "offenceStartDate" : "2023-05-12", "outcomeUuid" : "f17328cf-ceaa-43c2-930a-26cf74480e18", "prisonId" : "MDI", "sentence" : { "chargeNumber" : "1", "periodLengths" : [ { "days" : 4, "weeks" : 3, "months" : 2, "years" : 1, "periodOrder" : "years,months,weeks,days", "type" : "SENTENCE_LENGTH", "prisonId" : "MDI" } ], "sentenceServeType" : "FORTHWITH", "sentenceTypeId" : "467e2fa8-fce1-41a4-8110-b378c727eed3", "prisonId" : "MDI", "sentenceReference" : "0", "convictionDate" : "2023-05-12" } } ], "warrantType" : "SENTENCING", "prisonId" : "MDI", "overallSentenceLength" : { "days" : 2, "weeks" : 3, "months" : 5, "years" : 4, "periodOrder" : "years,months,weeks,days", "type" : "OVERALL_SENTENCE_LENGTH", "prisonId" : "MDI" }, "overallConvictionDate" : "2023-05-12" } ], "prisonId" : "MDI" }',
+              '{ "prisonerId" : "A1234AB", "appearances" : [ { "outcomeUuid" : "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode" : "ACCRYC", "courtCaseReference" : "T12345678", "appearanceDate" : "2023-05-12", "charges" : [ { "offenceCode" : "PS90037", "offenceStartDate" : "2023-05-10", "outcomeUuid" : "f17328cf-ceaa-43c2-930a-26cf74480e18", "prisonId" : "MDI", "sentence" : { "chargeNumber" : "1", "periodLengths" : [ { "days" : 4, "weeks" : 3, "months" : 2, "years" : 1, "periodOrder" : "years,months,weeks,days", "type" : "SENTENCE_LENGTH", "prisonId" : "MDI" } ], "sentenceServeType" : "FORTHWITH", "sentenceTypeId" : "467e2fa8-fce1-41a4-8110-b378c727eed3", "prisonId" : "MDI", "sentenceReference" : "0", "convictionDate" : "2023-05-12" } } ], "warrantType" : "SENTENCING", "prisonId" : "MDI", "overallSentenceLength" : { "days" : 2, "weeks" : 3, "months" : 5, "years" : 4, "periodOrder" : "years,months,weeks,days", "type" : "OVERALL_SENTENCE_LENGTH", "prisonId" : "MDI" }, "overallConvictionDate" : "2023-05-12" } ], "prisonId" : "MDI" }',
           },
         ],
       },
@@ -803,7 +803,7 @@ export default {
             charges: [
               {
                 offenceCode: 'PS90037',
-                offenceStartDate: '2023-05-10',
+                offenceStartDate: '2023-05-12',
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 prisonId: 'MDI',
               },
@@ -814,7 +814,13 @@ export default {
     })
   },
 
-  verifyCreateSentenceCourtCaseRequest: (): Promise<number> => {
+  verifyCreateSentenceCourtCaseRequest: ({
+    offenceStartDate = '2023-05-10',
+    convictionDate = '2023-05-13',
+  }: {
+    offenceStartDate?: string
+    convictionDate?: string
+  }): Promise<number> => {
     return verifyRequest({
       requestUrlPattern: '/remand-and-sentencing-api/court-case',
       method: 'POST',
@@ -829,7 +835,7 @@ export default {
             charges: [
               {
                 offenceCode: 'PS90037',
-                offenceStartDate: '2023-05-10',
+                offenceStartDate,
                 outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
                 prisonId: 'MDI',
                 sentence: {
@@ -849,7 +855,7 @@ export default {
                   sentenceTypeId: '467e2fa8-fce1-41a4-8110-b378c727eed3',
                   prisonId: 'MDI',
                   sentenceReference: '0',
-                  convictionDate: '2023-05-13',
+                  convictionDate,
                 },
               },
             ],
@@ -864,7 +870,7 @@ export default {
               type: 'OVERALL_SENTENCE_LENGTH',
               prisonId: 'MDI',
             },
-            overallConvictionDate: '2023-05-12',
+            overallConvictionDate: convictionDate,
           },
         ],
         prisonId: 'MDI',
@@ -2392,14 +2398,14 @@ export default {
     })
   },
 
-  stubGetHasSentenceToChainTo: (): SuperAgentRequest => {
+  stubGetHasSentenceToChainTo: (appearanceDate = '2023-05-13'): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
         urlPath: '/remand-and-sentencing-api/person/A1234AB/has-sentence-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: '2023-05-13', //TODO pass param if mpore failures
+            equalTo: appearanceDate, // TODO pass param if mpore failures
           },
         },
       },
@@ -2420,7 +2426,7 @@ export default {
         urlPath: '/remand-and-sentencing-api/person/A1234AB/sentences-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: '2023-05-13', //TODO maybe pass param
+            equalTo: '2023-05-13', // TODO maybe pass param
           },
         },
       },

@@ -8,6 +8,10 @@ context('Add Offence Alternative Period Length Page', () => {
   let offenceAlternativePeriodLengthPage: OffenceAlternativePeriodLengthPage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubSearchSentenceTypes', {
+      convictionDate: '2023-05-13',
+      offenceDate: '2023-05-12',
+    })
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
     const offenceOffenceDatePage = Page.verifyOnPageTitle(

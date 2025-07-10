@@ -294,6 +294,11 @@ context('New Court Case journey', () => {
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })
+    cy.task('stubSearchSentenceTypes', {
+      convictionDate: '2023-05-12',
+      offenceDate: '2023-05-10',
+    })
+    cy.task('stubGetHasSentenceToChainTo', '2023-05-12')
     const caseRef = 'T12345678'
 
     const startPage = Page.verifyOnPage(StartPage)
@@ -414,7 +419,7 @@ context('New Court Case journey', () => {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '4 years 5 months 3 weeks 2 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
-      'Conviction date': '13/05/2023',
+      'Conviction date': '12/05/2023',
       'Overall case outcome': 'Imprisonment',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
@@ -452,7 +457,7 @@ context('New Court Case journey', () => {
       OffenceOffenceDatePage,
       'Enter the offence dates for the first offence',
     )
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.continueButton().click()
@@ -519,8 +524,11 @@ context('New Court Case journey', () => {
         },
       ])
     courtCaseTaskListPage.continueButton().click()
+    cy.task('verifyCreateSentenceCourtCaseRequest', {
+      offenceStartDate: '2023-05-10',
+      convictionDate: '2023-05-12',
+    }).should('equal', 1)
 
-    cy.task('verifyCreateSentenceCourtCaseRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 })

@@ -635,7 +635,7 @@ export default {
             {
               chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
               offenceCode: 'PS90037',
-              offenceStartDate: '2023-05-12',
+              offenceStartDate: '2023-05-10',
               outcome: {
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 outcomeName: 'Remanded in custody',
@@ -803,7 +803,7 @@ export default {
             charges: [
               {
                 offenceCode: 'PS90037',
-                offenceStartDate: '2023-05-12',
+                offenceStartDate: '2023-05-10',
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 prisonId: 'MDI',
               },
@@ -829,7 +829,7 @@ export default {
             charges: [
               {
                 offenceCode: 'PS90037',
-                offenceStartDate: '2023-05-12',
+                offenceStartDate: '2023-05-10',
                 outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
                 prisonId: 'MDI',
                 sentence: {
@@ -849,7 +849,7 @@ export default {
                   sentenceTypeId: '467e2fa8-fce1-41a4-8110-b378c727eed3',
                   prisonId: 'MDI',
                   sentenceReference: '0',
-                  convictionDate: '2023-05-12',
+                  convictionDate: '2023-05-13',
                 },
               },
             ],
@@ -907,14 +907,14 @@ export default {
         charges: [
           {
             offenceCode: 'PS90037',
-            offenceStartDate: '2023-05-12',
+            offenceStartDate: '2023-05-10',
             outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
             chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
             prisonId: 'MDI',
           },
           {
             offenceCode: 'PS90037',
-            offenceStartDate: '2023-05-12',
+            offenceStartDate: '2023-05-10',
             outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
             prisonId: 'MDI',
           },
@@ -965,7 +965,7 @@ export default {
         charges: [
           {
             offenceCode: 'PS90037',
-            offenceStartDate: '2023-05-12',
+            offenceStartDate: '2023-05-10',
             outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
             prisonId: 'MDI',
             chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
@@ -984,7 +984,7 @@ export default {
               sentenceTypeId: '467e2fa8-fce1-41a4-8110-b378c727eed3',
               prisonId: 'MDI',
               sentenceReference: '0',
-              convictionDate: '2023-05-12',
+              convictionDate: '2023-05-13',
             },
           },
         ],
@@ -2013,8 +2013,8 @@ export default {
     })
   },
   stubSearchSentenceTypes: ({
-    convictionDate = '2023-05-12',
-    offenceDate = '2023-05-12',
+    convictionDate = '2023-05-13',
+    offenceDate = '2023-05-10',
   }: {
     convictionDate: string
     offenceDate: string
@@ -2399,7 +2399,7 @@ export default {
         urlPath: '/remand-and-sentencing-api/person/A1234AB/has-sentence-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: '2023-05-12',
+            equalTo: '2023-05-13', //TODO pass param if mpore failures
           },
         },
       },
@@ -2420,7 +2420,7 @@ export default {
         urlPath: '/remand-and-sentencing-api/person/A1234AB/sentences-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: '2023-05-12',
+            equalTo: '2023-05-13', //TODO maybe pass param
           },
         },
       },

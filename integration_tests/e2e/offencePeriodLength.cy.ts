@@ -21,7 +21,7 @@ context('Add Offence Period Length Page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/conviction-date')
     const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
     offenceConvictionDatePage.dayDateInput('convictionDate').clear()
-    offenceConvictionDatePage.dayDateInput('convictionDate').type('12')
+    offenceConvictionDatePage.dayDateInput('convictionDate').type('13')
     offenceConvictionDatePage.monthDateInput('convictionDate').clear()
     offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
     offenceConvictionDatePage.yearDateInput('convictionDate').clear()

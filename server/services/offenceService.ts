@@ -690,6 +690,7 @@ export default class OffenceService {
             },
           ]
         }
+
         if (!offenceEndDate && !convictionDate.isAfter(offenceStartDate)) {
           return [
             {

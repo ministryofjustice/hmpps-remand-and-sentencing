@@ -44,5 +44,5 @@
 
 
 {% macro formatAppearanceDetails(appearanceDetails) %}
-    {% if appearanceDetails.caseReference %}<strong>{{ appearanceDetails.caseReference }}</strong> at {% endif %}<strong>{{courtMap[appearanceDetails.courtCode]}}</strong> on <strong>{{ appearanceDetails.appearanceDate | formatDate }}</strong>
+    {% if appearanceDetails.caseReference %}<strong>{{ appearanceDetails.caseReference }}</strong>{% endif %} at <strong>{{courtMap[appearanceDetails.courtCode]}}</strong> on <strong>{{ appearanceDetails.appearanceDate | formatDate }}</strong>
 {% endmacro %}

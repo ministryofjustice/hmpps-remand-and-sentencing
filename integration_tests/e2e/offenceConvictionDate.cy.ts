@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import OffenceConvictionDatePage from '../pages/offenceConvictionDatePage'
 import Page from '../pages/page'
+import CourtCaseWarrantDatePage from '../pages/courtCaseWarrantDatePage'
 
 context('Add Offence Conviction Date Page', () => {
   let offenceConvictionDatePage: OffenceConvictionDatePage
@@ -36,7 +37,7 @@ context('Add Offence Conviction Date Page', () => {
       )
   })
 
-  it('submitting a start date in the future results in an error', () => {
+  it('submitting a conviction date in the future results in an error', () => {
     const futureDate = dayjs().add(7, 'day')
     offenceConvictionDatePage.dayDateInput('convictionDate').type(futureDate.date().toString())
     offenceConvictionDatePage.monthDateInput('convictionDate').type((futureDate.month() + 1).toString())
@@ -46,7 +47,7 @@ context('Add Offence Conviction Date Page', () => {
     offenceConvictionDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem Conviction date cannot be a date in the future')
+      .should('equal', 'There is a problem The conviction date cannot be a date in the future')
   })
 
   it('submitting an  invalid start date results in an error', () => {
@@ -59,5 +60,51 @@ context('Add Offence Conviction Date Page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem This date does not exist.')
+  })
+
+  it('Conviction date validation tests: within 100 years, after warrant date, after offence dates, not in future', () => {
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('08')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('07')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
+    courtCaseWarrantDatePage.continueButton().click()
+
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/conviction-date')
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('01')
+    offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('01')
+    offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('1899')
+    offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem All dates must be within the last 100 years from today’s date')
+
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('08')
+    offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('07')
+    offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('2025')
+    offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The conviction date must be after the offence start date')
+
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('09')
+    offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('07')
+    offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('2025')
+    offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The conviction date must be on or before the warrant date')
+
+    offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('10')
+    offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('07')
+    offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('3025')
+    offenceConvictionDatePage.continueButton().click()
+    offenceConvictionDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The conviction date cannot be a date in the future')
   })
 })

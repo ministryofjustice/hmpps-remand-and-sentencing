@@ -621,6 +621,8 @@ export default class OffenceService {
     courtCaseReference: string,
     offenceReference: string,
     offenceConvictionDateForm: OffenceConvictionDateForm,
+    addOrEditCourtAppearance: string,
+    warrantDate: Date,
   ): {
     text?: string
     html?: string
@@ -637,7 +639,7 @@ export default class OffenceService {
         offenceConvictionDateForm['convictionDate-month'],
         offenceConvictionDateForm['convictionDate-day'],
       )
-      isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastDate:${convictionDateString}`
+      isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastDate:${convictionDateString}|isWithinLast100Years:${convictionDateString}`
     }
 
     const errors = validate(
@@ -652,7 +654,9 @@ export default class OffenceService {
         'required.convictionDate-month': 'Conviction date must include month',
         'required.convictionDate-day': 'Conviction date must include day',
         'isValidDate.convictionDate-day': 'This date does not exist.',
-        'isPastDate.convictionDate-day': 'Conviction date cannot be a date in the future',
+        'isPastDate.convictionDate-day': 'The conviction date cannot be a date in the future',
+        'isWithinLast100Years.overallConvictionDate-day':
+          'All dates must be within the last 100 years from today’s date',
       },
     )
     if (errors.length === 0) {
@@ -664,6 +668,38 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, offenceReference)
+
+      if (addOrEditCourtAppearance === 'add-court-appearance') {
+        if (warrantDate && convictionDate.isAfter(dayjs(warrantDate))) {
+          return [
+            {
+              text: 'The conviction date must be on or before the warrant date',
+              href: '#convictionDate',
+            },
+          ]
+        }
+
+        const offenceStartDate = dayjs(offence.offenceStartDate)
+        const offenceEndDate = offence.offenceEndDate ? dayjs(offence.offenceEndDate) : null
+
+        if (offenceEndDate && !convictionDate.isAfter(offenceEndDate)) {
+          return [
+            {
+              text: 'The conviction date must be after the offence start date and offence end date',
+              href: '#convictionDate',
+            },
+          ]
+        }
+        if (!offenceEndDate && !convictionDate.isAfter(offenceStartDate)) {
+          return [
+            {
+              text: 'The conviction date must be after the offence start date',
+              href: '#convictionDate',
+            },
+          ]
+        }
+      }
+
       sentence.convictionDate = convictionDate.toDate()
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign

@@ -2405,7 +2405,7 @@ export default {
         urlPath: '/remand-and-sentencing-api/person/A1234AB/has-sentence-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: appearanceDate, // TODO pass param if mpore failures
+            equalTo: appearanceDate,
           },
         },
       },
@@ -2426,7 +2426,7 @@ export default {
         urlPath: '/remand-and-sentencing-api/person/A1234AB/sentences-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: '2023-05-13', // TODO maybe pass param
+            equalTo: '2023-05-13',
           },
         },
       },

@@ -181,7 +181,7 @@ context('Repeat Court Case journey', () => {
     offenceReviewOffencesPage.addAnotherButton().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.continueButton().click()
@@ -301,6 +301,11 @@ context('Repeat Court Case journey', () => {
       },
     ])
     cy.task('stubGetCountNumbersForCourtCase', {})
+    cy.task('stubSearchSentenceTypes', {
+      convictionDate: '2023-05-12',
+      offenceDate: '2023-05-10',
+    })
+    cy.task('stubGetHasSentenceToChainTo', '2023-05-12')
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
 
@@ -416,7 +421,7 @@ context('Repeat Court Case journey', () => {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '4 years 5 months 0 weeks 0 days',
       'Is the conviction date the same for all offences on the warrant?': 'Yes',
-      'Conviction date': '13/05/2023',
+      'Conviction date': '12/05/2023',
       'Overall case outcome': 'Imprisonment',
     })
     warrantInformationCheckAnswersPage.confirmAndContinueButton().click()

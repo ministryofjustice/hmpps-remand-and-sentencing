@@ -15,7 +15,7 @@ context('First sentence consecutive to Page', () => {
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
     courtCaseWarrantDatePage.continueButton().click()

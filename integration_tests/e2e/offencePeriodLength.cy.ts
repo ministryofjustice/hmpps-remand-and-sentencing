@@ -14,7 +14,7 @@ context('Add Offence Period Length Page', () => {
       OffenceOffenceDatePage,
       'Enter the offence dates for the first offence',
     )
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('10')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2023')
     offenceOffenceDatePage.continueButton().click()

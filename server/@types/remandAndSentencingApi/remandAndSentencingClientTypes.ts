@@ -95,3 +95,9 @@ export type CourtCaseCountNumbers = components['schemas']['CourtCaseCountNumbers
 export type SentenceTypeIsValid = components['schemas']['SentenceTypeIsValid']
 
 export type UploadedDocument = components['schemas']['UploadedDocument']
+
+export type HasSentenceAfterOnOtherCourtAppearanceResponse =
+  components['schemas']['HasSentenceAfterOnOtherCourtAppearanceResponse']
+
+export type SentencesAfterOnOtherCourtAppearanceDetailsResponse =
+  components['schemas']['SentencesAfterOnOtherCourtAppearanceDetailsResponse']

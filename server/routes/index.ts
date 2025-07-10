@@ -133,6 +133,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/offences/:offenceReference/check-delete-offence',
+    remandRoutes.checkDeleteOffence,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/offences/:offenceReference/cannot-delete-offence',
+    remandRoutes.getCannotDeleteOffence,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/new-journey',
     courtCaseRoutes.newJourney,
   )

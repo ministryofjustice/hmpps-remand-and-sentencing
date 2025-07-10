@@ -3,6 +3,7 @@ import CourtCaseAppearanceDetailsPage from '../pages/courtCaseAppearanceDetailsP
 import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
+import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
@@ -217,6 +218,22 @@ context('Court Case Appearance details Page', () => {
             Outcome: 'Remanded in custody',
           },
         ])
+    })
+
+    it('can delete an offence', () => {
+      courtCaseAppearanceDetailsPage
+        .deleteOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '0',
+        )
+        .click()
+      const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
+      offenceDeleteOffencePage.radioLabelSelector('true').click()
+      offenceDeleteOffencePage.continueButton().click()
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseAppearanceDetailsPage.allOffences().getOffenceCards().should('deep.equal', [])
     })
   })
 

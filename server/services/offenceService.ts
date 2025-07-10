@@ -681,8 +681,6 @@ export default class OffenceService {
 
         const offenceStartDate = dayjs(offence.offenceStartDate)
         const offenceEndDate = offence.offenceEndDate ? dayjs(offence.offenceEndDate) : null
-        console.log(`Offence start ${offenceStartDate}`)
-        console.log(`Offence end ${offenceEndDate}`)
 
         if (offenceEndDate && !convictionDate.isAfter(offenceEndDate)) {
           return [

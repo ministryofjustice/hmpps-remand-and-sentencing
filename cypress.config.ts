@@ -53,7 +53,9 @@ export default defineConfig({
               },
             ]),
             courtCasesReleaseDatesApi.stubGetServiceDefinitions(),
-            remandAndSentencingApi.stubGetHasSentenceToChainTo(),
+            remandAndSentencingApi.stubGetHasSentenceToChainTo({
+              beforeOrOnAppearanceDate: '2023-05-12',
+            }),
             remandAndSentencingApi.stubGetSentenceTypeById({
               sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
               description: 'SDS (Standard Determinate Sentence)',

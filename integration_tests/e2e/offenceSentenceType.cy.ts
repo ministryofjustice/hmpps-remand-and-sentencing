@@ -7,7 +7,10 @@ context('Add Offence Sentence Type Page', () => {
   let offenceSentenceTypePage: OffenceSentenceTypePage
   beforeEach(() => {
     cy.task('happyPathStubs')
-    cy.task('stubSearchSentenceTypes', {})
+    cy.task('stubSearchSentenceTypes', {
+      convictionDate: '2023-05-12',
+      offenceDate: '2023-05-10',
+    })
     cy.task('stubGetSentenceTypesByIds', [
       {
         sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
@@ -22,7 +25,7 @@ context('Add Offence Sentence Type Page', () => {
       OffenceOffenceDatePage,
       'Enter the offence dates for the first offence',
     )
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('10')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2023')
     offenceOffenceDatePage.continueButton().click()

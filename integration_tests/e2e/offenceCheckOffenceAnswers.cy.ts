@@ -117,13 +117,14 @@ context('Check Offence Answers Page', () => {
           outcomeType: 'SENTENCING',
         },
       ])
+      cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-      courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').type('14')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
       courtCaseWarrantDatePage.continueButton().click()
@@ -164,7 +165,7 @@ context('Check Offence Answers Page', () => {
             offenceCardHeader: 'PS90037 An offence description',
             'Committed on': '12/05/2023',
             'Consecutive or concurrent': 'Forthwith',
-            'Conviction date': '12/05/2023',
+            'Conviction date': '13/05/2023',
             Outcome: 'Imprisonment',
             'Sentence length': '4 years 5 months 0 weeks 0 days',
             'Sentence type': 'SDS (Standard Determinate Sentence)',

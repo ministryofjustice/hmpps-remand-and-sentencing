@@ -39,9 +39,10 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     personId: string,
     courtCaseId: string,
     appearanceReference: string,
+    remandOrSentencing: string,
     offenceId: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/remand/offences/${offenceId}/check-delete-offence"]`,
+      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/${remandOrSentencing}/offences/${offenceId}/check-delete-offence"]`,
     )
 }

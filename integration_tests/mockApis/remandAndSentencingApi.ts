@@ -2643,4 +2643,26 @@ export default {
       },
     })
   },
+
+  stubHasSentencesAfterOnOtherCourtAppearance: ({
+    sentenceUuid = 'b0f83d31-efbe-462c-970d-5293975acb17',
+    hasSentenceAfterOnOtherCourtAppearance = false,
+  }: {
+    sentenceUuid: string
+    hasSentenceAfterOnOtherCourtAppearance: boolean
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/sentence/${sentenceUuid}/has-sentences-after-on-other-court-appearance`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          hasSentenceAfterOnOtherCourtAppearance,
+        },
+      },
+    })
+  },
 }

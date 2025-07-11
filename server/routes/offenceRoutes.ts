@@ -1740,8 +1740,12 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const [offenceMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
-        [offence.offenceCode, sessionConsecutiveTo?.offenceCode].concat(
-          consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode),
+        Array.from(
+          new Set(
+            [offence.offenceCode, sessionConsecutiveTo?.offenceCode].concat(
+              consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode),
+            ),
+          ),
         ),
         req.user.token,
       ),

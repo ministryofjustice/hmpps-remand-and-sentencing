@@ -45,4 +45,14 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     cy.get(
       `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/${remandOrSentencing}/offences/${offenceId}/check-delete-offence"]`,
     )
+
+  selectConsecutiveConcurrentLink = (
+    personId: string,
+    courtCaseId: string,
+    appearanceReference: string,
+    offenceId: string,
+  ): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/offences/${offenceId}/select-consecutive-concurrent"]`,
+    )
 }

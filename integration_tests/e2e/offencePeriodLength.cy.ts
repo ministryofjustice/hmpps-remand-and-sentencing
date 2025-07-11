@@ -10,11 +10,15 @@ context('Add Offence Period Length Page', () => {
     cy.task('happyPathStubs')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
+    cy.task('stubSearchSentenceTypes', {
+      convictionDate: '2023-05-12',
+      offenceDate: '2023-05-11',
+    })
     const offenceOffenceDatePage = Page.verifyOnPageTitle(
       OffenceOffenceDatePage,
       'Enter the offence dates for the first offence',
     )
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('11')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2023')
     offenceOffenceDatePage.continueButton().click()

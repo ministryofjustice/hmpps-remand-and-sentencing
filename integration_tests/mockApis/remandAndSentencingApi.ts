@@ -2392,14 +2392,18 @@ export default {
     })
   },
 
-  stubGetHasSentenceToChainTo: (): SuperAgentRequest => {
+  stubGetHasSentenceToChainTo: ({
+    beforeOrOnAppearanceDate = '2023-05-12',
+  }: {
+    beforeOrOnAppearanceDate: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
         urlPath: '/remand-and-sentencing-api/person/A1234AB/has-sentence-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: '2023-05-12',
+            equalTo: beforeOrOnAppearanceDate,
           },
         },
       },
@@ -2413,14 +2417,18 @@ export default {
     })
   },
 
-  stubGetSentencesToChainTo: (): SuperAgentRequest => {
+  stubGetSentencesToChainTo: ({
+    beforeOrOnAppearanceDate = '2023-05-12',
+  }: {
+    beforeOrOnAppearanceDate: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
         urlPath: '/remand-and-sentencing-api/person/A1234AB/sentences-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: '2023-05-12',
+            equalTo: beforeOrOnAppearanceDate,
           },
         },
       },
@@ -2484,7 +2492,7 @@ export default {
         urlPath: '/remand-and-sentencing-api/person/A1234AB/sentences-to-chain-to',
         queryParameters: {
           beforeOrOnAppearanceDate: {
-            equalTo: '2023-05-12',
+            equalTo: '2023-05-13',
           },
         },
       },

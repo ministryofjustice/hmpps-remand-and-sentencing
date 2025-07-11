@@ -1486,6 +1486,8 @@ export default class OffenceRoutes extends BaseRoutes {
       courtCaseReference,
       offenceReference,
       offenceConvictionDateForm,
+      addOrEditCourtAppearance,
+      this.courtAppearanceService.getWarrantDate(req.session, nomsId),
     )
     if (errors.length > 0) {
       req.flash('errors', errors)

@@ -33,11 +33,16 @@ context('Sentencing delete sentence in chain Page', () => {
         outcomeType: 'SENTENCING',
       },
     ])
-    cy.task('stubGetSentencesToChainTo')
+    cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
+    cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
     cy.task('stubGetCourtsByIds')
+    cy.task('stubSearchSentenceTypes', {
+      convictionDate: '2023-05-12',
+      offenceDate: '2023-05-10',
+    })
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
     courtCaseWarrantDatePage.continueButton().click()
@@ -73,7 +78,7 @@ context('Sentencing delete sentence in chain Page', () => {
       .should('deep.equal', [
         {
           offenceCardHeader: 'PS90037 An offence description',
-          'Committed on': '12/05/2023',
+          'Committed on': '10/05/2023',
           'Conviction date': '12/05/2023',
           Outcome: 'Imprisonment',
           'Sentence type': 'SDS (Standard Determinate Sentence)',
@@ -92,7 +97,7 @@ context('Sentencing delete sentence in chain Page', () => {
       .should('deep.equal', [
         {
           offenceCardHeader: 'PS90037 An offence description',
-          'Committed on': '12/05/2023',
+          'Committed on': '10/05/2023',
           'Conviction date': '12/05/2023',
           Outcome: 'Imprisonment',
           'Sentence type': 'SDS (Standard Determinate Sentence)',

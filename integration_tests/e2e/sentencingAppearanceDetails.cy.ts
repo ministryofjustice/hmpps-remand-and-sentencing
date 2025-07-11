@@ -101,7 +101,7 @@ context('Sentencing appearance details Page', () => {
             Outcome: 'Imprisonment',
             'Sentence type': 'A Nomis sentence type',
             'Sentence length': '1 years 2 months 0 weeks 0 days',
-            'Consecutive or concurrent': 'Unknown',
+            'Consecutive or concurrent': 'Consecutive to count 3',
           },
         ])
       courtCaseAppearanceDetailsPage
@@ -186,7 +186,7 @@ context('Sentencing appearance details Page', () => {
       Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
 
-    it('can delete an offence when no sentences after', () => {
+    it('can delete an offence sentences after on same case', () => {
       cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {})
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',

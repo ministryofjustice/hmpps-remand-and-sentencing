@@ -205,6 +205,20 @@ const getRadioOptions = subject => {
   )
 }
 
+const getListItems = subject => {
+  if (subject.get().length > 1) {
+    throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
+  }
+  const listElement = subject.get()[0]
+
+  return [...listElement.querySelectorAll('li')].map(e =>
+    e.textContent
+      .replaceAll(/ +/g, ' ')
+      .replaceAll(/\r?\n|\r|\n/g, '')
+      .trim(),
+  )
+}
+
 Cypress.Commands.add('getTable', { prevSubject: true }, getTable)
 Cypress.Commands.add('getSummaryList', { prevSubject: true }, getSummaryList)
 Cypress.Commands.add('getActions', { prevSubject: true }, getActions)
@@ -213,7 +227,7 @@ Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 Cypress.Commands.add('getOffenceCards', { prevSubject: true }, getOffenceCards)
 Cypress.Commands.add('getAppearanceCardDetails', { prevSubject: true }, getAppearanceCardDetails)
 Cypress.Commands.add('getRadioOptions', { prevSubject: true }, getRadioOptions)
-
+Cypress.Commands.add('getListItems', { prevSubject: true }, getListItems)
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {
   cy.visit(
     `/person/${personId}/add-court-case/${courtCaseNumber}/add-court-appearance/${appearanceReference}/check-answers`,

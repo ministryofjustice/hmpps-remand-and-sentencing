@@ -140,7 +140,7 @@ export default class RemandRoutes extends BaseRoutes {
       )
       if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/offences/${offenceReference}/cannot-delete`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/offences/${offenceReference}/cannot-delete-offence`,
         )
       }
     }

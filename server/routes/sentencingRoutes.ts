@@ -799,7 +799,7 @@ export default class SentencingRoutes extends BaseRoutes {
       )
       if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/cannot-delete`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/cannot-delete-offence`,
         )
       }
     }

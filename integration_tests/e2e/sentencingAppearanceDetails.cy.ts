@@ -7,6 +7,7 @@ import AppearanceUpdatedConfirmationPage from '../pages/appearanceUpdatedConfirm
 import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseAlternativeSentenceLengthPage from '../pages/courtCaseAlternativeSentenceLengthPage'
 import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
+import CannotDeleteSentencePage from '../pages/cannotDeleteSentencePage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -237,6 +238,32 @@ context('Sentencing appearance details Page', () => {
             'Sentence length': '1 years 2 months 0 weeks 0 days',
             'Consecutive or concurrent': 'Unknown',
           },
+        ])
+    })
+
+    it('cannot delete an offence when there is are sentences after', () => {
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        hasSentenceAfterOnOtherCourtAppearance: true,
+      })
+      cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {})
+
+      courtCaseAppearanceDetailsPage
+        .deleteOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'sentencing',
+          '0',
+        )
+        .click()
+      const cannotDeleteSentencePage = Page.verifyOnPage(CannotDeleteSentencePage)
+      cannotDeleteSentencePage
+        .appearanceDetails()
+        .getListItems()
+        .should('deep.equal', [
+          'Case  CASE123 at Accrington Youth Court on 17/05/2002',
+          'Case  at Southampton Magistrate Court on 28/01/2010',
         ])
     })
   })

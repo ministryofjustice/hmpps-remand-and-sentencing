@@ -8,6 +8,8 @@ import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenc
 import CourtCaseAlternativeSentenceLengthPage from '../pages/courtCaseAlternativeSentenceLengthPage'
 import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
 import CannotDeleteSentencePage from '../pages/cannotDeleteSentencePage'
+import SentencingDeleteSentenceInChainPage from '../pages/sentencingDeleteSentenceInChainPage'
+import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -217,6 +219,8 @@ context('Sentencing appearance details Page', () => {
       const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
       offenceDeleteOffencePage.radioLabelSelector('true').click()
       offenceDeleteOffencePage.continueButton().click()
+      const sentencingDeleteSentenceInChainPage = Page.verifyOnPage(SentencingDeleteSentenceInChainPage)
+      sentencingDeleteSentenceInChainPage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage
         .custodialOffences()
@@ -236,7 +240,40 @@ context('Sentencing appearance details Page', () => {
             Outcome: 'Imprisonment',
             'Sentence type': 'A Nomis sentence type',
             'Sentence length': '1 years 2 months 0 weeks 0 days',
-            'Consecutive or concurrent': 'Unknown',
+            'Consecutive or concurrent': 'Select consecutive or current',
+          },
+        ])
+      courtCaseAppearanceDetailsPage
+        .selectConsecutiveConcurrentLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '1',
+        )
+        .click()
+      const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+      offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
+      offenceSentenceServeTypePage.continueButton().click()
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseAppearanceDetailsPage
+        .custodialOffences()
+        .getOffenceCards()
+        .should('deep.equal', [
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence length': '4 years 0 months 0 weeks 0 days',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Consecutive or concurrent': 'Forthwith',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '14/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'A Nomis sentence type',
+            'Sentence length': '1 years 2 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Concurrent',
           },
         ])
     })

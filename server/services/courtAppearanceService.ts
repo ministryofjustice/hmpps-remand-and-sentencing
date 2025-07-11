@@ -805,6 +805,8 @@ export default class CourtAppearanceService {
         }
 
         courtAppearance.overallConvictionDate = overallConvictionDate.toDate()
+      } else {
+        delete courtAppearance.overallConvictionDate
       }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance

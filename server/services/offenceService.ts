@@ -42,71 +42,80 @@ export default class OffenceService {
   ) {}
 
   setOffenceDates(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceOffenceDateForm: OffenceOffenceDateForm,
-    addOrEditCourtAppearance: string,
-    warrantDate: Date,
-    overallConvictionDate: Date,
+      session: CookieSessionInterfaces.CookieSessionObject,
+      nomsId: string,
+      courtCaseReference: string,
+      offenceOffenceDateForm: OffenceOffenceDateForm,
+      addOrEditCourtAppearance: string,
+      warrantDate: Date,
+      overallConvictionDate: Date,
   ) {
+    console.log('Running setOffenceDates...')
     let isValidOffenceStartDateRule = ''
     let startDateString = ''
+
     if (
-      offenceOffenceDateForm['offenceStartDate-day'] &&
-      offenceOffenceDateForm['offenceStartDate-month'] &&
-      offenceOffenceDateForm['offenceStartDate-year']
+        offenceOffenceDateForm['offenceStartDate-day'] &&
+        offenceOffenceDateForm['offenceStartDate-month'] &&
+        offenceOffenceDateForm['offenceStartDate-year']
     ) {
       startDateString = toDateString(
-        offenceOffenceDateForm['offenceStartDate-year'],
-        offenceOffenceDateForm['offenceStartDate-month'],
-        offenceOffenceDateForm['offenceStartDate-day'],
+          offenceOffenceDateForm['offenceStartDate-year'],
+          offenceOffenceDateForm['offenceStartDate-month'],
+          offenceOffenceDateForm['offenceStartDate-day'],
       )
       isValidOffenceStartDateRule = `|isValidDate:${startDateString}|isPastDate:${startDateString}|isWithinLast100Years:${startDateString}`
+      console.log('Parsed offenceStartDate:', startDateString)
     }
+
     let isValidOffenceEndDateRule = ''
+    let endDateString = ''
     if (
-      offenceOffenceDateForm['offenceEndDate-day'] &&
-      offenceOffenceDateForm['offenceEndDate-month'] &&
-      offenceOffenceDateForm['offenceEndDate-year']
+        offenceOffenceDateForm['offenceEndDate-day'] &&
+        offenceOffenceDateForm['offenceEndDate-month'] &&
+        offenceOffenceDateForm['offenceEndDate-year']
     ) {
-      const endDateString = toDateString(
-        offenceOffenceDateForm['offenceEndDate-year'],
-        offenceOffenceDateForm['offenceEndDate-month'],
-        offenceOffenceDateForm['offenceEndDate-day'],
+      endDateString = toDateString(
+          offenceOffenceDateForm['offenceEndDate-year'],
+          offenceOffenceDateForm['offenceEndDate-month'],
+          offenceOffenceDateForm['offenceEndDate-day'],
       )
       isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastDate:${endDateString}|isWithinLast100Years:${endDateString}`
       if (startDateString) {
         isValidOffenceEndDateRule += `|isAfterDate:${startDateString},${endDateString}`
       }
+      console.log('Parsed offenceEndDate:', endDateString)
     }
+
     const errors = validate(
-      offenceOffenceDateForm,
-      {
-        'offenceStartDate-day': `required${isValidOffenceStartDateRule}`,
-        'offenceStartDate-month': `required`,
-        'offenceStartDate-year': `required`,
-        'offenceEndDate-day': `requiredFieldWith:offenceEndDate-month,offenceEndDate-year${isValidOffenceEndDateRule}`,
-        'offenceEndDate-month': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-year',
-        'offenceEndDate-year': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-month',
-      },
-      {
-        'required.offenceStartDate-year': 'Offence start date must include year',
-        'required.offenceStartDate-month': 'Offence start date must include month',
-        'required.offenceStartDate-day': 'Offence start date must include day',
-        'isValidDate.offenceStartDate-day': 'This date does not exist.',
-        'isPastDate.offenceStartDate-day': 'The offence start date cannot be a date in the future',
-        'isWithinLast100Years.offenceStartDate-day': 'All dates must be within the last 100 years from today’s date',
-        'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
-        'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
-        'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
-        'isValidDate.offenceEndDate-day': 'This date does not exist.',
-        'isPastDate.offenceEndDate-day': 'The offence end date cannot be a date in the future',
-        'isAfterDate.offenceEndDate-day': 'The offence end date must be after the offence start date',
-        'isWithinLast100Years.offenceEndDate-day': 'All dates must be within the last 100 years from today’s date',
-      },
+        offenceOffenceDateForm,
+        {
+          'offenceStartDate-day': `required${isValidOffenceStartDateRule}`,
+          'offenceStartDate-month': `required`,
+          'offenceStartDate-year': `required`,
+          'offenceEndDate-day': `requiredFieldWith:offenceEndDate-month,offenceEndDate-year${isValidOffenceEndDateRule}`,
+          'offenceEndDate-month': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-year',
+          'offenceEndDate-year': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-month',
+        },
+        {
+          'required.offenceStartDate-year': 'Offence start date must include year',
+          'required.offenceStartDate-month': 'Offence start date must include month',
+          'required.offenceStartDate-day': 'Offence start date must include day',
+          'isValidDate.offenceStartDate-day': 'This date does not exist.',
+          'isPastDate.offenceStartDate-day': 'The offence start date cannot be a date in the future',
+          'isWithinLast100Years.offenceStartDate-day': 'All dates must be within the last 100 years from today’s date',
+          'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
+          'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
+          'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
+          'isValidDate.offenceEndDate-day': 'This date does not exist.',
+          'isPastDate.offenceEndDate-day': 'The offence end date cannot be a date in the future',
+          'isAfterDate.offenceEndDate-day': 'The offence end date must be after the offence start date',
+          'isWithinLast100Years.offenceEndDate-day': 'All dates must be within the last 100 years from today’s date',
+        },
     )
+
     if (errors.length === 0) {
+      console.log('No validation errors. Proceeding to date logic...')
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
 
@@ -115,11 +124,19 @@ export default class OffenceService {
         month: parseInt(offenceOffenceDateForm['offenceStartDate-month'], 10) - 1,
         day: offenceOffenceDateForm['offenceStartDate-day'],
       })
+
       const convictionDate = overallConvictionDate && dayjs(overallConvictionDate)
       const warrantDateParsed = warrantDate && dayjs(warrantDate)
 
+      console.log('Parsed startDate:', offenceStartDate.format('YYYY-MM-DD'))
+      console.log('Parsed warrantDate:', warrantDateParsed?.format('YYYY-MM-DD'))
+      console.log('Parsed convictionDate:', convictionDate?.format('YYYY-MM-DD'))
+
       if (addOrEditCourtAppearance === 'add-court-appearance') {
-        if (warrantDateParsed && offenceStartDate.isAfter(warrantDateParsed)) {
+        console.log('Running court appearance date checks...')
+
+        if (warrantDateParsed && !offenceStartDate.isBefore(warrantDateParsed)) {
+          console.warn('Start date is after warrant date')
           return [
             {
               text: 'The offence start date must be before the warrant date',
@@ -129,9 +146,10 @@ export default class OffenceService {
         }
 
         if (convictionDate && !offenceStartDate.isBefore(convictionDate)) {
+          console.warn('Start date is not before conviction date')
           return [
             {
-              text: 'The offence start date must be before the conviction date.',
+              text: 'The offence start date must be before the conviction date',
               href: '#offenceStartDate',
             },
           ]
@@ -139,6 +157,7 @@ export default class OffenceService {
       }
 
       offence.offenceStartDate = offenceStartDate.toDate()
+
       if (offenceOffenceDateForm['offenceEndDate-day']) {
         const offenceEndDate = dayjs({
           year: offenceOffenceDateForm['offenceEndDate-year'],
@@ -146,8 +165,11 @@ export default class OffenceService {
           day: offenceOffenceDateForm['offenceEndDate-day'],
         })
 
+        console.log('Parsed endDate:', offenceEndDate.format('YYYY-MM-DD'))
+
         if (addOrEditCourtAppearance === 'add-court-appearance') {
-          if (warrantDateParsed && offenceEndDate.isAfter(warrantDateParsed)) {
+          if (warrantDateParsed && !offenceEndDate.isBefore(warrantDateParsed)) {
+            console.warn('End date is after warrant date')
             return [
               {
                 text: 'The offence end date must be before the warrant date',
@@ -157,6 +179,7 @@ export default class OffenceService {
           }
 
           if (convictionDate && !offenceEndDate.isBefore(convictionDate)) {
+            console.warn('End date is not before conviction date')
             return [
               {
                 text: 'The offence end date must be before the conviction date',
@@ -166,6 +189,7 @@ export default class OffenceService {
           }
 
           if (offenceEndDate.isBefore(offenceStartDate)) {
+            console.warn('End date is before start date')
             return [
               {
                 text: 'The offence end date must be after the offence start date',
@@ -174,13 +198,19 @@ export default class OffenceService {
             ]
           }
         }
+
         offence.offenceEndDate = offenceEndDate.toDate()
       }
-      // eslint-disable-next-line no-param-reassign
+
+      console.log('Saving offence dates to session...')
       session.offences[id] = offence
+    } else {
+      console.warn('Validation errors:', errors)
     }
+
     return errors
   }
+
 
   async setOffenceCode(
     session: CookieSessionInterfaces.CookieSessionObject,

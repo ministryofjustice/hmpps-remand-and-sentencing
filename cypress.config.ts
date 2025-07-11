@@ -37,7 +37,7 @@ export default defineConfig({
             courtRegisterApi.stubSearchCourt(),
             remandAndSentencingApi.stubSearchSentenceTypes({
               convictionDate: '2023-05-12',
-              offenceDate: '2023-05-12',
+              offenceDate: '2023-05-10',
             }),
             remandAndSentencingApi.stubGetAllAppearanceTypes(),
             remandAndSentencingApi.stubGetAppearanceOutcomeById({
@@ -54,7 +54,7 @@ export default defineConfig({
             ]),
             courtCasesReleaseDatesApi.stubGetServiceDefinitions(),
             remandAndSentencingApi.stubGetHasSentenceToChainTo({
-              beforeOrOnAppearanceDate: '2023-05-12',
+              beforeOrOnAppearanceDate: '2023-05-13',
             }),
             remandAndSentencingApi.stubGetSentenceTypeById({
               sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',

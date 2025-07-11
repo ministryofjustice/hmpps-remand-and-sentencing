@@ -144,7 +144,6 @@ export default class OffenceService {
         }
       }
       offence.offenceStartDate = offenceStartDate.toDate()
-
       if (offenceOffenceDateForm['offenceEndDate-day']) {
         const offenceEndDate = dayjs({
           year: offenceOffenceDateForm['offenceEndDate-year'],
@@ -182,11 +181,9 @@ export default class OffenceService {
 
         offence.offenceEndDate = offenceEndDate.toDate()
       }
-
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-
     return errors
   }
 

@@ -6,6 +6,8 @@ import SentencingSentenceLengthMismatchPage from '../pages/sentencingSentenceLen
 import AppearanceUpdatedConfirmationPage from '../pages/appearanceUpdatedConfirmationPage'
 import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseAlternativeSentenceLengthPage from '../pages/courtCaseAlternativeSentenceLengthPage'
+import OffenceDeleteOffencePage from '../pages/offenceDeleteOffencePage'
+import CannotDeleteSentencePage from '../pages/cannotDeleteSentencePage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -182,6 +184,87 @@ context('Sentencing appearance details Page', () => {
       courtCaseAlternativeSentenceLengthPage.sentenceLengthDropDown('second').select('years')
       courtCaseAlternativeSentenceLengthPage.continueButton().click()
       Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+    })
+
+    it('can delete an offence when no sentences after', () => {
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {})
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+        description: 'EDS (Extended Determinate Sentence)',
+        classification: 'EXTENDED',
+      })
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      })
+      cy.task('stubGetSentenceTypesByIds', [
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
+        },
+      ])
+      courtCaseAppearanceDetailsPage
+        .deleteOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'sentencing',
+          '0',
+        )
+        .click()
+      const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
+      offenceDeleteOffencePage.radioLabelSelector('true').click()
+      offenceDeleteOffencePage.continueButton().click()
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseAppearanceDetailsPage
+        .custodialOffences()
+        .getOffenceCards()
+        .should('deep.equal', [
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence length': '4 years 0 months 0 weeks 0 days',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Consecutive or concurrent': 'Forthwith',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '14/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'A Nomis sentence type',
+            'Sentence length': '1 years 2 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Unknown',
+          },
+        ])
+    })
+
+    it('cannot delete an offence when there is are sentences after', () => {
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        hasSentenceAfterOnOtherCourtAppearance: true,
+      })
+      cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {})
+
+      courtCaseAppearanceDetailsPage
+        .deleteOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'sentencing',
+          '0',
+        )
+        .click()
+      const cannotDeleteSentencePage = Page.verifyOnPage(CannotDeleteSentencePage)
+      cannotDeleteSentencePage
+        .appearanceDetails()
+        .getListItems()
+        .should('deep.equal', [
+          'Case  CASE123 at Accrington Youth Court on 17/05/2002',
+          'Case  at Southampton Magistrate Court on 28/01/2010',
+        ])
     })
   })
 

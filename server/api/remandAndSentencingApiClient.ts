@@ -11,6 +11,7 @@ import {
   DraftCourtCaseCreatedResponse,
   DraftCreateCourtAppearance,
   DraftCreateCourtCase,
+  HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
@@ -19,6 +20,7 @@ import {
   PageCourtCaseContent,
   PagePagedCourtCase,
   SentenceConsecutiveToDetailsResponse,
+  SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
   SentenceTypeIsValid,
@@ -301,5 +303,21 @@ export default class RemandAndSentencingApiClient {
       path: `/court-case/${courtCaseUuid}/latest-offence-date`,
     })
     return result ?? null
+  }
+
+  async hasSentenceAfterOnOtherCourtAppearance(
+    sentenceUuid: string,
+  ): Promise<HasSentenceAfterOnOtherCourtAppearanceResponse> {
+    return (await this.restClient.get({
+      path: `/sentence/${sentenceUuid}/has-sentences-after-on-other-court-appearance`,
+    })) as unknown as Promise<HasSentenceAfterOnOtherCourtAppearanceResponse>
+  }
+
+  async getSentencesAfterOnOtherCourtAppearanceDetails(
+    sentenceUuid: string,
+  ): Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse> {
+    return (await this.restClient.get({
+      path: `/sentence/${sentenceUuid}/sentences-after-on-other-court-appearance-details`,
+    })) as unknown as Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse>
   }
 }

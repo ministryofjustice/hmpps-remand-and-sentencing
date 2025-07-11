@@ -108,6 +108,16 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/check-delete-offence',
+    sentencingRoutes.checkDeleteOffence,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:offenceReference/cannot-delete-offence',
+    sentencingRoutes.getCannotDeleteOffence,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/sentence-length-mismatch',
     sentencingRoutes.getSentenceLengthMismatch,
   )
@@ -130,6 +140,16 @@ export default function routes(services: Services): Router {
   post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/submit-details-edit',
     remandRoutes.submitAppearanceDetailsEdit,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/offences/:offenceReference/check-delete-offence',
+    remandRoutes.checkDeleteOffence,
+  )
+
+  get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/remand/offences/:offenceReference/cannot-delete-offence',
+    remandRoutes.getCannotDeleteOffence,
   )
 
   get(

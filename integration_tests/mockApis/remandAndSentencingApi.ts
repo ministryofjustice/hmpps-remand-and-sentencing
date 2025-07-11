@@ -2651,4 +2651,58 @@ export default {
       },
     })
   },
+
+  stubHasSentencesAfterOnOtherCourtAppearance: ({
+    sentenceUuid = 'b0f83d31-efbe-462c-970d-5293975acb17',
+    hasSentenceAfterOnOtherCourtAppearance = false,
+  }: {
+    sentenceUuid: string
+    hasSentenceAfterOnOtherCourtAppearance: boolean
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/sentence/${sentenceUuid}/has-sentences-after-on-other-court-appearance`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          hasSentenceAfterOnOtherCourtAppearance,
+        },
+      },
+    })
+  },
+
+  stubSentencesAfterOnOtherCourtAppearanceDetails: ({
+    sentenceUuid = 'b0f83d31-efbe-462c-970d-5293975acb17',
+  }: {
+    sentenceUuid: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/sentence/${sentenceUuid}/sentences-after-on-other-court-appearance-details`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearances: [
+            {
+              appearanceUuid: '3e46419c-aa43-48dd-b944-21b36d1e819c',
+              caseReference: 'CASE123',
+              appearanceDate: '2002-05-17',
+              courtCode: 'ACCRYC',
+            },
+            {
+              appearanceUuid: 'c2703fdc-6446-48b2-bbec-64617bfca5f0',
+              appearanceDate: '2010-01-28',
+              courtCode: 'STHHPM',
+            },
+          ],
+        },
+      },
+    })
+  },
 }

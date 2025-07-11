@@ -211,6 +211,10 @@
                             consecutiveTo: consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
                             sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
                             fineAmount: offence.sentence.fineAmount,
+                            consecutiveConcurrentLink: {
+                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/select-consecutive-concurrent",
+                                text: 'Select consecutive or current'
+                            } if offence.sentence,
                             actions: {
                                 items: [
                                     {
@@ -219,7 +223,7 @@
                                         visuallyHiddenText: "edit"
                                     },
                                     {
-                                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + loop.index0 + "/delete-offence",
+                                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/remand/offences/" + loop.index0 + "/check-delete-offence",
                                         text: "Delete",
                                         visuallyHiddenText: "delete"
                                     }

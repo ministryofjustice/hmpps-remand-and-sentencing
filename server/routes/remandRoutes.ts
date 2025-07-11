@@ -121,4 +121,68 @@ export default class RemandRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference)
   }
+
+  public checkDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const offence = courtAppearance.offences[parseInt(offenceReference, 10)]
+    if (offence.sentence?.sentenceUuid) {
+      const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
+        offence.sentence.sentenceUuid,
+        req.user.username,
+      )
+      if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/offences/${offenceReference}/cannot-delete-offence`,
+        )
+      }
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/delete-offence`,
+    )
+  }
+
+  public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { username, token } = req.user
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const offence = courtAppearance.offences[parseInt(offenceReference, 10)]
+    const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
+      offence.sentence.sentenceUuid,
+      username,
+    )
+    const courtIds = Array.from(new Set(sentencesAfterDetails.appearances.map(appearance => appearance.courtCode)))
+    const [courtMap, offenceDetails] = await Promise.all([
+      this.courtRegisterService.getCourtMap(courtIds, username),
+      this.manageOffencesService.getOffenceByCode(offence.offenceCode, token),
+    ])
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+    return res.render('pages/courtAppearance/cannot-delete-offence', {
+      nomsId,
+      courtCaseReference,
+      offenceReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offence,
+      offenceDetails,
+      courtMap,
+      backLink,
+      sentencesAfterDetails,
+    })
+  }
 }

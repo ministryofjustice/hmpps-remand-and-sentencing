@@ -1,0 +1,48 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% set pageTitle = "remand - Cannot delete offence" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">
+                You cannot delete this sentence
+            </h1>
+            <p class="govuk-body govuk-!-width-three-quarters">
+                {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}
+                {% if countDescription %}
+                    {{ countDescription }}<br>
+                {% endif %}
+                <strong>{{ offence.offenceCode }} {{ offenceDetails.description}}</strong><br>
+                {% if offence.offenceStartDate %}
+                    committed on {{ offence.offenceStartDate | formatDate }}{% if offence.offenceEndDate %} to {{offence.offenceEndDate | formatDate }}{% endif %}
+                {% endif %}
+            </p>
+            <p class="govuk-body">This sentence is linked to sentences on other cases, as part of a consecutive chain. Deleting this sentence breaks the chain, which could mean it does not reflect the information on the warrant.</p>
+            <p class="govuk-body">
+                {% if sentencesAfterDetails.appearances.length === 1%}
+                    This affects case {{formatAppearanceDetails(sentencesAfterDetails.appearances[0])}}
+                {% else %}
+                    This affects:  
+                    <ul class="govuk-list govuk-list-bullet" data-qa="appearanceDetails">
+                        {% for appearanceDetails in sentencesAfterDetails.appearances %}
+                            <li>Case {{formatAppearanceDetails(appearanceDetails) }}</strong></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </p>
+            <p class="govuk-body govuk-!-margin-top-6">You will need to update the consecutive details on the other cases before deleting this sentence.</p>
+            {{ govukButton({
+                text: "Go back",
+                href: backLink
+            })}}
+        </div>
+    </div>
+{% endblock %}
+
+
+{% macro formatAppearanceDetails(appearanceDetails) %}
+    {% if appearanceDetails.caseReference %}<strong>{{ appearanceDetails.caseReference }}</strong>{% endif %} at <strong>{{courtMap[appearanceDetails.courtCode]}}</strong> on <strong>{{ appearanceDetails.appearanceDate | formatDate }}</strong>
+{% endmacro %}

@@ -8,6 +8,7 @@ import {
   DraftCourtAppearance,
   DraftCourtAppearanceCreatedResponse,
   DraftCourtCaseCreatedResponse,
+  HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
@@ -15,6 +16,7 @@ import {
   PageCourtCaseContent,
   PagePagedCourtCase,
   SentenceConsecutiveToDetailsResponse,
+  SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
   SentenceTypeIsValid,
@@ -253,6 +255,24 @@ export default class RemandAndSentencingService {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getLatestOffenceDateForCourtCase(
       courtCaseUuid,
     )
+  }
+
+  async hasSentenceAfterOnOtherCourtAppearance(
+    sentenceUuid: string,
+    username: string,
+  ): Promise<HasSentenceAfterOnOtherCourtAppearanceResponse> {
+    return new RemandAndSentencingApiClient(
+      await this.getSystemClientToken(username),
+    ).hasSentenceAfterOnOtherCourtAppearance(sentenceUuid)
+  }
+
+  async getSentencesAfterOnOtherCourtAppearanceDetails(
+    sentenceUuid: string,
+    username: string,
+  ): Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse> {
+    return new RemandAndSentencingApiClient(
+      await this.getSystemClientToken(username),
+    ).getSentencesAfterOnOtherCourtAppearanceDetails(sentenceUuid)
   }
 
   private async getSystemClientToken(username: string): Promise<string> {

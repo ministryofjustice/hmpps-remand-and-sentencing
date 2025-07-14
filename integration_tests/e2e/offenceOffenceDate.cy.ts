@@ -212,7 +212,7 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage.continueButton().click()
     Page.verifyOnPageTitle(OffenceOffenceCodePage, 'Enter the offence code')
 
-    // If there is 'no overall conviction date' is subsequently selected then the conviction date cjhecks pass
+    // If 'there is no overall conviction date' is subsequently selected then the conviction date checks pass
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-conviction-date')
     courtCaseOverallConvictionDatePage.radioLabelSelector('false').click()
     courtCaseOverallConvictionDatePage.continueButton().click()
@@ -240,9 +240,9 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('11')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2025')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('01')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('01')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('1924')
+    offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('01')
+    offenceOffenceDatePage.monthDateInput('offenceEndDate').clear().type('01')
+    offenceOffenceDatePage.yearDateInput('offenceEndDate').clear().type('1924')
     offenceOffenceDatePage.continueButton().click()
     offenceOffenceDatePage
       .errorSummary()

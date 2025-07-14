@@ -1488,6 +1488,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const offenceConvictionDateForm = trimForm<OffenceConvictionDateForm>(req.body)
+
     const errors = this.offenceService.setConvictionDateForm(
       req.session,
       nomsId,
@@ -1496,6 +1497,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceConvictionDateForm,
       addOrEditCourtAppearance,
       this.courtAppearanceService.getWarrantDate(req.session, nomsId),
+      structuredClone(this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)),
     )
     if (errors.length > 0) {
       req.flash('errors', errors)

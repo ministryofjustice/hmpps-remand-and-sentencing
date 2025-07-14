@@ -139,7 +139,15 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const offenceDateForm = trimForm<OffenceOffenceDateForm>(req.body)
-    const errors = this.offenceService.setOffenceDates(req.session, nomsId, courtCaseReference, offenceDateForm)
+    const errors = this.offenceService.setOffenceDates(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceDateForm,
+      addOrEditCourtAppearance,
+      this.courtAppearanceService.getWarrantDate(req.session, nomsId),
+      this.courtAppearanceService.getOverallConvictionDate(req.session, nomsId),
+    )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('offenceDateForm', { ...offenceDateForm })

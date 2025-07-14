@@ -45,6 +45,7 @@ context('New Court Case journey', () => {
     cy.task('stubOverallSentenceLengthFail')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-12' })
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -161,7 +162,7 @@ context('New Court Case journey', () => {
       OffenceOffenceDatePage,
       'Enter the offence dates for the first offence',
     )
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.continueButton().click()
@@ -452,7 +453,7 @@ context('New Court Case journey', () => {
       OffenceOffenceDatePage,
       'Enter the offence dates for the first offence',
     )
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.continueButton().click()

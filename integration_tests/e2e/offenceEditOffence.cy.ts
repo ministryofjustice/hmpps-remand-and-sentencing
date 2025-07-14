@@ -85,7 +85,6 @@ context('Add Offence Edit offence Page', () => {
           outcomeType: 'SENTENCING',
         },
       ])
-      cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
@@ -442,7 +441,6 @@ context('Add Offence Edit offence Page', () => {
         convictionDate: '2023-05-13',
         offenceDate: '2023-05-12',
       })
-      cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
       cy.visit('/person/A1234AB')
       const startPage = Page.verifyOnPage(StartPage)
       startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()

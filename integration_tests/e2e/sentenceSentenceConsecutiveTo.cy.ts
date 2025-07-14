@@ -23,7 +23,6 @@ context('Sentence consecutive to Page', () => {
     ])
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
-    cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetOffencesByCodes', {})
 

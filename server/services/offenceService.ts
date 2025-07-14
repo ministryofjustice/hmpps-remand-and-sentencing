@@ -46,9 +46,13 @@ export default class OffenceService {
     nomsId: string,
     courtCaseReference: string,
     offenceOffenceDateForm: OffenceOffenceDateForm,
+    addOrEditCourtAppearance: string,
+    warrantDate: Date,
+    overallConvictionDate: Date,
   ) {
     let isValidOffenceStartDateRule = ''
     let startDateString = ''
+
     if (
       offenceOffenceDateForm['offenceStartDate-day'] &&
       offenceOffenceDateForm['offenceStartDate-month'] &&
@@ -59,24 +63,27 @@ export default class OffenceService {
         offenceOffenceDateForm['offenceStartDate-month'],
         offenceOffenceDateForm['offenceStartDate-day'],
       )
-      isValidOffenceStartDateRule = `|isValidDate:${startDateString}|isPastDate:${startDateString}`
+      isValidOffenceStartDateRule = `|isValidDate:${startDateString}|isPastDate:${startDateString}|isWithinLast100Years:${startDateString}`
     }
+
     let isValidOffenceEndDateRule = ''
+    let endDateString = ''
     if (
       offenceOffenceDateForm['offenceEndDate-day'] &&
       offenceOffenceDateForm['offenceEndDate-month'] &&
       offenceOffenceDateForm['offenceEndDate-year']
     ) {
-      const endDateString = toDateString(
+      endDateString = toDateString(
         offenceOffenceDateForm['offenceEndDate-year'],
         offenceOffenceDateForm['offenceEndDate-month'],
         offenceOffenceDateForm['offenceEndDate-day'],
       )
-      isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastDate:${endDateString}`
+      isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastDate:${endDateString}|isWithinLast100Years:${endDateString}`
       if (startDateString) {
         isValidOffenceEndDateRule += `|isAfterDate:${startDateString},${endDateString}`
       }
     }
+
     const errors = validate(
       offenceOffenceDateForm,
       {
@@ -92,15 +99,18 @@ export default class OffenceService {
         'required.offenceStartDate-month': 'Offence start date must include month',
         'required.offenceStartDate-day': 'Offence start date must include day',
         'isValidDate.offenceStartDate-day': 'This date does not exist.',
-        'isPastDate.offenceStartDate-day': 'Offence start date must use a date from the past',
+        'isPastDate.offenceStartDate-day': 'The offence start date must be a date from the past',
+        'isWithinLast100Years.offenceStartDate-day': 'All dates must be within the last 100 years from today’s date',
         'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
         'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
         'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
         'isValidDate.offenceEndDate-day': 'This date does not exist.',
-        'isPastDate.offenceEndDate-day': 'Offence end date must use a date from the past',
+        'isPastDate.offenceEndDate-day': 'The offence end date must be a date from the past',
         'isAfterDate.offenceEndDate-day': 'The offence end date must be after the offence start date',
+        'isWithinLast100Years.offenceEndDate-day': 'All dates must be within the last 100 years from today’s date',
       },
     )
+
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
@@ -110,6 +120,29 @@ export default class OffenceService {
         month: parseInt(offenceOffenceDateForm['offenceStartDate-month'], 10) - 1,
         day: offenceOffenceDateForm['offenceStartDate-day'],
       })
+
+      const convictionDate = overallConvictionDate && dayjs(overallConvictionDate)
+      const warrantDateParsed = warrantDate && dayjs(warrantDate)
+
+      if (addOrEditCourtAppearance === 'add-court-appearance') {
+        if (warrantDateParsed && !offenceStartDate.isBefore(warrantDateParsed)) {
+          return [
+            {
+              text: 'The offence start date must be before the warrant date',
+              href: '#offenceStartDate',
+            },
+          ]
+        }
+
+        if (convictionDate && !offenceStartDate.isBefore(convictionDate)) {
+          return [
+            {
+              text: 'The offence start date must be before the conviction date',
+              href: '#offenceStartDate',
+            },
+          ]
+        }
+      }
       offence.offenceStartDate = offenceStartDate.toDate()
       if (offenceOffenceDateForm['offenceEndDate-day']) {
         const offenceEndDate = dayjs({
@@ -117,6 +150,35 @@ export default class OffenceService {
           month: parseInt(offenceOffenceDateForm['offenceEndDate-month'], 10) - 1,
           day: offenceOffenceDateForm['offenceEndDate-day'],
         })
+        if (addOrEditCourtAppearance === 'add-court-appearance') {
+          if (warrantDateParsed && !offenceEndDate.isBefore(warrantDateParsed)) {
+            return [
+              {
+                text: 'The offence end date must be before the warrant date',
+                href: '#offenceEndDate',
+              },
+            ]
+          }
+
+          if (convictionDate && !offenceEndDate.isBefore(convictionDate)) {
+            return [
+              {
+                text: 'The offence end date must be before the conviction date',
+                href: '#offenceEndDate',
+              },
+            ]
+          }
+
+          if (offenceEndDate.isBefore(offenceStartDate)) {
+            return [
+              {
+                text: 'The offence end date must be after the offence start date',
+                href: '#offenceEndDate',
+              },
+            ]
+          }
+        }
+
         offence.offenceEndDate = offenceEndDate.toDate()
       }
       // eslint-disable-next-line no-param-reassign
@@ -639,7 +701,7 @@ export default class OffenceService {
         offenceConvictionDateForm['convictionDate-month'],
         offenceConvictionDateForm['convictionDate-day'],
       )
-      isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastDate:${convictionDateString}|isWithinLast100Years:${convictionDateString}`
+      isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastOrCurrentDate:${convictionDateString}|isWithinLast100Years:${convictionDateString}`
     }
 
     const errors = validate(
@@ -654,7 +716,7 @@ export default class OffenceService {
         'required.convictionDate-month': 'Conviction date must include month',
         'required.convictionDate-day': 'Conviction date must include day',
         'isValidDate.convictionDate-day': 'This date does not exist.',
-        'isPastDate.convictionDate-day': 'The conviction date cannot be a date in the future',
+        'isPastOrCurrentDate.convictionDate-day': 'The conviction date cannot be a date in the future',
         'isWithinLast100Years.overallConvictionDate-day':
           'All dates must be within the last 100 years from today’s date',
       },

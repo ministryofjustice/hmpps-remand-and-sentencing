@@ -1899,15 +1899,6 @@ export default class OffenceRoutes extends BaseRoutes {
       outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
     }
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
-    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
-      } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
-      }
-    }
-
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,
@@ -1922,7 +1913,6 @@ export default class OffenceRoutes extends BaseRoutes {
       outcome,
       periodLengthTypeHeadings,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      backLink,
     })
   }
 

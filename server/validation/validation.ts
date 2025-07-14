@@ -3,6 +3,7 @@ import onlyOneValidate from './onlyOneRule'
 import minWholeNumberValidate from './minWholeNumberRule'
 import minCurrencyValidate from './minCurrencyRule'
 import isPastOrCurrentDate from './isPastOrCurrentDate'
+import isPastDate from './isPastDate'
 import isValidDate from './isValidDate'
 import requiredFieldWith from './requiredFieldWith'
 import requireSentenceLength from './requireSentenceLength'
@@ -50,6 +51,7 @@ Validator.register('minCurrency', minCurrencyValidate, 'must be entered in a val
 Validator.register('isValidDate', isValidDate, 'This date does not exist.')
 Validator.registerImplicit('requiredFieldWith', requiredFieldWith, 'This field is required.')
 Validator.register('isPastOrCurrentDate', isPastOrCurrentDate, 'date cannot be a date in the future')
+Validator.register('isPastDate', isPastDate, 'date must be in the past')
 Validator.register('isAfterDate', isAfterDate, 'date must be after')
 Validator.register('isFutureDate', isFutureDate, 'date must be in the future')
 Validator.registerImplicit(

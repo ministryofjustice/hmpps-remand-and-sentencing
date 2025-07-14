@@ -49,7 +49,7 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence start date cannot be a date in the future')
+      .should('equal', 'There is a problem The offence start date must be a date from the past')
   })
 
   it('submitting an  invalid start date results in an error', () => {
@@ -105,7 +105,7 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence end date cannot be a date in the future')
+      .should('equal', 'There is a problem The offence end date must be a date from the past')
   })
 
   it('submitting an end date that is before the start date results in an error', () => {

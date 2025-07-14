@@ -63,7 +63,7 @@ export default class OffenceService {
         offenceOffenceDateForm['offenceStartDate-month'],
         offenceOffenceDateForm['offenceStartDate-day'],
       )
-      isValidOffenceStartDateRule = `|isValidDate:${startDateString}|isPastDate:${startDateString}|isWithinLast100Years:${startDateString}`
+      isValidOffenceStartDateRule = `|isValidDate:${startDateString}|isPastOrCurrentDate:${startDateString}|isWithinLast100Years:${startDateString}`
     }
 
     let isValidOffenceEndDateRule = ''
@@ -78,7 +78,7 @@ export default class OffenceService {
         offenceOffenceDateForm['offenceEndDate-month'],
         offenceOffenceDateForm['offenceEndDate-day'],
       )
-      isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastDate:${endDateString}|isWithinLast100Years:${endDateString}`
+      isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastOrCurrentDate:${endDateString}|isWithinLast100Years:${endDateString}`
       if (startDateString) {
         isValidOffenceEndDateRule += `|isAfterDate:${startDateString},${endDateString}`
       }
@@ -99,13 +99,13 @@ export default class OffenceService {
         'required.offenceStartDate-month': 'Offence start date must include month',
         'required.offenceStartDate-day': 'Offence start date must include day',
         'isValidDate.offenceStartDate-day': 'This date does not exist.',
-        'isPastDate.offenceStartDate-day': 'The offence start date cannot be a date in the future',
+        'isPastOrCurrentDate.offenceStartDate-day': 'The offence start date cannot be a date in the future',
         'isWithinLast100Years.offenceStartDate-day': 'All dates must be within the last 100 years from today’s date',
         'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
         'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
         'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
         'isValidDate.offenceEndDate-day': 'This date does not exist.',
-        'isPastDate.offenceEndDate-day': 'The offence end date cannot be a date in the future',
+        'isPastOrCurrentDate.offenceEndDate-day': 'The offence end date cannot be a date in the future',
         'isAfterDate.offenceEndDate-day': 'The offence end date must be after the offence start date',
         'isWithinLast100Years.offenceEndDate-day': 'All dates must be within the last 100 years from today’s date',
       },
@@ -701,7 +701,7 @@ export default class OffenceService {
         offenceConvictionDateForm['convictionDate-month'],
         offenceConvictionDateForm['convictionDate-day'],
       )
-      isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastDate:${convictionDateString}|isWithinLast100Years:${convictionDateString}`
+      isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastOrCurrentDate:${convictionDateString}|isWithinLast100Years:${convictionDateString}`
     }
 
     const errors = validate(
@@ -716,7 +716,7 @@ export default class OffenceService {
         'required.convictionDate-month': 'Conviction date must include month',
         'required.convictionDate-day': 'Conviction date must include day',
         'isValidDate.convictionDate-day': 'This date does not exist.',
-        'isPastDate.convictionDate-day': 'The conviction date cannot be a date in the future',
+        'isPastOrCurrentDate.convictionDate-day': 'The conviction date cannot be a date in the future',
         'isWithinLast100Years.overallConvictionDate-day':
           'All dates must be within the last 100 years from today’s date',
       },

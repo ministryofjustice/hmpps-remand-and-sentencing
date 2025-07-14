@@ -143,7 +143,7 @@ export default class CourtAppearanceService {
         courtCaseWarrantDateForm['warrantDate-month'],
         courtCaseWarrantDateForm['warrantDate-day'],
       )
-      isValidWarrantDateRule = `|isValidDate:${warrantDateString}|isPastDate:${warrantDateString}|isWithinLast100Years:${warrantDateString}`
+      isValidWarrantDateRule = `|isValidDate:${warrantDateString}|isPastOrCurrentDate:${warrantDateString}|isWithinLast100Years:${warrantDateString}`
     }
 
     const errors = validate(
@@ -159,7 +159,7 @@ export default class CourtAppearanceService {
         'required.warrantDate-month': 'Warrant date must include month',
         'required.warrantDate-day': 'Warrant date must include day',
         'isValidDate.warrantDate-day': 'This date does not exist.',
-        'isPastDate.warrantDate-day': 'The warrant date cannot be a date in the future',
+        'isPastOrCurrentDate.warrantDate-day': 'The warrant date cannot be a date in the future',
         'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
         'isWithinLast100Years.warrantDate-day': 'All dates must be within the last 100 years from today’s date',
       },
@@ -739,7 +739,7 @@ export default class CourtAppearanceService {
         overallConvictionDateForm['overallConvictionDate-month'],
         overallConvictionDateForm['overallConvictionDate-day'],
       )
-      isValidOverallConvictionDateRule = `|isValidDate:${overallConvictionDateString}|isPastDate:${overallConvictionDateString}|isWithinLast100Years:${overallConvictionDateString}`
+      isValidOverallConvictionDateRule = `|isValidDate:${overallConvictionDateString}|isPastOrCurrentDate:${overallConvictionDateString}|isWithinLast100Years:${overallConvictionDateString}`
     }
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     const errors = validate(
@@ -756,7 +756,7 @@ export default class CourtAppearanceService {
         'required_if.overallConvictionDate-month': 'Conviction date must include month',
         'required_if.overallConvictionDate-day': 'Conviction date must include day',
         'isValidDate.overallConvictionDate-day': 'This date does not exist.',
-        'isPastDate.overallConvictionDate-day': 'The conviction date cannot be a date in the future',
+        'isPastOrCurrentDate.overallConvictionDate-day': 'The conviction date cannot be a date in the future',
         'isWithinLast100Years.overallConvictionDate-day':
           'All dates must be within the last 100 years from today’s date',
         'required.overallConvictionDateAppliedAll':

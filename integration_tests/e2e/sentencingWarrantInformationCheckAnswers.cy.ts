@@ -102,20 +102,12 @@ context('Warrant Information Check Answers Page', () => {
   it('clicking edit conviction date and submitting goes back to check answers page', () => {
     offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'sentencing/overall-conviction-date').click()
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
-    courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
-    courtCaseOverallConvictionDatePage
-      .dayDateInput('overallConvictionDate')
-      .should('have.value', '12')
-      .clear()
-      .type('20')
-    courtCaseOverallConvictionDatePage.monthDateInput('overallConvictionDate').should('have.value', '5')
-    courtCaseOverallConvictionDatePage.yearDateInput('overallConvictionDate').should('have.value', '2023')
+    courtCaseOverallConvictionDatePage.radioLabelSelector('false').click()
     courtCaseOverallConvictionDatePage.continueButton().click()
     offenceCheckOverallAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
       'Is there an overall sentence length on the warrant?': 'Yes',
       'Overall sentence length': '4 years 5 months 0 weeks 0 days',
-      'Is the conviction date the same for all offences on the warrant?': 'Yes',
-      'Conviction date': '20/05/2023',
+      'Is the conviction date the same for all offences on the warrant?': 'No',
       'Overall case outcome': 'Imprisonment',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })

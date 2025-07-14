@@ -56,42 +56,51 @@
             }
         ] if courtAppearance.warrantInformationAccepted !== true
     }
-    },
-    {
-        key: {
-        text: "Conviction date"
-    },
-        value: {
-        text: courtAppearance.overallConvictionDate | formatDate if courtAppearance.overallConvictionDate else 'Not entered'
-    },
-        actions: {
-        items: [
-            {
-                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/overall-conviction-date?submitToCheckAnswers=true",
-                text: "Edit",
-                visuallyHiddenText: "conviction date"
-            }
-        ] if courtAppearance.warrantInformationAccepted !== true
-    }
-    },
-    {
-        key: {
-        text: "Overall case outcome"
-    },
-        value: {
-        text: overallCaseOutcome
-    },
-        actions: {
-        items: [
-            {
-                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/overall-case-outcome?submitToCheckAnswers=true",
-                text: "Edit",
-                visuallyHiddenText: "overall case outcome"
-            }
-        ] if courtAppearance.warrantInformationAccepted !== true
-    }
-    }
-] %}
+    }] %}
+
+    {% if courtAppearance.overallConvictionDate %}
+        {% set summaryRows = summaryRows.concat([{
+            key: {
+            text: "Conviction date"
+        },
+            value: {
+            text: courtAppearance.overallConvictionDate | formatDate if courtAppearance.overallConvictionDate else 'Not entered'
+        },
+            actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/overall-conviction-date?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "conviction date"
+                }
+            ] if courtAppearance.warrantInformationAccepted !== true
+        }
+        }]) %}
+    {% endif %}
+
+{% set summaryRows = summaryRows.concat([
+        {
+            key: {
+            text: "Overall case outcome"
+        },
+            value: {
+            text: overallCaseOutcome
+        },
+            actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/overall-case-outcome?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "overall case outcome"
+                }
+            ] if courtAppearance.warrantInformationAccepted !== true
+        }
+        }
+    ]) %}
+
+
+    
+
 
 {% if isAddJourney %}
     {% set summaryRows = summaryRows.concat([

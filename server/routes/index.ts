@@ -638,6 +638,11 @@ export default function routes(services: Services): Router {
   )
 
   get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/confirmation',
+    sentencingRoutes.getConfirmationPage,
+  )
+
+  get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/save-court-case',
     courtCaseRoutes.getDraftConfirmationPage,
   )

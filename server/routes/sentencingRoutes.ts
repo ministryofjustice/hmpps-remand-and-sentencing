@@ -854,4 +854,12 @@ export default class SentencingRoutes extends BaseRoutes {
       sentencesAfterDetails,
     })
   }
+
+  public getConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+
+    return res.render('pages/sentencing/confirmation', {
+      nomsId,
+    })
+  }
 }

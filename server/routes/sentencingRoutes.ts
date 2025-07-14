@@ -740,6 +740,15 @@ export default class SentencingRoutes extends BaseRoutes {
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.token)
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/delete-offence`
+    let goBackLink = backLink
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+      if (warrantType === 'SENTENCING') {
+        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+      } else {
+        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+      }
+    }
     return res.render('pages/sentencing/delete-sentence-in-chain', {
       nomsId,
       courtCaseReference,
@@ -751,6 +760,7 @@ export default class SentencingRoutes extends BaseRoutes {
       offence,
       submitToEditOffence,
       backLink,
+      goBackLink,
     })
   }
 

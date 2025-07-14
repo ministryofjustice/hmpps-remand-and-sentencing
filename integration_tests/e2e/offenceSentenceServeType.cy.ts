@@ -41,7 +41,6 @@ context('Add Offence Sentence Serve Type Page', () => {
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })
-    cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')

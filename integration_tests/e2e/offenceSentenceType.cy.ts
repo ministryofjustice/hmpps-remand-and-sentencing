@@ -7,10 +7,6 @@ context('Add Offence Sentence Type Page', () => {
   let offenceSentenceTypePage: OffenceSentenceTypePage
   beforeEach(() => {
     cy.task('happyPathStubs')
-    cy.task('stubSearchSentenceTypes', {
-      convictionDate: '2023-05-12',
-      offenceDate: '2023-05-10',
-    })
     cy.task('stubGetSentenceTypesByIds', [
       {
         sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',

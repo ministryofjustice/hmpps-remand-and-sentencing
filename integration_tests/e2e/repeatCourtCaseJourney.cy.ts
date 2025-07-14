@@ -181,7 +181,7 @@ context('Repeat Court Case journey', () => {
     offenceReviewOffencesPage.addAnotherButton().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.continueButton().click()
@@ -300,6 +300,11 @@ context('Repeat Court Case journey', () => {
         outcomeType: 'SENTENCING',
       },
     ])
+    cy.task('stubSearchSentenceTypes', {
+      convictionDate: '2023-05-12',
+      offenceDate: '2023-05-12',
+    })
+    cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-12' })
     cy.task('stubGetCountNumbersForCourtCase', {})
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()

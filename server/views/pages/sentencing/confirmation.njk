@@ -1,7 +1,7 @@
 {% extends "../../partials/prisonerBannerLayout.njk" %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 
-{% set pageTitle = applicationName + " - Remand successfully saved" %}
+{% set pageTitle = applicationName + " - Sentencing successfully saved" %}
 
 {% block subNavigation %}
 {% endblock %}
@@ -16,12 +16,13 @@
             }) }}
             <div class="govuk-!-margin-top-6">
                 <h2 class="govuk-heading-l">What you can do next</h2>
+                    <div class="govuk-body govuk-!-margin-top-6">
+                        <a class="govuk-link" href="{{ adjustmentServiceUrl }}/{{ nomsId }}">Add adjustments</a>
+                    </div>
                 <div class="govuk-body govuk-!-margin-top-6">
                     <span>You can go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
                     <ul class="govuk-list govuk-!-margin-top-2">
                         <li><a class="govuk-link" href="/person/{{ nomsId }}">Court case information</a></li>
-                        <li><a class="govuk-link" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ nomsId }}">Prisoner
-                                profile</a></li>
                     </ul>
                 </div>
                 <div class="govuk-!-margin-top-6">

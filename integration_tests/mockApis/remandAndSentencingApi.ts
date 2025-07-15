@@ -791,7 +791,7 @@ export default {
             outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
             courtCode: 'ACCRYC',
             courtCaseReference: 'T12345678',
-            appearanceDate: '2023-05-12',
+            appearanceDate: '2023-05-13',
             warrantType: 'REMAND',
             prisonId: 'MDI',
             nextCourtAppearance: {

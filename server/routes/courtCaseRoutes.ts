@@ -757,6 +757,11 @@ export default class CourtCaseRoutes {
       await this.remandAndSentencingService.createCourtAppearance(token, courtCaseReference, courtAppearance, prisonId)
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/confirmation`,
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/confirmation`,
     )

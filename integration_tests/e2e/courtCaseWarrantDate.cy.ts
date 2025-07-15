@@ -5,9 +5,17 @@ import CourtCaseCheckAnswersPage from '../pages/courtCaseCheckAnswersPage'
 import CourtCaseWarrantTypePage from '../pages/courtCaseWarrantTypePage'
 import CourtCaseCourtNamePage from '../pages/courtCaseCourtNamePage'
 import CourtCaseSelectCourtNamePage from '../pages/courtCaseSelectCourtNamePage'
+import StartPage from '../pages/startPage'
+import OffenceOffenceDatePage from '../pages/offenceOffenceDatePage'
+import OffenceOffenceCodePage from '../pages/offenceOffenceCodePage'
+import OffenceOffenceCodeConfirmPage from '../pages/offenceOffenceCodeConfirmPage'
+import CourtCaseDetailsPage from '../pages/courtCaseDetailsPage'
+import CourtCaseAppearanceDetailsPage from '../pages/courtCaseAppearanceDetailsPage'
+import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
+import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 
 context('Court Case Warrant Date Page', () => {
-  context('Add journey', () => {
+  context('Add court case and add appearance journey', () => {
     let courtCaseWarrantDatePage: CourtCaseWarrantDatePage
     beforeEach(() => {
       cy.task('happyPathStubs')
@@ -108,7 +116,7 @@ context('Court Case Warrant Date Page', () => {
     })
   })
 
-  context('Edit journey', () => {
+  context('Edit court case and add appearance journey', () => {
     beforeEach(() => {
       cy.task('happyPathStubs')
       cy.signIn()
@@ -120,7 +128,7 @@ context('Court Case Warrant Date Page', () => {
       )
     })
 
-    it('Run validation on edit journey - check for appropriate error messages', () => {
+    it('Run validation and check for appropriate error messages', () => {
       // Latest offence date has been mocked to return 01-01-2000
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('01')
@@ -163,4 +171,155 @@ context('Court Case Warrant Date Page', () => {
       Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the appearance at Accrington Youth Court?')
     })
   })
+
+  context('Edit appearance journey validation of warrant page', () => {
+    const futureDate = dayjs().add(10, 'day')
+    beforeEach(() => {
+      cy.task('happyPathStubs')
+      cy.task('stubGetOffenceByCode', {})
+      cy.task('stubSearchCourtCases', {})
+      cy.task('stubGetOffencesByCodes', {})
+      cy.task('stubGetLatestCourtAppearance', {})
+      cy.task('stubCreateCourtAppearance', { nextHearingDate: futureDate.format('YYYY-MM-DD') })
+      cy.task('stubCreateSentenceCourtAppearance')
+      cy.task('stubGetCourtById', {})
+      cy.task('stubGetCourtsByIds')
+      cy.task('stubGetAllChargeOutcomes')
+      cy.task('stubOverallSentenceLengthPass')
+      cy.task('stubGetServiceDefinitions')
+      cy.task('stubGetAllAppearanceOutcomes')
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
+      cy.task('stubGetLatestOffenceDate', {})
+      cy.signIn()
+      cy.visit('/person/A1234AB')
+      cy.task('stubGetAppearanceOutcomeById', {})
+      cy.task('stubGetAppearanceTypeByUuid')
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+        outcomeName: 'Remanded in custody',
+        outcomeType: 'REMAND',
+      })
+      cy.task('stubGetCourtCaseRemandLatest')
+      cy.task('stubGetRemandAppearanceDetails', 'a6400fd8-aef4-4567-b18c-d1f452651933')
+    })
+
+    it('Edit Remand journey validation - warrant date must be after offence dates', () => {
+      // Ensure validation occurs for the persisted offence (returned from api call) - offence start date is 2023-12-15
+      const startPage = Page.verifyOnPage(StartPage)
+      startPage.editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
+      const courtCaseDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseDetailsPage,
+        'Appearances for C894623 at Accrington Youth Court',
+      )
+
+      courtCaseDetailsPage
+        .editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
+        .click()
+
+      const courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      editWarrantDate(courtCaseAppearanceDetailsPage)
+
+      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      enterWarrantDate(courtCaseWarrantDatePage, '15', '12', '2023')
+      expectWarrantDateError(courtCaseWarrantDatePage)
+
+      enterWarrantDate(courtCaseWarrantDatePage, '16', '12', '2023')
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+
+      // Modify the offence (in session) and ensure validation occurs for that
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933', '0')
+        .click()
+
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage
+        .editFieldLink(
+          'A1234AB',
+          'edit',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'edit',
+          'a6400fd8-aef4-4567-b18c-d1f452651933',
+          '0',
+          'offence-date',
+        )
+        .click()
+      Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
+      enterOffenceStartDate('16', '12', '2023')
+
+      offenceEditOffencePage.continueButton().click()
+
+      editWarrantDate(courtCaseAppearanceDetailsPage)
+
+      enterWarrantDate(courtCaseWarrantDatePage, '16', '12', '2023')
+      expectWarrantDateError(courtCaseWarrantDatePage)
+
+      enterWarrantDate(courtCaseWarrantDatePage, '17', '12', '2023')
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+
+      // Add new offence to session and ensure validation occurs for that
+      courtCaseAppearanceDetailsPage.addAnotherButton().click()
+      enterOffenceStartDate('17', '12', '2023')
+
+      const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+      offenceOffenceCodePage.input().type('PS90037')
+      offenceOffenceCodePage.continueButton().click()
+
+      const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+      offenceOffenceCodeConfirmPage.continueButton().click()
+
+      const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+        OffenceOffenceOutcomePage,
+        'Select the outcome for this offence',
+      )
+      offenceOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
+      offenceOffenceOutcomePage.continueButton().click()
+
+      editWarrantDate(courtCaseAppearanceDetailsPage)
+
+      enterWarrantDate(courtCaseWarrantDatePage, '17', '12', '2023')
+      expectWarrantDateError(courtCaseWarrantDatePage)
+
+      enterWarrantDate(courtCaseWarrantDatePage, '18', '12', '2023')
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+    })
+  })
 })
+
+function enterWarrantDate(page, day: string, month: string, year: string) {
+  page.dayDateInput('warrantDate').clear().type(day)
+  page.monthDateInput('warrantDate').clear().type(month)
+  page.yearDateInput('warrantDate').clear().type(year)
+  page.continueButton().click()
+}
+
+function expectWarrantDateError(page) {
+  page
+    .errorSummary()
+    .trimTextContent()
+    .should('equal', 'There is a problem The warrant date must be after any existing offence dates in the court case')
+}
+
+function editWarrantDate(page) {
+  page
+    .editFieldLink(
+      'A1234AB',
+      '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      'a6400fd8-aef4-4567-b18c-d1f452651933',
+      'warrant-date',
+    )
+    .click()
+}
+
+function enterOffenceStartDate(day: string, month: string, year: string) {
+  const page = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
+  page.dayDateInput('offenceStartDate').clear().type(day)
+  page.monthDateInput('offenceStartDate').clear().type(month)
+  page.yearDateInput('offenceStartDate').clear().type(year)
+  page.continueButton().click()
+}

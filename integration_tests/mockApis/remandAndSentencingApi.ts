@@ -1002,17 +1002,17 @@ export default {
     })
   },
 
-  stubGetRemandAppearanceDetails: (): SuperAgentRequest => {
+  stubGetRemandAppearanceDetails: (appearanceUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6'): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        urlPattern: `/remand-and-sentencing-api/court-appearance/${appearanceUuid}`,
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
-          appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          appearanceUuid,
           outcome: {
             outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
             outcomeName: 'Remanded in custody',

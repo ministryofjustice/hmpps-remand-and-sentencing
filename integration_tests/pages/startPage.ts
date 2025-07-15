@@ -40,4 +40,7 @@ export default class StartPage extends Page {
     cy.get(
       `a[href="/person/A1234AB/edit-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/new-journey"]`,
     )
+
+  editAppearanceLink = (courtCaseReference: string): PageElement =>
+    cy.get(`a[href="/person/A1234AB/view-court-case/${courtCaseReference}/details"]`)
 }

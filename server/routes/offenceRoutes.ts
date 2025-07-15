@@ -380,7 +380,6 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-outcome${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
-    this.courtAppearanceService.setOffenceOutcome(req.session, nomsId, parseInt(offenceReference, 10), outcome)
     if (
       existingOffence.outcomeUuid &&
       existingOffence.outcomeUuid !== outcome.outcomeUuid &&
@@ -492,7 +491,6 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     if (submitToEditOffence) {
-      this.courtAppearanceService.setCountNumber(req.session, nomsId, parseInt(offenceReference, 10), countNumberForm)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
@@ -764,7 +762,6 @@ export default class OffenceRoutes extends BaseRoutes {
         },
         req.user.username,
       )
-      this.courtAppearanceService.setOffenceOutcome(req.session, nomsId, parseInt(offenceReference, 10), outcome)
 
       if (submitToEditOffence) {
         return res.redirect(

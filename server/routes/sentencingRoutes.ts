@@ -639,7 +639,6 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     this.offenceService.setSentenceToConcurrent(req.session, nomsId, courtCaseReference, offenceReference)
-    this.courtAppearanceService.setSentenceToConcurrent(req.session, nomsId, parseInt(offenceReference, 10))
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
     )
@@ -655,7 +654,6 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     this.offenceService.setSentenceToForthwith(req.session, nomsId, courtCaseReference, offenceReference)
-    this.courtAppearanceService.setSentenceToForthwith(req.session, nomsId, parseInt(offenceReference, 10))
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
     )
@@ -671,7 +669,6 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     this.offenceService.setSentenceToConsecutive(req.session, nomsId, courtCaseReference, offenceReference)
-    this.courtAppearanceService.setSentenceToConsecutive(req.session, nomsId, parseInt(offenceReference, 10))
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/sentence-consecutive-to?submitToEditOffence=true`,
     )

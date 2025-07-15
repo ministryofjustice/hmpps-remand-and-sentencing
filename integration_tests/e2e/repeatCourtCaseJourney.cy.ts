@@ -102,7 +102,7 @@ context('Repeat Court Case journey', () => {
     courtCaseSelectReferencePage.continueButton().click()
 
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
     courtCaseWarrantDatePage.continueButton().click()
@@ -129,7 +129,7 @@ context('Repeat Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
       'Case reference': 'C894623',
-      'Warrant date': '12/05/2023',
+      'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
       'Is the outcome the same for all offences on the warrant?': 'Yes',
@@ -159,23 +159,6 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    // courtCaseTaskListPage.courtDocumentsLink().click()
-
-    // const courtCaseDocumentTypePage = Page.verifyOnPage(CourtCaseDocumentTypePage) - not built yet
-    // courtCaseDocumentTypePage.radioLabelSelector('Custodial warrant').click()
-    // courtCaseDocumentTypePage.button().click()
-
-    // const courtCaseWarrantUploadPage = Page.verifyOnPage(CourtCaseWarrantUploadPage)
-    // courtCaseWarrantUploadPage.fileInput().selectFile('integration_tests/resources/aWarrant.jpg')
-    // courtCaseWarrantUploadPage.button().click()
-
-    // const courtCaseDocumentsPage = Page.verifyOnPage(CourtCaseDocumentsPage) - not built yet
-    // courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-    //   'Custodial warrant 1': 'uploaded',
-    // })
-    // courtCaseDocumentsPage.button().click()
-
-    // courtCaseTaskListPage = Page.verifyOnPage(CourtCaseTaskListPage) - not built yet
     courtCaseTaskListPage.reviewOffencesLink().click()
     let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.addAnotherButton().click()
@@ -346,7 +329,7 @@ context('Repeat Court Case journey', () => {
     courtCaseSelectReferencePage.continueButton().click()
 
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
     courtCaseWarrantDatePage.continueButton().click()
@@ -362,7 +345,7 @@ context('Repeat Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
       'Case reference': 'C894623',
-      'Warrant date': '12/05/2023',
+      'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
     })
     courtCaseCheckAnswersPage.continueButton().click()

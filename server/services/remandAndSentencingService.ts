@@ -251,9 +251,14 @@ export default class RemandAndSentencingService {
     ])
   }
 
-  async getLatestOffenceDateForCourtCase(courtCaseUuid: string, username: string): Promise<string | null> {
+  async getLatestOffenceDateForCourtCase(
+    courtCaseUuid: string,
+    username: string,
+    appearanceUuidToExclude?: string,
+  ): Promise<string | null> {
     return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getLatestOffenceDateForCourtCase(
       courtCaseUuid,
+      appearanceUuidToExclude,
     )
   }
 

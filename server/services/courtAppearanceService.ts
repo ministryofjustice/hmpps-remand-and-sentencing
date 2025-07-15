@@ -976,6 +976,8 @@ export default class CourtAppearanceService {
       courtAppearance.uploadedDocuments = [] // Initialize if null/undefined
     }
     courtAppearance.uploadedDocuments.push(document)
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
   }
 
   getUploadedDocuments(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): UploadedDocument[] {

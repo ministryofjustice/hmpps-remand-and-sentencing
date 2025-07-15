@@ -685,7 +685,6 @@ export default class OffenceService {
     offenceConvictionDateForm: OffenceConvictionDateForm,
     addOrEditCourtAppearance: string,
     warrantDate: Date,
-    offence: Offence,
   ): {
     text?: string
     html?: string
@@ -729,6 +728,7 @@ export default class OffenceService {
         day: offenceConvictionDateForm['convictionDate-day'],
       })
       const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, offenceReference)
 
       if (addOrEditCourtAppearance === 'add-court-appearance') {
@@ -764,7 +764,7 @@ export default class OffenceService {
       }
 
       sentence.convictionDate = convictionDate.toDate()
-      // eslint-disable-next-line no-param-reassign
+
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

@@ -32,7 +32,7 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     offenceId: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/offences/${offenceId}/edit-offence"]`,
+      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/offences/${offenceId}/load-edit-offence"]`,
     )
 
   deleteOffenceLink = (

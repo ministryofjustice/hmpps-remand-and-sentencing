@@ -76,7 +76,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let offenceEndDateDay: number | string = offenceDateForm['offenceEndDate-day']
     let offenceEndDateMonth: number | string = offenceDateForm['offenceEndDate-month']
     let offenceEndDateYear: number | string = offenceDateForm['offenceEndDate-year']
-    const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
 
     if (offence.offenceStartDate && Object.keys(offenceDateForm).length === 0) {
       const offenceStartDate = new Date(offence.offenceStartDate)
@@ -157,7 +157,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     if (submitToEditOffence) {
-      const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+      const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
       const hasInvalidatedOffence = await this.courtAppearanceService.checkOffenceDatesHaveInvalidatedOffence(
         req.session,
         nomsId,
@@ -190,7 +190,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const caseOutcomes = await this.offenceOutcomeService.getAllOutcomes(req.user.username)
 
@@ -248,7 +248,7 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const outcome = await this.offenceOutcomeService.getOutcomeById(
       offenceOutcomeForm.offenceOutcome,
       req.user.username,
@@ -284,7 +284,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     let offenceOutcomeForm = (req.flash('offenceOutcomeForm')[0] || {}) as OffenceOffenceOutcomeForm
-    const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (Object.keys(offenceOutcomeForm).length === 0) {
       offenceOutcomeForm = {
         offenceOutcome: offence.outcomeUuid,
@@ -364,7 +364,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
-    const existingOffence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const existingOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const { errors, outcome } = await this.offenceService.setOffenceOutcome(
       req.session,
       nomsId,
@@ -427,7 +427,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let countNumberForm = (req.flash('countNumberForm')[0] || {}) as OffenceCountNumberForm
     if (Object.keys(countNumberForm).length === 0) {
       const { countNumber, hasCountNumber } =
-        this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)?.sentence || {}
+        this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)?.sentence || {}
       countNumberForm = {
         hasCountNumber,
         ...(countNumber && countNumber !== '-1' ? { countNumber } : {}),
@@ -527,7 +527,8 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence } = req.query
     const offenceCodeForm = (req.flash('offenceCodeForm')[0] || {}) as OffenceOffenceCodeForm
     const offenceCode =
-      offenceCodeForm.offenceCode || this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)?.offenceCode
+      offenceCodeForm.offenceCode ||
+      this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)?.offenceCode
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
@@ -581,7 +582,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     if (offence.endDate) {
-      const sessionOffence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+      const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
       const offenceEndDate = dayjs(offence.endDate)
       const enteredStartDate = dayjs(sessionOffence.offenceStartDate)
       if (offenceEndDate.isBefore(enteredStartDate)) {
@@ -607,7 +608,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence } = req.query
     let offenceNameForm = (req.flash('offenceNameForm')[0] || {}) as OffenceOffenceNameForm
     if (Object.keys(offenceNameForm).length === 0) {
-      const { offenceCode } = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+      const { offenceCode } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
       if (offenceCode) {
         const offence = await this.manageOffencesService.getOffenceByCode(offenceCode, res.locals.user.token)
 
@@ -658,7 +659,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     if (offence.endDate) {
-      const sessionOffence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+      const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
       const offenceEndDate = dayjs(offence.endDate)
       const enteredStartDate = dayjs(sessionOffence.offenceStartDate)
       if (offenceEndDate.isBefore(enteredStartDate)) {
@@ -807,7 +808,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence, invalidatedFrom } = req.query
     let offenceSentenceTypeForm = (req.flash('offenceSentenceTypeForm')[0] || {}) as OffenceSentenceTypeForm
-    const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (Object.keys(offenceSentenceTypeForm).length === 0) {
       offenceSentenceTypeForm = {
         sentenceType: offence?.sentence?.sentenceTypeId,
@@ -897,11 +898,11 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     this.offenceService.updatePeriodLengths(req.session, nomsId, courtCaseReference, offenceReference, offence)
 
     const nextPeriodLengthType = getNextPeriodLengthType(
-      this.offenceService.getSessionOffence(req, nomsId, courtCaseReference).sentence ?? {
+      this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference).sentence ?? {
         sentenceReference: '',
       },
       null,
@@ -942,7 +943,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence, periodLengthType, invalidatedFrom } = req.query
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
-    const { sentence } = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const currentPeriodLength = sentence.periodLengths?.find(
       periodLength => periodLength.periodLengthType === periodLengthType,
     )
@@ -1005,7 +1006,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, periodLengthType, invalidatedFrom } = req.query
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
     const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
-    const { sentence } = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     this.offenceService.setInitialPeriodLengths(
       req.session,
       nomsId,
@@ -1071,7 +1072,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, invalidatedFrom, periodLengthType } = req.query
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
     let offenceFineAmountForm = (req.flash('offenceFineAmountForm')[0] || {}) as OffenceFineAmountForm
-    const { sentence } = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (Object.keys(offenceFineAmountForm).length === 0) {
       offenceFineAmountForm = {
         fineAmount: sentence?.fineAmount,
@@ -1153,7 +1154,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence, periodLengthType, invalidatedFrom } = req.query
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
-    const { sentence } = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     let offenceAlternativeSentenceLengthForm = (req.flash('offenceAlternativeSentenceLengthForm')[0] ||
       {}) as OffenceAlternativePeriodLengthForm
     if (Object.keys(offenceAlternativeSentenceLengthForm).length === 0) {
@@ -1197,7 +1198,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { periodLengthType, submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
     const offenceAlternativeSentenceLengthForm = trimForm<OffenceAlternativePeriodLengthForm>(req.body)
-    const { sentence } = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     this.offenceService.setInitialPeriodLengths(
       req.session,
       nomsId,
@@ -1278,7 +1279,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence, invalidatedFrom } = req.query
     const forthwithAlreadySelected = this.courtAppearanceService.isForwithAlreadySelected(req.session, nomsId)
-    const { sentence } = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const sentenceServeType = sentence?.sentenceServeType
     const expectedPeriodLengthsSize =
       sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths?.length
@@ -1323,7 +1324,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const offenceSentenceServeTypeForm = trimForm<OffenceSentenceServeTypeForm>(req.body)
-    const existingOffence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const existingOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
       req.session,
       nomsId,
@@ -1407,7 +1408,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let convictionDateDay: number | string = offenceConvictionDateForm['convictionDate-day']
     let convictionDateMonth: number | string = offenceConvictionDateForm['convictionDate-month']
     let convictionDateYear: number | string = offenceConvictionDateForm['convictionDate-year']
-    const convictionDateValue = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference).sentence
+    const convictionDateValue = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference).sentence
       ?.convictionDate
     if (convictionDateValue && Object.keys(offenceConvictionDateForm).length === 0) {
       const convictionDate = new Date(convictionDateValue)
@@ -1481,7 +1482,7 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
     if (submitToEditOffence) {
-      const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+      const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
       const hasInvalidatedOffence = await this.courtAppearanceService.checkConvictionDateHasInvalidatedOffence(
         req.session,
         nomsId,
@@ -1867,7 +1868,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
     let sentenceType: string
     if (offence.sentence) {
@@ -1908,7 +1909,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const offence = this.offenceService.getSessionOffence(req, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
 

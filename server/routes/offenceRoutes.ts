@@ -1885,7 +1885,6 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     let sentenceType: string
     if (offence.sentence) {
       if (offence.sentence.sentenceTypeId) {

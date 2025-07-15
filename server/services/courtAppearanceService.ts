@@ -176,6 +176,8 @@ export default class CourtAppearanceService {
           warrantDate,
           courtCaseReference,
           username,
+          session,
+          nomsId,
         )
         if (offenceDateErrors) return offenceDateErrors
       }
@@ -191,21 +193,28 @@ export default class CourtAppearanceService {
     warrantDate: dayjs.Dayjs,
     courtCaseReference: string,
     username: string,
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
   ): Promise<{ text: string; href: string }[] | null> {
     const latestOffenceDateStr = await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
       courtCaseReference,
       username,
     )
-    if (latestOffenceDateStr) {
-      const latestOffenceDate = dayjs(latestOffenceDateStr)
-      if (!warrantDate.isAfter(latestOffenceDate)) {
-        return [
-          {
-            text: `The warrant date must be after any existing offence dates in the court case`,
-            href: '#warrantDate',
-          },
-        ]
-      }
+    const latestOffenceDate = latestOffenceDateStr ? dayjs(latestOffenceDateStr) : null
+
+    const sessionOffenceDateRaw = this.getLatestOffenceDateInSession(session, nomsId)
+    const sessionOffenceDate = sessionOffenceDateRaw ? dayjs(sessionOffenceDateRaw) : null
+
+    if (
+      (latestOffenceDate && !warrantDate.isAfter(latestOffenceDate)) ||
+      (sessionOffenceDate && !warrantDate.isAfter(sessionOffenceDate))
+    ) {
+      return [
+        {
+          text: 'The warrant date must be after any existing offence dates in the court case',
+          href: '#warrantDate',
+        },
+      ]
     }
     return null
   }
@@ -1263,5 +1272,19 @@ export default class CourtAppearanceService {
 
   private async getSystemClientToken(username: string): Promise<string> {
     return this.hmppsAuthClient.getSystemClientToken(username)
+  }
+
+  private getLatestOffenceDateInSession(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+  ): Date | null {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    if (!courtAppearance?.offences?.length) return null
+
+    const offenceDates: Date[] = courtAppearance.offences.map(
+      offence => offence.offenceEndDate || offence.offenceStartDate,
+    )
+
+    return offenceDates.reduce((latest, current) => (current > latest ? current : latest))
   }
 }

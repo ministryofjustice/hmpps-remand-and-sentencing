@@ -1885,7 +1885,6 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const offence = this.getSessionOffenceOrAppearanceOffence(req, nomsId, courtCaseReference, offenceReference)
     const offenceMap = await this.manageOffencesService.getOffenceMap([offence.offenceCode], req.user.token)
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     let sentenceType: string
     if (offence.sentence) {
       if (offence.sentence.sentenceTypeId) {
@@ -1897,15 +1896,6 @@ export default class OffenceRoutes extends BaseRoutes {
     let outcome
     if (offence.outcomeUuid) {
       outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
-    }
-
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
-    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
-      } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
-      }
     }
 
     return res.render('pages/offence/edit-offence', {
@@ -1922,7 +1912,6 @@ export default class OffenceRoutes extends BaseRoutes {
       outcome,
       periodLengthTypeHeadings,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      backLink,
     })
   }
 

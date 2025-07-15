@@ -100,7 +100,7 @@ context('New Court Case journey', () => {
     courtCaseReferencePage.input().type('T12345678')
     courtCaseReferencePage.continueButton().click()
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
     courtCaseWarrantDatePage.continueButton().click()
@@ -127,7 +127,7 @@ context('New Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
       'Case reference': 'T12345678',
-      'Warrant date': '12/05/2023',
+      'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
       'Is the outcome the same for all offences on the warrant?': 'No',
@@ -171,7 +171,7 @@ context('New Court Case journey', () => {
     offenceOffenceCodePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
       'Court name': 'Accrington Youth Court',
-      'Warrant date': '12/05/2023',
+      'Warrant date': '13/05/2023',
       'Overall case outcome': 'Remanded in custody',
     })
     offenceOffenceCodePage.input().type('PS90037')

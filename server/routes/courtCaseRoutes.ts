@@ -422,7 +422,9 @@ export default class CourtCaseRoutes {
       nomsId,
       warrantDateForm,
       courtCaseReference,
+      appearanceReference,
       addOrEditCourtCase,
+      addOrEditCourtAppearance,
       username,
     )
     if (errors.length > 0) {

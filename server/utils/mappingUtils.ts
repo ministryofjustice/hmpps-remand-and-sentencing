@@ -462,36 +462,3 @@ export function draftCourtAppearanceToCourtAppearance(draftAppearance: DraftCour
   appearance.existingDraft = true
   return appearance
 }
-
-export function draftCourtAppearanceToPageCourtAppearance(
-  draftAppearance: DraftCourtAppearance,
-): PageCourtCaseAppearance {
-  const blobAsCourtAppearance = <CourtAppearance>(<unknown>draftAppearance.sessionBlob)
-
-  return {
-    charges: [],
-    appearanceUuid: draftAppearance.draftUuid,
-    /** Format: uuid */
-    // lifetimeUuid: string
-    outcome: {
-      outcomeUuid: blobAsCourtAppearance.appearanceOutcomeUuid,
-      outcomeName: 'draft',
-      nomisCode: null,
-      outcomeType: null,
-      displayOrder: null,
-      relatedChargeOutcomeUuid: null,
-      isSubList: null,
-    },
-    courtCode: blobAsCourtAppearance.courtCode,
-    courtCaseReference: blobAsCourtAppearance.caseReferenceNumber,
-    /** Format: date */
-    appearanceDate: String(blobAsCourtAppearance.warrantDate),
-    warrantId: blobAsCourtAppearance.warrantId,
-    warrantType: blobAsCourtAppearance.warrantType,
-    /** Format: int32 */
-    // nextCourtAppearance?: components['schemas']['NextCourtAppearance']
-    // charges: components['schemas']['Charge'][]
-    /** Format: date */
-    overallConvictionDate: String(blobAsCourtAppearance.overallConvictionDate),
-  }
-}

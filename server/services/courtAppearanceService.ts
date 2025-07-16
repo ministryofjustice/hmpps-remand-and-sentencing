@@ -217,6 +217,7 @@ export default class CourtAppearanceService {
   ): Promise<{ text: string; href: string }[] | null> {
     let latestOffenceDate = null
     if (addOrEditCourtCase === 'edit-court-case') {
+      // For the edit-court-appearance journey we omit the the appearance from getLatestOffenceDate call
       const latestOffenceDateStr =
         addOrEditCourtAppearance === 'add-court-appearance'
           ? await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(courtCaseReference, username)

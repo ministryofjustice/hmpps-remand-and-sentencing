@@ -192,10 +192,12 @@ export default class CourtCaseRoutes {
       }),
     )
 
-    courtCaseDetails.latestAppearance.documents.forEach(elem => {
-      this.courtAppearanceService.addUploadedDocument(req.session, nomsId, elem)
-    })
-    const documentsWithUiType = courtCaseDetails.latestAppearance.documents.map(document => ({
+    if (Array.isArray(courtCaseDetails.latestAppearance?.documents)) {
+      courtCaseDetails.latestAppearance.documents.forEach(elem => {
+        this.courtAppearanceService.addUploadedDocument(req.session, nomsId, elem)
+      })
+    }
+    const documentsWithUiType = (courtCaseDetails.latestAppearance.documents ?? []).map(document => ({
       ...document,
       documentType: this.getUiDocumentType(document.documentType, courtCaseDetails.latestAppearance.warrantType),
     }))
@@ -1650,12 +1652,15 @@ export default class CourtCaseRoutes {
       res.end()
     }
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(
-        warrantType === 'SENTENCING'
-          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
-          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
-      )
+      let redirectPath: string
+      if (addOrEditCourtCase === 'edit-court-case') {
+        redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+      } else if (warrantType === 'SENTENCING') {
+        redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+      } else {
+        redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`
+      }
+      return res.redirect(redirectPath)
     }
   }
 

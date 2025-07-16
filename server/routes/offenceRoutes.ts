@@ -190,7 +190,16 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    if (Object.keys(offence).length === 0) {
+      const existingOffence = this.courtAppearanceService.getOffence(
+        req.session,
+        nomsId,
+        parseInt(offenceReference, 10),
+      )
+      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, existingOffence)
+      offence = existingOffence
+    }
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const caseOutcomes = await this.offenceOutcomeService.getAllOutcomes(req.user.username)
 
@@ -364,7 +373,8 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
-    const existingOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const existingOffence =
+      this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10)) ?? {}
     const { errors, outcome } = await this.offenceService.setOffenceOutcome(
       req.session,
       nomsId,
@@ -1275,7 +1285,11 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { submitToEditOffence, invalidatedFrom } = req.query
-    const forthwithAlreadySelected = this.courtAppearanceService.isForwithAlreadySelected(req.session, nomsId)
+    const forthwithAlreadySelected = this.courtAppearanceService.isForwithAlreadySelected(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+    )
     const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const sentenceServeType = sentence?.sentenceServeType
     const expectedPeriodLengthsSize =
@@ -1321,7 +1335,8 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const offenceSentenceServeTypeForm = trimForm<OffenceSentenceServeTypeForm>(req.body)
-    const existingOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const existingOffence =
+      this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10)) ?? {}
     const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
       req.session,
       nomsId,

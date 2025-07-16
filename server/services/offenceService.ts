@@ -621,6 +621,16 @@ export default class OffenceService {
     return errors
   }
 
+  getSentenceServeType(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const sentenceServeType = this.getOffence(session.offences, id).sentence?.sentenceServeType
+    return sentenceServeType ? `${sentenceServeType}` : undefined
+  }
+
   setSentenceServeType(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

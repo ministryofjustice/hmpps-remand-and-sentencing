@@ -1335,8 +1335,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const offenceSentenceServeTypeForm = trimForm<OffenceSentenceServeTypeForm>(req.body)
-    const existingOffence =
-      this.courtAppearanceService.getOffence(req.session, nomsId, parseInt(offenceReference, 10)) ?? {}
+    const existingSentenceServeType = this.offenceService.getSentenceServeType(req.session, nomsId, courtCaseReference)
     const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
       req.session,
       nomsId,
@@ -1348,7 +1347,7 @@ export default class OffenceRoutes extends BaseRoutes {
       courtCaseReference,
       offenceReference,
       offenceSentenceServeTypeForm,
-      existingOffence.sentence?.sentenceServeType,
+      existingSentenceServeType,
       sentenceIsInChain,
     )
 
@@ -1365,9 +1364,8 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (submitToEditOffence) {
       const newType = serveType
-      const oldType = existingOffence.sentence?.sentenceServeType
 
-      if (sentenceIsInChain && oldType !== newType) {
+      if (sentenceIsInChain && existingSentenceServeType !== newType) {
         if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)) {
           return res.redirect(`${redirectBase}/making-sentence-concurrent${submitQuery}`)
         }

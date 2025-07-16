@@ -2637,6 +2637,28 @@ export default {
     })
   },
 
+  stubGetLatestOffenceDateExcludeAppearance({
+    courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    appearanceUuidToExclude = 'a6400fd8-aef4-4567-b18c-d1f452651933',
+    latestOffenceDate = '2000-01-01',
+  }: {
+    courtCaseUuid?: string
+    appearanceUuidToExclude?: string
+    latestOffenceDate?: string
+  }) {
+    return stubFor({
+      request: {
+        method: 'GET',
+        url: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/latest-offence-date?appearanceUuidToExclude=${appearanceUuidToExclude}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: latestOffenceDate,
+      },
+    })
+  },
+
   stubUploadDocument: (): SuperAgentRequest => {
     return stubFor({
       request: {

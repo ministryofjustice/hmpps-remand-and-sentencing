@@ -6,21 +6,10 @@ import { HmppsAuthClient } from '../data'
 export default class DocumentManagementService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
-  async uploadWarrant(
-    prisonerId: string,
-    fileToUpload: Express.Multer.File,
-    username: string,
-    activeCaseLoadId: string,
-  ): Promise<string> {
+  async uploadWarrant(prisonerId: string, fileToUpload: Express.Multer.File, username: string): Promise<string> {
     const documentId = crypto.randomUUID()
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    await new DocumentManagementApiClient(token).uploadWarrantDocument(
-      prisonerId,
-      documentId,
-      fileToUpload,
-      username,
-      activeCaseLoadId,
-    )
+    await new DocumentManagementApiClient(token).uploadWarrantDocument(prisonerId, documentId, fileToUpload, username)
     fs.unlinkSync(fileToUpload.path)
     return documentId
   }
@@ -29,7 +18,6 @@ export default class DocumentManagementService {
     prisonerId: string,
     fileToUpload: Express.Multer.File,
     username: string,
-    activeCaseLoadId: string,
     documentType: string,
   ): Promise<string> {
     const documentId = crypto.randomUUID()
@@ -41,7 +29,6 @@ export default class DocumentManagementService {
         documentId,
         fileToUpload,
         username,
-        activeCaseLoadId,
         documentType,
       )
       fs.unlinkSync(fileToUpload.path)
@@ -51,19 +38,19 @@ export default class DocumentManagementService {
     }
   }
 
-  async deleteDocument(documentId: string, username: string, activeCaseLoadId: string): Promise<void> {
+  async deleteDocument(documentId: string, username: string): Promise<void> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      await new DocumentManagementApiClient(token).deleteDocument(documentId, username, activeCaseLoadId)
+      await new DocumentManagementApiClient(token).deleteDocument(documentId, username)
     } catch (error) {
       throw new Error(`Failed to delete document: ${error.message}`)
     }
   }
 
-  async downloadDocument(documentId: string, username: string, activeCaseLoadId: string): Promise<Buffer> {
+  async downloadDocument(documentId: string, username: string): Promise<Buffer> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      return await new DocumentManagementApiClient(token).downloadDocument(documentId, username, activeCaseLoadId)
+      return await new DocumentManagementApiClient(token).downloadDocument(documentId, username)
     } catch (error) {
       throw new Error(`Failed to download document: ${error.message}`)
     }

@@ -13,7 +13,6 @@ export default class DocumentManagementApiClient {
     documentId: string,
     file: Express.Multer.File,
     username: string,
-    activeCaseLoadId: string,
   ): Promise<void> {
     return (await this.restClient.postMultiPart({
       path: `/documents/HMCTS_WARRANT/${documentId}`,
@@ -25,7 +24,6 @@ export default class DocumentManagementApiClient {
       headers: {
         'Service-Name': 'Remand and Sentencing',
         Username: username,
-        ...(activeCaseLoadId && { 'Active-Case-Load-Id': activeCaseLoadId }),
       },
     })) as void
   }
@@ -35,7 +33,6 @@ export default class DocumentManagementApiClient {
     documentId: string,
     file: Express.Multer.File,
     username: string,
-    activeCaseLoadId: string,
     documentType: string,
   ): Promise<void> {
     try {
@@ -48,7 +45,6 @@ export default class DocumentManagementApiClient {
         headers: {
           'Service-Name': 'Remand and Sentencing',
           Username: username,
-          ...(activeCaseLoadId && { 'Active-Case-Load-Id': activeCaseLoadId }),
         },
       })
     } catch (error) {
@@ -56,14 +52,13 @@ export default class DocumentManagementApiClient {
     }
   }
 
-  async deleteDocument(documentId: string, username: string, activeCaseLoadId: string): Promise<void> {
+  async deleteDocument(documentId: string, username: string): Promise<void> {
     try {
       await this.restClient.delete({
         path: `/documents/${documentId}`,
         headers: {
           'Service-Name': 'Remand and Sentencing',
           Username: username,
-          'Active-Case-Load-Id': activeCaseLoadId,
         },
       })
     } catch (error) {
@@ -71,7 +66,7 @@ export default class DocumentManagementApiClient {
     }
   }
 
-  async downloadDocument(documentId: string, username: string, activeCaseLoadId: string): Promise<Buffer> {
+  async downloadDocument(documentId: string, username: string): Promise<Buffer> {
     try {
       return await this.restClient.get({
         path: `/documents/${documentId}/file`,
@@ -79,7 +74,6 @@ export default class DocumentManagementApiClient {
         headers: {
           'Service-Name': 'Remand and Sentencing',
           Username: username,
-          ...(activeCaseLoadId && { 'Active-Case-Load-Id': activeCaseLoadId }),
         },
       })
     } catch (error) {

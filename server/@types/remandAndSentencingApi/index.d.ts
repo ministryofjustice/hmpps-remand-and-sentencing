@@ -1332,8 +1332,30 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/document-admin/cleanup': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Deletes uploaded documents without an appearance ID
+     * @description Deletes all uploaded documents where the appearance ID is null
+     */
+    delete: operations['cleanupDocument']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
+
 export type webhooks = Record<string, never>
+
 export interface components {
   schemas: {
     CreateRecall: {
@@ -1414,6 +1436,7 @@ export interface components {
         | 'COURT_APPEARANCE_UPDATED'
         | 'COURT_APPEARANCE_DELETED'
         | 'SENTENCE_INSERTED'
+        | 'SENTENCE_FIX_SINGLE_CHARGE_INSERTED'
         | 'SENTENCE_UPDATED'
         | 'SENTENCE_DELETED'
         | 'LEGACY_COURT_CASE_REFERENCES_UPDATED'
@@ -1428,6 +1451,7 @@ export interface components {
       sentenceIds?: string[]
       previousRecallId?: string
       previousSentenceIds?: string[]
+      originalSentenceId?: string
     }
     UnlinkEventsToEmit: {
       courtCaseEventMetadata?: components['schemas']['EventMetadata']
@@ -1451,7 +1475,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 09:47:32.096923681 */
+      /** @example 11:39:45.605915464 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1560,7 +1584,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:47:32.096923681 */
+      /** @example 11:39:45.605915464 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2013,6 +2037,7 @@ export interface components {
       /** Format: date */
       overallConvictionDate?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
+      documents: components['schemas']['UploadedDocument'][]
     }
     CourtAppearanceOutcome: {
       /** Format: uuid */
@@ -2041,7 +2066,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:47:32.096923681 */
+      /** @example 11:39:45.605915464 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -2236,7 +2261,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:47:32.096923681 */
+      /** @example 11:39:45.605915464 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -2244,7 +2269,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:47:32.096923681 */
+      /** @example 11:39:45.605915464 */
       appearanceTime?: string
       courtId: string
     }
@@ -2277,7 +2302,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:47:32.096923681 */
+      /** @example 11:39:45.605915464 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -2295,7 +2320,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:47:32.096923681 */
+      /** @example 11:39:45.605915464 */
       appearanceTime?: string
       courtId: string
     }
@@ -2545,7 +2570,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:47:32.096923681 */
+      /** @example 11:39:45.605915464 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -2618,7 +2643,9 @@ export interface components {
   headers: never
   pathItems: never
 }
+
 export type $defs = Record<string, never>
+
 export interface operations {
   getRecall: {
     parameters: {
@@ -6021,6 +6048,24 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  cleanupDocument: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Cleanup completed */
+      200: {
         headers: {
           [name: string]: unknown
         }

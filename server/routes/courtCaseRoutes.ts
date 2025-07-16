@@ -191,12 +191,24 @@ export default class CourtCaseRoutes {
         return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
       }),
     )
+
+    if (Array.isArray(courtCaseDetails.latestAppearance?.documents)) {
+      courtCaseDetails.latestAppearance.documents.forEach(elem => {
+        this.courtAppearanceService.addUploadedDocument(req.session, nomsId, elem)
+      })
+    }
+    const documentsWithUiType = (courtCaseDetails.latestAppearance.documents ?? []).map(document => ({
+      ...document,
+      documentType: this.getUiDocumentType(document.documentType, courtCaseDetails.latestAppearance.warrantType),
+    }))
+
     return res.render('pages/courtCaseDetails', {
       nomsId,
       courtCaseReference,
       addOrEditCourtCase,
       courtCaseDetails: new CourtCaseDetailsModel(courtCaseDetails),
       offenceMap,
+      documentsWithUiType,
       courtMap,
       consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}`,
@@ -815,10 +827,10 @@ export default class CourtCaseRoutes {
   public submitWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const { username } = res.locals.user as PrisonUser
 
     if (req.file) {
-      const warrantId = await this.documentManagementService.uploadWarrant(nomsId, req.file, username, activeCaseLoadId)
+      const warrantId = await this.documentManagementService.uploadWarrant(nomsId, req.file, username)
       this.courtAppearanceService.setWarrantId(req.session, nomsId, warrantId)
     }
 
@@ -1519,7 +1531,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       documentType,
     } = req.params
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const { username } = res.locals.user as PrisonUser
     const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
     const uploadedFile = (req.files as Express.Multer.File[])?.[0]
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
@@ -1538,7 +1550,6 @@ export default class CourtCaseRoutes {
         nomsId,
         uploadedFile,
         username,
-        activeCaseLoadId,
         documentTypeName,
       )
 
@@ -1589,27 +1600,24 @@ export default class CourtCaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+
     const document: UploadedDocument | undefined = this.courtAppearanceService.getUploadedDocument(
       req.session,
       nomsId,
       documentId,
     )
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const { username } = res.locals.user as PrisonUser
     let errors = []
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
 
     if (!document) {
       errors = [{ text: 'Document not found.' }]
     }
 
     let fileStream: Readable | undefined
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
 
     try {
-      const result = await this.documentManagementService.downloadDocument(
-        document.documentUUID,
-        username,
-        activeCaseLoadId,
-      )
+      const result = await this.documentManagementService.downloadDocument(documentId, username)
 
       if (result instanceof Readable) {
         fileStream = result
@@ -1618,7 +1626,7 @@ export default class CourtCaseRoutes {
         fileStream.push(result)
         fileStream.push(null)
       } else {
-        logger.error(`Document management service returned unexpected type for documentId: ${document.documentUUID}`)
+        logger.error(`Document management service returned unexpected type for documentId: ${documentId}`)
         throw new Error('Failed to retrieve document content.')
       }
 
@@ -1635,7 +1643,7 @@ export default class CourtCaseRoutes {
       })
 
       fileStream.on('end', () => {
-        logger.info(`Successfully streamed document ${document.documentUUID} to client.`)
+        logger.info(`Successfully streamed document ${documentId} to client.`)
       })
     } catch (error) {
       logger.error(`Error downloading document ${documentId}: ${error.message}`)
@@ -1645,12 +1653,15 @@ export default class CourtCaseRoutes {
       res.end()
     }
     if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(
-        warrantType === 'SENTENCING'
-          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
-          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
-      )
+      let redirectPath: string
+      if (addOrEditCourtCase === 'edit-court-case') {
+        redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+      } else if (warrantType === 'SENTENCING') {
+        redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+      } else {
+        redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`
+      }
+      return res.redirect(redirectPath)
     }
   }
 
@@ -1690,7 +1701,7 @@ export default class CourtCaseRoutes {
       documentId,
     } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const { username } = res.locals.user as PrisonUser
     const deleteDocumentForm = trimForm<DeleteDocumentForm>(req.body)
     const errors = await this.courtAppearanceService.removeUploadedDocument(
       req.session,
@@ -1698,7 +1709,6 @@ export default class CourtCaseRoutes {
       documentId,
       deleteDocumentForm,
       username,
-      activeCaseLoadId,
     )
 
     if (errors.length > 0) {
@@ -1744,6 +1754,21 @@ export default class CourtCaseRoutes {
         return 'prison court register'
       default:
         return 'court document'
+    }
+  }
+
+  private getUiDocumentType(documentType: string, warrantType: string): string {
+    switch (documentType) {
+      case 'HMCTS_WARRANT':
+        return warrantType === 'SENTENCING' ? 'Sentencing Warrant' : 'Remand Warrant'
+      case 'TRIAL_RECORD_SHEET':
+        return 'Trial Record Sheet'
+      case 'INDICTMENT':
+        return 'Indictment Document'
+      case 'PRISON_COURT_REGISTER':
+        return 'Prison Court Register'
+      default:
+        return 'Court Document'
     }
   }
 

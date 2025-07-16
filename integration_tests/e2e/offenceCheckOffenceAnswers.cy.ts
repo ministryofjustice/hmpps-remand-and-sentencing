@@ -191,16 +191,16 @@ context('Check Offence Answers Page', () => {
           outcomeType: 'NON_CUSTODIAL',
         },
       ])
-      cy.visit(
-        '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome?submitToEditOffence=true',
-      )
+      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
+      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'offence-outcome').click()
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',
       )
       offenceOffenceOutcomePage.radioLabelContains('Lie on file').click()
       offenceOffenceOutcomePage.continueButton().click()
-      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
       offenceCheckOffenceAnswersPage

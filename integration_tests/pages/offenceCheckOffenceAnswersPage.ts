@@ -32,7 +32,7 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
     offenceId: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${offenceId}/edit-offence"]`,
+      `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${offenceId}/load-edit-offence"]`,
     )
 
   finishAddingButton = (): PageElement => cy.get('[data-qa="finishAddingButton"]')

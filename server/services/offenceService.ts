@@ -621,6 +621,16 @@ export default class OffenceService {
     return errors
   }
 
+  getSentenceServeType(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    courtCaseReference: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const sentenceServeType = this.getOffence(session.offences, id).sentence?.sentenceServeType
+    return sentenceServeType ? `${sentenceServeType}` : undefined
+  }
+
   setSentenceServeType(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
@@ -685,7 +695,6 @@ export default class OffenceService {
     offenceConvictionDateForm: OffenceConvictionDateForm,
     addOrEditCourtAppearance: string,
     warrantDate: Date,
-    offence: Offence,
   ): {
     text?: string
     html?: string
@@ -729,6 +738,7 @@ export default class OffenceService {
         day: offenceConvictionDateForm['convictionDate-day'],
       })
       const id = this.getOffenceId(nomsId, courtCaseReference)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, offenceReference)
 
       if (addOrEditCourtAppearance === 'add-court-appearance') {
@@ -764,7 +774,7 @@ export default class OffenceService {
       }
 
       sentence.convictionDate = convictionDate.toDate()
-      // eslint-disable-next-line no-param-reassign
+
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

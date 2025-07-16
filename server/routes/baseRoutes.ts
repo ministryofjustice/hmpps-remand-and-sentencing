@@ -1,4 +1,3 @@
-import deepmerge from 'deepmerge'
 import type { Offence } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import dayjs from 'dayjs'
@@ -35,21 +34,6 @@ export default abstract class BaseRoutes {
 
   protected isEditJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
     return addOrEditCourtCase === 'edit-court-case' && addOrEditCourtAppearance === 'edit-court-appearance'
-  }
-
-  protected getSessionOffenceOrAppearanceOffence(
-    req,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceReference: string,
-  ): Offence {
-    const appearanceOffence = this.courtAppearanceService.getOffence(
-      req.session,
-      nomsId,
-      parseInt(offenceReference, 10),
-    )
-    const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    return deepmerge(appearanceOffence, sessionOffence, { arrayMerge: (_target, source, _options) => source })
   }
 
   protected saveOffenceInAppearance(

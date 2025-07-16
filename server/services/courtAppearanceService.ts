@@ -883,9 +883,16 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId)
   }
 
-  isForwithAlreadySelected(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+  isForwithAlreadySelected(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    excludeOffenceReference: number,
+  ): boolean {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
-    return courtAppearance.offences.some(offence => offence.sentence?.sentenceServeType === 'FORTHWITH')
+    const offences = Object.assign([], courtAppearance.offences)
+
+    offences.splice(excludeOffenceReference, 1)
+    return offences.some(offence => offence.sentence?.sentenceServeType === 'FORTHWITH')
   }
 
   hasNoSentences(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {

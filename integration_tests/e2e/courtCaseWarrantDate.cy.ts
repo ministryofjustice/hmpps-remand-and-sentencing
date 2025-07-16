@@ -195,7 +195,6 @@ context('Court Case Warrant Date Page', () => {
           outcomeType: 'REMAND',
         },
       ])
-      cy.task('stubGetLatestOffenceDate', {})
       cy.signIn()
       cy.visit('/person/A1234AB')
       cy.task('stubGetAppearanceOutcomeById', {})
@@ -207,6 +206,7 @@ context('Court Case Warrant Date Page', () => {
       })
       cy.task('stubGetCourtCaseRemandLatest')
       cy.task('stubGetRemandAppearanceDetails', 'a6400fd8-aef4-4567-b18c-d1f452651933')
+      cy.task('stubGetLatestOffenceDateExcludeAppearance', {})
     })
 
     it('Edit Remand journey validation - warrant date must be after offence dates', () => {
@@ -288,6 +288,29 @@ context('Court Case Warrant Date Page', () => {
       enterWarrantDate(courtCaseWarrantDatePage, '18', '12', '2023')
       Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
+
+    it('Run validation against next hearing date', () => {
+      // Latest offence date has been mocked to return 15-12-2024
+      const startPage = Page.verifyOnPage(StartPage)
+      startPage.editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
+      const courtCaseDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseDetailsPage,
+        'Appearances for C894623 at Accrington Youth Court',
+      )
+
+      courtCaseDetailsPage
+        .editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
+        .click()
+
+      const courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      editWarrantDate(courtCaseAppearanceDetailsPage)
+
+      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      enterWarrantDate(courtCaseWarrantDatePage, '15', '12', '2024')
+      expectHearingDateError(courtCaseWarrantDatePage)
+      enterWarrantDate(courtCaseWarrantDatePage, '14', '12', '2024')
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+    })
   })
 })
 
@@ -303,6 +326,13 @@ function expectWarrantDateError(page) {
     .errorSummary()
     .trimTextContent()
     .should('equal', 'There is a problem The warrant date must be after any existing offence dates in the court case')
+}
+
+function expectHearingDateError(page) {
+  page
+    .errorSummary()
+    .trimTextContent()
+    .should('equal', 'There is a problem The warrant date must be before the next court appearance date')
 }
 
 function editWarrantDate(page) {

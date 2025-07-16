@@ -298,9 +298,13 @@ export default class RemandAndSentencingApiClient {
     })) as unknown as Promise<void>
   }
 
-  async getLatestOffenceDateForCourtCase(courtCaseUuid: string): Promise<string | null> {
+  async getLatestOffenceDateForCourtCase(
+    courtCaseUuid: string,
+    appearanceUuidToExclude?: string,
+  ): Promise<string | null> {
+    const query = appearanceUuidToExclude ? `?appearanceUuidToExclude=${appearanceUuidToExclude}` : ''
     const result = await this.restClient.get<string>({
-      path: `/court-case/${courtCaseUuid}/latest-offence-date`,
+      path: `/court-case/${courtCaseUuid}/latest-offence-date${query}`,
     })
     return result ?? null
   }

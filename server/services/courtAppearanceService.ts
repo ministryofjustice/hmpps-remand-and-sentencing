@@ -908,7 +908,11 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
+      const existingOffence = { ...courtAppearance.offences[offenceReference] }
       courtAppearance.offences[offenceReference] = offence
+      if (existingOffence.sentence && !offence.sentence) {
+        this.resetChain(existingOffence.sentence.sentenceReference, courtAppearance)
+      }
     } else {
       courtAppearance.offences.push(offence)
     }
@@ -1271,26 +1275,31 @@ export default class CourtAppearanceService {
     if (courtAppearance.offences.length > offenceReference) {
       const { sentenceReference } = courtAppearance.offences[offenceReference].sentence
       offences.splice(offenceReference, 1)
-      let nextSentenceInChainIndex = offences.findIndex(
-        offence => offence.sentence.consecutiveToSentenceReference === sentenceReference,
-      )
-      while (nextSentenceInChainIndex !== -1) {
-        const nextChainOffence = courtAppearance.offences[nextSentenceInChainIndex]
-        const { sentence } = nextChainOffence
-        const nextSentenceInChainSentenceReference = sentence.sentenceReference
-        delete sentence.consecutiveToSentenceReference
-        delete sentence.consecutiveToSentenceUuid
-        delete sentence.sentenceServeType
-        delete sentence.isSentenceConsecutiveToAnotherCase
-        nextChainOffence.sentence = sentence
-        offences[nextSentenceInChainIndex] = nextChainOffence
-        nextSentenceInChainIndex = offences.findIndex(
-          offence => offence.sentence.consecutiveToSentenceReference === nextSentenceInChainSentenceReference,
-        )
-      }
+      this.resetChain(sentenceReference, courtAppearance)
       courtAppearance.offences = offences
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
+    }
+  }
+
+  private resetChain(deletedSentenceReference: string, courtAppearance: CourtAppearance) {
+    const { offences } = courtAppearance
+    let nextSentenceInChainIndex = offences.findIndex(
+      offence => offence.sentence?.consecutiveToSentenceReference === deletedSentenceReference,
+    )
+    while (nextSentenceInChainIndex !== -1) {
+      const nextChainOffence = courtAppearance.offences[nextSentenceInChainIndex]
+      const { sentence } = nextChainOffence
+      const nextSentenceInChainSentenceReference = sentence.sentenceReference
+      delete sentence.consecutiveToSentenceReference
+      delete sentence.consecutiveToSentenceUuid
+      delete sentence.sentenceServeType
+      delete sentence.isSentenceConsecutiveToAnotherCase
+      nextChainOffence.sentence = sentence
+      offences[nextSentenceInChainIndex] = nextChainOffence
+      nextSentenceInChainIndex = offences.findIndex(
+        offence => offence.sentence?.consecutiveToSentenceReference === nextSentenceInChainSentenceReference,
+      )
     }
   }
 

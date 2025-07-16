@@ -173,21 +173,18 @@ export default class CourtAppearanceService {
         day: courtCaseWarrantDateForm['warrantDate-day'],
       })
 
-      if (addOrEditCourtCase === 'edit-court-case') {
-        const offenceDateErrors =
-          addOrEditCourtAppearance === 'add-court-appearance'
-            ? await this.validateAgainstLatestOffence(warrantDate, courtCaseReference, username)
-            : await this.validateAgainstLatestOffenceIncludingSession(
-                warrantDate,
-                courtCaseReference,
-                appearanceReference,
-                username,
-                session,
-                nomsId,
-              )
+      const offenceDateErrors = await this.validateAgainstLatestOffence(
+        warrantDate,
+        courtCaseReference,
+        appearanceReference,
+        username,
+        session,
+        nomsId,
+        addOrEditCourtCase,
+        addOrEditCourtAppearance,
+      )
 
-        if (offenceDateErrors) return offenceDateErrors
-      }
+      if (offenceDateErrors) return offenceDateErrors
 
       if (courtAppearance.nextHearingDate) {
         const nextHearingDate = dayjs(courtAppearance.nextHearingDate)
@@ -211,40 +208,25 @@ export default class CourtAppearanceService {
   private async validateAgainstLatestOffence(
     warrantDate: dayjs.Dayjs,
     courtCaseReference: string,
-    username: string,
-  ): Promise<{ text: string; href: string }[] | null> {
-    const latestOffenceDateStr = await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
-      courtCaseReference,
-      username,
-    )
-    if (latestOffenceDateStr) {
-      const latestOffenceDate = dayjs(latestOffenceDateStr)
-      if (!warrantDate.isAfter(latestOffenceDate)) {
-        return [
-          {
-            text: `The warrant date must be after any existing offence dates in the court case`,
-            href: '#warrantDate',
-          },
-        ]
-      }
-    }
-    return null
-  }
-
-  private async validateAgainstLatestOffenceIncludingSession(
-    warrantDate: dayjs.Dayjs,
-    courtCaseReference: string,
     appearanceReference: string,
     username: string,
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
+    addOrEditCourtCase: string,
+    addOrEditCourtAppearance: string,
   ): Promise<{ text: string; href: string }[] | null> {
-    const latestOffenceDateStr = await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
-      courtCaseReference,
-      username,
-      appearanceReference,
-    )
-    const latestOffenceDate = latestOffenceDateStr ? dayjs(latestOffenceDateStr) : null
+    let latestOffenceDate = null
+    if (addOrEditCourtCase === 'edit-court-case') {
+      const latestOffenceDateStr =
+        addOrEditCourtAppearance === 'add-court-appearance'
+          ? await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(courtCaseReference, username)
+          : await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
+              courtCaseReference,
+              username,
+              appearanceReference,
+            )
+      latestOffenceDate = latestOffenceDateStr ? dayjs(latestOffenceDateStr) : null
+    }
 
     const sessionOffenceDateRaw = this.getLatestOffenceDateInSession(session, nomsId)
     const sessionOffenceDate = sessionOffenceDateRaw ? dayjs(sessionOffenceDateRaw) : null

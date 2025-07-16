@@ -825,10 +825,10 @@ export default class CourtCaseRoutes {
   public submitWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const { username } = res.locals.user as PrisonUser
 
     if (req.file) {
-      const warrantId = await this.documentManagementService.uploadWarrant(nomsId, req.file, username, activeCaseLoadId)
+      const warrantId = await this.documentManagementService.uploadWarrant(nomsId, req.file, username)
       this.courtAppearanceService.setWarrantId(req.session, nomsId, warrantId)
     }
 
@@ -1529,7 +1529,7 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       documentType,
     } = req.params
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const { username } = res.locals.user as PrisonUser
     const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
     const uploadedFile = (req.files as Express.Multer.File[])?.[0]
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
@@ -1548,7 +1548,6 @@ export default class CourtCaseRoutes {
         nomsId,
         uploadedFile,
         username,
-        activeCaseLoadId,
         documentTypeName,
       )
 
@@ -1605,7 +1604,7 @@ export default class CourtCaseRoutes {
       nomsId,
       documentId,
     )
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const { username } = res.locals.user as PrisonUser
     let errors = []
 
     if (!document) {
@@ -1616,7 +1615,7 @@ export default class CourtCaseRoutes {
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
 
     try {
-      const result = await this.documentManagementService.downloadDocument(documentId, username, activeCaseLoadId)
+      const result = await this.documentManagementService.downloadDocument(documentId, username)
 
       if (result instanceof Readable) {
         fileStream = result
@@ -1700,7 +1699,7 @@ export default class CourtCaseRoutes {
       documentId,
     } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
-    const { username, activeCaseLoadId } = res.locals.user as PrisonUser
+    const { username } = res.locals.user as PrisonUser
     const deleteDocumentForm = trimForm<DeleteDocumentForm>(req.body)
     const errors = await this.courtAppearanceService.removeUploadedDocument(
       req.session,
@@ -1708,7 +1707,6 @@ export default class CourtCaseRoutes {
       documentId,
       deleteDocumentForm,
       username,
-      activeCaseLoadId,
     )
 
     if (errors.length > 0) {

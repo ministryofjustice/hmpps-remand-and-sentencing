@@ -1008,7 +1008,6 @@ export default class CourtAppearanceService {
     documentId: string,
     deleteDocumentForm: DeleteDocumentForm,
     username: string,
-    activeCaseLoadId: string,
   ): Promise<
     {
       text?: string
@@ -1027,7 +1026,7 @@ export default class CourtAppearanceService {
     )
     if (deleteDocumentForm.deleteDocument === 'true') {
       try {
-        await this.documentManagementService.deleteDocument(documentId, username, activeCaseLoadId)
+        await this.documentManagementService.deleteDocument(documentId, username)
         const courtAppearance = this.getCourtAppearance(session, nomsId)
         if (courtAppearance.uploadedDocuments) {
           courtAppearance.uploadedDocuments = courtAppearance.uploadedDocuments.filter(

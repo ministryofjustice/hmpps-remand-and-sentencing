@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import CourtCaseNextHearingDatePage from '../pages/courtCaseNextHearingDatePage'
 import Page from '../pages/page'
 
@@ -70,5 +71,17 @@ context('Next hearing date page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem The next court date must be in the future')
+  })
+
+  it('submitting over 1 year away results in an error', () => {
+    const futureDate = dayjs().add(1, 'year').add(1, 'day')
+    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type(futureDate.date().toString())
+    courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type((futureDate.month() + 1).toString())
+    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type(futureDate.year().toString())
+    courtCaseNextHearingDatePage.continueButton().click()
+    courtCaseNextHearingDatePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem The next court appearance must be within 1 year of today’s date')
   })
 })

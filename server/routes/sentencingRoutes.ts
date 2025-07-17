@@ -12,7 +12,7 @@ import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import trimForm from '../utils/trim'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
-import { extractKeyValue } from '../utils/utils'
+import { extractKeyValue, getUiDocumentType } from '../utils/utils'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtRegisterService from '../services/courtRegisterService'
 
@@ -265,6 +265,11 @@ export default class SentencingRoutes extends BaseRoutes {
       nomsId,
       offenceMap,
     )
+
+    const documentsWithUiType = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId).map(document => ({
+      ...document,
+      documentType: getUiDocumentType(document.documentType, appearance.warrantType),
+    }))
     return res.render('pages/sentencing/appearance-details', {
       nomsId,
       courtCaseReference,
@@ -283,6 +288,7 @@ export default class SentencingRoutes extends BaseRoutes {
       nonCustodialOffences,
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
+      documentsWithUiType,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }
@@ -694,7 +700,9 @@ export default class SentencingRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      addOrEditCourtAppearance === 'edit-court-appearance'
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
   }
 

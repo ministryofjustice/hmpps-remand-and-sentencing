@@ -403,6 +403,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     relatedOffenceOutcomeUuid: pageCourtCaseAppearance.outcome?.relatedChargeOutcomeUuid,
     warrantType: pageCourtCaseAppearance.warrantType,
     warrantId: pageCourtCaseAppearance.warrantId,
+    uploadedDocuments: pageCourtCaseAppearance.documents,
     ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
     offences,
     ...(pageCourtCaseAppearance.overallSentenceLength && {

@@ -128,3 +128,18 @@ export const sortByDateDesc = (a: string | undefined | Date, b: string | undefin
 export const extractKeyValue = (object, value: string) => {
   return Object.keys(object)[Object.values(object).indexOf(value)]
 }
+
+export function getUiDocumentType(documentType: string, warrantType: string): string {
+  switch (documentType) {
+    case 'HMCTS_WARRANT':
+      return warrantType === 'SENTENCING' ? 'Sentencing Warrant' : 'Remand Warrant'
+    case 'TRIAL_RECORD_SHEET':
+      return 'Trial Record Sheet'
+    case 'INDICTMENT':
+      return 'Indictment Document'
+    case 'PRISON_COURT_REGISTER':
+      return 'Prison Court Register'
+    default:
+      return 'Court Document'
+  }
+}

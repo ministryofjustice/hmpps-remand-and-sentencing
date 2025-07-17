@@ -9,6 +9,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtRegisterService from '../services/courtRegisterService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
+import { getUiDocumentType } from '../utils/utils'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -99,6 +100,10 @@ export default class RemandRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
+    const documentsWithUiType = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId).map(document => ({
+      ...document,
+      documentType: getUiDocumentType(document.documentType, appearance.warrantType),
+    }))
     return res.render('pages/courtAppearance/appearance-details', {
       nomsId,
       courtCaseReference,
@@ -113,6 +118,7 @@ export default class RemandRoutes extends BaseRoutes {
       outcomeMap,
       appearanceTypeDescription,
       consecutiveToSentenceDetailsMap,
+      documentsWithUiType,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

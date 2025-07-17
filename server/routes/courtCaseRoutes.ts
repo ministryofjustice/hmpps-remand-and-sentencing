@@ -27,7 +27,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtCasesDetailsModel from './data/CourtCasesDetailsModel'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
-import { getAsStringOrDefault, outcomeValueOrLegacy, sortByDateDesc } from '../utils/utils'
+import { getAsStringOrDefault, outcomeValueOrLegacy, sortByDateDesc, getUiDocumentType } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
 import { chargeToOffence, draftCourtAppearanceToCourtAppearance } from '../utils/mappingUtils'
@@ -199,7 +199,7 @@ export default class CourtCaseRoutes {
     }
     const documentsWithUiType = (courtCaseDetails.latestAppearance.documents ?? []).map(document => ({
       ...document,
-      documentType: this.getUiDocumentType(document.documentType, courtCaseDetails.latestAppearance.warrantType),
+      documentType: getUiDocumentType(document.documentType, courtCaseDetails.latestAppearance.warrantType),
     }))
 
     return res.render('pages/courtCaseDetails', {
@@ -1486,7 +1486,9 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      addOrEditCourtAppearance === 'edit-court-appearance'
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
   }
 
@@ -1754,21 +1756,6 @@ export default class CourtCaseRoutes {
         return 'prison court register'
       default:
         return 'court document'
-    }
-  }
-
-  private getUiDocumentType(documentType: string, warrantType: string): string {
-    switch (documentType) {
-      case 'HMCTS_WARRANT':
-        return warrantType === 'SENTENCING' ? 'Sentencing Warrant' : 'Remand Warrant'
-      case 'TRIAL_RECORD_SHEET':
-        return 'Trial Record Sheet'
-      case 'INDICTMENT':
-        return 'Indictment Document'
-      case 'PRISON_COURT_REGISTER':
-        return 'Prison Court Register'
-      default:
-        return 'Court Document'
     }
   }
 

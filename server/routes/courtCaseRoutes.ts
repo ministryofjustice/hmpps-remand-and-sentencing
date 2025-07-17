@@ -417,6 +417,8 @@ export default class CourtCaseRoutes {
     const warrantDateForm = trimForm<CourtCaseWarrantDateForm>(req.body)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
     const { username } = res.locals.user
+    const { submitToCheckAnswers } = req.query
+    const submitToCheckAnswersQuery = submitToCheckAnswers ? `?submitToCheckAnswers=${submitToCheckAnswers}` : ''
     const errors = await this.courtAppearanceService.setWarrantDate(
       req.session,
       nomsId,
@@ -431,7 +433,7 @@ export default class CourtCaseRoutes {
       req.flash('errors', errors)
       req.flash('warrantDateForm', { ...warrantDateForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date${submitToCheckAnswersQuery}`,
       )
     }
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
@@ -444,7 +446,6 @@ export default class CourtCaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
-    const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,

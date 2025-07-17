@@ -13,6 +13,10 @@ import CourtCaseDetailsPage from '../pages/courtCaseDetailsPage'
 import CourtCaseAppearanceDetailsPage from '../pages/courtCaseAppearanceDetailsPage'
 import OffenceEditOffencePage from '../pages/offenceEditOffencePage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
+import CourtCaseTaskListPage from '../pages/courtCaseTaskListPage'
+import CourtCaseReferencePage from '../pages/courtCaseReferencePage'
+import CourtCaseOverallCaseOutcomePage from '../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseCaseOutcomeAppliedAllPage from '../pages/courtCaseCaseOutcomeAppliedAllPage'
 
 context('Court Case Warrant Date Page', () => {
   context('Add court case and add appearance journey', () => {
@@ -310,6 +314,72 @@ context('Court Case Warrant Date Page', () => {
       expectHearingDateError(courtCaseWarrantDatePage)
       enterWarrantDate(courtCaseWarrantDatePage, '14', '12', '2024')
       Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+    })
+  })
+  context('Tests for editing via check-your-answers whilst in the add journey', () => {
+    beforeEach(() => {
+      cy.task('happyPathStubs')
+      cy.task('stubSearchCourtCases', {})
+      cy.task('stubGetOffencesByCodes', {})
+      cy.task('stubGetCourtById', {})
+      cy.task('stubGetCourtsByIds')
+      cy.task('stubGetAllAppearanceOutcomes')
+      cy.task('stubGetAppearanceOutcomeById', {})
+      cy.signIn()
+      cy.visit('/person/A1234AB')
+    })
+    it('Changing warrant date after check-your-answers navigates correctly when there is a validation error', () => {
+      const startPage = Page.verifyOnPage(StartPage)
+      startPage.actionListLink().click()
+
+      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+      courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
+      courtCaseWarrantTypePage.continueButton().click()
+
+      const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
+      courtCaseTaskListPage.appearanceInformationLink().click()
+
+      const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+      courtCaseReferencePage.input().type('T12345678')
+      courtCaseReferencePage.continueButton().click()
+      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
+      courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+      courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+      courtCaseWarrantDatePage.continueButton().click()
+      const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
+      courtCaseCourtNamePage.autoCompleteInput().type('cou')
+      courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
+      courtCaseCourtNamePage.firstAutoCompleteOption().click()
+      courtCaseCourtNamePage.continueButton().click()
+
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
+
+      const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+      courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Remanded in custody')
+
+      courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
+      courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
+
+      const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+
+      courtCaseCheckAnswersPage.editFieldLink('A1234AB', 'add', '1', 'add', '0', 'warrant-date', true).click()
+
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('55')
+      courtCaseWarrantDatePage.continueButton().click()
+      courtCaseWarrantDatePage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem This date does not exist.')
+
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('15')
+      courtCaseWarrantDatePage.continueButton().click()
+      Page.verifyOnPage(CourtCaseCheckAnswersPage)
     })
   })
 })

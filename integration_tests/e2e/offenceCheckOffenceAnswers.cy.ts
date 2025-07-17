@@ -235,5 +235,58 @@ context('Check Offence Answers Page', () => {
         .trimTextContent()
         .should('equal', '! Warning There are missing count numbers. Please add these where possible')
     })
+
+    it('changing outcome from custodial to non custodial resets the consecutive chain', () => {
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+        outcomeName: 'Lie on file',
+        outcomeType: 'NON_CUSTODIAL',
+      })
+      cy.task('stubGetChargeOutcomesByIds', [
+        {
+          outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+          outcomeName: 'Lie on file',
+          outcomeType: 'NON_CUSTODIAL',
+        },
+        {
+          outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+          outcomeName: 'Imprisonment',
+          outcomeType: 'SENTENCING',
+        },
+      ])
+      cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
+      cy.task('stubGetCourtsByIds')
+      cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1')
+      offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+        OffenceCheckOffenceAnswersPage,
+        'You have added 2 offence',
+      )
+      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
+      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'offence-outcome').click()
+      const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+        OffenceOffenceOutcomePage,
+        'Select the outcome for this offence',
+      )
+      offenceOffenceOutcomePage.radioLabelContains('Lie on file').click()
+      offenceOffenceOutcomePage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.continueButton().click()
+      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
+      offenceCheckOffenceAnswersPage
+        .custodialOffences()
+        .getOffenceCards()
+        .should('deep.equal', [
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '10/05/2023',
+            'Conviction date': '12/05/2023',
+            Outcome: 'Imprisonment',
+            'Sentence length': '4 years 5 months 0 weeks 0 days',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Consecutive or concurrent': 'Select consecutive or current',
+          },
+        ])
+    })
   })
 })

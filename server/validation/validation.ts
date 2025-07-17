@@ -20,6 +20,7 @@ import isUniqueTimePeriod from './isUniqueTimePeriod'
 import atLeastOneNumberInString from './atLeastOneNumberInString'
 import isNotTrue from './isNotTrue'
 import isWithinLast100Years from './isWithinLast100Years'
+import isWithinNextOneYear from './isWithinNextOneYear'
 
 export default function validate<T>(
   form: T,
@@ -86,3 +87,4 @@ Validator.register(
   isWithinLast100Years,
   'All dates must be within the last 100 years from today’s date',
 )
+Validator.register('isWithinNextOneYear', isWithinNextOneYear, 'date must be within 1 year of today’s date')

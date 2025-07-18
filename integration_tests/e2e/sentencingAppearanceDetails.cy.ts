@@ -323,7 +323,7 @@ context('Sentencing appearance details Page', () => {
         cy.task('stubGetLatestCourtAppearanceWithSentencing', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
         cy.task('stubGetCourtById', {})
         cy.task('stubSearchSentenceTypes', {
-          convictionDate: '2025-07-17',
+          convictionDate: '2025-07-18',
           offenceDate: '2023-12-15',
           age: '60',
         })

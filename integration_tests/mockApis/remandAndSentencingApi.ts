@@ -2019,9 +2019,11 @@ export default {
   stubSearchSentenceTypes: ({
     convictionDate = '2023-05-12',
     offenceDate = '2023-05-10',
+    age = '58',
   }: {
     convictionDate: string
     offenceDate: string
+    age: string
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -2029,7 +2031,7 @@ export default {
         urlPath: '/remand-and-sentencing-api/sentence-type/search',
         queryParameters: {
           age: {
-            equalTo: '58',
+            equalTo: age,
           },
           convictionDate: {
             equalTo: convictionDate,
@@ -2057,6 +2059,12 @@ export default {
             description: 'EDS (Extended Determinate Sentence)',
             classification: 'EXTENDED',
             displayOrder: 50,
+          },
+          {
+            sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+            description: 'Imprisonment in Default of Fine',
+            classification: 'FINE',
+            displayOrder: 200,
           },
         ],
       },

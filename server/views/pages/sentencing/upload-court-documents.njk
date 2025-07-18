@@ -8,9 +8,13 @@
 {% block pageContent %}
 <div class="govuk-!-margin-right-8">
  <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-upload-court-documents">
+{% if addOrEditCourtAppearance == 'edit-court-appearance' %}
+  <h1 class="govuk-heading-l">Manage court documents</h1>
+{% else %}
   <h1 class="govuk-heading-l">Upload court documents</h1>
-  <p class="govuk-hint">
-    Uploading documents is optional. The selected file type should be among .PDF, .JPG, .DOC and .DOCX under 50MB.
+{% endif %}
+<p class="govuk-hint">
+    Uploading documents is optional. The selected file type should be among .PDF, .JPG, .PNG, .DOC and .DOCX under 50MB.
   </p>
 
   {% set documentTypesToDisplay = [

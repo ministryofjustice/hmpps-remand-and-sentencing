@@ -1479,7 +1479,10 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       courtAppearance,
       uploadedDocuments,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      backLink:
+        addOrEditCourtAppearance === `edit-court-appearance`
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
 
@@ -1778,9 +1781,5 @@ export default class CourtCaseRoutes {
   private static readonly errorMessages: Record<string, string> = {
     'Payload Too Large': 'The selected document must be smaller than 50MB.',
     'virus scan': 'The selected file contains a virus',
-  }
-
-  private isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
-    return addOrEditCourtCase === 'add-court-case' && addOrEditCourtAppearance === 'add-court-appearance'
   }
 }

@@ -692,7 +692,10 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       courtAppearance,
       uploadedDocuments,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      backLink:
+        addOrEditCourtAppearance === `edit-court-appearance`
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
 

@@ -333,7 +333,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`
-    if (submitToEditOffence) {
+    if (submitToEditOffence || offence.onFinishGoToEdit === true) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
@@ -390,10 +390,10 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-outcome${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
+    const potentialOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (
       existingOffence.outcomeUuid &&
-      existingOffence.outcomeUuid !== outcome.outcomeUuid &&
-      !existingOffence.sentence &&
+      (!existingOffence.sentence || !potentialOffence.sentence) &&
       outcome.outcomeType === 'SENTENCING'
     ) {
       this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference)
@@ -434,9 +434,9 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     let countNumberForm = (req.flash('countNumberForm')[0] || {}) as OffenceCountNumberForm
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (Object.keys(countNumberForm).length === 0) {
-      const { countNumber, hasCountNumber } =
-        this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)?.sentence || {}
+      const { countNumber, hasCountNumber } = offence?.sentence || {}
       countNumberForm = {
         hasCountNumber,
         ...(countNumber && countNumber !== '-1' ? { countNumber } : {}),
@@ -447,7 +447,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-    } else if (courtAppearance.caseOutcomeAppliedAll !== 'true') {
+    } else if (courtAppearance.caseOutcomeAppliedAll !== 'true' || offence.onFinishGoToEdit) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-outcome`
     }
 

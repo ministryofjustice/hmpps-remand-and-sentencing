@@ -114,6 +114,20 @@
                 })) %}
             {% endfor %}
 
+            {% if offence.sentence.fineAmount %}
+                                    {% set summaryRows = summaryRows.concat({
+                                        key: { text: "Fine Amount" },
+                                        value: { text: "£" + offence.sentence.fineAmount },
+                                        actions: {
+                                            items: [{
+                                                       href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/fine-amount?submitToEditOffence=true",
+                                                       text: "Edit",
+                                                       visuallyHiddenText: "fine amount"
+                                                   }]
+                                               }
+                                    }) %}
+                                {% endif %}
+
             {% set summaryRows = (summaryRows.concat({
                     key: {
                     text: "Consecutive or concurrent"
@@ -140,7 +154,7 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
                 <h1 class="govuk-heading-l">Edit offence details</h1>
-                
+
                 {{ govukSummaryList({
                     rows: summaryRows
                 }) }}

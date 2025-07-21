@@ -18,6 +18,7 @@ import CourtCaseOverallSentenceLengthPage from '../pages/courtCaseOverallSentenc
 import OffenceUpdateOffenceOutcomesPage from '../pages/offenceUpdateOffenceOutcomesPage'
 import OffenceOffenceOutcomePage from '../pages/offenceOffenceOutcomePage'
 import SentenceIsSentenceConsecutiveToPage from '../pages/sentenceIsSentenceConsecutiveToPage'
+import OffenceFineAmountPage from '../pages/offenceFineAmountPage'
 
 context('Add Offence Edit offence Page', () => {
   let offenceEditOffencePage: OffenceEditOffencePage
@@ -377,6 +378,73 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Custodial term': '4 years 4 months 0 weeks 0 days',
         'Licence period': '2 years 2 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Forthwith',
+      })
+    })
+
+    it('shows fine amount when entered', () => {
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+        description: 'Imprisonment in Default of Fine',
+        classification: 'FINE',
+      })
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-type').click()
+      const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+      offenceSentenceTypePage.radioLabelContains('Imprisonment in Default of Fine').click()
+      offenceSentenceTypePage.continueButton().click()
+      const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'term length')
+      offencePeriodLengthPage.yearsInput().type('5')
+      offencePeriodLengthPage.continueButton().click()
+      const offenceFineAmountPage = Page.verifyOnPage(OffenceFineAmountPage)
+      offenceFineAmountPage.input().type('500')
+      offenceFineAmountPage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        Offence: 'PS90037 An offence description',
+        'Committed on': '12/05/2023',
+        Outcome: 'Imprisonment',
+        'Count number': 'Count 1',
+        'Conviction date': '13/05/2023',
+        'Sentence type': 'Imprisonment in Default of Fine',
+        'Fine Amount': '£500',
+        'Term length': '5 years 0 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Forthwith',
+      })
+    })
+
+    it('can edit fine amount and return to edit page', () => {
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+        description: 'Imprisonment in Default of Fine',
+        classification: 'FINE',
+      })
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-type').click()
+      const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
+      offenceSentenceTypePage.radioLabelContains('Imprisonment in Default of Fine').click()
+      offenceSentenceTypePage.continueButton().click()
+      const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'term length')
+      offencePeriodLengthPage.yearsInput().type('5')
+      offencePeriodLengthPage.continueButton().click()
+      const offenceFineAmountPage = Page.verifyOnPage(OffenceFineAmountPage)
+      offenceFineAmountPage.input().type('500')
+      offenceFineAmountPage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'fine-amount').click()
+      Page.verifyOnPage(OffenceFineAmountPage)
+      offenceFineAmountPage.input().should('have.value', '500')
+      offenceFineAmountPage.input().clear()
+      offenceFineAmountPage.input().type('200')
+      offenceFineAmountPage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        Offence: 'PS90037 An offence description',
+        'Committed on': '12/05/2023',
+        Outcome: 'Imprisonment',
+        'Count number': 'Count 1',
+        'Conviction date': '13/05/2023',
+        'Sentence type': 'Imprisonment in Default of Fine',
+        'Fine Amount': '£200',
+        'Term length': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
     })

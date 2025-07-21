@@ -11,7 +11,6 @@ import CannotDeleteSentencePage from '../pages/cannotDeleteSentencePage'
 import SentencingDeleteSentenceInChainPage from '../pages/sentencingDeleteSentenceInChainPage'
 import OffenceSentenceServeTypePage from '../pages/offenceSentenceServeTypePage'
 import OffenceEditSentenceTypePage from '../pages/offenceEditSentenceTypePage'
-import OffenceFineAmountPage from '../pages/offenceFineAmountPage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -40,6 +39,11 @@ context('Sentencing appearance details Page', () => {
           sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
           description: 'SDS (Standard Determinate Sentence)',
           classification: 'STANDARD',
+        },
+        {
+          sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+          description: 'Imprisonment in Default of Fine',
+          classification: 'FINE',
         },
       ])
       cy.task('stubGetAppearanceOutcomeById', {
@@ -73,7 +77,7 @@ context('Sentencing appearance details Page', () => {
     it('overall displays correctly', () => {
       courtCaseAppearanceDetailsPage.overallSummaryList().getSummaryList().should('deep.equal', {
         'Overall sentence length': '4 years 0 months 0 weeks 0 days',
-        'Sentences added': '4 years 5 months 0 weeks 0 days',
+        'Sentences added': '0 years 0 months 0 weeks 0 days',
       })
     })
 
@@ -106,6 +110,16 @@ context('Sentencing appearance details Page', () => {
             'Sentence type': 'A Nomis sentence type',
             'Sentence length': '1 years 2 months 0 weeks 0 days',
             'Consecutive or concurrent': 'Consecutive to count 3',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '10/12/2023',
+            'Conviction date': '12/09/2024',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'Imprisonment in Default of Fine',
+            'Fine amount': '£50',
+            'Term length': '1 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Concurrent',
           },
         ])
       courtCaseAppearanceDetailsPage
@@ -163,7 +177,23 @@ context('Sentencing appearance details Page', () => {
     })
 
     it('display sentence mismatch when sentence length comparison fails', () => {
+      cy.task('stubGetSentenceAppearanceDetailsSupportedSentenceLengthsForMismatch')
       cy.task('stubOverallSentenceLengthFail')
+      cy.task('stubGetSentenceTypesByIds', [
+        {
+          sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+          description: 'EDS (Extended Determinate Sentence)',
+          classification: 'EXTENDED',
+        },
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
+        },
+      ])
+      cy.visit(
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/load-appearance-details',
+      )
       courtCaseAppearanceDetailsPage.confirmButton().click()
       Page.verifyOnPage(SentencingSentenceLengthMismatchPage)
     })
@@ -208,6 +238,11 @@ context('Sentencing appearance details Page', () => {
           description: 'SDS (Standard Determinate Sentence)',
           classification: 'STANDARD',
         },
+        {
+          sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+          description: 'Imprisonment in Default of Fine',
+          classification: 'FINE',
+        },
       ])
       courtCaseAppearanceDetailsPage
         .deleteOffenceLink(
@@ -244,6 +279,16 @@ context('Sentencing appearance details Page', () => {
             'Sentence length': '1 years 2 months 0 weeks 0 days',
             'Consecutive or concurrent': 'Select consecutive or current',
           },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '10/12/2023',
+            'Conviction date': '12/09/2024',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'Imprisonment in Default of Fine',
+            'Fine amount': '£50',
+            'Term length': '1 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Concurrent',
+          },
         ])
       courtCaseAppearanceDetailsPage
         .selectConsecutiveConcurrentLink(
@@ -277,6 +322,16 @@ context('Sentencing appearance details Page', () => {
             'Sentence length': '1 years 2 months 0 weeks 0 days',
             'Consecutive or concurrent': 'Concurrent',
           },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '10/12/2023',
+            'Conviction date': '12/09/2024',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'Imprisonment in Default of Fine',
+            'Fine amount': '£50',
+            'Term length': '1 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Concurrent',
+          },
         ])
     })
 
@@ -306,198 +361,95 @@ context('Sentencing appearance details Page', () => {
         ])
     })
 
-    context('Editing an existing sentence appearance', () => {
-      beforeEach(() => {
-        cy.task('stubUpdateSentenceCourtAppearance')
-        cy.task('stubGetSentenceTypeById', {
+    it('Fine amount should not be displayed if the sentence type is changed from FINE to any other', () => {
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+        description: 'Imprisonment in Default of Fine',
+        classification: 'FINE',
+      })
+      cy.task('stubGetChargeOutcomeById', {})
+      cy.task('stubSearchSentenceTypes', {
+        convictionDate: '2024-09-12',
+        offenceDate: '2023-12-10',
+        age: '59',
+      })
+      cy.task('stubGetSentenceTypesByIds', [
+        {
           sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
           description: 'EDS (Extended Determinate Sentence)',
           classification: 'EXTENDED',
-        })
-        cy.task('stubGetSentenceTypeById', {
-          sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
-          description: 'Imprisonment in Default of Fine',
-          classification: 'FINE',
-        })
-        cy.task('stubGetChargeOutcomeById', {})
-        cy.task('stubGetLatestCourtAppearanceWithSentencing', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
-        cy.task('stubGetCourtById', {})
-        cy.task('stubSearchSentenceTypes', {
-          convictionDate: '2025-07-18',
-          offenceDate: '2023-12-15',
-          age: '60',
-        })
+        },
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
+        },
+      ])
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '3')
+        .click()
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
 
-        cy.task('stubGetSentenceTypesByIds', [
+      offenceEditOffencePage
+        .editFieldLink(
+          'A1234AB',
+          'edit',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          'edit',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '3',
+          'sentence-type',
+        )
+        .click()
+      const offenceSentenceTypePage = Page.verifyOnPage(OffenceEditSentenceTypePage)
+      offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
+      offenceSentenceTypePage.continueButton().click()
+      const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
+      offencePeriodLengthPage.yearsInput().type('1')
+      offencePeriodLengthPage.continueButton().click()
+
+      offenceEditOffencePage.continueButton().click()
+
+      // Fine amount is no longer displayed
+      courtCaseAppearanceDetailsPage
+        .custodialOffences()
+        .getOffenceCards()
+        .should('deep.equal', [
           {
-            sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
-            description: 'Imprisonment in Default of Fine',
-            classification: 'FINE',
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'EDS (Extended Determinate Sentence)',
+            'Custodial term': '1 years 0 months 0 weeks 0 days',
+            'Licence period': '2 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Consecutive to count 1',
           },
           {
-            sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
-            description: 'SDS (Standard Determinate Sentence)',
-            classification: 'STANDARD',
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Sentence length': '4 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Forthwith',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '14/12/2023',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'A Nomis sentence type',
+            'Sentence length': '1 years 2 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Consecutive to count 3',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '10/12/2023',
+            'Conviction date': '12/09/2024',
+            Outcome: 'Imprisonment',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Sentence length': '1 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Concurrent',
           },
         ])
-        cy.task('stubGetSentenceTypesByIds', [
-          {
-            sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
-            description: 'SDS (Standard Determinate Sentence)',
-            classification: 'STANDARD',
-          },
-        ])
-        cy.task('stubGetSentenceTypesByIds', [
-          {
-            sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
-            description: 'Imprisonment in Default of Fine',
-            classification: 'FINE',
-          },
-        ])
-      })
-      it('Fine amount should not be displayed if the sentence type is changed from FINE to any other', () => {
-        courtCaseAppearanceDetailsPage
-          .editOffenceLink(
-            'A1234AB',
-            '83517113-5c14-4628-9133-1e3cb12e31fa',
-            '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-            '0',
-          )
-          .click()
-        let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-        offenceEditOffencePage
-          .editPeriodLengthLink(
-            'A1234AB',
-            'edit',
-            '83517113-5c14-4628-9133-1e3cb12e31fa',
-            '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-            '0',
-            'CUSTODIAL_TERM',
-          )
-          .click()
-        const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'custodial term')
-        offencePeriodLengthPage.yearsInput().should('have.value', '1')
-        offencePeriodLengthPage.yearsInput().clear()
-        offencePeriodLengthPage.yearsInput().type('2')
-        offencePeriodLengthPage.continueButton().click()
-        offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-        offenceEditOffencePage
-          .editFieldLink(
-            'A1234AB',
-            'edit',
-            '83517113-5c14-4628-9133-1e3cb12e31fa',
-            'edit',
-            '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-            '0',
-            'sentence-type',
-          )
-          .click()
-
-        const offenceSentenceTypePage = Page.verifyOnPage(OffenceEditSentenceTypePage)
-        offenceSentenceTypePage.radioLabelSelector('c71ceefe-932b-4a69-b87c-7c1294e37cf7|FINE').click()
-        offenceSentenceTypePage.continueButton().click()
-
-        offencePeriodLengthPage.yearsInput().type('1')
-        offencePeriodLengthPage.continueButton().click()
-
-        const offenceFineAmountPage = Page.verifyOnPage(OffenceFineAmountPage)
-        offenceFineAmountPage.input().type('987')
-        offenceFineAmountPage.continueButton().click()
-
-        offenceEditOffencePage.continueButton().click()
-
-        // Fine amount is displayed because sentence type is FINE
-        courtCaseAppearanceDetailsPage
-          .custodialOffences()
-          .getOffenceCards()
-          .should('deep.equal', [
-            {
-              offenceCardHeader: 'PS90037 An offence description',
-              'Committed on': '15/12/2023',
-              Outcome: 'Imprisonment',
-              'Sentence type': 'Imprisonment in Default of Fine',
-              'Fine amount': '£987',
-              'Term length': '1 years 0 months 0 weeks 0 days',
-              'Consecutive or concurrent': 'Consecutive to count 1',
-            },
-            {
-              offenceCardHeader: 'PS90037 An offence description',
-              'Committed on': '15/12/2023',
-              Outcome: 'Imprisonment',
-              'Sentence type': 'SDS (Standard Determinate Sentence)',
-              'Sentence length': '4 years 0 months 0 weeks 0 days',
-              'Consecutive or concurrent': 'Forthwith',
-            },
-            {
-              offenceCardHeader: 'PS90037 An offence description',
-              'Committed on': '14/12/2023',
-              Outcome: 'Imprisonment',
-              'Sentence type': 'A Nomis sentence type',
-              'Sentence length': '1 years 2 months 0 weeks 0 days',
-              'Consecutive or concurrent': 'Consecutive to count 3',
-            },
-          ])
-
-        courtCaseAppearanceDetailsPage
-          .editOffenceLink(
-            'A1234AB',
-            '83517113-5c14-4628-9133-1e3cb12e31fa',
-            '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-            '0',
-          )
-          .click()
-
-        offenceEditOffencePage
-          .editFieldLink(
-            'A1234AB',
-            'edit',
-            '83517113-5c14-4628-9133-1e3cb12e31fa',
-            'edit',
-            '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-            '0',
-            'sentence-type',
-          )
-          .click()
-
-        offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
-        offenceSentenceTypePage.continueButton().click()
-
-        offencePeriodLengthPage.yearsInput().type('1')
-        offencePeriodLengthPage.continueButton().click()
-
-        offenceEditOffencePage.continueButton().click()
-
-        // Fine amount is no longer displayed
-        courtCaseAppearanceDetailsPage
-          .custodialOffences()
-          .getOffenceCards()
-          .should('deep.equal', [
-            {
-              offenceCardHeader: 'PS90037 An offence description',
-              'Committed on': '15/12/2023',
-              Outcome: 'Imprisonment',
-              'Sentence type': 'SDS (Standard Determinate Sentence)',
-              'Sentence length': '1 years 0 months 0 weeks 0 days',
-              'Consecutive or concurrent': 'Consecutive to count 1',
-            },
-            {
-              offenceCardHeader: 'PS90037 An offence description',
-              'Committed on': '15/12/2023',
-              Outcome: 'Imprisonment',
-              'Sentence type': 'SDS (Standard Determinate Sentence)',
-              'Sentence length': '4 years 0 months 0 weeks 0 days',
-              'Consecutive or concurrent': 'Forthwith',
-            },
-            {
-              offenceCardHeader: 'PS90037 An offence description',
-              'Committed on': '14/12/2023',
-              Outcome: 'Imprisonment',
-              'Sentence type': 'A Nomis sentence type',
-              'Sentence length': '1 years 2 months 0 weeks 0 days',
-              'Consecutive or concurrent': 'Consecutive to count 3',
-            },
-          ])
-      })
     })
   })
 

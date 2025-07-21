@@ -1373,6 +1373,199 @@ export default {
                 },
               },
             },
+            {
+              chargeUuid: '8cb559d1-b9e9-4c60-8ef7-f40abf368196',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-10',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: 'd70e57ae-09c3-40c0-a513-132f040b09a5',
+                chargeNumber: '4',
+                periodLengths: [
+                  {
+                    periodLengthUuid: '64953986-1bf2-4bcb-a981-c391621cc863',
+                    years: 1,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'TERM_LENGTH',
+                    legacyData: null,
+                  },
+                ],
+                sentenceServeType: 'CONCURRENT',
+                consecutiveToSentenceUuid: null,
+                sentenceType: {
+                  sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+                  description: 'Imprisonment in Default of Fine',
+                  classification: 'FINE',
+                  hintText: null,
+                },
+                convictionDate: '2024-09-12',
+                fineAmount: {
+                  fineAmount: 50,
+                },
+              },
+            },
+          ],
+          overallSentenceLength: {
+            years: 4,
+            months: null,
+            weeks: null,
+            days: null,
+            periodOrder: 'years',
+            periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+          },
+        },
+      },
+    })
+  },
+
+  stubGetSentenceAppearanceDetailsSupportedSentenceLengthsForMismatch: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          outcome: {
+            outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10',
+            outcomeName: 'Imprisonment',
+            nomisCode: '09753',
+            outcomeType: 'SENTENCING',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          },
+          warrantType: 'SENTENCING',
+          courtCode: 'STHHPM',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          overallConvictionDate: '2024-09-12',
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',
+                chargeNumber: '1',
+                periodLengths: [
+                  {
+                    periodLengthUuid: 'bf6e75e4-2137-48ee-84fe-df0a18e65047',
+                    years: 4,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                ],
+                sentenceServeType: 'FORTHWITH',
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
+              },
+            },
+            {
+              chargeUuid: 'a94b4ba8-d6b4-443e-bf69-7f1dab98a6bf',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-14',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: '10a45197-642a-4b20-b9d8-1ae89edf77cc',
+                chargeNumber: '2',
+                periodLengths: [
+                  {
+                    periodLengthUuid: 'f15d1f04-f124-4662-b076-f9be92727304',
+                    months: 2,
+                    years: 1,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                ],
+                sentenceServeType: 'CONSECUTIVE',
+                consecutiveToSentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+                sentenceType: null,
+                legacyData: {
+                  sentenceCalcType: '1',
+                  sentenceCategory: '1',
+                  sentenceTypeDesc: 'A Nomis sentence type',
+                  postedDate: '10-10-2024',
+                },
+              },
+            },
+            {
+              chargeUuid: 'a6d6dbaf-9dc8-443d-acb4-5b52dd919f11',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+                chargeNumber: '3',
+                periodLengths: [
+                  {
+                    periodLengthUuid: '2b8002ad-f2d4-45a6-a186-df2326e37159',
+                    years: 1,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'CUSTODIAL_TERM',
+                    legacyData: null,
+                  },
+                  {
+                    periodLengthUuid: 'ef7984c6-fcbf-407b-b5dd-896cb5793d7f',
+                    years: 2,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'LICENCE_PERIOD',
+                    legacyData: null,
+                  },
+                ],
+                sentenceServeType: 'CONSECUTIVE',
+                consecutiveToSentenceUuid: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',
+                sentenceType: {
+                  sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+                  description: 'EDS (Extended Determinate Sentence)',
+                  classification: 'EXTENDED',
+                  hintText: null,
+                },
+              },
+            },
           ],
           overallSentenceLength: {
             years: 4,
@@ -1449,7 +1642,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{ "courtCaseUuid" : "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid" : "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid" : "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "courtCode" : "STHHPM", "courtCaseReference" : "C894623", "appearanceDate" : "2023-12-15", "charges" : [ { "offenceCode" : "PS90037", "offenceStartDate" : "2023-12-15", "outcomeUuid" : "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId" : "MDI", "chargeUuid" : "a6d6dbaf-9dc8-443d-acb4-5b52dd919f11", "sentence" : { "chargeNumber" : "3", "periodLengths" : [ { "years" : 2, "periodOrder" : "years,months,weeks,days", "type" : "CUSTODIAL_TERM", "periodLengthUuid" : "2b8002ad-f2d4-45a6-a186-df2326e37159", "prisonId" : "MDI" }, { "years" : 2, "periodOrder" : "years,months,weeks,days", "type" : "LICENCE_PERIOD", "periodLengthUuid" : "ef7984c6-fcbf-407b-b5dd-896cb5793d7f", "prisonId" : "MDI" } ], "sentenceServeType" : "CONSECUTIVE", "consecutiveToSentenceReference": "1", "sentenceTypeId" : "0197d1a8-3663-432d-b78d-16933b219ec7", "prisonId" : "MDI", "sentenceReference" : "0", "sentenceUuid" : "b0f83d31-efbe-462c-970d-5293975acb17" } }, { "offenceCode" : "PS90037", "offenceStartDate" : "2023-12-15", "outcomeUuid" : "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId" : "MDI", "chargeUuid" : "71bb9f7e-971c-4c34-9a33-43478baee74f", "sentence" : { "chargeNumber" : "1", "periodLengths" : [ { "years" : 4, "periodOrder" : "years,months,weeks,days", "type" : "SENTENCE_LENGTH", "periodLengthUuid" : "bf6e75e4-2137-48ee-84fe-df0a18e65047", "prisonId" : "MDI" } ], "sentenceServeType" : "FORTHWITH", "sentenceTypeId" : "467e2fa8-fce1-41a4-8110-b378c727eed3", "prisonId" : "MDI", "sentenceReference" : "1", "sentenceUuid" : "3a0a10d5-1ba0-403b-86d6-8cc75ee88454" } }, { "offenceCode" : "PS90037", "offenceStartDate" : "2023-12-14", "outcomeUuid" : "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId" : "MDI", "chargeUuid" : "a94b4ba8-d6b4-443e-bf69-7f1dab98a6bf", "sentence" : { "sentenceUuid": "10a45197-642a-4b20-b9d8-1ae89edf77cc", "chargeNumber" : "2", "periodLengths" : [ { "months" : 2, "years" : 1, "periodOrder" : "years,months,weeks,days", "type" : "SENTENCE_LENGTH", "periodLengthUuid" : "f15d1f04-f124-4662-b076-f9be92727304", "prisonId" : "MDI" } ], "sentenceServeType" : "CONSECUTIVE", "consecutiveToSentenceReference" : "0", "prisonId" : "MDI", "sentenceReference" : "2" } } ], "warrantType" : "SENTENCING", "prisonId" : "MDI", "overallSentenceLength" : { "years" : 4, "periodOrder" : "years", "type" : "OVERALL_SENTENCE_LENGTH", "prisonId" : "MDI" }, "overallConvictionDate" : "2024-09-12" }',
+              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "courtCode": "STHHPM", "courtCaseReference": "C894623", "appearanceDate": "2023-12-15", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "a6d6dbaf-9dc8-443d-acb4-5b52dd919f11", "sentence": {"chargeNumber": "3", "periodLengths": [{"years": 2, "periodOrder": "years,months,weeks,days", "type": "CUSTODIAL_TERM", "periodLengthUuid": "2b8002ad-f2d4-45a6-a186-df2326e37159", "prisonId": "MDI"}, {"years": 2, "periodOrder": "years,months,weeks,days", "type": "LICENCE_PERIOD", "periodLengthUuid": "ef7984c6-fcbf-407b-b5dd-896cb5793d7f", "prisonId": "MDI"}], "sentenceServeType": "CONSECUTIVE", "sentenceTypeId": "0197d1a8-3663-432d-b78d-16933b219ec7", "prisonId": "MDI", "sentenceReference": "0", "consecutiveToSentenceReference": "1", "sentenceUuid": "b0f83d31-efbe-462c-970d-5293975acb17"}}, {"offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "sentence": {"chargeNumber": "1", "periodLengths": [{"years": 4, "periodOrder": "years,months,weeks,days", "type": "SENTENCE_LENGTH", "periodLengthUuid": "bf6e75e4-2137-48ee-84fe-df0a18e65047", "prisonId": "MDI"}], "sentenceServeType": "FORTHWITH", "sentenceTypeId": "467e2fa8-fce1-41a4-8110-b378c727eed3", "prisonId": "MDI", "sentenceReference": "1", "sentenceUuid": "3a0a10d5-1ba0-403b-86d6-8cc75ee88454"}}, {"offenceCode": "PS90037", "offenceStartDate": "2023-12-14", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "a94b4ba8-d6b4-443e-bf69-7f1dab98a6bf", "sentence": {"chargeNumber": "2", "periodLengths": [{"months": 2, "years": 1, "periodOrder": "years,months,weeks,days", "type": "SENTENCE_LENGTH", "periodLengthUuid": "f15d1f04-f124-4662-b076-f9be92727304", "prisonId": "MDI"}], "sentenceServeType": "CONSECUTIVE", "prisonId": "MDI", "sentenceReference": "2", "consecutiveToSentenceReference": "0", "sentenceUuid": "10a45197-642a-4b20-b9d8-1ae89edf77cc"}}, {"offenceCode": "PS90037", "offenceStartDate": "2023-12-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "8cb559d1-b9e9-4c60-8ef7-f40abf368196", "sentence": {"chargeNumber": "4", "periodLengths": [{"years": 1, "periodOrder": "years,months,weeks,days", "type": "TERM_LENGTH", "periodLengthUuid": "64953986-1bf2-4bcb-a981-c391621cc863", "prisonId": "MDI"}], "sentenceServeType": "CONCURRENT", "sentenceTypeId": "c71ceefe-932b-4a69-b87c-7c1294e37cf7", "prisonId": "MDI", "sentenceReference": "3", "convictionDate": "2024-09-12", "fineAmount": {"fineAmount": 50}, "sentenceUuid": "d70e57ae-09c3-40c0-a513-132f040b09a5"}}], "warrantType": "SENTENCING", "prisonId": "MDI", "overallSentenceLength": {"years": 4, "periodOrder": "years", "type": "OVERALL_SENTENCE_LENGTH", "prisonId": "MDI"}, "overallConvictionDate": "2024-09-12"}',
           },
         ],
       },
@@ -1500,10 +1693,10 @@ export default {
                 },
               ],
               sentenceServeType: 'CONSECUTIVE',
-              consecutiveToSentenceReference: '1',
               sentenceTypeId: '0197d1a8-3663-432d-b78d-16933b219ec7',
               prisonId: 'MDI',
               sentenceReference: '0',
+              consecutiveToSentenceReference: '1',
               sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
             },
           },
@@ -1538,7 +1731,6 @@ export default {
             prisonId: 'MDI',
             chargeUuid: 'a94b4ba8-d6b4-443e-bf69-7f1dab98a6bf',
             sentence: {
-              sentenceUuid: '10a45197-642a-4b20-b9d8-1ae89edf77cc',
               chargeNumber: '2',
               periodLengths: [
                 {
@@ -1551,9 +1743,38 @@ export default {
                 },
               ],
               sentenceServeType: 'CONSECUTIVE',
-              consecutiveToSentenceReference: '0',
               prisonId: 'MDI',
               sentenceReference: '2',
+              consecutiveToSentenceReference: '0',
+              sentenceUuid: '10a45197-642a-4b20-b9d8-1ae89edf77cc',
+            },
+          },
+          {
+            offenceCode: 'PS90037',
+            offenceStartDate: '2023-12-10',
+            outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+            prisonId: 'MDI',
+            chargeUuid: '8cb559d1-b9e9-4c60-8ef7-f40abf368196',
+            sentence: {
+              chargeNumber: '4',
+              periodLengths: [
+                {
+                  years: 1,
+                  periodOrder: 'years,months,weeks,days',
+                  type: 'TERM_LENGTH',
+                  periodLengthUuid: '64953986-1bf2-4bcb-a981-c391621cc863',
+                  prisonId: 'MDI',
+                },
+              ],
+              sentenceServeType: 'CONCURRENT',
+              sentenceTypeId: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+              prisonId: 'MDI',
+              sentenceReference: '3',
+              convictionDate: '2024-09-12',
+              fineAmount: {
+                fineAmount: 50,
+              },
+              sentenceUuid: 'd70e57ae-09c3-40c0-a513-132f040b09a5',
             },
           },
         ],

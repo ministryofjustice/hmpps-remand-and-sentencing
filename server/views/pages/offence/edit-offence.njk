@@ -52,83 +52,95 @@
     {% else %}
         {% set countNumber = "Not entered" %}
     {% endif %}
-    {% set summaryRows = ([{
-                    key: {
-                    text: "Count number"
-                },
-                    value: {
-                    text: countNumber
-                },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/count-number?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "count number"
-                        }]
-                    }
-                }].concat(summaryRows,[{
-                    key: {
-                        text: "Conviction date"
-                    }, value: {
-                        text: (offence.sentence.convictionDate | formatDate if offence.sentence.convictionDate else '')
-                    },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/conviction-date?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "conviction date"
-                        }]
-                    }
-                },
-                {
-                    key: {
-                    text: "Sentence type"
-                },
-                    value: {
-                    text: sentenceType | sentenceTypeValueOrLegacy(offence.sentence.legacyData)
-                },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/sentence-type?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "sentence type"
-                        }]
-                    }
-                }] )) %}
 
-            {% for periodLength in offence.sentence.periodLengths %}
-                {% set summaryRows = (summaryRows.concat({
-                    key: {
-                        text: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize
-                    },
-                        value: {
-                            text: periodLength | formatLengths
-                        },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/period-length?periodLengthType=" + periodLength.periodLengthType +"&submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize
-                    }]
-                }
-                })) %}
-            {% endfor %}
+    {# Define the array of sentence details to be concatenated #}
+    {% set sentenceDetailsRows = [
+        {
+            key: { text: "Count number" },
+            value: { text: countNumber },
+            actions: {
+                items: [{
+                    href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/count-number?submitToEditOffence=true",
+                    text: "Edit",
+                    visuallyHiddenText: "count number"
+                }]
+            }
+        },
+        {
+            key: { text: "Conviction date" },
+            value: { text: (offence.sentence.convictionDate | formatDate if offence.sentence.convictionDate else '') },
+            actions: {
+                items: [{
+                    href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/conviction-date?submitToEditOffence=true",
+                    text: "Edit",
+                    visuallyHiddenText: "conviction date"
+                }]
+            }
+        },
+        {
+            key: { text: "Sentence type" },
+            value: { text: sentenceType | sentenceTypeValueOrLegacy(offence.sentence.legacyData) },
+            actions: {
+                items: [{
+                    href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/sentence-type?submitToEditOffence=true",
+                    text: "Edit",
+                    visuallyHiddenText: "sentence type"
+                }]
+            }
+        }
+    ] %}
 
-            {% set summaryRows = (summaryRows.concat({
-                    key: {
-                    text: "Consecutive or concurrent"
+    {% if offence.sentence.fineAmount %}
+        {% set sentenceDetailsRows = sentenceDetailsRows.concat({
+            key: { text: "Fine Amount" },
+            value: { text: offence.sentence.fineAmount },
+            actions: {
+                items: [{
+                           href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/fine-amount?submitToEditOffence=true",
+                           text: "Edit",
+                           visuallyHiddenText: "sentence type"
+                       }]
+                   }
+        }) %}
+    {% endif %}
+
+    {# Now, concatenate these sentence details to the main summaryRows #}
+    {% set summaryRows = summaryRows.concat(sentenceDetailsRows) %}
+
+
+    {% for periodLength in offence.sentence.periodLengths %}
+        {% set summaryRows = (summaryRows.concat({
+            key: {
+                text: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize
+            },
+                value: {
+                    text: periodLength | formatLengths
                 },
-                    value: {
-                    text: offence.sentence.sentenceServeType | capitalize + (' to count ' + offence.sentence.consecutiveTo if offence.sentence.consecutiveTo else '' )
-                },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/sentence-serve-type?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "consecutive or concurrent"
-                    }]
-                }
-            })) %}
+            actions: {
+                items: [{
+                    href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/period-length?periodLengthType=" + periodLength.periodLengthType +"&submitToEditOffence=true",
+                    text: "Edit",
+                    visuallyHiddenText: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize
+            }]
+        }
+        })) %}
+    {% endfor %}
+
+    {% set summaryRows = (summaryRows.concat({
+            key: {
+            text: "Consecutive or concurrent"
+        },
+            value: {
+            text: offence.sentence.sentenceServeType | capitalize + (' to count ' + offence.sentence.consecutiveTo if offence.sentence.consecutiveTo else '' )
+        },
+            actions: {
+                items: [{
+                    href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/sentence-serve-type?submitToEditOffence=true",
+                    text: "Edit",
+                    visuallyHiddenText: "consecutive or concurrent"
+            }]
+        }
+    })) %}
 {% endif %}
 
 {% set pageTitle = applicationName + " - Edit an offence" %}
@@ -140,7 +152,7 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
                 <h1 class="govuk-heading-l">Edit offence details</h1>
-                
+
                 {{ govukSummaryList({
                     rows: summaryRows
                 }) }}

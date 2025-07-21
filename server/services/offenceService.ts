@@ -438,6 +438,9 @@ export default class OffenceService {
       const [sentenceTypeId, sentenceTypeClassification] = offenceSentenceTypeForm.sentenceType.split('|')
       sentence.sentenceTypeId = sentenceTypeId
       sentence.sentenceTypeClassification = sentenceTypeClassification
+      if (sentence.sentenceTypeClassification !== 'FINE') {
+        delete sentence.fineAmount
+      }
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

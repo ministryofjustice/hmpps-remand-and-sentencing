@@ -91,14 +91,14 @@
     ] %}
 
     {% if offence.sentence.fineAmount %}
-        {% set sentenceDetailsRows = sentenceDetailsRows.concat({
+        {% set summaryRows = summaryRows.concat({
             key: { text: "Fine Amount" },
-            value: { text: offence.sentence.fineAmount },
+            value: { text: "£" + offence.sentence.fineAmount },
             actions: {
                 items: [{
                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/fine-amount?submitToEditOffence=true",
                            text: "Edit",
-                           visuallyHiddenText: "sentence type"
+                           visuallyHiddenText: "fine amount"
                        }]
                    }
         }) %}

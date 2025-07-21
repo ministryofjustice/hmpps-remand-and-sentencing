@@ -386,7 +386,7 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
         description: 'Imprisonment in Default of Fine',
-        classification: 'STANDARD',
+        classification: 'FINE',
       })
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
@@ -406,7 +406,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         'Conviction date': '13/05/2023',
         'Sentence type': 'Imprisonment in Default of Fine',
-        'Fine Amount': '500',
+        'Fine Amount': '£500',
         'Term length': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
@@ -416,7 +416,7 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
         description: 'Imprisonment in Default of Fine',
-        classification: 'STANDARD',
+        classification: 'FINE',
       })
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
@@ -443,7 +443,7 @@ context('Add Offence Edit offence Page', () => {
         'Count number': 'Count 1',
         'Conviction date': '13/05/2023',
         'Sentence type': 'Imprisonment in Default of Fine',
-        'Fine Amount': '200',
+        'Fine Amount': '£200',
         'Term length': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })

@@ -289,6 +289,7 @@ export default class SentencingRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
       documentsWithUiType,
+      errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

@@ -119,6 +119,7 @@ export default class RemandRoutes extends BaseRoutes {
       appearanceTypeDescription,
       consecutiveToSentenceDetailsMap,
       documentsWithUiType,
+      errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }

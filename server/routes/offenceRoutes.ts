@@ -2095,10 +2095,10 @@ export default class OffenceRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const updateOffenceOutcomesForm = trimForm<UpdateOffenceOutcomesForm>(req.body)
 
-    const errors = this.offenceService.validateUpdateOffenceOutcomesForm(updateOffenceOutcomesForm)
+    let errors = this.offenceService.validateUpdateOffenceOutcomesForm(updateOffenceOutcomesForm)
     if (updateOffenceOutcomesForm.finishedReviewOffenceOutcomes === 'true') {
       const offenceErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(req.session, nomsId)
-      errors.concat(offenceErrors)
+      errors = errors.concat(offenceErrors)
     }
     if (errors.length > 0) {
       req.flash('errors', errors)

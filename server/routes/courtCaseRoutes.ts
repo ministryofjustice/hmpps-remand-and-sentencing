@@ -39,17 +39,22 @@ import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import mojPaginationFromPageCourtCase from './data/pagination'
 import config from '../config'
+import BaseRoutes from './baseRoutes'
+import OffenceService from '../services/offenceService'
 
-export default class CourtCaseRoutes {
+export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
-    private readonly courtAppearanceService: CourtAppearanceService,
-    private readonly remandAndSentencingService: RemandAndSentencingService,
+    offenceService: OffenceService,
+    courtAppearanceService: CourtAppearanceService,
+    remandAndSentencingService: RemandAndSentencingService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
-  ) {}
+  ) {
+    super(courtAppearanceService, offenceService, remandAndSentencingService)
+  }
 
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
@@ -1479,10 +1484,9 @@ export default class CourtCaseRoutes {
       addOrEditCourtAppearance,
       courtAppearance,
       uploadedDocuments,
-      backLink:
-        addOrEditCourtAppearance === `edit-court-appearance`
-          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
-          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
 
@@ -1490,7 +1494,7 @@ export default class CourtCaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId)
     return res.redirect(
-      addOrEditCourtAppearance === 'edit-court-appearance'
+      this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )

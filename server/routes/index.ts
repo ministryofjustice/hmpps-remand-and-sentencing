@@ -23,6 +23,7 @@ export default function routes(services: Services): Router {
   router.use('/sentence-types', sentenceTypeRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
+    services.offenceService,
     services.courtAppearanceService,
     services.remandAndSentencingService,
     services.manageOffencesService,

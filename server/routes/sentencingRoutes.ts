@@ -692,7 +692,9 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       courtAppearance,
       uploadedDocuments,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
 
@@ -700,7 +702,7 @@ export default class SentencingRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId)
     return res.redirect(
-      addOrEditCourtAppearance === 'edit-court-appearance'
+      this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )

@@ -287,6 +287,16 @@ context('Check Offence Answers Page', () => {
             'Consecutive or concurrent': 'Select consecutive or current',
           },
         ])
+      offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
+      offenceCheckOffenceAnswersPage.finishAddingButton().click()
+      offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+        OffenceCheckOffenceAnswersPage,
+        'You have added 2 offence',
+      )
+      offenceCheckOffenceAnswersPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Select consecutive or concurrent')
     })
   })
 })

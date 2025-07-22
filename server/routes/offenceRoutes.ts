@@ -24,7 +24,6 @@ import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import CourtAppearanceService from '../services/courtAppearanceService'
-import validate from '../validation/validation'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import {
   sentenceLengthToAlternativeSentenceLengthForm,
@@ -1611,16 +1610,12 @@ export default class OffenceRoutes extends BaseRoutes {
 
   public submitCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const finishedAddingOffences = trimForm<OffenceFinishedAddingForm>(req.body)
-    const errors = validate(
-      finishedAddingOffences,
-      {
-        finishedAddingOffences: 'required',
-      },
-      {
-        'required.finishedAddingOffences': `You must select whether you have finished adding offences`,
-      },
-    )
+    const offenceFinishedAddingForm = trimForm<OffenceFinishedAddingForm>(req.body)
+    let errors = this.courtAppearanceService.checkFinishingOffences(offenceFinishedAddingForm)
+    if (offenceFinishedAddingForm.finishedAddingOffences === 'true') {
+      const offenceErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(req.session, nomsId)
+      errors = errors.concat(offenceErrors)
+    }
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
@@ -1630,7 +1625,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (
       courtAppearance.warrantType === 'SENTENCING' &&
-      finishedAddingOffences.finishedAddingOffences === 'true' &&
+      offenceFinishedAddingForm.finishedAddingOffences === 'true' &&
       courtAppearance.hasOverallSentenceLength
     ) {
       const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
@@ -1649,7 +1644,7 @@ export default class OffenceRoutes extends BaseRoutes {
     this.courtAppearanceService.setOffenceSentenceAccepted(
       req.session,
       nomsId,
-      finishedAddingOffences.finishedAddingOffences === 'true',
+      offenceFinishedAddingForm.finishedAddingOffences === 'true',
     )
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
@@ -2101,7 +2096,10 @@ export default class OffenceRoutes extends BaseRoutes {
     const updateOffenceOutcomesForm = trimForm<UpdateOffenceOutcomesForm>(req.body)
 
     const errors = this.offenceService.validateUpdateOffenceOutcomesForm(updateOffenceOutcomesForm)
-
+    if (updateOffenceOutcomesForm.finishedReviewOffenceOutcomes === 'true') {
+      const offenceErrors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(req.session, nomsId)
+      errors.concat(offenceErrors)
+    }
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(

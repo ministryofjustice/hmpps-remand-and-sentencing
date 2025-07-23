@@ -16,7 +16,6 @@ import type {
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
   OffenceCountNumberForm,
-  OffenceDeleteOffenceForm,
   OffenceFinishedAddingForm,
   SentenceLengthForm,
 } from 'forms'
@@ -965,33 +964,11 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteOffence(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    offenceReference: number,
-    deleteOffenceForm: OffenceDeleteOffenceForm,
-    sentenceIsInChain: boolean,
-  ): {
-    text?: string
-    html?: string
-    href: string
-  }[] {
-    const errors = validate(
-      deleteOffenceForm,
-      {
-        deleteOffence: 'required',
-      },
-      {
-        'required.deleteOffence': `You must select whether you want to delete this offence`,
-      },
-    )
-    if (errors.length === 0 && deleteOffenceForm.deleteOffence === 'true' && !sentenceIsInChain) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
-      courtAppearance.offences.splice(offenceReference, 1)
-      // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
-    }
-    return errors
+  deleteOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    courtAppearance.offences.splice(offenceReference, 1)
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
   }
 
   getOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number): Offence {

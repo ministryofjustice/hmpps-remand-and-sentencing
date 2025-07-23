@@ -290,6 +290,12 @@ context('Sentencing appearance details Page', () => {
             'Consecutive or concurrent': 'Concurrent',
           },
         ])
+      courtCaseAppearanceDetailsPage.confirmButton().click()
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseAppearanceDetailsPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Select consecutive or concurrent')
       courtCaseAppearanceDetailsPage
         .selectConsecutiveConcurrentLink(
           'A1234AB',

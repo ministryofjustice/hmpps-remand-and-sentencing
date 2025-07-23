@@ -15,6 +15,7 @@
 {% endif %}
 <span data-qa="custodialOffences">
     {% for offence in custodialOffences %}
+        {% set offenceId = 'offences.' + offence.index %}
         {{ offenceCard({
             offenceCode: offence.offenceCode,
             offenceName: offenceMap[offence.offenceCode],
@@ -48,7 +49,9 @@
                         visuallyHiddenText: "delete offence"
                     }
                 ]
-            }
+            },
+            id: offenceId,
+            errorMessage: errors | findErrorsBeginningWith(offenceId)
         }) }}
     {% else %}
         {{ govukInsetText({
@@ -64,6 +67,7 @@
 <h2 class="govuk-heading-m govuk-!-margin-top-7">Offences with non-custodial outcomes</h2>
 <span data-qa="nonCustodialOffences">
     {% for offence in nonCustodialOffences %}
+        {% set offenceId = 'offences.' + offence.index %}
         {{ offenceCard({
             offenceCode: offence.offenceCode,
             offenceName: offenceMap[offence.offenceCode],
@@ -93,7 +97,9 @@
                         visuallyHiddenText: "delete offence"
                     }
                 ]
-            }
+            },
+            id: offenceId,
+            errorMessage: errors | findErrorsBeginningWith(offenceId)
         }) }}
     {% else %}
         {{ govukInsetText({

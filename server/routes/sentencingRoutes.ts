@@ -289,12 +289,20 @@ export default class SentencingRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
       documentsWithUiType,
+      errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })
   }
 
   public submitAppearanceDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const errors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(req.session, nomsId)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+      )
+    }
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (courtAppearance.hasOverallSentenceLength === 'true') {
       const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(

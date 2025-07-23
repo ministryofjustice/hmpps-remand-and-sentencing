@@ -221,6 +221,7 @@
             }) }}
     <span data-qa="allOffences">  
         {% for offence in appearance.offences %}
+        {% set offenceId = 'offences.' + loop.index0 %}
                         {{
                         offenceCard({
                             offenceCode: offence.offenceCode,
@@ -255,7 +256,9 @@
                                         visuallyHiddenText: "delete"
                                     }
                                 ]
-                            }
+                            },
+                            id: offenceId,
+                            errorMessage: errors | findErrorsBeginningWith(offenceId)
                         })
                         }}
             {% endfor %}

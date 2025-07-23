@@ -8,29 +8,6 @@
 
 {% set pageTitle = applicationName + " - Delete an offence" %}
 
-
-{% set hintHtml %}
-    {{
-        offenceCard({
-            offenceCode: offence.offenceCode,
-            offenceName: offenceMap[offence.offenceCode],
-            offenceStartDate: offence.offenceStartDate | formatDate,
-            offenceEndDate: offence.offenceEndDate | formatDate,
-            outcome: outcome | outcomeValueOrLegacy(offence.legacyData),
-            countNumber: offence.sentence.countNumber,
-            lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-            convictionDate: offence.sentence.convictionDate | formatDate,
-            terrorRelated: offence.terrorRelated,
-            isSentenced: offence.sentence,
-            periodLengths: offence.sentence.periodLengths,
-            sentenceServeType: offence.sentence.sentenceServeType,
-            consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
-            sentenceType: sentenceType.description if sentenceType,
-            fineAmount: offence.sentence.fineAmount
-        })
-    }}
-{% endset %}
-
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">

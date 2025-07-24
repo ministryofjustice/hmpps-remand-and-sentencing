@@ -46,6 +46,7 @@
     <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that have not been updated</h2>
 
     {% for offence in unchangedOffences %}
+        {% set offenceId = 'offences.' + offence.index %}
         {{
         offenceCard({
             offenceCode: offence.offenceCode,
@@ -73,12 +74,14 @@
                     }
                 ]
             },
-                                    listItems: {
-                            classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
-                            items: [{
-                                html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.index + '/update-offence-outcome">Update outcome</a>'
-                            }]
-                        }
+            listItems: {
+                classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+                items: [{
+                    html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.index + '/update-offence-outcome">Update outcome</a>'
+                }]
+            },
+            id: offenceId,
+            errorMessage: errors | findErrorsBeginningWith(offenceId)
 
         })
     }}
@@ -93,6 +96,7 @@
     <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with custodial outcomes</h3>
 
     {% for offence in custodialChangedOffences %}
+        {% set offenceId = 'offences.' + offence.index %}
         {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
@@ -119,7 +123,9 @@
                                     visuallyHiddenText: "edit offence"
                                 }
                             ]
-                        }
+                        },
+                        id: offenceId,
+                        errorMessage: errors | findErrorsBeginningWith(offenceId)
                     })
                 }}
     {% else %}
@@ -131,6 +137,7 @@
     <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with non-custodial outcomes</h3>
 
     {% for offence in nonCustodialChangedOffences %}
+        {% set offenceId = 'offences.' + offence.index %}
         {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
@@ -157,7 +164,9 @@
                                     visuallyHiddenText: "edit offence"
                                 }
                             ]
-                        }
+                        },
+                        id: offenceId,
+                        errorMessage: errors | findErrorsBeginningWith(offenceId)
                     })
                 }}
     {% else %}

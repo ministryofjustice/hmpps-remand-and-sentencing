@@ -17,6 +17,7 @@ import type {
   DeleteDocumentForm,
   OffenceCountNumberForm,
   OffenceDeleteOffenceForm,
+  OffenceFinishedAddingForm,
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
@@ -1302,6 +1303,46 @@ export default class CourtAppearanceService {
         offence => offence.sentence?.consecutiveToSentenceReference === nextSentenceInChainSentenceReference,
       )
     }
+  }
+
+  checkFinishingOffences(offenceFinishedAddingForm: OffenceFinishedAddingForm): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    return validate(
+      offenceFinishedAddingForm,
+      {
+        finishedAddingOffences: 'required',
+      },
+      {
+        'required.finishedAddingOffences': `You must select whether you have finished adding offences`,
+      },
+    )
+  }
+
+  checkOffencesHaveMandatoryFields(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const errors = validate(
+      courtAppearance,
+      {
+        'offences.*.sentence.sentenceServeType': 'required_with:offences.*.sentence',
+      },
+      {
+        'required_with.offences.*.sentence.sentenceServeType': 'Select consecutive or concurrent',
+      },
+    )
+    return errors.map(error => {
+      const href = error.href.replace('.sentence.sentenceServeType', '')
+      return { ...error, href }
+    })
   }
 
   clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {

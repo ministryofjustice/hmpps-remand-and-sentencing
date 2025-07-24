@@ -232,6 +232,7 @@
             <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with custodial outcomes</h3>
             <span data-qa="custodialOffences">
             {% for offence in custodialOffences %}
+            {% set offenceId = 'offences.' + offence.index %}
                 {{ offenceCard({
             offenceCode: offence.offenceCode,
             offenceName: offenceMap[offence.offenceCode],
@@ -265,7 +266,9 @@
                         visuallyHiddenText: "delete offence"
                     }
                 ]
-            }
+            },
+            id: offenceId,
+            errorMessage: errors | findErrorsBeginningWith(offenceId)
         }) }}
             {% else %}
                 {{ govukInsetText({
@@ -277,6 +280,7 @@
             <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with non-custodial outcomes</h3>
 
             {% for offence in nonCustodialOffences %}
+                {% set offenceId = 'offences.' + offence.index %}
                 {{ offenceCard({
                     offenceCode: offence.offenceCode,
                     offenceName: offenceMap[offence.offenceCode],
@@ -310,7 +314,9 @@
                                 visuallyHiddenText: "delete offence"
                             }
                         ]
-                    }
+                    },
+                    id: offenceId,
+                    errorMessage: errors | findErrorsBeginningWith(offenceId)
                 }) }}
             {% else %}
                 {{ govukInsetText({

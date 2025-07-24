@@ -4,7 +4,6 @@ import type {
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
   OffenceCountNumberForm,
-  OffenceDeleteOffenceForm,
   OffenceFineAmountForm,
   OffenceFinishedAddingForm,
   OffenceOffenceCodeForm,
@@ -1770,12 +1769,12 @@ export default class OffenceRoutes extends BaseRoutes {
         } as ConsecutiveToDetails,
       }
     }
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+    let cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (courtAppearance.warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+        cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+        cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     }
 
@@ -1794,7 +1793,7 @@ export default class OffenceRoutes extends BaseRoutes {
       sessionConsecutiveToSentenceDetailsMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       outcome,
-      backLink,
+      cancelLink,
     })
   }
 
@@ -1808,30 +1807,18 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
 
-    const deleteOffenceForm = trimForm<OffenceDeleteOffenceForm>(req.body)
     const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
       req.session,
       nomsId,
       parseInt(offenceReference, 10),
     )
-    const errors = this.courtAppearanceService.deleteOffence(
-      req.session,
-      nomsId,
-      parseInt(offenceReference, 10),
-      deleteOffenceForm,
-      sentenceIsInChain,
-    )
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/delete-offence`,
-      )
-    }
+
     if (sentenceIsInChain) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/delete-sentence-in-chain`,
       )
     }
+    this.courtAppearanceService.deleteOffence(req.session, nomsId, parseInt(offenceReference, 10))
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
       if (warrantType === 'SENTENCING') {

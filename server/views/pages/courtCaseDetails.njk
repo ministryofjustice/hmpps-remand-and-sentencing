@@ -4,6 +4,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - Court case details" %}
 
@@ -79,7 +80,13 @@
         <div class="govuk-grid-column-one-half">
             <h2 class="govuk-heading-m">{{ appearance.courtCaseReference + ' at ' if appearance.courtCaseReference }}{{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
                 on {{ appearance.appearanceDate | formatDate }}</h2>
+                {% if not appearance.canDelete %}
+                          {{ govukInsetText({
+                            text: "You can not delete an appearance that includes sentences."
+                          }) }}
+                        {% endif %}
         </div>
+
         <div class="govuk-grid-column-one-half">
             <ul class="offence-card-actions-list" data-qa="appearanceActionList-{{appearance.appearanceUuid}}">
                 {% if not appearance.hasAnyRecalls %}
@@ -101,9 +108,11 @@
                             </a>
                         {% endif %}
                     </li>
-                    <li class="offence-card-action-link">
-                        <a href="?" class="govuk-link--no-visited-state">Delete</a>
-                    </li>
+                    {% if appearance.canDelete %}
+                      <li class="offence-card-action-link">
+                        <a href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/{{ appearance.appearanceUuid }}/confirm-delete" class="govuk-link--no-visited-state">Delete</a>
+                      </li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </div>

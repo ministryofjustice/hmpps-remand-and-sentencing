@@ -207,6 +207,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
       documentType: getUiDocumentType(document.documentType, courtCaseDetails.latestAppearance.warrantType),
     }))
 
+    courtCaseDetails.appearances = courtCaseDetails.appearances.map(appearance => ({
+      ...appearance,
+      canDelete: appearance.charges.every(charge => !charge.sentence),
+    }))
+
     return res.render('pages/courtCaseDetails', {
       nomsId,
       courtCaseReference,
@@ -217,6 +222,25 @@ export default class CourtCaseRoutes extends BaseRoutes {
       courtMap,
       consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}`,
+    })
+  }
+
+  public getDeleteAppearanceConfirmation: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { token } = res.locals.user
+    const latestAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+      token,
+      courtCaseReference,
+    )
+    const courtDetails = await this.courtRegisterService.findCourtById(latestAppearance.courtCode, req.user.username)
+    return res.render('pages/courtAppearance/delete-appearance-confirmation', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      latestAppearance,
+      courtDetails,
     })
   }
 
@@ -1556,7 +1580,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
 
       const documentTypeName = this.getDocumentType(documentType)
-      const documentId = await this.documentManagementService.uploadDocument(
+      const documentUuid = await this.documentManagementService.uploadDocument(
         nomsId,
         uploadedFile,
         username,
@@ -1564,7 +1588,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
 
       const uploadedDocument: UploadedDocument = {
-        documentUUID: documentId,
+        documentUUID: documentUuid,
         documentType: documentTypeName,
         fileName: uploadedFile.originalname,
       }

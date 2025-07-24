@@ -46,8 +46,7 @@ context('Sentencing delete sentence in chain Page', () => {
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
     offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
     const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
-    offenceDeleteOffencePage.radioLabelSelector('true').click()
-    offenceDeleteOffencePage.continueButton().click()
+    offenceDeleteOffencePage.deleteButton().click()
     sentencingDeleteSentenceInChainPage = Page.verifyOnPage(SentencingDeleteSentenceInChainPage)
   })
 

@@ -1,34 +1,12 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 
 {% set isDeleteOffence = true %}
 
 {% set pageTitle = applicationName + " - Delete an offence" %}
-
-
-{% set hintHtml %}
-    {{
-        offenceCard({
-            offenceCode: offence.offenceCode,
-            offenceName: offenceMap[offence.offenceCode],
-            offenceStartDate: offence.offenceStartDate | formatDate,
-            offenceEndDate: offence.offenceEndDate | formatDate,
-            outcome: outcome | outcomeValueOrLegacy(offence.legacyData),
-            countNumber: offence.sentence.countNumber,
-            lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-            convictionDate: offence.sentence.convictionDate | formatDate,
-            terrorRelated: offence.terrorRelated,
-            isSentenced: offence.sentence,
-            periodLengths: offence.sentence.periodLengths,
-            sentenceServeType: offence.sentence.sentenceServeType,
-            consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
-            sentenceType: sentenceType.description if sentenceType,
-            fineAmount: offence.sentence.fineAmount
-        })
-    }}
-{% endset %}
 
 {% block content %}
     {{ super() }}
@@ -38,36 +16,42 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 
-                {{ govukRadios({
-                    name: "deleteOffence",
-                    fieldset: {
+                {% call govukFieldset({
                         legend: {
                             text: "Are you sure you want to delete this offence?",
                             isPageHeading: true,
                             classes: "govuk-fieldset__legend--l"
                         }
-                    },
-                    errorMessage:  errors | findError('deleteOffence'),
-                    hint: {
-                        html: hintHtml
-                    },
-                    items: [
-                        {
-                            value: "true",
-                            text: "Yes"
-                        },
-                        {
-                            value: "false",
-                            text: "No"
-                        }
-                    ]
-                }) }}
+                }) %}
 
+                    {{
+                        offenceCard({
+                                offenceCode: offence.offenceCode,
+                                offenceName: offenceMap[offence.offenceCode],
+                                offenceStartDate: offence.offenceStartDate | formatDate,
+                                offenceEndDate: offence.offenceEndDate | formatDate,
+                                outcome: outcome | outcomeValueOrLegacy(offence.legacyData),
+                                countNumber: offence.sentence.countNumber,
+                                lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
+                                convictionDate: offence.sentence.convictionDate | formatDate,
+                                terrorRelated: offence.terrorRelated,
+                                isSentenced: offence.sentence,
+                                periodLengths: offence.sentence.periodLengths,
+                                sentenceServeType: offence.sentence.sentenceServeType,
+                                consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
+                                sentenceType: sentenceType.description if sentenceType,
+                                fineAmount: offence.sentence.fineAmount
+                            })
+                    }}
 
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
+                    <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Yes, delete offence",
+                        classes: "govuk-button--warning",
+                        attributes: {  'data-qa': 'delete-button' }
+                    }) }}
+                    <a class="govuk-link" href="{{ cancelLink }}">Cancel and go back</a>
+                {% endcall %}
             </form>
         </div>
     </div>

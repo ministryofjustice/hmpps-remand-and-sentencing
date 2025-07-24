@@ -76,6 +76,13 @@ context('Court Case details Page', () => {
           },
         ])
     })
+    it('should show delete button', () => {
+      courtCaseDetailsPage
+        .appearanceActionList('a6400fd8-aef4-4567-b18c-d1f452651933')
+        .children()
+        .should('have.length', 2)
+        .and('contain.text', 'Delete')
+    })
   })
 
   context('Latest sentence appearance', () => {

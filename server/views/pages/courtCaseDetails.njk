@@ -101,9 +101,11 @@
                             </a>
                         {% endif %}
                     </li>
-                    <li class="offence-card-action-link">
-                        <a href="?" class="govuk-link--no-visited-state">Delete</a>
-                    </li>
+                    {% if appearance.canDelete %}
+                      <li class="offence-card-action-link">
+                        <a href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/{{ appearance.appearanceUuid }}/delete" class="govuk-link--no-visited-state">Delete</a>
+                      </li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </div>

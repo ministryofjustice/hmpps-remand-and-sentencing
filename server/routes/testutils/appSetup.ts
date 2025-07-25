@@ -13,9 +13,35 @@ import AuditService from '../../services/auditService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import CourtAppearanceService from '../../services/courtAppearanceService'
+import PrisonerService from '../../services/prisonerService'
+import UserService from '../../services/userService'
+import OffenceService from '../../services/offenceService'
+import ManageOffencesService from '../../services/manageOffencesService'
+import RemandAndSentencingService from '../../services/remandAndSentencingService'
+import FeComponentsService from '../../services/feComponentsService'
+import DocumentManagementService from '../../services/documentManagementService'
+import PrisonerSearchService from '../../services/prisonerSearchService'
+import CourtRegisterService from '../../services/courtRegisterService'
+import AppearanceOutcomeService from '../../services/appearanceOutcomeService'
+import OffenceOutcomeService from '../../services/offenceOutcomeService'
+import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
+import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
 
 jest.mock('../../services/auditService')
 jest.mock('../../services/courtAppearanceService')
+jest.mock('../../services/prisonerService')
+jest.mock('../../services/userService')
+jest.mock('../../services/offenceService')
+jest.mock('../../services/manageOffencesService')
+jest.mock('../../services/remandAndSentencingService')
+jest.mock('../../services/feComponentsService')
+jest.mock('../../services/documentManagementService')
+jest.mock('../../services/prisonerSearchService')
+jest.mock('../../services/courtRegisterService')
+jest.mock('../../services/appearanceOutcomeService')
+jest.mock('../../services/offenceOutcomeService')
+jest.mock('../../services/calculateReleaseDatesService')
+jest.mock('../../services/courtCasesReleaseDatesService')
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
@@ -23,6 +49,25 @@ const testAppInfo: ApplicationInfo = {
   gitRef: 'long ref',
   gitShortHash: 'short ref',
   branchName: 'main',
+}
+
+export const defaultServices = {
+  applicationInfo: testAppInfo,
+  userService: new UserService(null) as jest.Mocked<UserService>,
+  prisonerService: new PrisonerService() as jest.Mocked<PrisonerService>,
+  offenceService: new OffenceService(null, null, null) as jest.Mocked<OffenceService>,
+  manageOffencesService: new ManageOffencesService() as jest.Mocked<ManageOffencesService>,
+  feComponentsService: new FeComponentsService(null) as jest.Mocked<FeComponentsService>,
+  remandAndSentencingService: new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>,
+  courtAppearanceService: new CourtAppearanceService(null, null, null) as jest.Mocked<CourtAppearanceService>,
+  documentManagementService: new DocumentManagementService(null) as jest.Mocked<DocumentManagementService>,
+  prisonerSearchService: new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>,
+  auditService: new AuditService(null) as jest.Mocked<AuditService>,
+  courtRegisterService: new CourtRegisterService(null) as jest.Mocked<CourtRegisterService>,
+  appearanceOutcomeService: new AppearanceOutcomeService(null) as jest.Mocked<AppearanceOutcomeService>,
+  offenceOutcomeService: new OffenceOutcomeService(null) as jest.Mocked<OffenceOutcomeService>,
+  calculateReleaseDatesService: new CalculateReleaseDatesService(null) as jest.Mocked<CalculateReleaseDatesService>,
+  courtCasesReleaseDatesService: new CourtCasesReleaseDatesService() as jest.Mocked<CourtCasesReleaseDatesService>,
 }
 
 export const user: HmppsUser = {
@@ -100,10 +145,7 @@ function appSetup(
 
 export function appWithAllRoutes({
   production = false,
-  services = {
-    auditService: new AuditService(null) as jest.Mocked<AuditService>,
-    courtAppearanceService: new CourtAppearanceService(null, null, null) as jest.Mocked<CourtAppearanceService>,
-  },
+  services = defaultServices,
   userSupplier = () => user,
   prisoner = defaultPrisoner,
 }: {

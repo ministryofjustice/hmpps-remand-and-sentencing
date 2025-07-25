@@ -4,7 +4,7 @@ import request from 'supertest'
 import type { CourtAppearance } from 'models'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import type { CourtDto } from '../../@types/courtRegisterApi/types'
-import { AppearanceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { AppearanceType } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 let app: Express
 
@@ -16,32 +16,29 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET Court Case Check Answers', () => {
+describe('GET Check Next Hearing Answers', () => {
   it('should render page on new journey', () => {
     const courtCode = 'ACCRYC'
-    const outcomeUuid = '1'
-    const appearanceOutcome = {
-      outcomeUuid,
-      outcomeName: 'Appearance outcome',
-    } as AppearanceOutcome
+    const nextHearingTypeUuid = '1'
     const courtAppearance = {
-      warrantType: 'REMAND',
-      caseReferenceNumber: 'T12345678',
-      warrantDate: new Date(),
-      courtCode: 'ACCRYC',
-      appearanceOutcomeUuid: outcomeUuid,
-      caseOutcomeAppliedAll: 'false',
+      nextHearingSelect: true,
+      nextHearingCourtCode: 'ACCRYC',
+      nextHearingTypeUuid,
     } as CourtAppearance
     const court = {
       courtId: courtCode,
       courtName: 'A court',
     } as CourtDto
+    const appearanceType = {
+      appearanceTypeUuid: nextHearingTypeUuid,
+      description: 'Appearance type',
+    } as AppearanceType
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue(courtAppearance)
     defaultServices.courtRegisterService.findCourtById.mockResolvedValue(court)
-    defaultServices.appearanceOutcomeService.getOutcomeByUuid.mockResolvedValue(appearanceOutcome)
+    defaultServices.remandAndSentencingService.getAppearanceTypeByUuid.mockResolvedValue(appearanceType)
 
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-answers')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-hearing-answers')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

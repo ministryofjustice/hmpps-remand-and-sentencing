@@ -1,8 +1,7 @@
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
-import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
-import { AppearanceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { appWithAllRoutes } from '../testutils/appSetup'
 
 let app: Express
 
@@ -14,18 +13,10 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET Court Case Case Outcome applied all', () => {
+describe('GET court name', () => {
   it('should render page on new journey', () => {
-    const outcomeUuid = '1'
-    const appearanceOutcome = {
-      outcomeUuid,
-      outcomeName: 'Appearance outcome',
-    } as AppearanceOutcome
-    defaultServices.courtAppearanceService.getAppearanceOutcomeUuid.mockReturnValue(outcomeUuid)
-    defaultServices.appearanceOutcomeService.getOutcomeByUuid.mockResolvedValue(appearanceOutcome)
-
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/case-outcome-applied-all')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

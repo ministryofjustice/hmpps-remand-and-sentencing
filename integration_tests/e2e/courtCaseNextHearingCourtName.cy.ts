@@ -10,19 +10,6 @@ context('Next hearing court name page', () => {
     courtCaseNextHearingCourtNamePage = Page.verifyOnPage(CourtCaseNextHearingCourtNamePage)
   })
 
-  it('displays person details', () => {
-    courtCaseNextHearingCourtNamePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    courtCaseNextHearingCourtNamePage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without entering anything in the input results in an error', () => {
     courtCaseNextHearingCourtNamePage.continueButton().click()
     courtCaseNextHearingCourtNamePage

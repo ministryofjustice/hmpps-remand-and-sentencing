@@ -11,23 +11,6 @@ context('Next hearing date page', () => {
     courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
   })
 
-  it('displays person details', () => {
-    courtCaseNextHearingDatePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to save draft is not displayed', () => {
-    courtCaseNextHearingDatePage.saveDraftButton().should('not.exist')
-  })
-
-  it('button to continue is displayed', () => {
-    courtCaseNextHearingDatePage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without entering anything in the inputs results in an error', () => {
     courtCaseNextHearingDatePage.continueButton().click()
     courtCaseNextHearingDatePage

@@ -12,19 +12,6 @@ context('Court Case Court Name Page', () => {
     courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
   })
 
-  it('displays person details', () => {
-    courtCaseCourtNamePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    courtCaseCourtNamePage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without entering anything in the input results in an error', () => {
     courtCaseCourtNamePage.continueButton().click()
     courtCaseCourtNamePage

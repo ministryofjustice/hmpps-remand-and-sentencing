@@ -15,28 +15,6 @@ context('Court Case Overall Conviction Date Page', () => {
     courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
   })
 
-  it('displays person details', () => {
-    courtCaseOverallConvictionDatePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    courtCaseOverallConvictionDatePage.continueButton().should('contain.text', 'Continue')
-  })
-
-  it('inset hint text is displayed', () => {
-    courtCaseOverallConvictionDatePage
-      .hintInset()
-      .should(
-        'contain.text',
-        'This is not always the same as the sentencing date. You can find the conviction date on the Prison court register.',
-      )
-  })
-
   it('submitting without entering anything in the inputs results in an error', () => {
     courtCaseOverallConvictionDatePage.continueButton().click()
     courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)

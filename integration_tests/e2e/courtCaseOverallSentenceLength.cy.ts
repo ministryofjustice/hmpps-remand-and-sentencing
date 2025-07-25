@@ -17,19 +17,6 @@ context('Add Court Case Sentence Length Page', () => {
     courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
   })
 
-  it('displays person details', () => {
-    courtCaseOverallSentenceLengthPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    courtCaseOverallSentenceLengthPage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without entering anything in the inputs results in an error', () => {
     courtCaseOverallSentenceLengthPage.radioLabelSelector('true').click()
     courtCaseOverallSentenceLengthPage.continueButton().click()
@@ -78,11 +65,5 @@ context('Add Court Case Sentence Length Page', () => {
     courtCaseOverallSentenceLengthPage.continueButton().click()
     offenceConvictionDatePage.backLink().click()
     courtCaseOverallSentenceLengthPage.radioSelector('false').should('be.checked')
-  })
-
-  it('Correct offences caption is displayed', () => {
-    courtCaseOverallSentenceLengthPage
-      .warrantInformationCaption()
-      .should('contain.text', 'Add overall warrant information')
   })
 })

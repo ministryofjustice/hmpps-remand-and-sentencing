@@ -12,8 +12,10 @@ import { PrisonerSearchApiPrisoner } from '../../@types/prisonerSearchApi/prison
 import AuditService from '../../services/auditService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
+import CourtAppearanceService from '../../services/courtAppearanceService'
 
 jest.mock('../../services/auditService')
+jest.mock('../../services/courtAppearanceService')
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
@@ -60,6 +62,7 @@ const defaultPrisoner: PrisonerSearchApiPrisoner = {
 } as PrisonerSearchApiPrisoner
 
 export const flashProvider = jest.fn()
+flashProvider.mockReturnValue([])
 
 function appSetup(
   services: Services,
@@ -99,6 +102,7 @@ export function appWithAllRoutes({
   production = false,
   services = {
     auditService: new AuditService(null) as jest.Mocked<AuditService>,
+    courtAppearanceService: new CourtAppearanceService(null, null, null) as jest.Mocked<CourtAppearanceService>,
   },
   userSupplier = () => user,
   prisoner = defaultPrisoner,

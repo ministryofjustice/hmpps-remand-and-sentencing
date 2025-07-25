@@ -6,19 +6,17 @@ import { appWithAllRoutes, user } from '../testutils/appSetup'
 let app: Express
 
 beforeEach(() => {
-  app = appWithAllRoutes({
-    userSupplier: () => user,
-  })
+  app = appWithAllRoutes({})
 })
 
 afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET warrant type', () => {
-  it('should render warrant type page', () => {
+describe('GET Court Case Alternative Sentence Length', () => {
+  it('should render page on new journey', () => {
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/alternative-overall-sentence-length')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
@@ -29,8 +27,6 @@ describe('GET warrant type', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
-        const captionText = $('.govuk-caption-l').text()
-        expect(captionText).toContain('Add a court case')
       })
   })
 })

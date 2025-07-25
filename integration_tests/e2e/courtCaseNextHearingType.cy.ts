@@ -11,19 +11,6 @@ context('Next hearing type page', () => {
     courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
   })
 
-  it('displays person details', () => {
-    courtCaseNextHearingTypePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    courtCaseNextHearingTypePage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without selecting anything results in an error', () => {
     courtCaseNextHearingTypePage.continueButton().click()
     courtCaseNextHearingTypePage

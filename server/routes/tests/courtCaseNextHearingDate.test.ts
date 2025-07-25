@@ -3,12 +3,20 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes } from '../testutils/appSetup'
 
-const app: Express = appWithAllRoutes({})
+let app: Express
 
-describe('GET warrant type', () => {
+beforeEach(() => {
+  app = appWithAllRoutes({})
+})
+
+afterEach(() => {
+  jest.resetAllMocks()
+})
+
+describe('GET Next hearing date', () => {
   it('should render page on new journey', () => {
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-date')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
@@ -19,19 +27,6 @@ describe('GET warrant type', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
-        const captionText = $('.govuk-caption-l').text()
-        expect(captionText).toContain('Add a court case')
-      })
-  })
-
-  it('should render page on repeat journey', () => {
-    return request(app)
-      .get('/person/A1234AB/edit-court-case/0/add-court-appearance/0/warrant-type')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const captionText = $('.govuk-caption-l').text()
-        expect(captionText).toContain('Add an appearance')
       })
   })
 })

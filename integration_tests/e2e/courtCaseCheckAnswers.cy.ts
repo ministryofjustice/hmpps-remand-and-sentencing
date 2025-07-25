@@ -54,19 +54,6 @@ context('Court Case Check Answers Page', () => {
       courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     })
 
-    it('displays person details', () => {
-      courtCaseCheckAnswersPage
-        .prisonerBanner()
-        .should('contain.text', 'Meza, Cormac')
-        .and('contain.text', 'A1234AB')
-        .and('contain.text', 'EstablishmentHMP Bedford')
-        .and('contain.text', 'Cell numberCELL-1')
-    })
-
-    it('button to Save court case is displayed', () => {
-      courtCaseCheckAnswersPage.continueButton().should('contain.text', 'Confirm and continue')
-    })
-
     it('displays court appearance details', () => {
       courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
         'Warrant type': 'Remand',

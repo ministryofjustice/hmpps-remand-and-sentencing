@@ -1,14 +1,12 @@
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
-import { appWithAllRoutes, user } from '../testutils/appSetup'
+import { appWithAllRoutes } from '../testutils/appSetup'
 
 let app: Express
 
 beforeEach(() => {
-  app = appWithAllRoutes({
-    userSupplier: () => user,
-  })
+  app = appWithAllRoutes({})
 })
 
 afterEach(() => {

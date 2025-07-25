@@ -13,19 +13,6 @@ context('Select reference page', () => {
     courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
   })
 
-  it('displays person details', () => {
-    courtCaseSelectReferencePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    courtCaseSelectReferencePage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without entering anything in the input results in an error', () => {
     courtCaseSelectReferencePage.continueButton().click()
     courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')

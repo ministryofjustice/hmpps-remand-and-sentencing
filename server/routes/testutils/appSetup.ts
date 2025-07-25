@@ -46,12 +46,17 @@ export const user: HmppsUser = {
 }
 
 const defaultPrisoner: PrisonerSearchApiPrisoner = {
-  prisonerNumber: 'ABC123',
-  firstName: 'Anon',
-  lastName: 'Nobody',
-  dateOfBirth: '24/06/2000',
-  bookingId: '12345',
-  prisonId: 'LDS',
+  prisonerNumber: 'A1234AB',
+  bookingId: '1234',
+  firstName: 'Cormac',
+  lastName: 'Meza',
+  dateOfBirth: '1965-02-03',
+  prisonId: 'MDI',
+  status: 'REMAND',
+  prisonName: 'HMP Bedford',
+  cellLocation: 'CELL-1',
+  pncNumber: '1231/XX/121',
+  imprisonmentStatusDescription: 'Sentenced with a sentence c',
 } as PrisonerSearchApiPrisoner
 
 export const flashProvider = jest.fn()

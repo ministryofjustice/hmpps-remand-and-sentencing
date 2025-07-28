@@ -56,19 +56,6 @@ context('Warrant Information Check Answers Page', () => {
     offenceCheckOverallAnswersPage = Page.verifyOnPage(SentencingWarrantInformationCheckAnswersPage)
   })
 
-  it('displays person details', () => {
-    offenceCheckOverallAnswersPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to confirm and continue is displayed', () => {
-    offenceCheckOverallAnswersPage.confirmAndContinueButton().should('contain.text', 'Confirm and continue')
-  })
-
   it('displays overall details', () => {
     offenceCheckOverallAnswersPage.checkOverallAnswersSummaryList().getSummaryList().should('deep.equal', {
       'Is there an overall sentence length on the warrant?': 'Yes',

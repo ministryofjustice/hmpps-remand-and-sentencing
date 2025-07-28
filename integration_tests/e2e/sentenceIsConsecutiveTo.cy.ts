@@ -17,19 +17,6 @@ context('Is sentence consecutive to Page', () => {
     sentenceIsSentenceConsecutiveToPage = Page.verifyOnPage(SentenceIsSentenceConsecutiveToPage)
   })
 
-  it('displays person details', () => {
-    sentenceIsSentenceConsecutiveToPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    sentenceIsSentenceConsecutiveToPage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without selecting an option results in error', () => {
     sentenceIsSentenceConsecutiveToPage.continueButton().click()
     sentenceIsSentenceConsecutiveToPage

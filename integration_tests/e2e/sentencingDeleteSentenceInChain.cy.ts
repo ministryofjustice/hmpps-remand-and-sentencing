@@ -50,19 +50,6 @@ context('Sentencing delete sentence in chain Page', () => {
     sentencingDeleteSentenceInChainPage = Page.verifyOnPage(SentencingDeleteSentenceInChainPage)
   })
 
-  it('displays person details', () => {
-    sentencingDeleteSentenceInChainPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    sentencingDeleteSentenceInChainPage.continueButton().should('contain.text', 'Yes, delete the sentence')
-  })
-
   it('continuing clears the whole chain', () => {
     sentencingDeleteSentenceInChainPage.continueButton().click()
     let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')

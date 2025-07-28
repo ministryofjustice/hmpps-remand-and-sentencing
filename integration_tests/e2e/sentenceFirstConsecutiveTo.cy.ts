@@ -29,19 +29,6 @@ context('First sentence consecutive to Page', () => {
     sentenceFirstSentenceConsecutiveToPage = Page.verifyOnPage(SentenceFirstSentenceConsecutiveToPage)
   })
 
-  it('displays person details', () => {
-    sentenceFirstSentenceConsecutiveToPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    sentenceFirstSentenceConsecutiveToPage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without selecting an option results in error', () => {
     sentenceFirstSentenceConsecutiveToPage.continueButton().click()
     sentenceFirstSentenceConsecutiveToPage

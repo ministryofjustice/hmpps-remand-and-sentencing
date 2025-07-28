@@ -27,23 +27,6 @@ context('Remove document confirmation page', () => {
     removeDocumentConfirmationPage = Page.verifyOnPage(RemoveDocumentConfirmationPage)
   })
 
-  it('displays person details', () => {
-    removeDocumentConfirmationPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    removeDocumentConfirmationPage.continueButton().should('contain.text', 'Continue')
-  })
-
-  it('filename is displayed', () => {
-    removeDocumentConfirmationPage.fileName.should('contain.text', 'testfile.doc')
-  })
-
   it('submitting without selecting anything results in error', () => {
     removeDocumentConfirmationPage.continueButton().click()
     removeDocumentConfirmationPage

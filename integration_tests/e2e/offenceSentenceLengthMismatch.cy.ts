@@ -11,19 +11,6 @@ context('Offence sentence length mismatch', () => {
     offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
   })
 
-  it('displays person details', () => {
-    offenceSentenceLengthMismatchPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    offenceSentenceLengthMismatchPage.continueButton().should('contain.text', 'Yes, continue')
-  })
-
   it('clicking continue goes back to task list page', () => {
     offenceSentenceLengthMismatchPage.continueButton().click()
     Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')

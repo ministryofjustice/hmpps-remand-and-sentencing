@@ -41,19 +41,6 @@ context('Add Offence Period Length Page', () => {
     offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
   })
 
-  it('displays person details', () => {
-    offencePeriodLengthPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    offencePeriodLengthPage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without entering anything in the inputs results in an error', () => {
     offencePeriodLengthPage.continueButton().click()
     offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')

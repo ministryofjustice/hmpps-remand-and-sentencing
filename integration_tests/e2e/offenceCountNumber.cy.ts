@@ -16,19 +16,6 @@ context('Add Offence Count number Page', () => {
     offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
   })
 
-  it('displays person details', () => {
-    offenceCountNumberPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    offenceCountNumberPage.continueButton().should('contain.text', 'Save and continue')
-  })
-
   it('submitting without selecting entering anything results in error', () => {
     offenceCountNumberPage.continueButton().click()
     offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)

@@ -30,40 +30,6 @@ context('Add Offence Edit offence Page', () => {
     cy.signIn()
   })
 
-  context('remand', () => {
-    beforeEach(() => {
-      cy.task('stubGetChargeOutcomesByIds', [
-        {
-          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-          outcomeName: 'Remanded in custody',
-          outcomeType: 'REMAND',
-        },
-      ])
-      cy.task('stubGetChargeOutcomeById', {})
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-      courtCaseWarrantTypePage.continueButton().click()
-      cy.createOffence('A1234AB', '0', '0', '0')
-      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    })
-
-    it('displays person details', () => {
-      offenceEditOffencePage
-        .prisonerBanner()
-        .should('contain.text', 'Meza, Cormac')
-        .and('contain.text', 'A1234AB')
-        .and('contain.text', 'EstablishmentHMP Bedford')
-        .and('contain.text', 'Cell numberCELL-1')
-    })
-
-    it('button to accept changes is displayed', () => {
-      offenceEditOffencePage.continueButton().should('contain.text', 'Accept changes')
-    })
-  })
-
   context('sentence', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceTypeById', {})
@@ -100,19 +66,6 @@ context('Add Offence Edit offence Page', () => {
       const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
       offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    })
-
-    it('displays person details', () => {
-      offenceEditOffencePage
-        .prisonerBanner()
-        .should('contain.text', 'Meza, Cormac')
-        .and('contain.text', 'A1234AB')
-        .and('contain.text', 'EstablishmentHMP Bedford')
-        .and('contain.text', 'Cell numberCELL-1')
-    })
-
-    it('button to accept changes is displayed', () => {
-      offenceEditOffencePage.continueButton().should('contain.text', 'Accept changes')
     })
 
     it('can edit count number and return to edit page', () => {

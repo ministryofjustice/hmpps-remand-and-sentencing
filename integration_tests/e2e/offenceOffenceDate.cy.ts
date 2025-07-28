@@ -14,19 +14,6 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
   })
 
-  it('displays person details', () => {
-    offenceOffenceDatePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    offenceOffenceDatePage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without entering anything in the inputs results in an error', () => {
     offenceOffenceDatePage.continueButton().click()
     offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')

@@ -252,8 +252,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public submitDeleteAppearanceConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { username } = res.locals.user as PrisonUser
+    const { token } = res.locals.user
     await this.remandAndSentencingService.deleteCourtAppearance(appearanceReference, username)
-    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
     const lastAppearance = courtCaseDetails.appearances.length === 0
     if (lastAppearance) {
       return res.redirect(`/person/${nomsId}`)

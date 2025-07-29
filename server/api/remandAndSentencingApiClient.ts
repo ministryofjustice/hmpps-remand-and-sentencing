@@ -121,6 +121,12 @@ export default class RemandAndSentencingApiClient {
     })) as unknown as Promise<DraftCourtAppearance>
   }
 
+  async deleteCourtAppearance(appearanceUuid: string): Promise<void> {
+    return (await this.restClient.delete({
+      path: `/court-appearance/${appearanceUuid}`,
+    })) as unknown as Promise<void>
+  }
+
   async getCourtCaseByUuid(courtCaseUuid: string): Promise<PageCourtCaseContent> {
     return (await this.restClient.get({
       path: `/court-case/${courtCaseUuid}`,

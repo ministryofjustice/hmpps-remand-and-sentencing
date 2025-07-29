@@ -134,6 +134,12 @@ export default class RemandAndSentencingService {
     ).getDraftCourtAppearanceByDraftUuid(draftUuid)
   }
 
+  async deleteCourtAppearance(appearanceUuid: string, username: string): Promise<void> {
+    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).deleteCourtAppearance(
+      appearanceUuid,
+    )
+  }
+
   async getCourtCaseDetails(courtCaseUuid: string, token: string): Promise<PageCourtCaseContent> {
     return new RemandAndSentencingApiClient(token).getCourtCaseByUuid(courtCaseUuid)
   }

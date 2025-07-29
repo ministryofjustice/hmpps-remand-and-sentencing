@@ -41,6 +41,7 @@ import mojPaginationFromPageCourtCase from './data/pagination'
 import config from '../config'
 import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
+import remandAndSentencingApi from '../../integration_tests/mockApis/remandAndSentencingApi'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -228,20 +229,37 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public getDeleteAppearanceConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { token } = res.locals.user
-    const latestAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+    const appearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+      appearanceReference,
       token,
-      courtCaseReference,
     )
-    const courtDetails = await this.courtRegisterService.findCourtById(latestAppearance.courtCode, req.user.username)
-    return res.render('pages/courtAppearance/delete-appearance-confirmation', {
+    const courtDetails = await this.courtRegisterService.findCourtById(appearance.courtCode, req.user.username)
+    const description = `${appearance.courtCaseReference ? appearance.courtCaseReference : 'Case held'} at ${courtDetails.courtName} on ${appearance.appearanceDate}`
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
+    const lastAppearance = courtCaseDetails.appearances.length === 1
+    return res.render('pages/courtAppearance/delete-appearance', {
       nomsId,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      latestAppearance,
+      appearance,
+      description,
       courtDetails,
+      lastAppearance,
     })
+  }
+
+  public submitDeleteAppearanceConfirmation: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
+    const { username } = res.locals.user as PrisonUser
+    await this.remandAndSentencingService.deleteCourtAppearance(appearanceReference, username)
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
+    const lastAppearance = courtCaseDetails.appearances.length === 0
+    if (lastAppearance) {
+      return res.redirect(`/person/${nomsId}`)
+    }
+    return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
   }
 
   public getAppearanceUpdatedConfirmation: RequestHandler = async (req, res): Promise<void> => {

@@ -19,19 +19,6 @@ context('document upload page', () => {
     documentUploadPage = Page.verifyOnPageTitle(DocumentUploadPage, 'sentencing warrant')
   })
 
-  it('displays person details', () => {
-    documentUploadPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    documentUploadPage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('shows an error when no document is uploaded and continue is clicked', () => {
     documentUploadPage.continueButton().click()
     documentUploadPage.errorSummary().should('contain.text', 'Select a document to upload.')

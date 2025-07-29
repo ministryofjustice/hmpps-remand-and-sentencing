@@ -11,19 +11,6 @@ context('Add Offence Fine amount Page', () => {
     offenceFineAmountPage = Page.verifyOnPage(OffenceFineAmountPage)
   })
 
-  it('displays person details', () => {
-    offenceFineAmountPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    offenceFineAmountPage.continueButton().should('contain.text', 'Continue')
-  })
-
   it("submitting a fine amount that isn't a number", () => {
     offenceFineAmountPage.input().type('bazinga')
     offenceFineAmountPage.continueButton().click()

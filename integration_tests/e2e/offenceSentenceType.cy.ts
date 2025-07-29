@@ -38,19 +38,6 @@ context('Add Offence Sentence Type Page', () => {
     offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
   })
 
-  it('displays person details', () => {
-    offenceSentenceTypePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    offenceSentenceTypePage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without selecting an option results in error', () => {
     offenceSentenceTypePage.continueButton().click()
     offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)

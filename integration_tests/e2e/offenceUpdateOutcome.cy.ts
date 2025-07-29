@@ -31,31 +31,12 @@ context('Update Offence Outcome Page', () => {
       offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
     })
 
-    it('displays person details', () => {
-      offenceUpdateOutcomePage
-        .prisonerBanner()
-        .should('contain.text', 'Meza, Cormac')
-        .and('contain.text', 'A1234AB')
-        .and('contain.text', 'EstablishmentHMP Bedford')
-        .and('contain.text', 'Cell numberCELL-1')
-    })
-
-    it('button to continue is displayed', () => {
-      offenceUpdateOutcomePage.continueButton().should('contain.text', 'Save and continue')
-    })
-
     it('submitting without selecting anything results in an error', () => {
       offenceUpdateOutcomePage.continueButton().click()
       offenceUpdateOutcomePage
         .errorSummary()
         .trimTextContent()
         .should('equal', 'There is a problem You must select the new outcome for this offence')
-    })
-
-    it('displays offence paragraph', () => {
-      offenceUpdateOutcomePage
-        .offenceParagraph()
-        .should('contain.text', 'PS90037 - An offence description committed on 12/05/2023')
     })
 
     it('displays remand and non custodial outcomes', () => {

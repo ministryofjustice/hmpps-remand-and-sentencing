@@ -126,6 +126,10 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('can edit court name and return back to details page', () => {
+      cy.task('stubGetCourtById', {
+        courtId: 'ACCRYC',
+        courtName: 'Accrington Youth Court',
+      })
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',

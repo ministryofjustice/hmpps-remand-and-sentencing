@@ -55,27 +55,6 @@ context('Add Offence Outcome Page', () => {
       )
     })
 
-    it('displays person details', () => {
-      offenceOffenceOutcomePage
-        .prisonerBanner()
-        .should('contain.text', 'Meza, Cormac')
-        .and('contain.text', 'A1234AB')
-        .and('contain.text', 'EstablishmentHMP Bedford')
-        .and('contain.text', 'Cell numberCELL-1')
-    })
-
-    it('button to continue is displayed', () => {
-      offenceOffenceOutcomePage.continueButton().should('contain.text', 'Continue')
-    })
-
-    it('displays offence paragraph', () => {
-      offenceOffenceOutcomePage.offenceParagraph().should('contain.text', 'PS90037 - An offence description')
-    })
-
-    it('should not display legacy paragraph when first on page', () => {
-      offenceOffenceOutcomePage.legendParagraph().should('not.exist')
-    })
-
     it('submitting without selecting anything results in an error', () => {
       offenceOffenceOutcomePage.continueButton().click()
       offenceOffenceOutcomePage

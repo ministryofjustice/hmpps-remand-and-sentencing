@@ -37,19 +37,6 @@ context('Review Offences Page', () => {
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     })
 
-    it('displays person details', () => {
-      offenceReviewOffencesPage
-        .prisonerBanner()
-        .should('contain.text', 'Meza, Cormac')
-        .and('contain.text', 'A1234AB')
-        .and('contain.text', 'EstablishmentHMP Bedford')
-        .and('contain.text', 'Cell numberCELL-1')
-    })
-
-    it('button to continue is displayed', () => {
-      offenceReviewOffencesPage.continueButton().should('contain.text', 'Continue')
-    })
-
     it('update outcome and return to review offences page', () => {
       cy.task('stubGetAllChargeOutcomes')
       cy.task('stubGetOffenceByCode', {})

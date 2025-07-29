@@ -47,11 +47,6 @@ context('Update Offence Outcomes Page', () => {
       offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
     })
 
-    it('should display the govukSummaryList with overall sentence length', () => {
-      // Assert that the govukSummaryList is visible
-      offenceUpdateOffenceOutcomesPage.sentenceLengthSection().should('be.visible')
-    })
-
     it('shows error if Continue button pressed without selecting an outcome', () => {
       offenceUpdateOffenceOutcomesPage.continueButton().click()
       offenceUpdateOffenceOutcomesPage

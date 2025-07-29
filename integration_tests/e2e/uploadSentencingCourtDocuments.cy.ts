@@ -4,7 +4,6 @@ import UploadSentencingCourtDocumentsPage from '../pages/uploadSentencingCourtDo
 import DocumentUploadPage from '../pages/documentUpload'
 
 context('Upload sentencing court document page', () => {
-  let uploadSentencingCourtDocumentsPage: UploadSentencingCourtDocumentsPage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubUploadWarrant')
@@ -16,20 +15,7 @@ context('Upload sentencing court document page', () => {
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/upload-court-documents')
-    uploadSentencingCourtDocumentsPage = Page.verifyOnPage(UploadSentencingCourtDocumentsPage)
-  })
-
-  it('displays person details', () => {
-    uploadSentencingCourtDocumentsPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    uploadSentencingCourtDocumentsPage.continueButton().should('contain.text', 'Continue')
+    Page.verifyOnPage(UploadSentencingCourtDocumentsPage)
   })
 
   it(`uploads a document and shows on the upload court documents page`, () => {

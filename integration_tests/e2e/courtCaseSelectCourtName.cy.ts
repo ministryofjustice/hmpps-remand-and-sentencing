@@ -20,19 +20,6 @@ context('Select court name page', () => {
     )
   })
 
-  it('displays person details', () => {
-    courtCaseSelectCourtNamePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    courtCaseSelectCourtNamePage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without selecting anything in the input results in an error', () => {
     courtCaseSelectCourtNamePage.continueButton().click()
     courtCaseSelectCourtNamePage

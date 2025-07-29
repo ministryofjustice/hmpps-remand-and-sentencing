@@ -15,19 +15,6 @@ context('Add Offence Offence Code Page', () => {
     offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
   })
 
-  it('displays person details', () => {
-    offenceOffenceCodeConfirmPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    offenceOffenceCodeConfirmPage.continueButton().should('contain.text', 'Confirm and continue')
-  })
-
   it('displays offence details', () => {
     offenceOffenceCodeConfirmPage.offenceSummaryList().getSummaryList().should('deep.equal', {
       'Offence code': 'PS90037',

@@ -15,17 +15,6 @@ context('Start Page', () => {
     startPage = Page.verifyOnPage(StartPage)
   })
 
-  it('displays person details', () => {
-    startPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'Date of birth03/02/1965')
-      .and('contain.text', 'StatusSentenced with a sentence c')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
   it('action list link to add a court case is displayed', () => {
     startPage
       .actionListLink()

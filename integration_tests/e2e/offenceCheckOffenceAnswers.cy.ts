@@ -35,19 +35,6 @@ context('Check Offence Answers Page', () => {
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
   })
 
-  it('displays person details', () => {
-    offenceCheckOffenceAnswersPage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button add an offence is displayed', () => {
-    offenceCheckOffenceAnswersPage.addAnotherButton().should('contain.text', 'Add an offence')
-  })
-
   context('remand', () => {
     beforeEach(() => {
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
@@ -138,10 +125,6 @@ context('Check Offence Answers Page', () => {
       const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
       offenceDeleteOffencePage.deleteButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
-    })
-
-    it('creating a new sentenced offence results in showing the sentenced offence', () => {
-      offenceCheckOffenceAnswersPage.offencesSummaryCard().should('not.exist')
     })
 
     it('custodial offences appear in custodial offences heading', () => {

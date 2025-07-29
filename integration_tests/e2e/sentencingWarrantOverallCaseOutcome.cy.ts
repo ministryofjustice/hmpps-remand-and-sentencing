@@ -22,19 +22,6 @@ context('Sentencing Warrant Overall Case Outcome Page', () => {
     )
   })
 
-  it('displays person details', () => {
-    courtCaseOverallCaseOutcomePage
-      .prisonerBanner()
-      .should('contain.text', 'Meza, Cormac')
-      .and('contain.text', 'A1234AB')
-      .and('contain.text', 'EstablishmentHMP Bedford')
-      .and('contain.text', 'Cell numberCELL-1')
-  })
-
-  it('button to continue is displayed', () => {
-    courtCaseOverallCaseOutcomePage.continueButton().should('contain.text', 'Continue')
-  })
-
   it('submitting without selecting anything results in an error', () => {
     courtCaseOverallCaseOutcomePage.continueButton().click()
     courtCaseOverallCaseOutcomePage

@@ -41,7 +41,6 @@ import mojPaginationFromPageCourtCase from './data/pagination'
 import config from '../config'
 import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
-import remandAndSentencingApi from '../../integration_tests/mockApis/remandAndSentencingApi'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(

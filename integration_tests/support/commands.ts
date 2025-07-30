@@ -251,7 +251,7 @@ Cypress.Commands.add(
     courtCaseWarrantTypePage.continueButton().click()
 
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/add-another-offence`,
     )
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
@@ -297,7 +297,7 @@ Cypress.Commands.add(
     courtCaseWarrantTypePage.continueButton().click()
 
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/add-another-offence`,
     )
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
@@ -372,7 +372,7 @@ Cypress.Commands.add(
     courtCaseWarrantTypePage.continueButton().click()
 
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/add-another-offence`,
     )
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
@@ -441,7 +441,7 @@ Cypress.Commands.add(
     consecutiveToSelect: string = '0|SAME',
   ) => {
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/offence-date`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/add-another-offence`,
     )
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')

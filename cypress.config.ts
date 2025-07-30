@@ -38,6 +38,7 @@ export default defineConfig({
             remandAndSentencingApi.stubSearchSentenceTypes({
               convictionDate: '2023-05-12',
               offenceDate: '2023-05-10',
+              age: '58',
             }),
             remandAndSentencingApi.stubGetAllAppearanceTypes(),
             remandAndSentencingApi.stubGetAppearanceOutcomeById({

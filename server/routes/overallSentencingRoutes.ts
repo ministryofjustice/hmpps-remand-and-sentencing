@@ -389,7 +389,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
   public getCheckOverallAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
+    const { appearanceOutcomeUuid } = courtAppearance
     const overallCaseOutcome = (
       await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName

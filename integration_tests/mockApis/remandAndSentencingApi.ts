@@ -2625,6 +2625,94 @@ export default {
     })
   },
 
+  stubGetAppearanceByUuid: ({ appearanceUuid = 'a6400fd8-aef4-4567-b18c-d1f452651933' } = {}): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/court-appearance/${appearanceUuid}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid,
+          outcome: {
+            outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+            outcomeName: 'Remanded in custody',
+            nomisCode: '3452',
+            outcomeType: 'REMAND',
+            displayOrder: 10,
+          },
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          warrantId: 'W12345',
+          warrantType: 'REMAND',
+          nextCourtAppearance: {
+            appearanceDate: '2024-12-15',
+            courtCode: 'ACCRYC',
+            appearanceType: {
+              appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+              description: 'Court appearance',
+              displayOrder: 10,
+            },
+          },
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                outcomeName: 'Remanded in custody',
+                nomisCode: '3452',
+                outcomeType: 'REMAND',
+                displayOrder: 10,
+                dispositionCode: 'INTERIM',
+              },
+            },
+          ],
+          overallSentenceLength: {
+            years: 4,
+            months: 5,
+            periodOrder: 'years,months',
+            type: 'OVERALL_SENTENCE_LENGTH',
+            prisonId: 'MDI',
+          },
+          overallConvictionDate: '2024-09-12',
+          legacyData: {
+            eventId: '1',
+            caseId: '1',
+            postedDate: '10-10-2015',
+            nomisOutcomeCode: '3567',
+            outcomeDescription: 'A Nomis Outcome',
+          },
+          documents: [
+            {
+              documentUUID: 'doc-uuid-1',
+              fileName: 'court-document.pdf',
+              uploadedAt: '2024-06-01T10:00:00Z',
+              uploadedBy: 'user1',
+            },
+          ],
+        },
+      },
+    })
+  },
+
+  stubDeleteAppearanceByUuid: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'DELETE',
+        urlPath: `/remand-and-sentencing-api/court-appearance/a6400fd8-aef4-4567-b18c-d1f452651933`,
+      },
+      response: {
+        status: 204,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
+
   stubGetHasSentenceToChainTo: ({
     beforeOrOnAppearanceDate = '2023-05-12',
   }: {

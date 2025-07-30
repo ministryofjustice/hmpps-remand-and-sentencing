@@ -93,6 +93,11 @@ export default function routes(services: Services): Router {
     courtCaseRoutes.getDeleteAppearanceConfirmation,
   )
 
+  post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/submit-delete-appearance',
+    courtCaseRoutes.submitDeleteAppearanceConfirmation,
+  )
+
   get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/appearance-updated-confirmation',
     courtCaseRoutes.getAppearanceUpdatedConfirmation,

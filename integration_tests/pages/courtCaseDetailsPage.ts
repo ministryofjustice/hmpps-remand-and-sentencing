@@ -16,4 +16,7 @@ export default class CourtCaseDetailsPage extends Page {
     cy.get(
       `a[href*="/person/A1234AB/edit-court-case/${courtCaseReference}/edit-court-appearance/${appearanceReference}/remand/load-appearance-details"]`,
     )
+
+  deleteAppearanceLink = (courtCaseReference: string, appearanceReference: string): PageElement =>
+    cy.get(`a[href*="/person/A1234AB/edit-court-case/${courtCaseReference}/${appearanceReference}/confirm-delete"]`)
 }

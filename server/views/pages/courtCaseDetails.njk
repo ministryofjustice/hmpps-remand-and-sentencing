@@ -82,7 +82,7 @@
                 on {{ appearance.appearanceDate | formatDate }}</h2>
                 {% if not appearance.canDelete %}
                           {{ govukInsetText({
-                            text: "You can not delete an appearance that includes sentences."
+                            text: "You cannot delete an appearance that includes sentences."
                           }) }}
                         {% endif %}
         </div>

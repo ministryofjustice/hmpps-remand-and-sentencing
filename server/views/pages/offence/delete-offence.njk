@@ -1,6 +1,8 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
 
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 
@@ -43,6 +45,13 @@
                                 fineAmount: offence.sentence.fineAmount
                             })
                     }}
+
+                    {% if isEditJourney and offence.sentence %}
+                        {{ govukInsetText({
+                            text: "Deleting this sentence will also delete Adjustments associated with it",
+                            attributes: {  'data-qa': 'delete-adjustments-inset' }
+                        }) }}
+                    {% endif %}
 
                     <div class="govuk-button-group">
                     {{ govukButton({

@@ -1792,6 +1792,7 @@ export default class OffenceRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       outcome,
       cancelLink,
     })

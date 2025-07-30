@@ -63,7 +63,7 @@ export const getNextPeriodLengthType = (sentence: Sentence, currentPeriodLengthT
   const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentence.sentenceTypeClassification]?.periodLengths
     .filter(periodLength => !periodLength.auto)
     .map(periodLength => periodLength.type)
-  if (expectedPeriodLengthTypes) {
+  if (expectedPeriodLengthTypes && currentPeriodLengthType !== 'UNSUPPORTED') {
     const nextIndex = expectedPeriodLengthTypes.indexOf(currentPeriodLengthType) + 1
     return expectedPeriodLengthTypes[nextIndex]
   }

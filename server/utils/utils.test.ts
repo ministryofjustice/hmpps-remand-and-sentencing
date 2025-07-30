@@ -1,5 +1,6 @@
+import type { Sentence } from 'models'
 import trimForm from './trim'
-import { convertToTitleCase, initialiseName, outcomeValueOrLegacy } from './utils'
+import { convertToTitleCase, getNextPeriodLengthType, initialiseName, outcomeValueOrLegacy } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -43,5 +44,15 @@ describe('outcome value or legacy', () => {
 describe('trim', () => {
   it('trims out null characters', () => {
     expect(trimForm({ key: `value with null${String.fromCharCode(0)}` })).toEqual({ key: 'value with null' })
+  })
+})
+
+describe('next period length type', () => {
+  it('return null when current period length type is unsupported', () => {
+    const sentence = {
+      sentenceReference: '0',
+      sentenceTypeClassification: 'EXTENDED',
+    } as Sentence
+    expect(getNextPeriodLengthType(sentence, 'UNSUPPORTED')).toBeNull()
   })
 })

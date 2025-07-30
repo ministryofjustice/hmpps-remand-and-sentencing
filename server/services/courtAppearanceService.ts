@@ -710,7 +710,7 @@ export default class CourtAppearanceService {
         nextHearingDateForm['nextHearingDate-month'],
         nextHearingDateForm['nextHearingDate-day'],
       )
-      isValidDateRule = `|isValidDate:${nextHearingDateString}|isFutureDate:${nextHearingDateString}|isWithinNextOneYear:${nextHearingDateString}`
+      isValidDateRule = `|isValidDate:${nextHearingDateString}|isFutureOrCurrentDate:${nextHearingDateString}|isWithinNextOneYear:${nextHearingDateString}`
     }
     const errors = validate(
       nextHearingDateForm,
@@ -726,7 +726,7 @@ export default class CourtAppearanceService {
         'required.nextHearingDate-day': 'Next court date must include day',
         'isValidDate.nextHearingDate-day': 'This date does not exist.',
         'regex.nextHearingTime': 'Time must be in 1:00 or 13:00 format',
-        'isFutureDate.nextHearingDate-day': 'The next court date must be in the future',
+        'isFutureOrCurrentDate.nextHearingDate-day': 'The next court date must be in the future',
         'isWithinNextOneYear.nextHearingDate-day': 'The next court appearance must be within 1 year of today’s date',
       },
     )

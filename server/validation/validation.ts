@@ -15,7 +15,7 @@ import requireOneNonZeroAlternativeSentenceLength from './requireOneNonZeroAlter
 import requireSentenceLengthIf from './requireSentenceLengthIf'
 import requireOneNonZeroSentenceLengthIf from './requireOneNonZeroSentenceLengthIf'
 import isAfterDate from './isAfterDate'
-import isFutureDate from './isFutureDate'
+import isFutureOrCurrentDate from './isFutureOrCurrentDate'
 import isUniqueTimePeriod from './isUniqueTimePeriod'
 import atLeastOneNumberInString from './atLeastOneNumberInString'
 import isNotTrue from './isNotTrue'
@@ -54,7 +54,7 @@ Validator.registerImplicit('requiredFieldWith', requiredFieldWith, 'This field i
 Validator.register('isPastOrCurrentDate', isPastOrCurrentDate, 'date cannot be a date in the future')
 Validator.register('isPastDate', isPastDate, 'date must be in the past')
 Validator.register('isAfterDate', isAfterDate, 'date must be after')
-Validator.register('isFutureDate', isFutureDate, 'date must be in the future')
+Validator.register('isFutureOrCurrentDate', isFutureOrCurrentDate, 'date cannot be date in the past')
 Validator.registerImplicit(
   'requireAlternativeSentenceLength',
   requireAlternativeSentenceLength,

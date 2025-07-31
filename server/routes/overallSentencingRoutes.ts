@@ -322,13 +322,14 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       )
     }
 
-    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !submitToCheckAnswers) {
+    if (submitToCheckAnswers) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/case-outcome-applied-all`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/check-overall-answers`,
       )
     }
+
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/check-overall-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/case-outcome-applied-all`,
     )
   }
 

@@ -180,6 +180,8 @@ export default class OffenceService {
         }
 
         offence.offenceEndDate = offenceEndDate.toDate()
+      } else {
+        delete offence.offenceEndDate
       }
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

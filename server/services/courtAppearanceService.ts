@@ -416,11 +416,10 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     const errors = validate(
-      { ...overallCaseOutcomeForm, warrantInformationAccepted: courtAppearance.warrantInformationAccepted },
-      { overallCaseOutcome: 'required', warrantInformationAccepted: 'isNotTrue' },
+      { ...overallCaseOutcomeForm },
+      { overallCaseOutcome: 'required' },
       {
         'required.overallCaseOutcome': 'You must select the overall case outcome',
-        'isNotTrue.warrantInformationAccepted': 'You cannot submit after confirming overall warrant information',
       },
     )
     if (errors.length === 0) {

@@ -7,7 +7,6 @@
 {% set pageTitle = applicationName + " - Appearance details" %}
 
 {% set appearanceSummaryRows = [
- 
     {
         key: {
         text: "Case reference"
@@ -32,10 +31,8 @@
         value: {
         text: appearance.warrantDate | formatDate
     }
-    }
-] %}
-
-{% set appearanceSummaryRows = appearanceSummaryRows.concat({
+    },
+    {
     key: {
         text: "Location"
     },
@@ -51,7 +48,25 @@
             }
         ]
     }
-}) %}
+    },
+    {
+        key: {
+            text: "Overall case outcome"
+        },
+        value: {
+            text: overallCaseOutcome
+        },
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/overall-case-outcome",
+                    text: "Edit",
+                    visuallyHiddenText: "overall case outcome"
+                }
+            ]
+        }
+    }
+] %}
 
 {% set nextHearingSummaryRows = [{
     key: {

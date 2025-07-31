@@ -71,6 +71,7 @@ context('Sentencing appearance details Page', () => {
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
+        'Overall case outcome': 'Imprisonment',
       })
     })
 
@@ -479,6 +480,7 @@ context('Sentencing appearance details Page', () => {
         'Case reference': 'BB7937',
         'Warrant date': '27/01/2025',
         Location: 'Southampton Magistrate Court',
+        'Overall case outcome': 'A Nomis description',
       })
     })
 

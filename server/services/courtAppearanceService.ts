@@ -83,7 +83,7 @@ export default class CourtAppearanceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    authToken: string,
+    username: string,
     referenceForm: CourtCaseSelectReferenceForm,
   ) {
     const errors = validate(
@@ -99,7 +99,7 @@ export default class CourtAppearanceService {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       if (referenceForm.referenceNumberSelect === 'true') {
         const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-          authToken,
+          username,
           courtCaseReference,
         )
         courtAppearance.caseReferenceNumber = latestCourtAppearance.courtCaseReference
@@ -826,7 +826,7 @@ export default class CourtAppearanceService {
           this.getCourtAppearance(session, nomsId).warrantType === 'SENTENCING'
         ) {
           const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-            await this.getSystemClientToken(username),
+            username,
             courtCaseReference,
           )
 

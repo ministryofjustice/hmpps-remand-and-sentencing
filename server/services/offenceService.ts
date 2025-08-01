@@ -193,7 +193,7 @@ export default class OffenceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    authToken: string,
+    username: string,
     offenceCodeForm: OffenceOffenceCodeForm,
   ): Promise<{
     errors: {
@@ -218,7 +218,7 @@ export default class OffenceService {
     let apiOffence
     if (offenceCodeForm.offenceCode && !offenceCodeForm.unknownCode) {
       try {
-        apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCodeForm.offenceCode, authToken)
+        apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCodeForm.offenceCode, username)
       } catch (error) {
         logger.error(error)
         errors.push({ text: 'You must enter a valid offence code.', href: '#offenceCode' })
@@ -238,7 +238,7 @@ export default class OffenceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    authToken: string,
+    username: string,
     offenceNameForm: OffenceOffenceNameForm,
   ): Promise<{
     errors: {
@@ -261,7 +261,7 @@ export default class OffenceService {
     let apiOffence
     if (offenceCode) {
       try {
-        apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCode, authToken)
+        apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCode, username)
       } catch (error) {
         logger.error(error)
         errors.push({ text: 'You must enter a valid offence.', href: '#offenceName' })

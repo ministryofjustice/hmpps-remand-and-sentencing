@@ -19,7 +19,7 @@ export default function setupCurrentCourtAppearance(
     res.locals.offences = courtAppearance.offences
     res.locals.isAddCourtAppearance = addOrEditCourtAppearance === 'add-court-appearance'
     const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
-    res.locals.offenceNameMap = await manageOffenceService.getOffenceMap(offenceCodes, req.user.token)
+    res.locals.offenceNameMap = await manageOffenceService.getOffenceMap(offenceCodes, req.user.username)
     if (courtAppearance.courtCode) {
       try {
         const court = await courtRegisterService.findCourtById(courtAppearance.courtCode, req.user.username)

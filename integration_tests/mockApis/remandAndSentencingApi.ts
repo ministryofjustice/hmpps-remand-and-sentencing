@@ -2876,7 +2876,7 @@ export default {
         jsonBody: {
           sentences: sentenceUuids.map(sentenceUuid => {
             return {
-              ...(consecutiveToDetails[sentenceUuid] ?? consecutiveToDetails.DEFAULT),
+              ...(consecutiveToDetails[sentenceUuid] ?? { ...consecutiveToDetails.DEFAULT, sentenceUuid }),
               sentenceUuid,
             }
           }),

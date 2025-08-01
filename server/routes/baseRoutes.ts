@@ -150,10 +150,10 @@ export default abstract class BaseRoutes {
 
   protected async updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference) {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { prisonId } = res.locals.prisoner
     await this.remandAndSentencingService.updateCourtAppearance(
-      token,
+      username,
       courtCaseReference,
       appearanceReference,
       courtAppearance,

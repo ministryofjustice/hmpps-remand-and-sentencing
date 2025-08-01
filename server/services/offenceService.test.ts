@@ -16,7 +16,7 @@ describe('offenceService', () => {
   let service: OffenceService
 
   beforeEach(() => {
-    manageOffencesService = new ManageOffencesService() as jest.Mocked<ManageOffencesService>
+    manageOffencesService = new ManageOffencesService(null) as jest.Mocked<ManageOffencesService>
     offenceOutcomeService = new OffenceOutcomeService(null) as jest.Mocked<OffenceOutcomeService>
     remandAndSentencingService = new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>
     service = new OffenceService(manageOffencesService, offenceOutcomeService, remandAndSentencingService)

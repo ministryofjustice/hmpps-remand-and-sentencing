@@ -18,7 +18,7 @@ export default class ManageOffencesService {
     let offenceMap = {}
     const toSearchCodes = offenceCodes.filter(offenceCode => offenceCode)
     if (toSearchCodes.length) {
-      const offences = await this.getOffencesByCodes(toSearchCodes, token)
+      const offences = await this.getOffencesByCodes(Array.from(new Set(toSearchCodes)), token)
       offenceMap = Object.fromEntries(offences.map(offence => [offence.code, offence.description]))
     }
     return offenceMap

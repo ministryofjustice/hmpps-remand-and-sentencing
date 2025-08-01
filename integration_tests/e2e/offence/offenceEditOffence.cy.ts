@@ -224,6 +224,7 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
       cy.task('stubGetCourtsByIds')
       cy.task('stubGetOffencesByCodes', {})
+      cy.task('stubGetConsecutiveToDetails', { sentenceUuids: ['328fa693-3f99-46bf-9a94-d8578dc399af'] })
       offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-serve-type').click()
       const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
       offenceSentenceServeTypePage.radioSelector('FORTHWITH').should('be.checked')
@@ -241,7 +242,8 @@ context('Add Offence Edit offence Page', () => {
         'Conviction date': '13/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
-        'Consecutive or concurrent': 'Consecutive',
+        'Consecutive or concurrent':
+          'Consecutive to count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
       })
     })
 

@@ -55,7 +55,6 @@ context('Sentencing making sentence concurrent Page', () => {
   it('Check offence answers page after the last sentence is made concurrent', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
-    cy.pause()
     offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '2').click()
     const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '2', 'sentence-serve-type').click()

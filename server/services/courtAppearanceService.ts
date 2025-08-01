@@ -975,6 +975,15 @@ export default class CourtAppearanceService {
     return courtAppearance.offences[offenceReference]
   }
 
+  getOffenceBySentenceReference(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    sentenceReference: string,
+  ): Offence {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    return courtAppearance.offences.find(offence => offence.sentence?.sentenceReference === sentenceReference)
+  }
+
   getCountNumbers(
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,

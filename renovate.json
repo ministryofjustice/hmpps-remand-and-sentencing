@@ -6,14 +6,21 @@
   "packageRules": [
     {
       "matchManagers": ["npm"],
-      "rangeStrategy": "bump"
+      "rangeStrategy": "bump",
+      "automerge": true
     },
     {
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non major NPM dependencies",
       "groupSlug": "all-npm-minor-patch",
-      "stabilityDays": 5
+      "stabilityDays": 5,
+      "automerge": true
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
     },
     {
       "matchDepTypes": ["engines"],
@@ -22,7 +29,8 @@
     {
       "matchPackageNames": ["typescript", "govuk-frontend"],
       "rangeStrategy": "bump",
-      "stabilityDays": 0
+      "stabilityDays": 0,
+      "automerge": true
     },
     {
       "matchManagers": ["npm"],

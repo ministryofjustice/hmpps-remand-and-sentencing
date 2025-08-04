@@ -93,7 +93,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       .flat()
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
     const [offenceMap, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
+      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
     ])
     const consecutiveToSentenceDetailsMap = Object.fromEntries(
@@ -142,8 +142,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getCourtCaseDetails: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
-    const { token } = res.locals.user
-    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
+    const { username } = res.locals.user
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
 
     const consecutiveToUuids = courtCaseDetails.appearances
       .flatMap(appearance => appearance.charges.map(charge => charge.sentence?.consecutiveToSentenceUuid))
@@ -170,7 +170,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       .filter(courtId => courtId !== undefined && courtId !== null)
 
     const [offenceMap, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
+      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
     ])
     const allSentenceUuids = courtCaseDetails.appearances
@@ -227,14 +227,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getDeleteAppearanceConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const appearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
       appearanceReference,
-      token,
+      username,
     )
     const courtDetails = await this.courtRegisterService.findCourtById(appearance.courtCode, req.user.username)
     const description = `${appearance.courtCaseReference ? appearance.courtCaseReference : 'Case held'} at ${courtDetails.courtName} on ${appearance.appearanceDate}`
-    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
     const lastAppearance = courtCaseDetails.appearances.length === 1
     return res.render('pages/courtAppearance/delete-appearance', {
       nomsId,
@@ -252,9 +252,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public submitDeleteAppearanceConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { username } = res.locals.user as PrisonUser
-    const { token } = res.locals.user
     await this.remandAndSentencingService.deleteCourtAppearance(appearanceReference, username)
-    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
+    const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
     const lastAppearance = courtCaseDetails.appearances.length === 0
     if (lastAppearance) {
       return res.redirect(`/person/${nomsId}`)
@@ -264,9 +263,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getAppearanceUpdatedConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
-    const { token, username } = res.locals.user
+    const { username } = res.locals.user
     const latestAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-      token,
+      username,
       courtCaseReference,
     )
     const courtDetails = await this.courtRegisterService.findCourtById(latestAppearance.courtCode, username)
@@ -355,7 +354,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-      req.user.token,
+      req.user.username,
       courtCaseReference,
     )
     let referenceForm = (req.flash('referenceForm')[0] || {}) as CourtCaseSelectReferenceForm
@@ -390,7 +389,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
-      req.user.token,
+      req.user.username,
       referenceForm,
     )
 
@@ -501,7 +500,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     if (addOrEditCourtCase === 'edit-court-case') {
       try {
         const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-          req.user.token,
+          req.user.username,
           courtCaseReference,
         )
         if (latestCourtAppearance) {
@@ -523,7 +522,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-      req.user.token,
+      req.user.username,
       courtCaseReference,
     )
     const sessionAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
@@ -628,7 +627,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
     } else if (addOrEditCourtCase === 'edit-court-case') {
       const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-        req.user.token,
+        req.user.username,
         courtCaseReference,
       )
       if (latestCourtAppearance.nextCourtAppearance?.courtCode) {
@@ -688,7 +687,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     if (!res.locals.isAddCourtCase) {
       const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-        req.user.token,
+        req.user.username,
         courtCaseReference,
       )
       latestCourtAppearance.charges
@@ -783,7 +782,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let caseReferenceSet = !!courtAppearance.caseReferenceNumber
     if (!res.locals.isAddCourtCase && !caseReferenceSet) {
       const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-        req.user.token,
+        req.user.username,
         courtCaseReference,
       )
       caseReferenceSet = !!latestCourtAppearance.courtCaseReference
@@ -809,14 +808,19 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public submitTaskList: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { prisonId } = res.locals.prisoner
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     if (addOrEditCourtCase === 'add-court-case') {
       const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createCourtCase(nomsId, token, courtCase, prisonId)
+      await this.remandAndSentencingService.createCourtCase(nomsId, username, courtCase, prisonId)
     } else {
-      await this.remandAndSentencingService.createCourtAppearance(token, courtCaseReference, courtAppearance, prisonId)
+      await this.remandAndSentencingService.createCourtAppearance(
+        username,
+        courtCaseReference,
+        courtAppearance,
+        prisonId,
+      )
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     if (courtAppearance.warrantType === 'SENTENCING') {
@@ -1247,12 +1251,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-type`
 
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
+    } else if (submitToCheckAnswers) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
     }
 
     return res.render('pages/courtAppearance/next-hearing-date', {

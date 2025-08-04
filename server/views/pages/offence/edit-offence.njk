@@ -133,7 +133,7 @@
                     text: "Consecutive or concurrent"
                 },
                     value: {
-                    text: offence.sentence.sentenceServeType | capitalize + (' to count ' + offence.sentence.consecutiveTo if offence.sentence.consecutiveTo else '' )
+                    text: offence.sentence.sentenceServeType | capitalize + (consecutiveToDetails | consecutiveToDetailsToDescription if consecutiveToDetails else '')
                 },
                     actions: {
                         items: [{

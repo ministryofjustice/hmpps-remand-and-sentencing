@@ -83,7 +83,7 @@ export default class CourtAppearanceService {
     session: CookieSessionInterfaces.CookieSessionObject,
     nomsId: string,
     courtCaseReference: string,
-    authToken: string,
+    username: string,
     referenceForm: CourtCaseSelectReferenceForm,
   ) {
     const errors = validate(
@@ -99,7 +99,7 @@ export default class CourtAppearanceService {
       const courtAppearance = this.getCourtAppearance(session, nomsId)
       if (referenceForm.referenceNumberSelect === 'true') {
         const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-          authToken,
+          username,
           courtCaseReference,
         )
         courtAppearance.caseReferenceNumber = latestCourtAppearance.courtCaseReference
@@ -416,11 +416,10 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     const errors = validate(
-      { ...overallCaseOutcomeForm, warrantInformationAccepted: courtAppearance.warrantInformationAccepted },
-      { overallCaseOutcome: 'required', warrantInformationAccepted: 'isNotTrue' },
+      { ...overallCaseOutcomeForm },
+      { overallCaseOutcome: 'required' },
       {
         'required.overallCaseOutcome': 'You must select the overall case outcome',
-        'isNotTrue.warrantInformationAccepted': 'You cannot submit after confirming overall warrant information',
       },
     )
     if (errors.length === 0) {
@@ -710,7 +709,7 @@ export default class CourtAppearanceService {
         nextHearingDateForm['nextHearingDate-month'],
         nextHearingDateForm['nextHearingDate-day'],
       )
-      isValidDateRule = `|isValidDate:${nextHearingDateString}|isFutureDate:${nextHearingDateString}|isWithinNextOneYear:${nextHearingDateString}`
+      isValidDateRule = `|isValidDate:${nextHearingDateString}|isFutureOrCurrentDate:${nextHearingDateString}|isWithinNextOneYear:${nextHearingDateString}`
     }
     const errors = validate(
       nextHearingDateForm,
@@ -726,7 +725,7 @@ export default class CourtAppearanceService {
         'required.nextHearingDate-day': 'Next court date must include day',
         'isValidDate.nextHearingDate-day': 'This date does not exist.',
         'regex.nextHearingTime': 'Time must be in 1:00 or 13:00 format',
-        'isFutureDate.nextHearingDate-day': 'The next court date must be in the future',
+        'isFutureOrCurrentDate.nextHearingDate-day': 'The next court date must be in the future',
         'isWithinNextOneYear.nextHearingDate-day': 'The next court appearance must be within 1 year of today’s date',
       },
     )
@@ -827,7 +826,7 @@ export default class CourtAppearanceService {
           this.getCourtAppearance(session, nomsId).warrantType === 'SENTENCING'
         ) {
           const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-            await this.getSystemClientToken(username),
+            username,
             courtCaseReference,
           )
 
@@ -974,6 +973,15 @@ export default class CourtAppearanceService {
   getOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     return courtAppearance.offences[offenceReference]
+  }
+
+  getOffenceBySentenceReference(
+    session: CookieSessionInterfaces.CookieSessionObject,
+    nomsId: string,
+    sentenceReference: string,
+  ): Offence {
+    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    return courtAppearance.offences.find(offence => offence.sentence?.sentenceReference === sentenceReference)
   }
 
   getCountNumbers(

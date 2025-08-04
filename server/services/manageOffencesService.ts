@@ -1,26 +1,33 @@
 import type { Offence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import ManageOffencesApiClient from '../api/manageOffencesApiClient'
+import { HmppsAuthClient } from '../data'
 
 export default class ManageOffencesService {
-  async getOffenceByCode(offenceCode: string, token: string): Promise<Offence> {
-    return new ManageOffencesApiClient(token).getOffenceByCode(offenceCode)
+  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+
+  async getOffenceByCode(offenceCode: string, username: string): Promise<Offence> {
+    return new ManageOffencesApiClient(await this.getSystemClientToken(username)).getOffenceByCode(offenceCode)
   }
 
-  async searchOffence(searchString: string, token: string): Promise<Offence[]> {
-    return new ManageOffencesApiClient(token).searchOffence(searchString)
+  async searchOffence(searchString: string, username: string): Promise<Offence[]> {
+    return new ManageOffencesApiClient(await this.getSystemClientToken(username)).searchOffence(searchString)
   }
 
-  async getOffencesByCodes(offenceCodes: string[], token: string): Promise<Offence[]> {
-    return new ManageOffencesApiClient(token).getOffencesByCodes(offenceCodes)
+  async getOffencesByCodes(offenceCodes: string[], username: string): Promise<Offence[]> {
+    return new ManageOffencesApiClient(await this.getSystemClientToken(username)).getOffencesByCodes(offenceCodes)
   }
 
-  async getOffenceMap(offenceCodes: string[], token: string) {
+  async getOffenceMap(offenceCodes: string[], username: string) {
     let offenceMap = {}
     const toSearchCodes = offenceCodes.filter(offenceCode => offenceCode)
     if (toSearchCodes.length) {
-      const offences = await this.getOffencesByCodes(toSearchCodes, token)
+      const offences = await this.getOffencesByCodes(Array.from(new Set(toSearchCodes)), username)
       offenceMap = Object.fromEntries(offences.map(offence => [offence.code, offence.description]))
     }
     return offenceMap
+  }
+
+  private async getSystemClientToken(username: string): Promise<string> {
+    return this.hmppsAuthClient.getSystemClientToken(username)
   }
 }

@@ -1,6 +1,7 @@
 import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import type { SentenceLengthForm } from 'forms'
+import type { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
   APISentence,
   Charge,
@@ -19,9 +20,11 @@ import {
   PagedSentence,
   PagedSentencePeriodLength,
   PeriodLength,
+  SentenceConsecutiveToDetails,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import { sortByDateDesc } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
+import config from '../config'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, prisonId: string): CreatePeriodLength => {
   return {
@@ -463,4 +466,39 @@ export function draftCourtAppearanceToCourtAppearance(draftAppearance: DraftCour
   appearance.appearanceReference = draftAppearance.draftUuid
   appearance.existingDraft = true
   return appearance
+}
+
+export function offenceToConsecutiveToDetails(
+  offence: Offence,
+  offenceMap: { [key: string]: string },
+): ConsecutiveToDetails {
+  return {
+    countNumber: offence.sentence.countNumber,
+    offenceCode: offence.offenceCode,
+    offenceDescription: offenceMap[offence.offenceCode],
+  }
+}
+
+export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
+  sentenceConsecutiveToDetails: SentenceConsecutiveToDetails,
+  offenceMap: { [key: string]: string },
+  courtMap: { [key: string]: string },
+  isInSameAppearance: boolean,
+): ConsecutiveToDetails {
+  let consecutiveToDetailsEntry = {
+    countNumber: sentenceConsecutiveToDetails.countNumber,
+    offenceCode: sentenceConsecutiveToDetails.offenceCode,
+    offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
+    courtCaseReference: sentenceConsecutiveToDetails.courtCaseReference,
+    courtName: courtMap[sentenceConsecutiveToDetails.courtCode],
+    warrantDate: dayjs(sentenceConsecutiveToDetails.appearanceDate).format(config.dateFormat),
+  } as ConsecutiveToDetails
+  if (isInSameAppearance) {
+    consecutiveToDetailsEntry = {
+      countNumber: sentenceConsecutiveToDetails.countNumber,
+      offenceCode: sentenceConsecutiveToDetails.offenceCode,
+      offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
+    }
+  }
+  return consecutiveToDetailsEntry
 }

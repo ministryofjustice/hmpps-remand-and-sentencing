@@ -18,9 +18,10 @@ export default class CourtRegisterService {
 
   async getCourtMap(courtIds: string[], username: string): Promise<{ [key: string]: string }> {
     let courtMap = {}
+    const toSearchIds = courtIds.filter(courtId => courtId)
     if (courtIds.length) {
       const courts = await new CourtRegisterApiClient(await this.getSystemClientToken(username)).findCourtsByIds(
-        courtIds,
+        Array.from(new Set(toSearchIds)),
       )
       courtMap = Object.fromEntries(courts.map(court => [court.courtId, court.courtName]))
     }

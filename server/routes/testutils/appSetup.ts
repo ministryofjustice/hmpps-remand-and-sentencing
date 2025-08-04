@@ -54,9 +54,9 @@ const testAppInfo: ApplicationInfo = {
 export const defaultServices = {
   applicationInfo: testAppInfo,
   userService: new UserService(null) as jest.Mocked<UserService>,
-  prisonerService: new PrisonerService() as jest.Mocked<PrisonerService>,
+  prisonerService: new PrisonerService(null) as jest.Mocked<PrisonerService>,
   offenceService: new OffenceService(null, null, null) as jest.Mocked<OffenceService>,
-  manageOffencesService: new ManageOffencesService() as jest.Mocked<ManageOffencesService>,
+  manageOffencesService: new ManageOffencesService(null) as jest.Mocked<ManageOffencesService>,
   feComponentsService: new FeComponentsService(null) as jest.Mocked<FeComponentsService>,
   remandAndSentencingService: new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>,
   courtAppearanceService: new CourtAppearanceService(null, null, null) as jest.Mocked<CourtAppearanceService>,

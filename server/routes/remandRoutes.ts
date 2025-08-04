@@ -26,10 +26,10 @@ export default class RemandRoutes extends BaseRoutes {
 
   public loadAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
       appearanceReference,
-      token,
+      username,
     )
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
@@ -45,11 +45,11 @@ export default class RemandRoutes extends BaseRoutes {
 
   public getAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId, appearanceReference)) {
       const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
         appearanceReference,
-        token,
+        username,
       )
       this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
       this.courtAppearanceService.setSessionCourtAppearance(
@@ -85,7 +85,7 @@ export default class RemandRoutes extends BaseRoutes {
 
     const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap, appearanceTypeDescription] =
       await Promise.all([
-        this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.token),
+        this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username),
         this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
         this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
         outcomePromise,

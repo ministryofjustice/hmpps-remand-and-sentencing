@@ -71,6 +71,7 @@ context('Sentencing appearance details Page', () => {
         'Case reference': 'C894623',
         'Warrant date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
+        'Overall case outcome': 'Imprisonment',
       })
     })
 
@@ -167,7 +168,7 @@ context('Sentencing appearance details Page', () => {
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Custodial term': '2 years 0 months 0 weeks 0 days',
         'Licence period': '2 years 0 months 0 weeks 0 days',
-        'Consecutive or concurrent': 'Consecutive',
+        'Consecutive or concurrent': 'Consecutive to count 1',
       })
       offenceEditOffencePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
@@ -479,6 +480,7 @@ context('Sentencing appearance details Page', () => {
         'Case reference': 'BB7937',
         'Warrant date': '27/01/2025',
         Location: 'Southampton Magistrate Court',
+        'Overall case outcome': 'A Nomis description',
       })
     })
 

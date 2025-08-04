@@ -1,6 +1,5 @@
 import type { Offence } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
-import dayjs from 'dayjs'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -9,6 +8,12 @@ import {
   SentenceConsecutiveToDetailsResponse,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
+import { SentenceConsecutiveToDetailsResponse } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import {
+  offenceToConsecutiveToDetails,
+  sentenceConsecutiveToDetailsToConsecutiveToDetails,
+} from '../utils/mappingUtils'
+
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -114,21 +119,12 @@ export default abstract class BaseRoutes {
   } {
     return Object.fromEntries(
       consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => {
-        let consecutiveToDetailsEntry = {
-          countNumber: consecutiveToDetails.countNumber,
-          offenceCode: consecutiveToDetails.offenceCode,
-          offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
-          courtCaseReference: consecutiveToDetails.courtCaseReference,
-          courtName: courtMap[consecutiveToDetails.courtCode],
-          warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
-        } as ConsecutiveToDetails
-        if (allSentenceUuids.includes(consecutiveToDetails.sentenceUuid)) {
-          consecutiveToDetailsEntry = {
-            countNumber: consecutiveToDetails.countNumber,
-            offenceCode: consecutiveToDetails.offenceCode,
-            offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
-          }
-        }
+        const consecutiveToDetailsEntry = sentenceConsecutiveToDetailsToConsecutiveToDetails(
+          consecutiveToDetails,
+          offenceMap,
+          courtMap,
+          allSentenceUuids.includes(consecutiveToDetails.sentenceUuid),
+        )
         return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
       }),
     )
@@ -152,11 +148,7 @@ export default abstract class BaseRoutes {
           )
           return [
             consecutiveOffence.sentence.consecutiveToSentenceReference,
-            {
-              countNumber: consecutiveToOffence.sentence.countNumber,
-              offenceCode: consecutiveToOffence.offenceCode,
-              offenceDescription: offenceMap[consecutiveToOffence.offenceCode],
-            } as ConsecutiveToDetails,
+            offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap),
           ]
         }),
     )
@@ -164,10 +156,10 @@ export default abstract class BaseRoutes {
 
   protected async updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference) {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { prisonId } = res.locals.prisoner
     await this.remandAndSentencingService.updateCourtAppearance(
-      token,
+      username,
       courtCaseReference,
       appearanceReference,
       courtAppearance,

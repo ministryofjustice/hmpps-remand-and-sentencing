@@ -2054,7 +2054,8 @@ export default class OffenceRoutes extends BaseRoutes {
       new Set(
         consecutiveToSentenceDetails.sentences
           .map(consecutiveToDetails => consecutiveToDetails.courtCode)
-          .concat(offences.map(offence => offence.mergedFromCase?.courtCode)),
+          .concat(offences.map(offence => offence.mergedFromCase?.courtCode))
+          .filter(courtId => courtId !== undefined && courtId !== null),
       ),
     )
 

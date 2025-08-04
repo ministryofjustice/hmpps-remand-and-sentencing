@@ -18,11 +18,11 @@ import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
 export const services = () => {
   const { applicationInfo, feComponentsClient, hmppsAuthClient, hmppsAuditClient } = dataAccess()
 
-  const prisonerService = new PrisonerService()
+  const prisonerService = new PrisonerService(hmppsAuthClient)
 
   const userService = new UserService(prisonerService)
 
-  const manageOffencesService = new ManageOffencesService()
+  const manageOffencesService = new ManageOffencesService(hmppsAuthClient)
 
   const feComponentsService = new FeComponentsService(feComponentsClient)
 

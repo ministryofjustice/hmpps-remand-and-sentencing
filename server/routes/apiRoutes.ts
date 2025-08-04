@@ -15,7 +15,7 @@ export default class ApiRoutes {
   public personImage: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     return this.prisonerService
-      .getPrisonerImage(nomsId, res.locals.user.token)
+      .getPrisonerImage(nomsId, res.locals.user.username)
       .then(data => {
         res.set('Cache-control', 'private, max-age=86400')
         res.removeHeader('pragma')
@@ -29,7 +29,7 @@ export default class ApiRoutes {
 
   public searchOffence: RequestHandler = async (req, res): Promise<void> => {
     const { searchString } = req.query
-    const result = await this.manageOffencesService.searchOffence(searchString as string, res.locals.user.token)
+    const result = await this.manageOffencesService.searchOffence(searchString as string, res.locals.user.username)
     res.status(200).send(result)
   }
 

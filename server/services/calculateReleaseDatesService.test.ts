@@ -1,5 +1,5 @@
 import type { CourtAppearance } from 'models'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import { HmppsAuthClient } from '../data'
 

@@ -50,10 +50,7 @@ const buildAssets = buildConfig => {
         quietDeps: true,
         loadPaths: [
           process.cwd(),
-          path.join(process.cwd(), 'node_modules/govuk-frontend/dist'),
-          path.join(process.cwd(), 'node_modules/@ministryofjustice/frontend'),
-          path.join(process.cwd(), 'node_modules/accessible-autocomplete'),
-          path.join(process.cwd(), 'node_modules/@ministryofjustice/hmpps-court-cases-release-dates-design'),
+          path.join(process.cwd(), 'node_modules'),
         ],
       }),
     ],

@@ -6,8 +6,8 @@ $govuk-page-width: $moj-page-width;
 
 @import "govuk-frontend/dist/govuk/index";
 @import "@ministryofjustice/frontend/moj/all";
-@import 'hmpps/all';
-@import 'dist/accessible-autocomplete.min';
+@import "@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/all";
+@import "accessible-autocomplete/dist/accessible-autocomplete.min";
 
 @import './components/header-bar';
 @import './components/offence-summary';

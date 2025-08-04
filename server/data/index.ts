@@ -17,6 +17,7 @@ import FeComponentsClient from './feComponentsClient'
 import HmppsAuditClient from './hmppsAuditClient'
 import logger from '../../logger'
 import ExampleApiClient from './exampleApiClient'
+import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -30,6 +31,7 @@ export const dataAccess = () => {
     hmppsAuthClient,
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
     feComponentsClient: new FeComponentsClient(),
+    calculateReleaseDatesApiClient: new CalculateReleaseDatesApiClient(hmppsAuthClient),
   }
 }
 

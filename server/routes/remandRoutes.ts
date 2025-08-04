@@ -58,6 +58,7 @@ export default class RemandRoutes extends BaseRoutes {
         pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
       )
     }
+    const courtCase = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
 
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
@@ -104,6 +105,20 @@ export default class RemandRoutes extends BaseRoutes {
       ...document,
       documentType: getUiDocumentType(document.documentType, appearance.warrantType),
     }))
+    console.log(appearance.offences)
+    let mergedFromText = ''
+    if (appearance.offences.some(offence => offence.mergedFromCase != null)) {
+      const mergedOffence = appearance.offences.find(offence => offence.mergedFromCase != null)
+      if (courtCase.latestAppearance.courtCaseReference != null) {
+        mergedFromText = `This appearance includes offences from ${courtCase.latestAppearance.courtCaseReference} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+      } else {
+        const court = await this.courtRegisterService.findCourtById(
+          mergedOffence.mergedFromCase.courtCode,
+          req.user.username,
+        )
+        mergedFromText = `This appearance includes offences from ${court.courtName} on ${courtCase.latestAppearance.appearanceDate} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+      }
+    }
     return res.render('pages/courtAppearance/appearance-details', {
       nomsId,
       courtCaseReference,
@@ -119,6 +134,7 @@ export default class RemandRoutes extends BaseRoutes {
       appearanceTypeDescription,
       consecutiveToSentenceDetailsMap,
       documentsWithUiType,
+      mergedFromText,
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })

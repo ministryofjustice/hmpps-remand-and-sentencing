@@ -4,7 +4,10 @@ import dayjs from 'dayjs'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
-import { SentenceConsecutiveToDetailsResponse } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import {
+  PagedMergedFromCase,
+  SentenceConsecutiveToDetailsResponse,
+} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 
 export default abstract class BaseRoutes {

@@ -1,6 +1,7 @@
 import {
   AppearanceOutcome,
   AppearanceType,
+  Charge,
   CourtCaseCountNumbers,
   CreateCourtAppearance,
   CreateCourtAppearanceResponse,

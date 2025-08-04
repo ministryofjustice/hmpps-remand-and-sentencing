@@ -1986,6 +1986,8 @@ export default class OffenceRoutes extends BaseRoutes {
 
   public getUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { token } = res.locals.user
+    const courtCase = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const { offences, warrantType } = courtAppearance
 
@@ -2056,6 +2058,20 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
     )
 
+    let mergedFromText = ''
+    if (courtAppearance.offences.some(offence => offence.mergedFromCase != null)) {
+      const mergedOffence = courtAppearance.offences.find(offence => offence.mergedFromCase != null)
+      if (courtCase.latestAppearance.courtCaseReference != null) {
+        mergedFromText = `This appearance includes offences from ${courtCase.latestAppearance.courtCaseReference} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+      } else {
+        const court = await this.courtRegisterService.findCourtById(
+          mergedOffence.mergedFromCase.courtCode,
+          req.user.username,
+        )
+        mergedFromText = `This appearance includes offences from ${court.courtName} on ${courtCase.latestAppearance.appearanceDate} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+      }
+    }
+
     return res.render('pages/offence/update-offence-outcomes', {
       nomsId,
       courtCaseReference,
@@ -2074,6 +2090,7 @@ export default class OffenceRoutes extends BaseRoutes {
       overallSentenceLengthComparison,
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
+      mergedFromText,
       errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })

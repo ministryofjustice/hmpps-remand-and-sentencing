@@ -194,7 +194,7 @@ export default class SentencingRoutes extends BaseRoutes {
         pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
       )
     }
-
+    const courtCase = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
     const chargeCodes = appearance.offences
@@ -270,6 +270,21 @@ export default class SentencingRoutes extends BaseRoutes {
       ...document,
       documentType: getUiDocumentType(document.documentType, appearance.warrantType),
     }))
+
+    let mergedFromText = ''
+    if (appearance.offences.some(offence => offence.mergedFromCase != null)) {
+      const mergedOffence = appearance.offences.find(offence => offence.mergedFromCase != null)
+      if (courtCase.latestAppearance.courtCaseReference != null) {
+        mergedFromText = `This appearance includes offences from ${courtCase.latestAppearance.courtCaseReference} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+      } else {
+        const court = await this.courtRegisterService.findCourtById(
+          mergedOffence.mergedFromCase.courtCode,
+          req.user.username,
+        )
+        mergedFromText = `This appearance includes offences from ${court.courtName} on ${courtCase.latestAppearance.appearanceDate} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+      }
+    }
+
     return res.render('pages/sentencing/appearance-details', {
       nomsId,
       courtCaseReference,
@@ -289,6 +304,7 @@ export default class SentencingRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
       documentsWithUiType,
+      mergedFromText,
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })

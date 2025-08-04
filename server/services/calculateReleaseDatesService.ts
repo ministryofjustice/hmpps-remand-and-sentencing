@@ -56,7 +56,7 @@ export default class CalculateReleaseDatesService {
         warrantDate: dayjs(appearance.warrantDate).format('YYYY-MM-DD'),
       } as OverallSentenceLengthRequest
 
-      return this.calculateReleaseDatesApiClient.compareOverallSentenceLength(request)
+      return this.calculateReleaseDatesApiClient.compareOverallSentenceLength(request, username)
     }
     return {
       custodialLength: this.emptySentenceLength,

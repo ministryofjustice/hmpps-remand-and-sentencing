@@ -18,6 +18,9 @@ import HmppsAuditClient from './hmppsAuditClient'
 import logger from '../../logger'
 import ExampleApiClient from './exampleApiClient'
 import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
+import CourtCasesReleaseDatesApiClient from './courtCasesReleaseDatesApiClient'
+import CourtRegisterApiClient from './courtRegisterApiClient'
+import DocumentManagementApiClient from './documentManagementApiClient'
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -32,6 +35,9 @@ export const dataAccess = () => {
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
     feComponentsClient: new FeComponentsClient(),
     calculateReleaseDatesApiClient: new CalculateReleaseDatesApiClient(hmppsAuthClient),
+    courtCasesReleaseDatesApiClient: new CourtCasesReleaseDatesApiClient(hmppsAuthClient),
+    courtRegisterApiClient: new CourtRegisterApiClient(hmppsAuthClient),
+    DocumentManagementApiClient: new DocumentManagementApiClient(hmppsAuthClient),
   }
 }
 

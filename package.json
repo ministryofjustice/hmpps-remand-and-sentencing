@@ -138,6 +138,7 @@
     "@types/passport-oauth2": "^1.8.0",
     "@types/superagent": "^8.1.9",
     "@types/supertest": "^6.0.3",
+    "@typescript-eslint/parser": "8.38.0",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "cheerio": "^1.1.2",
@@ -150,6 +151,7 @@
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
     "esbuild-sass-plugin": "^3.3.1",
+    "eslint-import-resolver-typescript": "^4.4.4",
     "glob": "^11.0.3",
     "jest": "^30.0.5",
     "jest-html-reporter": "^4.3.0",
@@ -163,9 +165,17 @@
     "prettier-plugin-jinja-template": "^2.1.0",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.0"
   },
   "overrides": {
+    "@typescript-eslint/eslint-plugin": {
+      ".": "$@typescript-eslint/eslint-plugin",
+      "typescript": "$typescript",
+      "@typescript-eslint/parser": {
+        ".": "$@typescript-eslint/parser",
+        "typescript": "$typescript"
+      }
+    },
     "@jgoz/esbuild-plugin-typecheck": {
       "esbuild": "$esbuild"
     },

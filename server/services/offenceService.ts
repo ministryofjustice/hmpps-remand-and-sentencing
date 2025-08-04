@@ -18,6 +18,7 @@ import type {
 } from 'forms'
 import type { Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
+import { SessionData } from 'express-session'
 import validate from '../validation/validation'
 import { extractKeyValue, toDateString } from '../utils/utils'
 import {
@@ -42,7 +43,7 @@ export default class OffenceService {
   ) {}
 
   setOffenceDates(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceOffenceDateForm: OffenceOffenceDateForm,
@@ -190,7 +191,7 @@ export default class OffenceService {
   }
 
   async setOffenceCode(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     username: string,
@@ -235,7 +236,7 @@ export default class OffenceService {
   }
 
   async setOffenceCodeFromLookup(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     username: string,
@@ -278,7 +279,7 @@ export default class OffenceService {
   }
 
   setOffenceCodeFromConfirm(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     confirmOffenceForm: OffenceConfirmOffenceForm,
@@ -290,18 +291,18 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
-  getOffenceCode(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtCaseReference: string) {
+  getOffenceCode(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     return this.getOffence(session.offences, id).offenceCode
   }
 
-  getCountNumber(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtCaseReference: string) {
+  getCountNumber(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     return this.getOffence(session.offences, id).sentence?.countNumber
   }
 
   async setCountNumber(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -357,7 +358,7 @@ export default class OffenceService {
   }
 
   async setOffenceOutcome(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceOutcomeForm: OffenceOffenceOutcomeForm,
@@ -392,7 +393,7 @@ export default class OffenceService {
   }
 
   updateOffenceOutcome(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceOutcomeForm: OffenceOffenceOutcomeForm,
@@ -418,7 +419,7 @@ export default class OffenceService {
   }
 
   setSentenceType(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -451,7 +452,7 @@ export default class OffenceService {
   }
 
   setOffenceFineAmount(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -479,7 +480,7 @@ export default class OffenceService {
   }
 
   updatePeriodLengths(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -507,7 +508,7 @@ export default class OffenceService {
   }
 
   setInitialPeriodLengths(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -523,7 +524,7 @@ export default class OffenceService {
   }
 
   setPeriodLength(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -577,7 +578,7 @@ export default class OffenceService {
   }
 
   setAlternativePeriodLength(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -626,18 +627,14 @@ export default class OffenceService {
     return errors
   }
 
-  getSentenceServeType(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-  ) {
+  getSentenceServeType(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const sentenceServeType = this.getOffence(session.offences, id).sentence?.sentenceServeType
     return sentenceServeType ? `${sentenceServeType}` : undefined
   }
 
   setSentenceServeType(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -677,7 +674,7 @@ export default class OffenceService {
   }
 
   setConvictionDate(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -693,7 +690,7 @@ export default class OffenceService {
   }
 
   setConvictionDateForm(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -802,7 +799,7 @@ export default class OffenceService {
   }
 
   setIsSentenceConsecutiveTo(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -836,7 +833,7 @@ export default class OffenceService {
   }
 
   setFirstSentenceConsecutiveTo(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -868,7 +865,7 @@ export default class OffenceService {
   }
 
   setSentenceConsecutiveTo(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -906,28 +903,19 @@ export default class OffenceService {
     return errors
   }
 
-  getSessionOffence(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-  ): Offence {
+  getSessionOffence(session: Partial<SessionData>, nomsId: string, courtCaseReference: string): Offence {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     return this.getOffence(session.offences, id)
   }
 
-  setSessionOffence(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offence: Offence,
-  ) {
+  setSessionOffence(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, offence: Offence) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     // eslint-disable-next-line no-param-reassign
     session.offences[id] = offence
   }
 
   invalidateFromOffenceDate(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -945,7 +933,7 @@ export default class OffenceService {
   }
 
   invalidateFromConvictionDate(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
@@ -961,47 +949,28 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
-  setOnFinishGoToEdit(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-  ) {
+  setOnFinishGoToEdit(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
     offence.onFinishGoToEdit = true
   }
 
-  setSentenceToConcurrent(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceReference: string,
-  ) {
+  setSentenceToConcurrent(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, offenceReference: string) {
     this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONCURRENT)
   }
 
-  setSentenceToForthwith(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceReference: string,
-  ) {
+  setSentenceToForthwith(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, offenceReference: string) {
     this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.FORTHWITH)
   }
 
-  setSentenceToConsecutive(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtCaseReference: string,
-    offenceReference: string,
-  ) {
+  setSentenceToConsecutive(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, offenceReference: string) {
     this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONSECUTIVE)
   }
 
   private updateSentenceServType(
     nomsId: string,
     courtCaseReference: string,
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     offenceReference: string,
     sentenceServeType: string,
   ) {
@@ -1016,7 +985,7 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
-  clearOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, courtCaseReference: string) {
+  clearOffence(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     // eslint-disable-next-line no-param-reassign
     delete session.offences[id]

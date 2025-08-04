@@ -12,13 +12,16 @@ export default class CalculateReleaseDatesApiClient extends RestClient {
     super('Calculate Release Dates API', config.apis.calculateReleaseDatesApi, logger, authenticationClient)
   }
 
-  async compareOverallSentenceLength(request: OverallSentenceLengthRequest): Promise<OverallSentenceLengthComparison> {
+  async compareOverallSentenceLength(
+    request: OverallSentenceLengthRequest,
+    username: string,
+  ): Promise<OverallSentenceLengthComparison> {
     return this.post(
       {
         path: `/overall-sentence-length`,
         data: request,
       },
-      asSystem(),
+      asSystem(username),
     ) as Promise<OverallSentenceLengthComparison>
   }
 }

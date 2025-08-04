@@ -17,15 +17,17 @@ import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import { outcomeValueOrLegacy } from '../utils/utils'
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default class OverallSentencingRoutes extends BaseRoutes {
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
+    courtRegisterService: CourtRegisterService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, courtRegisterService)
   }
 
   public getOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {

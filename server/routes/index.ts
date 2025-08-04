@@ -26,9 +26,9 @@ export default function routes(services: Services): Router {
     services.offenceService,
     services.courtAppearanceService,
     services.remandAndSentencingService,
+    services.courtRegisterService,
     services.manageOffencesService,
     services.documentManagementService,
-    services.courtRegisterService,
     services.appearanceOutcomeService,
     services.courtCasesReleaseDatesService,
   )
@@ -51,6 +51,7 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.offenceService,
     services.remandAndSentencingService,
+    services.courtRegisterService,
     services.appearanceOutcomeService,
   )
 
@@ -69,9 +70,9 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.offenceService,
     services.remandAndSentencingService,
+    services.courtRegisterService,
     services.manageOffencesService,
     services.appearanceOutcomeService,
-    services.courtRegisterService,
     services.offenceOutcomeService,
   )
 

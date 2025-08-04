@@ -250,6 +250,7 @@
                             sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
                             fineAmount: offence.sentence.fineAmount,
                             mergedFromCase: offence.mergedFromCase,
+                            courtDetails: courtMap,
                             consecutiveConcurrentLink: {
                                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/select-consecutive-concurrent",
                                 text: 'Select consecutive or current'

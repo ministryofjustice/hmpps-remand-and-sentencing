@@ -29,11 +29,11 @@ export default class SentencingRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
-    private readonly courtRegisterService: CourtRegisterService,
+    courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, courtRegisterService)
   }
 
   public getIsSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
@@ -194,7 +194,6 @@ export default class SentencingRoutes extends BaseRoutes {
         pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
       )
     }
-    const courtCase = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, token)
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
     const chargeCodes = appearance.offences
@@ -202,6 +201,7 @@ export default class SentencingRoutes extends BaseRoutes {
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
     const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode]
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
+      .concat(appearance.offences.map(offence => offence.mergedFromCase?.courtCode))
       .filter(courtId => courtId !== undefined && courtId !== null)
     const sentenceTypeIds = appearance.offences
       .filter(offence => offence.sentence?.sentenceTypeId)
@@ -271,19 +271,10 @@ export default class SentencingRoutes extends BaseRoutes {
       documentType: getUiDocumentType(document.documentType, appearance.warrantType),
     }))
 
-    let mergedFromText = ''
-    if (appearance.offences.some(offence => offence.mergedFromCase != null)) {
-      const mergedOffence = appearance.offences.find(offence => offence.mergedFromCase != null)
-      if (courtCase.latestAppearance.courtCaseReference != null) {
-        mergedFromText = `This appearance includes offences from ${courtCase.latestAppearance.courtCaseReference} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
-      } else {
-        const court = await this.courtRegisterService.findCourtById(
-          mergedOffence.mergedFromCase.courtCode,
-          req.user.username,
-        )
-        mergedFromText = `This appearance includes offences from ${court.courtName} on ${courtCase.latestAppearance.appearanceDate} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
-      }
-    }
+    const mergedFromText = await this.getMergedFromText(
+      appearance.offences?.find(offence => offence.mergedFromCase != null),
+      req.user.username,
+    )
 
     return res.render('pages/sentencing/appearance-details', {
       nomsId,

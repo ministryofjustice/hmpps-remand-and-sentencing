@@ -1,19 +1,14 @@
-import type { Offence } from 'models'
+import type { Offence, CourtAppearance } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
-import {
-  PagedMergedFromCase,
-  SentenceConsecutiveToDetailsResponse,
-} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import config from '../config'
 import { SentenceConsecutiveToDetailsResponse } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import {
   offenceToConsecutiveToDetails,
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
 } from '../utils/mappingUtils'
-
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -22,14 +17,18 @@ export default abstract class BaseRoutes {
 
   remandAndSentencingService: RemandAndSentencingService
 
+  courtRegisterService: CourtRegisterService
+
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
+    courtRegisterService: CourtRegisterService,
   ) {
     this.courtAppearanceService = courtAppearanceService
     this.offenceService = offenceService
     this.remandAndSentencingService = remandAndSentencingService
+    this.courtRegisterService = courtRegisterService
   }
 
   protected isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
@@ -178,5 +177,16 @@ export default abstract class BaseRoutes {
       submitQueries.push(`invalidatedFrom=${invalidatedFrom}`)
     }
     return submitQueries.length ? `?${submitQueries.join('&')}` : ''
+  }
+
+  protected async getMergedFromText(mergedOffence: Offence, username: string): Promise<string> {
+    if (mergedOffence?.mergedFromCase) {
+      if (mergedOffence.mergedFromCase.caseReference != null) {
+        return `This appearance includes offences from ${mergedOffence.mergedFromCase.caseReference} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+      }
+      const court = await this.courtRegisterService.findCourtById(mergedOffence.mergedFromCase.courtCode!, username)
+      return `This appearance includes offences from ${court.courtName} on ${mergedOffence.mergedFromCase.warrantDate} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+    }
+    return ''
   }
 }

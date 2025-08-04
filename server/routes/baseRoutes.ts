@@ -9,6 +9,7 @@ import {
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
 } from '../utils/mappingUtils'
 import CourtRegisterService from '../services/courtRegisterService'
+import { formatDate } from '../utils/utils'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -182,10 +183,12 @@ export default abstract class BaseRoutes {
   protected async getMergedFromText(mergedOffence: Offence, username: string): Promise<string> {
     if (mergedOffence?.mergedFromCase) {
       if (mergedOffence.mergedFromCase.caseReference != null) {
-        return `This appearance includes offences from ${mergedOffence.mergedFromCase.caseReference} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+        const formattedDate = formatDate(mergedOffence.mergedFromCase.mergedFromDate)
+        return `This appearance includes offences from ${mergedOffence.mergedFromCase.caseReference} that were merged with this case on ${formattedDate}`
       }
       const court = await this.courtRegisterService.findCourtById(mergedOffence.mergedFromCase.courtCode!, username)
-      return `This appearance includes offences from ${court.courtName} on ${mergedOffence.mergedFromCase.warrantDate} that were merged with this case on ${mergedOffence.mergedFromCase.mergedFromDate}`
+      const formattedDate = formatDate(mergedOffence.mergedFromCase.mergedFromDate)
+      return `This appearance includes offences from ${court.courtName} on ${mergedOffence.mergedFromCase.warrantDate} that were merged with this case on ${formattedDate}`
     }
     return ''
   }

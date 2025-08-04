@@ -45,6 +45,7 @@ export default function setUpWebSecurity(): Router {
           imgSrc,
           formAction,
           connectSrc,
+          ...(config.production ? {} : { upgradeInsecureRequests: null }),
         },
       },
       referrerPolicy: {

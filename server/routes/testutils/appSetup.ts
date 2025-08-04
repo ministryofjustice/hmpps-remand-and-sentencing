@@ -1,11 +1,10 @@
 import express, { Express } from 'express'
 import { NotFound } from 'http-errors'
-import { v4 as uuidv4 } from 'uuid'
 
+import { randomUUID } from 'crypto'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
-import * as auth from '../../authentication/auth'
 import type { Services } from '../../services'
 import type { ApplicationInfo } from '../../applicationInfo'
 import { PrisonerSearchApiPrisoner } from '../../@types/prisonerSearchApi/prisonerSearchTypes'
@@ -119,7 +118,7 @@ function appSetup(
 
   app.set('view engine', 'njk')
 
-  nunjucksSetup(app, testAppInfo)
+  nunjucksSetup(app)
   app.use(setUpWebSession())
   app.use((req, res, next) => {
     req.user = userSupplier() as Express.User
@@ -131,7 +130,7 @@ function appSetup(
     next()
   })
   app.use((req, res, next) => {
-    req.id = uuidv4()
+    req.id = randomUUID()
     next()
   })
   app.use(express.json())
@@ -154,6 +153,5 @@ export function appWithAllRoutes({
   userSupplier?: () => HmppsUser
   prisoner?: PrisonerSearchApiPrisoner
 }): Express {
-  auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(services as Services, production, userSupplier, prisoner)
+  return appSetup(services as Services, production, userSupplier)
 }

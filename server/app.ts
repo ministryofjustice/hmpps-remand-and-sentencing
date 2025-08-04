@@ -37,8 +37,9 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
-  app.use(setUpStaticResources())
   app.use(setUpWebRequestParsing())
+  app.use(setUpStaticResources())
+
   app.use(upload.any())
 
   nunjucksSetup(app, services.applicationInfo)

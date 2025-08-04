@@ -75,6 +75,7 @@
             consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
             fineAmount: offence.sentence.fineAmount,
             mergedFromCase: offence.mergedFromCase,
+            courtDetails: courtMap,
             actions: {
                 items: [
                     {
@@ -126,6 +127,7 @@
                         consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
                         fineAmount: offence.sentence.fineAmount,
                         mergedFromCase: offence.mergedFromCase,
+                        courtDetails: courtMap,
                         actions: {
                             items: [
                                 {
@@ -168,6 +170,7 @@
                         consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
                         fineAmount: offence.sentence.fineAmount,
                         mergedFromCase: offence.mergedFromCase,
+                        courtDetails: courtMap,
                         actions: {
                             items: [
                                 {

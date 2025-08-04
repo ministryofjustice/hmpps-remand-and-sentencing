@@ -2026,7 +2026,6 @@ export default class OffenceRoutes extends BaseRoutes {
 
   public getUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { token } = res.locals.user
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const { offences, warrantType } = courtAppearance
 
@@ -2052,7 +2051,11 @@ export default class OffenceRoutes extends BaseRoutes {
     )
     const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
     const courtIds = Array.from(
-      new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
+      new Set(
+        consecutiveToSentenceDetails.sentences
+          .map(consecutiveToDetails => consecutiveToDetails.courtCode)
+          .concat(offences.map(offence => offence.mergedFromCase?.courtCode)),
+      ),
     )
 
     const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison, courtMap] = await Promise.all([
@@ -2121,6 +2124,7 @@ export default class OffenceRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
       mergedFromText,
+      courtMap,
       errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })

@@ -63,7 +63,7 @@ export default function createApp(services: Services): express.Application {
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences',
     setupCurrentOffence(services.offenceService),
   )
-  app.get('*', getFrontendComponents(services))
+  app.get(/(.*)/, getFrontendComponents(services))
 
   // --- Main application routes ---
   app.use(routes(services))

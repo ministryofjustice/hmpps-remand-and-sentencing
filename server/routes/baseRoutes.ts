@@ -180,16 +180,25 @@ export default abstract class BaseRoutes {
     return submitQueries.length ? `?${submitQueries.join('&')}` : ''
   }
 
-  protected async getMergedFromText(mergedOffence: Offence, username: string): Promise<string> {
-    if (mergedOffence?.mergedFromCase) {
-      if (mergedOffence.mergedFromCase.caseReference != null) {
+  protected async getMergedFromText(mergedOffences: Offence[], courtMap: { [key: string]: string }): Promise<string> {
+    const parts = new Set<string>()
+    for (const mergedOffence of mergedOffences) {
+      if (mergedOffence.mergedFromCase) {
         const formattedDate = formatDate(mergedOffence.mergedFromCase.mergedFromDate)
-        return `This appearance includes offences from ${mergedOffence.mergedFromCase.caseReference} that were merged with this case on ${formattedDate}`
+        if (mergedOffence.mergedFromCase.caseReference != null) {
+          parts.add(
+            `offences from ${mergedOffence.mergedFromCase.caseReference} that were merged with this case on ${formattedDate}`,
+          )
+        } else {
+          const courtName = courtMap[mergedOffence.mergedFromCase.courtCode!]
+          const formattedWarrantDate = formatDate(mergedOffence.mergedFromCase.warrantDate)
+          parts.add(
+            `offences from ${courtName} on ${formattedWarrantDate} that were merged with this case on ${formattedDate}`,
+          )
+        }
       }
-      const court = await this.courtRegisterService.findCourtById(mergedOffence.mergedFromCase.courtCode!, username)
-      const formattedDate = formatDate(mergedOffence.mergedFromCase.mergedFromDate)
-      return `This appearance includes offences from ${court.courtName} on ${mergedOffence.mergedFromCase.warrantDate} that were merged with this case on ${formattedDate}`
     }
-    return ''
+    if (parts.size === 0) return ''
+    return `This appearance includes ${Array.from(parts).join(' and ')}`
   }
 }

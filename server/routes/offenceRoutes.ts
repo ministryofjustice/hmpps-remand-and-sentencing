@@ -1974,6 +1974,13 @@ export default class OffenceRoutes extends BaseRoutes {
   public getReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtIds = Array.from(
+      new Set(
+        offences
+          .map(offence => offence.mergedFromCase?.courtCode)
+          .filter(courtId => courtId !== undefined && courtId !== null),
+      ),
+    )
 
     const sentenceTypeIds = Array.from(
       new Set(
@@ -1983,10 +1990,11 @@ export default class OffenceRoutes extends BaseRoutes {
     const offenceCodes = Array.from(new Set(offences.map(offence => offence.offenceCode)))
     const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
 
-    const [offenceMap, sentenceTypeMap, outcomeMap] = await Promise.all([
+    const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(offenceCodes, req.user.username),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
+      this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
     const [changedOffences, unchangedOffences] = offences.reduce(
       ([changedList, unchangedList], offence, index) => {
@@ -1996,6 +2004,12 @@ export default class OffenceRoutes extends BaseRoutes {
       },
       [[], []],
     )
+
+    const mergedFromText = await this.getMergedFromText(
+      offences?.filter(offence => offence.mergedFromCase != null),
+      courtMap,
+    )
+
     return res.render('pages/offence/review-offences', {
       nomsId,
       courtCaseReference,
@@ -2007,6 +2021,8 @@ export default class OffenceRoutes extends BaseRoutes {
       changedOffences,
       unchangedOffences,
       outcomeMap,
+      mergedFromText,
+      courtMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
@@ -2102,8 +2118,8 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     const mergedFromText = await this.getMergedFromText(
-      offences?.find(offence => offence.mergedFromCase != null),
-      req.user.username,
+      offences?.filter(offence => offence.mergedFromCase != null),
+      courtMap,
     )
 
     return res.render('pages/offence/update-offence-outcomes', {

@@ -272,8 +272,8 @@ export default class SentencingRoutes extends BaseRoutes {
     }))
 
     const mergedFromText = await this.getMergedFromText(
-      appearance.offences?.find(offence => offence.mergedFromCase != null),
-      req.user.username,
+      appearance.offences?.filter(offence => offence.mergedFromCase != null),
+      courtMap,
     )
 
     return res.render('pages/sentencing/appearance-details', {

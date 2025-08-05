@@ -48,6 +48,7 @@ const testAppInfo: ApplicationInfo = {
   gitRef: 'long ref',
   gitShortHash: 'short ref',
   branchName: 'main',
+  productId: 'P1',
 }
 
 export const defaultServices = {
@@ -58,7 +59,7 @@ export const defaultServices = {
   manageOffencesService: new ManageOffencesService(null) as jest.Mocked<ManageOffencesService>,
   feComponentsService: new FeComponentsService(null) as jest.Mocked<FeComponentsService>,
   remandAndSentencingService: new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>,
-  courtAppearanceService: new CourtAppearanceService(null, null, null) as jest.Mocked<CourtAppearanceService>,
+  courtAppearanceService: new CourtAppearanceService(null, null) as jest.Mocked<CourtAppearanceService>,
   documentManagementService: new DocumentManagementService(null) as jest.Mocked<DocumentManagementService>,
   prisonerSearchService: new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>,
   auditService: new AuditService(null) as jest.Mocked<AuditService>,
@@ -66,7 +67,7 @@ export const defaultServices = {
   appearanceOutcomeService: new AppearanceOutcomeService(null) as jest.Mocked<AppearanceOutcomeService>,
   offenceOutcomeService: new OffenceOutcomeService(null) as jest.Mocked<OffenceOutcomeService>,
   calculateReleaseDatesService: new CalculateReleaseDatesService(null) as jest.Mocked<CalculateReleaseDatesService>,
-  courtCasesReleaseDatesService: new CourtCasesReleaseDatesService() as jest.Mocked<CourtCasesReleaseDatesService>,
+  courtCasesReleaseDatesService: new CourtCasesReleaseDatesService(null) as jest.Mocked<CourtCasesReleaseDatesService>,
 }
 
 export const user: HmppsUser = {
@@ -118,7 +119,7 @@ function appSetup(
 
   app.set('view engine', 'njk')
 
-  nunjucksSetup(app)
+  nunjucksSetup(app, services.applicationInfo)
   app.use(setUpWebSession())
   app.use((req, res, next) => {
     req.user = userSupplier() as Express.User
@@ -153,5 +154,5 @@ export function appWithAllRoutes({
   userSupplier?: () => HmppsUser
   prisoner?: PrisonerSearchApiPrisoner
 }): Express {
-  return appSetup(services as Services, production, userSupplier)
+  return appSetup(services as Services, production, userSupplier, prisoner)
 }

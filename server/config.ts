@@ -76,6 +76,7 @@ export default {
     },
     prisonApi: {
       url: get('PRISON_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISON_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISON_API_TIMEOUT_DEADLINE', 10000)),
@@ -84,6 +85,7 @@ export default {
     },
     courtRegisterApi: {
       url: get('COURT_REGISTER_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('COURT_REGISTER_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('COURT_REGISTER_API_TIMEOUT_DEADLINE', 10000)),
@@ -92,6 +94,7 @@ export default {
     },
     manageOffencesApi: {
       url: get('MANAGE_OFFENCES_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('MANAGE_OFFENCES_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('MANAGE_OFFENCES_API_TIMEOUT_DEADLINE', 10000)),
@@ -100,6 +103,7 @@ export default {
     },
     frontendComponents: {
       url: get('COMPONENT_API_URL', 'http://127.0.0.1:8082', requiredInProduction),
+      healthPath: '/ping',
       timeout: {
         response: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000)),
         deadline: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000)),
@@ -109,6 +113,7 @@ export default {
     },
     remandAndSentencingApi: {
       url: get('REMAND_AND_SENTENCING_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('REMAND_AND_SENTENCING_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('REMAND_AND_SENTENCING_API_TIMEOUT_DEADLINE', 10000)),
@@ -117,6 +122,7 @@ export default {
     },
     documentManagementApi: {
       url: get('DOCUMENT_MANAGEMENT_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('DOCUMENT_MANAGEMENT_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('DOCUMENT_MANAGEMENT_API_TIMEOUT_DEADLINE', 10000)),
@@ -125,6 +131,7 @@ export default {
     },
     prisonerSearchApi: {
       url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8110', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 10000)),
@@ -133,6 +140,7 @@ export default {
     },
     calculateReleaseDatesApi: {
       url: get('CALCULATE_RELEASE_DATES_API_URL', 'http://localhost:8110', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE', 10000)),
@@ -141,6 +149,7 @@ export default {
     },
     courtCasesReleaseDatesApi: {
       url: get('COURT_CASES_RELEASE_DATES_API_URL', 'http://localhost:8083', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('COURT_CASES_RELEASE_DATES_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('COURT_CASES_RELEASE_DATES_API_TIMEOUT_DEADLINE', 10000)),

@@ -16,37 +16,33 @@ import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
 
 export const services = () => {
-  const { applicationInfo, feComponentsClient, hmppsAuthClient, hmppsAuditClient } = dataAccess()
+  const data = dataAccess()
 
-  const prisonerService = new PrisonerService(hmppsAuthClient)
+  const prisonerService = new PrisonerService(data.prisonApiClient)
 
   const userService = new UserService(prisonerService)
 
-  const manageOffencesService = new ManageOffencesService(hmppsAuthClient)
+  const manageOffencesService = new ManageOffencesService(data.manageOffencesApiClient)
 
-  const feComponentsService = new FeComponentsService(feComponentsClient)
+  const feComponentsService = new FeComponentsService(data.feComponentsClient)
 
-  const remandAndSentencingService = new RemandAndSentencingService(hmppsAuthClient)
+  const remandAndSentencingService = new RemandAndSentencingService(data.remandAndSentencingApiClient)
 
-  const documentManagementService = new DocumentManagementService(hmppsAuthClient)
+  const documentManagementService = new DocumentManagementService(data.documentManagementApiClient)
 
-  const calculateReleaseDatesService = new CalculateReleaseDatesService(hmppsAuthClient)
+  const calculateReleaseDatesService = new CalculateReleaseDatesService(data.calculateReleaseDatesApiClient)
 
-  const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient)
-  const auditService = new AuditService(hmppsAuditClient)
-  const courtRegisterService = new CourtRegisterService(hmppsAuthClient)
-  const appearanceOutcomeService = new AppearanceOutcomeService(hmppsAuthClient)
-  const offenceOutcomeService = new OffenceOutcomeService(hmppsAuthClient)
-  const courtAppearanceService = new CourtAppearanceService(
-    remandAndSentencingService,
-    documentManagementService,
-    hmppsAuthClient,
-  )
-  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService()
+  const prisonerSearchService = new PrisonerSearchService(data.prisonerSearchApiClient)
+  const auditService = new AuditService(data.hmppsAuditClient)
+  const courtRegisterService = new CourtRegisterService(data.courtRegisterApiClient)
+  const appearanceOutcomeService = new AppearanceOutcomeService(data.remandAndSentencingApiClient)
+  const offenceOutcomeService = new OffenceOutcomeService(data.remandAndSentencingApiClient)
+  const courtAppearanceService = new CourtAppearanceService(remandAndSentencingService, documentManagementService)
+  const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(data.courtCasesReleaseDatesApiClient)
   const offenceService = new OffenceService(manageOffencesService, offenceOutcomeService, remandAndSentencingService)
 
   return {
-    applicationInfo,
+    applicationInfo: data.applicationInfo,
     userService,
     prisonerService,
     offenceService,

@@ -16,11 +16,14 @@ import config from '../config'
 import FeComponentsClient from './feComponentsClient'
 import HmppsAuditClient from './hmppsAuditClient'
 import logger from '../../logger'
-import ExampleApiClient from './exampleApiClient'
 import CalculateReleaseDatesApiClient from './calculateReleaseDatesApiClient'
 import CourtCasesReleaseDatesApiClient from './courtCasesReleaseDatesApiClient'
 import CourtRegisterApiClient from './courtRegisterApiClient'
 import DocumentManagementApiClient from './documentManagementApiClient'
+import ManageOffencesApiClient from './manageOffencesApiClient'
+import PrisonApiClient from './prisonApiClient'
+import PrisonerSearchApiClient from './prisonerSearchApiClient'
+import RemandAndSentencingApiClient from './remandAndSentencingApiClient'
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -33,14 +36,18 @@ export const dataAccess = () => {
     applicationInfo,
     hmppsAuthClient,
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
-    feComponentsClient: new FeComponentsClient(),
+    feComponentsClient: new FeComponentsClient(hmppsAuthClient),
     calculateReleaseDatesApiClient: new CalculateReleaseDatesApiClient(hmppsAuthClient),
     courtCasesReleaseDatesApiClient: new CourtCasesReleaseDatesApiClient(hmppsAuthClient),
     courtRegisterApiClient: new CourtRegisterApiClient(hmppsAuthClient),
-    DocumentManagementApiClient: new DocumentManagementApiClient(hmppsAuthClient),
+    documentManagementApiClient: new DocumentManagementApiClient(hmppsAuthClient),
+    manageOffencesApiClient: new ManageOffencesApiClient(hmppsAuthClient),
+    prisonApiClient: new PrisonApiClient(hmppsAuthClient),
+    prisonerSearchApiClient: new PrisonerSearchApiClient(hmppsAuthClient),
+    remandAndSentencingApiClient: new RemandAndSentencingApiClient(hmppsAuthClient),
   }
 }
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { AuthenticationClient, HmppsAuditClient, ExampleApiClient }
+export { AuthenticationClient, HmppsAuditClient }

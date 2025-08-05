@@ -1,27 +1,22 @@
 import type { CourtAppearance } from 'models'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
-import { HmppsAuthClient } from '../data'
 
 jest.mock('../api/calculateReleaseDatesApiClient')
 jest.mock('../data/hmppsAuthClient')
 
 describe('CalculateReleaseDatesService', () => {
   let calculateReleaseDatesApiClient: jest.Mocked<CalculateReleaseDatesApiClient>
-  let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
+
   let service: CalculateReleaseDatesService
 
   beforeEach(() => {
-    hmppsAuthClient = {
-      getSystemClientToken: jest.fn().mockResolvedValue(token),
-    } as unknown as jest.Mocked<HmppsAuthClient>
-
     calculateReleaseDatesApiClient = {
       compareOverallSentenceLength: jest.fn(),
     } as unknown as jest.Mocked<CalculateReleaseDatesApiClient>
     ;(CalculateReleaseDatesApiClient as jest.Mock).mockImplementation(() => calculateReleaseDatesApiClient)
 
-    service = new CalculateReleaseDatesService(hmppsAuthClient)
+    service = new CalculateReleaseDatesService(calculateReleaseDatesApiClient)
   })
 
   describe('compareOverallSentenceLength', () => {
@@ -62,7 +57,6 @@ describe('CalculateReleaseDatesService', () => {
       })
 
       const result = await service.compareOverallSentenceLength(multipleSupportedSentences, 'test-user')
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith('test-user')
       expect(calculateReleaseDatesApiClient.compareOverallSentenceLength).toHaveBeenCalled()
       expect(result.custodialLengthMatches).toBe(true)
     })
@@ -74,8 +68,6 @@ describe('CalculateReleaseDatesService', () => {
     })
   })
 })
-
-const token = 'some-token'
 
 const baseAppearance: CourtAppearance = {
   hasOverallSentenceLength: 'true',

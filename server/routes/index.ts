@@ -1,4 +1,4 @@
-import { type RequestHandler, Router } from 'express'
+import { Router } from 'express'
 import CourtCaseRoutes from './courtCaseRoutes'
 import ApiRoutes from './apiRoutes'
 import OffenceRoutes from './offenceRoutes'
@@ -12,8 +12,63 @@ import RemandRoutes from './remandRoutes'
 export default function routes(services: Services): Router {
   const router = Router()
 
+  router.use('/sentence-types', sentenceTypeRoutes(services))
+
+  const courtCaseRoutes = new CourtCaseRoutes(
+    services.offenceService,
+    services.courtAppearanceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.documentManagementService,
+    services.courtRegisterService,
+    services.appearanceOutcomeService,
+    services.courtCasesReleaseDatesService,
+  )
+  const apiRoutes = new ApiRoutes(
+    services.prisonerService,
+    services.manageOffencesService,
+    services.courtRegisterService,
+  )
+  const offenceRoutes = new OffenceRoutes(
+    services.offenceService,
+    services.manageOffencesService,
+    services.courtAppearanceService,
+    services.remandAndSentencingService,
+    services.offenceOutcomeService,
+    services.calculateReleaseDatesService,
+    services.courtRegisterService,
+  )
+
+  const overallSentencingRoutes = new OverallSentencingRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.appearanceOutcomeService,
+  )
+
+  const sentencingRoutes = new SentencingRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.appearanceOutcomeService,
+    services.courtRegisterService,
+    services.calculateReleaseDatesService,
+    services.offenceOutcomeService,
+  )
+
+  const remandRoutes = new RemandRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.appearanceOutcomeService,
+    services.courtRegisterService,
+    services.offenceOutcomeService,
+  )
+
   router.get('/', async (req, res, next) => {
-    await auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
+    await services.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
 
     res.render('pages/index')
   })

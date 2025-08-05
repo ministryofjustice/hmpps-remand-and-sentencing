@@ -1,31 +1,24 @@
 import type { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
-import { HmppsAuthClient } from '../data'
+import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 
 export default class OffenceOutcomeService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
 
   async getAllOutcomes(username: string): Promise<OffenceOutcome[]> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAllChargeOutcomes()
+    return this.remandAndSentencingApiClient.getAllChargeOutcomes(username)
   }
 
   async getOutcomeMap(outcomeIds: string[], username: string): Promise<{ [key: string]: OffenceOutcome }> {
     let outcomeMap = {}
     const outcomeIdsToSearch = outcomeIds.filter(outcomeId => outcomeId)
     if (outcomeIdsToSearch.length) {
-      const outcomes = await new RemandAndSentencingApiClient(
-        await this.getSystemClientToken(username),
-      ).getChargeOutcomesByIds(outcomeIdsToSearch)
+      const outcomes = await this.remandAndSentencingApiClient.getChargeOutcomesByIds(outcomeIdsToSearch, username)
       outcomeMap = Object.fromEntries(outcomes.map(outcome => [outcome.outcomeUuid, outcome]))
     }
     return outcomeMap
   }
 
   async getOutcomeById(outcomeId: string, username: string): Promise<OffenceOutcome> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getChargeOutcomeById(outcomeId)
-  }
-
-  private async getSystemClientToken(username: string): Promise<string> {
-    return this.hmppsAuthClient.getSystemClientToken(username)
+    return this.remandAndSentencingApiClient.getChargeOutcomeById(outcomeId, username)
   }
 }

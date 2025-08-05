@@ -55,9 +55,9 @@ export default class OffenceRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    courtRegisterService: CourtRegisterService,
+    private readonly courtRegisterService: CourtRegisterService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, courtRegisterService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -2005,7 +2005,7 @@ export default class OffenceRoutes extends BaseRoutes {
       [[], []],
     )
 
-    const mergedFromText = await this.getMergedFromText(
+    const mergedFromText = this.getMergedFromText(
       offences?.filter(offence => offence.mergedFromCase != null),
       courtMap,
     )
@@ -2117,7 +2117,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
     )
 
-    const mergedFromText = await this.getMergedFromText(
+    const mergedFromText = this.getMergedFromText(
       offences?.filter(offence => offence.mergedFromCase != null),
       courtMap,
     )

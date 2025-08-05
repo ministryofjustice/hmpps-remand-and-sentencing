@@ -29,11 +29,11 @@ export default class SentencingRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
-    courtRegisterService: CourtRegisterService,
+    private readonly courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, courtRegisterService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
 
   public getIsSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
@@ -271,7 +271,7 @@ export default class SentencingRoutes extends BaseRoutes {
       documentType: getUiDocumentType(document.documentType, appearance.warrantType),
     }))
 
-    const mergedFromText = await this.getMergedFromText(
+    const mergedFromText = this.getMergedFromText(
       appearance.offences?.filter(offence => offence.mergedFromCase != null),
       courtMap,
     )

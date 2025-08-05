@@ -8,7 +8,6 @@ import {
   offenceToConsecutiveToDetails,
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
 } from '../utils/mappingUtils'
-import CourtRegisterService from '../services/courtRegisterService'
 import { formatDate } from '../utils/utils'
 
 export default abstract class BaseRoutes {
@@ -18,18 +17,14 @@ export default abstract class BaseRoutes {
 
   remandAndSentencingService: RemandAndSentencingService
 
-  courtRegisterService: CourtRegisterService
-
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
-    courtRegisterService: CourtRegisterService,
   ) {
     this.courtAppearanceService = courtAppearanceService
     this.offenceService = offenceService
     this.remandAndSentencingService = remandAndSentencingService
-    this.courtRegisterService = courtRegisterService
   }
 
   protected isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
@@ -180,7 +175,7 @@ export default abstract class BaseRoutes {
     return submitQueries.length ? `?${submitQueries.join('&')}` : ''
   }
 
-  protected async getMergedFromText(mergedOffences: Offence[], courtMap: { [key: string]: string }): Promise<string> {
+  protected getMergedFromText(mergedOffences: Offence[], courtMap: { [key: string]: string }): string {
     const parts = new Set<string>()
     for (const mergedOffence of mergedOffences) {
       if (mergedOffence.mergedFromCase) {

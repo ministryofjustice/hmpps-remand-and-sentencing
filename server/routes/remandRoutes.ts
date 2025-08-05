@@ -16,12 +16,12 @@ export default class RemandRoutes extends BaseRoutes {
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
-    courtRegisterService: CourtRegisterService,
+    private readonly courtRegisterService: CourtRegisterService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, courtRegisterService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
 
   public loadAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
@@ -106,7 +106,7 @@ export default class RemandRoutes extends BaseRoutes {
       documentType: getUiDocumentType(document.documentType, appearance.warrantType),
     }))
 
-    const mergedFromText = await this.getMergedFromText(
+    const mergedFromText = this.getMergedFromText(
       appearance.offences?.filter(offence => offence.mergedFromCase != null),
       courtMap,
     )

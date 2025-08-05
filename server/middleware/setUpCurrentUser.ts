@@ -22,18 +22,20 @@ export default function setUpCurrentUser(userService: UserService) {
         authorities?: string[]
         auth_source?: AuthSource
       }
-
+      const userRoles = roles.map(role => role.substring(role.indexOf('_') + 1))
       res.locals.user = {
         ...res.locals.user,
         userId,
         name,
         displayName: convertToTitleCase(name),
-        userRoles: roles.map(role => role.substring(role.indexOf('_') + 1)),
+        userRoles,
       }
       res.locals.user.authSource = authSource
 
       if (res.locals.user.authSource === 'nomis') {
         res.locals.user.staffId = parseInt(userId, 10) || undefined
+        res.locals.user.hasInactiveBookingsAccess = userRoles.includes('INACTIVE_BOOKINGS')
+        res.locals.user.hasRecallsAccess = userRoles.includes('RECALL_MAINTAINER')
         await getUserCaseLoads(res, userService)
       }
 

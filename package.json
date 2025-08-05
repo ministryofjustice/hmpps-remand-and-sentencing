@@ -169,10 +169,8 @@
   },
   "overrides": {
     "@typescript-eslint/eslint-plugin": {
-      ".": "$@typescript-eslint/eslint-plugin",
       "typescript": "$typescript",
       "@typescript-eslint/parser": {
-        ".": "$@typescript-eslint/parser",
         "typescript": "$typescript"
       }
     },

@@ -216,6 +216,7 @@ export const chargeToOffence = (charge: Charge, index: number): Offence => {
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence, index) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
+    ...(charge.mergedFromCase && { mergedFromCase: charge.mergedFromCase }),
   } as Offence
 }
 

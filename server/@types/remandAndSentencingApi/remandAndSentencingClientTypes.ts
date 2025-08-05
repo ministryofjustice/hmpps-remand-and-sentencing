@@ -101,3 +101,5 @@ export type HasSentenceAfterOnOtherCourtAppearanceResponse =
 
 export type SentencesAfterOnOtherCourtAppearanceDetailsResponse =
   components['schemas']['SentencesAfterOnOtherCourtAppearanceDetailsResponse']
+
+export type MergedFromCase = components['schemas']['MergedFromCase']

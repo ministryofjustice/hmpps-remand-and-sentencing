@@ -61,9 +61,9 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.offenceService,
     services.remandAndSentencingService,
+    services.courtRegisterService,
     services.manageOffencesService,
     services.appearanceOutcomeService,
-    services.courtRegisterService,
     services.offenceOutcomeService,
   )
 

@@ -35,7 +35,21 @@ const stubComponentsFail = () =>
     },
   })
 
+const stubComponentsPing = (httpStatus = 200) =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/components/ping',
+    },
+    response: {
+      status: httpStatus,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
+    },
+  })
+
 export default {
   stubComponents,
   stubComponentsFail,
+  stubComponentsPing,
 }

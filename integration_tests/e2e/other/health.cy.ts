@@ -4,7 +4,15 @@ context('Healthcheck', () => {
       cy.task('reset')
       cy.task('stubAuthPing')
       cy.task('stubTokenVerificationPing')
-      cy.task('stubExamplePing')
+      cy.task('stubCalculateReleaseDatesPing')
+      cy.task('stubComponentsPing')
+      cy.task('stubCourtCasesReleaseDatesPing')
+      cy.task('stubCourtRegisterPing')
+      cy.task('stubDocumentManagementPing')
+      cy.task('stubManageOffencesPing')
+      cy.task('stubPrisonApiPing')
+      cy.task('stubPrisonerSearchPing')
+      cy.task('stubRemandAndSentencingPing')
     })
 
     it('Health check page is visible and UP', () => {
@@ -25,6 +33,15 @@ context('Healthcheck', () => {
       cy.task('reset')
       cy.task('stubAuthPing')
       cy.task('stubTokenVerificationPing', 500)
+      cy.task('stubCalculateReleaseDatesPing')
+      cy.task('stubComponentsPing')
+      cy.task('stubCourtCasesReleaseDatesPing')
+      cy.task('stubCourtRegisterPing')
+      cy.task('stubDocumentManagementPing')
+      cy.task('stubManageOffencesPing')
+      cy.task('stubPrisonApiPing')
+      cy.task('stubPrisonerSearchPing')
+      cy.task('stubRemandAndSentencingPing')
     })
 
     it('Reports correctly when token verification down', () => {

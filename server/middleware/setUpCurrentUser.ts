@@ -4,6 +4,7 @@ import { convertToTitleCase } from '../utils/utils'
 import logger from '../../logger'
 import UserService from '../services/userService'
 import { CaseLoad } from '../@types/prisonApi/types'
+import { AuthSource } from '../interfaces/hmppsUser'
 
 export default function setUpCurrentUser(userService: UserService) {
   const router = express.Router()
@@ -14,10 +15,12 @@ export default function setUpCurrentUser(userService: UserService) {
         name,
         user_id: userId,
         authorities: roles = [],
+        auth_source: authSource,
       } = jwtDecode(res.locals.user.token) as {
         name?: string
         user_id?: string
         authorities?: string[]
+        auth_source?: AuthSource
       }
 
       res.locals.user = {
@@ -27,6 +30,7 @@ export default function setUpCurrentUser(userService: UserService) {
         displayName: convertToTitleCase(name),
         userRoles: roles.map(role => role.substring(role.indexOf('_') + 1)),
       }
+      res.locals.user.authSource = authSource
 
       if (res.locals.user.authSource === 'nomis') {
         res.locals.user.staffId = parseInt(userId, 10) || undefined

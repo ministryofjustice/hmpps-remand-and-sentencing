@@ -40,7 +40,11 @@ export default class CourtAppearanceService {
     private readonly documentManagementService: DocumentManagementService,
   ) {}
 
-  setCaseReferenceNumber(session: Partial<SessionData>, nomsId: string, courtCaseReferenceForm: CourtCaseReferenceForm) {
+  setCaseReferenceNumber(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReferenceForm: CourtCaseReferenceForm,
+  ) {
     const errors = validate(
       courtCaseReferenceForm,
       {
@@ -284,7 +288,11 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setCourtNameFromSelect(session: Partial<SessionData>, nomsId: string, selectCourtNameForm: CourtCaseSelectCourtNameForm) {
+  setCourtNameFromSelect(
+    session: Partial<SessionData>,
+    nomsId: string,
+    selectCourtNameForm: CourtCaseSelectCourtNameForm,
+  ) {
     const errors = validate(
       selectCourtNameForm,
       { courtNameSelect: 'required' },
@@ -609,7 +617,11 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId).nextHearingSelect
   }
 
-  setNextHearingSelect(session: Partial<SessionData>, nomsId: string, nextHearingSelectForm: CourtCaseNextHearingSelectForm) {
+  setNextHearingSelect(
+    session: Partial<SessionData>,
+    nomsId: string,
+    nextHearingSelectForm: CourtCaseNextHearingSelectForm,
+  ) {
     const errors = validate(
       nextHearingSelectForm,
       {
@@ -898,7 +910,12 @@ export default class CourtAppearanceService {
     }
   }
 
-  setOffenceOutcome(session: Partial<SessionData>, nomsId: string, offenceReference: number, offenceOutcome: OffenceOutcome) {
+  setOffenceOutcome(
+    session: Partial<SessionData>,
+    nomsId: string,
+    offenceReference: number,
+    offenceOutcome: OffenceOutcome,
+  ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]

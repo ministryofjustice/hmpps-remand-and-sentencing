@@ -41,7 +41,6 @@ import type {
   SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
-
 type Error = {
   href: string
   text: string

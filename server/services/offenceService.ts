@@ -955,15 +955,30 @@ export default class OffenceService {
     offence.onFinishGoToEdit = true
   }
 
-  setSentenceToConcurrent(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, offenceReference: string) {
+  setSentenceToConcurrent(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+  ) {
     this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONCURRENT)
   }
 
-  setSentenceToForthwith(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, offenceReference: string) {
+  setSentenceToForthwith(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+  ) {
     this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.FORTHWITH)
   }
 
-  setSentenceToConsecutive(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, offenceReference: string) {
+  setSentenceToConsecutive(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceReference: string,
+  ) {
     this.updateSentenceServType(nomsId, courtCaseReference, session, offenceReference, sentenceServeTypes.CONSECUTIVE)
   }
 

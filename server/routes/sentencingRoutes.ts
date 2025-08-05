@@ -272,7 +272,7 @@ export default class SentencingRoutes extends BaseRoutes {
     }))
 
     const mergedFromText = this.getMergedFromText(
-      appearance.offences?.filter(offence => offence.mergedFromCase != null),
+      appearance.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
       courtMap,
     )
 

@@ -3,7 +3,10 @@ import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-relea
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
-import { SentenceConsecutiveToDetailsResponse } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import {
+  MergedFromCase,
+  SentenceConsecutiveToDetailsResponse,
+} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import {
   offenceToConsecutiveToDetails,
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
@@ -175,22 +178,18 @@ export default abstract class BaseRoutes {
     return submitQueries.length ? `?${submitQueries.join('&')}` : ''
   }
 
-  protected getMergedFromText(mergedOffences: Offence[], courtMap: { [key: string]: string }): string {
+  protected getMergedFromText(mergedFromCases: MergedFromCase[], courtMap: { [key: string]: string }): string {
     const parts = new Set<string>()
-    for (const mergedOffence of mergedOffences) {
-      if (mergedOffence.mergedFromCase) {
-        const formattedDate = formatDate(mergedOffence.mergedFromCase.mergedFromDate)
-        if (mergedOffence.mergedFromCase.caseReference != null) {
-          parts.add(
-            `offences from ${mergedOffence.mergedFromCase.caseReference} that were merged with this case on ${formattedDate}`,
-          )
-        } else {
-          const courtName = courtMap[mergedOffence.mergedFromCase.courtCode!]
-          const formattedWarrantDate = formatDate(mergedOffence.mergedFromCase.warrantDate)
-          parts.add(
-            `offences from ${courtName} on ${formattedWarrantDate} that were merged with this case on ${formattedDate}`,
-          )
-        }
+    for (const mergedFromCase of mergedFromCases) {
+      const formattedDate = formatDate(mergedFromCase.mergedFromDate)
+      if (mergedFromCase.caseReference != null) {
+        parts.add(`offences from ${mergedFromCase.caseReference} that were merged with this case on ${formattedDate}`)
+      } else {
+        const courtName = courtMap[mergedFromCase.courtCode!]
+        const formattedWarrantDate = formatDate(mergedFromCase.warrantDate)
+        parts.add(
+          `offences from ${courtName} on ${formattedWarrantDate} that were merged with this case on ${formattedDate}`,
+        )
       }
     }
     if (parts.size === 0) return ''

@@ -2006,7 +2006,7 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     const mergedFromText = this.getMergedFromText(
-      offences?.filter(offence => offence.mergedFromCase != null),
+      offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
       courtMap,
     )
 
@@ -2118,7 +2118,7 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     const mergedFromText = this.getMergedFromText(
-      offences?.filter(offence => offence.mergedFromCase != null),
+      offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
       courtMap,
     )
 

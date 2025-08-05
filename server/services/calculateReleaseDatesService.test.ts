@@ -2,8 +2,7 @@ import type { CourtAppearance } from 'models'
 import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 
-jest.mock('../api/calculateReleaseDatesApiClient')
-jest.mock('../data/hmppsAuthClient')
+jest.mock('../data/calculateReleaseDatesApiClient')
 
 describe('CalculateReleaseDatesService', () => {
   let calculateReleaseDatesApiClient: jest.Mocked<CalculateReleaseDatesApiClient>

@@ -1048,6 +1048,12 @@ export default {
                 displayOrder: 10,
                 dispositionCode: 'INTERIM',
               },
+              mergedFromCase: {
+                caseReference: 'C894623',
+                courtCode: 'STHHPM',
+                warrantDate: '2023-12-15',
+                mergedFromDate: '2023-12-15',
+              },
             },
           ],
         },

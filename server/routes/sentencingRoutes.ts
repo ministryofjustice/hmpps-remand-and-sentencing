@@ -194,7 +194,6 @@ export default class SentencingRoutes extends BaseRoutes {
         pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
       )
     }
-
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
     const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
     const chargeCodes = appearance.offences
@@ -202,6 +201,7 @@ export default class SentencingRoutes extends BaseRoutes {
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
     const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode]
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
+      .concat(appearance.offences.map(offence => offence.mergedFromCase?.courtCode))
       .filter(courtId => courtId !== undefined && courtId !== null)
     const sentenceTypeIds = appearance.offences
       .filter(offence => offence.sentence?.sentenceTypeId)
@@ -270,6 +270,12 @@ export default class SentencingRoutes extends BaseRoutes {
       ...document,
       documentType: getUiDocumentType(document.documentType, appearance.warrantType),
     }))
+
+    const mergedFromText = this.getMergedFromText(
+      appearance.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
+      courtMap,
+    )
+
     return res.render('pages/sentencing/appearance-details', {
       nomsId,
       courtCaseReference,
@@ -289,6 +295,7 @@ export default class SentencingRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
       documentsWithUiType,
+      mergedFromText,
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })

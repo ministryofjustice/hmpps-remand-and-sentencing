@@ -33,7 +33,6 @@ import validate from '../validation/validation'
 import { chargeToOffence, draftCourtAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
-import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
@@ -41,6 +40,7 @@ import mojPaginationFromPageCourtCase from './data/pagination'
 import config from '../config'
 import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(

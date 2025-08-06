@@ -215,12 +215,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       documentType: getUiDocumentType(document.documentType, courtCaseDetails.latestAppearance.warrantType),
     }))
 
-    courtCaseDetails.appearances.forEach(elem => {
-      elem.charges.forEach(charge => {
-        console.log('charge.mergedFromCase: ', charge.mergedFromCase)
-      })
-    })
-
     courtCaseDetails.appearances = courtCaseDetails.appearances.map(appearance => ({
       ...appearance,
       canDelete: appearance.charges.every(charge => !charge.sentence),
@@ -244,7 +238,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
   }
 
   private offenceGetMergedFromText(mergedFromCases: MergedFromCase[], courtMap: { [key: string]: string }): string[] {
-    console.log(`***************************************** ${mergedFromCases.length}`)
     if (!mergedFromCases || mergedFromCases.length === 0) return []
     const parts = new Set<string>()
     for (const mergedFromCase of mergedFromCases) {
@@ -259,8 +252,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
         )
       }
     }
-    console.log('*****************************************')
-    console.log(parts)
     return Array.from(parts)
   }
 

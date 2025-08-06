@@ -41,7 +41,7 @@ Fallback html must be included for all imported components for instances when th
 
 2. **Start the app** by running:
    ```sh
-   npm run start
+   npm run start:dev
    ```
 
 3. **Access the application** in your browser:

@@ -57,7 +57,7 @@ generic-service:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
     hmpps-remand-and-sentencing-session-secret:
       SESSION_SECRET: 'SESSION_SECRET'
-    hmpps-remand-and-sentencing-elasticache-redis:
+    elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"
     #sqs-hmpps-audit-secret:

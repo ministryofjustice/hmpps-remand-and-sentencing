@@ -80,11 +80,6 @@
         <div class="govuk-grid-column-one-half">
             <h2 class="govuk-heading-m">{{ appearance.courtCaseReference + ' at ' if appearance.courtCaseReference }}{{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
                 on {{ appearance.appearanceDate | formatDate }}</h2>
-                {% if not appearance.canDelete %}
-                          {{ govukInsetText({
-                            text: "You cannot delete an appearance that includes sentences."
-                          }) }}
-                        {% endif %}
         </div>
 
         <div class="govuk-grid-column-one-half">
@@ -117,6 +112,22 @@
             </ul>
         </div>
     </div>
+    {% if appearance.mergedFromTextArray and appearance.mergedFromTextArray | length > 0 %}
+      {% for text in appearance.mergedFromTextArray %}
+        {{ govukInsetText({
+          text: text,
+          classes: "govuk-!-margin-bottom-3",
+          attributes: {
+            "data-qa": "mergedFromText"
+          }
+        }) }}
+      {% endfor %}
+    {% endif %}
+    {% if not appearance.canDelete %}
+      {{ govukInsetText({
+        text: "You cannot delete an appearance that includes sentences."
+      }) }}
+    {% endif %}
     <div class="govuk-grid-row govuk-!-padding-bottom-2 govuk-!-margin-top-2">
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Case reference</h3>
@@ -191,7 +202,9 @@
                         consecutiveTo: consecutiveToSentenceDetailsMap[charge.sentence.consecutiveToSentenceUuid],
                         sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
                         fineAmount: charge.sentence.fineAmount.fineAmount,
-                        detailsClasses: 'govuk-!-padding-4'
+                        detailsClasses: 'govuk-!-padding-4',
+                        mergedFromCase: charge.mergedFromCase,
+                        courtDetails: courtMap
                     }) }}
             {% endfor %}
             {% endset %}

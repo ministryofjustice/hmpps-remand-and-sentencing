@@ -1,20 +1,19 @@
 import type { Offence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
-import ManageOffencesApiClient from '../api/manageOffencesApiClient'
-import { HmppsAuthClient } from '../data'
+import ManageOffencesApiClient from '../data/manageOffencesApiClient'
 
 export default class ManageOffencesService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor(private readonly manageOffencesApiClient: ManageOffencesApiClient) {}
 
   async getOffenceByCode(offenceCode: string, username: string): Promise<Offence> {
-    return new ManageOffencesApiClient(await this.getSystemClientToken(username)).getOffenceByCode(offenceCode)
+    return this.manageOffencesApiClient.getOffenceByCode(offenceCode, username)
   }
 
   async searchOffence(searchString: string, username: string): Promise<Offence[]> {
-    return new ManageOffencesApiClient(await this.getSystemClientToken(username)).searchOffence(searchString)
+    return this.manageOffencesApiClient.searchOffence(searchString, username)
   }
 
   async getOffencesByCodes(offenceCodes: string[], username: string): Promise<Offence[]> {
-    return new ManageOffencesApiClient(await this.getSystemClientToken(username)).getOffencesByCodes(offenceCodes)
+    return this.manageOffencesApiClient.getOffencesByCodes(offenceCodes, username)
   }
 
   async getOffenceMap(offenceCodes: string[], username: string) {
@@ -25,9 +24,5 @@ export default class ManageOffencesService {
       offenceMap = Object.fromEntries(offences.map(offence => [offence.code, offence.description]))
     }
     return offenceMap
-  }
-
-  private async getSystemClientToken(username: string): Promise<string> {
-    return this.hmppsAuthClient.getSystemClientToken(username)
   }
 }

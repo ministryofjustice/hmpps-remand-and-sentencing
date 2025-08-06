@@ -1,21 +1,14 @@
 import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
-import { HmppsAuthClient } from '../data'
+import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 
 export default class AppearanceOutcomeService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
 
   async getAllOutcomes(username: string): Promise<AppearanceOutcome[]> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAllAppearanceOutcomes()
+    return this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username)
   }
 
   async getOutcomeByUuid(appearanceOutcomeUuid: string, username: string): Promise<AppearanceOutcome> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAppearanceOutcomeByUuid(
-      appearanceOutcomeUuid,
-    )
-  }
-
-  private async getSystemClientToken(username: string): Promise<string> {
-    return this.hmppsAuthClient.getSystemClientToken(username)
+    return this.remandAndSentencingApiClient.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
   }
 }

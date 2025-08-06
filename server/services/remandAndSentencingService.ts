@@ -21,17 +21,16 @@ import {
   SentenceType,
   SentenceTypeIsValid,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import RemandAndSentencingApiClient from '../api/remandAndSentencingApiClient'
+import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import {
   courtAppearanceToCreateCourtAppearance,
   courtAppearanceToDraftCreateCourtAppearance,
   courtCaseToCreateCourtCase,
   courtCaseToDraftCreateCourtCase,
 } from '../utils/mappingUtils'
-import { HmppsAuthClient } from '../data'
 
 export default class RemandAndSentencingService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
 
   async createCourtCase(
     prisonerId: string,
@@ -40,7 +39,7 @@ export default class RemandAndSentencingService {
     prisonId: string,
   ): Promise<CreateCourtCaseResponse> {
     const createCourtCase = courtCaseToCreateCourtCase(prisonerId, courtCase, prisonId)
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createCourtCase(createCourtCase)
+    return this.remandAndSentencingApiClient.createCourtCase(createCourtCase, username)
   }
 
   async searchCourtCases(
@@ -49,11 +48,7 @@ export default class RemandAndSentencingService {
     sortBy: string,
     page: number,
   ): Promise<PagePagedCourtCase> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).searchCourtCases(
-      prisonerId,
-      sortBy,
-      page,
-    )
+    return this.remandAndSentencingApiClient.searchCourtCases(prisonerId, sortBy, page, username)
   }
 
   async createCourtAppearance(
@@ -63,9 +58,7 @@ export default class RemandAndSentencingService {
     prisonId: string,
   ): Promise<CreateCourtAppearanceResponse> {
     const createCourtAppearance = courtAppearanceToCreateCourtAppearance(courtAppearance, prisonId, courtCaseUuid)
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createCourtAppearance(
-      createCourtAppearance,
-    )
+    return this.remandAndSentencingApiClient.createCourtAppearance(createCourtAppearance, username)
   }
 
   async createDraftCourtCase(
@@ -74,9 +67,7 @@ export default class RemandAndSentencingService {
     courtCase: CourtCase,
   ): Promise<DraftCourtCaseCreatedResponse> {
     const createDraftCourtCase = courtCaseToDraftCreateCourtCase(nomsId, courtCase)
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createDraftCourtCase(
-      createDraftCourtCase,
-    )
+    return this.remandAndSentencingApiClient.createDraftCourtCase(createDraftCourtCase, username)
   }
 
   async createDraftCourtAppearance(
@@ -85,9 +76,10 @@ export default class RemandAndSentencingService {
     courtAppearance: CourtAppearance,
   ): Promise<DraftCourtAppearanceCreatedResponse> {
     const createDraftCourtAppearance = courtAppearanceToDraftCreateCourtAppearance(courtAppearance)
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createDraftCourtAppearance(
+    return this.remandAndSentencingApiClient.createDraftCourtAppearance(
       courtCaseUuid,
       createDraftCourtAppearance,
+      username,
     )
   }
 
@@ -97,9 +89,10 @@ export default class RemandAndSentencingService {
     courtAppearance: CourtAppearance,
   ): Promise<void> {
     const createDraftCourtAppearance = courtAppearanceToDraftCreateCourtAppearance(courtAppearance)
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).updateDraftCourtAppearance(
+    return this.remandAndSentencingApiClient.updateDraftCourtAppearance(
       courtAppearanceUuid,
       createDraftCourtAppearance,
+      username,
     )
   }
 
@@ -116,41 +109,30 @@ export default class RemandAndSentencingService {
       courtCaseUuid,
       appearanceUuid,
     )
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).putCourtAppearance(
-      appearanceUuid,
-      updateCourtAppearance,
-    )
+    return this.remandAndSentencingApiClient.putCourtAppearance(appearanceUuid, updateCourtAppearance, username)
   }
 
   async getLatestCourtAppearanceByCourtCaseUuid(
     username: string,
     courtCaseUuid: string,
   ): Promise<PageCourtCaseAppearance> {
-    return new RemandAndSentencingApiClient(
-      await this.getSystemClientToken(username),
-    ).getLatestAppearanceByCourtCaseUuid(courtCaseUuid)
+    return this.remandAndSentencingApiClient.getLatestAppearanceByCourtCaseUuid(courtCaseUuid, username)
   }
 
   async getCourtAppearanceByAppearanceUuid(appearanceUuid: string, username: string): Promise<PageCourtCaseAppearance> {
-    return new RemandAndSentencingApiClient(
-      await this.getSystemClientToken(username),
-    ).getCourtAppearanceByAppearanceUuid(appearanceUuid)
+    return this.remandAndSentencingApiClient.getCourtAppearanceByAppearanceUuid(appearanceUuid, username)
   }
 
   async getDraftCourtAppearanceByAppearanceUuid(draftUuid: string, username: string): Promise<DraftCourtAppearance> {
-    return new RemandAndSentencingApiClient(
-      await this.getSystemClientToken(username),
-    ).getDraftCourtAppearanceByDraftUuid(draftUuid)
+    return this.remandAndSentencingApiClient.getDraftCourtAppearanceByDraftUuid(draftUuid, username)
   }
 
   async deleteCourtAppearance(appearanceUuid: string, username: string): Promise<void> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).deleteCourtAppearance(
-      appearanceUuid,
-    )
+    return this.remandAndSentencingApiClient.deleteCourtAppearance(appearanceUuid, username)
   }
 
   async getCourtCaseDetails(courtCaseUuid: string, username: string): Promise<PageCourtCaseContent> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getCourtCaseByUuid(courtCaseUuid)
+    return this.remandAndSentencingApiClient.getCourtCaseByUuid(courtCaseUuid, username)
   }
 
   async getSentenceTypes(
@@ -159,26 +141,26 @@ export default class RemandAndSentencingService {
     offenceDate: Dayjs,
     username: string,
   ): Promise<SentenceType[]> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).searchSentenceTypes(
+    return this.remandAndSentencingApiClient.searchSentenceTypes(
       age,
       convictionDate.format('YYYY-MM-DD'),
       offenceDate.format('YYYY-MM-DD'),
+      username,
     )
   }
 
   async getSentenceTypeById(sentenceTypeId: string, username: string): Promise<SentenceType> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getSentenceTypeById(
-      sentenceTypeId,
-    )
+    return this.remandAndSentencingApiClient.getSentenceTypeById(sentenceTypeId, username)
   }
 
   async getSentenceTypeMap(sentenceTypeIds: string[], username: string): Promise<{ [key: string]: string }> {
     let sentenceTypeMap = {}
     const sentenceTypeIdsToSearch = sentenceTypeIds.filter(sentenceTypeId => sentenceTypeId)
     if (sentenceTypeIdsToSearch.length) {
-      const sentenceTypes = await new RemandAndSentencingApiClient(
-        await this.getSystemClientToken(username),
-      ).getSentenceTypesByIds(sentenceTypeIdsToSearch)
+      const sentenceTypes = await this.remandAndSentencingApiClient.getSentenceTypesByIds(
+        sentenceTypeIdsToSearch,
+        username,
+      )
       sentenceTypeMap = Object.fromEntries(
         sentenceTypes.map(sentenceType => [sentenceType.sentenceTypeUuid, sentenceType.description]),
       )
@@ -187,25 +169,19 @@ export default class RemandAndSentencingService {
   }
 
   async getAllAppearanceTypes(username: string): Promise<AppearanceType[]> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAppearanceTypes()
+    return this.remandAndSentencingApiClient.getAppearanceTypes(username)
   }
 
   async getAppearanceTypeByUuid(appearanceTypeUuid: string, username: string): Promise<AppearanceType> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getAppearanceTypeByUuid(
-      appearanceTypeUuid,
-    )
+    return this.remandAndSentencingApiClient.getAppearanceTypeByUuid(appearanceTypeUuid, username)
   }
 
   async getLegacySentenceTypesSummaryAll(username: string): Promise<LegacySentenceTypeGroupingSummary[]> {
-    return new RemandAndSentencingApiClient(
-      await this.getSystemClientToken(username),
-    ).getLegacySentenceTypesSummaryAll()
+    return this.remandAndSentencingApiClient.getLegacySentenceTypesSummaryAll(username)
   }
 
   async getLegacySentenceType(nomisSentenceTypeReference: string, username: string): Promise<LegacySentenceType[]> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getLegacySentenceTypesDetail(
-      nomisSentenceTypeReference,
-    )
+    return this.remandAndSentencingApiClient.getLegacySentenceTypesDetail(nomisSentenceTypeReference, username)
   }
 
   async hasSentenceToChainTo(
@@ -213,9 +189,10 @@ export default class RemandAndSentencingService {
     warrantDate: Dayjs,
     username: string,
   ): Promise<HasSentenceToChainToResponse> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).hasSentenceToChainTo(
+    return this.remandAndSentencingApiClient.hasSentenceToChainTo(
       prisonerId,
       warrantDate.format('YYYY-MM-DD'),
+      username,
     )
   }
 
@@ -224,10 +201,7 @@ export default class RemandAndSentencingService {
     warrantDate: Dayjs,
     username: string,
   ): Promise<SentencesToChainToResponse> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).sentencesToChainTo(
-      prisonerId,
-      warrantDate.format('YYYY-MM-DD'),
-    )
+    return this.remandAndSentencingApiClient.sentencesToChainTo(prisonerId, warrantDate.format('YYYY-MM-DD'), username)
   }
 
   async getConsecutiveToDetails(
@@ -235,14 +209,12 @@ export default class RemandAndSentencingService {
     username: string,
   ): Promise<SentenceConsecutiveToDetailsResponse> {
     return sentenceUuids.filter(sentenceUuid => sentenceUuid).length
-      ? new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).consecutiveToDetails(sentenceUuids)
+      ? this.remandAndSentencingApiClient.consecutiveToDetails(sentenceUuids, username)
       : { sentences: [] }
   }
 
   async getCourtCaseCountNumbers(courtCaseUuid: string, username: string): Promise<CourtCaseCountNumbers> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).courtCaseCountNumbers(
-      courtCaseUuid,
-    )
+    return this.remandAndSentencingApiClient.courtCaseCountNumbers(courtCaseUuid, username)
   }
 
   async getIsSentenceTypeStillValid(
@@ -252,18 +224,17 @@ export default class RemandAndSentencingService {
     offenceDate: Dayjs,
     username: string,
   ): Promise<SentenceTypeIsValid> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).isSentenceTypeStillValid(
+    return this.remandAndSentencingApiClient.isSentenceTypeStillValid(
       sentenceTypeId,
       age,
       convictionDate.format('YYYY-MM-DD'),
       offenceDate.format('YYYY-MM-DD'),
+      username,
     )
   }
 
   async createUploadDocument(uploadedDocument: UploadedDocument, username: string): Promise<void> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).createUploadedDocument([
-      uploadedDocument,
-    ])
+    return this.remandAndSentencingApiClient.createUploadedDocument([uploadedDocument], username)
   }
 
   async getLatestOffenceDateForCourtCase(
@@ -271,8 +242,9 @@ export default class RemandAndSentencingService {
     username: string,
     appearanceUuidToExclude?: string,
   ): Promise<string | null> {
-    return new RemandAndSentencingApiClient(await this.getSystemClientToken(username)).getLatestOffenceDateForCourtCase(
+    return this.remandAndSentencingApiClient.getLatestOffenceDateForCourtCase(
       courtCaseUuid,
+      username,
       appearanceUuidToExclude,
     )
   }
@@ -281,21 +253,13 @@ export default class RemandAndSentencingService {
     sentenceUuid: string,
     username: string,
   ): Promise<HasSentenceAfterOnOtherCourtAppearanceResponse> {
-    return new RemandAndSentencingApiClient(
-      await this.getSystemClientToken(username),
-    ).hasSentenceAfterOnOtherCourtAppearance(sentenceUuid)
+    return this.remandAndSentencingApiClient.hasSentenceAfterOnOtherCourtAppearance(sentenceUuid, username)
   }
 
   async getSentencesAfterOnOtherCourtAppearanceDetails(
     sentenceUuid: string,
     username: string,
   ): Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse> {
-    return new RemandAndSentencingApiClient(
-      await this.getSystemClientToken(username),
-    ).getSentencesAfterOnOtherCourtAppearanceDetails(sentenceUuid)
-  }
-
-  private async getSystemClientToken(username: string): Promise<string> {
-    return this.hmppsAuthClient.getSystemClientToken(username)
+    return this.remandAndSentencingApiClient.getSentencesAfterOnOtherCourtAppearanceDetails(sentenceUuid, username)
   }
 }

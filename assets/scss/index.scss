@@ -4,10 +4,10 @@ $path: "/assets/images/";
 $moj-page-width: 1170px;
 $govuk-page-width: $moj-page-width;
 
-@import 'govuk/index';
-@import 'moj/all';
-@import 'hmpps/all';
-@import 'dist/accessible-autocomplete.min';
+@import "govuk-frontend/dist/govuk/index";
+@import "@ministryofjustice/frontend/moj/all";
+@import "@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/all";
+@import "accessible-autocomplete/dist/accessible-autocomplete.min";
 
 @import './components/header-bar';
 @import './components/offence-summary';
@@ -15,4 +15,4 @@ $govuk-page-width: $moj-page-width;
 @import './components/content-top';
 @import './components/action-list';
 @import './components/alternative-sentence-length';
-@import './local';
+@import './overrides/local';

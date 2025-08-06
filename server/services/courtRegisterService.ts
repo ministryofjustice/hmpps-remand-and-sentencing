@@ -1,34 +1,25 @@
 import { CourtDto } from '../@types/courtRegisterApi/types'
-import CourtRegisterApiClient from '../api/courtRegisterApiClient'
-import { HmppsAuthClient } from '../data'
+import CourtRegisterApiClient from '../data/courtRegisterApiClient'
 
 export default class CourtRegisterService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor(private readonly courtRegisterApiClient: CourtRegisterApiClient) {}
 
   async searchCourts(textSearch: string, username: string): Promise<CourtDto[]> {
-    const pageResult = await new CourtRegisterApiClient(await this.getSystemClientToken(username)).searchCourt(
-      textSearch,
-    )
+    const pageResult = await this.courtRegisterApiClient.searchCourt(textSearch, username)
     return pageResult.content
   }
 
   async findCourtById(courtCode: string, username: string): Promise<CourtDto> {
-    return new CourtRegisterApiClient(await this.getSystemClientToken(username)).findCourtById(courtCode)
+    return this.courtRegisterApiClient.findCourtById(courtCode, username)
   }
 
   async getCourtMap(courtIds: string[], username: string): Promise<{ [key: string]: string }> {
     let courtMap = {}
     const toSearchIds = courtIds.filter(courtId => courtId)
     if (courtIds.length) {
-      const courts = await new CourtRegisterApiClient(await this.getSystemClientToken(username)).findCourtsByIds(
-        Array.from(new Set(toSearchIds)),
-      )
+      const courts = await this.courtRegisterApiClient.findCourtsByIds(Array.from(new Set(toSearchIds)), username)
       courtMap = Object.fromEntries(courts.map(court => [court.courtId, court.courtName]))
     }
     return courtMap
-  }
-
-  private async getSystemClientToken(username: string): Promise<string> {
-    return this.hmppsAuthClient.getSystemClientToken(username)
   }
 }

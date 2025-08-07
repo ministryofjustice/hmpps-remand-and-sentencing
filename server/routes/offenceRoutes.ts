@@ -2208,9 +2208,11 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (isFirstSentence) {
       const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId)
+      const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
       const { hasSentenceToChainTo } = await this.remandAndSentencingService.hasSentenceToChainTo(
         nomsId,
         dayjs(warrantDate),
+        sentence?.legacyData?.bookingId ?? res.locals.prisoner.bookingId,
         req.user.username,
       )
       if (hasSentenceToChainTo) {

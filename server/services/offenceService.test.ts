@@ -1,5 +1,6 @@
 import type { Offence } from 'models'
 import type { OffenceOffenceDateForm } from 'forms'
+import { SessionData } from 'express-session'
 import ManageOffencesService from './manageOffencesService'
 import OffenceOutcomeService from './offenceOutcomeService'
 import OffenceService from './offenceService'
@@ -33,7 +34,7 @@ describe('offenceService', () => {
       offences: {
         [`${nomsId}-${courtCaseReference}`]: offence,
       },
-    } as CookieSessionInterfaces.CookieSessionObject
+    } as unknown as Partial<SessionData>
     const offenceOffenceDateForm = {
       'offenceStartDate-day': '12',
       'offenceStartDate-month': '5',

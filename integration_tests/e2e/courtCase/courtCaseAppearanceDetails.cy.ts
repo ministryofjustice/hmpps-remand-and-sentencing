@@ -90,6 +90,7 @@ context('Court Case Appearance details Page', () => {
             offenceCardHeader: 'PS90037 An offence description',
             'Committed on': '15/12/2023',
             Outcome: 'Remanded in custody',
+            'Merged from': 'C894623 at Southampton Magistrate Court',
           },
         ])
     })
@@ -215,6 +216,7 @@ context('Court Case Appearance details Page', () => {
             offenceCardHeader: 'PS90037 An offence description',
             'Committed on': '15/12/2023',
             Outcome: 'Remanded in custody',
+            'Merged from': 'C894623 at Southampton Magistrate Court',
           },
           {
             offenceCardHeader: 'PS90037 An offence description',
@@ -238,6 +240,15 @@ context('Court Case Appearance details Page', () => {
       offenceDeleteOffencePage.deleteButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.allOffences().getOffenceCards().should('deep.equal', [])
+    })
+
+    it('displays merged from cases correctly', () => {
+      courtCaseAppearanceDetailsPage
+        .mergedCaseInset()
+        .should(
+          'contain.text',
+          'This appearance includes offences from C894623 that were merged with this case on 15/12/2023',
+        )
     })
   })
 

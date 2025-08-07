@@ -1,3 +1,5 @@
+import { AgentConfig } from '@ministryofjustice/hmpps-rest-client'
+
 const production = process.env.NODE_ENV === 'production'
 
 function get<T>(name: string, fallback: T, options = { requireInProduction: false }): T | string {
@@ -11,28 +13,6 @@ function get<T>(name: string, fallback: T, options = { requireInProduction: fals
 }
 
 const requiredInProduction = { requireInProduction: true }
-
-export class AgentConfig {
-  // Sets the working socket to timeout after timeout milliseconds of inactivity on the working socket.
-  timeout: number
-
-  constructor(timeout = 8000) {
-    this.timeout = timeout
-  }
-}
-
-export interface ApiConfig {
-  url: string
-  timeout: {
-    // sets maximum time to wait for the first byte to arrive from the server, but it does not limit how long the
-    // entire download can take.
-    response: number
-    // sets a deadline for the entire request (including all uploads, redirects, server processing time) to complete.
-    // If the response isn't fully downloaded within that time, the request will be aborted.
-    deadline: number
-  }
-  agent: AgentConfig
-}
 
 const auditConfig = () => {
   const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
@@ -54,7 +34,7 @@ export default {
   gitRef: get('GIT_REF', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
   branchName: get('GIT_BRANCH', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
   production,
-  https: production,
+  https: process.env.NO_HTTPS === 'true' ? false : production,
   staticResourceCacheDuration: '1h',
   dateFormat: 'DD/MM/YYYY',
   dateTimeFormat: 'DD/MM/YYYY HH:mm',
@@ -71,20 +51,22 @@ export default {
   },
   apis: {
     hmppsAuth: {
-      url: get('HMPPS_AUTH_URL', 'http://127.0.0.1:9090/auth', requiredInProduction),
-      externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://127.0.0.1:9090/auth')),
+      url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
+      healthPath: '/health/ping',
+      externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://localhost:9090/auth')),
       timeout: {
         response: Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('HMPPS_AUTH_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
-      apiClientId: get('API_CLIENT_ID', 'clientid', requiredInProduction),
-      apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret', requiredInProduction),
-      systemClientId: get('SYSTEM_CLIENT_ID', 'clientid', requiredInProduction),
-      systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
+      authClientId: get('AUTH_CODE_CLIENT_ID', 'clientid', requiredInProduction),
+      authClientSecret: get('AUTH_CODE_CLIENT_SECRET', 'clientsecret', requiredInProduction),
+      systemClientId: get('CLIENT_CREDS_CLIENT_ID', 'clientid', requiredInProduction),
+      systemClientSecret: get('CLIENT_CREDS_CLIENT_SECRET', 'clientsecret', requiredInProduction),
     },
     tokenVerification: {
-      url: get('TOKEN_VERIFICATION_API_URL', 'http://127.0.0.1:8100', requiredInProduction),
+      url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE', 5000)),
@@ -94,30 +76,34 @@ export default {
     },
     prisonApi: {
       url: get('PRISON_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
-        response: get('PRISON_API_TIMEOUT_RESPONSE', 10000),
-        deadline: get('PRISON_API_TIMEOUT_DEADLINE', 10000),
+        response: Number(get('PRISON_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('PRISON_API_TIMEOUT_DEADLINE', 10000)),
       },
-      agent: new AgentConfig(),
+      agent: new AgentConfig(Number(get('PRISON_API_TIMEOUT_RESPONSE', 10000))),
     },
     courtRegisterApi: {
       url: get('COURT_REGISTER_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
-        response: get('COURT_REGISTER_API_TIMEOUT_RESPONSE', 10000),
-        deadline: get('COURT_REGISTER_API_TIMEOUT_DEADLINE', 10000),
+        response: Number(get('COURT_REGISTER_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('COURT_REGISTER_API_TIMEOUT_DEADLINE', 10000)),
       },
-      agent: new AgentConfig(),
+      agent: new AgentConfig(Number(get('COURT_REGISTER_API_TIMEOUT_RESPONSE', 10000))),
     },
     manageOffencesApi: {
       url: get('MANAGE_OFFENCES_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
-        response: get('MANAGE_OFFENCES_API_TIMEOUT_RESPONSE', 10000),
-        deadline: get('MANAGE_OFFENCES_API_TIMEOUT_DEADLINE', 10000),
+        response: Number(get('MANAGE_OFFENCES_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('MANAGE_OFFENCES_API_TIMEOUT_DEADLINE', 10000)),
       },
-      agent: new AgentConfig(),
+      agent: new AgentConfig(Number(get('MANAGE_OFFENCES_API_TIMEOUT_RESPONSE', 10000))),
     },
     frontendComponents: {
       url: get('COMPONENT_API_URL', 'http://127.0.0.1:8082', requiredInProduction),
+      healthPath: '/ping',
       timeout: {
         response: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000)),
         deadline: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000)),
@@ -127,22 +113,25 @@ export default {
     },
     remandAndSentencingApi: {
       url: get('REMAND_AND_SENTENCING_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
-        response: get('REMAND_AND_SENTENCING_API_TIMEOUT_RESPONSE', 10000),
-        deadline: get('REMAND_AND_SENTENCING_API_TIMEOUT_DEADLINE', 10000),
+        response: Number(get('REMAND_AND_SENTENCING_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('REMAND_AND_SENTENCING_API_TIMEOUT_DEADLINE', 10000)),
       },
-      agent: new AgentConfig(10000),
+      agent: new AgentConfig(Number(get('REMAND_AND_SENTENCING_API_TIMEOUT_RESPONSE', 10000))),
     },
     documentManagementApi: {
       url: get('DOCUMENT_MANAGEMENT_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
-        response: get('DOCUMENT_MANAGEMENT_API_TIMEOUT_RESPONSE', 10000),
-        deadline: get('DOCUMENT_MANAGEMENT_API_TIMEOUT_DEADLINE', 10000),
+        response: Number(get('DOCUMENT_MANAGEMENT_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('DOCUMENT_MANAGEMENT_API_TIMEOUT_DEADLINE', 10000)),
       },
-      agent: new AgentConfig(10000),
+      agent: new AgentConfig(Number(get('DOCUMENT_MANAGEMENT_API_TIMEOUT_RESPONSE', 10000))),
     },
     prisonerSearchApi: {
       url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8110', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 10000)),
@@ -151,6 +140,7 @@ export default {
     },
     calculateReleaseDatesApi: {
       url: get('CALCULATE_RELEASE_DATES_API_URL', 'http://localhost:8110', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('CALCULATE_RELEASE_DATES_API_TIMEOUT_DEADLINE', 10000)),
@@ -159,6 +149,7 @@ export default {
     },
     courtCasesReleaseDatesApi: {
       url: get('COURT_CASES_RELEASE_DATES_API_URL', 'http://localhost:8083', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('COURT_CASES_RELEASE_DATES_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('COURT_CASES_RELEASE_DATES_API_TIMEOUT_DEADLINE', 10000)),
@@ -180,6 +171,7 @@ export default {
     saveAsDraftEnabled: get('SAVE_AS_DRAFT_ENABLED', 'false') === 'true',
   },
 
+  ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
 }

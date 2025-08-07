@@ -14,6 +14,7 @@ import {
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import type { Offence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
+import fs from 'fs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
   formatDate,
@@ -28,6 +29,7 @@ import {
 } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
+import logger from '../../logger'
 import { periodLengthsToSentenceLengths } from './mappingUtils'
 import type {
   AppearanceOutcome,
@@ -38,8 +40,6 @@ import type {
   PagedMergedToCase,
   SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-
-const production = process.env.NODE_ENV === 'production'
 
 type Error = {
   href: string
@@ -54,6 +54,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.applicationName = 'Hmpps Remand And Sentencing'
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+  let assetManifest: Record<string, string> = {}
   app.locals.digitalPrisonServicesUrl = config.digitalPrisonServices.ui_url
   app.locals.appInsightsConnectionString = config.appInsightsConnectionString
   app.locals.appInsightsApplicationName = applicationInfo.applicationName
@@ -70,16 +71,13 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     app.locals.environment = 'prod'
   }
 
-  // Cachebusting version string
-  if (production) {
-    // Version only changes with new commits
-    app.locals.version = applicationInfo.gitShortHash
-  } else {
-    // Version changes every request
-    app.use((req, res, next) => {
-      res.locals.version = Date.now().toString()
-      return next()
-    })
+  try {
+    const assetMetadataPath = path.resolve(__dirname, '../../assets/manifest.json')
+    assetManifest = JSON.parse(fs.readFileSync(assetMetadataPath, 'utf8'))
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'test') {
+      logger.error(e, 'Could not read asset manifest file')
+    }
   }
 
   const njkEnv = nunjucks.configure(
@@ -253,4 +251,5 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   )
 
   njkEnv.addGlobal('featureToggles', config.featureToggles)
+  njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
 }

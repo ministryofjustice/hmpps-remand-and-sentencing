@@ -19,7 +19,6 @@ window.addEventListener('load', function () {
     menuClasses: 'govuk-body',
     confirmOnBlur: false,
     name: 'nextHearingCourtName',
-    menuClasses: 'govuk-body',
     onConfirm: function (confirmed) {
       if (confirmed && confirmed.courtId) {
         document.getElementById('court-code').value = confirmed.courtId

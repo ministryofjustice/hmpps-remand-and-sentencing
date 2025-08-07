@@ -37,8 +37,9 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
-  app.use(setUpStaticResources())
   app.use(setUpWebRequestParsing())
+  app.use(setUpStaticResources())
+
   app.use(upload.any())
 
   nunjucksSetup(app, services.applicationInfo)
@@ -46,7 +47,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware(['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']))
   app.use(setUpCsrf())
-  app.use(setUpCurrentUser(services))
+  app.use(setUpCurrentUser(services.userService))
   app.use('/person/:nomsId', populateCurrentPrisoner(services.prisonerSearchService))
   app.use('/person/:nomsId/:addOrEditCourtCase/:courtCaseReference', setupCurrentCourtCase())
   app.use(
@@ -62,7 +63,7 @@ export default function createApp(services: Services): express.Application {
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences',
     setupCurrentOffence(services.offenceService),
   )
-  app.get('*', getFrontendComponents(services))
+  app.get(/(.*)/, getFrontendComponents(services))
 
   // --- Main application routes ---
   app.use(routes(services))

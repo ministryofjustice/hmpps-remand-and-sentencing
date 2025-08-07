@@ -8,6 +8,15 @@
 {% set hideOffences = true %}
 {% block pageContent %}
         <h1 class="govuk-heading-l">Update offence outcomes</h1>
+                    {% if mergedFromText %}
+                        {{ govukInsetText({
+                            text: mergedFromText,
+                            classes: "govuk-!-margin-bottom-3",
+                            attributes: {
+                                "data-qa": "mergedFromText"
+                            }
+                        }) }}
+                    {% endif %}
     {% if courtAppearance.hasOverallSentenceLength === 'true' %}
         {{ govukSummaryList({
                 rows: [
@@ -66,6 +75,8 @@
             sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
             consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
             fineAmount: offence.sentence.fineAmount,
+            mergedFromCase: offence.mergedFromCase,
+            courtDetails: courtMap,
             actions: {
                 items: [
                     {
@@ -117,6 +128,8 @@
                         sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
                         consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
                         fineAmount: offence.sentence.fineAmount,
+                        mergedFromCase: offence.mergedFromCase,
+                        courtDetails: courtMap,
                         actions: {
                             items: [
                                 {
@@ -159,6 +172,8 @@
                         sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
                         consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
                         fineAmount: offence.sentence.fineAmount,
+                        mergedFromCase: offence.mergedFromCase,
+                        courtDetails: courtMap,
                         actions: {
                             items: [
                                 {

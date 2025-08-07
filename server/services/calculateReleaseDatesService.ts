@@ -1,7 +1,6 @@
 import type { CourtAppearance, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
-import CalculateReleaseDatesApiClient from '../api/calculateReleaseDatesApiClient'
-import { HmppsAuthClient } from '../data'
+import CalculateReleaseDatesApiClient from '../data/calculateReleaseDatesApiClient'
 import {
   OverallSentenceLength,
   OverallSentenceLengthComparison,
@@ -10,7 +9,7 @@ import {
 } from '../@types/calculateReleaseDatesApi/calculateReleaseDatesClientTypes'
 
 export default class CalculateReleaseDatesService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor(private readonly calculateReleaseDatesApiClient: CalculateReleaseDatesApiClient) {}
 
   private readonly supportedPeriodLengthTypes = new Set(['SENTENCE_LENGTH', 'CUSTODIAL_TERM', 'LICENCE_PERIOD'])
 
@@ -57,9 +56,7 @@ export default class CalculateReleaseDatesService {
         warrantDate: dayjs(appearance.warrantDate).format('YYYY-MM-DD'),
       } as OverallSentenceLengthRequest
 
-      return new CalculateReleaseDatesApiClient(await this.getSystemClientToken(username)).compareOverallSentenceLength(
-        request,
-      )
+      return this.calculateReleaseDatesApiClient.compareOverallSentenceLength(request, username)
     }
     return {
       custodialLength: this.emptySentenceLength,
@@ -116,9 +113,5 @@ export default class CalculateReleaseDatesService {
     return {
       custodialDuration: this.mapPeriodLengthToOverallSentenceLength(appearance.overallSentenceLength),
     } as OverallSentenceLengthSentence
-  }
-
-  private async getSystemClientToken(username: string): Promise<string> {
-    return this.hmppsAuthClient.getSystemClientToken(username)
   }
 }

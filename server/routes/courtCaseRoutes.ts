@@ -27,13 +27,18 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtCasesDetailsModel from './data/CourtCasesDetailsModel'
 import CourtCaseDetailsModel from './data/CourtCaseDetailsModel'
 import ManageOffencesService from '../services/manageOffencesService'
-import { getAsStringOrDefault, outcomeValueOrLegacy, sortByDateDesc, getUiDocumentType } from '../utils/utils'
+import {
+  getAsStringOrDefault,
+  outcomeValueOrLegacy,
+  sortByDateDesc,
+  getUiDocumentType,
+  formatDate,
+} from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
 import { chargeToOffence, draftCourtAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
-import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
@@ -41,6 +46,8 @@ import mojPaginationFromPageCourtCase from './data/pagination'
 import config from '../config'
 import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
+import CourtRegisterService from '../services/courtRegisterService'
+import { MergedFromCase } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -166,6 +173,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         courtCaseDetails.appearances.flatMap(appearance => [
           appearance.courtCode,
           appearance.nextCourtAppearance?.courtCode,
+          ...appearance.charges.map(charge => charge.mergedFromCase?.courtCode),
         ]),
         consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode),
       )
@@ -216,6 +224,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
     courtCaseDetails.appearances = courtCaseDetails.appearances.map(appearance => ({
       ...appearance,
       canDelete: appearance.charges.every(charge => !charge.sentence),
+      mergedFromCases: this.offenceGetMergedFromText(
+        appearance.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
+        courtMap,
+      ),
     }))
 
     return res.render('pages/courtCaseDetails', {
@@ -229,6 +241,24 @@ export default class CourtCaseRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}`,
     })
+  }
+
+  private offenceGetMergedFromText(mergedFromCases: MergedFromCase[], courtMap: { [key: string]: string }): string[] {
+    if (!mergedFromCases || mergedFromCases.length === 0) return []
+    const parts = new Set<string>()
+    for (const mergedFromCase of mergedFromCases) {
+      const mergedFromDate = formatDate(mergedFromCase.mergedFromDate)
+      if (mergedFromCase.caseReference) {
+        parts.add(`Offences from ${mergedFromCase.caseReference} were merged with this appearance on ${mergedFromDate}`)
+      } else {
+        const courtName = courtMap[mergedFromCase.courtCode!]
+        const latestAppearance = formatDate(mergedFromCase.warrantDate)
+        parts.add(
+          `Offences from the case at ${courtName} on ${latestAppearance} were merged with this appearance on ${mergedFromDate}`,
+        )
+      }
+    }
+    return Array.from(parts)
   }
 
   public getDeleteAppearanceConfirmation: RequestHandler = async (req, res): Promise<void> => {

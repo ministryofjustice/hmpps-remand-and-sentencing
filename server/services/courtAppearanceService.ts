@@ -20,6 +20,7 @@ import type {
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
+import { SessionData } from 'express-session'
 import validate from '../validation/validation'
 import {
   alternativeSentenceLengthFormToSentenceLength,
@@ -32,17 +33,15 @@ import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSenten
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
-import { HmppsAuthClient } from '../data'
 
 export default class CourtAppearanceService {
   constructor(
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly documentManagementService: DocumentManagementService,
-    private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
   setCaseReferenceNumber(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReferenceForm: CourtCaseReferenceForm,
   ) {
@@ -80,7 +79,7 @@ export default class CourtAppearanceService {
   }
 
   async setCaseReferenceFromSelectCaseReference(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     username: string,
@@ -113,12 +112,12 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getCaseReferenceNumber(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getCaseReferenceNumber(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).caseReferenceNumber
   }
 
   async setWarrantDate(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseWarrantDateForm: CourtCaseWarrantDateForm,
     courtCaseReference: string,
@@ -210,7 +209,7 @@ export default class CourtAppearanceService {
     courtCaseReference: string,
     appearanceReference: string,
     username: string,
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     addOrEditCourtCase: string,
     addOrEditCourtAppearance: string,
@@ -269,16 +268,12 @@ export default class CourtAppearanceService {
     return null
   }
 
-  getWarrantDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {
+  getWarrantDate(session: Partial<SessionData>, nomsId: string): Date {
     const { warrantDate } = this.getCourtAppearance(session, nomsId)
     return warrantDate ? new Date(warrantDate) : undefined
   }
 
-  setCourtName(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtNameForm: CourtCaseCourtNameForm,
-  ) {
+  setCourtName(session: Partial<SessionData>, nomsId: string, courtNameForm: CourtCaseCourtNameForm) {
     const errors = validate(
       courtNameForm,
       { courtCode: 'required' },
@@ -294,7 +289,7 @@ export default class CourtAppearanceService {
   }
 
   setCourtNameFromSelect(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     selectCourtNameForm: CourtCaseSelectCourtNameForm,
   ) {
@@ -312,34 +307,34 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getCourtCode(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getCourtCode(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).courtCode
   }
 
-  setWarrantType(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, warrantType: string) {
+  setWarrantType(session: Partial<SessionData>, nomsId: string, warrantType: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     courtAppearance.warrantType = warrantType
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getWarrantType(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getWarrantType(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).warrantType
   }
 
-  setWarrantId(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, warrantId: string) {
+  setWarrantId(session: Partial<SessionData>, nomsId: string, warrantId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     courtAppearance.warrantId = warrantId
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getNextHearingCourtSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getNextHearingCourtSelect(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).nextHearingCourtSelect
   }
 
   setNextHearingCourtSelect(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     nextHearingCourtSelectForm: CourtCaseNextHearingCourtSelectForm,
   ) {
@@ -360,12 +355,12 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingCourtCode(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getNextHearingCourtCode(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).nextHearingCourtCode
   }
 
   setNextHearingCourtName(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     nextHearingCourtNameForm: CourtCaseNextHearingCourtNameForm,
   ) {
@@ -385,7 +380,7 @@ export default class CourtAppearanceService {
   }
 
   setAppearanceOutcomeUuid(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     overallCaseOutcomeForm: CourtCaseOverallCaseOutcomeForm,
   ) {
@@ -410,7 +405,7 @@ export default class CourtAppearanceService {
   }
 
   setSentencingAppearanceOutcomeUuid(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     overallCaseOutcomeForm: CourtCaseOverallCaseOutcomeForm,
   ) {
@@ -433,16 +428,16 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getAppearanceOutcomeUuid(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getAppearanceOutcomeUuid(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).appearanceOutcomeUuid
   }
 
-  getRelatedOffenceOutcomeUuid(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getRelatedOffenceOutcomeUuid(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).relatedOffenceOutcomeUuid
   }
 
   setCaseOutcomeAppliedAll(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     caseOutcomeAppliedAllForm: CourtCaseCaseOutcomeAppliedAllForm,
   ) {
@@ -475,22 +470,19 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getCaseOutcomeAppliedAll(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getCaseOutcomeAppliedAll(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).caseOutcomeAppliedAll
   }
 
-  getOverallCustodialSentenceLength(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-  ): SentenceLength {
+  getOverallCustodialSentenceLength(session: Partial<SessionData>, nomsId: string): SentenceLength {
     return this.getCourtAppearance(session, nomsId).overallSentenceLength
   }
 
-  getHasOverallSentenceLength(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getHasOverallSentenceLength(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).hasOverallSentenceLength
   }
 
-  setHasOverallSentenceLengthTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+  setHasOverallSentenceLengthTrue(session: Partial<SessionData>, nomsId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     courtAppearance.hasOverallSentenceLength = 'true'
     // eslint-disable-next-line no-param-reassign
@@ -498,7 +490,7 @@ export default class CourtAppearanceService {
   }
 
   setOverallSentenceLength(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseOverallSentenceLengthForm: SentenceLengthForm,
   ) {
@@ -546,7 +538,7 @@ export default class CourtAppearanceService {
   }
 
   setOverallAlternativeSentenceLength(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     courtCaseAlternativeSentenceLengthForm: CourtCaseAlternativeSentenceLengthForm,
   ) {
@@ -587,21 +579,21 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setAppearanceInformationAcceptedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+  setAppearanceInformationAcceptedTrue(session: Partial<SessionData>, nomsId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     courtAppearance.appearanceInformationAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  setWarrantInformationAccepted(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+  setWarrantInformationAccepted(session: Partial<SessionData>, nomsId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     courtAppearance.warrantInformationAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  setOffenceSentenceAccepted(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, completed: boolean) {
+  setOffenceSentenceAccepted(session: Partial<SessionData>, nomsId: string, completed: boolean) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
 
     courtAppearance.offenceSentenceAccepted = completed
@@ -609,24 +601,24 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  setNextCourtAppearanceAcceptedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+  setNextCourtAppearanceAcceptedTrue(session: Partial<SessionData>, nomsId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     courtAppearance.nextCourtAppearanceAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  isNextCourtAppearanceAccepted(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+  isNextCourtAppearanceAccepted(session: Partial<SessionData>, nomsId: string): boolean {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     return courtAppearance.nextCourtAppearanceAccepted
   }
 
-  getNextHearingSelect(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+  getNextHearingSelect(session: Partial<SessionData>, nomsId: string): boolean {
     return this.getCourtAppearance(session, nomsId).nextHearingSelect
   }
 
   setNextHearingSelect(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     nextHearingSelectForm: CourtCaseNextHearingSelectForm,
   ) {
@@ -658,15 +650,11 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingTypeUuid(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getNextHearingTypeUuid(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).nextHearingTypeUuid
   }
 
-  setNextHearingType(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    nextHearingTypeForm: CourtCaseNextHearingTypeForm,
-  ) {
+  setNextHearingType(session: Partial<SessionData>, nomsId: string, nextHearingTypeForm: CourtCaseNextHearingTypeForm) {
     const errors = validate(
       nextHearingTypeForm,
       {
@@ -685,19 +673,15 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {
+  getNextHearingDate(session: Partial<SessionData>, nomsId: string): Date {
     return this.getCourtAppearance(session, nomsId).nextHearingDate
   }
 
-  hasNextHearingTimeSet(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+  hasNextHearingTimeSet(session: Partial<SessionData>, nomsId: string): boolean {
     return this.getCourtAppearance(session, nomsId).nextHearingTimeSet
   }
 
-  setNextHearingDate(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    nextHearingDateForm: CourtCaseNextHearingDateForm,
-  ) {
+  setNextHearingDate(session: Partial<SessionData>, nomsId: string, nextHearingDateForm: CourtCaseNextHearingDateForm) {
     let isValidDateRule = ''
     if (
       nextHearingDateForm['nextHearingDate-day'] !== undefined &&
@@ -750,7 +734,7 @@ export default class CourtAppearanceService {
   }
 
   async setOverallConvictionDate(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     overallConvictionDateForm: CourtCaseOverallConvictionDateForm,
     courtCaseReference: string,
@@ -850,44 +834,32 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getOverallConvictionDate(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): Date {
+  getOverallConvictionDate(session: Partial<SessionData>, nomsId: string): Date {
     const { overallConvictionDate } = this.getCourtAppearance(session, nomsId)
     return overallConvictionDate ? new Date(overallConvictionDate) : undefined
   }
 
-  getOverallConvictionDateAppliedAll(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): string {
+  getOverallConvictionDateAppliedAll(session: Partial<SessionData>, nomsId: string): string {
     return this.getCourtAppearance(session, nomsId).overallConvictionDateAppliedAll
   }
 
-  sessionCourtAppearanceExists(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    appearanceReference: string,
-  ): boolean {
+  sessionCourtAppearanceExists(session: Partial<SessionData>, nomsId: string, appearanceReference: string): boolean {
     return (
       session.courtAppearances[nomsId] !== undefined &&
       session.courtAppearances[nomsId].appearanceReference === appearanceReference
     )
   }
 
-  setSessionCourtAppearance(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    courtAppearance: CourtAppearance,
-  ) {
+  setSessionCourtAppearance(session: Partial<SessionData>, nomsId: string, courtAppearance: CourtAppearance) {
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
+  getSessionCourtAppearance(session: Partial<SessionData>, nomsId: string): CourtAppearance {
     return this.getCourtAppearance(session, nomsId)
   }
 
-  isForwithAlreadySelected(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    excludeOffenceReference: number,
-  ): boolean {
+  isForwithAlreadySelected(session: Partial<SessionData>, nomsId: string, excludeOffenceReference: number): boolean {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     const offences = Object.assign([], courtAppearance.offences)
 
@@ -895,17 +867,12 @@ export default class CourtAppearanceService {
     return offences.some(offence => offence.sentence?.sentenceServeType === 'FORTHWITH')
   }
 
-  hasNoSentences(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): boolean {
+  hasNoSentences(session: Partial<SessionData>, nomsId: string): boolean {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     return !courtAppearance.offences.some(offence => offence.sentence)
   }
 
-  addOffence(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    offenceReference: number,
-    offence: Offence,
-  ) {
+  addOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number, offence: Offence) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
       const existingOffence = { ...courtAppearance.offences[offenceReference] }
@@ -921,7 +888,7 @@ export default class CourtAppearanceService {
   }
 
   setCountNumber(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     offenceReference: number,
     countNumberForm: OffenceCountNumberForm,
@@ -944,7 +911,7 @@ export default class CourtAppearanceService {
   }
 
   setOffenceOutcome(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     offenceReference: number,
     offenceOutcome: OffenceOutcome,
@@ -963,32 +930,24 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number) {
+  deleteOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     courtAppearance.offences.splice(offenceReference, 1)
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getOffence(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string, offenceReference: number): Offence {
+  getOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     return courtAppearance.offences[offenceReference]
   }
 
-  getOffenceBySentenceReference(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    sentenceReference: string,
-  ): Offence {
+  getOffenceBySentenceReference(session: Partial<SessionData>, nomsId: string, sentenceReference: string): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     return courtAppearance.offences.find(offence => offence.sentence?.sentenceReference === sentenceReference)
   }
 
-  getCountNumbers(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    excludeOffenceReference: number,
-  ): string[] {
+  getCountNumbers(session: Partial<SessionData>, nomsId: string, excludeOffenceReference: number): string[] {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     const { offences } = courtAppearance
     return offences
@@ -999,11 +958,7 @@ export default class CourtAppearanceService {
       .map(offence => offence.sentence.countNumber)
   }
 
-  addUploadedDocument(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    document: UploadedDocument,
-  ) {
+  addUploadedDocument(session: Partial<SessionData>, nomsId: string, document: UploadedDocument) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     // Ensure courtAppearance.uploadedDocuments is an array, then push
     if (!courtAppearance.uploadedDocuments) {
@@ -1014,21 +969,17 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getUploadedDocuments(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): UploadedDocument[] {
+  getUploadedDocuments(session: Partial<SessionData>, nomsId: string): UploadedDocument[] {
     return this.getCourtAppearance(session, nomsId).uploadedDocuments ?? []
   }
 
-  getUploadedDocument(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    documentId: string,
-  ): UploadedDocument | undefined {
+  getUploadedDocument(session: Partial<SessionData>, nomsId: string, documentId: string): UploadedDocument | undefined {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     return courtAppearance.uploadedDocuments?.find(doc => doc.documentUUID === documentId)
   }
 
   async removeUploadedDocument(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     documentId: string,
     deleteDocumentForm: DeleteDocumentForm,
@@ -1068,7 +1019,7 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setDocumentUploadedTrue(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+  setDocumentUploadedTrue(session: Partial<SessionData>, nomsId: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     courtAppearance.documentUploadAccepted = true
     // eslint-disable-next-line no-param-reassign
@@ -1076,7 +1027,7 @@ export default class CourtAppearanceService {
   }
 
   async checkOffenceDatesHaveInvalidatedOffence(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     offenceReference: number,
     offence: Offence,
@@ -1125,7 +1076,7 @@ export default class CourtAppearanceService {
   }
 
   async checkConvictionDateHasInvalidatedOffence(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
     offenceReference: number,
     offence: Offence,
@@ -1164,11 +1115,7 @@ export default class CourtAppearanceService {
     return hasInvalidated
   }
 
-  sentenceIsInChain(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    offenceReference: number,
-  ): boolean {
+  sentenceIsInChain(session: Partial<SessionData>, nomsId: string, offenceReference: number): boolean {
     let sentenceInChain: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
@@ -1183,11 +1130,7 @@ export default class CourtAppearanceService {
     return sentenceInChain
   }
 
-  setSentenceToConcurrent(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    offenceReference: number,
-  ) {
+  setSentenceToConcurrent(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
@@ -1200,11 +1143,7 @@ export default class CourtAppearanceService {
     }
   }
 
-  resetConsecutiveFields(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    offenceReference: number,
-  ) {
+  resetConsecutiveFields(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
@@ -1218,11 +1157,7 @@ export default class CourtAppearanceService {
     }
   }
 
-  setSentenceToForthwith(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    offenceReference: number,
-  ) {
+  setSentenceToForthwith(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
@@ -1235,11 +1170,7 @@ export default class CourtAppearanceService {
     }
   }
 
-  setSentenceToConsecutive(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    offenceReference: number,
-  ) {
+  setSentenceToConsecutive(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
@@ -1252,11 +1183,7 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteSentenceInChain(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-    offenceReference: number,
-  ) {
+  deleteSentenceInChain(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     const { offences } = courtAppearance
     if (courtAppearance.offences.length > offenceReference) {
@@ -1307,7 +1234,7 @@ export default class CourtAppearanceService {
   }
 
   checkOffencesHaveMandatoryFields(
-    session: CookieSessionInterfaces.CookieSessionObject,
+    session: Partial<SessionData>,
     nomsId: string,
   ): {
     text?: string
@@ -1330,23 +1257,16 @@ export default class CourtAppearanceService {
     })
   }
 
-  clearSessionCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string) {
+  clearSessionCourtAppearance(session: Partial<SessionData>, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]
   }
 
-  private getCourtAppearance(session: CookieSessionInterfaces.CookieSessionObject, nomsId: string): CourtAppearance {
+  private getCourtAppearance(session: Partial<SessionData>, nomsId: string): CourtAppearance {
     return session.courtAppearances[nomsId] ?? { offences: [] }
   }
 
-  private async getSystemClientToken(username: string): Promise<string> {
-    return this.hmppsAuthClient.getSystemClientToken(username)
-  }
-
-  private getLatestOffenceDateInSession(
-    session: CookieSessionInterfaces.CookieSessionObject,
-    nomsId: string,
-  ): Date | null {
+  private getLatestOffenceDateInSession(session: Partial<SessionData>, nomsId: string): Date | null {
     const courtAppearance = this.getCourtAppearance(session, nomsId)
     if (!courtAppearance?.offences?.length) return null
 

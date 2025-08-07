@@ -1048,6 +1048,12 @@ export default {
                 displayOrder: 10,
                 dispositionCode: 'INTERIM',
               },
+              mergedFromCase: {
+                caseReference: 'C894623',
+                courtCode: 'STHHPM',
+                warrantDate: '2023-12-15',
+                mergedFromDate: '2023-12-15',
+              },
             },
           ],
         },
@@ -1829,7 +1835,7 @@ export default {
               {
                 chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
                 offenceCode: 'PS90037',
-                offenceStartDate: '2023-12-15',
+                offenceStartDate: '2025-12-15',
                 outcome: {
                   outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                   outcomeName: 'Remanded in custody',
@@ -1880,7 +1886,7 @@ export default {
                 {
                   chargeUuid: '9056c1f3-b090-4d1e-bc6e-4f66ebed2ed5',
                   offenceCode: 'PS90037',
-                  offenceStartDate: '2023-12-15',
+                  offenceStartDate: '2025-12-15',
                   legacyData: {
                     offenderChargeId: '1',
                     bookingId: '1',
@@ -1888,6 +1894,12 @@ export default {
                     nomisOutcomeCode: '678324',
                     outcomeDescription: 'A Nomis Outcome',
                     outcomeDispositionCode: 'INTERIM',
+                  },
+                  mergedFromCase: {
+                    caseReference: 'NOMIS123',
+                    courtCode: 'ACCRYC',
+                    warrantDate: '2025-06-05',
+                    mergedFromDate: '2019-06-05',
                   },
                 },
               ],
@@ -3048,4 +3060,17 @@ export default {
       },
     })
   },
+
+  stubRemandAndSentencingPing: (httpStatus = 200): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/health/ping',
+      },
+      response: {
+        status: httpStatus,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
+      },
+    }),
 }

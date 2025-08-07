@@ -3,11 +3,15 @@ import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-relea
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
-import { SentenceConsecutiveToDetailsResponse } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import {
+  MergedFromCase,
+  SentenceConsecutiveToDetailsResponse,
+} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import {
   offenceToConsecutiveToDetails,
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
 } from '../utils/mappingUtils'
+import { formatDate } from '../utils/utils'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -172,5 +176,23 @@ export default abstract class BaseRoutes {
       submitQueries.push(`invalidatedFrom=${invalidatedFrom}`)
     }
     return submitQueries.length ? `?${submitQueries.join('&')}` : ''
+  }
+
+  protected getMergedFromText(mergedFromCases: MergedFromCase[], courtMap: { [key: string]: string }): string {
+    const parts = new Set<string>()
+    for (const mergedFromCase of mergedFromCases) {
+      const formattedDate = formatDate(mergedFromCase.mergedFromDate)
+      if (mergedFromCase.caseReference != null) {
+        parts.add(`offences from ${mergedFromCase.caseReference} that were merged with this case on ${formattedDate}`)
+      } else {
+        const courtName = courtMap[mergedFromCase.courtCode!]
+        const formattedWarrantDate = formatDate(mergedFromCase.warrantDate)
+        parts.add(
+          `offences from ${courtName} on ${formattedWarrantDate} that were merged with this case on ${formattedDate}`,
+        )
+      }
+    }
+    if (parts.size === 0) return ''
+    return `This appearance includes ${Array.from(parts).join(' and ')}`
   }
 }

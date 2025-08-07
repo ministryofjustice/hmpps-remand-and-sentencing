@@ -15,6 +15,8 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
 
   allOffences = (): PageElement => cy.get('[data-qa=allOffences]')
 
+  mergedCaseInset = (): PageElement => cy.get(`[data-qa=mergedFromText]`)
+
   editFieldLink = (
     personId: string,
     courtCaseReference: string,

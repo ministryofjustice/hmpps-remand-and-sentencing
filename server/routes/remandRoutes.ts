@@ -16,9 +16,9 @@ export default class RemandRoutes extends BaseRoutes {
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
+    private readonly courtRegisterService: CourtRegisterService,
     private readonly manageOffencesService: ManageOffencesService,
     private readonly appearanceOutcomeService: AppearanceOutcomeService,
-    private readonly courtRegisterService: CourtRegisterService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService)
@@ -66,6 +66,7 @@ export default class RemandRoutes extends BaseRoutes {
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
     const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode]
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
+      .concat(appearance.offences.map(offence => offence.mergedFromCase?.courtCode))
       .filter(courtId => courtId !== undefined && courtId !== null)
     const sentenceTypeIds = appearance.offences
       .filter(offence => offence.sentence?.sentenceTypeId)
@@ -104,6 +105,12 @@ export default class RemandRoutes extends BaseRoutes {
       ...document,
       documentType: getUiDocumentType(document.documentType, appearance.warrantType),
     }))
+
+    const mergedFromText = this.getMergedFromText(
+      appearance.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
+      courtMap,
+    )
+
     return res.render('pages/courtAppearance/appearance-details', {
       nomsId,
       courtCaseReference,
@@ -119,6 +126,7 @@ export default class RemandRoutes extends BaseRoutes {
       appearanceTypeDescription,
       consecutiveToSentenceDetailsMap,
       documentsWithUiType,
+      mergedFromText,
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
     })

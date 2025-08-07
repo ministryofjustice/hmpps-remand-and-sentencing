@@ -60,8 +60,9 @@ context('Court Case details Page', () => {
               'Offences (1)': [
                 {
                   offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '15/12/2023',
+                  'Committed on': '15/12/2025',
                   Outcome: 'A Nomis Outcome',
+                  'Merged from': 'NOMIS123 at Accrington Youth Court',
                 },
               ],
             },
@@ -93,6 +94,11 @@ context('Court Case details Page', () => {
         CourtCaseDetailsPage,
         'Appearances for C894623 at Accrington Youth Court',
       )
+    })
+    it('should show mergedFrom details', () => {
+      courtCaseDetailsPage
+        .mergedCaseInset()
+        .should('contain.text', 'Offences from NOMIS123 were merged with this appearance on 05/06/2019')
     })
   })
 

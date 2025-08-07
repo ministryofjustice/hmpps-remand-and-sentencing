@@ -114,7 +114,7 @@
     </div>
     {% if appearance.mergedFromCase and appearance.mergedFromCase | length > 0 %}
       {{ govukInsetText({
-        text: appearance.mergedFromCase | join('<br>'),
+        html: appearance.mergedFromCase | join('<br>'),
         classes: "govuk-!-margin-bottom-3",
         attributes: {
           "data-qa": "mergedFromText"

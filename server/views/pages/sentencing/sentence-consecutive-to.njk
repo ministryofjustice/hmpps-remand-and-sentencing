@@ -10,87 +10,95 @@
 {% set errorMessage = errors | findError('consecutiveToSentenceUuid') %}
 {% set radioIdIndex = 0 %}
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ offenceReference }}/submit-sentence-consecutive-to{{ submitQuery }}">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/offenceCaption.njk" %}
-                <div class="govuk-form-group {%- if errorMessage %} govuk-form-group--error{% endif %}">
-                    {% call govukFieldset({
-                        describedBy: "consecutiveToSentenceUuid-hint" + (" consecutiveToSentenceUuid-error" if errorMessage else ""),
-                        legend: {
-                            text: "Which sentence is this sentence consecutive to?",
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--l"
-                        }
-                    }) %}
-                    {{
-                        govukHint({
-                            id: 'consecutiveToSentenceUuid-hint',
-                            text: offenceDetails.code + " " + offenceDetails.description + (" committed on " + offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else "") if offence.offenceStartDate)
-                        })
-                    }}
-                    {% if errorMessage %}
-                        {{ govukErrorMessage({
-                            id: "consecutiveToSentenceUuid-error",
-                            text: errorMessage.text
-                        }) }}
-                    {% endif %}
-                    <div class="govuk-radios" data-module="govuk-radios" data-govuk-radios-init="">
-
-                        {% if sentencesOnSameCase.length %}
-                            <h2 class="govuk-heading-m">Sentences on this case</h2>
-                            {% for sentence in sentencesOnSameCase | sortByCountNumber %}
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceReference}}|SAME">
-                                    <label class="govuk-label govuk-radios__label" for="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}">
-                                        {% if sentence.countNumber%}
-                                            Count {{sentence.countNumber}}<br>
-                                        {% endif %}
-                                        {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}
-                                        {% if sentence.offenceStartDate %}
-                                            <br><span class="govuk-hint">
-                                                Committed on {{ sentence.offenceStartDate | formatDate }}{{' to ' + sentence.offenceEndDate | formatDate if sentence.offenceEndDate }}
-                                            </span>
-                                        {% endif %}
-                                    </label>
-                                </div>
-                                {% set radioIdIndex=radioIdIndex + 1 %}
-                            {% endfor %}
-                        {% endif %}
-
-                        {% if sentencesToChainTo.appearances.length %}
-                            <h2 class="govuk-heading-m" data-qa="sentencesOnOtherCasesHeader">Sentences on other cases</h2>
-
-                            {% for appearance in sentencesToChainTo.appearances | sortByAppearanceDate %}
-                                <div class="govuk-!-margin-bottom-6">
-                                    <h3 class="govuk-heading-s"> {{appearance.courtCaseReference + ' at ' if appearance.courtCaseReference}}{{courtMap[appearance.courtCode]}} on {{appearance.appearanceDate | formatDate}}</h3>
-                                    {% for sentence in appearance.sentences | sortByCountNumber %}
-                                        <div class="govuk-radios__item">
-                                            <input class="govuk-radios__input" id="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}" name="consecutiveToSentenceUuid" type="radio" value="{{sentence.sentenceUuid}}|OTHER">
-                                            <label class="govuk-label govuk-radios__label" for="consecutiveToSentenceUuid{{'-' + radioIdIndex if radioIdIndex > 0 else ''}}">
-                                                {% if sentence.countNumber and sentence.countNumber !== '-1' %}
-                                                    Count {{sentence.countNumber}}<br>
-                                                {% endif %}
-                                                {{ sentence.offenceCode }} - {{offenceMap[sentence.offenceCode]}}
-                                                {% if sentence.offenceStartDate %}
-                                                    <br><span class="govuk-hint">
-                                                        Committed on {{ sentence.offenceStartDate | formatDate }}{{' to ' + sentence.offenceEndDate | formatDate if sentence.offenceEndDate }}
-                                                    </span>
-                                                {% endif %}
-                                            </label>
-                                        </div>
-                                        {% set radioIdIndex=radioIdIndex + 1 %}
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    {% endcall %}
-                </div>
-
-
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
+    <form method="post"
+          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ offenceReference }}/submit-sentence-consecutive-to{{ submitQuery }}">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/offenceCaption.njk" %}
+        <div class="govuk-form-group {%- if errorMessage %} govuk-form-group--error{% endif %}">
+            {% call govukFieldset({
+                describedBy: "consecutiveToSentenceUuid-hint" + (" consecutiveToSentenceUuid-error" if errorMessage else ""),
+                legend: {
+                    text: "Which sentence is this sentence consecutive to?",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            }) %}
+                {{ govukHint({
+                    id: 'consecutiveToSentenceUuid-hint',
+                    text: offenceDetails.code + " " + offenceDetails.description + (" committed on " + offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else "") if offence.offenceStartDate)
                 }) }}
-            </form>
+                {% if errorMessage %}
+                    {{ govukErrorMessage({
+                        id: "consecutiveToSentenceUuid-error",
+                        text: errorMessage.text
+                    }) }}
+                {% endif %}
+                <div class="govuk-radios" data-module="govuk-radios" data-govuk-radios-init="">
+
+                    {% if sentencesOnSameCase.length %}
+                        <h2 class="govuk-heading-m">Sentences on this case</h2>
+                        {% for sentence in sentencesOnSameCase | sortByCountNumber %}
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}"
+                                       name="consecutiveToSentenceUuid" type="radio"
+                                       value="{{ sentence.sentenceReference }}|SAME">
+                                <label class="govuk-label govuk-radios__label"
+                                       for="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}">
+                                    {% if sentence.countNumber and sentence.countNumber !== '-1' %}
+                                        Count {{ sentence.countNumber }}<br>
+                                    {% endif %}
+                                    {{ sentence.offenceCode }} - {{ offenceMap[sentence.offenceCode] }}
+                                    {% if sentence.offenceStartDate %}
+                                        <br><span class="govuk-hint">
+                                                Committed on {{ sentence.offenceStartDate | formatDate }}{{ ' to ' + sentence.offenceEndDate | formatDate if sentence.offenceEndDate }}
+                                            </span>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            {% set radioIdIndex=radioIdIndex + 1 %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if sentencesToChainTo.appearances.length %}
+                        <h2 class="govuk-heading-m" data-qa="sentencesOnOtherCasesHeader">Sentences on other cases</h2>
+
+                        {% for appearance in sentencesToChainTo.appearances | sortByAppearanceDate %}
+                            <div class="govuk-!-margin-bottom-6">
+                                <h3 class="govuk-heading-s"> {{ appearance.courtCaseReference + ' at ' if appearance.courtCaseReference }}{{ courtMap[appearance.courtCode] }}
+                                    on {{ appearance.appearanceDate | formatDate }}</h3>
+                                {% for sentence in appearance.sentences | sortByCountNumber %}
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               id="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}"
+                                               name="consecutiveToSentenceUuid" type="radio"
+                                               value="{{ sentence.sentenceUuid }}|OTHER">
+                                        <label class="govuk-label govuk-radios__label"
+                                               for="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}">
+                                            {% if sentence.countNumber and sentence.countNumber !== '-1' %}
+                                                Count {{ sentence.countNumber }}<br>
+                                            {% endif %}
+                                            {{ sentence.offenceCode }} - {{ offenceMap[sentence.offenceCode] }}
+                                            {% if sentence.offenceStartDate %}
+                                                <br><span class="govuk-hint">
+                                                        Committed on {{ sentence.offenceStartDate | formatDate }}{{ ' to ' + sentence.offenceEndDate | formatDate if sentence.offenceEndDate }}
+                                                    </span>
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                    {% set radioIdIndex=radioIdIndex + 1 %}
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endcall %}
+        </div>
+
+
+        {{ govukButton({
+            text: "Continue",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
+    </form>
 {% endblock %}

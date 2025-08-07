@@ -46,6 +46,7 @@ import BaseRoutes from './baseRoutes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import InvalidatedFrom from '../resources/invalidatedFromTypes'
 import { SentenceConsecutiveToDetails } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import config from '../config'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -1769,6 +1770,8 @@ export default class OffenceRoutes extends BaseRoutes {
           countNumber: sessionConsecutiveTo.sentence.countNumber,
           offenceCode: sessionConsecutiveTo.offenceCode,
           offenceDescription: offenceMap[sessionConsecutiveTo.offenceCode],
+          offenceStartDate: dayjs(sessionConsecutiveTo.offenceStartDate).format(config.dateFormat),
+          offenceEndDate: dayjs(sessionConsecutiveTo.offenceEndDate).format(config.dateFormat),
         } as ConsecutiveToDetails,
       }
     }

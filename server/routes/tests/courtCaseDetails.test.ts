@@ -364,8 +364,6 @@ describe('V2 Consecutive to label display', () => {
       setupSharedMocks({ offences, consecutiveToSentence: consecutiveTo })
 
       const res = await request(app).get('/person/A1234AB/edit-court-case/1/details').expect('Content-Type', /html/)
-      console.log(res.text)
-
       const $ = cheerio.load(res.text)
 
       const offenceSummaryLists = $('[data-qa="offenceSummaryList"]')

@@ -242,6 +242,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
           countNumber: consecutiveToDetails.countNumber,
           offenceCode: consecutiveToDetails.offenceCode,
           offenceDescription: consecutiveToDetails.offenceDescription,
+          offenceStartDate: consecutiveToDetails.offenceStartDate,
+          offenceEndDate: consecutiveToDetails.offenceEndDate,
         }
       }
       return consecutiveToDetailsResponse

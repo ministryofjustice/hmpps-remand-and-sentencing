@@ -84,7 +84,7 @@
         text: "Next hearing set"
     },
     value: {
-        text: "Yes" if appearance.nextHearingSelect else "No"
+        text: "Yes" if appearance.nextHearingSelect else "No future appearance scheduled"
     },
     actions: {
         items: [
@@ -153,6 +153,42 @@
     ]) %}
 {% endif %}
 
+{% set documentSummaryRows = [] %}
+
+{% for document in documentsWithUiType %}
+    {% set documentRowHtml %}
+        <span style="vertical-align: middle;">
+            <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
+                <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"></path>
+            </svg>
+            <a class="govuk-link" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/download-document">
+                <strong>{{ document.documentType }}</strong>
+            </a>
+        </span>
+    {% endset %}
+    {% set documentSummaryRows = documentSummaryRows.concat([
+            {
+                key: {
+                    html: documentRowHtml
+                },
+                value: {
+                    text: ""
+                }
+            }
+        ]) %}
+{% else %}
+    {% set documentSummaryRows = documentSummaryRows.concat([
+            {
+                key: {
+                    text: ""
+                },
+                value: {
+                    text: "No documents uploaded"
+                }
+            }
+        ]) %}
+{% endfor %}
+
 
 {% block content %}
     {{ super() }}
@@ -178,46 +214,48 @@
             {% endif %}
 
             {{ govukSummaryList({
+                card: {
+                    title: {
+                        text: "Appearance information"
+                    }
+                },
                 rows: appearanceSummaryRows,
                 attributes: {
                     "data-qa": "appearanceSummaryList"
                 }
             }) }}
 
-            <h2 class="govuk-heading-m">Next hearing</h2>
             {{ govukSummaryList({
+                    card: {
+                        title: {
+                            text: "Next court appearance"
+                        }
+                    },
                     rows: nextHearingSummaryRows,
                     attributes: {
                         "data-qa": "nextHearingSummaryList"
                     }
                 }) }}
 
-            <h2 class="govuk-heading-m">Court documents</h2>
-                       <ul class="govuk-list govuk-list--no--bullet govuk-!-margin-bottom-3" data-qa="court-documents">
-                         {% for document in documentsWithUiType %}
-                           <li>
-                             <span style="vertical-align: middle;">
-                               <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
-                                 <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"></path>
-                               </svg>
-                               <a class="govuk-link" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/download-document">
-                                 <strong>{{ document.documentType }}</strong>
-                               </a>
-                             </span>
-                           </li>
-                         {% else %}
-                           <li>No documents uploaded</li>
-                         {% endfor %}
-                       </ul>
-                       <p class="govuk-body">
-                         <a class="govuk-link" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/upload-court-documents">
-                           {% if documentsWithUiType | length > 0 %}
-                             Manage court documents
-                           {% else %}
-                             Add court documents
-                           {% endif %}
-                         </a>
-                       </p>
+            {{ govukSummaryList({
+                card: {
+                    title: {
+                        text: "Court documents"
+                    },
+                    actions: {
+                        items: [
+                            {
+                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/upload-court-documents",
+                                text: "Manage court documents"
+                            }
+                        ]
+                    }
+                },
+                rows: documentSummaryRows,
+                attributes: {
+                        "data-qa": "documentsSummaryList"
+                    }
+            })}}
 
             <h2 class="govuk-heading-m">Offences <span class="govuk-body">({{ appearance.offences | length }})</span></h2>
 

@@ -115,7 +115,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
             courtName: courtMap[consecutiveToDetails.courtCode],
             warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
             offenceStartDate: dayjs(consecutiveToDetails.offenceStartDate).format(config.dateFormat),
-            offenceEndDate: dayjs(consecutiveToDetails.offenceEndDate).format(config.dateFormat),
+            offenceEndDate:
+              consecutiveToDetails.offenceEndDate &&
+              dayjs(consecutiveToDetails.offenceEndDate).format(config.dateFormat),
           } as ConsecutiveToDetails,
         ]
       }),

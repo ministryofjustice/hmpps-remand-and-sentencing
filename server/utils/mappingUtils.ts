@@ -476,6 +476,8 @@ export function offenceToConsecutiveToDetails(
     countNumber: offence.sentence.countNumber,
     offenceCode: offence.offenceCode,
     offenceDescription: offenceMap[offence.offenceCode],
+    offenceStartDate: dayjs(offence.offenceStartDate).format(config.dateFormat),
+    offenceEndDate: offence.offenceEndDate && dayjs(offence.offenceEndDate).format(config.dateFormat),
   }
 }
 
@@ -492,12 +494,20 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
     courtCaseReference: sentenceConsecutiveToDetails.courtCaseReference,
     courtName: courtMap[sentenceConsecutiveToDetails.courtCode],
     warrantDate: dayjs(sentenceConsecutiveToDetails.appearanceDate).format(config.dateFormat),
+    offenceStartDate: dayjs(sentenceConsecutiveToDetails.offenceStartDate).format(config.dateFormat),
+    offenceEndDate:
+      sentenceConsecutiveToDetails.offenceEndDate &&
+      dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
   } as ConsecutiveToDetails
   if (isInSameAppearance) {
     consecutiveToDetailsEntry = {
       countNumber: sentenceConsecutiveToDetails.countNumber,
       offenceCode: sentenceConsecutiveToDetails.offenceCode,
       offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
+      offenceStartDate: dayjs(sentenceConsecutiveToDetails.offenceStartDate).format(config.dateFormat),
+      offenceEndDate:
+        sentenceConsecutiveToDetails.offenceEndDate &&
+        dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
     }
   }
   return consecutiveToDetailsEntry

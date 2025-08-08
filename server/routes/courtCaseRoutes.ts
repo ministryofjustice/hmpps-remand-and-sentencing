@@ -114,6 +114,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
             courtCaseReference: consecutiveToDetails.courtCaseReference,
             courtName: courtMap[consecutiveToDetails.courtCode],
             warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
+            offenceStartDate: dayjs(consecutiveToDetails.offenceStartDate).format(config.dateFormat),
+            offenceEndDate:
+              consecutiveToDetails.offenceEndDate &&
+              dayjs(consecutiveToDetails.offenceEndDate).format(config.dateFormat),
           } as ConsecutiveToDetails,
         ]
       }),
@@ -193,12 +197,19 @@ export default class CourtCaseRoutes extends BaseRoutes {
           courtCaseReference: consecutiveToDetails.courtCaseReference,
           courtName: courtMap[consecutiveToDetails.courtCode],
           warrantDate: dayjs(consecutiveToDetails.appearanceDate).format(config.dateFormat),
+          offenceStartDate: dayjs(consecutiveToDetails.offenceStartDate).format(config.dateFormat),
+          offenceEndDate:
+            consecutiveToDetails.offenceEndDate && dayjs(consecutiveToDetails.offenceEndDate).format(config.dateFormat),
         } as ConsecutiveToDetails
         if (allSentenceUuids.includes(consecutiveToDetails.sentenceUuid)) {
           consecutiveToDetailsEntry = {
             countNumber: consecutiveToDetails.countNumber,
             offenceCode: consecutiveToDetails.offenceCode,
             offenceDescription: offenceMap[consecutiveToDetails.offenceCode],
+            offenceStartDate: dayjs(consecutiveToDetails.offenceStartDate).format(config.dateFormat),
+            offenceEndDate:
+              consecutiveToDetails.offenceEndDate &&
+              dayjs(consecutiveToDetails.offenceEndDate).format(config.dateFormat),
           }
         }
         return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]

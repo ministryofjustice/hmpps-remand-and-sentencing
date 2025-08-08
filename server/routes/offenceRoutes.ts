@@ -1771,7 +1771,8 @@ export default class OffenceRoutes extends BaseRoutes {
           offenceCode: sessionConsecutiveTo.offenceCode,
           offenceDescription: offenceMap[sessionConsecutiveTo.offenceCode],
           offenceStartDate: dayjs(sessionConsecutiveTo.offenceStartDate).format(config.dateFormat),
-          offenceEndDate: dayjs(sessionConsecutiveTo.offenceEndDate).format(config.dateFormat),
+          offenceEndDate:
+            sessionConsecutiveTo.offenceEndDate && dayjs(sessionConsecutiveTo.offenceEndDate).format(config.dateFormat),
         } as ConsecutiveToDetails,
       }
     }

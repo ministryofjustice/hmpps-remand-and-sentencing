@@ -56,7 +56,6 @@
 
     {% for offence in unchangedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
-        {#                // TODO#}
         {{
         offenceCard({
             offenceCode: offence.offenceCode,
@@ -109,7 +108,6 @@
 
     {% for offence in custodialChangedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
-        {#                // TODO#}
         {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
@@ -153,7 +151,6 @@
 
     {% for offence in nonCustodialChangedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
-        {#                // TODO#}
         {{
                     offenceCard({
                         offenceCode: offence.offenceCode,

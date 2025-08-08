@@ -2727,8 +2727,10 @@ export default {
 
   stubGetHasSentenceToChainTo: ({
     beforeOrOnAppearanceDate = '2023-05-12',
+    bookingId = '1234',
   }: {
     beforeOrOnAppearanceDate: string
+    bookingId: string
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -2737,6 +2739,9 @@ export default {
         queryParameters: {
           beforeOrOnAppearanceDate: {
             equalTo: beforeOrOnAppearanceDate,
+          },
+          bookingId: {
+            equalTo: bookingId,
           },
         },
       },
@@ -2752,8 +2757,10 @@ export default {
 
   stubGetSentencesToChainTo: ({
     beforeOrOnAppearanceDate = '2023-05-12',
+    bookingId = '1234',
   }: {
     beforeOrOnAppearanceDate: string
+    bookingId: string
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -2762,6 +2769,9 @@ export default {
         queryParameters: {
           beforeOrOnAppearanceDate: {
             equalTo: beforeOrOnAppearanceDate,
+          },
+          bookingId: {
+            equalTo: bookingId,
           },
         },
       },
@@ -2826,6 +2836,9 @@ export default {
         queryParameters: {
           beforeOrOnAppearanceDate: {
             equalTo: '2023-05-13',
+          },
+          bookingId: {
+            equalTo: '1234',
           },
         },
       },

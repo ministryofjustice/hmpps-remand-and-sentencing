@@ -343,6 +343,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
   async hasSentenceToChainTo(
     prisonerId: string,
     beforeOrOnAppearanceDate: string,
+    bookingId: string,
     username: string,
   ): Promise<HasSentenceToChainToResponse> {
     return (await this.get(
@@ -350,6 +351,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         path: `/person/${prisonerId}/has-sentence-to-chain-to`,
         query: {
           beforeOrOnAppearanceDate,
+          bookingId,
         },
       },
       asSystem(username),
@@ -359,6 +361,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
   async sentencesToChainTo(
     prisonerId: string,
     beforeOrOnAppearanceDate: string,
+    bookingId: string,
     username: string,
   ): Promise<SentencesToChainToResponse> {
     return (await this.get(
@@ -366,6 +369,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         path: `/person/${prisonerId}/sentences-to-chain-to`,
         query: {
           beforeOrOnAppearanceDate,
+          bookingId,
         },
       },
       asSystem(username),

@@ -68,19 +68,7 @@ describe('GET court name', () => {
 })
 
 describe('Consecutive to label display', () => {
-  const baseCourtAppearance = {
-    appearanceUuid: '1',
-    appearanceDate: '2025-07-25',
-    courtCode: 'ACCRYC',
-    warrantType: 'REMAND',
-    courtCaseReference: 'A123',
-    outcome: {
-      outcomeUuid: '1',
-      outcomeName: 'Appearance outcome',
-    },
-  }
-
-  const offence = {
+  const baseOffence = {
     chargeUuid: '1',
     offenceCode: 'OFF123',
     offenceStartDate: '2025-01-01',
@@ -95,22 +83,24 @@ describe('Consecutive to label display', () => {
     },
   }
 
-  const baseCourtCase = {
-    courtCaseUuid: '1',
-    prisonerId: 'A1234AB',
-    status: 'ACTIVE',
-  }
-
-  const appearanceDate = '2025-02-02'
-
-  const sharedSetup = ({ countNumber, caseRef }: { countNumber: string | null; caseRef?: string }) => {
+  const setupSharedMocks = ({ offences, consecutiveToSentence }: { offences; consecutiveToSentence }) => {
     const courtAppearance = {
-      ...baseCourtAppearance,
-      charges: [{ ...offence }],
+      appearanceUuid: '1',
+      appearanceDate: '2025-07-25',
+      courtCode: 'ACCRYC',
+      warrantType: 'REMAND',
+      courtCaseReference: 'A123',
+      outcome: {
+        outcomeUuid: '1',
+        outcomeName: 'Appearance outcome',
+      },
+      charges: offences,
     }
 
     const courtCase = {
-      ...baseCourtCase,
+      courtCaseUuid: '1',
+      prisonerId: 'A1234AB',
+      status: 'ACTIVE',
       latestAppearance: courtAppearance,
       appearances: [courtAppearance],
     } as PageCourtCaseContent
@@ -118,18 +108,7 @@ describe('Consecutive to label display', () => {
     defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
 
     defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
-      sentences: [
-        {
-          sentenceUuid: 'SENT123',
-          offenceCode: 'OFF456',
-          countNumber: countNumber ?? undefined,
-          courtCaseReference: caseRef,
-          courtCode: 'ACCRYC',
-          appearanceDate,
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-        },
-      ],
+      sentences: [consecutiveToSentence],
     })
 
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
@@ -144,513 +123,136 @@ describe('Consecutive to label display', () => {
 
   const testCases = [
     {
+      title: 'same case with valid count number',
+      offences: [
+        baseOffence,
+        {
+          ...baseOffence,
+          chargeUuid: '2',
+          offenceCode: 'OFF124',
+          sentence: {
+            sentenceServeType: 'FORTHWITH',
+            sentenceUuid: 'SENT123',
+          },
+        },
+      ],
+      consecutiveTo: {
+        sentenceUuid: 'SENT123',
+        offenceCode: 'OFF456',
+        countNumber: '3',
+        courtCode: null,
+        appearanceDate: null,
+        offenceStartDate: '2025-01-01',
+        offenceEndDate: '2025-01-10',
+      },
+      expected: 'Consecutive to count 3',
+    },
+    {
+      title: 'same case with invalid count number',
+      offences: [
+        baseOffence,
+        {
+          ...baseOffence,
+          chargeUuid: '2',
+          offenceCode: 'OFF124',
+          sentence: {
+            sentenceServeType: 'FORTHWITH',
+            sentenceUuid: 'SENT123',
+          },
+        },
+      ],
+      consecutiveTo: {
+        sentenceUuid: 'SENT123',
+        offenceCode: 'OFF456',
+        countNumber: '-1',
+        courtCaseReference: 'A123',
+        courtCode: 'ACCRYC',
+        appearanceDate: '2025-02-02',
+        offenceStartDate: '2025-01-01',
+        offenceEndDate: '2025-01-10',
+      },
+      expected: 'Consecutive to OFF456 - Offence description committed on 01/01/2025 to 10/01/2025',
+    },
+    {
       title: 'different case with valid count number and case ref',
-      input: { countNumber: '5', caseRef: 'CASE456' },
+      offences: [baseOffence],
+      consecutiveTo: {
+        sentenceUuid: 'SENT123',
+        offenceCode: 'OFF456',
+        countNumber: '5',
+        courtCaseReference: 'CASE456',
+        courtCode: 'ACCRYC',
+        appearanceDate: '2025-02-02',
+        offenceStartDate: '2025-01-01',
+        offenceEndDate: '2025-01-10',
+      },
       expected: 'Consecutive to count 5 on case CASE456 at Court description on 02/02/2025',
     },
     {
       title: 'different case with valid count number and no case ref',
-      input: { countNumber: '6' },
+      offences: [baseOffence],
+      consecutiveTo: {
+        sentenceUuid: 'SENT123',
+        offenceCode: 'OFF456',
+        countNumber: '6',
+        courtCode: 'ACCRYC',
+        appearanceDate: '2025-02-02',
+        offenceStartDate: '2025-01-01',
+        offenceEndDate: '2025-01-10',
+      },
       expected: 'Consecutive to count 6 at Court description on 02/02/2025',
     },
     {
       title: 'different case with invalid count number and case ref',
-      input: { countNumber: '-1', caseRef: 'CASE789' },
+      offences: [baseOffence],
+      consecutiveTo: {
+        sentenceUuid: 'SENT123',
+        offenceCode: 'OFF456',
+        countNumber: '-1',
+        courtCaseReference: 'CASE789',
+        courtCode: 'ACCRYC',
+        appearanceDate: '2025-02-02',
+        offenceStartDate: '2025-01-01',
+        offenceEndDate: '2025-01-10',
+      },
       expected:
         'Consecutive to OFF456 - Offence description committed on 01/01/2025 to 10/01/2025 on case CASE789 at Court description on 02/02/2025',
     },
     {
       title: 'different case with invalid count number and no case ref',
-      input: { countNumber: '-1' },
+      offences: [baseOffence],
+      consecutiveTo: {
+        sentenceUuid: 'SENT123',
+        offenceCode: 'OFF456',
+        countNumber: '-1',
+        courtCode: 'ACCRYC',
+        appearanceDate: '2025-02-02',
+        offenceStartDate: '2025-01-01',
+        offenceEndDate: '2025-01-10',
+      },
       expected:
         'Consecutive to OFF456 - Offence description committed on 01/01/2025 to 10/01/2025 at Court description on 02/02/2025',
     },
   ]
 
-  testCases.forEach(({ title, input, expected }) => {
-    it(`should set consecutive to label correctly when ${title}`, () => {
-      sharedSetup(input)
+  testCases.forEach(({ title, offences, consecutiveTo, expected }) => {
+    it(`should set consecutive to label correctly when ${title}`, async () => {
+      setupSharedMocks({ offences, consecutiveToSentence: consecutiveTo })
 
-      return request(app)
-        .get('/person/A1234AB/edit-court-case/1/details')
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          const $ = cheerio.load(res.text)
-          const consecutiveText = $(
-            '[data-qa="offenceSummaryList"] .govuk-summary-list__row:nth-child(3) .govuk-summary-list__value',
-          )
-            .text()
-            .trim()
-          expect(consecutiveText).toBe(expected)
-        })
+      const res = await request(app).get('/person/A1234AB/edit-court-case/1/details').expect('Content-Type', /html/)
+
+      const $ = cheerio.load(res.text)
+
+      const offenceSummaryLists = $('[data-qa="offenceSummaryList"]')
+      const lastOffenceSummaryList = offenceSummaryLists.last()
+      const consecutiveText = lastOffenceSummaryList
+        .find('.govuk-summary-list__row')
+        .filter((_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Consecutive or concurrent')
+        .find('.govuk-summary-list__value')
+        .text()
+        .trim()
+
+      expect(consecutiveText).toBe(expected)
     })
-  })
-})
-
-describe.skip('XXXX Consecutive to label display', () => {
-  it('should set consecutive to label correctly when same case with valid count number', () => {
-    const courtAppearance = {
-      appearanceUuid: '1',
-      // appearanceDate: '2025-07-25',
-      // courtCode: 'ACCRYC',
-      warrantType: 'REMAND',
-      // courtCaseReference: 'A123',
-      outcome: {
-        outcomeUuid: '1',
-        outcomeName: 'Appearance outcome',
-      },
-      charges: [
-        {
-          chargeUuid: '1',
-          offenceCode: 'OFF123',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-          outcome: {
-            outcomeUuid: '1',
-            outcomeName: 'Offence outcome',
-          },
-          sentence: {
-            sentenceServeType: 'CONSECUTIVE',
-            consecutiveToSentenceUuid: 'SENT123',
-          },
-        },
-      ],
-    }
-
-    const courtCase = {
-      courtCaseUuid: '1',
-      prisonerId: 'A1234AB',
-      status: 'ACTIVE',
-      latestAppearance: courtAppearance,
-      appearances: [courtAppearance],
-    } as PageCourtCaseContent
-
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
-      sentences: [
-        {
-          sentenceUuid: 'SENT123',
-          offenceCode: 'OFF456',
-          countNumber: '3',
-          courtCaseReference: null,
-          courtCode: null,
-          appearanceDate: null,
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-        },
-      ],
-    })
-
-    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
-      OFF123: 'Offence code description',
-      OFF456: 'Offence description',
-    })
-
-    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
-      ACCRYC: 'Court description',
-    })
-
-    return request(app)
-      .get('/person/A1234AB/edit-court-case/1/details')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const consecutiveText = $(
-          '[data-qa="offenceSummaryList"] .govuk-summary-list__row:nth-child(3) .govuk-summary-list__value',
-        )
-          .text()
-          .trim()
-        expect(consecutiveText).toBe('Consecutive to count 3')
-      })
-  })
-
-  it('should set consecutive to label correctly when same case with invalid count number', () => {
-    const courtAppearance = {
-      appearanceUuid: '1',
-      appearanceDate: '2025-07-25',
-      courtCode: 'ACCRYC',
-      warrantType: 'REMAND',
-      courtCaseReference: 'A123',
-      outcome: {
-        outcomeUuid: '1',
-        outcomeName: 'Appearance outcome',
-      },
-      charges: [
-        {
-          chargeUuid: '1',
-          offenceCode: 'OFF123',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-          outcome: {
-            outcomeUuid: '1',
-            outcomeName: 'Offence outcome',
-          },
-          sentence: {
-            sentenceServeType: 'CONSECUTIVE',
-            consecutiveToSentenceUuid: 'SENT123',
-          },
-        },
-      ],
-    }
-
-    const courtCase = {
-      courtCaseUuid: '1',
-      prisonerId: 'A1234AB',
-      status: 'ACTIVE',
-      latestAppearance: courtAppearance,
-      appearances: [courtAppearance],
-    } as PageCourtCaseContent
-
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
-      sentences: [
-        {
-          sentenceUuid: 'SENT123',
-          offenceCode: 'OFF456',
-          countNumber: '-1',
-          courtCaseReference: 'A123',
-          courtCode: 'ACCRYC',
-          appearanceDate: '2025-02-02',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-        },
-      ],
-    })
-
-    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
-      OFF123: 'Offence code description',
-      OFF456: 'Offence description',
-    })
-
-    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
-      ACCRYC: 'Court description',
-    })
-
-    return request(app)
-      .get('/person/A1234AB/edit-court-case/1/details')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const consecutiveText = $(
-          '[data-qa="offenceSummaryList"] .govuk-summary-list__row:nth-child(3) .govuk-summary-list__value',
-        )
-          .text()
-          .trim()
-        expect(consecutiveText).toBe(
-          'Consecutive to OFF456 - Offence description committed on 01/01/2025 to 10/01/2025',
-        )
-      })
-  })
-
-  it('should set consecutive to label correctly when different case with valid count number and case ref', () => {
-    const courtAppearance = {
-      appearanceUuid: '1',
-      appearanceDate: '2025-07-25',
-      courtCode: 'ACCRYC',
-      warrantType: 'REMAND',
-      courtCaseReference: 'A123',
-      outcome: {
-        outcomeUuid: '1',
-        outcomeName: 'Appearance outcome',
-      },
-      charges: [
-        {
-          chargeUuid: '1',
-          offenceCode: 'OFF123',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-          outcome: {
-            outcomeUuid: '1',
-            outcomeName: 'Offence outcome',
-          },
-          sentence: {
-            sentenceServeType: 'CONSECUTIVE',
-            consecutiveToSentenceUuid: 'SENT123',
-          },
-        },
-      ],
-    }
-
-    const courtCase = {
-      courtCaseUuid: '1',
-      prisonerId: 'A1234AB',
-      status: 'ACTIVE',
-      latestAppearance: courtAppearance,
-      appearances: [courtAppearance],
-    } as PageCourtCaseContent
-
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
-      sentences: [
-        {
-          sentenceUuid: 'SENT123',
-          offenceCode: 'OFF456',
-          countNumber: '5',
-          courtCaseReference: 'CASE456',
-          courtCode: 'ACCRYC',
-          appearanceDate: '2025-02-02',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-        },
-      ],
-    })
-
-    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
-      OFF123: 'Offence code description',
-      OFF456: 'Offence description',
-    })
-
-    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
-      ACCRYC: 'Court description',
-    })
-
-    return request(app)
-      .get('/person/A1234AB/edit-court-case/1/details')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const consecutiveText = $(
-          '[data-qa="offenceSummaryList"] .govuk-summary-list__row:nth-child(3) .govuk-summary-list__value',
-        )
-          .text()
-          .trim()
-        expect(consecutiveText).toBe('Consecutive to count 5 on case CASE456 at Court description on 02/02/2025')
-      })
-  })
-
-  it('should set consecutive to label correctly when different case with valid count number and no case ref', () => {
-    const courtAppearance = {
-      appearanceUuid: '1',
-      appearanceDate: '2025-07-25',
-      courtCode: 'ACCRYC',
-      warrantType: 'REMAND',
-      courtCaseReference: 'A123',
-      outcome: {
-        outcomeUuid: '1',
-        outcomeName: 'Appearance outcome',
-      },
-      charges: [
-        {
-          chargeUuid: '1',
-          offenceCode: 'OFF123',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-          outcome: {
-            outcomeUuid: '1',
-            outcomeName: 'Offence outcome',
-          },
-          sentence: {
-            sentenceServeType: 'CONSECUTIVE',
-            consecutiveToSentenceUuid: 'SENT123',
-          },
-        },
-      ],
-    }
-
-    const courtCase = {
-      courtCaseUuid: '1',
-      prisonerId: 'A1234AB',
-      status: 'ACTIVE',
-      latestAppearance: courtAppearance,
-      appearances: [courtAppearance],
-    } as PageCourtCaseContent
-
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
-      sentences: [
-        {
-          sentenceUuid: 'SENT123',
-          offenceCode: 'OFF456',
-          countNumber: '6',
-          courtCode: 'ACCRYC',
-          appearanceDate: '2025-02-02',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-        },
-      ],
-    })
-
-    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
-      OFF123: 'Offence code description',
-      OFF456: 'Offence description',
-    })
-
-    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
-      ACCRYC: 'Court description',
-    })
-
-    return request(app)
-      .get('/person/A1234AB/edit-court-case/1/details')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const consecutiveText = $(
-          '[data-qa="offenceSummaryList"] .govuk-summary-list__row:nth-child(3) .govuk-summary-list__value',
-        )
-          .text()
-          .trim()
-        expect(consecutiveText).toBe('Consecutive to count 6 at Court description on 02/02/2025')
-      })
-  })
-
-  it('should set consecutive to label correctly when different case with invalid count number and case ref', () => {
-    const courtAppearance = {
-      appearanceUuid: '1',
-      appearanceDate: '2025-07-25',
-      courtCode: 'ACCRYC',
-      warrantType: 'REMAND',
-      courtCaseReference: 'A123',
-      outcome: {
-        outcomeUuid: '1',
-        outcomeName: 'Appearance outcome',
-      },
-      charges: [
-        {
-          chargeUuid: '1',
-          offenceCode: 'OFF123',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-          outcome: {
-            outcomeUuid: '1',
-            outcomeName: 'Offence outcome',
-          },
-          sentence: {
-            sentenceServeType: 'CONSECUTIVE',
-            consecutiveToSentenceUuid: 'SENT123',
-          },
-        },
-      ],
-    }
-
-    const courtCase = {
-      courtCaseUuid: '1',
-      prisonerId: 'A1234AB',
-      status: 'ACTIVE',
-      latestAppearance: courtAppearance,
-      appearances: [courtAppearance],
-    } as PageCourtCaseContent
-
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
-      sentences: [
-        {
-          sentenceUuid: 'SENT123',
-          offenceCode: 'OFF456',
-          countNumber: '-1',
-          courtCaseReference: 'CASE789',
-          courtCode: 'ACCRYC',
-          appearanceDate: '2025-02-02',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-        },
-      ],
-    })
-
-    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
-      OFF123: 'Offence code description',
-      OFF456: 'Offence description',
-    })
-
-    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
-      ACCRYC: 'Court description',
-    })
-
-    return request(app)
-      .get('/person/A1234AB/edit-court-case/1/details')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const consecutiveText = $(
-          '[data-qa="offenceSummaryList"] .govuk-summary-list__row:nth-child(3) .govuk-summary-list__value',
-        )
-          .text()
-          .trim()
-        expect(consecutiveText).toBe(
-          'Consecutive to OFF456 - Offence description committed on 01/01/2025 to 10/01/2025 on case CASE789 at Court description on 02/02/2025',
-        )
-      })
-  })
-
-  it('should set consecutive to label correctly when different case with invalid count number and no case ref', () => {
-    const courtAppearance = {
-      appearanceUuid: '1',
-      appearanceDate: '2025-07-25',
-      courtCode: 'ACCRYC',
-      warrantType: 'REMAND',
-      courtCaseReference: 'A123',
-      outcome: {
-        outcomeUuid: '1',
-        outcomeName: 'Appearance outcome',
-      },
-      charges: [
-        {
-          chargeUuid: '1',
-          offenceCode: 'OFF123',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-          outcome: {
-            outcomeUuid: '1',
-            outcomeName: 'Offence outcome',
-          },
-          sentence: {
-            sentenceServeType: 'CONSECUTIVE',
-            consecutiveToSentenceUuid: 'SENT123',
-          },
-        },
-      ],
-    }
-
-    const courtCase = {
-      courtCaseUuid: '1',
-      prisonerId: 'A1234AB',
-      status: 'ACTIVE',
-      latestAppearance: courtAppearance,
-      appearances: [courtAppearance],
-    } as PageCourtCaseContent
-
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-
-    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
-      sentences: [
-        {
-          sentenceUuid: 'SENT123',
-          offenceCode: 'OFF456',
-          countNumber: '-1',
-          courtCode: 'ACCRYC',
-          appearanceDate: '2025-02-02',
-          offenceStartDate: '2025-01-01',
-          offenceEndDate: '2025-01-10',
-        },
-      ],
-    })
-
-    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
-      OFF123: 'Offence code description',
-      OFF456: 'Offence description',
-    })
-
-    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
-      ACCRYC: 'Court description',
-    })
-
-    return request(app)
-      .get('/person/A1234AB/edit-court-case/1/details')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const consecutiveText = $(
-          '[data-qa="offenceSummaryList"] .govuk-summary-list__row:nth-child(3) .govuk-summary-list__value',
-        )
-          .text()
-          .trim()
-        expect(consecutiveText).toBe(
-          'Consecutive to OFF456 - Offence description committed on 01/01/2025 to 10/01/2025 at Court description on 02/02/2025',
-        )
-      })
   })
 })

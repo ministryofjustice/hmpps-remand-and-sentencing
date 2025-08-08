@@ -212,13 +212,6 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-l">
-                {% if appearance.caseReferenceNumber %}
-                    {{ appearance.caseReferenceNumber }} at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }} on {{ appearance.warrantDate | formatDate }}
-                {% else %}
-                    Case held at {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
-                {% endif %}
-            </span>
             <h1 class="govuk-heading-l">Edit appearance</h1>
 
                         {% if mergedFromText %}

@@ -18,4 +18,6 @@ export default class CourtCaseCheckAnswersPage extends Page {
     const href = `/person/${personId}/${addOrEditCourtCase}-court-case/${courtCaseReference}/${addOrEditCourtAppearance}-court-appearance/${appearanceReference}/${page}${queryParam}`
     return cy.get(`a[href="${href}"]`)
   }
+
+  editWarrantDateLink = (): PageElement => cy.get('[data-qa=edit-warrant-date-link]')
 }

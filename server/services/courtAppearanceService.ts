@@ -882,7 +882,7 @@ export default class CourtAppearanceService {
   sessionCourtAppearanceExists(session: Partial<SessionData>, nomsId: string, appearanceReference: string): boolean {
     return (
       session.courtAppearances[nomsId] !== undefined &&
-      session.courtAppearances[nomsId].appearanceReference === appearanceReference
+      session.courtAppearances[nomsId].appearanceUuid === appearanceReference
     )
   }
 

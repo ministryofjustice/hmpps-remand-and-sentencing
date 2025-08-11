@@ -355,7 +355,7 @@ context('Court Case Warrant Date Page', () => {
 
       const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
 
-      courtCaseCheckAnswersPage.editFieldLink('A1234AB', 'add', '1', 'add', '0', 'warrant-date', true).click()
+      courtCaseCheckAnswersPage.editWarrantDateLink().click()
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('55')
       courtCaseWarrantDatePage.continueButton().click()

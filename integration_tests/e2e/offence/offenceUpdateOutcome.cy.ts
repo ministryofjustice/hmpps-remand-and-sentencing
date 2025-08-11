@@ -22,7 +22,7 @@ context('Update Offence Outcome Page', () => {
 
   context('Repeat Remand', () => {
     beforeEach(() => {
-      startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
+      startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
       courtCaseWarrantTypePage.continueButton().click()

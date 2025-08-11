@@ -244,7 +244,10 @@
                                             } if courtCaseDetails.hasARecall else {
                                                 href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + appearanceUuid + "/new-journey",
                                                 text: "Add appearance",
-                                                visuallyHiddenText: "Add appearance"
+                                                visuallyHiddenText: "Add appearance",
+                                                attributes: {
+                                                    'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
+                                                }
                                             })
                                             
                                             

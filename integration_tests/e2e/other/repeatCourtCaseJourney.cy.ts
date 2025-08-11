@@ -67,7 +67,7 @@ context('Repeat Court Case journey', () => {
     })
 
     const startPage = Page.verifyOnPage(StartPage)
-    startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
+    startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
 
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
@@ -290,7 +290,7 @@ context('Repeat Court Case journey', () => {
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-12' })
     cy.task('stubGetCountNumbersForCourtCase', {})
     const startPage = Page.verifyOnPage(StartPage)
-    startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
+    startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
 
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
@@ -438,9 +438,7 @@ context('Repeat Court Case journey', () => {
     courtCaseTaskListPage.updateOffenceOutcomesLink().click()
 
     let offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
-    offenceUpdateOffenceOutcomesPage
-      .updateOutcomeLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '0')
-      .click()
+    offenceUpdateOffenceOutcomesPage.updateOutcomeLink('0').click()
 
     const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
     offenceUpdateOutcomePage.radioLabelContains('Imprisonment').click()

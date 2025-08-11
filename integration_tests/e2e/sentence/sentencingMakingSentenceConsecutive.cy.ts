@@ -49,9 +49,9 @@ context('Check offence answers page after making consecutive', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
 
-    offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '1').click()
+    offenceCheckOffenceAnswersPage.editOffenceLink('1').click()
     const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '1', 'sentence-serve-type').click()
+    offenceEditOffencePage.editFieldLink('1', 'sentence-serve-type').click()
     const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     offenceSentenceServeTypePage.radioLabelSelector('CONSECUTIVE').click()
     offenceSentenceServeTypePage.continueButton().click()

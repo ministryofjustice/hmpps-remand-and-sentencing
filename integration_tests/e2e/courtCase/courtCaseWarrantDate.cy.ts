@@ -229,17 +229,7 @@ context('Court Case Warrant Date Page', () => {
         .click()
 
       const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage
-        .editFieldLink(
-          'A1234AB',
-          'edit',
-          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          'edit',
-          'a6400fd8-aef4-4567-b18c-d1f452651933',
-          '0',
-          'offence-date',
-        )
-        .click()
+      offenceEditOffencePage.editFieldLink('0', 'offence-date').click()
       Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
       enterOffenceStartDate('16', '12', '2023')
 

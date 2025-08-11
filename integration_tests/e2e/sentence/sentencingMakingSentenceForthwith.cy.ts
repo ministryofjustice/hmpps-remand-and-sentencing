@@ -49,16 +49,16 @@ context('Check offence answers page after making forthwith', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
 
-    offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
+    offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
     const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-serve-type').click()
+    offenceEditOffencePage.editFieldLink('0', 'sentence-serve-type').click()
     const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
     offenceSentenceServeTypePage.continueButton().click()
     const sentencingMakingSentenceConcurrentPage = Page.verifyOnPage(SentencingMakingSentenceConcurrentPage)
     sentencingMakingSentenceConcurrentPage.continueButton().click()
 
-    offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'sentence-serve-type').click()
+    offenceEditOffencePage.editFieldLink('0', 'sentence-serve-type').click()
     offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
     offenceSentenceServeTypePage.continueButton().click()
 

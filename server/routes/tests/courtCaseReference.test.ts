@@ -17,6 +17,7 @@ describe('GET Court case reference', () => {
   it('should render page on new journey', () => {
     defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('REMAND')
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       warrantType: 'REMAND',
     })
     return request(app)

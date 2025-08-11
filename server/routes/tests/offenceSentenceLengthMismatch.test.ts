@@ -14,7 +14,7 @@ afterEach(() => {
 })
 
 describe('GET Offence sentence length mismatch', () => {
-  defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({})
+  defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({ appearanceUuid: '1' })
   defaultServices.calculateReleaseDatesService.compareOverallSentenceLength.mockResolvedValue({
     custodialLength: { years: 0, months: 0, weeks: 0, days: 0 },
     custodialLengthMatches: false,

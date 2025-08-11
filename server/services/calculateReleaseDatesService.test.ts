@@ -82,7 +82,7 @@ const baseAppearance: CourtAppearance = {
     description: '',
     uuid: '',
   },
-  appearanceReference: '',
+  appearanceUuid: '1',
   appearanceInformationAccepted: false,
   offenceSentenceAccepted: false,
   nextCourtAppearanceAccepted: false,

@@ -16,7 +16,7 @@ afterEach(() => {
 
 describe('GET Offence Sentence Type', () => {
   it('should render page on new journey', () => {
-    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({})
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({ appearanceUuid: '1' })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       offenceStartDate: dayjs({ date: 10, month: 5, year: 2023 }).toDate(),
       sentence: {

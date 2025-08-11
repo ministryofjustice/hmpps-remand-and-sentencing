@@ -44,6 +44,7 @@ export default class CourtAppearanceService {
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReferenceForm: CourtCaseReferenceForm,
+    appearanceUuid: string,
   ) {
     const errors = validate(
       courtCaseReferenceForm,
@@ -65,7 +66,7 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       if (courtCaseReferenceForm.referenceNumber) {
         courtAppearance.caseReferenceNumber = courtCaseReferenceForm.referenceNumber
       } else {
@@ -84,6 +85,7 @@ export default class CourtAppearanceService {
     courtCaseReference: string,
     username: string,
     referenceForm: CourtCaseSelectReferenceForm,
+    appearanceUuid: string,
   ) {
     const errors = validate(
       referenceForm,
@@ -95,7 +97,7 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       if (referenceForm.referenceNumberSelect === 'true') {
         const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
           username,
@@ -112,8 +114,8 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getCaseReferenceNumber(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).caseReferenceNumber
+  getCaseReferenceNumber(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).caseReferenceNumber
   }
 
   async setWarrantDate(
@@ -121,7 +123,7 @@ export default class CourtAppearanceService {
     nomsId: string,
     courtCaseWarrantDateForm: CourtCaseWarrantDateForm,
     courtCaseReference: string,
-    appearanceReference: string,
+    appearanceUuid: string,
     addOrEditCourtCase: string,
     addOrEditCourtAppearance: string,
     username: string,
@@ -132,7 +134,7 @@ export default class CourtAppearanceService {
       href: string
     }[]
   > {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     let isValidWarrantDateRule = ''
     if (
       courtCaseWarrantDateForm['warrantDate-day'] &&
@@ -175,7 +177,7 @@ export default class CourtAppearanceService {
       const offenceDateErrors = await this.validateAgainstLatestOffence(
         warrantDate,
         courtCaseReference,
-        appearanceReference,
+        appearanceUuid,
         username,
         session,
         nomsId,
@@ -207,7 +209,7 @@ export default class CourtAppearanceService {
   private async validateAgainstLatestOffence(
     warrantDate: dayjs.Dayjs,
     courtCaseReference: string,
-    appearanceReference: string,
+    appearanceUuid: string,
     username: string,
     session: Partial<SessionData>,
     nomsId: string,
@@ -223,12 +225,12 @@ export default class CourtAppearanceService {
           : await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
               courtCaseReference,
               username,
-              appearanceReference,
+              appearanceUuid,
             )
       latestOffenceDate = latestOffenceDateStr ? dayjs(latestOffenceDateStr) : null
     }
 
-    const sessionOffenceDateRaw = this.getLatestOffenceDateInSession(session, nomsId)
+    const sessionOffenceDateRaw = this.getLatestOffenceDateInSession(session, nomsId, appearanceUuid)
     const sessionOffenceDate = sessionOffenceDateRaw ? dayjs(sessionOffenceDateRaw) : null
 
     if (
@@ -268,19 +270,24 @@ export default class CourtAppearanceService {
     return null
   }
 
-  getWarrantDate(session: Partial<SessionData>, nomsId: string): Date {
-    const { warrantDate } = this.getCourtAppearance(session, nomsId)
+  getWarrantDate(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): Date {
+    const { warrantDate } = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return warrantDate ? new Date(warrantDate) : undefined
   }
 
-  setCourtName(session: Partial<SessionData>, nomsId: string, courtNameForm: CourtCaseCourtNameForm) {
+  setCourtName(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtNameForm: CourtCaseCourtNameForm,
+    appearanceUuid: string,
+  ) {
     const errors = validate(
       courtNameForm,
       { courtCode: 'required' },
       { 'required.courtCode': 'You must enter the court name' },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.courtCode = courtNameForm.courtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
@@ -292,6 +299,7 @@ export default class CourtAppearanceService {
     session: Partial<SessionData>,
     nomsId: string,
     selectCourtNameForm: CourtCaseSelectCourtNameForm,
+    appearanceUuid: string,
   ) {
     const errors = validate(
       selectCourtNameForm,
@@ -299,7 +307,7 @@ export default class CourtAppearanceService {
       { 'required.courtNameSelect': "Select 'Yes' if the appearance was at this court." },
     )
     if (errors.length === 0 && selectCourtNameForm.courtNameSelect === 'true') {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.courtCode = selectCourtNameForm.previousCourtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
@@ -307,36 +315,37 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getCourtCode(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).courtCode
+  getCourtCode(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).courtCode
   }
 
-  setWarrantType(session: Partial<SessionData>, nomsId: string, warrantType: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setWarrantType(session: Partial<SessionData>, nomsId: string, warrantType: string, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.warrantType = warrantType
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getWarrantType(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).warrantType
+  getWarrantType(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).warrantType
   }
 
-  setWarrantId(session: Partial<SessionData>, nomsId: string, warrantId: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setWarrantId(session: Partial<SessionData>, nomsId: string, warrantId: string, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.warrantId = warrantId
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getNextHearingCourtSelect(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).nextHearingCourtSelect
+  getNextHearingCourtSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingCourtSelect
   }
 
   setNextHearingCourtSelect(
     session: Partial<SessionData>,
     nomsId: string,
     nextHearingCourtSelectForm: CourtCaseNextHearingCourtSelectForm,
+    appearanceUuid: string,
   ) {
     const errors = validate(
       nextHearingCourtSelectForm,
@@ -344,7 +353,7 @@ export default class CourtAppearanceService {
       { 'required.nextHearingCourtSelect': "Select 'Yes' if the next hearing will be at this same court." },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect
       if (nextHearingCourtSelectForm.nextHearingCourtSelect === 'true') {
         courtAppearance.nextHearingCourtCode = courtAppearance.courtCode
@@ -355,14 +364,15 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingCourtCode(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).nextHearingCourtCode
+  getNextHearingCourtCode(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingCourtCode
   }
 
   setNextHearingCourtName(
     session: Partial<SessionData>,
     nomsId: string,
     nextHearingCourtNameForm: CourtCaseNextHearingCourtNameForm,
+    appearanceUuid: string,
   ) {
     const errors = validate(
       nextHearingCourtNameForm,
@@ -370,7 +380,7 @@ export default class CourtAppearanceService {
       { 'required.courtCode': 'You must enter the court name' },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.nextHearingCourtCode = nextHearingCourtNameForm.courtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
@@ -383,8 +393,9 @@ export default class CourtAppearanceService {
     session: Partial<SessionData>,
     nomsId: string,
     overallCaseOutcomeForm: CourtCaseOverallCaseOutcomeForm,
+    appearanceUuid: string,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const errors = validate(
       { ...overallCaseOutcomeForm, appearanceInformationAccepted: courtAppearance.appearanceInformationAccepted },
       { overallCaseOutcome: 'required', appearanceInformationAccepted: 'isNotTrue' },
@@ -408,8 +419,9 @@ export default class CourtAppearanceService {
     session: Partial<SessionData>,
     nomsId: string,
     overallCaseOutcomeForm: CourtCaseOverallCaseOutcomeForm,
+    appearanceUuid: string,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const errors = validate(
       { ...overallCaseOutcomeForm },
       { overallCaseOutcome: 'required' },
@@ -428,20 +440,21 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getAppearanceOutcomeUuid(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).appearanceOutcomeUuid
+  getAppearanceOutcomeUuid(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).appearanceOutcomeUuid
   }
 
-  getRelatedOffenceOutcomeUuid(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).relatedOffenceOutcomeUuid
+  getRelatedOffenceOutcomeUuid(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).relatedOffenceOutcomeUuid
   }
 
   setCaseOutcomeAppliedAll(
     session: Partial<SessionData>,
     nomsId: string,
     caseOutcomeAppliedAllForm: CourtCaseCaseOutcomeAppliedAllForm,
+    appearanceUuid: string,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const errors = validate(
       { ...caseOutcomeAppliedAllForm, appearanceInformationAccepted: courtAppearance.appearanceInformationAccepted },
       {
@@ -470,20 +483,24 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getCaseOutcomeAppliedAll(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).caseOutcomeAppliedAll
+  getCaseOutcomeAppliedAll(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).caseOutcomeAppliedAll
   }
 
-  getOverallCustodialSentenceLength(session: Partial<SessionData>, nomsId: string): SentenceLength {
-    return this.getCourtAppearance(session, nomsId).overallSentenceLength
+  getOverallCustodialSentenceLength(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+  ): SentenceLength {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).overallSentenceLength
   }
 
-  getHasOverallSentenceLength(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).hasOverallSentenceLength
+  getHasOverallSentenceLength(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).hasOverallSentenceLength
   }
 
-  setHasOverallSentenceLengthTrue(session: Partial<SessionData>, nomsId: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setHasOverallSentenceLengthTrue(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.hasOverallSentenceLength = 'true'
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
@@ -493,6 +510,7 @@ export default class CourtAppearanceService {
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseOverallSentenceLengthForm: SentenceLengthForm,
+    appearanceUuid: string,
   ) {
     const errors = validate(
       courtCaseOverallSentenceLengthForm,
@@ -516,7 +534,7 @@ export default class CourtAppearanceService {
     )
 
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       if (courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true') {
         courtAppearance.overallSentenceLength = {
           ...sentenceLengthFormToSentenceLength(
@@ -541,6 +559,7 @@ export default class CourtAppearanceService {
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseAlternativeSentenceLengthForm: CourtCaseAlternativeSentenceLengthForm,
+    appearanceUuid: string,
   ) {
     const errors = validate(
       courtCaseAlternativeSentenceLengthForm,
@@ -570,7 +589,7 @@ export default class CourtAppearanceService {
         'OVERALL_SENTENCE_LENGTH',
         periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
       )
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.overallSentenceLength = sentenceLength
       courtAppearance.hasOverallSentenceLength = 'true'
       // eslint-disable-next-line no-param-reassign
@@ -579,48 +598,54 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setAppearanceInformationAcceptedTrue(session: Partial<SessionData>, nomsId: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setAppearanceInformationAcceptedTrue(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.appearanceInformationAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  setWarrantInformationAccepted(session: Partial<SessionData>, nomsId: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setWarrantInformationAccepted(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.warrantInformationAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  setOffenceSentenceAccepted(session: Partial<SessionData>, nomsId: string, completed: boolean) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setOffenceSentenceAccepted(
+    session: Partial<SessionData>,
+    nomsId: string,
+    completed: boolean,
+    appearanceUuid: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
 
     courtAppearance.offenceSentenceAccepted = completed
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  setNextCourtAppearanceAcceptedTrue(session: Partial<SessionData>, nomsId: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setNextCourtAppearanceAcceptedTrue(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.nextCourtAppearanceAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  isNextCourtAppearanceAccepted(session: Partial<SessionData>, nomsId: string): boolean {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  isNextCourtAppearanceAccepted(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return courtAppearance.nextCourtAppearanceAccepted
   }
 
-  getNextHearingSelect(session: Partial<SessionData>, nomsId: string): boolean {
-    return this.getCourtAppearance(session, nomsId).nextHearingSelect
+  getNextHearingSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingSelect
   }
 
   setNextHearingSelect(
     session: Partial<SessionData>,
     nomsId: string,
     nextHearingSelectForm: CourtCaseNextHearingSelectForm,
+    appearanceUuid: string,
   ) {
     const errors = validate(
       nextHearingSelectForm,
@@ -632,7 +657,7 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       const previousNextHearingSelect = courtAppearance.nextHearingSelect
       courtAppearance.nextHearingSelect = nextHearingSelectForm.nextHearingSelect === 'true'
       if (!courtAppearance.nextHearingSelect) {
@@ -650,11 +675,16 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingTypeUuid(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).nextHearingTypeUuid
+  getNextHearingTypeUuid(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingTypeUuid
   }
 
-  setNextHearingType(session: Partial<SessionData>, nomsId: string, nextHearingTypeForm: CourtCaseNextHearingTypeForm) {
+  setNextHearingType(
+    session: Partial<SessionData>,
+    nomsId: string,
+    nextHearingTypeForm: CourtCaseNextHearingTypeForm,
+    appearanceUuid: string,
+  ) {
     const errors = validate(
       nextHearingTypeForm,
       {
@@ -665,7 +695,7 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.nextHearingTypeUuid = nextHearingTypeForm.nextHearingType
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
@@ -673,15 +703,20 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingDate(session: Partial<SessionData>, nomsId: string): Date {
-    return this.getCourtAppearance(session, nomsId).nextHearingDate
+  getNextHearingDate(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): Date {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingDate
   }
 
-  hasNextHearingTimeSet(session: Partial<SessionData>, nomsId: string): boolean {
-    return this.getCourtAppearance(session, nomsId).nextHearingTimeSet
+  hasNextHearingTimeSet(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingTimeSet
   }
 
-  setNextHearingDate(session: Partial<SessionData>, nomsId: string, nextHearingDateForm: CourtCaseNextHearingDateForm) {
+  setNextHearingDate(
+    session: Partial<SessionData>,
+    nomsId: string,
+    nextHearingDateForm: CourtCaseNextHearingDateForm,
+    appearanceUuid: string,
+  ) {
     let isValidDateRule = ''
     if (
       nextHearingDateForm['nextHearingDate-day'] !== undefined &&
@@ -724,7 +759,7 @@ export default class CourtAppearanceService {
         nextHearingDate = nextHearingDate.set('hour', parseInt(nextHearingHour, 10))
         nextHearingDate = nextHearingDate.set('minute', parseInt(nextHearingMinute, 10))
       }
-      const courtAppearance = this.getCourtAppearance(session, nomsId)
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.nextHearingDate = nextHearingDate.toDate()
       courtAppearance.nextHearingTimeSet = Boolean(nextHearingDateForm.nextHearingTime)
       // eslint-disable-next-line no-param-reassign
@@ -741,6 +776,7 @@ export default class CourtAppearanceService {
     addOrEditCourtCase: string,
     addOrEditCourtAppearance: string,
     username: string,
+    appearanceUuid: string,
   ): Promise<
     {
       text?: string
@@ -761,7 +797,7 @@ export default class CourtAppearanceService {
       )
       isValidOverallConvictionDateRule = `|isValidDate:${overallConvictionDateString}|isPastOrCurrentDate:${overallConvictionDateString}|isWithinLast100Years:${overallConvictionDateString}`
     }
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const errors = validate(
       { ...overallConvictionDateForm, warrantInformationAccepted: courtAppearance.warrantInformationAccepted },
       {
@@ -807,7 +843,7 @@ export default class CourtAppearanceService {
         if (
           addOrEditCourtCase === 'edit-court-case' &&
           addOrEditCourtAppearance === 'add-court-appearance' &&
-          this.getCourtAppearance(session, nomsId).warrantType === 'SENTENCING'
+          this.getCourtAppearance(session, nomsId, appearanceUuid).warrantType === 'SENTENCING'
         ) {
           const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
             username,
@@ -834,13 +870,13 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getOverallConvictionDate(session: Partial<SessionData>, nomsId: string): Date {
-    const { overallConvictionDate } = this.getCourtAppearance(session, nomsId)
+  getOverallConvictionDate(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): Date {
+    const { overallConvictionDate } = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return overallConvictionDate ? new Date(overallConvictionDate) : undefined
   }
 
-  getOverallConvictionDateAppliedAll(session: Partial<SessionData>, nomsId: string): string {
-    return this.getCourtAppearance(session, nomsId).overallConvictionDateAppliedAll
+  getOverallConvictionDateAppliedAll(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).overallConvictionDateAppliedAll
   }
 
   sessionCourtAppearanceExists(session: Partial<SessionData>, nomsId: string, appearanceReference: string): boolean {
@@ -855,25 +891,36 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getSessionCourtAppearance(session: Partial<SessionData>, nomsId: string): CourtAppearance {
-    return this.getCourtAppearance(session, nomsId)
+  getSessionCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid)
   }
 
-  isForwithAlreadySelected(session: Partial<SessionData>, nomsId: string, excludeOffenceReference: number): boolean {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  isForwithAlreadySelected(
+    session: Partial<SessionData>,
+    nomsId: string,
+    excludeOffenceReference: number,
+    appearanceUuid: string,
+  ): boolean {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offences = Object.assign([], courtAppearance.offences)
 
     offences.splice(excludeOffenceReference, 1)
     return offences.some(offence => offence.sentence?.sentenceServeType === 'FORTHWITH')
   }
 
-  hasNoSentences(session: Partial<SessionData>, nomsId: string): boolean {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  hasNoSentences(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return !courtAppearance.offences.some(offence => offence.sentence)
   }
 
-  addOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number, offence: Offence) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  addOffence(
+    session: Partial<SessionData>,
+    nomsId: string,
+    offenceReference: number,
+    offence: Offence,
+    appearanceUuid: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const existingOffence = { ...courtAppearance.offences[offenceReference] }
       courtAppearance.offences[offenceReference] = offence
@@ -892,8 +939,9 @@ export default class CourtAppearanceService {
     nomsId: string,
     offenceReference: number,
     countNumberForm: OffenceCountNumberForm,
+    appearanceUuid: string,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const sentence = offence.sentence ?? { sentenceReference: offenceReference.toString() }
@@ -915,8 +963,9 @@ export default class CourtAppearanceService {
     nomsId: string,
     offenceReference: number,
     offenceOutcome: OffenceOutcome,
+    appearanceUuid: string,
   ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       offence.outcomeUuid = offenceOutcome.outcomeUuid
@@ -930,25 +979,35 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  deleteOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.offences.splice(offenceReference, 1)
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number): Offence {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  getOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number, appearanceUuid: string): Offence {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return courtAppearance.offences[offenceReference]
   }
 
-  getOffenceBySentenceReference(session: Partial<SessionData>, nomsId: string, sentenceReference: string): Offence {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  getOffenceBySentenceReference(
+    session: Partial<SessionData>,
+    nomsId: string,
+    sentenceReference: string,
+    appearanceUuid: string,
+  ): Offence {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return courtAppearance.offences.find(offence => offence.sentence?.sentenceReference === sentenceReference)
   }
 
-  getCountNumbers(session: Partial<SessionData>, nomsId: string, excludeOffenceReference: number): string[] {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  getCountNumbers(
+    session: Partial<SessionData>,
+    nomsId: string,
+    excludeOffenceReference: number,
+    appearanceUuid: string,
+  ): string[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const { offences } = courtAppearance
     return offences
       .filter(
@@ -958,8 +1017,13 @@ export default class CourtAppearanceService {
       .map(offence => offence.sentence.countNumber)
   }
 
-  addUploadedDocument(session: Partial<SessionData>, nomsId: string, document: UploadedDocument) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  addUploadedDocument(
+    session: Partial<SessionData>,
+    nomsId: string,
+    document: UploadedDocument,
+    appearanceUuid: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     // Ensure courtAppearance.uploadedDocuments is an array, then push
     if (!courtAppearance.uploadedDocuments) {
       courtAppearance.uploadedDocuments = [] // Initialize if null/undefined
@@ -969,12 +1033,17 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getUploadedDocuments(session: Partial<SessionData>, nomsId: string): UploadedDocument[] {
-    return this.getCourtAppearance(session, nomsId).uploadedDocuments ?? []
+  getUploadedDocuments(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): UploadedDocument[] {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).uploadedDocuments ?? []
   }
 
-  getUploadedDocument(session: Partial<SessionData>, nomsId: string, documentId: string): UploadedDocument | undefined {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  getUploadedDocument(
+    session: Partial<SessionData>,
+    nomsId: string,
+    documentId: string,
+    appearanceUuid: string,
+  ): UploadedDocument | undefined {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return courtAppearance.uploadedDocuments?.find(doc => doc.documentUUID === documentId)
   }
 
@@ -984,6 +1053,7 @@ export default class CourtAppearanceService {
     documentId: string,
     deleteDocumentForm: DeleteDocumentForm,
     username: string,
+    appearanceUuid: string,
   ): Promise<
     {
       text?: string
@@ -1003,7 +1073,7 @@ export default class CourtAppearanceService {
     if (deleteDocumentForm.deleteDocument === 'true') {
       try {
         await this.documentManagementService.deleteDocument(documentId, username)
-        const courtAppearance = this.getCourtAppearance(session, nomsId)
+        const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
         if (courtAppearance.uploadedDocuments) {
           courtAppearance.uploadedDocuments = courtAppearance.uploadedDocuments.filter(
             doc => doc.documentUUID !== documentId,
@@ -1019,8 +1089,8 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setDocumentUploadedTrue(session: Partial<SessionData>, nomsId: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setDocumentUploadedTrue(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.documentUploadAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
@@ -1033,9 +1103,10 @@ export default class CourtAppearanceService {
     offence: Offence,
     dateOfBirth: string,
     username: string,
+    appearanceUuid: string,
   ): Promise<boolean> {
     let hasInvalidated: boolean = false
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       if (offence.sentence && offence.sentence.convictionDate) {
         const { sentence } = offence
@@ -1082,9 +1153,10 @@ export default class CourtAppearanceService {
     offence: Offence,
     dateOfBirth: string,
     username: string,
+    appearanceUuid: string,
   ): Promise<boolean> {
     let hasInvalidated: boolean = false
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const { sentence } = offence
       const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
@@ -1115,9 +1187,14 @@ export default class CourtAppearanceService {
     return hasInvalidated
   }
 
-  sentenceIsInChain(session: Partial<SessionData>, nomsId: string, offenceReference: number): boolean {
+  sentenceIsInChain(
+    session: Partial<SessionData>,
+    nomsId: string,
+    offenceReference: number,
+    appearanceUuid: string,
+  ): boolean {
     let sentenceInChain: boolean = false
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
@@ -1130,8 +1207,13 @@ export default class CourtAppearanceService {
     return sentenceInChain
   }
 
-  setSentenceToConcurrent(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setSentenceToConcurrent(
+    session: Partial<SessionData>,
+    nomsId: string,
+    offenceReference: number,
+    appearanceUuid: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
@@ -1143,8 +1225,13 @@ export default class CourtAppearanceService {
     }
   }
 
-  resetConsecutiveFields(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  resetConsecutiveFields(
+    session: Partial<SessionData>,
+    nomsId: string,
+    offenceReference: number,
+    appearanceUuid: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const sentence = offence.sentence ?? { sentenceReference: offenceReference.toString() }
@@ -1157,8 +1244,13 @@ export default class CourtAppearanceService {
     }
   }
 
-  setSentenceToForthwith(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setSentenceToForthwith(
+    session: Partial<SessionData>,
+    nomsId: string,
+    offenceReference: number,
+    appearanceUuid: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
@@ -1170,8 +1262,13 @@ export default class CourtAppearanceService {
     }
   }
 
-  setSentenceToConsecutive(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  setSentenceToConsecutive(
+    session: Partial<SessionData>,
+    nomsId: string,
+    offenceReference: number,
+    appearanceUuid: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
@@ -1183,8 +1280,13 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteSentenceInChain(session: Partial<SessionData>, nomsId: string, offenceReference: number) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  deleteSentenceInChain(
+    session: Partial<SessionData>,
+    nomsId: string,
+    offenceReference: number,
+    appearanceUuid: string,
+  ) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const { offences } = courtAppearance
     if (courtAppearance.offences.length > offenceReference) {
       const { sentenceReference } = courtAppearance.offences[offenceReference].sentence
@@ -1236,12 +1338,13 @@ export default class CourtAppearanceService {
   checkOffencesHaveMandatoryFields(
     session: Partial<SessionData>,
     nomsId: string,
+    appearanceUuid: string,
   ): {
     text?: string
     html?: string
     href: string
   }[] {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const errors = validate(
       courtAppearance,
       {
@@ -1262,12 +1365,16 @@ export default class CourtAppearanceService {
     delete session.courtAppearances[nomsId]
   }
 
-  private getCourtAppearance(session: Partial<SessionData>, nomsId: string): CourtAppearance {
-    return session.courtAppearances[nomsId] ?? { offences: [] }
+  private getCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {
+    return session.courtAppearances[nomsId] ?? { offences: [], appearanceUuid }
   }
 
-  private getLatestOffenceDateInSession(session: Partial<SessionData>, nomsId: string): Date | null {
-    const courtAppearance = this.getCourtAppearance(session, nomsId)
+  private getLatestOffenceDateInSession(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+  ): Date | null {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (!courtAppearance?.offences?.length) return null
 
     const offenceDates: Date[] = courtAppearance.offences.map(

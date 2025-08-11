@@ -16,6 +16,7 @@ afterEach(() => {
 describe('GET Update offence outcomes', () => {
   it('should render page on repeat journey', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       offences: [],
       overallSentenceLength: {
         years: '4',

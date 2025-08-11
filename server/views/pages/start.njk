@@ -242,7 +242,7 @@
                                                 }),
                                                 visuallyHiddenText: "Recalled"
                                             } if courtCaseDetails.hasARecall else {
-                                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + courtCaseDetails.appearanceTotal + "/new-journey",
+                                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + appearanceUuid + "/new-journey",
                                                 text: "Add appearance",
                                                 visuallyHiddenText: "Add appearance"
                                             })
@@ -264,7 +264,7 @@
                     
                 {% else %}
                     <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
-                    <p class="gouk-body"><a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/0/new-journey">Add a court case now</a>
+                    <p class="gouk-body"><a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey">Add a court case now</a>
                     </p>
                 {% endfor %}
 
@@ -282,7 +282,7 @@
             <div class="actions-list">
                 <ul class="govuk-list actions-list-list">
                     <span class="govuk-heading-m actions-list-header">Actions</span>
-                    <li><a href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/0/new-journey">Add a new court case</a></li>
+                    <li><a href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey">Add a new court case</a></li>
                 </ul>
             </div>  
         </div>

@@ -132,7 +132,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         )
         .map(outcome => [outcome.outcomeUuid, outcome.outcomeName]),
     )
-    const newCourtCaseId = courtCases.totalElements
+    const newCourtCaseId = crypto.randomUUID()
     const paginationUrl = new URL(`/person/${nomsId}`, config.domain)
     paginationUrl.searchParams.set('sortBy', sortBy)
     const pagination = mojPaginationFromPageCourtCase(courtCases, paginationUrl)
@@ -148,6 +148,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       serviceDefinitions,
       pagination,
       consecutiveToSentenceDetailsMap,
+      appearanceUuid: crypto.randomUUID(),
     })
   }
 

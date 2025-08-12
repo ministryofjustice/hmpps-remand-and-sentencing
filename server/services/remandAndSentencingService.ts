@@ -194,11 +194,13 @@ export default class RemandAndSentencingService {
   async hasSentenceToChainTo(
     prisonerId: string,
     warrantDate: Dayjs,
+    bookingId: string,
     username: string,
   ): Promise<HasSentenceToChainToResponse> {
     return this.remandAndSentencingApiClient.hasSentenceToChainTo(
       prisonerId,
       warrantDate.format('YYYY-MM-DD'),
+      bookingId,
       username,
     )
   }
@@ -206,9 +208,15 @@ export default class RemandAndSentencingService {
   async getSentencesToChainTo(
     prisonerId: string,
     warrantDate: Dayjs,
+    bookingId: string,
     username: string,
   ): Promise<SentencesToChainToResponse> {
-    return this.remandAndSentencingApiClient.sentencesToChainTo(prisonerId, warrantDate.format('YYYY-MM-DD'), username)
+    return this.remandAndSentencingApiClient.sentencesToChainTo(
+      prisonerId,
+      warrantDate.format('YYYY-MM-DD'),
+      bookingId,
+      username,
+    )
   }
 
   async getConsecutiveToDetails(

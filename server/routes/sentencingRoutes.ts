@@ -365,6 +365,7 @@ export default class SentencingRoutes extends BaseRoutes {
       this.remandAndSentencingService.getSentencesToChainTo(
         nomsId,
         dayjs(courtAppearance.warrantDate),
+        sentence?.legacyData?.bookingId ?? res.locals.prisoner.bookingId,
         req.user.username,
       ),
     ])
@@ -480,6 +481,7 @@ export default class SentencingRoutes extends BaseRoutes {
       this.remandAndSentencingService.getSentencesToChainTo(
         nomsId,
         dayjs(courtAppearance.warrantDate),
+        sentence?.legacyData?.bookingId ?? res.locals.prisoner.bookingId,
         req.user.username,
       ),
     ])

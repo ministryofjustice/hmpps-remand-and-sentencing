@@ -436,9 +436,12 @@ export default class RemandAndSentencingApiClient extends RestClient {
     appearanceUuidToExclude?: string,
   ): Promise<string | null> {
     const query = appearanceUuidToExclude ? `?appearanceUuidToExclude=${appearanceUuidToExclude}` : ''
-    const result = await this.get<string>({
-      path: `/court-case/${courtCaseUuid}/latest-offence-date${query}`,
-    })
+    const result = await this.get<string>(
+      {
+        path: `/court-case/${courtCaseUuid}/latest-offence-date${query}`,
+      },
+      asSystem(username),
+    )
     return result ?? null
   }
 

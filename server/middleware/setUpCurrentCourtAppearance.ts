@@ -12,8 +12,8 @@ export default function setupCurrentCourtAppearance(
   appearanceOutcomeService: AppearanceOutcomeService,
 ): RequestHandler {
   return async (req, res, next) => {
-    const { nomsId, addOrEditCourtAppearance } = req.params
-    const courtAppearance = courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const { nomsId, addOrEditCourtAppearance, appearanceReference } = req.params
+    const courtAppearance = courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
 
     res.locals.courtAppearance = courtAppearance
     res.locals.offences = courtAppearance.offences

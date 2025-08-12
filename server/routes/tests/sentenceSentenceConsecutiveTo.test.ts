@@ -17,6 +17,7 @@ afterEach(() => {
 describe('GET Sentence consecutive to', () => {
   it('should render page on new journey', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       warrantDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
       offences: [],
     })

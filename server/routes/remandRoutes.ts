@@ -59,8 +59,12 @@ export default class RemandRoutes extends BaseRoutes {
       )
     }
 
-    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
-    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(req, nomsId)
+    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(
+      req,
+      nomsId,
+      appearanceReference,
+    )
     const chargeCodes = appearance.offences
       .map(offences => offences.offenceCode)
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
@@ -101,10 +105,12 @@ export default class RemandRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
-    const documentsWithUiType = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId).map(document => ({
-      ...document,
-      documentType: getUiDocumentType(document.documentType, appearance.warrantType),
-    }))
+    const documentsWithUiType = this.courtAppearanceService
+      .getUploadedDocuments(req.session, nomsId, appearanceReference)
+      .map(document => ({
+        ...document,
+        documentType: getUiDocumentType(document.documentType, appearance.warrantType),
+      }))
 
     const mergedFromText = this.getMergedFromText(
       appearance.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
@@ -134,7 +140,11 @@ export default class RemandRoutes extends BaseRoutes {
 
   public submitAppearanceDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const errors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(req.session, nomsId)
+    const errors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
@@ -153,7 +163,11 @@ export default class RemandRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     const offence = courtAppearance.offences[parseInt(offenceReference, 10)]
     if (offence.sentence?.sentenceUuid) {
       const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
@@ -181,7 +195,11 @@ export default class RemandRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { username, token } = req.user
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     const offence = courtAppearance.offences[parseInt(offenceReference, 10)]
     const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
       offence.sentence.sentenceUuid,

@@ -31,12 +31,16 @@ export default class OverallSentencingRoutes extends BaseRoutes {
   public getOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     let overallSentenceLengthForm = (req.flash('overallSentenceLengthForm')[0] || {}) as SentenceLengthForm
     if (Object.keys(overallSentenceLengthForm).length === 0) {
       overallSentenceLengthForm = sentenceLengthToSentenceLengthForm(
-        this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
-        this.courtAppearanceService.getHasOverallSentenceLength(req.session, nomsId),
+        this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId, appearanceReference),
+        this.courtAppearanceService.getHasOverallSentenceLength(req.session, nomsId, appearanceReference),
       )
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
@@ -69,9 +73,18 @@ export default class OverallSentencingRoutes extends BaseRoutes {
   public submitOverallSentenceLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     const overallSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
-    const errors = this.courtAppearanceService.setOverallSentenceLength(req.session, nomsId, overallSentenceLengthForm)
+    const errors = this.courtAppearanceService.setOverallSentenceLength(
+      req.session,
+      nomsId,
+      overallSentenceLengthForm,
+      appearanceReference,
+    )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('overallSentenceLengthForm', { ...overallSentenceLengthForm })
@@ -111,10 +124,10 @@ export default class OverallSentencingRoutes extends BaseRoutes {
     if (Object.keys(courtCaseAlternativeSentenceLengthForm).length === 0) {
       courtCaseAlternativeSentenceLengthForm =
         sentenceLengthToAlternativeSentenceLengthForm<CourtCaseAlternativeSentenceLengthForm>(
-          this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId),
+          this.courtAppearanceService.getOverallCustodialSentenceLength(req.session, nomsId, appearanceReference),
         )
     }
-    this.courtAppearanceService.setHasOverallSentenceLengthTrue(req.session, nomsId)
+    this.courtAppearanceService.setHasOverallSentenceLengthTrue(req.session, nomsId, appearanceReference)
     return res.render('pages/overallSentencing/alternative-sentence-length', {
       nomsId,
       courtCaseReference,
@@ -137,6 +150,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseAlternativeSentenceLengthForm,
+      appearanceReference,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -150,7 +164,11 @@ export default class OverallSentencingRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/check-overall-answers`,
       )
     }
-    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
@@ -179,7 +197,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
     const {
       overallConvictionDate: overallConvictionDateValue,
       overallConvictionDateAppliedAll: overallConvictionDateAppliedAllValue,
-    } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     if (overallConvictionDateValue && Object.keys(overallConvictionDateForm).length === 0) {
       const overallConvictionDate = new Date(overallConvictionDateValue)
       overallConvictionDateDay = overallConvictionDate.getDate()
@@ -222,6 +240,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       username,
+      appearanceReference,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -253,7 +272,11 @@ export default class OverallSentencingRoutes extends BaseRoutes {
     }
 
     let overallCaseOutcomeForm = (req.flash('overallCaseOutcomeForm')[0] || {}) as CourtCaseOverallCaseOutcomeForm
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     if (Object.keys(overallCaseOutcomeForm).length === 0) {
       overallCaseOutcomeForm = {
         overallCaseOutcome: `${courtAppearance.appearanceOutcomeUuid}|${courtAppearance.relatedOffenceOutcomeUuid}`,
@@ -308,6 +331,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       req.session,
       nomsId,
       overallCaseOutcomeForm,
+      appearanceReference,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -335,7 +359,11 @@ export default class OverallSentencingRoutes extends BaseRoutes {
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId)
+    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     const overallCaseOutcome = (
       await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName
@@ -344,7 +372,11 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       {}) as CourtCaseCaseOutcomeAppliedAllForm
     if (Object.keys(caseOutcomeAppliedAllForm).length === 0) {
       caseOutcomeAppliedAllForm = {
-        caseOutcomeAppliedAll: this.courtAppearanceService.getCaseOutcomeAppliedAll(req.session, nomsId),
+        caseOutcomeAppliedAll: this.courtAppearanceService.getCaseOutcomeAppliedAll(
+          req.session,
+          nomsId,
+          appearanceReference,
+        ),
       }
     }
 
@@ -373,7 +405,12 @@ export default class OverallSentencingRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const caseOutcomeAppliedAllForm = trimForm<CourtCaseCaseOutcomeAppliedAllForm>(req.body)
     const { submitToCheckAnswers } = req.query
-    const errors = this.courtAppearanceService.setCaseOutcomeAppliedAll(req.session, nomsId, caseOutcomeAppliedAllForm)
+    const errors = this.courtAppearanceService.setCaseOutcomeAppliedAll(
+      req.session,
+      nomsId,
+      caseOutcomeAppliedAllForm,
+      appearanceReference,
+    )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('caseOutcomeAppliedAllForm', { ...caseOutcomeAppliedAllForm })
@@ -388,7 +425,11 @@ export default class OverallSentencingRoutes extends BaseRoutes {
 
   public getCheckOverallAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     const { appearanceOutcomeUuid } = courtAppearance
     const overallCaseOutcome = (
       await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
@@ -408,7 +449,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
 
   public submitCheckOverallAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    this.courtAppearanceService.setWarrantInformationAccepted(req.session, nomsId)
+    this.courtAppearanceService.setWarrantInformationAccepted(req.session, nomsId, appearanceReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )

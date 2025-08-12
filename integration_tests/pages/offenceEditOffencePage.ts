@@ -1,22 +1,12 @@
 import Page, { PageElement } from './page'
 
-export default class OffenceDeleteOffencePage extends Page {
+export default class OffenceEditOffencePage extends Page {
   constructor(sentenceOffence: string) {
     super(`Edit ${sentenceOffence} details`)
   }
 
-  editFieldLink = (
-    personId: string,
-    addOrEditCourtCase: string,
-    courtCaseReference: string,
-    addOrEditCourtAppearance: string,
-    appearanceReference: string,
-    offenceReference: string,
-    page: string,
-  ): PageElement =>
-    cy.get(
-      `a[href="/person/${personId}/${addOrEditCourtCase}-court-case/${courtCaseReference}/${addOrEditCourtAppearance}-court-appearance/${appearanceReference}/offences/${offenceReference}/${page}?submitToEditOffence=true"]`,
-    )
+  editFieldLink = (offenceReference: string, page: string): PageElement =>
+    cy.get(`a[data-qa="edit-${page}-${offenceReference}"]`)
 
   editPeriodLengthLink = (
     personId: string,

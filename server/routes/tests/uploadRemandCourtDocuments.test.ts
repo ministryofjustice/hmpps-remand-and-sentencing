@@ -16,6 +16,7 @@ afterEach(() => {
 describe('GET Upload remand court document', () => {
   it('should render page on new journey', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       warrantType: 'REMAND',
     })
     defaultServices.courtAppearanceService.getUploadedDocuments.mockReturnValue([])

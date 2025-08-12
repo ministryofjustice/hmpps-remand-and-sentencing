@@ -48,8 +48,15 @@ export default abstract class BaseRoutes {
     courtCaseReference: string,
     offenceReference: string,
     offence: Offence,
+    appearanceReference: string,
   ) {
-    this.courtAppearanceService.addOffence(req.session, nomsId, parseInt(offenceReference, 10), offence)
+    this.courtAppearanceService.addOffence(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+      offence,
+      appearanceReference,
+    )
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
   }
 
@@ -69,13 +76,13 @@ export default abstract class BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
       )
     }
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence)
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence, appearanceReference)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
     }
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
@@ -99,8 +106,9 @@ export default abstract class BaseRoutes {
   protected async getSessionConsecutiveToSentenceDetails(
     req,
     nomsId: string,
+    appearanceReference: string,
   ): Promise<SentenceConsecutiveToDetailsResponse> {
-    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     const consecutiveToSentenceUuids = appearance.offences
       .map(offence => offence.sentence?.consecutiveToSentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
@@ -132,10 +140,11 @@ export default abstract class BaseRoutes {
     req,
     nomsId: string,
     offenceMap: { [key: string]: string },
+    appearanceReference: string,
   ): {
     [key: string]: ConsecutiveToDetails
   } {
-    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     return Object.fromEntries(
       offences
         .filter(offence => offence.sentence?.consecutiveToSentenceReference)
@@ -153,7 +162,11 @@ export default abstract class BaseRoutes {
   }
 
   protected async updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference) {
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     const { username } = res.locals.user
     const { prisonId } = res.locals.prisoner
     await this.remandAndSentencingService.updateCourtAppearance(

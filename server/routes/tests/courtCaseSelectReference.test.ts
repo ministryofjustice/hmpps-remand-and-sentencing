@@ -48,6 +48,7 @@ describe('GET Select reference', () => {
       documents: [],
     })
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       warrantDate: new Date(),
     })
     return request(app)

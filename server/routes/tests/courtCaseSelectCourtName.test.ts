@@ -48,6 +48,7 @@ describe('GET Select court name ', () => {
       documents: [],
     })
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       warrantDate: new Date(),
     })
     defaultServices.courtRegisterService.findCourtById.mockResolvedValue({

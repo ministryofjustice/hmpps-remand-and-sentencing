@@ -8,7 +8,7 @@ declare module 'models' {
   } // at some point this needs to change to appearance model
 
   export interface CourtAppearance {
-    appearanceReference?: string
+    appearanceUuid: string
     caseReferenceNumber?: string
     noCaseReference?: string
     warrantDate?: Date

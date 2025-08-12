@@ -20,7 +20,7 @@ describe('GET Offence Count Number', () => {
         sentenceReference: '0',
       },
     })
-    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({})
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({ appearanceUuid: '1' })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/count-number')
       .expect('Content-Type', /html/)

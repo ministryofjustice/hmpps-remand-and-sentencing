@@ -97,8 +97,8 @@ const offenceToCreateCharge = (offence: Offence, prisonId: string): CreateCharge
 export const courtAppearanceToCreateCourtAppearance = (
   courtAppearance: CourtAppearance,
   prisonId: string,
-  courtCaseUuid?: string,
-  appearanceUuid?: string,
+  courtCaseUuid: string,
+  appearanceUuid: string,
 ): CreateCourtAppearance => {
   const nextCourtAppearance = courtAppearanceToCreateNextCourtAppearance(courtAppearance, prisonId)
   return {
@@ -128,9 +128,10 @@ export const courtCaseToCreateCourtCase = (
   prisonerId: string,
   courtCase: CourtCase,
   prisonId: string,
+  courtCaseUuid: string,
 ): CreateCourtCase => {
   const appearances = courtCase.appearances.map(courtAppearance =>
-    courtAppearanceToCreateCourtAppearance(courtAppearance, prisonId),
+    courtAppearanceToCreateCourtAppearance(courtAppearance, prisonId, courtCaseUuid, courtAppearance.appearanceUuid),
   )
 
   return {
@@ -398,7 +399,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     .map(chargeToOffence)
   populateConsecutiveToSentenceReference(offences)
   return {
-    appearanceReference: pageCourtCaseAppearance.appearanceUuid,
+    appearanceUuid: pageCourtCaseAppearance.appearanceUuid,
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,
     noCaseReference: pageCourtCaseAppearance.courtCaseReference ? undefined : 'true',
     warrantDate: dayjs(pageCourtCaseAppearance.appearanceDate).toDate(),
@@ -463,7 +464,7 @@ export function courtAppearanceToDraftCreateCourtAppearance(appearance: CourtApp
 
 export function draftCourtAppearanceToCourtAppearance(draftAppearance: DraftCourtAppearance): CourtAppearance {
   const appearance = draftAppearance.sessionBlob as unknown as CourtAppearance
-  appearance.appearanceReference = draftAppearance.draftUuid
+  appearance.appearanceUuid = draftAppearance.draftUuid
   appearance.existingDraft = true
   return appearance
 }

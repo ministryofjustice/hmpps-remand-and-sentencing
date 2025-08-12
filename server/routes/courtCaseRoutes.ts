@@ -750,7 +750,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       latestCourtAppearance.charges
         .filter(charge => {
           const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
-          return !dispositionCode || dispositionCode === 'INTERIM'
+          return !dispositionCode || dispositionCode === 'INTERIM' || dispositionCode === 'I'
         })
         .sort((a, b) => {
           return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)

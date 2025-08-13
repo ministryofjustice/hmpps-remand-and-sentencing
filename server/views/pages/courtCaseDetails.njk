@@ -21,6 +21,14 @@
                     Appearances{{ ' for ' + courtCaseDetails.latestCaseReference if courtCaseDetails.latestCaseReference }} at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }}
                 {% endif %}
             </h1>
+            {% if courtCaseDetails.mergedToInsetText %}
+                {{ govukInsetText({
+                    text: courtCaseDetails.mergedToInsetText,
+                    attributes: {
+                        "data-qa": "mergedToInsetText"
+                    }
+                }) }}
+            {% endif %}
 
             <div class="govuk-tabs" data-module="govuk-tabs">
                 <h2 class="govuk-tabs__title">

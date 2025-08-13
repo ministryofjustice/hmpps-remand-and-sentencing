@@ -279,3 +279,82 @@ describe('Consecutive to label display', () => {
     })
   })
 })
+
+describe('GET tests for inset text', () => {
+  const prisonerId = 'A1234AB'
+  const path = `/person/${prisonerId}/edit-court-case/1/details`
+
+  const baseAppearance = {
+    appearanceUuid: '1',
+    appearanceDate: '2025-07-25',
+    courtCode: 'ACCRYC',
+    warrantType: 'REMAND',
+    courtCaseReference: 'A123',
+    outcome: { outcomeUuid: '1', outcomeName: 'Appearance outcome' },
+    charges: [
+      {
+        chargeUuid: '1',
+        offenceCode: 'OFF123',
+        offenceStartDate: '2025-01-01',
+        outcome: { outcomeUuid: '1', outcomeName: 'Offence outcome' },
+      },
+    ],
+  }
+
+  const baseCourtCase: PageCourtCaseContent = {
+    courtCaseUuid: '1',
+    prisonerId,
+    status: 'ACTIVE',
+    latestAppearance: baseAppearance,
+    appearances: [baseAppearance],
+    mergedToCaseDetails: {
+      mergedToDate: '2024-08-12',
+      caseReference: 'T20107142',
+      courtCode: 'ACCRYC',
+      warrantDate: '2024-07-25',
+    },
+  } as PageCourtCaseContent
+
+  beforeEach(() => {
+    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ OFF123: 'Offence code description' })
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({ ACCRYC: 'Court description' })
+  })
+
+  const expectInsetText = async (courtCase: PageCourtCaseContent, expected: string) => {
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+
+    const res = await request(app).get(path).expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const insetText = $('[data-qa="mergedToInsetText"]').text().trim()
+    expect(insetText).toEqual(expected)
+  }
+
+  it('should show inset with case reference when parent has a case reference', async () => {
+    const courtCase: PageCourtCaseContent = {
+      ...baseCourtCase,
+      mergedToCaseDetails: {
+        ...baseCourtCase.mergedToCaseDetails!,
+        caseReference: 'T20107142',
+      },
+    }
+    await expectInsetText(
+      courtCase,
+      'Offences from this court case were merged on 12/08/2024 with T20107142 at Court description',
+    )
+  })
+
+  it('should show inset without case reference when parent has no case reference', async () => {
+    const courtCase: PageCourtCaseContent = {
+      ...baseCourtCase,
+      mergedToCaseDetails: {
+        ...baseCourtCase.mergedToCaseDetails!,
+        caseReference: null,
+      },
+    }
+    await expectInsetText(
+      courtCase,
+      'Offences from this court case were merged on 12/08/2024 with the case at Court description on 25/07/2024',
+    )
+  })
+})

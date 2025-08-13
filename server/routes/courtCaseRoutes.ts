@@ -178,6 +178,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           ...appearance.charges.map(charge => charge.mergedFromCase?.courtCode),
         ]),
         consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode),
+        courtCaseDetails.mergedToCaseDetails?.courtCode ? [courtCaseDetails.mergedToCaseDetails.courtCode] : [],
       )
       .filter(courtId => courtId !== undefined && courtId !== null)
 
@@ -239,7 +240,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       nomsId,
       courtCaseReference,
       addOrEditCourtCase,
-      courtCaseDetails: new CourtCaseDetailsModel(courtCaseDetails),
+      courtCaseDetails: new CourtCaseDetailsModel(courtCaseDetails, courtMap),
       offenceMap,
       documentsWithUiType,
       courtMap,

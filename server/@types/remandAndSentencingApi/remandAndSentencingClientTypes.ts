@@ -103,3 +103,5 @@ export type SentencesAfterOnOtherCourtAppearanceDetailsResponse =
   components['schemas']['SentencesAfterOnOtherCourtAppearanceDetailsResponse']
 
 export type MergedFromCase = components['schemas']['MergedFromCase']
+
+export type MergedToCaseDetails = components['schemas']['MergedToCaseDetails']

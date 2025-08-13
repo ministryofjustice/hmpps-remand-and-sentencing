@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import { formatLengths } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import {
+  MergedToCaseDetails,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -31,7 +32,11 @@ export default class CourtCaseDetailsModel {
 
   draftAppearances: PageCourtCaseAppearance[]
 
-  constructor(pageCourtCaseContent: PageCourtCaseContent) {
+  mergedToCaseDetails: MergedToCaseDetails
+
+  mergedToInsetText?: string
+
+  constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     this.latestCaseReference = pageCourtCaseContent.latestAppearance?.courtCaseReference
     this.latestCourtCode = pageCourtCaseContent.latestAppearance?.courtCode
@@ -73,5 +78,21 @@ export default class CourtCaseDetailsModel {
         return { ...appearance, charges: sortedCharges, hasAnyRecalls }
       })
       .sort((a, b) => sortByDateDesc(a.appearanceDate, b.appearanceDate))
+
+    this.mergedToCaseDetails = pageCourtCaseContent.mergedToCaseDetails
+
+    this.mergedToInsetText = this.mergedToCaseDetails
+      ? CourtCaseDetailsModel.buildMergedToInsetText(this.mergedToCaseDetails, courtMap)
+      : undefined
+  }
+
+  private static buildMergedToInsetText(merged: MergedToCaseDetails, courtMap: { [key: string]: string }): string {
+    const mergedDate = merged.mergedToDate ? dayjs(merged.mergedToDate).format(config.dateFormat) : ''
+    const courtName = merged.courtCode ? courtMap[merged.courtCode] : ''
+    if (merged.caseReference) {
+      return `Offences from this court case were merged on ${mergedDate} with ${merged.caseReference} at ${courtName}`
+    }
+    const latestAppearanceDate = merged.warrantDate ? dayjs(merged.warrantDate).format(config.dateFormat) : ''
+    return `Offences from this court case were merged on ${mergedDate} with the case at ${courtName} on ${latestAppearanceDate}`
   }
 }

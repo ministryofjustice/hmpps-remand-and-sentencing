@@ -34,10 +34,7 @@ export default class CourtCaseDetailsModel {
 
   mergedToCaseDetails: MergedToCaseDetails
 
-  // NEW convenience fields
   mergedToInsetText?: string
-
-  isChildCase: boolean
 
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
@@ -83,10 +80,7 @@ export default class CourtCaseDetailsModel {
       .sort((a, b) => sortByDateDesc(a.appearanceDate, b.appearanceDate))
 
     this.mergedToCaseDetails = pageCourtCaseContent.mergedToCaseDetails
-    // convenience boolean for UI
-    this.isChildCase = !!this.mergedToCaseDetails
 
-    // compute inset text per ACs (only if we have details)
     this.mergedToInsetText = this.mergedToCaseDetails
       ? CourtCaseDetailsModel.buildMergedToInsetText(this.mergedToCaseDetails, courtMap)
       : undefined
@@ -103,11 +97,9 @@ export default class CourtCaseDetailsModel {
   ): string {
     const mergedDate = merged.mergedToDate ? dayjs(merged.mergedToDate).format(config.dateFormat) : ''
     const courtName = merged.courtCode ? courtMap[merged.courtCode] : ''
-    // AC1: parent HAS a case reference
     if (merged.caseReference) {
       return `Offences from this court case were merged on ${mergedDate} with ${merged.caseReference} at ${courtName}`
     }
-    // AC2: parent has NO case reference → include parent latest appearance date instead
     const latestAppearanceDate = merged.warrantDate ? dayjs(merged.warrantDate).format(config.dateFormat) : ''
     return `Offences from this court case were merged on ${mergedDate} with the case at ${courtName} on ${latestAppearanceDate}`
   }

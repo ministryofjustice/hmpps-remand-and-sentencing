@@ -86,15 +86,7 @@ export default class CourtCaseDetailsModel {
       : undefined
   }
 
-  private static buildMergedToInsetText(
-    merged: {
-      mergedToDate?: string
-      caseReference?: string | null
-      courtCode?: string | null
-      warrantDate?: string | null // parent latest appearance date
-    },
-    courtMap: { [key: string]: string },
-  ): string {
+  private static buildMergedToInsetText(merged: MergedToCaseDetails, courtMap: { [key: string]: string }): string {
     const mergedDate = merged.mergedToDate ? dayjs(merged.mergedToDate).format(config.dateFormat) : ''
     const courtName = merged.courtCode ? courtMap[merged.courtCode] : ''
     if (merged.caseReference) {

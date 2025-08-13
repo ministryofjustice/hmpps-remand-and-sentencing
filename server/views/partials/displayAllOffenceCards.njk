@@ -24,7 +24,10 @@
                 {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/load-edit-offence",
                     text: "Edit",
-                    visuallyHiddenText: "edit offence"
+                    visuallyHiddenText: "edit offence",
+                    attributes: {
+                        'data-qa': 'edit-offence-link-' + offence.index
+                    }
                 },
                 {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/delete-offence",

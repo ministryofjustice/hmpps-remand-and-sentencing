@@ -317,17 +317,7 @@ context('Court Case Appearance details Page', () => {
         .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
         .click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage
-        .editFieldLink(
-          'A1234AB',
-          'edit',
-          '83517113-5c14-4628-9133-1e3cb12e31fa',
-          'edit',
-          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          '0',
-          'offence-outcome',
-        )
-        .click()
+      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
       const offenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',

@@ -16,6 +16,7 @@ afterEach(() => {
 describe('GET Delete offence', () => {
   it('should render page on new journey', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       warrantType: 'SENTENCING',
       offences: [
         {
@@ -80,6 +81,7 @@ describe('GET Delete offence', () => {
 
   it('should render page on edit journey', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       warrantType: 'SENTENCING',
       offences: [
         {

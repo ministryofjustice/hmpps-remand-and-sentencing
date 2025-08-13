@@ -16,6 +16,7 @@ afterEach(() => {
 describe('GET Review offence answers page', () => {
   it('should render page on repeat journey', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       offences: [],
     })
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({})

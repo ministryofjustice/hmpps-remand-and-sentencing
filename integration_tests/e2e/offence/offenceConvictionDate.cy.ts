@@ -279,9 +279,9 @@ context('Add Offence Conviction Date Page tests with a full create court appeara
     sentenceIsConsecutiveToPage.continueButton().click()
 
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-    offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '1', '0', '0').click()
+    offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
     const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    offenceEditOffencePage.editFieldLink('A1234AB', 'add', '1', 'add', '0', '0', 'conviction-date').click()
+    offenceEditOffencePage.editFieldLink('0', 'conviction-date').click()
     offenceConvictionDatePage.continueButton().click()
 
     // RASS-1214 bug fix tested by this - previously an error message was being shown

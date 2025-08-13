@@ -26,7 +26,7 @@ context('Review Offences Page', () => {
       ])
       cy.visit('/person/A1234AB')
       const startPage = Page.verifyOnPage(StartPage)
-      startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', '2').click()
+      startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
 
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
@@ -52,7 +52,7 @@ context('Review Offences Page', () => {
         outcomeName: 'Lie on file',
         outcomeType: 'NON_CUSTODIAL',
       })
-      offenceReviewOffencesPage.updateOutcomeLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '0').click()
+      offenceReviewOffencesPage.updateOutcomeLink('0').click()
 
       const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
       offenceUpdateOutcomePage.radioLabelContains('Lie on file').click()

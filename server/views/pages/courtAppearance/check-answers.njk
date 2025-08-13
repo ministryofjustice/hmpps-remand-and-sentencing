@@ -40,7 +40,10 @@
                 {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
                     text: "Edit",
-                    visuallyHiddenText: "warrant date"
+                    visuallyHiddenText: "warrant date",
+                    attributes: {
+                        "data-qa": "edit-warrant-date-link"
+                    }
                 } if courtAppearance.appearanceInformationAccepted !== true or isRemandWarrant
             ]
         }

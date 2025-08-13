@@ -72,9 +72,9 @@ context('Check Offence Answers Page', () => {
       })
       cy.createOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
+      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'offence-outcome').click()
+      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',
@@ -162,9 +162,9 @@ context('Check Offence Answers Page', () => {
           outcomeType: 'NON_CUSTODIAL',
         },
       ])
-      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
+      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'offence-outcome').click()
+      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',
@@ -192,9 +192,9 @@ context('Check Offence Answers Page', () => {
     })
 
     it('display count number warning when at least 1 offence has no count', () => {
-      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
+      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'count-number').click()
+      offenceEditOffencePage.editFieldLink('0', 'count-number').click()
       const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
       offenceCountNumberPage.radioLabelSelector('false').click()
       offenceCountNumberPage.continueButton().click()
@@ -232,9 +232,9 @@ context('Check Offence Answers Page', () => {
         OffenceCheckOffenceAnswersPage,
         'You have added 2 offence',
       )
-      offenceCheckOffenceAnswersPage.editOffenceLink('A1234AB', '0', '0', '0').click()
+      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('A1234AB', 'add', '0', 'add', '0', '0', 'offence-outcome').click()
+      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',

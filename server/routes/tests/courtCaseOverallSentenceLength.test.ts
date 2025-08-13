@@ -16,6 +16,7 @@ afterEach(() => {
 describe('GET Court Case Sentence Length', () => {
   it('should render page on new journey', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       warrantType: 'SENTENCING',
     })
     return request(app)

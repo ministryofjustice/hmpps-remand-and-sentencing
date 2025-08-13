@@ -396,17 +396,7 @@ context('Sentencing appearance details Page', () => {
         .click()
       const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
 
-      offenceEditOffencePage
-        .editFieldLink(
-          'A1234AB',
-          'edit',
-          '83517113-5c14-4628-9133-1e3cb12e31fa',
-          'edit',
-          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          '3',
-          'sentence-type',
-        )
-        .click()
+      offenceEditOffencePage.editFieldLink('3', 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceEditSentenceTypePage)
       offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
       offenceSentenceTypePage.continueButton().click()

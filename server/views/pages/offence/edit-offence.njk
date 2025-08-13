@@ -13,7 +13,10 @@
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-code?submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: "offence code"
+                            visuallyHiddenText: "offence code",
+                            attributes: {
+                                'data-qa': 'edit-offence-code-' + offenceReference
+                            }
                         }]
                     }
                 },
@@ -27,7 +30,10 @@
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-date?submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: "committed on"
+                            visuallyHiddenText: "committed on",
+                            attributes: {
+                                'data-qa': 'edit-offence-date-' + offenceReference
+                            }
                         }]
                     }
                 },
@@ -41,7 +47,10 @@
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-outcome?submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: "outcome"
+                            visuallyHiddenText: "outcome",
+                            attributes: {
+                                'data-qa': 'edit-offence-outcome-' + offenceReference
+                            }
                         }]
                     }
                 }] %}
@@ -63,7 +72,10 @@
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/count-number?submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: "count number"
+                            visuallyHiddenText: "count number",
+                            attributes: {
+                                'data-qa': 'edit-count-number-' + offenceReference
+                            }
                         }]
                     }
                 }].concat(summaryRows,[{
@@ -76,7 +88,10 @@
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/conviction-date?submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: "conviction date"
+                            visuallyHiddenText: "conviction date",
+                            attributes: {
+                                'data-qa': 'edit-conviction-date-' + offenceReference
+                            }
                         }]
                     }
                 },
@@ -91,7 +106,10 @@
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/sentence-type?submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: "sentence type"
+                            visuallyHiddenText: "sentence type",
+                            attributes: {
+                                'data-qa': 'edit-sentence-type-' + offenceReference
+                            }
                         }]
                     }
                 }] )) %}
@@ -108,7 +126,10 @@
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/period-length?periodLengthType=" + periodLength.periodLengthType +"&submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize
+                            visuallyHiddenText: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize,
+                            attributes: {
+                                'data-qa': 'edit-period-length-'+ periodLength.periodLengthType +'-' + offenceReference
+                            }
                     }]
                 }
                 })) %}
@@ -122,7 +143,10 @@
                                             items: [{
                                                        href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/fine-amount?submitToEditOffence=true",
                                                        text: "Edit",
-                                                       visuallyHiddenText: "fine amount"
+                                                       visuallyHiddenText: "fine amount",
+                                                       attributes: {
+                                                           'data-qa': 'edit-fine-amount-' + offenceReference
+                                                       }
                                                    }]
                                                }
                                     }) %}
@@ -139,7 +163,10 @@
                         items: [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/sentence-serve-type?submitToEditOffence=true",
                             text: "Edit",
-                            visuallyHiddenText: "consecutive or concurrent"
+                            visuallyHiddenText: "consecutive or concurrent",
+                            attributes: {
+                                'data-qa': 'edit-sentence-serve-type-' + offenceReference
+                            }
                     }]
                 }
             })) %}

@@ -19,6 +19,7 @@ describe('GET Next hearing been set', () => {
   it('should render page on new journey', () => {
     const courtCode = 'ACCRYC'
     const courtAppearance = {
+      appearanceUuid: '1',
       courtCode,
     } as CourtAppearance
     const court = {

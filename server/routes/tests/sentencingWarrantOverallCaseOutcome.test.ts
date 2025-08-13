@@ -16,6 +16,7 @@ afterEach(() => {
 describe('Court Case Overall Case Outcome', () => {
   it('should render page on new journey', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
       warrantType: 'SENTENCING',
     })
     defaultServices.appearanceOutcomeService.getAllOutcomes.mockResolvedValue([

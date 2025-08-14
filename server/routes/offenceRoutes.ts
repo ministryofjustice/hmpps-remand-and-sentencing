@@ -1330,6 +1330,12 @@ export default class OffenceRoutes extends BaseRoutes {
       parseInt(offenceReference, 10),
       appearanceReference,
     )
+    const sentenceConsecutiveToAnotherCase = this.courtAppearanceService.anySentenceConsecutiveToAnotherCase(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+      appearanceReference,
+    )
     const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const sentenceServeType = sentence?.sentenceServeType
     const expectedPeriodLengthsSize =
@@ -1355,7 +1361,8 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
-      showForthwith: sentenceServeType === 'FORTHWITH' || !forthwithAlreadySelected,
+      showForthwith:
+        sentenceServeType === 'FORTHWITH' || (!forthwithAlreadySelected && !sentenceConsecutiveToAnotherCase),
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       sentenceServeType,
       submitQuery,

@@ -32,4 +32,20 @@ describe('GET Offence Sentence Serve Type', () => {
         expect(continueButton).toContain('Continue')
       })
   })
+
+  it('hide forthwith when sentence is consecutive to another case', () => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+    })
+    defaultServices.courtAppearanceService.isForwithAlreadySelected.mockReturnValue(false)
+    defaultServices.courtAppearanceService.anySentenceConsecutiveToAnotherCase.mockReturnValue(true)
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/sentence-serve-type')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const forthwithOption = $(':radio[value="FORTHWITH"]')
+        expect(forthwithOption.length).toBe(0)
+      })
+  })
 })

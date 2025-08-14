@@ -908,6 +908,19 @@ export default class CourtAppearanceService {
     return offences.some(offence => offence.sentence?.sentenceServeType === 'FORTHWITH')
   }
 
+  anySentenceConsecutiveToAnotherCase(
+    session: Partial<SessionData>,
+    nomsId: string,
+    excludeOffenceReference: number,
+    appearanceUuid: string,
+  ): boolean {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    const offences = Object.assign([], courtAppearance.offences)
+
+    offences.splice(excludeOffenceReference, 1)
+    return offences.some(offence => offence.sentence?.consecutiveToSentenceUuid)
+  }
+
   hasNoSentences(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return !courtAppearance.offences.some(offence => offence.sentence)

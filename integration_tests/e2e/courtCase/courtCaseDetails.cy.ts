@@ -38,13 +38,13 @@ context('Court Case details Page', () => {
               'Offences (2)': [
                 {
                   offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': 'Not entered',
-                  Outcome: 'Commit to Crown Court for trial in custody',
+                  'Committed on': '15/12/2023',
+                  Outcome: 'Remanded in custody',
                 },
                 {
                   offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '15/12/2023',
-                  Outcome: 'Remanded in custody',
+                  'Committed on': 'Not entered',
+                  Outcome: 'Commit to Crown Court for trial in custody',
                 },
               ],
             },
@@ -129,11 +129,11 @@ context('Court Case details Page', () => {
               'Offences (4)': [
                 {
                   offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '15/02/2024',
+                  'Committed on': '15/12/2023',
                   Outcome: 'Imprisonment',
                   'Sentence type': 'SDS (Standard Determinate Sentence)',
                   'Sentence length': '4 years 5 months 0 weeks 0 days',
-                  'Consecutive or concurrent': 'Consecutive to count 1',
+                  'Consecutive or concurrent': 'Forthwith',
                 },
                 {
                   offenceCardHeader: 'PS90037 An offence description',
@@ -145,20 +145,20 @@ context('Court Case details Page', () => {
                 },
                 {
                   offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '15/12/2023',
-                  Outcome: 'Imprisonment',
-                  'Sentence type': 'SDS (Standard Determinate Sentence)',
-                  'Sentence length': '4 years 5 months 0 weeks 0 days',
-                  'Consecutive or concurrent': 'Forthwith',
-                },
-                {
-                  offenceCardHeader: 'PS90037 An offence description',
                   'Committed on': '03/06/2023',
                   Outcome: 'Imprisonment',
                   'Sentence type': 'SDS (Standard Determinate Sentence)',
                   'Sentence length': '4 years 5 months 0 weeks 0 days',
                   'Consecutive or concurrent':
                     'Consecutive to count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
+                },
+                {
+                  offenceCardHeader: 'PS90037 An offence description',
+                  'Committed on': '15/02/2024',
+                  Outcome: 'Imprisonment',
+                  'Sentence type': 'SDS (Standard Determinate Sentence)',
+                  'Sentence length': '4 years 5 months 0 weeks 0 days',
+                  'Consecutive or concurrent': 'Consecutive to count 1',
                 },
               ],
             },

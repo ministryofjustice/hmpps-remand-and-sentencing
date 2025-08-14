@@ -188,8 +188,13 @@ const rasCountForCharge = (c: Charge) => {
 const rasSubGroupForCharge = (c: Charge) =>
   isChargeRasMinusOne(c) ? RasGroup.RAS_WITH_MINUS_ONE_COUNT : RasGroup.RAS_WITH_COUNT
 
-const toTimeX = (d?: Date) => (d ? d.getTime() : 0)
-const offenceDate = (o: Offence) => toTimeX(o.offenceEndDate ?? o.offenceStartDate)
+const dateToTime = (d?: Date | string) => {
+  if (!d) return 0
+  const date = typeof d === 'string' ? new Date(d) : d
+
+  return date.getTime()
+}
+const offenceDate = (o: Offence) => dateToTime(o.offenceEndDate ?? o.offenceStartDate)
 
 const getOffenceCount = (o: Offence) => o.sentence?.countNumber
 const isNomisOffence = (o: Offence) => !!o.sentence && (getOffenceCount(o) == null || getOffenceCount(o) === '')

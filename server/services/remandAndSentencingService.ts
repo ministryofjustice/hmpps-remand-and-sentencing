@@ -40,7 +40,7 @@ export default class RemandAndSentencingService {
     courtCaseUuid: string,
   ): Promise<CreateCourtCaseResponse> {
     const createCourtCase = courtCaseToCreateCourtCase(prisonerId, courtCase, prisonId, courtCaseUuid)
-    return this.remandAndSentencingApiClient.createCourtCase(createCourtCase, username)
+    return this.remandAndSentencingApiClient.putCourtCase(createCourtCase, courtCaseUuid, username)
   }
 
   async searchCourtCases(
@@ -65,7 +65,7 @@ export default class RemandAndSentencingService {
       courtCaseUuid,
       appearanceUuid,
     )
-    return this.remandAndSentencingApiClient.createCourtAppearance(createCourtAppearance, username)
+    return this.remandAndSentencingApiClient.putCourtAppearance(appearanceUuid, createCourtAppearance, username)
   }
 
   async createDraftCourtCase(

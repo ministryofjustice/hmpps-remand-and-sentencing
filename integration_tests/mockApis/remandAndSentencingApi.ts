@@ -5,8 +5,9 @@ export default {
   stubCreateCourtCase: ({ nextHearingDate = '' }: { nextHearingDate: string }): SuperAgentRequest => {
     return stubFor({
       request: {
-        method: 'POST',
-        urlPattern: '/remand-and-sentencing-api/court-case',
+        method: 'PUT',
+        urlPattern:
+          '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
         bodyPatterns: [
           {
             equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"courtCaseUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-13", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}, "charges": [{"chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI"}], "warrantType": "REMAND"}]}`,
@@ -70,8 +71,9 @@ export default {
   stubCreateSentenceCourtCase: (): SuperAgentRequest => {
     return stubFor({
       request: {
-        method: 'POST',
-        urlPattern: '/remand-and-sentencing-api/court-case',
+        method: 'PUT',
+        urlPattern:
+          '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
         bodyPatterns: [
           {
             equalToJson:
@@ -782,8 +784,9 @@ export default {
 
   verifyCreateCourtCaseRequest: ({ nextHearingDate = '' }: { nextHearingDate: string }): Promise<number> => {
     return verifyRequest({
-      requestUrlPattern: '/remand-and-sentencing-api/court-case',
-      method: 'POST',
+      requestUrlPattern:
+        '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
+      method: 'PUT',
       body: {
         prisonerId: 'A1234AB',
         prisonId: 'MDI',
@@ -823,8 +826,9 @@ export default {
 
   verifyCreateSentenceCourtCaseRequest: (): Promise<number> => {
     return verifyRequest({
-      requestUrlPattern: '/remand-and-sentencing-api/court-case',
-      method: 'POST',
+      requestUrlPattern:
+        '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
+      method: 'PUT',
       body: {
         prisonerId: 'A1234AB',
         appearances: [
@@ -894,8 +898,9 @@ export default {
   stubCreateCourtAppearance: ({ nextHearingDate = '' }: { nextHearingDate: string }): SuperAgentRequest => {
     return stubFor({
       request: {
-        method: 'POST',
-        urlPattern: '/remand-and-sentencing-api/court-appearance',
+        method: 'PUT',
+        urlPathPattern:
+          '/remand-and-sentencing-api/court-appearance/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
         bodyPatterns: [
           {
             equalToJson: `{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-13", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI" }], "warrantType": "REMAND", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}}`,
@@ -914,8 +919,9 @@ export default {
 
   verifyCreateCourtAppearanceRequest: ({ nextHearingDate = '' }: { nextHearingDate: string }): Promise<number> => {
     return verifyRequest({
-      requestUrlPattern: '/remand-and-sentencing-api/court-appearance',
-      method: 'POST',
+      requestUrlPattern:
+        '/remand-and-sentencing-api/court-appearance/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
+      method: 'PUT',
       body: {
         courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
         // eslint-disable-next-line no-template-curly-in-string
@@ -956,8 +962,9 @@ export default {
   stubCreateSentenceCourtAppearance: (): SuperAgentRequest => {
     return stubFor({
       request: {
-        method: 'POST',
-        urlPattern: '/remand-and-sentencing-api/court-appearance',
+        method: 'PUT',
+        urlPattern:
+          '/remand-and-sentencing-api/court-appearance/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
         bodyPatterns: [
           {
             equalToJson:
@@ -978,8 +985,9 @@ export default {
 
   verifyCreateSentenceCourtAppearanceRequest: (): Promise<number> => {
     return verifyRequest({
-      requestUrlPattern: '/remand-and-sentencing-api/court-appearance',
-      method: 'POST',
+      requestUrlPattern:
+        '/remand-and-sentencing-api/court-appearance/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
+      method: 'PUT',
       body: {
         courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
         // eslint-disable-next-line no-template-curly-in-string

@@ -36,11 +36,15 @@ export default class RemandAndSentencingApiClient extends RestClient {
     super('Remand and Sentencing API', config.apis.remandAndSentencingApi, logger, authenticationClient)
   }
 
-  async createCourtCase(createCourtCase: CreateCourtCase, username: string): Promise<CreateCourtCaseResponse> {
-    return (await this.post(
+  async putCourtCase(
+    createCourtCase: CreateCourtCase,
+    courtCaseUuid: string,
+    username: string,
+  ): Promise<CreateCourtCaseResponse> {
+    return (await this.put(
       {
         data: createCourtCase,
-        path: '/court-case',
+        path: `/court-case/${courtCaseUuid}`,
       },
       asSystem(username),
     )) as unknown as Promise<CreateCourtCaseResponse>
@@ -104,19 +108,6 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )) as unknown as Promise<PagePagedCourtCase>
-  }
-
-  async createCourtAppearance(
-    createCourtAppearance: CreateCourtAppearance,
-    username: string,
-  ): Promise<CreateCourtAppearanceResponse> {
-    return (await this.post(
-      {
-        data: createCourtAppearance,
-        path: '/court-appearance',
-      },
-      asSystem(username),
-    )) as unknown as Promise<CreateCourtAppearanceResponse>
   }
 
   async putCourtAppearance(

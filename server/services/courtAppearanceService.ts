@@ -27,7 +27,7 @@ import {
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import RemandAndSentencingService from './remandAndSentencingService'
-import { extractKeyValue, toDateString } from '../utils/utils'
+import { extractKeyValue, orderOffences, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
@@ -892,7 +892,11 @@ export default class CourtAppearanceService {
   }
 
   getSessionCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid)
+    const appearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    return {
+      ...appearance,
+      offences: orderOffences(appearance.offences),
+    }
   }
 
   isForwithAlreadySelected(

@@ -267,7 +267,7 @@ describe('Consecutive to label display', () => {
       const $ = cheerio.load(res.text)
 
       const offenceSummaryLists = $('[data-qa="offenceSummaryList"]')
-      const lastOffenceSummaryList = offenceSummaryLists.last()
+      const lastOffenceSummaryList = offenceSummaryLists.first()
       const consecutiveText = lastOffenceSummaryList
         .find('.govuk-summary-list__row')
         .filter((_, el) => $(el).find('.govuk-summary-list__key').text().trim() === 'Consecutive or concurrent')

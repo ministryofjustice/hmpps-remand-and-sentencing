@@ -381,13 +381,12 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
-    const existingOffence =
-      this.courtAppearanceService.getOffence(
-        req.session,
-        nomsId,
-        parseInt(offenceReference, 10),
-        appearanceReference,
-      ) ?? {}
+    const existingOffence = this.courtAppearanceService.getOffence(
+      req.session,
+      nomsId,
+      parseInt(offenceReference, 10),
+      appearanceReference,
+    ) ?? { chargeUuid: crypto.randomUUID() }
     const { errors, outcome } = await this.offenceService.setOffenceOutcome(
       req.session,
       nomsId,
@@ -945,6 +944,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const nextPeriodLengthType = getNextPeriodLengthType(
       this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference).sentence ?? {
         sentenceReference: '',
+        sentenceUuid: crypto.randomUUID(),
       },
       null,
     )

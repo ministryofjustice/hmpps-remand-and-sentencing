@@ -17,6 +17,7 @@ afterEach(() => {
 describe('GET Inactive offence', () => {
   it('should render page on new journey', () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
       offenceCode: 'CC12345',
     })
     defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({

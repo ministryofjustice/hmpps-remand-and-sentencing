@@ -17,6 +17,7 @@ afterEach(() => {
 describe('GET Sentencing delete sentence in chain', () => {
   it('should render page on new journey', () => {
     defaultServices.courtAppearanceService.getOffence.mockReturnValue({
+      chargeUuid: '1',
       offenceCode: 'CC12345',
     })
     defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({

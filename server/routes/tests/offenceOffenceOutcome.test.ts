@@ -18,6 +18,7 @@ describe('GET Offence outcome', () => {
   it('should render page on new journey', () => {
     defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('REMAND')
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
       offenceCode: 'CC12345',
     })
     defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({

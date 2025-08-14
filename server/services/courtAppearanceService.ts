@@ -944,7 +944,10 @@ export default class CourtAppearanceService {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
-      const sentence = offence.sentence ?? { sentenceReference: offenceReference.toString() }
+      const sentence = offence.sentence ?? {
+        sentenceReference: offenceReference.toString(),
+        sentenceUuid: crypto.randomUUID(),
+      }
       sentence.hasCountNumber = countNumberForm.hasCountNumber
       if (countNumberForm.hasCountNumber === 'true') {
         sentence.countNumber = countNumberForm.countNumber
@@ -1234,7 +1237,10 @@ export default class CourtAppearanceService {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     if (courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
-      const sentence = offence.sentence ?? { sentenceReference: offenceReference.toString() }
+      const sentence = offence.sentence ?? {
+        sentenceReference: offenceReference.toString(),
+        sentenceUuid: crypto.randomUUID(),
+      }
       delete sentence.consecutiveToSentenceReference
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence

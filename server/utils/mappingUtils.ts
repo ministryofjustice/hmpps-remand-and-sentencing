@@ -272,6 +272,7 @@ export const pagedSentencePeriodLengthToSentenceLength = (
       description:
         periodLengthTypeHeadings[pagedSentencePeriodLength.type] ??
         pagedSentencePeriodLength.legacyData?.sentenceTermDescription,
+      uuid: pagedSentencePeriodLength.periodLengthUuid,
     } as SentenceLength
   }
   return null
@@ -308,7 +309,7 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(
   periodLengthType: string,
   description: string,
 ): SentenceLength {
-  const sentenceLength = { periodOrder: [], description, periodLengthType }
+  const sentenceLength = { periodOrder: [], description, periodLengthType, uuid: crypto.randomUUID() }
   if (alternativeSentenceLengthForm['firstSentenceLength-value']) {
     sentenceLength[alternativeSentenceLengthForm['firstSentenceLength-period']] =
       alternativeSentenceLengthForm['firstSentenceLength-value']
@@ -370,6 +371,7 @@ export function sentenceLengthFormToSentenceLength(
     periodLengthType,
     hasOverallSentenceLength: sentenceLengthForm.hasOverallSentenceLength === 'true',
     description,
+    uuid: crypto.randomUUID(),
   } as SentenceLength
 }
 

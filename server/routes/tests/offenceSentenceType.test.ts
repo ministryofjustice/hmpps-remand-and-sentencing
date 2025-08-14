@@ -18,8 +18,10 @@ describe('GET Offence Sentence Type', () => {
   it('should render page on new journey', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({ appearanceUuid: '1' })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
       offenceStartDate: dayjs({ date: 10, month: 5, year: 2023 }).toDate(),
       sentence: {
+        sentenceUuid: '2',
         sentenceReference: '0',
         convictionDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
       },

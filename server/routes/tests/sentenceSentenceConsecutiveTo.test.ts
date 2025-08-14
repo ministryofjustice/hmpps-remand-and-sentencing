@@ -22,8 +22,10 @@ describe('GET Sentence consecutive to', () => {
       offences: [],
     })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
       offenceCode: 'CC12345',
       sentence: {
+        sentenceUuid: '2',
         sentenceReference: '0',
       },
     })

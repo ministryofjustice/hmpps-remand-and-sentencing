@@ -15,7 +15,9 @@ afterEach(() => {
 
 describe('GET Offence code', () => {
   it('should render page on new journey', () => {
-    defaultServices.offenceService.getSessionOffence.mockReturnValue({})
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+    })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
       .expect('Content-Type', /html/)

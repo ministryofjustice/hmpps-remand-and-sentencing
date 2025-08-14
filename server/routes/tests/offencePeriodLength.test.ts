@@ -16,7 +16,9 @@ afterEach(() => {
 describe('GET Offence period length', () => {
   it('should render page on new journey', () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
       sentence: {
+        sentenceUuid: '2',
         sentenceReference: '0',
         periodLengths: [],
       },

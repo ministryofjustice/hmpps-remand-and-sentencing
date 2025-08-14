@@ -499,7 +499,9 @@ export default class OffenceService {
         currentOffence.sentence.sentenceTypeClassification
       ].periodLengths
         .filter(periodLengthConfig => periodLengthConfig.auto)
-        .map(periodLengthConfig => periodLengthConfig.periodLength)
+        .map(periodLengthConfig => {
+          return { ...periodLengthConfig.periodLength, uuid: crypto.randomUUID() }
+        })
       sentence.periodLengths = autoAddPeriodLengths
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
@@ -1011,10 +1013,10 @@ export default class OffenceService {
   }
 
   private getOffence(offences: Map<string, Offence>, id: string): Offence {
-    return offences[id] ?? {}
+    return offences[id] ?? { chargeUuid: crypto.randomUUID() }
   }
 
   private getSentence(offence: Offence, sentenceReference: string): Sentence {
-    return offence.sentence ?? { sentenceReference }
+    return offence.sentence ?? { sentenceReference, sentenceUuid: crypto.randomUUID() }
   }
 }

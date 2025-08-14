@@ -93,6 +93,7 @@ const singleTermLengthSentence: CourtAppearance = {
   ...baseAppearance,
   offences: [
     {
+      chargeUuid: '',
       sentence: {
         periodLengths: [
           {
@@ -125,6 +126,7 @@ const singleSentenceLengthSentence: CourtAppearance = {
   ...baseAppearance,
   offences: [
     {
+      chargeUuid: '',
       sentence: {
         periodLengths: [
           {
@@ -157,6 +159,7 @@ const multipleSupportedSentences: CourtAppearance = {
   ...baseAppearance,
   offences: [
     {
+      chargeUuid: '',
       sentence: {
         periodLengths: [
           {
@@ -183,6 +186,7 @@ const multipleSupportedSentences: CourtAppearance = {
       },
     },
     {
+      chargeUuid: '',
       sentence: {
         periodLengths: [
           {
@@ -215,6 +219,7 @@ const multipleSentencesAndUnsupported: CourtAppearance = {
   ...baseAppearance,
   offences: [
     {
+      chargeUuid: '',
       sentence: {
         periodLengths: [
           {
@@ -241,6 +246,7 @@ const multipleSentencesAndUnsupported: CourtAppearance = {
       },
     },
     {
+      chargeUuid: '',
       sentence: {
         periodLengths: [
           {

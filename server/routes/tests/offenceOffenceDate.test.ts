@@ -15,7 +15,9 @@ afterEach(() => {
 
 describe('GET Offence date', () => {
   it('should render page on new journey', () => {
-    defaultServices.offenceService.getSessionOffence.mockReturnValue({})
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+    })
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
       warrantType: 'REMAND',

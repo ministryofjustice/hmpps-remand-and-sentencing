@@ -20,10 +20,12 @@ describe('GET Delete offence', () => {
       warrantType: 'SENTENCING',
       offences: [
         {
+          chargeUuid: '2',
           offenceCode: 'CC12345',
           offenceStartDate: new Date(),
           outcomeUuid: '123',
           sentence: {
+            sentenceUuid: '3',
             sentenceReference: '0',
             convictionDate: new Date(),
             countNumber: '1',
@@ -33,6 +35,7 @@ describe('GET Delete offence', () => {
             hasCountNumber: 'true',
             periodLengths: [
               {
+                uuid: '4',
                 years: '1',
                 periodOrder: ['years', 'months', 'weeks', 'days'],
                 periodLengthType: 'SENTENCE_LENGTH',
@@ -85,10 +88,12 @@ describe('GET Delete offence', () => {
       warrantType: 'SENTENCING',
       offences: [
         {
+          chargeUuid: '2',
           offenceCode: 'CC12345',
           offenceStartDate: new Date(),
           outcomeUuid: '123',
           sentence: {
+            sentenceUuid: '3',
             sentenceReference: '0',
             convictionDate: new Date(),
             countNumber: '1',
@@ -98,6 +103,7 @@ describe('GET Delete offence', () => {
             hasCountNumber: 'true',
             periodLengths: [
               {
+                uuid: '4',
                 years: '1',
                 periodOrder: ['years', 'months', 'weeks', 'days'],
                 periodLengthType: 'SENTENCE_LENGTH',

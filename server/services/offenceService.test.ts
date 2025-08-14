@@ -27,6 +27,7 @@ describe('offenceService', () => {
     const nomsId = 'P123'
     const courtCaseReference = '1'
     const offence = {
+      chargeUuid: '1',
       offenceStartDate: new Date(),
       offenceEndDate: new Date(),
     } as Offence

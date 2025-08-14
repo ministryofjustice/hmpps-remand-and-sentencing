@@ -25,6 +25,7 @@ describe('GET Warrant Information Check Answers', () => {
       overallConvictionDateAppliedAll: 'true',
       hasOverallSentenceLength: 'true',
       overallSentenceLength: {
+        uuid: '2',
         years: '4',
         months: '5',
         periodOrder: ['years', 'months', 'weeks', 'days'],

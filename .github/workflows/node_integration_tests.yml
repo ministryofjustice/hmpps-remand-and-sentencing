@@ -17,6 +17,7 @@ jobs:
     name: Run the integration tests
     runs-on: ubuntu-latest
     strategy:
+        fail-fast: false
         matrix:
             folder: [courtCase, documents, offence, other, sentence]
     steps:

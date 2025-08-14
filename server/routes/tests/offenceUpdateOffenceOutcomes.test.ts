@@ -19,6 +19,7 @@ describe('GET Update offence outcomes', () => {
       appearanceUuid: '1',
       offences: [],
       overallSentenceLength: {
+        uuid: '2',
         years: '4',
         months: '5',
         weeks: '3',

@@ -45,7 +45,7 @@ declare module 'models' {
     offenceEndDate?: Date
     offenceCode?: string
     outcomeUuid?: string
-    chargeUuid?: string
+    chargeUuid: string
     sentence?: Sentence
     terrorRelated?: boolean
     legacyData?: Record<string, never>
@@ -55,7 +55,7 @@ declare module 'models' {
   }
 
   export interface Sentence {
-    sentenceUuid?: string
+    sentenceUuid: string
     countNumber?: string
     hasCountNumber?: string
     periodLengths?: SentenceLength[]
@@ -86,7 +86,7 @@ declare module 'models' {
       | 'OVERALL_SENTENCE_LENGTH'
     legacyData?: PeriodLengthLegacyData
     description?: string
-    uuid?: string
+    uuid: string
   }
 
   export interface TaskListItem {

@@ -21,8 +21,10 @@ describe('GET First sentence consecutive to', () => {
       warrantDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
     })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
       offenceCode: 'CC12345',
       sentence: {
+        sentenceUuid: '2',
         sentenceReference: '0',
       },
     })

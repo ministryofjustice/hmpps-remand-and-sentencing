@@ -542,7 +542,7 @@ export default class CourtAppearanceService {
             'OVERALL_SENTENCE_LENGTH',
             periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
           ),
-          uuid: courtAppearance.overallSentenceLength?.uuid,
+          uuid: courtAppearance.overallSentenceLength?.uuid ?? crypto.randomUUID(),
         }
       } else {
         delete courtAppearance.overallSentenceLength

@@ -198,7 +198,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    if (Object.keys(offence).length === 0) {
+    if (Object.keys(offence).length === 1 && Object.keys(offence).includes('chargeUuid')) {
       const existingOffence = this.courtAppearanceService.getOffence(
         req.session,
         nomsId,

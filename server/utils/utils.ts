@@ -219,6 +219,7 @@ const rasCountForOffence = (o: Offence) => {
 const rasSubRankForOffence = (o: Offence) => (isOffenceRasMinusOne(o) ? 0 : 1)
 
 export function orderCharges(charges: Charge[]): Charge[] {
+  if (!charges) return charges
   return [...charges].sort((a, b) => {
     const groupA = groupRank(a)
     const groupB = groupRank(b)
@@ -239,6 +240,7 @@ export function orderCharges(charges: Charge[]): Charge[] {
 }
 
 export function orderOffences(offences: Offence[]): Offence[] {
+  if (!offences) return offences
   return [...offences].sort((a, b) => {
     const groupA = groupOffence(a)
     const groupB = groupOffence(b)

@@ -12,7 +12,7 @@ import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import trimForm from '../utils/trim'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
-import { extractKeyValue, getUiDocumentType } from '../utils/utils'
+import { extractKeyValue, getUiDocumentType, orderOffences } from '../utils/utils'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtRegisterService from '../services/courtRegisterService'
 
@@ -289,7 +289,7 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      appearance,
+      appearance: { ...appearance, offences: orderOffences(appearance.offences) },
       offenceMap,
       courtMap,
       sentenceTypeMap,

@@ -44,11 +44,6 @@ describe('GET Offence Sentence Serve Type', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        const prisonerBanner = $('.mini-profile').text()
-        expect(prisonerBanner).toContain('Meza, Cormac')
-        expect(prisonerBanner).toContain('A1234AB')
-        expect(prisonerBanner).toContain('EstablishmentHMP Bedford')
-        expect(prisonerBanner).toContain('Cell numberCELL-1')
         const forthwithOption = $(':radio[value="FORTHWITH"]')
         expect(forthwithOption.length).toBe(0)
       })

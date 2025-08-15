@@ -216,7 +216,7 @@ context('Add Offence Offence Date Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem All dates must be within the last 100 years from today’s date')
 
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('11')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('5')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2025')
     offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('01')

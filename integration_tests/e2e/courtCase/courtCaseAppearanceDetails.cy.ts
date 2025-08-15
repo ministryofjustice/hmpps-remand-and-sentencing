@@ -190,7 +190,7 @@ context('Court Case Appearance details Page', () => {
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
       offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-      offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2024')
+      offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
       offenceOffenceDatePage.continueButton().click()
 
       const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
@@ -220,7 +220,7 @@ context('Court Case Appearance details Page', () => {
           },
           {
             offenceCardHeader: 'PS90037 An offence description',
-            'Committed on': '12/05/2024',
+            'Committed on': '12/05/2023',
             Outcome: 'Remanded in custody',
           },
         ])

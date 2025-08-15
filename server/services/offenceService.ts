@@ -55,7 +55,7 @@ export default class OffenceService {
     let startDateString = ''
     const warrantDateString = toDateString(
       warrantDate.getFullYear().toString(),
-      warrantDate.getMonth().toString(),
+      (warrantDate.getMonth() + 1).toString(),
       warrantDate.getDate().toString(),
     )
     if (

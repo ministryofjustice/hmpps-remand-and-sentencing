@@ -83,11 +83,17 @@ export default class CourtCaseRoutes extends BaseRoutes {
       consecutiveToSentenceUuids,
       req.user.username,
     )
-
-    const chargeCodes = courtCases.content
-      .flatMap(courtCase => courtCase.latestCourtAppearance.charges)
+    const charges = courtCases.content.flatMap(courtCase => courtCase.latestCourtAppearance.charges)
+    const chargeCodes = charges
       .map(charge => charge.offenceCode)
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
+    const chargeDescriptions: [string, string][] = Array.from(
+      new Set(
+        charges
+          .filter(charge => charge.legacyData?.offenceDescription)
+          .map(charge => [charge.offenceCode, charge.legacyData.offenceDescription]),
+      ),
+    )
     const courtIds = courtCases.content
       .flatMap(courtCase =>
         [
@@ -101,7 +107,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       .flat()
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
     const [offenceMap, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username),
+      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username, chargeDescriptions),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
     ])
     const consecutiveToSentenceDetailsMap = Object.fromEntries(
@@ -183,9 +189,16 @@ export default class CourtCaseRoutes extends BaseRoutes {
         courtCaseDetails.mergedToCaseDetails?.courtCode ? [courtCaseDetails.mergedToCaseDetails.courtCode] : [],
       )
       .filter(courtId => courtId !== undefined && courtId !== null)
-
+    const chargeDescriptions: [string, string][] = Array.from(
+      new Set(
+        courtCaseDetails.appearances
+          .flatMap(appearance => appearance.charges)
+          .filter(charge => charge.legacyData?.offenceDescription)
+          .map(charge => [charge.offenceCode, charge.legacyData.offenceDescription]),
+      ),
+    )
     const [offenceMap, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username),
+      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username, chargeDescriptions),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
     ])
     const allSentenceUuids = courtCaseDetails.appearances

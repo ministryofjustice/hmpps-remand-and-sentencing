@@ -143,10 +143,13 @@ export default {
                     },
                   },
                   {
-                    offenceCode: 'PS90037',
+                    offenceCode: 'PS11111',
                     outcome: {
                       outcomeUuid: '92e69bb5-9769-478b-9ee6-77c91808d9af',
                       outcomeName: 'Commit to Crown Court for trial in custody',
+                    },
+                    legacyData: {
+                      offenceDescription: 'A legacy offence description',
                     },
                   },
                 ],

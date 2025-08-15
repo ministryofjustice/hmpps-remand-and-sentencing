@@ -38,6 +38,7 @@ context('New Court Case journey', () => {
     cy.task('stubCreateSentenceCourtCase')
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
+    cy.task('stubGetOffencesByCodes', {})
     cy.task('stubUploadWarrant')
     cy.task('stubGetCourtById', {})
     cy.task('stubGetCourtsByIds')

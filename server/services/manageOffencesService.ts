@@ -16,12 +16,15 @@ export default class ManageOffencesService {
     return this.manageOffencesApiClient.getOffencesByCodes(offenceCodes, username)
   }
 
-  async getOffenceMap(offenceCodes: string[], username: string) {
-    let offenceMap = {}
+  async getOffenceMap(offenceCodes: string[], username: string, offenceDescriptions: [string, string][]) {
+    let offenceMap = Object.fromEntries(offenceDescriptions)
     const toSearchCodes = offenceCodes.filter(offenceCode => offenceCode)
     if (toSearchCodes.length) {
       const offences = await this.getOffencesByCodes(Array.from(new Set(toSearchCodes)), username)
-      offenceMap = Object.fromEntries(offences.map(offence => [offence.code, offence.description]))
+      offenceMap = {
+        ...offenceMap,
+        ...Object.fromEntries(offences.map(offence => [offence.code, offence.description])),
+      }
     }
     return offenceMap
   }

@@ -264,3 +264,13 @@ export function orderOffences(offences: Offence[]): Offence[] {
     return offenceDate(b) - offenceDate(a)
   })
 }
+
+export function offencesToOffenceDescriptions(offences: Offence[]): [string, string][] {
+  return Array.from(
+    new Set(
+      offences
+        .filter(offence => offence.legacyData?.offenceDescription)
+        .map(offence => [offence.offenceCode, offence.legacyData.offenceDescription]),
+    ),
+  )
+}

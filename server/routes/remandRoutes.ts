@@ -9,7 +9,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtRegisterService from '../services/courtRegisterService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
-import { getUiDocumentType } from '../utils/utils'
+import { getUiDocumentType, orderOffences } from '../utils/utils'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -123,7 +123,7 @@ export default class RemandRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      appearance,
+      appearance: { ...appearance, offences: orderOffences(appearance.offences) },
       offenceMap,
       courtMap,
       sentenceTypeMap,

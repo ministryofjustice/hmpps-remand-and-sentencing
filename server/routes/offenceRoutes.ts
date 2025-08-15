@@ -36,6 +36,7 @@ import {
   allPeriodLengthTypesEntered,
   extractKeyValue,
   getNextPeriodLengthType,
+  orderOffences,
   outcomeValueOrLegacy,
   sentenceTypeValueOrLegacy,
 } from '../utils/utils'
@@ -1653,7 +1654,7 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,
-      courtAppearance,
+      courtAppearance: { ...courtAppearance, offences: orderOffences(courtAppearance.offences) },
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,

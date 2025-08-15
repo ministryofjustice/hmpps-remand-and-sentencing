@@ -105,3 +105,7 @@ export type SentencesAfterOnOtherCourtAppearanceDetailsResponse =
 export type MergedFromCase = components['schemas']['MergedFromCase']
 
 export type MergedToCaseDetails = components['schemas']['MergedToCaseDetails']
+
+export type SentenceLegacyData = components['schemas']['SentenceLegacyData']
+
+export type Sentence = components['schemas']['Sentence']

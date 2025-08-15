@@ -214,14 +214,14 @@ context('Court Case Appearance details Page', () => {
         .should('deep.equal', [
           {
             offenceCardHeader: 'PS90037 An offence description',
-            'Committed on': '15/12/2023',
+            'Committed on': '12/05/2024',
             Outcome: 'Remanded in custody',
-            'Merged from': 'C894623 at Southampton Magistrate Court',
           },
           {
             offenceCardHeader: 'PS90037 An offence description',
-            'Committed on': '12/05/2023',
+            'Committed on': '15/12/2023',
             Outcome: 'Remanded in custody',
+            'Merged from': 'C894623 at Southampton Magistrate Court',
           },
         ])
     })

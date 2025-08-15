@@ -21,6 +21,8 @@ import atLeastOneNumberInString from './atLeastOneNumberInString'
 import isNotTrue from './isNotTrue'
 import isWithinLast100Years from './isWithinLast100Years'
 import isWithinNextOneYear from './isWithinNextOneYear'
+import isBeforeWarrantDate from './isBeforeWarrantDate'
+import isBeforeConvictionDate from './isBeforeConvictionDate'
 
 export default function validate<T>(
   form: T,
@@ -54,6 +56,8 @@ Validator.registerImplicit('requiredFieldWith', requiredFieldWith, 'This field i
 Validator.register('isPastOrCurrentDate', isPastOrCurrentDate, 'date cannot be a date in the future')
 Validator.register('isPastDate', isPastDate, 'date must be in the past')
 Validator.register('isAfterDate', isAfterDate, 'date must be after')
+Validator.register('isBeforeWarrantDate', isBeforeWarrantDate, 'date must be before warrant date')
+Validator.register('isBeforeConvictionDate', isBeforeConvictionDate, 'date must be before conviction date')
 Validator.register('isFutureOrCurrentDate', isFutureOrCurrentDate, 'date cannot be date in the past')
 Validator.registerImplicit(
   'requireAlternativeSentenceLength',

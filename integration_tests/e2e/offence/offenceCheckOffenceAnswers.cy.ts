@@ -31,12 +31,19 @@ context('Check Offence Answers Page', () => {
     ])
     cy.task('stubGetChargeOutcomeById', {})
     cy.signIn()
+
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
   })
 
   context('remand', () => {
     beforeEach(() => {
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('14')
+      courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('5')
+      courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
+      courtCaseWarrantDatePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()

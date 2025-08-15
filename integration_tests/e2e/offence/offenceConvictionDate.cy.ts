@@ -98,6 +98,12 @@ context('Add Offence Conviction Date Page', () => {
   })
 
   it('Conviction date must be after offence start and end dates', () => {
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('08')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('07')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
+    courtCaseWarrantDatePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('16')

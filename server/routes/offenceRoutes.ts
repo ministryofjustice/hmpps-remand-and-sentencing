@@ -151,7 +151,6 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       courtCaseReference,
       offenceDateForm,
-      addOrEditCourtAppearance,
       this.courtAppearanceService.getWarrantDate(req.session, nomsId, appearanceReference),
       this.courtAppearanceService.getOverallConvictionDate(req.session, nomsId, appearanceReference),
     )

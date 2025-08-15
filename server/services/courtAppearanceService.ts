@@ -1128,13 +1128,7 @@ export default class CourtAppearanceService {
         const { sentence } = offence
         const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
         const convictionDate = dayjs(sentence.convictionDate)
-        if (offenceDate.isAfter(convictionDate)) {
-          hasInvalidated = true
-          delete sentence.convictionDate
-          delete sentence.sentenceTypeClassification
-          delete sentence.sentenceTypeId
-          delete sentence.periodLengths
-        } else if (sentence.sentenceTypeId) {
+        if (sentence.sentenceTypeId) {
           const prisonerDateOfBirth = dayjs(dateOfBirth)
           const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
           const sentenceTypeStillValid = await this.remandAndSentencingService.getIsSentenceTypeStillValid(
@@ -1146,7 +1140,6 @@ export default class CourtAppearanceService {
           )
           if (!sentenceTypeStillValid.isStillValid) {
             hasInvalidated = true
-            delete sentence.convictionDate
             delete sentence.sentenceTypeClassification
             delete sentence.sentenceTypeId
             delete sentence.periodLengths

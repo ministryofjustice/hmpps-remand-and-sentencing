@@ -106,9 +106,11 @@ export default {
   stubGetOffencesByCodes: ({
     offenceCode = 'PS90037',
     offenceDescription = 'An offence description',
+    legacyOffenceCode = '',
   }: {
     offenceCode: string
     offenceDescription: string
+    legacyOffenceCode: string
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -116,7 +118,7 @@ export default {
         urlPath: '/manage-offences-api/offences/code/multiple',
         queryParameters: {
           offenceCodes: {
-            equalTo: offenceCode,
+            equalTo: offenceCode + (legacyOffenceCode ? `,${legacyOffenceCode}` : ''),
           },
         },
       },

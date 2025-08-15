@@ -6,7 +6,11 @@ context('Start Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubSearchCourtCases', {})
-    cy.task('stubGetOffencesByCodes', {})
+    cy.task('stubGetOffencesByCodes', {
+      offenceCode: 'PS90037',
+      offenceDescription: 'An offence description',
+      legacyOffenceCode: 'PS11111',
+    })
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetConsecutiveToDetails', {})
@@ -69,7 +73,7 @@ context('Start Page', () => {
           Outcome: 'Remanded in custody',
         },
         {
-          offenceCardHeader: 'PS90037 An offence description',
+          offenceCardHeader: 'PS11111 A legacy offence description',
           'Committed on': 'Not entered',
           Outcome: 'Commit to Crown Court for trial in custody',
         },

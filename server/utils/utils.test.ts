@@ -94,7 +94,7 @@ const withNoSentence = (id: string, { start, end }: { start?: string; end?: stri
   makeCharge(id, { offenceStartDate: start, offenceEndDate: end })
 
 describe('orderCharges', () => {
-  test('groups in order: NOMIS -> RaS -> No sentence (AC1)', () => {
+  test('groups in order: NOMIS -> RaS -> No sentence', () => {
     const nomis = withSentence('N1', { chargeNumber: undefined, nomisLine: '5' }) // NOMIS
     const ras = withSentence('R1', { chargeNumber: '2' }) // RaS with count
     const none = withNoSentence('X1', { start: '2024-01-01' }) // No sentence
@@ -105,7 +105,7 @@ describe('orderCharges', () => {
     expect(out).toEqual(['N1', 'R1', 'X1'])
   })
 
-  test('NOMIS: ordered by nomisLineReference ascending (AC2)', () => {
+  test('NOMIS: ordered by nomisLineReference ascending', () => {
     const n3 = withSentence('N3', { chargeNumber: undefined, nomisLine: '3' })
     const n1 = withSentence('N1', { chargeNumber: undefined, nomisLine: '1' })
     const n2 = withSentence('N2', { chargeNumber: undefined, nomisLine: '2' })
@@ -115,7 +115,7 @@ describe('orderCharges', () => {
     expect(out).toEqual(['N1', 'N2', 'N3', 'NB'])
   })
 
-  test('RaS: "-1" counts first by offence date DESC (AC3 part 1)', () => {
+  test('RaS: -1 counts first by offence date DESC', () => {
     const mOld = withSentence('M_OLD', { chargeNumber: '-1', start: '2024-02-01' })
     const mNew = withSentence('M_NEW', { chargeNumber: '-1', end: '2024-03-10' }) // end date should be used and is newer
 
@@ -126,7 +126,7 @@ describe('orderCharges', () => {
     expect(out).toEqual(['M_NEW', 'M_OLD', 'C1', 'C2'])
   })
 
-  test('RaS: counted charges ordered by count ascending (AC3 part 2)', () => {
+  test('RaS: counted charges ordered by count ascending', () => {
     const r5 = withSentence('R5', { chargeNumber: '5' })
     const r1 = withSentence('R1', { chargeNumber: '1' })
     const r0 = withSentence('R0', { chargeNumber: '0' })
@@ -171,10 +171,10 @@ describe('orderCharges', () => {
       'N1',
       'N2',
       'NB',
-      // RaS "-1" by date desc
+      // RaS -1 by date desc
       'M_NEW',
       'M_OLD',
-      // RaS counted by count asc
+      // RaS by count asc
       'R1',
       'R2',
       // No sentence by date desc
@@ -191,7 +191,7 @@ describe('orderCharges', () => {
   })
 
   test('Invalid/missing dates default to 0 and sort to the end of their subgroup where DESC is used', () => {
-    // For "-1" subgroup (DESC by date), missing date should be treated as 0 => last among "-1"
+    // For -1 subgroup (DESC by date), missing date should be treated as 0 => last among -1
     const mNoDate = withSentence('M_NODATE', { chargeNumber: '-1' })
     const mHasDate = withSentence('M_HASDATE', { chargeNumber: '-1', start: '2024-01-01' })
 
@@ -215,7 +215,7 @@ describe('orderCharges', () => {
     expect(out).toEqual(['LOW_COUNT_HIGH_LINE', 'HIGH_COUNT_LOW_LINE'])
   })
 
-  test('RaS "-1": when both nomisLineReference and "-1" present, prioritise date DESC (ignore nomis line)', () => {
+  test('RaS -1: when both nomisLineReference and -1 present, prioritise date DESC (ignore nomis line)', () => {
     const olderHighLine = withSentence('OLDER_HIGH_LINE', {
       chargeNumber: '-1',
       nomisLine: '999',
@@ -297,7 +297,7 @@ const withOffenceNoSentence = (code: string, { start, end }: { start?: string; e
   makeOffence(code, { offenceStartDate: d(start), offenceEndDate: d(end) })
 
 describe('orderOffences', () => {
-  test('groups in order: NOMIS -> RaS -> No sentence (AC1)', () => {
+  test('groups in order: NOMIS -> RaS -> No sentence', () => {
     const nomis = withOffenceSentence('N1', { chargeNumber: undefined, nomisLine: '5' }) // NOMIS
     const ras = withOffenceSentence('R1', { chargeNumber: '2' }) // RaS with count
     const none = withOffenceNoSentence('X1', { start: '2024-01-01' }) // No sentence
@@ -308,7 +308,7 @@ describe('orderOffences', () => {
     expect(out).toEqual(['N1', 'R1', 'X1'])
   })
 
-  test('NOMIS: ordered by nomisLineReference ascending (AC2)', () => {
+  test('NOMIS: ordered by nomisLineReference ascending', () => {
     const n3 = withOffenceSentence('N3', { chargeNumber: undefined, nomisLine: '3' })
     const n1 = withOffenceSentence('N1', { chargeNumber: undefined, nomisLine: '1' })
     const n2 = withOffenceSentence('N2', { chargeNumber: undefined, nomisLine: '2' })
@@ -318,7 +318,7 @@ describe('orderOffences', () => {
     expect(out).toEqual(['N1', 'N2', 'N3', 'NB'])
   })
 
-  test('RaS: "-1" counts first by offence date DESC (AC3 part 1)', () => {
+  test('RaS: -1 counts first by offence date DESC', () => {
     const mOld = withOffenceSentence('M_OLD', { chargeNumber: '-1', start: '2024-02-01' })
     const mNew = withOffenceSentence('M_NEW', { chargeNumber: '-1', end: '2024-03-10' }) // end date preferred, newer
     const c1 = withOffenceSentence('C1', { chargeNumber: '1' })
@@ -328,7 +328,7 @@ describe('orderOffences', () => {
     expect(out).toEqual(['M_NEW', 'M_OLD', 'C1', 'C2'])
   })
 
-  test('RaS: counted offences ordered by count ascending (AC3 part 2)', () => {
+  test('RaS: counted offences ordered by count ascending', () => {
     const r5 = withOffenceSentence('R5', { chargeNumber: '5' })
     const r1 = withOffenceSentence('R1', { chargeNumber: '1' })
     const r0 = withOffenceSentence('R0', { chargeNumber: '0' })
@@ -338,7 +338,7 @@ describe('orderOffences', () => {
     expect(out).toEqual(['R0', 'R1', 'R5', 'R10'])
   })
 
-  test('No sentence: ordered by offence date DESC (AC4)', () => {
+  test('No sentence: ordered by offence date DESC', () => {
     const a = withOffenceNoSentence('A', { start: '2024-01-02' })
     const b = withOffenceNoSentence('B', { end: '2024-03-01' }) // end date preferred, newer
     const c = withOffenceNoSentence('C', { start: '2023-12-31' })
@@ -353,7 +353,7 @@ describe('orderOffences', () => {
     const n1 = withOffenceSentence('N1', { chargeNumber: undefined, nomisLine: '1' })
     const nBad = withOffenceSentence('NB', { chargeNumber: undefined, nomisLine: 'ZZZ' })
 
-    // RaS "-1" (by date desc)
+    // RaS -1 (by date desc)
     const mOld = withOffenceSentence('M_OLD', { chargeNumber: '-1', start: '2024-01-01' })
     const mNew = withOffenceSentence('M_NEW', { chargeNumber: '-1', end: '2024-06-15' })
 
@@ -373,7 +373,7 @@ describe('orderOffences', () => {
       'N1',
       'N2',
       'NB',
-      // RaS "-1" by date desc
+      // RaS -1 by date desc
       'M_NEW',
       'M_OLD',
       // RaS counted by count asc
@@ -416,7 +416,7 @@ describe('orderOffences', () => {
     expect(out).toEqual(['LOW_COUNT_HIGH_LINE', 'HIGH_COUNT_LOW_LINE'])
   })
 
-  test('RaS "-1": when both nomisLineReference and "-1" present, prioritise date DESC (ignore nomis line)', () => {
+  test('RaS -1: when both nomisLineReference and -1 present, prioritise date DESC (ignore nomis line)', () => {
     const olderHighLine = withOffenceSentence('OLDER_HIGH_LINE', {
       chargeNumber: '-1',
       nomisLine: '999',

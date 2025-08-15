@@ -107,7 +107,7 @@ export default class OffenceService {
         isValidOffenceEndDateRule += `|isAfterDate:${startDateString},${endDateString}`
       }
       if (convictionDateString) {
-        isValidOffenceStartDateRule += `|isBeforeConvictionDate:${convictionDateString},${endDateString}`
+        isValidOffenceEndDateRule += `|isBeforeConvictionDate:${convictionDateString},${endDateString}`
       }
     }
 

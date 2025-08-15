@@ -308,10 +308,7 @@ context('Add Offence Edit offence Page', () => {
         convictionDate: '2023-05-13',
         offenceDate: '2023-05-12',
       })
-      offenceEditOffencePage.editFieldLink('0', 'offence-date').click()
-      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
-      offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('12')
-      offenceOffenceDatePage.continueButton().click()
+      offenceEditOffencePage.editFieldLink('0', 'conviction-date').click()
       const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
       offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('13')
       offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('5')

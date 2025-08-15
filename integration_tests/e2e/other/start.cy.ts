@@ -65,13 +65,13 @@ context('Start Page', () => {
       .should('deep.equal', [
         {
           offenceCardHeader: 'PS90037 An offence description',
-          'Committed on': 'Not entered',
-          Outcome: 'Commit to Crown Court for trial in custody',
+          'Committed on': '15/12/2023',
+          Outcome: 'Remanded in custody',
         },
         {
           offenceCardHeader: 'PS90037 An offence description',
-          'Committed on': '15/12/2023',
-          Outcome: 'Remanded in custody',
+          'Committed on': 'Not entered',
+          Outcome: 'Commit to Crown Court for trial in custody',
         },
       ])
   })
@@ -100,6 +100,15 @@ context('Start Page', () => {
       .should('deep.equal', [
         {
           offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '11/10/2023',
+          Outcome: 'Imprisonment',
+          'Consecutive or concurrent': 'Forthwith',
+          'Conviction date': '12/10/2023',
+          'Sentence type': 'A NOMIS Sentence Type',
+          'Tariff length': '1 years 0 months 0 weeks 0 days',
+        },
+        {
+          offenceCardHeader: 'PS90037 An offence description',
           'Committed on': '11/05/2024',
           Outcome: 'Imprisonment',
           'Conviction date': '11/05/2024',
@@ -107,25 +116,6 @@ context('Start Page', () => {
           'Fine amount': '£10',
           'Consecutive or concurrent': 'Concurrent',
           'Term length': '0 years 6 months 0 weeks 0 days',
-        },
-        {
-          offenceCardHeader: 'PS90037 An offence description',
-          'Committed on': '07/01/2024',
-          Outcome: 'Imprisonment',
-          'Conviction date': '11/05/2024',
-          'Sentence type': 'A NOMIS Fine Sentence Type',
-          'Fine amount': '£10',
-          'Consecutive or concurrent': 'Consecutive to count 1',
-          'Term length': '0 years 3 months 0 weeks 0 days',
-        },
-        {
-          offenceCardHeader: 'PS90037 An offence description',
-          'Committed on': '11/10/2023',
-          Outcome: 'Imprisonment',
-          'Consecutive or concurrent': 'Forthwith',
-          'Conviction date': '12/10/2023',
-          'Sentence type': 'A NOMIS Sentence Type',
-          'Tariff length': '1 years 0 months 0 weeks 0 days',
         },
         {
           offenceCardHeader: 'PS90037 An offence description',
@@ -137,6 +127,16 @@ context('Start Page', () => {
           'Sentence type': 'A NOMIS Fine Sentence Type',
           'Fine amount': '£10',
           'Term length': '0 years 2 months 0 weeks 0 days',
+        },
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '07/01/2024',
+          Outcome: 'Imprisonment',
+          'Conviction date': '11/05/2024',
+          'Sentence type': 'A NOMIS Fine Sentence Type',
+          'Fine amount': '£10',
+          'Consecutive or concurrent': 'Consecutive to count 1',
+          'Term length': '0 years 3 months 0 weeks 0 days',
         },
       ])
   })

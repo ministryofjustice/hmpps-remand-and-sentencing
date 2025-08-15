@@ -10,6 +10,12 @@ context('Add Offence Offence Date Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('8')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('7')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2025')
+    courtCaseWarrantDatePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
     offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
   })
@@ -111,13 +117,6 @@ context('Add Offence Offence Date Page', () => {
   })
 
   it('Offence dates must be before the warrant date', () => {
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('08')
-    courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('07')
-    courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
-    courtCaseWarrantDatePage.continueButton().click()
-
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('08')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
@@ -152,13 +151,6 @@ context('Add Offence Offence Date Page', () => {
   })
 
   it('Offence dates must be before the overall conviction date', () => {
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('08')
-    courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('07')
-    courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
-    courtCaseWarrantDatePage.continueButton().click()
-
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-conviction-date')
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
     courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
@@ -224,7 +216,7 @@ context('Add Offence Offence Date Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem All dates must be within the last 100 years from today’s date')
 
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('11')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('5')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2025')
     offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('01')

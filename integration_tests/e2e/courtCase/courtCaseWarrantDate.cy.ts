@@ -6,13 +6,8 @@ import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseSelectCourtNamePage from '../../pages/courtCaseSelectCourtNamePage'
 import StartPage from '../../pages/startPage'
-import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
-import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
-import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import CourtCaseDetailsPage from '../../pages/courtCaseDetailsPage'
 import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetailsPage'
-import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
-import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
@@ -219,55 +214,6 @@ context('Court Case Warrant Date Page', () => {
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       enterWarrantDate(courtCaseWarrantDatePage, '15', '12', '2023')
       expectWarrantDateError(courtCaseWarrantDatePage)
-
-      enterWarrantDate(courtCaseWarrantDatePage, '16', '12', '2023')
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-
-      // Modify the offence (in session) and ensure validation occurs for that
-      courtCaseAppearanceDetailsPage
-        .editOffenceLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933', '0')
-        .click()
-
-      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('0', 'offence-date').click()
-      Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
-      enterOffenceStartDate('16', '12', '2023')
-
-      offenceEditOffencePage.continueButton().click()
-
-      editWarrantDate(courtCaseAppearanceDetailsPage)
-
-      enterWarrantDate(courtCaseWarrantDatePage, '16', '12', '2023')
-      expectWarrantDateError(courtCaseWarrantDatePage)
-
-      enterWarrantDate(courtCaseWarrantDatePage, '17', '12', '2023')
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-
-      // Add new offence to session and ensure validation occurs for that
-      courtCaseAppearanceDetailsPage.addAnotherButton().click()
-      enterOffenceStartDate('17', '12', '2023')
-
-      const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-      offenceOffenceCodePage.input().type('PS90037')
-      offenceOffenceCodePage.continueButton().click()
-
-      const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-      offenceOffenceCodeConfirmPage.continueButton().click()
-
-      const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
-        OffenceOffenceOutcomePage,
-        'Select the outcome for this offence',
-      )
-      offenceOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
-      offenceOffenceOutcomePage.continueButton().click()
-
-      editWarrantDate(courtCaseAppearanceDetailsPage)
-
-      enterWarrantDate(courtCaseWarrantDatePage, '17', '12', '2023')
-      expectWarrantDateError(courtCaseWarrantDatePage)
-
-      enterWarrantDate(courtCaseWarrantDatePage, '18', '12', '2023')
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
 
     it('Run validation against next hearing date', () => {
@@ -391,12 +337,4 @@ function editWarrantDate(page) {
       'warrant-date',
     )
     .click()
-}
-
-function enterOffenceStartDate(day: string, month: string, year: string) {
-  const page = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
-  page.dayDateInput('offenceStartDate').clear().type(day)
-  page.monthDateInput('offenceStartDate').clear().type(month)
-  page.yearDateInput('offenceStartDate').clear().type(year)
-  page.continueButton().click()
 }

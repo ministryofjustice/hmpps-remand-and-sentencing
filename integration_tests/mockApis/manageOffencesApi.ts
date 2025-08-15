@@ -106,7 +106,7 @@ export default {
   stubGetOffencesByCodes: ({
     offenceCode = 'PS90037',
     offenceDescription = 'An offence description',
-    legacyOffenceCode = '',
+    legacyOffenceCode = 'PS11111',
   }: {
     offenceCode: string
     offenceDescription: string
@@ -118,7 +118,14 @@ export default {
         urlPath: '/manage-offences-api/offences/code/multiple',
         queryParameters: {
           offenceCodes: {
-            equalTo: offenceCode + (legacyOffenceCode ? `,${legacyOffenceCode}` : ''),
+            or: [
+              {
+                equalTo: offenceCode,
+              },
+              {
+                equalTo: `${offenceCode},${legacyOffenceCode}`,
+              },
+            ],
           },
         },
       },

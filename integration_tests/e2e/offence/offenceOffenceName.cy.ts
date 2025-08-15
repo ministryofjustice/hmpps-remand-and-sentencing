@@ -4,6 +4,7 @@ import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
+import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 
 context('Add Offence Offence Name Page', () => {
   let offenceOffenceNamePage: OffenceOffenceNamePage
@@ -50,6 +51,12 @@ context('Add Offence Offence Name Page', () => {
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
     courtCaseWarrantTypePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('20')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
+    courtCaseWarrantDatePage.continueButton().click()
 
     cy.visit(`/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date`)
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')

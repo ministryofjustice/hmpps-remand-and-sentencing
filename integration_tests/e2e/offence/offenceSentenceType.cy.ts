@@ -1,3 +1,4 @@
+import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
@@ -16,6 +17,12 @@ context('Add Offence Sentence Type Page', () => {
     ])
     cy.task('stubGetSentenceTypeById', {})
     cy.signIn()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('20')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
+    courtCaseWarrantDatePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
     const offenceOffenceDatePage = Page.verifyOnPageTitle(
       OffenceOffenceDatePage,

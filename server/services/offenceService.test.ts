@@ -1,6 +1,7 @@
 import type { Offence } from 'models'
 import type { OffenceOffenceDateForm } from 'forms'
 import { SessionData } from 'express-session'
+import dayjs from 'dayjs'
 import ManageOffencesService from './manageOffencesService'
 import OffenceOutcomeService from './offenceOutcomeService'
 import OffenceService from './offenceService'
@@ -46,9 +47,8 @@ describe('offenceService', () => {
       nomsId,
       courtCaseReference,
       offenceOffenceDateForm,
-      '',
-      new Date(),
-      new Date(),
+      dayjs().add(10, 'days').toDate(),
+      dayjs().add(10, 'days').toDate(),
     )
     expect(errors.length).toBe(0)
     expect(offence.offenceEndDate).toBeUndefined()

@@ -33,6 +33,7 @@ import {
   sortByDateDesc,
   getUiDocumentType,
   formatDate,
+  orderOffences,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
@@ -1161,7 +1162,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
     return res.render('pages/courtAppearance/check-answers', {
       nomsId,
-      courtAppearance,
+      courtAppearance: { ...courtAppearance, offences: orderOffences(courtAppearance.offences) },
       courtName,
       overallCaseOutcome,
       courtCaseReference,

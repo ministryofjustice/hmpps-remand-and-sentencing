@@ -1,8 +1,9 @@
 import dayjs from 'dayjs'
-import type { Sentence } from 'models'
+import type { Sentence, Offence } from 'models'
 import config from '../config'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import {
+  Charge,
   CourtAppearanceLegacyData,
   PeriodLengthLegacyData,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -142,4 +143,124 @@ export function getUiDocumentType(documentType: string, warrantType: string): st
     default:
       return 'Court Document'
   }
+}
+
+enum OffenceGroup {
+  NOMIS = 0,
+  RAS = 1,
+  NO_SENTENCE = 2,
+}
+
+enum RasGroup {
+  RAS_WITH_MINUS_ONE_COUNT = 0,
+  RAS_WITH_COUNT = 1,
+}
+
+const toTime = (iso?: string) => (iso ? new Date(iso).getTime() : 0)
+const chargeDate = (c: Charge) => toTime(c.offenceEndDate ?? c.offenceStartDate)
+
+const getChargeCount = (c: Charge) => c.sentence?.chargeNumber
+const isNomisCharge = (c: Charge) => c.sentence && (getChargeCount(c) == null || getChargeCount(c) === '')
+const isChargeRasMinusOne = (c: Charge) => c.sentence && getChargeCount(c) === '-1'
+const isRasChargeWithCount = (c: Charge) => {
+  if (!c.sentence) return false
+  const n = Number(getChargeCount(c))
+  return Number.isFinite(n) && n >= 0
+}
+
+const groupRank = (c: Charge) => {
+  if (isNomisCharge(c)) return OffenceGroup.NOMIS
+  if (isChargeRasMinusOne(c) || isRasChargeWithCount(c)) return OffenceGroup.RAS
+  return OffenceGroup.NO_SENTENCE
+}
+
+const nomisLineNumberFromCharge = (c: Charge) => {
+  const val = c.sentence?.legacyData?.nomisLineReference
+  const n = Number(val)
+  return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY
+}
+
+const rasCountForCharge = (c: Charge) => {
+  const n = Number(getChargeCount(c))
+  return Number.isFinite(n) && n >= 0 ? n : Number.POSITIVE_INFINITY
+}
+
+const rasSubGroupForCharge = (c: Charge) =>
+  isChargeRasMinusOne(c) ? RasGroup.RAS_WITH_MINUS_ONE_COUNT : RasGroup.RAS_WITH_COUNT
+
+const dateToTime = (d?: Date | string) => {
+  if (!d) return 0
+  const date = typeof d === 'string' ? new Date(d) : d
+
+  return date.getTime()
+}
+const offenceDate = (o: Offence) => dateToTime(o.offenceEndDate ?? o.offenceStartDate)
+
+const getOffenceCount = (o: Offence) => o.sentence?.countNumber
+const isNomisOffence = (o: Offence) => !!o.sentence && (getOffenceCount(o) == null || getOffenceCount(o) === '')
+const isOffenceRasMinusOne = (o: Offence) => !!o.sentence && getOffenceCount(o) === '-1'
+const isRasWithCountOffence = (o: Offence) => {
+  if (!o.sentence) return false
+  const n = Number(getOffenceCount(o))
+  return Number.isFinite(n) && n >= 0
+}
+
+const groupOffence = (o: Offence) => {
+  if (isNomisOffence(o)) return 0
+  if (isOffenceRasMinusOne(o) || isRasWithCountOffence(o)) return 1
+  return 2
+}
+
+const nomisLineNumberFromOffence = (o: Offence) => {
+  const n = Number(o.sentence?.legacyData?.nomisLineReference)
+  return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY
+}
+
+const rasCountForOffence = (o: Offence) => {
+  const n = Number(getOffenceCount(o))
+  return Number.isFinite(n) && n >= 0 ? n : Number.POSITIVE_INFINITY
+}
+
+const rasSubRankForOffence = (o: Offence) => (isOffenceRasMinusOne(o) ? 0 : 1)
+
+export function orderCharges(charges: Charge[]): Charge[] {
+  if (!charges) return charges
+  return [...charges].sort((a, b) => {
+    const groupA = groupRank(a)
+    const groupB = groupRank(b)
+    if (groupA !== groupB) return groupA - groupB
+
+    if (groupA === OffenceGroup.NOMIS) return nomisLineNumberFromCharge(a) - nomisLineNumberFromCharge(b)
+
+    if (groupA === OffenceGroup.RAS) {
+      const subGroupA = rasSubGroupForCharge(a)
+      const subGroup = rasSubGroupForCharge(b)
+      if (subGroupA !== subGroup) return subGroupA - subGroup
+      if (subGroupA === RasGroup.RAS_WITH_MINUS_ONE_COUNT) return chargeDate(b) - chargeDate(a)
+      return rasCountForCharge(a) - rasCountForCharge(b)
+    }
+
+    return chargeDate(b) - chargeDate(a)
+  })
+}
+
+export function orderOffences(offences: Offence[]): Offence[] {
+  if (!offences) return offences
+  return [...offences].sort((a, b) => {
+    const groupA = groupOffence(a)
+    const groupB = groupOffence(b)
+    if (groupA !== groupB) return groupA - groupB
+
+    if (groupA === OffenceGroup.NOMIS) return nomisLineNumberFromOffence(a) - nomisLineNumberFromOffence(b)
+
+    if (groupA === OffenceGroup.RAS) {
+      const subGroupA = rasSubRankForOffence(a)
+      const subGroupB = rasSubRankForOffence(b)
+      if (subGroupA !== subGroupB) return subGroupA - subGroupB
+      if (subGroupA === RasGroup.RAS_WITH_MINUS_ONE_COUNT) return offenceDate(b) - offenceDate(a)
+      return rasCountForOffence(a) - rasCountForOffence(b)
+    }
+
+    return offenceDate(b) - offenceDate(a)
+  })
 }

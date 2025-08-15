@@ -902,7 +902,6 @@ export default class OffenceService {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence, offenceReference)
-    delete sentence.convictionDate
     delete sentence.sentenceTypeClassification
     delete sentence.sentenceTypeId
     delete sentence.periodLengths

@@ -176,7 +176,7 @@ export default class OffenceRoutes extends BaseRoutes {
       if (hasInvalidatedOffence) {
         this.offenceService.invalidateFromOffenceDate(req.session, nomsId, courtCaseReference, offenceReference)
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date?invalidatedFrom=${InvalidatedFrom.OFFENCE_DATE}`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type?invalidatedFrom=${InvalidatedFrom.OFFENCE_DATE}`,
         )
       }
       return res.redirect(
@@ -888,7 +888,12 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     if (invalidatedFrom) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date${submitQuery}`
+      const invalidatedFromType = InvalidatedFrom[invalidatedFrom as keyof typeof InvalidatedFrom]
+      if (invalidatedFromType === InvalidatedFrom.OFFENCE_DATE) {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date${submitQuery}`
+      } else {
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date${submitQuery}`
+      }
     } else if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     }
@@ -1482,12 +1487,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`
     if (invalidatedFrom) {
-      const invalidatedFromType = InvalidatedFrom[invalidatedFrom as keyof typeof InvalidatedFrom]
-      if (invalidatedFromType === InvalidatedFrom.OFFENCE_DATE) {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date${submitQuery}`
-      } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
-      }
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     } else if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
     }

@@ -253,7 +253,7 @@ context('Add Offence Edit offence Page', () => {
       })
     })
 
-    it('editing offence date and invalidating means entering conviction date, sentence type and period lengths again', () => {
+    it('editing offence date and invalidating means entering sentence type and period lengths again', () => {
       cy.task('stubIsSentenceTypeStillValid', {
         sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
         isStillValid: false,
@@ -270,11 +270,6 @@ context('Add Offence Edit offence Page', () => {
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '12').clear().type('8')
       offenceOffenceDatePage.continueButton().click()
-      const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
-      offenceConvictionDatePage.dayDateInput('convictionDate').type('13')
-      offenceConvictionDatePage.monthDateInput('convictionDate').type('5')
-      offenceConvictionDatePage.yearDateInput('convictionDate').type('2023')
-      offenceConvictionDatePage.continueButton().click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
       offenceSentenceTypePage.radioLabelContains('EDS (Extended Determinate Sentence)').click()
       offenceSentenceTypePage.continueButton().click()
@@ -313,10 +308,7 @@ context('Add Offence Edit offence Page', () => {
         convictionDate: '2023-05-13',
         offenceDate: '2023-05-12',
       })
-      offenceEditOffencePage.editFieldLink('0', 'offence-date').click()
-      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
-      offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('12')
-      offenceOffenceDatePage.continueButton().click()
+      offenceEditOffencePage.editFieldLink('0', 'conviction-date').click()
       const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
       offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('13')
       offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('5')

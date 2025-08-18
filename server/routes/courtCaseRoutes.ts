@@ -93,11 +93,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
         charges
           .filter(charge => charge.legacyData?.offenceDescription)
           .map(charge => [charge.offenceCode, charge.legacyData.offenceDescription])
-          .concat(
-            consecutiveToSentenceDetails.sentences
-              .filter(sentence => sentence.chargeLegacyData?.offenceDescription)
-              .map(sentence => [sentence.offenceCode, sentence.chargeLegacyData.offenceDescription]),
-          ) as [string, string][],
+          .concat(consecutiveToSentenceDetailsToOffenceDescriptions(consecutiveToSentenceDetails.sentences)) as [
+          string,
+          string,
+        ][],
       ),
     )
     const courtIds = courtCases.content

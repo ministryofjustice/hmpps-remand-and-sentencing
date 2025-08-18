@@ -36,6 +36,7 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, pris
     type: sentenceLength.periodLengthType,
     periodLengthUuid: sentenceLength.uuid,
     prisonId,
+    legacyData: sentenceLength.legacyData,
   } as CreatePeriodLength
 }
 

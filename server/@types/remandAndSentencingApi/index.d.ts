@@ -1644,6 +1644,7 @@ export interface components {
         | 'OVERALL_SENTENCE_LENGTH'
         | 'UNSUPPORTED'
       prisonId: string
+      legacyData: components['schemas']['PeriodLengthLegacyData']
     }
     CreateSentence: {
       /** Format: uuid */

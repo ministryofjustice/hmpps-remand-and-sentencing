@@ -36,7 +36,6 @@ context('Repeat Court Case journey', () => {
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
-    cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetLatestCourtAppearance', {})
     cy.task('stubCreateCourtAppearance', { nextHearingDate: futureDate.format('YYYY-MM-DD') })
     cy.task('stubCreateSentenceCourtAppearance')

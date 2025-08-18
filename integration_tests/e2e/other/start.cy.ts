@@ -6,11 +6,7 @@ context('Start Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubSearchCourtCases', {})
-    cy.task('stubGetOffencesByCodes', {
-      offenceCode: 'PS90037',
-      offenceDescription: 'An offence description',
-      legacyOffenceCode: 'PS11111',
-    })
+    cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetConsecutiveToDetails', {})

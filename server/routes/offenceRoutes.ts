@@ -1616,7 +1616,7 @@ export default class OffenceRoutes extends BaseRoutes {
       this.manageOffencesService.getOffenceMap(
         offenceCodes,
         req.user.username,
-        offencesToOffenceDescriptions(courtAppearance.offences),
+        offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
       ),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
@@ -1820,7 +1820,7 @@ export default class OffenceRoutes extends BaseRoutes {
           ),
         ),
         req.user.username,
-        offencesToOffenceDescriptions(courtAppearance.offences),
+        offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
       ),
       this.courtRegisterService.getCourtMap(
         consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode),
@@ -1985,7 +1985,7 @@ export default class OffenceRoutes extends BaseRoutes {
       await this.manageOffencesService.getOffenceMap(
         offenceCodes,
         req.user.username,
-        offencesToOffenceDescriptions([offence]),
+        offencesToOffenceDescriptions([offence], sentenceConsecutiveToDetails ? [sentenceConsecutiveToDetails] : []),
       ),
       await this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
@@ -2093,7 +2093,7 @@ export default class OffenceRoutes extends BaseRoutes {
       this.manageOffencesService.getOffenceMap(
         offenceCodes,
         req.user.username,
-        offencesToOffenceDescriptions(offences),
+        offencesToOffenceDescriptions(offences, []),
       ),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
@@ -2191,7 +2191,7 @@ export default class OffenceRoutes extends BaseRoutes {
       this.manageOffencesService.getOffenceMap(
         offenceCodes,
         req.user.username,
-        offencesToOffenceDescriptions(courtAppearance.offences),
+        offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
       ),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),

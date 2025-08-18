@@ -34,6 +34,7 @@ import {
   getUiDocumentType,
   formatDate,
   orderOffences,
+  consecutiveToSentenceDetailsToOffenceDescriptions,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
@@ -91,7 +92,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
       new Set(
         charges
           .filter(charge => charge.legacyData?.offenceDescription)
-          .map(charge => [charge.offenceCode, charge.legacyData.offenceDescription]),
+          .map(charge => [charge.offenceCode, charge.legacyData.offenceDescription])
+          .concat(consecutiveToSentenceDetailsToOffenceDescriptions(consecutiveToSentenceDetails.sentences)) as [
+          string,
+          string,
+        ][],
       ),
     )
     const courtIds = courtCases.content
@@ -194,7 +199,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
         courtCaseDetails.appearances
           .flatMap(appearance => appearance.charges)
           .filter(charge => charge.legacyData?.offenceDescription)
-          .map(charge => [charge.offenceCode, charge.legacyData.offenceDescription]),
+          .map(charge => [charge.offenceCode, charge.legacyData.offenceDescription])
+          .concat(consecutiveToSentenceDetailsToOffenceDescriptions(consecutiveToSentenceDetails.sentences)) as [
+          string,
+          string,
+        ][],
       ),
     )
     const [offenceMap, courtMap] = await Promise.all([

@@ -23,7 +23,7 @@ export default function setupCurrentCourtAppearance(
     res.locals.offenceNameMap = await manageOffenceService.getOffenceMap(
       offenceCodes,
       req.user.username,
-      offencesToOffenceDescriptions(courtAppearance.offences),
+      offencesToOffenceDescriptions(courtAppearance.offences, []),
     )
     if (courtAppearance.courtCode) {
       try {

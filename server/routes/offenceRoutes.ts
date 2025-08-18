@@ -36,6 +36,7 @@ import {
   allPeriodLengthTypesEntered,
   extractKeyValue,
   getNextPeriodLengthType,
+  offencesToOffenceDescriptions,
   orderOffences,
   outcomeValueOrLegacy,
   sentenceTypeValueOrLegacy,
@@ -1612,7 +1613,11 @@ export default class OffenceRoutes extends BaseRoutes {
       new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
     )
     const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.username),
+      this.manageOffencesService.getOffenceMap(
+        offenceCodes,
+        req.user.username,
+        offencesToOffenceDescriptions(courtAppearance.offences),
+      ),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
       this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
@@ -1815,6 +1820,7 @@ export default class OffenceRoutes extends BaseRoutes {
           ),
         ),
         req.user.username,
+        offencesToOffenceDescriptions(courtAppearance.offences),
       ),
       this.courtRegisterService.getCourtMap(
         consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode),
@@ -1976,7 +1982,11 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceCodes.push(consecutiveToOffence.offenceCode)
     }
     const [offenceMap, courtMap] = await Promise.all([
-      await this.manageOffencesService.getOffenceMap(offenceCodes, req.user.username),
+      await this.manageOffencesService.getOffenceMap(
+        offenceCodes,
+        req.user.username,
+        offencesToOffenceDescriptions([offence]),
+      ),
       await this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
 
@@ -2080,7 +2090,11 @@ export default class OffenceRoutes extends BaseRoutes {
     const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
 
     const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.username),
+      this.manageOffencesService.getOffenceMap(
+        offenceCodes,
+        req.user.username,
+        offencesToOffenceDescriptions(offences),
+      ),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
@@ -2174,7 +2188,11 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.username),
+      this.manageOffencesService.getOffenceMap(
+        offenceCodes,
+        req.user.username,
+        offencesToOffenceDescriptions(courtAppearance.offences),
+      ),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
       this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),

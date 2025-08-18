@@ -19,6 +19,7 @@ describe('GET First sentence consecutive to', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
       warrantDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
+      offences: [],
     })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',

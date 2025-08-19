@@ -160,7 +160,7 @@ enum RasGroup {
 
 const toTime = (iso?: string) => (iso ? new Date(iso).getTime() : 0)
 const chargeDate = (c: Charge) => toTime(c.offenceEndDate ?? c.offenceStartDate)
-
+const getChargeOffenceCode = (c: Charge) => c.offenceCode
 const getChargeCount = (c: Charge) => c.sentence?.chargeNumber
 const isNomisCharge = (c: Charge) => c.sentence && (getChargeCount(c) == null || getChargeCount(c) === '')
 const isChargeRasMinusOne = (c: Charge) => c.sentence && getChargeCount(c) === '-1'
@@ -197,7 +197,7 @@ const dateToTime = (d?: Date | string) => {
   return date.getTime()
 }
 const offenceDate = (o: Offence) => dateToTime(o.offenceEndDate ?? o.offenceStartDate)
-
+const getOffenceCode = (o: Offence) => o.offenceCode
 const getOffenceCount = (o: Offence) => o.sentence?.countNumber
 const isNomisOffence = (o: Offence) => !!o.sentence && (getOffenceCount(o) == null || getOffenceCount(o) === '')
 const isOffenceRasMinusOne = (o: Offence) => !!o.sentence && getOffenceCount(o) === '-1'
@@ -238,11 +238,13 @@ export function orderCharges(charges: Charge[]): Charge[] {
       const subGroupA = rasSubGroupForCharge(a)
       const subGroup = rasSubGroupForCharge(b)
       if (subGroupA !== subGroup) return subGroupA - subGroup
-      if (subGroupA === RasGroup.RAS_WITH_MINUS_ONE_COUNT) return chargeDate(b) - chargeDate(a)
-      return rasCountForCharge(a) - rasCountForCharge(b)
+      if (subGroupA !== RasGroup.RAS_WITH_MINUS_ONE_COUNT) return rasCountForCharge(a) - rasCountForCharge(b)
     }
-
-    return chargeDate(b) - chargeDate(a)
+    const dateDifference = chargeDate(b) - chargeDate(a)
+    if (dateDifference === 0) {
+      return getChargeOffenceCode(a).localeCompare(getChargeOffenceCode(b))
+    }
+    return dateDifference
   })
 }
 
@@ -259,11 +261,13 @@ export function orderOffences(offences: Offence[]): Offence[] {
       const subGroupA = rasSubRankForOffence(a)
       const subGroupB = rasSubRankForOffence(b)
       if (subGroupA !== subGroupB) return subGroupA - subGroupB
-      if (subGroupA === RasGroup.RAS_WITH_MINUS_ONE_COUNT) return offenceDate(b) - offenceDate(a)
-      return rasCountForOffence(a) - rasCountForOffence(b)
+      if (subGroupA !== RasGroup.RAS_WITH_MINUS_ONE_COUNT) return rasCountForOffence(a) - rasCountForOffence(b)
     }
-
-    return offenceDate(b) - offenceDate(a)
+    const dateDifference = offenceDate(b) - offenceDate(a)
+    if (dateDifference === 0) {
+      return getOffenceCode(a).localeCompare(getOffenceCode(b))
+    }
+    return dateDifference
   })
 }
 

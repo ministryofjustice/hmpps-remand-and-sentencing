@@ -9,7 +9,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtRegisterService from '../services/courtRegisterService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
-import { getUiDocumentType, orderOffences } from '../utils/utils'
+import { getUiDocumentType, offencesToOffenceDescriptions, orderOffences } from '../utils/utils'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -89,7 +89,11 @@ export default class RemandRoutes extends BaseRoutes {
 
     const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap, appearanceTypeDescription] =
       await Promise.all([
-        this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username),
+        this.manageOffencesService.getOffenceMap(
+          Array.from(new Set(chargeCodes)),
+          req.user.username,
+          offencesToOffenceDescriptions(appearance.offences, consecutiveToSentenceDetails.sentences),
+        ),
         this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
         this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
         outcomePromise,

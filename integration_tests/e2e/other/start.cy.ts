@@ -69,7 +69,7 @@ context('Start Page', () => {
           Outcome: 'Remanded in custody',
         },
         {
-          offenceCardHeader: 'PS90037 An offence description',
+          offenceCardHeader: 'PS11111 A legacy offence description',
           'Committed on': 'Not entered',
           Outcome: 'Commit to Crown Court for trial in custody',
         },

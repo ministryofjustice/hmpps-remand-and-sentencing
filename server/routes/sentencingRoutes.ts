@@ -12,7 +12,13 @@ import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import trimForm from '../utils/trim'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
-import { extractKeyValue, getUiDocumentType, orderOffences } from '../utils/utils'
+import {
+  extractKeyValue,
+  getUiDocumentType,
+  offencesToOffenceDescriptions,
+  orderOffences,
+  sentencesToChainToResponseToOffenceDescriptions,
+} from '../utils/utils'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtRegisterService from '../services/courtRegisterService'
 
@@ -231,7 +237,11 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceTypeDescription,
       overallSentenceLengthComparison,
     ] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username),
+      this.manageOffencesService.getOffenceMap(
+        Array.from(new Set(chargeCodes)),
+        req.user.username,
+        offencesToOffenceDescriptions(appearance.offences, consecutiveToSentenceDetails.sentences),
+      ),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
       this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
       outcomePromise,
@@ -388,7 +398,13 @@ export default class SentencingRoutes extends BaseRoutes {
     const courtCodes = Array.from(new Set(sentencesToChainTo.appearances.map(appearance => appearance.courtCode)))
 
     const [offenceMap, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.username),
+      this.manageOffencesService.getOffenceMap(
+        offenceCodes,
+        req.user.username,
+        offencesToOffenceDescriptions(courtAppearance.offences, []).concat(
+          sentencesToChainToResponseToOffenceDescriptions(sentencesToChainTo),
+        ),
+      ),
       this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
 
@@ -508,7 +524,13 @@ export default class SentencingRoutes extends BaseRoutes {
     const courtCodes = Array.from(new Set(sentencesToChainTo.appearances.map(appearance => appearance.courtCode)))
 
     const [offenceMap, courtMap] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.username),
+      this.manageOffencesService.getOffenceMap(
+        offenceCodes,
+        req.user.username,
+        offencesToOffenceDescriptions(courtAppearance.offences, []).concat(
+          sentencesToChainToResponseToOffenceDescriptions(sentencesToChainTo),
+        ),
+      ),
       this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
 

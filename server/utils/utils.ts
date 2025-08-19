@@ -6,6 +6,8 @@ import {
   Charge,
   CourtAppearanceLegacyData,
   PeriodLengthLegacyData,
+  SentenceConsecutiveToDetails,
+  SentencesToChainToResponse,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 const properCase = (word: string): string =>
@@ -263,4 +265,43 @@ export function orderOffences(offences: Offence[]): Offence[] {
 
     return offenceDate(b) - offenceDate(a)
   })
+}
+
+export function offencesToOffenceDescriptions(
+  offences: Offence[],
+  consecutiveToSentenceDetails: SentenceConsecutiveToDetails[],
+): [string, string][] {
+  return Array.from(
+    new Set(
+      offences
+        .filter(offence => offence.legacyData?.offenceDescription)
+        .map(offence => [offence.offenceCode, offence.legacyData.offenceDescription])
+        .concat(consecutiveToSentenceDetailsToOffenceDescriptions(consecutiveToSentenceDetails)) as [string, string][],
+    ),
+  )
+}
+
+export function consecutiveToSentenceDetailsToOffenceDescriptions(
+  consecutiveToSentenceDetails: SentenceConsecutiveToDetails[],
+): [string, string][] {
+  return Array.from(
+    new Set(
+      consecutiveToSentenceDetails
+        .filter(sentence => sentence.chargeLegacyData?.offenceDescription)
+        .map(sentence => [sentence.offenceCode, sentence.chargeLegacyData.offenceDescription]),
+    ),
+  )
+}
+
+export function sentencesToChainToResponseToOffenceDescriptions(
+  sentencesToChainToResponse: SentencesToChainToResponse,
+): [string, string][] {
+  return Array.from(
+    new Set(
+      sentencesToChainToResponse.appearances
+        .flatMap(appearance => appearance.sentences)
+        .filter(sentence => sentence.chargeLegacyData?.offenceDescription)
+        .map(sentence => [sentence.offenceCode, sentence.chargeLegacyData.offenceDescription]),
+    ),
+  )
 }

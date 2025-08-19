@@ -32,6 +32,16 @@ context('Start Page', () => {
     })
   })
 
+  it('displays add appearance', () => {
+    startPage.courtCaseCard('3fa85f64-5717-4562-b3fc-2c963f66afa6').should('exist')
+    startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').should('exist')
+  })
+
+  it('should not display add appearance if case contains sentencing', () => {
+    startPage.courtCaseCard('261911e2-6346-42e0-b025-a806048f4d04').should('exist')
+    startPage.addAppearanceLink('261911e2-6346-42e0-b025-a806048f4d04').should('not.exist')
+  })
+
   it('displays inactive tag on inactive case', () => {
     startPage
       .courtCaseCard('84ab3dc4-7bd7-4b14-a1ae-6434f7e2cc8b')

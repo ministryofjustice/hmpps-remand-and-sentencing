@@ -9,7 +9,6 @@
 {%- from "moj/components/pagination/macro.njk" import mojPagination -%}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
-
 {% set pageTitle = applicationName + " - Home" %}
 
 {% block content %}
@@ -26,7 +25,7 @@
                             <span class="govuk-body govuk-!-font-weight-bold">Sort by:</span>
                             <span class="govuk-body govuk-!-margin-left-2">
                                 {% if sortBy === 'APPEARANCE_DATE_DESC' %}
-                                    Most recent 
+                                    Most recent
                                 {% else %}
                                     <a href="/person/{{nomsId}}?sortBy=APPEARANCE_DATE_DESC">Most recent</a>
                                 {% endif %}
@@ -103,7 +102,7 @@
                                         "data-qa": "recallInset-" + courtCaseDetails.courtCaseUuid
                                     }
                                 }) }}
-                            
+
                             {% endif %}
 
                             {% if courtCaseDetails.mergedToCase %}
@@ -141,7 +140,7 @@
                             }}
 
                             <hr class="govuk-section-break govuk-section-break--visible">
-                            
+
                             <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-one-half">
                                         <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Latest appearance</h2>
@@ -165,7 +164,7 @@
                                             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
                                             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceConvictionDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.convictionDate | formatDate if courtCaseDetails.latestAppearance.convictionDate else 'Not entered' }}</p>
                                         {% endif %}
-                                        
+
                                     </div>
                                     <div class="govuk-grid-column-full govuk-!-margin-top-2">
                                         {% set offenceDetailsHtml %}
@@ -213,11 +212,35 @@
                                     {% else %}
                                         View and edit all appearances for this court case ({{ courtCaseDetails.appearanceTotal }})
                                     {% endif %}
-                                    
+
                                 </a>
                             </p>
 
                         {% endset %}
+
+                        {% set actions = [] %}
+                        {% if courtCaseDetails.overallCaseStatus == "INACTIVE" or courtCaseDetails.overallCaseStatus == "MERGED" %}
+                          {% set _ = actions.push({
+                            href: null,
+                            html: govukTag({ text: "Inactive" }),
+                            visuallyHiddenText: "Inactive"
+                          }) %}
+                        {% elif courtCaseDetails.hasARecall %}
+                          {% set _ = actions.push({
+                            href: null,
+                            html: govukTag({ text: "Recalled", classes: "govuk-tag--purple" }),
+                            visuallyHiddenText: "Recalled"
+                          }) %}
+                        {% elif courtCaseDetails.warrantType !== 'SENTENCING' %}
+                          {% set _ = actions.push({
+                            href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + appearanceUuid + "/new-journey",
+                            text: "Add appearance",
+                            visuallyHiddenText: "Add appearance",
+                            attributes: {
+                              'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
+                            }
+                          }) %}
+                        {% endif %}
 
                         {{
                             govukSummaryList({
@@ -226,32 +249,7 @@
                                         text: courtCaseDetails.title
                                     },
                                     actions: {
-                                        items: [
-                                            {
-                                                href: null,
-                                                html: govukTag({
-                                                    text: "Inactive"
-                                                }),
-                                                visuallyHiddenText: "Inactive"
-                                            }
-                                             if courtCaseDetails.overallCaseStatus == "INACTIVE" or courtCaseDetails.overallCaseStatus == "MERGED" else ({
-                                                href: null,
-                                                html: govukTag({
-                                                    text: "Recalled",
-                                                    classes: "govuk-tag--purple"
-                                                }),
-                                                visuallyHiddenText: "Recalled"
-                                            } if courtCaseDetails.hasARecall else {
-                                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid +  "/add-court-appearance/" + appearanceUuid + "/new-journey",
-                                                text: "Add appearance",
-                                                visuallyHiddenText: "Add appearance",
-                                                attributes: {
-                                                    'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
-                                                }
-                                            })
-                                            
-                                            
-                                        ]
+                                        items: actions
                                     },
                                     attributes: {
                                         "data-qa": "courtCaseCard-" + courtCaseDetails.courtCaseUuid
@@ -264,7 +262,7 @@
                                 }]
                             })
                         }}
-                    
+
                 {% else %}
                     <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
                     <p class="gouk-body"><a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey">Add a court case now</a>
@@ -287,7 +285,7 @@
                     <span class="govuk-heading-m actions-list-header">Actions</span>
                     <li><a href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey">Add a new court case</a></li>
                 </ul>
-            </div>  
+            </div>
         </div>
     </div>
 

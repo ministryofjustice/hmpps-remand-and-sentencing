@@ -314,10 +314,11 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetOffenceByCode', {})
       cy.task('stubGetAllChargeOutcomes')
       courtCaseAppearanceDetailsPage
-        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
+        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '1')
+        .first()
         .click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
+      offenceEditOffencePage.editFieldLink('1', 'offence-outcome').click()
       const offenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',
@@ -327,7 +328,7 @@ context('Court Case Appearance details Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
         Offence: 'PS90037 An offence description',
-        'Committed on': 'Not entered',
+        'Committed on': '15/12/2023',
         Outcome: 'Remanded in custody',
       })
       offenceEditOffencePage.continueButton().click()

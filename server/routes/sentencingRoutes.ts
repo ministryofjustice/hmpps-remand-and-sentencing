@@ -293,13 +293,19 @@ export default class SentencingRoutes extends BaseRoutes {
       courtMap,
     )
 
+    const orderedOffences = orderOffences(appearance.offences)
+    const originalOffences = appearance.offences
+
+    const offenceIndexMap = Object.fromEntries(originalOffences.map((offence, idx) => [offence.offenceCode, idx]))
+
     return res.render('pages/sentencing/appearance-details', {
       nomsId,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      appearance: { ...appearance, offences: orderOffences(appearance.offences) },
+      appearance: { ...appearance, offences: orderedOffences },
+      offenceIndexMap,
       offenceMap,
       courtMap,
       sentenceTypeMap,

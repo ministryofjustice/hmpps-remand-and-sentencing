@@ -170,7 +170,7 @@
                 text: overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder
             }
     }
-    ] %}    
+    ] %}
 
 {% set documentSummaryRows = [] %}
 
@@ -338,7 +338,7 @@
             <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with non-custodial outcomes</h3>
 
             {% for offence in nonCustodialOffences %}
-                {% set offenceId = 'offences.' + offence.index %}
+                {% set originalIndex = offenceIndexMap[offence.offenceCode] %}
                 {{ offenceCard({
                     offenceCode: offence.offenceCode,
                     offenceName: offenceMap[offence.offenceCode],
@@ -356,18 +356,18 @@
                     sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
                     fineAmount: offence.sentence.fineAmount,
                     consecutiveConcurrentLink: {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/select-consecutive-concurrent",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + originalIndex + "/select-consecutive-concurrent",
                         text: 'Select consecutive or current'
                     } if offence.sentence,
                     actions: {
                         items: [
                             {
-                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/load-edit-offence",
+                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + originalIndex + "/load-edit-offence",
                                 text: "Edit",
                                 visuallyHiddenText: "edit offence"
                             },
                             {
-                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/sentencing/offences/" + offence.index + "/check-delete-offence",
+                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/sentencing/offences/" + originalIndex + "/check-delete-offence",
                                 text: "Delete",
                                 visuallyHiddenText: "delete offence"
                             }
@@ -385,7 +385,7 @@
                             }
                         }) }}
             {% endfor %}
-            
+
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-details-edit">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <div class="govuk-button-group">

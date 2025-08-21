@@ -19,7 +19,16 @@ describe('GET Sentence consecutive to', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
       warrantDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
-      offences: [],
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'BB6557',
+          sentence: {
+            sentenceUuid: '3',
+            sentenceReference: '1',
+          },
+        },
+      ],
     })
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
@@ -55,13 +64,28 @@ describe('GET Sentence consecutive to', () => {
             },
           ],
         },
+        {
+          courtCode: 'GHEUTY',
+          courtCaseReference: 'G123',
+          appearanceDate: '2023-03-12',
+          sentences: [
+            {
+              offenceCode: 'BB6557',
+              offenceStartDate: '2023-01-12',
+              sentenceUuid: '3',
+              countNumber: '1',
+            },
+          ],
+        },
       ],
     })
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
       CC12345: 'An offence description',
+      BB6557: 'Another offence description',
     })
     defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
       ACCRYC: 'A court name',
+      GHEUTY: 'Another court name',
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/0/sentence-consecutive-to')
@@ -75,6 +99,8 @@ describe('GET Sentence consecutive to', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
+        const otherCourtCaseSentenceRadio = $(':radio[value=3|OTHER]')
+        expect(otherCourtCaseSentenceRadio.length).toBe(0)
       })
   })
 })

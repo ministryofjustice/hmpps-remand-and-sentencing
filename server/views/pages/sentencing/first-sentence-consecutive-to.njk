@@ -35,7 +35,7 @@
                         }) }}
                     {% endif %}
                     <div class="govuk-radios" data-module="govuk-radios" data-govuk-radios-init="">
-                        {% for appearance in sentencesToChainTo.appearances | sortByAppearanceDate %}
+                        {% for appearance in sentencedAppearancesOnOtherCases | sortByAppearanceDate %}
                             <div class="govuk-!-margin-bottom-6">
                                 <h3 class="govuk-heading-s"> {{appearance.courtCaseReference + ' at ' if appearance.courtCaseReference}}{{courtMap[appearance.courtCode]}} on {{appearance.appearanceDate | formatDate}}</h3>
                                 {% for sentence in appearance.sentences | sortByCountNumber %}

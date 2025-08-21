@@ -408,6 +408,15 @@ export default class SentencingRoutes extends BaseRoutes {
       this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
 
+    const sameCaseSentenceUuids = courtAppearance.offences
+      .filter(sessionOffence => sessionOffence.sentence)
+      .map(sessionOffence => sessionOffence.sentence.sentenceUuid)
+    const sentencedAppearancesOnOtherCases = sentencesToChainTo.appearances.filter(chainToAppearances =>
+      chainToAppearances.sentences.every(
+        sentenceToChainTo => !sameCaseSentenceUuids.includes(sentenceToChainTo.sentenceUuid),
+      ),
+    )
+
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/is-sentence-consecutive-to`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
@@ -422,7 +431,7 @@ export default class SentencingRoutes extends BaseRoutes {
       offenceDetails,
       offence,
       firstSentenceConsecutiveToForm,
-      sentencesToChainTo,
+      sentencedAppearancesOnOtherCases,
       offenceMap,
       courtMap,
       errors: req.flash('errors') || [],
@@ -546,6 +555,14 @@ export default class SentencingRoutes extends BaseRoutes {
           sentenceReference: sessionOffence.sentence.sentenceReference,
         } as unknown as SameCaseSentenceToChainTo
       })
+    const sameCaseSentenceUuids = courtAppearance.offences
+      .filter(sessionOffence => sessionOffence.sentence)
+      .map(sessionOffence => sessionOffence.sentence.sentenceUuid)
+    const sentencedAppearancesOnOtherCases = sentencesToChainTo.appearances.filter(chainToAppearances =>
+      chainToAppearances.sentences.every(
+        sentenceToChainTo => !sameCaseSentenceUuids.includes(sentenceToChainTo.sentenceUuid),
+      ),
+    )
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitQuery}`
     if (submitToEditOffence) {
@@ -561,7 +578,7 @@ export default class SentencingRoutes extends BaseRoutes {
       offenceDetails,
       offence,
       sentenceConsecutiveToForm,
-      sentencesToChainTo,
+      sentencedAppearancesOnOtherCases,
       sentencesOnSameCase,
       offenceMap,
       courtMap,

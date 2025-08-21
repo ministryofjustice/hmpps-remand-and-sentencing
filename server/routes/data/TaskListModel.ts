@@ -36,6 +36,7 @@ export default class TaskListModel {
 
     // Add a warrant information item only for SENTENCING warrantType
     if (courtAppearance.warrantType === 'SENTENCING') {
+      this.items.splice(2, 1) // remove next court appearance item
       this.items.splice(1, 0, this.getWarrantInformationItem(courtAppearance))
     }
   }

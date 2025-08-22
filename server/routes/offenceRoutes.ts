@@ -223,7 +223,11 @@ export default class OffenceRoutes extends BaseRoutes {
         },
         [[], []],
       )
-    const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.username)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
     let backLink
     if (warrantType === 'SENTENCING') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
@@ -312,7 +316,11 @@ export default class OffenceRoutes extends BaseRoutes {
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const [caseOutcomes, offenceDetails] = await Promise.all([
       this.offenceOutcomeService.getAllOutcomes(req.user.username),
-      this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.username),
+      this.manageOffencesService.getOffenceByCode(
+        offence.offenceCode,
+        req.user.username,
+        offence.legacyData?.offenceDescription,
+      ),
     ])
 
     const [warrantTypeOutcomes, nonCustodialOutcomes] = caseOutcomes
@@ -638,9 +646,13 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence } = req.query
     let offenceNameForm = (req.flash('offenceNameForm')[0] || {}) as OffenceOffenceNameForm
     if (Object.keys(offenceNameForm).length === 0) {
-      const { offenceCode } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+      const { offenceCode, legacyData } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
       if (offenceCode) {
-        const offence = await this.manageOffencesService.getOffenceByCode(offenceCode, res.locals.user.username)
+        const offence = await this.manageOffencesService.getOffenceByCode(
+          offenceCode,
+          res.locals.user.username,
+          legacyData?.offenceDescription,
+        )
 
         offenceNameForm = {
           offenceName: `${offence.code} ${offence.description}`,
@@ -722,6 +734,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const offence = await this.manageOffencesService.getOffenceByCode(
       this.offenceService.getOffenceCode(req.session, nomsId, courtCaseReference),
       req.user.username,
+      '',
     )
 
     return res.render('pages/offence/inactive-offence', {
@@ -752,9 +765,11 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { submitToEditOffence } = req.query
+    const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const offence = await this.manageOffencesService.getOffenceByCode(
-      this.offenceService.getOffenceCode(req.session, nomsId, courtCaseReference),
+      sessionOffence.offenceCode,
       req.user.username,
+      sessionOffence.legacyData?.offenceDescription,
     )
 
     return res.render('pages/offence/confirm-offence', {

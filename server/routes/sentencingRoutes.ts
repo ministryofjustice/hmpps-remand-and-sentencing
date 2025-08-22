@@ -58,7 +58,11 @@ export default class SentencingRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.username)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
     const { sentence } = offence
     const expectedPeriodLengthsSize =
       sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths?.length
@@ -376,7 +380,11 @@ export default class SentencingRoutes extends BaseRoutes {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const { sentence } = offence
     const [offenceDetails, sentencesToChainTo] = await Promise.all([
-      this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.username),
+      this.manageOffencesService.getOffenceByCode(
+        offence.offenceCode,
+        req.user.username,
+        offence.legacyData?.offenceDescription,
+      ),
       this.remandAndSentencingService.getSentencesToChainTo(
         nomsId,
         dayjs(courtAppearance.warrantDate),
@@ -517,7 +525,11 @@ export default class SentencingRoutes extends BaseRoutes {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const { sentence } = offence
     const [offenceDetails, sentencesToChainTo] = await Promise.all([
-      this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.username),
+      this.manageOffencesService.getOffenceByCode(
+        offence.offenceCode,
+        req.user.username,
+        offence.legacyData?.offenceDescription,
+      ),
       this.remandAndSentencingService.getSentencesToChainTo(
         nomsId,
         dayjs(courtAppearance.warrantDate),
@@ -655,7 +667,11 @@ export default class SentencingRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.username)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
     return res.render('pages/sentencing/making-sentence-concurrent', {
       nomsId,
@@ -682,7 +698,11 @@ export default class SentencingRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.username)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
     return res.render('pages/sentencing/making-sentence-forthwith', {
       nomsId,
@@ -709,7 +729,11 @@ export default class SentencingRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.username)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
     return res.render('pages/sentencing/making-sentence-consecutive', {
       nomsId,
@@ -848,7 +872,11 @@ export default class SentencingRoutes extends BaseRoutes {
       parseInt(offenceReference, 10),
       appearanceReference,
     )
-    const offenceDetails = await this.manageOffencesService.getOffenceByCode(offence.offenceCode, req.user.username)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/delete-offence`
     let goBackLink = backLink
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
@@ -960,7 +988,11 @@ export default class SentencingRoutes extends BaseRoutes {
     const courtIds = Array.from(new Set(sentencesAfterDetails.appearances.map(appearance => appearance.courtCode)))
     const [courtMap, offenceDetails] = await Promise.all([
       this.courtRegisterService.getCourtMap(courtIds, username),
-      this.manageOffencesService.getOffenceByCode(offence.offenceCode, username),
+      this.manageOffencesService.getOffenceByCode(
+        offence.offenceCode,
+        username,
+        offence.legacyData?.offenceDescription,
+      ),
     ])
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
     return res.render('pages/sentencing/cannot-delete-offence', {

@@ -237,7 +237,7 @@ export default class OffenceService {
     if (offenceCode) {
       apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCode, username, '')
       if (apiOffence.id === -1) {
-        errors.push({ text: 'You must enter a valid offence code.', href: '#offenceCode' })
+        errors.push({ text: 'You must enter a valid offence.', href: '#offenceName' })
       }
     }
     if (errors.length === 0) {

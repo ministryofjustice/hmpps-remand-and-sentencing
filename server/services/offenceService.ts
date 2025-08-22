@@ -26,7 +26,6 @@ import {
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import ManageOffencesService from './manageOffencesService'
-import logger from '../../logger'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
@@ -195,10 +194,8 @@ export default class OffenceService {
     )
     let apiOffence
     if (offenceCodeForm.offenceCode && !offenceCodeForm.unknownCode) {
-      try {
-        apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCodeForm.offenceCode, username)
-      } catch (error) {
-        logger.error(error)
+      apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCodeForm.offenceCode, username, '')
+      if (apiOffence.id === -1) {
         errors.push({ text: 'You must enter a valid offence code.', href: '#offenceCode' })
       }
     }
@@ -238,11 +235,9 @@ export default class OffenceService {
     const [offenceCode] = offenceNameForm.offenceName.split(' ')
     let apiOffence
     if (offenceCode) {
-      try {
-        apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCode, username)
-      } catch (error) {
-        logger.error(error)
-        errors.push({ text: 'You must enter a valid offence.', href: '#offenceName' })
+      apiOffence = await this.manageOffencesService.getOffenceByCode(offenceCode, username, '')
+      if (apiOffence.id === -1) {
+        errors.push({ text: 'You must enter a valid offence code.', href: '#offenceCode' })
       }
     }
     if (errors.length === 0) {

@@ -1,11 +1,25 @@
+import logger from '../../logger'
 import type { Offence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import ManageOffencesApiClient from '../data/manageOffencesApiClient'
 
 export default class ManageOffencesService {
   constructor(private readonly manageOffencesApiClient: ManageOffencesApiClient) {}
 
-  async getOffenceByCode(offenceCode: string, username: string): Promise<Offence> {
-    return this.manageOffencesApiClient.getOffenceByCode(offenceCode, username)
+  async getOffenceByCode(offenceCode: string, username: string, legacyDescription: string): Promise<Offence> {
+    try {
+      return await this.manageOffencesApiClient.getOffenceByCode(offenceCode, username)
+    } catch (e) {
+      logger.error(e)
+      return Promise.resolve({
+        changedDate: '',
+        code: offenceCode,
+        id: -1,
+        isChild: false,
+        revisionId: -1,
+        startDate: '',
+        description: legacyDescription,
+      })
+    }
   }
 
   async searchOffence(searchString: string, username: string): Promise<Offence[]> {

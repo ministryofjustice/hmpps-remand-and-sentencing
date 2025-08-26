@@ -31,10 +31,10 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     personId: string,
     courtCaseId: string,
     appearanceReference: string,
-    offenceId: string,
+    chargeUuid: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/offences/${offenceId}/load-edit-offence"]`,
+      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/offences/${chargeUuid}/load-edit-offence"]`,
     )
 
   deleteOffenceLink = (
@@ -42,10 +42,10 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     courtCaseId: string,
     appearanceReference: string,
     remandOrSentencing: string,
-    offenceId: string,
+    chargeUuid: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/${remandOrSentencing}/offences/${offenceId}/check-delete-offence"]`,
+      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/${remandOrSentencing}/offences/${chargeUuid}/check-delete-offence"]`,
     )
 
   selectConsecutiveConcurrentLink = (

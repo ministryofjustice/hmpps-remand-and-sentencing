@@ -233,7 +233,7 @@ context('Court Case Appearance details Page', () => {
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
           'remand',
-          '0',
+          '71bb9f7e-971c-4c34-9a33-43478baee74f',
         )
         .click()
       const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
@@ -314,7 +314,12 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetOffenceByCode', {})
       cy.task('stubGetAllChargeOutcomes')
       courtCaseAppearanceDetailsPage
-        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '9b622879-8191-4a7f-9fe8-71b680417220',
+        )
         .click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()

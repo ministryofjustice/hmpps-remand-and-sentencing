@@ -68,79 +68,6 @@
     }
 ] %}
 
-{% set nextHearingSummaryRows = [{
-    key: {
-        text: "Next hearing set"
-    },
-    value: {
-        text: "Yes" if appearance.nextHearingSelect else "No future appearance scheduled"
-    },
-    actions: {
-        items: [
-            {
-                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-select",
-                text: "Edit",
-                visuallyHiddenText: "Next hearing set"
-            }
-        ]
-    }
-}] %}
-
-{% if appearance.nextHearingSelect %}
-    {% set nextHearingSummaryRows = nextHearingSummaryRows.concat([
-        {
-            key: {
-            text: "Location"
-        },
-            value: {
-            text: courtMap[appearance.nextHearingCourtCode]
-        },
-            actions: {
-            items: [
-                {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-court-name",
-                    text: "Edit",
-                    visuallyHiddenText: "Next hearing court name"
-                }
-            ]
-        }
-        },
-        {
-            key: {
-            text: "Hearing type"
-        },
-            value: {
-            text: appearanceTypeDescription
-        },
-            actions: {
-            items: [
-                {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-type",
-                    text: "Edit",
-                    visuallyHiddenText: "Next hearing type"
-                }
-            ]
-        }
-        },
-        {
-            key: {
-            text: "Date"
-        },
-            value: {
-            text: appearance.nextHearingDate | formatDateTime(appearance.nextHearingTimeSet)
-        },
-            actions: {
-            items: [
-                {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-date",
-                    text: "Edit",
-                    visuallyHiddenText: "next hearing date"
-                }
-            ]
-        }
-        }
-    ]) %}
-{% endif %}
 {% set overallSentenceLengthText = "Not entered" %}
 {% if appearance.overallSentenceLength %}
     {% set overallSentenceLengthText = appearance.overallSentenceLength | formatLengths %}
@@ -233,18 +160,6 @@
                 rows: appearanceSummaryRows,
                 attributes: {
                     "data-qa": "appearanceSummaryList"
-                }
-            }) }}
-
-            {{ govukSummaryList({
-                card: {
-                        title: {
-                            text: "Next court appearance"
-                        }
-                    },
-                rows: nextHearingSummaryRows,
-                attributes: {
-                    "data-qa": "nextHearingSummaryList"
                 }
             }) }}
 

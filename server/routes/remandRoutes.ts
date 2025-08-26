@@ -204,7 +204,7 @@ export default class RemandRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { username, token } = req.user
+    const { username } = req.user
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -218,7 +218,11 @@ export default class RemandRoutes extends BaseRoutes {
     const courtIds = Array.from(new Set(sentencesAfterDetails.appearances.map(appearance => appearance.courtCode)))
     const [courtMap, offenceDetails] = await Promise.all([
       this.courtRegisterService.getCourtMap(courtIds, username),
-      this.manageOffencesService.getOffenceByCode(offence.offenceCode, token),
+      this.manageOffencesService.getOffenceByCode(
+        offence.offenceCode,
+        username,
+        offence.legacyData?.offenceDescription,
+      ),
     ])
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
     return res.render('pages/courtAppearance/cannot-delete-offence', {

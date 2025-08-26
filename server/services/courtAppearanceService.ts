@@ -902,7 +902,6 @@ export default class CourtAppearanceService {
     appearanceUuid: string,
   ): number {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    console.log(courtAppearance.offences)
     return courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
   }
 

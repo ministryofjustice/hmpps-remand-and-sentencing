@@ -1922,16 +1922,12 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
 
-    console.log('chargeUuid', chargeUuid)
-
     const offenceReference = this.courtAppearanceService.getOffenceReference(
       req.session,
       nomsId,
       chargeUuid,
       appearanceReference,
     )
-
-    console.log('offenceReference', offenceReference)
     const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
       req.session,
       nomsId,
@@ -2053,7 +2049,6 @@ export default class OffenceRoutes extends BaseRoutes {
       consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
     }
 
-    console.log('offenceReference', offenceReference)
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,

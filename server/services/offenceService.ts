@@ -882,10 +882,16 @@ export default class OffenceService {
     return this.getOffence(session.offences, id)
   }
 
-  setSessionOffence(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, offence: Offence) {
+  setSessionOffence(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    offence: Offence,
+  ): string {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     // eslint-disable-next-line no-param-reassign
     session.offences[id] = offence
+    return id
   }
 
   invalidateFromOffenceDate(

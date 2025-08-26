@@ -895,7 +895,18 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, appearanceUuid)
   }
 
-  isForwithAlreadySelected(
+  getOffenceReference(
+    session: Partial<SessionData>,
+    nomsId: string,
+    chargeUuid: string,
+    appearanceUuid: string,
+  ): number {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    console.log(courtAppearance.offences)
+    return courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+  }
+
+  isForthwithAlreadySelected(
     session: Partial<SessionData>,
     nomsId: string,
     excludeOffenceReference: number,
@@ -995,9 +1006,12 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number, appearanceUuid: string) {
+  deleteOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    courtAppearance.offences.splice(offenceReference, 1)
+    const index = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (index !== -1) {
+      courtAppearance.offences.splice(index, 1)
+    }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
@@ -1005,6 +1019,16 @@ export default class CourtAppearanceService {
   getOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number, appearanceUuid: string): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return courtAppearance.offences[offenceReference]
+  }
+
+  getOffenceByChargeUuid(
+    session: Partial<SessionData>,
+    nomsId: string,
+    chargeUuid: string,
+    appearanceUuid: string,
+  ): Offence {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    return courtAppearance.offences.find(offence => offence.chargeUuid === chargeUuid)
   }
 
   getOffenceBySentenceReference(

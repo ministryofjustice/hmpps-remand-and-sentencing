@@ -1969,7 +1969,6 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    console.log('chargeUuid', chargeUuid)
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const courtCodes = []
     const offenceCodes = [offence.offenceCode]

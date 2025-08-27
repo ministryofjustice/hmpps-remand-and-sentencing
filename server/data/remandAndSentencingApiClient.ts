@@ -467,7 +467,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
   ): Promise<boolean> {
     return this.post(
       {
-        path: '/sentence/consecutive-chain/check',
+        path: '/sentence/consecutive-chain/has-a-loop',
         data: consecutiveChainValidationRequest,
       },
       asSystem(username),

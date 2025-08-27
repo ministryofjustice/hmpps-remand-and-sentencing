@@ -118,6 +118,7 @@ context('Add Offence Edit offence Page', () => {
           outcomeType: 'SENTENCING',
         },
       ])
+      cy.task('stubHasLoopInChain')
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()

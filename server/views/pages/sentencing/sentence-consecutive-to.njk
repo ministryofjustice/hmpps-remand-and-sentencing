@@ -11,7 +11,7 @@
 {% set radioIdIndex = 0 %}
 {% block pageContent %}
     <form method="post"
-          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ offenceReference }}/submit-sentence-consecutive-to{{ submitQuery }}">
+          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ chargeUuid }}/submit-sentence-consecutive-to{{ submitQuery }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/offenceCaption.njk" %}
         <div class="govuk-form-group {%- if errorMessage %} govuk-form-group--error{% endif %}">

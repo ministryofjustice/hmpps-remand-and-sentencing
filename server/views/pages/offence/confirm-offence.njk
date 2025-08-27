@@ -68,7 +68,7 @@
                             class="govuk-button"
                             data-module="govuk-button"
                             data-qa="continue-button"
-                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-confirm-offence{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-confirm-offence{{ "?submitToEditOffence=true" if submitToEditOffence }}">
                         Confirm and continue
                     </button>
 
@@ -84,10 +84,10 @@
                 </div>
             </form>
             <p class="govuk-body">
-                <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/offence-code" class="govuk-link--no-visited-state">Enter a different offence code</a>
+                <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/offence-code" class="govuk-link--no-visited-state">Enter a different offence code</a>
             </p>
             <p class="govuk-body">
-                <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/offence-name" class="govuk-link--no-visited-state">Look up an offence by name</a>
+                <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/offence-name" class="govuk-link--no-visited-state">Look up an offence by name</a>
             </p>
 
 {% endblock %}

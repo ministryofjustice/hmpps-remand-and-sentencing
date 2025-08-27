@@ -781,7 +781,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         })
         .map((charge, index) => chargeToOffence(charge, index))
         .forEach((offence, index) =>
-          this.courtAppearanceService.addOffence(req.session, nomsId, index, offence, appearanceReference),
+          this.courtAppearanceService.addOffence(req.session, nomsId, offence.chargeUuid, offence, appearanceReference),
         )
     }
     return res.redirect(

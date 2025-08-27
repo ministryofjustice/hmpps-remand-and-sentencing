@@ -3132,6 +3132,7 @@ export default {
         jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
       },
     }),
+
   stubHasLoopInChain: (): SuperAgentRequest => {
     return stubFor({
       request: {

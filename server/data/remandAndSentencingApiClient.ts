@@ -1,8 +1,9 @@
-import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import {
   AppearanceOutcome,
   AppearanceType,
+  ConsecutiveChainValidationRequest,
   CourtCaseCountNumbers,
   CreateCourtAppearance,
   CreateCourtAppearanceResponse,
@@ -458,5 +459,18 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )) as unknown as Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse>
+  }
+
+  async hasLoopInChain(
+    consecutiveChainValidationRequest: ConsecutiveChainValidationRequest,
+    username: string,
+  ): Promise<boolean> {
+    return this.post(
+      {
+        path: '/sentence/consecutive-chain/check',
+        data: consecutiveChainValidationRequest,
+      },
+      asSystem(username),
+    )
   }
 }

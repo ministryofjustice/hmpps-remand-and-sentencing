@@ -109,3 +109,7 @@ export type MergedToCaseDetails = components['schemas']['MergedToCaseDetails']
 export type SentenceLegacyData = components['schemas']['SentenceLegacyData']
 
 export type Sentence = components['schemas']['Sentence']
+
+export type ConsecutiveChainValidationRequest = components['schemas']['ConsecutiveChainValidationRequest']
+
+export type SentenceDetailsForConsecValidation = components['schemas']['SentenceDetailsForConsecValidation']

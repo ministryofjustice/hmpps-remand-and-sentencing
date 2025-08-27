@@ -1,7 +1,8 @@
-import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
+import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
 import {
   AppearanceType,
+  ConsecutiveChainValidationRequest,
   CourtCaseCountNumbers,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
@@ -16,6 +17,7 @@ import {
   PageCourtCaseContent,
   PagePagedCourtCase,
   SentenceConsecutiveToDetailsResponse,
+  SentenceDetailsForConsecValidation,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
@@ -276,5 +278,58 @@ export default class RemandAndSentencingService {
     username: string,
   ): Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse> {
     return this.remandAndSentencingApiClient.getSentencesAfterOnOtherCourtAppearanceDetails(sentenceUuid, username)
+  }
+
+  async validateConsecutiveLoops(
+    useConsecutiveToRef: boolean,
+    targetSentenceReferenceOrUuId: string,
+    sessionCourtAppearance: CourtAppearance,
+    nomsId: string,
+    sourceSentenceUuid: string,
+    username: string,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    const sentences = sessionCourtAppearance.offences.map(offence => {
+      return {
+        sentenceUuid: offence.sentence.sentenceUuid,
+        consecutiveToSentenceUuid: this.getConsecutiveToSentenceUuid(offence, sessionCourtAppearance),
+      } as SentenceDetailsForConsecValidation
+    })
+
+    const targetSentenceUuid = useConsecutiveToRef
+      ? sessionCourtAppearance.offences.find(o => o.sentence.sentenceReference === targetSentenceReferenceOrUuId)
+          .sentence.sentenceUuid
+      : targetSentenceReferenceOrUuId
+    const request: ConsecutiveChainValidationRequest = {
+      prisonerId: nomsId,
+      appearanceUuid: sessionCourtAppearance.appearanceUuid,
+      sourceSentenceUuid,
+      targetSentenceUuid,
+      sentences,
+    }
+
+    const loopExists = await this.remandAndSentencingApiClient.hasLoopInChain(request, username)
+    if (loopExists)
+      return [
+        {
+          html: 'The sentence you have selected is already part of the consecutive chain<br>You must select a sentence that has not been used in this chain.',
+          href: '#',
+        },
+      ]
+    return []
+  }
+
+  private getConsecutiveToSentenceUuid(offence: Offence, sessionCourtAppearance: CourtAppearance) {
+    return offence.sentence.consecutiveToSentenceUuid
+      ? offence.sentence.consecutiveToSentenceUuid
+      : offence.sentence.consecutiveToSentenceReference &&
+          sessionCourtAppearance.offences.find(
+            o => o.sentence.sentenceReference === offence.sentence.consecutiveToSentenceReference,
+          ).sentence.sentenceUuid
   }
 }

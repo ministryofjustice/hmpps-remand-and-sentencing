@@ -3132,4 +3132,18 @@ export default {
         jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
       },
     }),
+
+  stubHasLoopInChain: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPathPattern: '/remand-and-sentencing-api/sentence/consecutive-chain/has-a-loop',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: false,
+      },
+    })
+  },
 }

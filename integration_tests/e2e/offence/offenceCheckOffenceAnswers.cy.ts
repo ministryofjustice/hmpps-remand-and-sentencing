@@ -129,6 +129,7 @@ context('Check Offence Answers Page', () => {
       ])
       cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      cy.task('stubHasLoopInChain')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.continueButton().click()

@@ -35,6 +35,7 @@ context('Check offence answers page after making consecutive', () => {
     ])
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
+    cy.task('stubHasLoopInChain')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
     const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')

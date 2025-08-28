@@ -624,12 +624,14 @@ export default class SentencingRoutes extends BaseRoutes {
     const { submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const sentenceConsecutiveToForm = trimForm<SentenceConsecutiveToForm>(req.body)
-    const errors = this.offenceService.setSentenceConsecutiveTo(
+    const errors = await this.offenceService.setSentenceConsecutiveTo(
       req.session,
       nomsId,
       courtCaseReference,
       chargeUuid,
       sentenceConsecutiveToForm,
+      this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference),
+      req.user.username,
     )
 
     if (errors.length > 0) {

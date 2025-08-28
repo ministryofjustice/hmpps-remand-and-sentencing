@@ -42,6 +42,7 @@
                                 <input class="govuk-radios__input"
                                        id="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}"
                                        name="consecutiveToSentenceUuid" type="radio"
+                                       {% if sentenceConsecutiveToForm.consecutiveToSentenceUuid == (sentence.sentenceReference + '|SAME') %}checked{% endif %}
                                        value="{{ sentence.sentenceReference }}|SAME">
                                 <label class="govuk-label govuk-radios__label"
                                        for="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}">
@@ -72,6 +73,7 @@
                                         <input class="govuk-radios__input"
                                                id="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}"
                                                name="consecutiveToSentenceUuid" type="radio"
+                                               {% if sentenceConsecutiveToForm.consecutiveToSentenceUuid == (sentence.sentenceUuid + '|OTHER') %}checked{% endif %}
                                                value="{{ sentence.sentenceUuid }}|OTHER">
                                         <label class="govuk-label govuk-radios__label"
                                                for="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}">

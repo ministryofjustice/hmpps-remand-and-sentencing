@@ -16,7 +16,7 @@ import type {
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
 } from 'forms'
-import type { Offence, Sentence, SentenceLength } from 'models'
+import type { Offence, Sentence, SentenceLength, CourtAppearance } from 'models'
 import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
 import validate from '../validation/validation'
@@ -838,17 +838,21 @@ export default class OffenceService {
     return errors
   }
 
-  setSentenceConsecutiveTo(
+  async setSentenceConsecutiveTo(
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceReference: string,
     sentenceConsecutiveToForm: SentenceConsecutiveToForm,
-  ): {
-    text?: string
-    html?: string
-    href: string
-  }[] {
+    sessionCourtAppearance: CourtAppearance,
+    username: string,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
     const errors = validate(
       sentenceConsecutiveToForm,
       {
@@ -862,12 +866,25 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, offenceReference)
-      const [sentenceReference, sameOrOther] = sentenceConsecutiveToForm.consecutiveToSentenceUuid.split('|')
-      if (sameOrOther === 'SAME') {
-        sentence.consecutiveToSentenceReference = sentenceReference
+      const [sentenceReferenceOrUuid, sameOrOther] = sentenceConsecutiveToForm.consecutiveToSentenceUuid.split('|')
+      const useConsecutiveToRef = sameOrOther === 'SAME'
+      const sourceSentenceUuid = sentence.sentenceUuid
+
+      const loopErrors = await this.remandAndSentencingService.validateConsecutiveLoops(
+        useConsecutiveToRef,
+        sentenceReferenceOrUuid,
+        sessionCourtAppearance,
+        nomsId,
+        sourceSentenceUuid,
+        username,
+      )
+      if (loopErrors.length !== 0) return loopErrors
+
+      if (useConsecutiveToRef) {
+        sentence.consecutiveToSentenceReference = sentenceReferenceOrUuid
         delete sentence.consecutiveToSentenceUuid
       } else {
-        sentence.consecutiveToSentenceUuid = sentenceReference
+        sentence.consecutiveToSentenceUuid = sentenceReferenceOrUuid
         delete sentence.consecutiveToSentenceReference
       }
       offence.sentence = sentence

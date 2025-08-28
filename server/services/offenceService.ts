@@ -866,10 +866,6 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence, chargeUuid)
-      const [sentenceReference, sameOrOther] = sentenceConsecutiveToForm.consecutiveToSentenceUuid.split('|')
-      if (sameOrOther === 'SAME') {
-        sentence.consecutiveToSentenceReference = sentenceReference
-      const sentence = this.getSentence(offence, offenceReference)
       const [sentenceReferenceOrUuid, sameOrOther] = sentenceConsecutiveToForm.consecutiveToSentenceUuid.split('|')
       const useConsecutiveToRef = sameOrOther === 'SAME'
       const sourceSentenceUuid = sentence.sentenceUuid

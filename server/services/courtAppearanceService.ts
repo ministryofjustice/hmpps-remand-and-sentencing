@@ -1012,17 +1012,7 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number, appearanceUuid: string): Offence {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    return courtAppearance.offences[offenceReference]
-  }
-
-  getOffenceByChargeUuid(
-    session: Partial<SessionData>,
-    nomsId: string,
-    chargeUuid: string,
-    appearanceUuid: string,
-  ): Offence {
+  getOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return courtAppearance.offences.find(offence => offence.chargeUuid === chargeUuid)
   }
@@ -1146,7 +1136,7 @@ export default class CourtAppearanceService {
     let hasInvalidated: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    if (courtAppearance.offences.length > offenceReference) {
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       if (offence.sentence && offence.sentence.convictionDate) {
         const { sentence } = offence
         const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
@@ -1190,7 +1180,7 @@ export default class CourtAppearanceService {
     let hasInvalidated: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    if (courtAppearance.offences.length > offenceReference) {
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const { sentence } = offence
       const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
       const potentialConvictionDate = dayjs(offence.sentence.convictionDate)
@@ -1229,7 +1219,8 @@ export default class CourtAppearanceService {
     let sentenceInChain: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    if (courtAppearance.offences.length > offenceReference) {
+    console.log('offenceReference', offenceReference)
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
       if (sentence) {
@@ -1262,7 +1253,7 @@ export default class CourtAppearanceService {
   resetConsecutiveFields(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    if (courtAppearance.offences.length > offenceReference) {
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const sentence = offence.sentence ?? {
         sentenceReference: offenceReference.toString(),
@@ -1317,7 +1308,7 @@ export default class CourtAppearanceService {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const { offences } = courtAppearance
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    if (courtAppearance.offences.length > offenceReference) {
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const { sentenceReference } = courtAppearance.offences[offenceReference].sentence
       offences.splice(offenceReference, 1)
       this.resetChain(sentenceReference, courtAppearance)

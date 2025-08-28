@@ -223,18 +223,18 @@
             mergedFromCase: offence.mergedFromCase,
             courtDetails: courtMap,
             consecutiveConcurrentLink: {
-                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/select-consecutive-concurrent",
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: 'Select consecutive or current'
             } if offence.sentence,
             actions: {
                 items: [
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/load-edit-offence",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/load-edit-offence",
                         text: "Edit",
                         visuallyHiddenText: "edit offence"
                     },
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/sentencing/offences/" + offence.index + "/check-delete-offence",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/sentencing/offences/" + offence.chargeUuid + "/check-delete-offence",
                         text: "Delete",
                         visuallyHiddenText: "delete offence"
                     }

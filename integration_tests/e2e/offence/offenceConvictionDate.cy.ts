@@ -285,9 +285,20 @@ context('Add Offence Conviction Date Page tests with a full create court appeara
     sentenceIsConsecutiveToPage.continueButton().click()
 
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-    offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
-    const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    offenceEditOffencePage.editFieldLink('0', 'conviction-date').click()
+
+    cy.get('[data-qa^="edit-offence-link-"]')
+      .first()
+      .then($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+          const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+          offenceEditOffencePage.editFieldLink(chargeUuid, 'conviction-date').click()
+        }
+      })
+
     offenceConvictionDatePage.continueButton().click()
 
     // RASS-1214 bug fix tested by this - previously an error message was being shown

@@ -9,23 +9,23 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
     personId: string,
     courtCaseId: string,
     appearanceReference: string,
-    offenceId: string,
+    chargeUuid: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${offenceId}/delete-offence"]`,
+      `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${chargeUuid}/delete-offence"]`,
     )
 
   selectConsecutiveConcurrentLink = (
     personId: string,
     courtCaseId: string,
     appearanceReference: string,
-    offenceId: string,
+    chargeUuid: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${offenceId}/select-consecutive-concurrent"]`,
+      `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${chargeUuid}/select-consecutive-concurrent"]`,
     )
 
-  editOffenceLink = (offenceId: string): PageElement => cy.get(`[data-qa="edit-offence-link-${offenceId}"]`)
+  editOffenceLink = (chargeUuid: string): PageElement => cy.get(`[data-qa="edit-offence-link-${chargeUuid}"]`)
 
   finishAddingButton = (): PageElement => cy.get('[data-qa="finishAddingButton"]')
 

@@ -7,16 +7,15 @@ export default class OffenceUpdateOffenceOutcomesPage extends Page {
 
   sentenceLengthSection = (): PageElement => cy.get('[data-qa="overallSentenceLengthComparison"]')
 
-  updateOutcomeLink = (offenceReference: string): PageElement =>
-    cy.get(`[data-qa="update-outcome-link-${offenceReference}"]`)
+  updateOutcomeLink = (chargeUuid: string): PageElement => cy.get(`[data-qa="update-outcome-link-${chargeUuid}"]`)
 
   editOffenceLink = (
     personId: string,
     courtCaseId: string,
     appearanceReference: string,
-    offenceId: string,
+    chargeUuid: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${offenceId}/load-edit-offence"]`,
+      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${chargeUuid}/load-edit-offence"]`,
     )
 }

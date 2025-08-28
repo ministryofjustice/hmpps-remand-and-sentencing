@@ -27,7 +27,9 @@ context('Update Offence Outcome Page', () => {
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
       courtCaseWarrantTypePage.continueButton().click()
 
-      cy.visit('/person/A1234AB/edit-court-case/0/add-court-appearance/2/offences/0/update-offence-outcome')
+      cy.visit(
+        '/person/A1234AB/edit-court-case/0/add-court-appearance/2/offences/71bb9f7e-971c-4c34-9a33-43478baee74f/update-offence-outcome',
+      )
       offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
     })
 

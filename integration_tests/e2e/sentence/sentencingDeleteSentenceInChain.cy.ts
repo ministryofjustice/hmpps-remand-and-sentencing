@@ -44,7 +44,9 @@ context('Sentencing delete sentence in chain Page', () => {
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
-    offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
+    offenceCheckOffenceAnswersPage
+      .deleteOffenceLink('A1234AB', '0', '0', 'f6053bf3-9f08-45c1-9aa9-66bf0bb2ad52')
+      .click()
     const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
     offenceDeleteOffencePage.deleteButton().click()
     sentencingDeleteSentenceInChainPage = Page.verifyOnPage(SentencingDeleteSentenceInChainPage)

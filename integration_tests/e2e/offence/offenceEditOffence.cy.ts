@@ -22,6 +22,7 @@ import OffenceFineAmountPage from '../../pages/offenceFineAmountPage'
 
 context('Add Offence Edit offence Page', () => {
   let offenceEditOffencePage: OffenceEditOffencePage
+  let chargeUuid = ''
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})
@@ -52,12 +53,24 @@ context('Add Offence Edit offence Page', () => {
       courtCaseWarrantDatePage.continueButton().click()
       cy.createOffence('A1234AB', '0', '0', '0')
       const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
+
+      cy.get('[data-qa^="edit-offence-link-"]')
+        .first()
+        .then($el => {
+          const href = $el.attr('href')
+          const match = href.match(/offences\/([a-f0-9-]+)\//)
+          if (match) {
+            // eslint-disable-next-line prefer-destructuring
+            chargeUuid = match[1]
+            offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+          }
+        })
+
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 
     it('can edit offence date and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('0', 'offence-date').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'offence-date').click()
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '15')
       offenceOffenceDatePage.monthDateInput('offenceStartDate').should('have.value', '7')
@@ -76,7 +89,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit offence and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('0', 'offence-code').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'offence-code').click()
       cy.task('stubGetOffenceByCode', { offenceCode: 'AB11000', offenceDescription: 'Another offence description' })
       cy.task('stubGetOffencesByCodes', { offenceCode: 'AB11000', offenceDescription: 'Another offence description' })
       const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
@@ -130,12 +143,22 @@ context('Add Offence Edit offence Page', () => {
       courtCaseWarrantDatePage.continueButton().click()
       cy.createSentencedOffence('A1234AB', '0', '0', '0')
       const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
+      cy.get('[data-qa^="edit-offence-link-"]')
+        .first()
+        .then($el => {
+          const href = $el.attr('href')
+          const match = href.match(/offences\/([a-f0-9-]+)\//)
+          if (match) {
+            // eslint-disable-next-line prefer-destructuring
+            chargeUuid = match[1]
+            offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+          }
+        })
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 
     it('can edit count number and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('0', 'count-number').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'count-number').click()
       const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
       offenceCountNumberPage.radioLabelSelector('true').click()
       offenceCountNumberPage.input().should('have.value', '1')
@@ -155,7 +178,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit sentence length and return to edit page', () => {
-      offenceEditOffencePage.editPeriodLengthLink('A1234AB', 'add', '0', '0', '0', 'SENTENCE_LENGTH').click()
+      offenceEditOffencePage.editPeriodLengthLink('A1234AB', 'add', '0', '0', chargeUuid, 'SENTENCE_LENGTH').click()
       const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
       offencePeriodLengthPage.yearsInput().should('have.value', '4')
       offencePeriodLengthPage.yearsInput().clear().type('6')
@@ -176,7 +199,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can edit sentence serve type and return to edit page', () => {
-      offenceEditOffencePage.editFieldLink('0', 'sentence-serve-type').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-serve-type').click()
       const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
       offenceSentenceServeTypePage.radioSelector('FORTHWITH').should('be.checked')
       offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
@@ -199,7 +222,7 @@ context('Add Offence Edit offence Page', () => {
         sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
         description: 'EDS (Extended Determinate Sentence)',
       })
-      offenceEditOffencePage.editFieldLink('0', 'sentence-type').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
       offenceSentenceTypePage.radioSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').should('be.checked')
       offenceSentenceTypePage.radioLabelContains('EDS (Extended Determinate Sentence)').click()
@@ -231,7 +254,7 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetCourtsByIds')
       cy.task('stubGetOffencesByCodes', {})
       cy.task('stubGetConsecutiveToDetails', { sentenceUuids: ['328fa693-3f99-46bf-9a94-d8578dc399af'] })
-      offenceEditOffencePage.editFieldLink('0', 'sentence-serve-type').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-serve-type').click()
       const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
       offenceSentenceServeTypePage.radioSelector('FORTHWITH').should('be.checked')
       offenceSentenceServeTypePage.radioLabelSelector('CONSECUTIVE').click()
@@ -266,7 +289,7 @@ context('Add Offence Edit offence Page', () => {
         convictionDate: '2023-05-13',
         offenceDate: '2023-05-08',
       })
-      offenceEditOffencePage.editFieldLink('0', 'offence-date').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'offence-date').click()
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').should('have.value', '12').clear().type('8')
       offenceOffenceDatePage.continueButton().click()
@@ -308,7 +331,7 @@ context('Add Offence Edit offence Page', () => {
         convictionDate: '2023-05-13',
         offenceDate: '2023-05-12',
       })
-      offenceEditOffencePage.editFieldLink('0', 'conviction-date').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'conviction-date').click()
       const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
       offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('13')
       offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('5')
@@ -346,7 +369,7 @@ context('Add Offence Edit offence Page', () => {
         description: 'Imprisonment in Default of Fine',
         classification: 'FINE',
       })
-      offenceEditOffencePage.editFieldLink('0', 'sentence-type').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
       offenceSentenceTypePage.radioLabelContains('Imprisonment in Default of Fine').click()
       offenceSentenceTypePage.continueButton().click()
@@ -368,7 +391,7 @@ context('Add Offence Edit offence Page', () => {
         'Term length': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
-      offenceEditOffencePage.editFieldLink('0', 'fine-amount').click()
+      offenceEditOffencePage.editFieldLink(chargeUuid, 'fine-amount').click()
       Page.verifyOnPage(OffenceFineAmountPage)
       offenceFineAmountPage.input().should('have.value', '500')
       offenceFineAmountPage.input().clear()
@@ -415,7 +438,12 @@ context('Add Offence Edit offence Page', () => {
       )
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage
-        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '71bb9f7e-971c-4c34-9a33-43478baee74f',
+        )
         .click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
@@ -487,17 +515,17 @@ context('Add Offence Edit offence Page', () => {
         outcomeType: 'SENTENCING',
       })
       offenceUpdateOffenceOutcomesPage
-        .editOffenceLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '0')
+        .editOffenceLink('A1234AB', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '2', '71bb9f7e-971c-4c34-9a33-43478baee74f')
         .click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 
     it('editing outcome from remand to sentence leads to entering sentence information', () => {
-      offenceEditOffencePage.editFieldLink('0', 'offence-date').click()
+      offenceEditOffencePage.editFieldLink('71bb9f7e-971c-4c34-9a33-43478baee74f', 'offence-date').click()
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('12')
       offenceOffenceDatePage.continueButton().click()
-      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
+      offenceEditOffencePage.editFieldLink('71bb9f7e-971c-4c34-9a33-43478baee74f', 'offence-outcome').click()
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',

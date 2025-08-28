@@ -200,7 +200,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (Object.keys(offence).length === 1 && Object.keys(offence).includes('chargeUuid')) {
-      const existingOffence = this.courtAppearanceService.getOffenceByChargeUuid(
+      const existingOffence = this.courtAppearanceService.getOffence(
         req.session,
         nomsId,
         chargeUuid,
@@ -390,7 +390,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
-    const existingOffence = this.courtAppearanceService.getOffenceByChargeUuid(
+    const existingOffence = this.courtAppearanceService.getOffence(
       req.session,
       nomsId,
       chargeUuid,
@@ -1323,12 +1323,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
 
-    const offence = this.courtAppearanceService.getOffenceByChargeUuid(
-      req.session,
-      nomsId,
-      chargeUuid,
-      appearanceReference,
-    )
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-serve-type?invalidatedFrom=${InvalidatedFrom.DELETE_CHAIN}`,
@@ -1948,12 +1943,8 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const offence = this.courtAppearanceService.getOffenceByChargeUuid(
-      req.session,
-      nomsId,
-      chargeUuid,
-      appearanceReference,
-    )
+    console.log('chargeUuid', chargeUuid)
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,

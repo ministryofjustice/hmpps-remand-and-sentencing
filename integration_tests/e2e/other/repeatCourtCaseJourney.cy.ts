@@ -426,7 +426,7 @@ context('Repeat Court Case journey', () => {
     courtCaseTaskListPage.updateOffenceOutcomesLink().click()
 
     let offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
-    offenceUpdateOffenceOutcomesPage.updateOutcomeLink('0').click()
+    offenceUpdateOffenceOutcomesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
 
     const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
     offenceUpdateOutcomePage.radioLabelContains('Imprisonment').click()

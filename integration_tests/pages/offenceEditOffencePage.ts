@@ -5,18 +5,17 @@ export default class OffenceEditOffencePage extends Page {
     super(`Edit ${sentenceOffence} details`)
   }
 
-  editFieldLink = (offenceReference: string, page: string): PageElement =>
-    cy.get(`a[data-qa="edit-${page}-${offenceReference}"]`)
+  editFieldLink = (chargeUuid: string, page: string): PageElement => cy.get(`a[data-qa="edit-${page}-${chargeUuid}"]`)
 
   editPeriodLengthLink = (
     personId: string,
     addOrEdit: string,
     courtCaseReference: string,
     appearanceReference: string,
-    offenceReference: string,
+    chargeUuid: string,
     periodLengthType: string,
   ): PageElement =>
     cy.get(
-      `a[href="/person/${personId}/${addOrEdit}-court-case/${courtCaseReference}/${addOrEdit}-court-appearance/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${periodLengthType}&submitToEditOffence=true"]`,
+      `a[href="/person/${personId}/${addOrEdit}-court-case/${courtCaseReference}/${addOrEdit}-court-appearance/${appearanceReference}/offences/${chargeUuid}/period-length?periodLengthType=${periodLengthType}&submitToEditOffence=true"]`,
     )
 }

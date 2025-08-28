@@ -1219,7 +1219,6 @@ export default class CourtAppearanceService {
     let sentenceInChain: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    console.log('offenceReference', offenceReference)
     if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence

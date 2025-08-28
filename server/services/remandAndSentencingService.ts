@@ -301,6 +301,9 @@ export default class RemandAndSentencingService {
       } as SentenceDetailsForConsecValidation
     })
 
+    // Source sentence has not beed added to sentences yet, therefore cannot be part of a loop yet
+    if (!sentences.some(s => s.sentenceUuid === sourceSentenceUuid)) return []
+
     const targetSentenceUuid = useConsecutiveToRef
       ? sessionCourtAppearance.offences.find(o => o.sentence.sentenceReference === targetSentenceReferenceOrUuId)
           .sentence.sentenceUuid

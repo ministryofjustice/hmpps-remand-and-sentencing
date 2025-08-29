@@ -895,29 +895,35 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, appearanceUuid)
   }
 
-  isForwithAlreadySelected(
+  isForthwithAlreadySelected(
     session: Partial<SessionData>,
     nomsId: string,
-    excludeOffenceReference: number,
+    chargeUuid: string,
     appearanceUuid: string,
   ): boolean {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offences = Object.assign([], courtAppearance.offences)
+    const index = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (index !== -1) {
+      offences.splice(index, 1)
+    }
 
-    offences.splice(excludeOffenceReference, 1)
     return offences.some(offence => offence.sentence?.sentenceServeType === 'FORTHWITH')
   }
 
   anySentenceConsecutiveToAnotherCase(
     session: Partial<SessionData>,
     nomsId: string,
-    excludeOffenceReference: number,
+    chargeUuid: string,
     appearanceUuid: string,
   ): boolean {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offences = Object.assign([], courtAppearance.offences)
+    const index = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (index !== -1) {
+      offences.splice(index, 1)
+    }
 
-    offences.splice(excludeOffenceReference, 1)
     return offences.some(offence => offence.sentence?.consecutiveToSentenceUuid)
   }
 
@@ -929,19 +935,20 @@ export default class CourtAppearanceService {
   addOffence(
     session: Partial<SessionData>,
     nomsId: string,
-    offenceReference: number,
+    chargeUuid: string,
     offence: Offence,
     appearanceUuid: string,
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
-      const existingOffence = { ...courtAppearance.offences[offenceReference] }
+    const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (offenceReference === -1 || offenceReference > courtAppearance.offences.length) {
+      courtAppearance.offences.push(offence)
+    } else {
+      const existingOffence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
       courtAppearance.offences[offenceReference] = offence
       if (existingOffence.sentence && !offence.sentence) {
         this.resetChain(existingOffence.sentence.sentenceReference, courtAppearance)
       }
-    } else {
-      courtAppearance.offences.push(offence)
     }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
@@ -995,16 +1002,19 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number, appearanceUuid: string) {
+  deleteOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    courtAppearance.offences.splice(offenceReference, 1)
+    const index = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (index !== -1) {
+      courtAppearance.offences.splice(index, 1)
+    }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  getOffence(session: Partial<SessionData>, nomsId: string, offenceReference: number, appearanceUuid: string): Offence {
+  getOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    return courtAppearance.offences[offenceReference]
+    return courtAppearance.offences.find(offence => offence.chargeUuid === chargeUuid)
   }
 
   getOffenceBySentenceReference(
@@ -1020,15 +1030,17 @@ export default class CourtAppearanceService {
   getCountNumbers(
     session: Partial<SessionData>,
     nomsId: string,
-    excludeOffenceReference: number,
+    excludeChargeUuid: string,
     appearanceUuid: string,
   ): string[] {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const { offences } = courtAppearance
     return offences
       .filter(
-        (offence, index) =>
-          offence.sentence?.countNumber && offence.sentence?.countNumber !== '-1' && excludeOffenceReference !== index,
+        offence =>
+          offence.sentence?.countNumber &&
+          offence.sentence?.countNumber !== '-1' &&
+          offence.chargeUuid !== excludeChargeUuid,
       )
       .map(offence => offence.sentence.countNumber)
   }
@@ -1115,7 +1127,7 @@ export default class CourtAppearanceService {
   async checkOffenceDatesHaveInvalidatedOffence(
     session: Partial<SessionData>,
     nomsId: string,
-    offenceReference: number,
+    chargeUuid: string,
     offence: Offence,
     dateOfBirth: string,
     username: string,
@@ -1123,7 +1135,8 @@ export default class CourtAppearanceService {
   ): Promise<boolean> {
     let hasInvalidated: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
+    const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       if (offence.sentence && offence.sentence.convictionDate) {
         const { sentence } = offence
         const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
@@ -1158,7 +1171,7 @@ export default class CourtAppearanceService {
   async checkConvictionDateHasInvalidatedOffence(
     session: Partial<SessionData>,
     nomsId: string,
-    offenceReference: number,
+    chargeUuid: string,
     offence: Offence,
     dateOfBirth: string,
     username: string,
@@ -1166,7 +1179,8 @@ export default class CourtAppearanceService {
   ): Promise<boolean> {
     let hasInvalidated: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
+    const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const { sentence } = offence
       const offenceDate = dayjs(offence.offenceEndDate ?? offence.offenceStartDate)
       const potentialConvictionDate = dayjs(offence.sentence.convictionDate)
@@ -1199,12 +1213,13 @@ export default class CourtAppearanceService {
   sentenceIsInChain(
     session: Partial<SessionData>,
     nomsId: string,
-    offenceReference: number,
+    chargeUuid: string,
     appearanceUuid: string,
   ): boolean {
     let sentenceInChain: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
+    const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
       if (sentence) {
@@ -1234,14 +1249,10 @@ export default class CourtAppearanceService {
     }
   }
 
-  resetConsecutiveFields(
-    session: Partial<SessionData>,
-    nomsId: string,
-    offenceReference: number,
-    appearanceUuid: string,
-  ) {
+  resetConsecutiveFields(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
+    const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const sentence = offence.sentence ?? {
         sentenceReference: offenceReference.toString(),
@@ -1292,15 +1303,11 @@ export default class CourtAppearanceService {
     }
   }
 
-  deleteSentenceInChain(
-    session: Partial<SessionData>,
-    nomsId: string,
-    offenceReference: number,
-    appearanceUuid: string,
-  ) {
+  deleteSentenceInChain(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const { offences } = courtAppearance
-    if (courtAppearance.offences.length > offenceReference) {
+    const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const { sentenceReference } = courtAppearance.offences[offenceReference].sentence
       offences.splice(offenceReference, 1)
       this.resetChain(sentenceReference, courtAppearance)

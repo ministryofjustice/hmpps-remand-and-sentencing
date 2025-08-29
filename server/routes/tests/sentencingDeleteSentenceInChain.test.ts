@@ -32,7 +32,7 @@ describe('GET Sentencing delete sentence in chain', () => {
       isChild: false,
     })
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/0/delete-sentence-in-chain')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/1/delete-sentence-in-chain')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

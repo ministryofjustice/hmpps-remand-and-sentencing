@@ -79,7 +79,7 @@
             actions: {
                 items: [
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/load-edit-offence",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
                         text: "Edit",
                         visuallyHiddenText: "edit offence"
                     }
@@ -88,7 +88,7 @@
             listItems: {
                 classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
                 items: [{
-                    html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.index + '/update-offence-outcome" data-qa="update-outcome-link-'+ offence.index +'">Update outcome</a>'
+                    html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/update-offence-outcome" data-qa="update-outcome-link-'+ offence.chargeUuid +'">Update outcome</a>'
                 }]
             },
             id: offenceId,
@@ -131,7 +131,7 @@
                         actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/load-edit-offence",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
                                     text: "Edit",
                                     visuallyHiddenText: "edit offence"
                                 }
@@ -174,7 +174,7 @@
                         actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.index + "/load-edit-offence",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
                                     text: "Edit",
                                     visuallyHiddenText: "edit offence"
                                 }

@@ -11,11 +11,11 @@
                     },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-code?submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-code?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "offence code",
                             attributes: {
-                                'data-qa': 'edit-offence-code-' + offenceReference
+                                'data-qa': 'edit-offence-code-' + chargeUuid
                             }
                         }]
                     }
@@ -28,11 +28,11 @@
                     },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-date?submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-date?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "committed on",
                             attributes: {
-                                'data-qa': 'edit-offence-date-' + offenceReference
+                                'data-qa': 'edit-offence-date-' + chargeUuid
                             }
                         }]
                     }
@@ -45,11 +45,11 @@
                     },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/offence-outcome?submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-outcome?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "outcome",
                             attributes: {
-                                'data-qa': 'edit-offence-outcome-' + offenceReference
+                                'data-qa': 'edit-offence-outcome-' + chargeUuid
                             }
                         }]
                     }
@@ -70,11 +70,11 @@
                 },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/count-number?submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/count-number?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "count number",
                             attributes: {
-                                'data-qa': 'edit-count-number-' + offenceReference
+                                'data-qa': 'edit-count-number-' + chargeUuid
                             }
                         }]
                     }
@@ -86,11 +86,11 @@
                     },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/conviction-date?submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/conviction-date?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "conviction date",
                             attributes: {
-                                'data-qa': 'edit-conviction-date-' + offenceReference
+                                'data-qa': 'edit-conviction-date-' + chargeUuid
                             }
                         }]
                     }
@@ -104,11 +104,11 @@
                 },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/sentence-type?submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-type?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "sentence type",
                             attributes: {
-                                'data-qa': 'edit-sentence-type-' + offenceReference
+                                'data-qa': 'edit-sentence-type-' + chargeUuid
                             }
                         }]
                     }
@@ -124,11 +124,11 @@
                         },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/period-length?periodLengthType=" + periodLength.periodLengthType +"&submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.periodLengthType +"&submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize,
                             attributes: {
-                                'data-qa': 'edit-period-length-'+ periodLength.periodLengthType +'-' + offenceReference
+                                'data-qa': 'edit-period-length-'+ periodLength.periodLengthType +'-' + chargeUuid
                             }
                     }]
                 }
@@ -141,11 +141,11 @@
                                         value: { text: "£" + offence.sentence.fineAmount },
                                         actions: {
                                             items: [{
-                                                       href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/fine-amount?submitToEditOffence=true",
+                                                       href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/fine-amount?submitToEditOffence=true",
                                                        text: "Edit",
                                                        visuallyHiddenText: "fine amount",
                                                        attributes: {
-                                                           'data-qa': 'edit-fine-amount-' + offenceReference
+                                                           'data-qa': 'edit-fine-amount-' + chargeUuid
                                                        }
                                                    }]
                                                }
@@ -161,11 +161,11 @@
                 },
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offenceReference + "/sentence-serve-type?submitToEditOffence=true",
+                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "consecutive or concurrent",
                             attributes: {
-                                'data-qa': 'edit-sentence-serve-type-' + offenceReference
+                                'data-qa': 'edit-sentence-serve-type-' + chargeUuid
                             }
                     }]
                 }
@@ -177,7 +177,7 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-edit-offence">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-edit-offence">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
                 <h1 class="govuk-heading-l">Edit offence details</h1>

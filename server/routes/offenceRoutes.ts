@@ -67,7 +67,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -103,7 +103,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const isFirstOffence = offences.length === 0
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     if (submitToEditOffence || invalidatedFrom) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'REMAND') {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
@@ -117,7 +117,7 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.render('pages/offence/offence-date', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -139,7 +139,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -159,7 +159,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceDateForm', { ...offenceDateForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date${submitQuery}`,
       )
     }
 
@@ -168,24 +168,24 @@ export default class OffenceRoutes extends BaseRoutes {
       const hasInvalidatedOffence = await this.courtAppearanceService.checkOffenceDatesHaveInvalidatedOffence(
         req.session,
         nomsId,
-        parseInt(offenceReference, 10),
+        chargeUuid,
         offence,
         res.locals.prisoner.dateOfBirth,
         req.user.username,
         appearanceReference,
       )
       if (hasInvalidatedOffence) {
-        this.offenceService.invalidateFromOffenceDate(req.session, nomsId, courtCaseReference, offenceReference)
+        this.offenceService.invalidateFromOffenceDate(req.session, nomsId, courtCaseReference, chargeUuid)
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type?invalidatedFrom=${InvalidatedFrom.OFFENCE_DATE}`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type?invalidatedFrom=${InvalidatedFrom.OFFENCE_DATE}`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code`,
     )
   }
 
@@ -193,7 +193,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -203,7 +203,7 @@ export default class OffenceRoutes extends BaseRoutes {
       const existingOffence = this.courtAppearanceService.getOffence(
         req.session,
         nomsId,
-        parseInt(offenceReference, 10),
+        chargeUuid,
         appearanceReference,
       )
       this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, existingOffence)
@@ -238,7 +238,7 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.render('pages/offence/update-outcome', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -255,7 +255,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -266,7 +266,7 @@ export default class OffenceRoutes extends BaseRoutes {
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome`,
       )
     }
 
@@ -277,17 +277,17 @@ export default class OffenceRoutes extends BaseRoutes {
     )
     if (outcome.outcomeType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
     }
     if (outcome.outcomeType === 'NON_CUSTODIAL') {
       delete offence.sentence
     }
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence, appearanceReference)
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes?backTo=OUTCOME&offenceReference=${offenceReference}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes?backTo=OUTCOME&chargeUuid=${chargeUuid}`,
       )
     }
     return res.redirect(
@@ -299,7 +299,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -349,14 +349,14 @@ export default class OffenceRoutes extends BaseRoutes {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, offence.legacyData)
     }
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence || offence.onFinishGoToEdit === true) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/review-offences`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/review-offences`
       }
     }
 
@@ -364,7 +364,7 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       courtCaseReference,
       offenceOutcomeForm,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -383,7 +383,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -393,7 +393,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const existingOffence = this.courtAppearanceService.getOffence(
       req.session,
       nomsId,
-      parseInt(offenceReference, 10),
+      chargeUuid,
       appearanceReference,
     ) ?? { chargeUuid: crypto.randomUUID() }
     const { errors, outcome } = await this.offenceService.setOffenceOutcome(
@@ -408,7 +408,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-outcome${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
     const potentialOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
@@ -419,17 +419,17 @@ export default class OffenceRoutes extends BaseRoutes {
     ) {
       this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference)
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
     }
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
     if (outcome.outcomeType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
     }
     return this.saveSessionOffenceInAppearance(
@@ -440,7 +440,7 @@ export default class OffenceRoutes extends BaseRoutes {
       courtCaseReference,
       addOrEditCourtAppearance,
       appearanceReference,
-      offenceReference,
+      chargeUuid,
     )
   }
 
@@ -448,7 +448,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -469,17 +469,17 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     } else if (courtAppearance.caseOutcomeAppliedAll !== 'true' || offence.onFinishGoToEdit) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-outcome`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
     }
 
     return res.render('pages/offence/count-number', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -495,7 +495,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -505,14 +505,14 @@ export default class OffenceRoutes extends BaseRoutes {
     const existingCountNumbers = this.courtAppearanceService.getCountNumbers(
       req.session,
       nomsId,
-      parseInt(offenceReference, 10),
+      chargeUuid,
       appearanceReference,
     )
     const errors = await this.offenceService.setCountNumber(
       req.session,
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       countNumberForm,
       this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       existingCountNumbers,
@@ -522,13 +522,13 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('countNumberForm', { ...countNumberForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
@@ -541,15 +541,15 @@ export default class OffenceRoutes extends BaseRoutes {
         req.session,
         nomsId,
         courtCaseReference,
-        offenceReference,
+        chargeUuid,
         courtAppearance.overallConvictionDate,
       )
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type`,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/conviction-date`,
     )
   }
 
@@ -557,7 +557,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -567,14 +567,14 @@ export default class OffenceRoutes extends BaseRoutes {
     const offenceCode =
       offenceCodeForm.offenceCode ||
       this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)?.offenceCode
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date`
     if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
     return res.render('pages/offence/offence-code', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
@@ -591,7 +591,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -609,13 +609,13 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceCodeForm', { ...offenceCodeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
     if (offenceCodeForm.unknownCode) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
@@ -625,12 +625,12 @@ export default class OffenceRoutes extends BaseRoutes {
       const enteredStartDate = dayjs(sessionOffence.offenceStartDate)
       if (offenceEndDate.isBefore(enteredStartDate)) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/inactive-offence?backTo=CODE${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/inactive-offence?backTo=CODE${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
         )
       }
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
     )
   }
 
@@ -638,7 +638,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -662,7 +662,7 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.render('pages/offence/offence-name', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -670,7 +670,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceNameForm,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code`,
     })
   }
 
@@ -678,7 +678,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -696,7 +696,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceNameForm', { ...offenceNameForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
@@ -706,18 +706,18 @@ export default class OffenceRoutes extends BaseRoutes {
       const enteredStartDate = dayjs(sessionOffence.offenceStartDate)
       if (offenceEndDate.isBefore(enteredStartDate)) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/inactive-offence?backTo=NAME${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/inactive-offence?backTo=NAME${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
         )
       }
     }
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/confirm-offence-code`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`,
     )
   }
 
@@ -725,7 +725,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -741,7 +741,7 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       courtCaseReference,
       offence,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -750,8 +750,8 @@ export default class OffenceRoutes extends BaseRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       backLink:
         backTo === 'NAME'
-          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
-          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+          ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
+          : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
     })
   }
 
@@ -759,7 +759,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -776,13 +776,13 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       courtCaseReference,
       offence,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       submitToEditOffence,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-code`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code`,
     })
   }
 
@@ -790,7 +790,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -820,12 +820,12 @@ export default class OffenceRoutes extends BaseRoutes {
 
       if (submitToEditOffence) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
         )
       }
       if (outcome.outcomeType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
         )
       }
       return this.saveSessionOffenceInAppearance(
@@ -836,16 +836,16 @@ export default class OffenceRoutes extends BaseRoutes {
         courtCaseReference,
         addOrEditCourtAppearance,
         appearanceReference,
-        offenceReference,
+        chargeUuid,
       )
     }
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-outcome`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`,
     )
   }
 
@@ -853,7 +853,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -897,27 +897,27 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/conviction-date`
     if (courtAppearance.overallConvictionDateAppliedAll === 'true') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`
     }
 
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     if (invalidatedFrom) {
       const invalidatedFromType = InvalidatedFrom[invalidatedFrom as keyof typeof InvalidatedFrom]
       if (invalidatedFromType === InvalidatedFrom.OFFENCE_DATE) {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date${submitQuery}`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date${submitQuery}`
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date${submitQuery}`
+        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/conviction-date${submitQuery}`
       }
     } else if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
 
     return res.render('pages/offence/sentence-type', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -935,7 +935,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -947,7 +947,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       offenceSentenceTypeForm,
     )
 
@@ -955,12 +955,12 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceSentenceTypeForm', { ...offenceSentenceTypeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type${submitQuery}`,
       )
     }
 
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    this.offenceService.updatePeriodLengths(req.session, nomsId, courtCaseReference, offenceReference, offence)
+    this.offenceService.updatePeriodLengths(req.session, nomsId, courtCaseReference, chargeUuid, offence)
 
     const nextPeriodLengthType = getNextPeriodLengthType(
       this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference).sentence ?? {
@@ -972,13 +972,13 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (nextPeriodLengthType) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
       )
     }
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
 
@@ -990,7 +990,7 @@ export default class OffenceRoutes extends BaseRoutes {
       courtCaseReference,
       addOrEditCourtAppearance,
       appearanceReference,
-      offenceReference,
+      chargeUuid,
     )
   }
 
@@ -998,7 +998,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1020,9 +1020,9 @@ export default class OffenceRoutes extends BaseRoutes {
     const periodLengthHeader =
       periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
       currentPeriodLength?.legacyData?.sentenceTermDescription
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type${this.queryParametersToString(submitToEditOffence, invalidatedFrom)}`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type${this.queryParametersToString(submitToEditOffence, invalidatedFrom)}`
     if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     } else if (expectedPeriodLengthTypeIndex >= 1) {
       const backSubmitQuery = this.periodLengthQueryParameterToString(
         sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths[expectedPeriodLengthTypeIndex - 1]
@@ -1030,7 +1030,7 @@ export default class OffenceRoutes extends BaseRoutes {
         submitToEditOffence,
         invalidatedFrom,
       )
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${backSubmitQuery}`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${backSubmitQuery}`
     }
     let sentenceTypeHint
     if (sentence?.sentenceTypeId) {
@@ -1041,7 +1041,7 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.render('pages/offence/period-length', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1060,7 +1060,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1073,14 +1073,14 @@ export default class OffenceRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       sentence?.periodLengths ?? [],
     )
     const errors = this.offenceService.setPeriodLength(
       req.session,
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       offenceSentenceLengthForm,
       periodLengthType as string,
     )
@@ -1088,26 +1088,26 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceSentenceLengthForm', { ...offenceSentenceLengthForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${submitQuery}`,
       )
     }
 
     if (sentence.sentenceTypeClassification === 'FINE') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/fine-amount${submitQuery}`,
       )
     }
     const allPeriodLengthsEntered = allPeriodLengthTypesEntered(sentence)
     const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType as string)
     if (nextPeriodLengthType && !allPeriodLengthsEntered) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
       )
     }
 
     if (submitToEditOffence || invalidatedFrom) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
     return this.determineSentenceServeType(
@@ -1118,7 +1118,7 @@ export default class OffenceRoutes extends BaseRoutes {
       courtCaseReference,
       addOrEditCourtAppearance,
       appearanceReference,
-      offenceReference,
+      chargeUuid,
     )
   }
 
@@ -1126,7 +1126,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1141,9 +1141,9 @@ export default class OffenceRoutes extends BaseRoutes {
       }
     }
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${submitQuery}`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${submitQuery}`
     if (submitToEditOffence && !invalidatedFrom) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
 
     return res.render('pages/offence/fine-amount', {
@@ -1153,7 +1153,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       offenceFineAmountForm,
-      offenceReference,
+      chargeUuid,
       backLink,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
@@ -1168,7 +1168,7 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offenceReference,
+      chargeUuid,
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceFineAmountForm = trimForm<OffenceFineAmountForm>(req.body)
@@ -1176,7 +1176,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       offenceFineAmountForm,
     )
 
@@ -1184,13 +1184,13 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceFineAmountForm', { ...offenceFineAmountForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/fine-amount${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
     return this.determineSentenceServeType(
@@ -1201,7 +1201,7 @@ export default class OffenceRoutes extends BaseRoutes {
       courtCaseReference,
       addOrEditCourtAppearance,
       appearanceReference,
-      offenceReference,
+      chargeUuid,
     )
   }
 
@@ -1209,7 +1209,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1234,14 +1234,14 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.render('pages/offence/alternative-period-length', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       offenceAlternativeSentenceLengthForm,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${submitQuery}`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${submitQuery}`,
       periodLengthType,
       periodLengthHeader,
       submitQuery,
@@ -1252,7 +1252,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1265,14 +1265,14 @@ export default class OffenceRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       sentence?.periodLengths ?? [],
     )
     const errors = this.offenceService.setAlternativePeriodLength(
       req.session,
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       offenceAlternativeSentenceLengthForm,
       periodLengthType as string,
     )
@@ -1280,25 +1280,25 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceAlternativeSentenceLengthForm', { ...offenceAlternativeSentenceLengthForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/alternative-period-length${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/alternative-period-length${submitQuery}`,
       )
     }
     if (sentence.sentenceTypeClassification === 'FINE') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/fine-amount${submitQuery}`,
       )
     }
     const allPeriodLengthsEntered = allPeriodLengthTypesEntered(sentence)
     const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType as string)
     if (nextPeriodLengthType && !allPeriodLengthsEntered) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
       )
     }
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
     return this.determineSentenceServeType(
@@ -1309,7 +1309,7 @@ export default class OffenceRoutes extends BaseRoutes {
       courtCaseReference,
       addOrEditCourtAppearance,
       appearanceReference,
-      offenceReference,
+      chargeUuid,
     )
   }
 
@@ -1317,21 +1317,16 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
 
-    const offence = this.courtAppearanceService.getOffence(
-      req.session,
-      nomsId,
-      parseInt(offenceReference, 10),
-      appearanceReference,
-    )
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type?invalidatedFrom=${InvalidatedFrom.DELETE_CHAIN}`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-serve-type?invalidatedFrom=${InvalidatedFrom.DELETE_CHAIN}`,
     )
   }
 
@@ -1339,22 +1334,22 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
     const { submitToEditOffence, invalidatedFrom } = req.query
-    const forthwithAlreadySelected = this.courtAppearanceService.isForwithAlreadySelected(
+    const forthwithAlreadySelected = this.courtAppearanceService.isForthwithAlreadySelected(
       req.session,
       nomsId,
-      parseInt(offenceReference, 10),
+      chargeUuid,
       appearanceReference,
     )
     const sentenceConsecutiveToAnotherCase = this.courtAppearanceService.anySentenceConsecutiveToAnotherCase(
       req.session,
       nomsId,
-      parseInt(offenceReference, 10),
+      chargeUuid,
       appearanceReference,
     )
     const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
@@ -1362,22 +1357,22 @@ export default class OffenceRoutes extends BaseRoutes {
     const expectedPeriodLengthsSize =
       sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths?.length
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type`
     if (invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
     } else if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     } else if (sentence?.sentenceTypeClassification === 'FINE') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/fine-amount`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/fine-amount`
     } else if (expectedPeriodLengthsSize) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/period-length?periodLengthType=${
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length?periodLengthType=${
         sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths[expectedPeriodLengthsSize - 1].type
       }`
     }
     return res.render('pages/offence/sentence-serve-type', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1395,7 +1390,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1407,14 +1402,15 @@ export default class OffenceRoutes extends BaseRoutes {
     const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
       req.session,
       nomsId,
-      parseInt(offenceReference, 10),
+      chargeUuid,
       appearanceReference,
     )
+
     const errors = this.offenceService.setSentenceServeType(
       req.session,
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       offenceSentenceServeTypeForm,
       existingSentenceServeType,
       sentenceIsInChain,
@@ -1423,13 +1419,13 @@ export default class OffenceRoutes extends BaseRoutes {
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-serve-type${submitQuery}`,
       )
     }
 
     const serveType = offenceSentenceServeTypeForm.sentenceServeType
     const isConsecutive = serveType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
-    const redirectBase = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}`
+    const redirectBase = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}`
 
     if (submitToEditOffence) {
       const newType = serveType
@@ -1449,16 +1445,11 @@ export default class OffenceRoutes extends BaseRoutes {
         return res.redirect(`${redirectBase}/sentence-consecutive-to${submitQuery}`)
       }
 
-      this.courtAppearanceService.resetConsecutiveFields(
-        req.session,
-        nomsId,
-        parseInt(offenceReference, 10),
-        appearanceReference,
-      )
+      this.courtAppearanceService.resetConsecutiveFields(req.session, nomsId, chargeUuid, appearanceReference)
 
       // Go back to edit screen as fallback
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
 
@@ -1474,7 +1465,7 @@ export default class OffenceRoutes extends BaseRoutes {
       courtCaseReference,
       addOrEditCourtAppearance,
       appearanceReference,
-      offenceReference,
+      chargeUuid,
     )
   }
 
@@ -1482,7 +1473,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1501,17 +1492,17 @@ export default class OffenceRoutes extends BaseRoutes {
       convictionDateYear = convictionDate.getFullYear()
     }
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/count-number`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`
     if (invalidatedFrom) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     } else if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
 
     return res.render('pages/offence/offence-conviction-date', {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1529,7 +1520,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1542,7 +1533,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.session,
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       offenceConvictionDateForm,
       addOrEditCourtAppearance,
       this.courtAppearanceService.getWarrantDate(req.session, nomsId, appearanceReference),
@@ -1551,13 +1542,13 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceConvictionDateForm', { ...offenceConvictionDateForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/conviction-date${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/conviction-date${submitQuery}`,
       )
     }
 
     if (invalidatedFrom) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type${submitQuery}`,
       )
     }
     if (submitToEditOffence) {
@@ -1565,24 +1556,24 @@ export default class OffenceRoutes extends BaseRoutes {
       const hasInvalidatedOffence = await this.courtAppearanceService.checkConvictionDateHasInvalidatedOffence(
         req.session,
         nomsId,
-        parseInt(offenceReference, 10),
+        chargeUuid,
         offence,
         res.locals.prisoner.dateOfBirth,
         req.user.username,
         appearanceReference,
       )
       if (hasInvalidatedOffence) {
-        this.offenceService.invalidateFromConvictionDate(req.session, nomsId, courtCaseReference, offenceReference)
+        this.offenceService.invalidateFromConvictionDate(req.session, nomsId, courtCaseReference, chargeUuid)
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type?invalidatedFrom=${InvalidatedFrom.CONVICTION_DATE}`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type?invalidatedFrom=${InvalidatedFrom.CONVICTION_DATE}`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-type`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type`,
     )
   }
 
@@ -1787,14 +1778,14 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/offence-date`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date`,
     )
   }
 
@@ -1802,7 +1793,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1812,7 +1803,7 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    const offence = courtAppearance.offences[parseInt(offenceReference, 10)]
+    const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
     const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
       [offence.sentence?.consecutiveToSentenceUuid],
       req.user.username,
@@ -1888,7 +1879,7 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       courtCaseReference,
       offence,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1908,7 +1899,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -1917,16 +1908,16 @@ export default class OffenceRoutes extends BaseRoutes {
     const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
       req.session,
       nomsId,
-      parseInt(offenceReference, 10),
+      chargeUuid,
       appearanceReference,
     )
 
     if (sentenceIsInChain) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/delete-sentence-in-chain`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/delete-sentence-in-chain`,
       )
     }
-    this.courtAppearanceService.deleteOffence(req.session, nomsId, parseInt(offenceReference, 10), appearanceReference)
+    this.courtAppearanceService.deleteOffence(req.session, nomsId, chargeUuid, appearanceReference)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
       if (warrantType === 'SENTENCING') {
@@ -1947,20 +1938,15 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const offence = this.courtAppearanceService.getOffence(
-      req.session,
-      nomsId,
-      parseInt(offenceReference, 10),
-      appearanceReference,
-    )
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
     )
   }
 
@@ -1968,11 +1954,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const courtCodes = []
     const offenceCodes = [offence.offenceCode]
@@ -2028,12 +2015,11 @@ export default class OffenceRoutes extends BaseRoutes {
     } else if (offence.sentence?.consecutiveToSentenceReference) {
       consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
     }
-
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,
       offence,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -2051,13 +2037,13 @@ export default class OffenceRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence, appearanceReference)
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
 
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
@@ -2168,10 +2154,10 @@ export default class OffenceRoutes extends BaseRoutes {
     )
     const { offences, warrantType } = courtAppearance
 
-    const { backTo, offenceReference } = req.query // Query parameter to determine navigation context
+    const { backTo, chargeUuid } = req.query // Query parameter to determine navigation context
     const backLink =
       backTo === 'OUTCOME'
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/update-offence-outcome`
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
 
     const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(
@@ -2343,7 +2329,7 @@ export default class OffenceRoutes extends BaseRoutes {
     courtCaseReference: string,
     addOrEditCourtAppearance: string,
     appearanceReference: string,
-    offenceReference: string,
+    chargeUuid: string,
   ) {
     const isFirstSentence = this.courtAppearanceService.hasNoSentences(req.session, nomsId, appearanceReference)
 
@@ -2358,14 +2344,14 @@ export default class OffenceRoutes extends BaseRoutes {
       )
       if (hasSentenceToChainTo) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${offenceReference}/is-sentence-consecutive-to`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/is-sentence-consecutive-to`,
         )
       }
       this.offenceService.setSentenceServeType(
         req.session,
         nomsId,
         courtCaseReference,
-        offenceReference,
+        chargeUuid,
         {
           sentenceServeType: extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH),
         },
@@ -2380,11 +2366,11 @@ export default class OffenceRoutes extends BaseRoutes {
         courtCaseReference,
         addOrEditCourtAppearance,
         appearanceReference,
-        offenceReference,
+        chargeUuid,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/sentence-serve-type`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-serve-type`,
     )
   }
 }

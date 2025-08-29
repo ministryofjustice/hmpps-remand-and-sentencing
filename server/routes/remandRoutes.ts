@@ -162,7 +162,7 @@ export default class RemandRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -172,7 +172,7 @@ export default class RemandRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    const offence = courtAppearance.offences[parseInt(offenceReference, 10)]
+    const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
     if (offence.sentence?.sentenceUuid) {
       const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
         offence.sentence.sentenceUuid,
@@ -180,12 +180,12 @@ export default class RemandRoutes extends BaseRoutes {
       )
       if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/offences/${offenceReference}/cannot-delete-offence`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/offences/${chargeUuid}/cannot-delete-offence`,
         )
       }
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/delete-offence`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/delete-offence`,
     )
   }
 
@@ -193,7 +193,7 @@ export default class RemandRoutes extends BaseRoutes {
     const {
       nomsId,
       courtCaseReference,
-      offenceReference,
+      chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
@@ -204,7 +204,7 @@ export default class RemandRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    const offence = courtAppearance.offences[parseInt(offenceReference, 10)]
+    const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
     const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
       offence.sentence.sentenceUuid,
       username,
@@ -222,7 +222,6 @@ export default class RemandRoutes extends BaseRoutes {
     return res.render('pages/courtAppearance/cannot-delete-offence', {
       nomsId,
       courtCaseReference,
-      offenceReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,

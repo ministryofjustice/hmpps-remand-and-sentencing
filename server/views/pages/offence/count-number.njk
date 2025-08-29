@@ -22,7 +22,7 @@
 {% set pageTitle = applicationName + " - Add a court case Count Number" %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-count-number{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-count-number{{ "?submitToEditOffence=true" if submitToEditOffence }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
                 <h1 class="govuk-heading-l">Is there a count number for this offence?</h1>

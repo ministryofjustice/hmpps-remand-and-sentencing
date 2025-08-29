@@ -37,7 +37,7 @@ describe('GET Offence Sentence Serve Type', () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
     })
-    defaultServices.courtAppearanceService.isForwithAlreadySelected.mockReturnValue(false)
+    defaultServices.courtAppearanceService.isForthwithAlreadySelected.mockReturnValue(false)
     defaultServices.courtAppearanceService.anySentenceConsecutiveToAnotherCase.mockReturnValue(true)
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/sentence-serve-type')

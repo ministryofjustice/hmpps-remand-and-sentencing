@@ -7,7 +7,7 @@
 {% set pageTitle = applicationName + " - Appearance details" %}
 
 {% set appearanceSummaryRows = [
- 
+
     {
         key: {
         text: "Case reference"
@@ -260,7 +260,7 @@
                     "data-qa": "addAnotherOffence"
                 }
             }) }}
-    <span data-qa="allOffences">  
+    <span data-qa="allOffences">
         {% for offence in appearance.offences %}
         {% set offenceId = 'offences.' + loop.index0 %}
                         {{
@@ -283,18 +283,18 @@
                             mergedFromCase: offence.mergedFromCase,
                             courtDetails: courtMap,
                             consecutiveConcurrentLink: {
-                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + loop.index0 + "/select-consecutive-concurrent",
+                                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                                 text: 'Select consecutive or current'
                             } if offence.sentence,
                             actions: {
                                 items: [
                                     {
-                                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + loop.index0 + "/load-edit-offence",
+                                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
                                         text: "Edit",
                                         visuallyHiddenText: "edit"
                                     },
                                     {
-                                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/remand/offences/" + loop.index0 + "/check-delete-offence",
+                                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/remand/offences/" + offence.chargeUuid + "/check-delete-offence",
                                         text: "Delete",
                                         visuallyHiddenText: "delete"
                                     }
@@ -307,7 +307,7 @@
             {% endfor %}
         </span>
 
-            
+
 
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/remand/submit-details-edit">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">

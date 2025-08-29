@@ -140,7 +140,12 @@ context('Sentencing appearance details Page', () => {
       cy.task('stubGetLatestCourtAppearanceWithSentencing', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
       cy.task('stubGetCourtById', {})
       courtCaseAppearanceDetailsPage
-        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '0')
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'a6d6dbaf-9dc8-443d-acb4-5b52dd919f11',
+        )
         .click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage
@@ -149,7 +154,7 @@ context('Sentencing appearance details Page', () => {
           'edit',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          '0',
+          'a6d6dbaf-9dc8-443d-acb4-5b52dd919f11',
           'CUSTODIAL_TERM',
         )
         .click()
@@ -251,7 +256,7 @@ context('Sentencing appearance details Page', () => {
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
           'sentencing',
-          '0',
+          'a6d6dbaf-9dc8-443d-acb4-5b52dd919f11',
         )
         .click()
       const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
@@ -301,7 +306,7 @@ context('Sentencing appearance details Page', () => {
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          '1',
+          'a94b4ba8-d6b4-443e-bf69-7f1dab98a6bf',
         )
         .click()
       const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
@@ -341,7 +346,7 @@ context('Sentencing appearance details Page', () => {
         ])
     })
 
-    it('cannot delete an offence when there is are sentences after', () => {
+    it('cannot delete an offence when there are sentences after', () => {
       cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
         sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
         hasSentenceAfterOnOtherCourtAppearance: true,
@@ -354,7 +359,7 @@ context('Sentencing appearance details Page', () => {
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
           'sentencing',
-          '0',
+          'a6d6dbaf-9dc8-443d-acb4-5b52dd919f11',
         )
         .click()
       const cannotDeleteSentencePage = Page.verifyOnPage(CannotDeleteSentencePage)
@@ -392,11 +397,16 @@ context('Sentencing appearance details Page', () => {
         },
       ])
       courtCaseAppearanceDetailsPage
-        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '3')
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '8cb559d1-b9e9-4c60-8ef7-f40abf368196',
+        )
         .click()
       const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
 
-      offenceEditOffencePage.editFieldLink('3', 'sentence-type').click()
+      offenceEditOffencePage.editFieldLink('8cb559d1-b9e9-4c60-8ef7-f40abf368196', 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceEditSentenceTypePage)
       offenceSentenceTypePage.radioLabelSelector('467e2fa8-fce1-41a4-8110-b378c727eed3|STANDARD').click()
       offenceSentenceTypePage.continueButton().click()
@@ -476,7 +486,12 @@ context('Sentencing appearance details Page', () => {
 
     it('can edit an unsupported period length', () => {
       courtCaseAppearanceDetailsPage
-        .editOffenceLink('A1234AB', '83517113-5c14-4628-9133-1e3cb12e31fa', '3f20856f-fa17-493b-89c7-205970c749b8', '0')
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3f20856f-fa17-493b-89c7-205970c749b8',
+          'b2565181-6066-4b55-b4a7-32c2ddf8c36d',
+        )
         .click()
 
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
@@ -486,7 +501,7 @@ context('Sentencing appearance details Page', () => {
           'edit',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3f20856f-fa17-493b-89c7-205970c749b8',
-          '0',
+          'b2565181-6066-4b55-b4a7-32c2ddf8c36d',
           'UNSUPPORTED',
         )
         .click()

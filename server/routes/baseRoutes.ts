@@ -46,17 +46,11 @@ export default abstract class BaseRoutes {
     req,
     nomsId: string,
     courtCaseReference: string,
-    offenceReference: string,
+    chargeUuid: string,
     offence: Offence,
     appearanceReference: string,
   ) {
-    this.courtAppearanceService.addOffence(
-      req.session,
-      nomsId,
-      parseInt(offenceReference, 10),
-      offence,
-      appearanceReference,
-    )
+    this.courtAppearanceService.addOffence(req.session, nomsId, chargeUuid, offence, appearanceReference)
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
   }
 
@@ -68,15 +62,15 @@ export default abstract class BaseRoutes {
     courtCaseReference: string,
     addOrEditCourtAppearance: string,
     appearanceReference: string,
-    offenceReference: string,
+    chargeUuid: string,
   ) {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (offence.onFinishGoToEdit) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${offenceReference}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, offenceReference, offence, appearanceReference)
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,

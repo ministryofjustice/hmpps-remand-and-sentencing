@@ -33,21 +33,21 @@
             sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
             fineAmount: offence.sentence.fineAmount,
             consecutiveConcurrentLink: {
-                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/select-consecutive-concurrent",
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: 'Select consecutive or current'
             },
             actions: {
                 items: [
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/load-edit-offence",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/load-edit-offence",
                         text: "Edit",
                         visuallyHiddenText: "edit offence",
                         attributes: {
-                            'data-qa': 'edit-offence-link-' + offence.index
+                            'data-qa': 'edit-offence-link-' + offence.chargeUuid
                         }
                     },
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/delete-offence",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/delete-offence",
                         text: "Delete",
                         visuallyHiddenText: "delete offence"
                     }
@@ -90,15 +90,15 @@
             actions: {
                 items: [
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/load-edit-offence",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/load-edit-offence",
                         text: "Edit",
                         visuallyHiddenText: "edit offence",
                         attributes: {
-                            'data-qa': 'edit-offence-link-' + offence.index
+                            'data-qa': 'edit-offence-link-' + offence.chargeUuid
                         }
                     },
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.index + "/delete-offence",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/delete-offence",
                         text: "Delete",
                         visuallyHiddenText: "delete offence"
                     }

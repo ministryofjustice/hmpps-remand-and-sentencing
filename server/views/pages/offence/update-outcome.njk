@@ -44,7 +44,7 @@
 {% endif %}
 
 {% block pageContent %}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ offenceReference }}/submit-update-offence-outcome">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-update-offence-outcome">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         {{ govukRadios(radiosData) }}

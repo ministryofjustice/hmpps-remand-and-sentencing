@@ -49,23 +49,31 @@ context('Check offence answers page after making forthwith', () => {
   it('Check that intercept fires after changing sentence to forthwith - also check offence card displays correctly', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
+    cy.get('[data-qa^="edit-offence-link-"]')
+      .eq(0)
+      .then($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+          const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+          offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-serve-type').click()
+          const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+          offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
+          offenceSentenceServeTypePage.continueButton().click()
+          const sentencingMakingSentenceConcurrentPage = Page.verifyOnPage(SentencingMakingSentenceConcurrentPage)
+          sentencingMakingSentenceConcurrentPage.continueButton().click()
 
-    offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
-    const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    offenceEditOffencePage.editFieldLink('0', 'sentence-serve-type').click()
-    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
-    offenceSentenceServeTypePage.continueButton().click()
-    const sentencingMakingSentenceConcurrentPage = Page.verifyOnPage(SentencingMakingSentenceConcurrentPage)
-    sentencingMakingSentenceConcurrentPage.continueButton().click()
+          offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-serve-type').click()
+          offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
+          offenceSentenceServeTypePage.continueButton().click()
 
-    offenceEditOffencePage.editFieldLink('0', 'sentence-serve-type').click()
-    offenceSentenceServeTypePage.radioLabelSelector('FORTHWITH').click()
-    offenceSentenceServeTypePage.continueButton().click()
-
-    const sentencingMakingSentenceForthwithPage = Page.verifyOnPage(SentencingMakingSentenceForthwithPage)
-    sentencingMakingSentenceForthwithPage.continueButton().click()
-    offenceEditOffencePage.continueButton().click()
-    offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(1, 'Forthwith')
+          const sentencingMakingSentenceForthwithPage = Page.verifyOnPage(SentencingMakingSentenceForthwithPage)
+          sentencingMakingSentenceForthwithPage.continueButton().click()
+          offenceEditOffencePage.continueButton().click()
+          offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(1, 'Forthwith')
+        }
+      })
   })
 })

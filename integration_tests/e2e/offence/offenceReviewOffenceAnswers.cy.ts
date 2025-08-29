@@ -52,7 +52,7 @@ context('Review Offences Page', () => {
         outcomeName: 'Lie on file',
         outcomeType: 'NON_CUSTODIAL',
       })
-      offenceReviewOffencesPage.updateOutcomeLink('0').click()
+      offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
 
       const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
       offenceUpdateOutcomePage.radioLabelContains('Lie on file').click()

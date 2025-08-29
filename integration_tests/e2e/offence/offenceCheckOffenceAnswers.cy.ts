@@ -54,7 +54,15 @@ context('Check Offence Answers Page', () => {
     it('deleting offence removes from list and goes back to check answers page', () => {
       cy.createOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-      offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
+      cy.get('[data-qa^="edit-offence-link-"]').each($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', chargeUuid).click()
+        }
+      })
+
       const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
       offenceDeleteOffencePage.deleteButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
@@ -77,11 +85,20 @@ context('Check Offence Answers Page', () => {
         outcomeName: 'Lie on file',
         outcomeType: 'NON_CUSTODIAL',
       })
+      let offenceEditOffencePage = null
       cy.createOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
-      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
+      cy.get('[data-qa^="edit-offence-link-"]').each($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+          offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+          offenceEditOffencePage.editFieldLink(chargeUuid, 'offence-outcome').click()
+        }
+      })
+
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',
@@ -129,7 +146,14 @@ context('Check Offence Answers Page', () => {
     })
 
     it('deleting sentence removes from list and goes back to check answers page', () => {
-      offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', '0').click()
+      cy.get('[data-qa^="edit-offence-link-"]').each($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', chargeUuid).click()
+        }
+      })
       const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
       offenceDeleteOffencePage.deleteButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
@@ -170,9 +194,18 @@ context('Check Offence Answers Page', () => {
           outcomeType: 'NON_CUSTODIAL',
         },
       ])
-      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
-      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
+      let offenceEditOffencePage = null
+      cy.get('[data-qa^="edit-offence-link-"]').each($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+          offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+          offenceEditOffencePage.editFieldLink(chargeUuid, 'offence-outcome').click()
+        }
+      })
+
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',
@@ -200,9 +233,18 @@ context('Check Offence Answers Page', () => {
     })
 
     it('display count number warning when at least 1 offence has no count', () => {
-      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
-      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('0', 'count-number').click()
+      let offenceEditOffencePage = null
+      cy.get('[data-qa^="edit-offence-link-"]').each($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+          offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+          offenceEditOffencePage.editFieldLink(chargeUuid, 'count-number').click()
+        }
+      })
+
       const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
       offenceCountNumberPage.radioLabelSelector('false').click()
       offenceCountNumberPage.continueButton().click()
@@ -240,16 +282,26 @@ context('Check Offence Answers Page', () => {
         OffenceCheckOffenceAnswersPage,
         'You have added 2 offence',
       )
-      offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
-      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
+      cy.get('[data-qa^="edit-offence-link-"]')
+        .first()
+        .then($el => {
+          const href = $el.attr('href')
+          const match = href.match(/offences\/([a-f0-9-]+)\//)
+          if (match) {
+            const chargeUuid = match[1]
+            offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+            const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+            offenceEditOffencePage.editFieldLink(chargeUuid, 'offence-outcome').click()
+          }
+        })
+
       const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',
       )
       offenceOffenceOutcomePage.radioLabelContains('Lie on file').click()
       offenceOffenceOutcomePage.continueButton().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
       offenceCheckOffenceAnswersPage

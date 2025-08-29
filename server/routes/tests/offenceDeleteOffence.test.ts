@@ -67,7 +67,7 @@ describe('GET Delete offence', () => {
       outcomeType: 'SENTENCING',
     })
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/delete-offence')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/2/delete-offence')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
@@ -135,7 +135,7 @@ describe('GET Delete offence', () => {
       outcomeType: 'SENTENCING',
     })
     return request(app)
-      .get('/person/A1234AB/edit-court-case/0/edit-court-appearance/0/offences/0/delete-offence')
+      .get('/person/A1234AB/edit-court-case/0/edit-court-appearance/0/offences/2/delete-offence')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

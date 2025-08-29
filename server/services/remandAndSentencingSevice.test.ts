@@ -137,5 +137,50 @@ describe('RemandAndSentencingService', () => {
         { sentenceUuid: 'uuid-2', consecutiveToSentenceUuid: 'uuid-1' },
       ])
     })
+
+    it('offences without sentences get filtered out when running loop validation', async () => {
+      const courtAppearance = {
+        appearanceUuid: 'app1',
+        offences: [
+          {
+            chargeUuid: 'charge1',
+            sentence: {
+              sentenceUuid: 'uuid-1',
+              sentenceReference: 'REF-1',
+              consecutiveToSentenceUuid: null,
+            },
+          },
+          {
+            sentence: {
+              sentenceUuid: 'uuid-2',
+              sentenceReference: 'REF-2',
+              consecutiveToSentenceReference: 'REF-1',
+            },
+          },
+          {
+            chargeUuid: 'charge2',
+          },
+        ],
+      } as unknown as CourtAppearance
+
+      remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(false)
+
+      await service.validateConsecutiveLoops(true, 'REF-2', courtAppearance, 'AB123A', 'uuid-1', 'user')
+
+      expect(remandAndSentencingApiClient.hasLoopInChain).toHaveBeenCalledTimes(1)
+      const req = remandAndSentencingApiClient.hasLoopInChain.mock.calls[0][0]
+
+      expect(req).toMatchObject({
+        prisonerId: 'AB123A',
+        appearanceUuid: 'app1',
+        sourceSentenceUuid: 'uuid-1',
+        targetSentenceUuid: 'uuid-2',
+      })
+
+      expect(req.sentences).toEqual([
+        { sentenceUuid: 'uuid-1' },
+        { sentenceUuid: 'uuid-2', consecutiveToSentenceUuid: 'uuid-1' },
+      ])
+    })
   })
 })

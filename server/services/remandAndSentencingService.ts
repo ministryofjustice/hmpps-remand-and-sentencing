@@ -294,20 +294,24 @@ export default class RemandAndSentencingService {
       href: string
     }[]
   > {
-    const sentences = sessionCourtAppearance.offences.map(offence => {
-      return {
-        sentenceUuid: offence.sentence.sentenceUuid,
-        consecutiveToSentenceUuid: this.getConsecutiveToSentenceUuid(offence, sessionCourtAppearance),
-      } as SentenceDetailsForConsecValidation
-    })
+    const sentences = sessionCourtAppearance.offences
+      .filter(offence => offence.sentence)
+      .map(offence => {
+        return {
+          sentenceUuid: offence.sentence.sentenceUuid,
+          consecutiveToSentenceUuid: this.getConsecutiveToSentenceUuid(offence, sessionCourtAppearance),
+        } as SentenceDetailsForConsecValidation
+      })
 
     // Source sentence has not beed added to sentences yet, therefore cannot be part of a loop yet
     if (!sentences.some(s => s.sentenceUuid === sourceSentenceUuid)) return []
 
     const targetSentenceUuid = useConsecutiveToRef
-      ? sessionCourtAppearance.offences.find(o => o.sentence.sentenceReference === targetSentenceReferenceOrUuId)
-          .sentence.sentenceUuid
+      ? sessionCourtAppearance.offences
+          .filter(offence => offence.sentence)
+          .find(o => o.sentence.sentenceReference === targetSentenceReferenceOrUuId).sentence.sentenceUuid
       : targetSentenceReferenceOrUuId
+
     const request: ConsecutiveChainValidationRequest = {
       prisonerId: nomsId,
       appearanceUuid: sessionCourtAppearance.appearanceUuid,

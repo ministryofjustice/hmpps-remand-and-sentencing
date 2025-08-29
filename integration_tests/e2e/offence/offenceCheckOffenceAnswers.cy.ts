@@ -282,7 +282,6 @@ context('Check Offence Answers Page', () => {
         OffenceCheckOffenceAnswersPage,
         'You have added 2 offence',
       )
-      let offenceEditOffencePage = null
       cy.get('[data-qa^="edit-offence-link-"]')
         .first()
         .then($el => {
@@ -291,7 +290,7 @@ context('Check Offence Answers Page', () => {
           if (match) {
             const chargeUuid = match[1]
             offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
-            offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+            const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
             offenceEditOffencePage.editFieldLink(chargeUuid, 'offence-outcome').click()
           }
         })
@@ -302,7 +301,7 @@ context('Check Offence Answers Page', () => {
       )
       offenceOffenceOutcomePage.radioLabelContains('Lie on file').click()
       offenceOffenceOutcomePage.continueButton().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.continueButton().click()
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
       offenceCheckOffenceAnswersPage

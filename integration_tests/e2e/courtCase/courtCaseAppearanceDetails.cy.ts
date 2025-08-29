@@ -322,7 +322,7 @@ context('Court Case Appearance details Page', () => {
         )
         .click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editFieldLink('0', 'offence-outcome').click()
+      offenceEditOffencePage.editFieldLink('9b622879-8191-4a7f-9fe8-71b680417220', 'offence-outcome').click()
       const offenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,
         'Select the outcome for this offence',

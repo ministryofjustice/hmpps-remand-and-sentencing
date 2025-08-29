@@ -1427,6 +1427,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const isConsecutive = serveType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
     const redirectBase = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}`
 
+    console.log('submitToEditOffence:', submitToEditOffence)
+    console.log('newType:', extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT))
+    console.log('sentenceIsInChain:', sentenceIsInChain)
+    console.log('serveType:', serveType)
+    console.log('isConsecutive:', isConsecutive)
+
     if (submitToEditOffence) {
       const newType = serveType
 

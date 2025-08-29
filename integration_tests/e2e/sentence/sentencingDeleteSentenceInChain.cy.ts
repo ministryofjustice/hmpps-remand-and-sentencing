@@ -45,9 +45,17 @@ context('Sentencing delete sentence in chain Page', () => {
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
-    offenceCheckOffenceAnswersPage
-      .deleteOffenceLink('A1234AB', '0', '0', 'f6053bf3-9f08-45c1-9aa9-66bf0bb2ad52')
-      .click()
+    cy.get('[data-qa^="edit-offence-link-"]')
+      .first()
+      .then($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.deleteOffenceLink('A1234AB', '0', '0', chargeUuid).click()
+        }
+      })
+
     const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
     offenceDeleteOffencePage.deleteButton().click()
     sentencingDeleteSentenceInChainPage = Page.verifyOnPage(SentencingDeleteSentenceInChainPage)
@@ -70,7 +78,17 @@ context('Sentencing delete sentence in chain Page', () => {
           'Consecutive or concurrent': 'Select consecutive or current',
         },
       ])
-    offenceCheckOffenceAnswersPage.selectConsecutiveConcurrentLink('A1234AB', '0', '0', '0').click()
+    cy.get('[data-qa^="edit-offence-link-"]')
+      .first()
+      .then($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.selectConsecutiveConcurrentLink('A1234AB', '0', '0', chargeUuid).click()
+        }
+      })
+
     const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
     offenceSentenceServeTypePage.continueButton().click()

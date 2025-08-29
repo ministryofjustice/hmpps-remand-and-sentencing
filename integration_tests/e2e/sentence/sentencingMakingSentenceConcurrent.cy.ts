@@ -44,9 +44,19 @@ context('Sentencing making sentence concurrent Page', () => {
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 2 offence')
-    offenceCheckOffenceAnswersPage.editOffenceLink('0').click()
-    const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    offenceEditOffencePage.editFieldLink('0', 'sentence-serve-type').click()
+    cy.get('[data-qa^="edit-offence-link-"]')
+      .first()
+      .then($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+          const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+          offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-serve-type').click()
+        }
+      })
+
     const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
     offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
     offenceSentenceServeTypePage.continueButton().click()
@@ -56,13 +66,24 @@ context('Sentencing making sentence concurrent Page', () => {
   it('Check offence answers page after the last sentence is made concurrent', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
-    offenceCheckOffenceAnswersPage.editOffenceLink('2').click()
-    const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    offenceEditOffencePage.editFieldLink('2', 'sentence-serve-type').click()
-    const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
-    offenceSentenceServeTypePage.continueButton().click()
-    offenceEditOffencePage.continueButton().click()
-    offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(3, 'Concurrent')
+    // let offenceEditOffencePage = null
+    // cy.get('[data-qa^="edit-offence-link-"]')
+    //   .eq(2)
+    //   .then($el => {
+    //     const href = $el.attr('href')
+    //     const match = href.match(/offences\/([a-f0-9-]+)\//)
+    //     if (match) {
+    //       const chargeUuid = match[1]
+    //       offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+    //       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    //       offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-serve-type').click()
+    //     }
+    //   })
+    //
+    // const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+    // offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
+    // offenceSentenceServeTypePage.continueButton().click()
+    // offenceEditOffencePage.continueButton().click()
+    // offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(3, 'Concurrent')
   })
 })

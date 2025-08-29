@@ -905,7 +905,7 @@ export default class CourtAppearanceService {
     const offences = Object.assign([], courtAppearance.offences)
     const index = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
     if (index !== -1) {
-      courtAppearance.offences.splice(index, 1)
+      offences.splice(index, 1)
     }
 
     return offences.some(offence => offence.sentence?.sentenceServeType === 'FORTHWITH')
@@ -921,7 +921,7 @@ export default class CourtAppearanceService {
     const offences = Object.assign([], courtAppearance.offences)
     const index = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
     if (index !== -1) {
-      courtAppearance.offences.splice(index, 1)
+      offences.splice(index, 1)
     }
 
     return offences.some(offence => offence.sentence?.consecutiveToSentenceUuid)
@@ -1219,8 +1219,6 @@ export default class CourtAppearanceService {
     let sentenceInChain: boolean = false
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    console.log('courtAppearance', courtAppearance)
-    console.log('chargeUuid', chargeUuid)
     if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence

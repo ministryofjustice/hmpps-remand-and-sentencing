@@ -1427,12 +1427,6 @@ export default class OffenceRoutes extends BaseRoutes {
     const isConsecutive = serveType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
     const redirectBase = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}`
 
-    console.log('submitToEditOffence:', submitToEditOffence)
-    console.log('newType:', extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT))
-    console.log('sentenceIsInChain:', sentenceIsInChain)
-    console.log('serveType:', serveType)
-    console.log('isConsecutive:', isConsecutive)
-
     if (submitToEditOffence) {
       const newType = serveType
 
@@ -1965,6 +1959,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const courtCodes = []
     const offenceCodes = [offence.offenceCode]
@@ -2020,7 +2015,6 @@ export default class OffenceRoutes extends BaseRoutes {
     } else if (offence.sentence?.consecutiveToSentenceReference) {
       consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
     }
-
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,

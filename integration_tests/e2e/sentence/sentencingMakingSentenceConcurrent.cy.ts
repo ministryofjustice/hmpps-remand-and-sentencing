@@ -66,24 +66,22 @@ context('Sentencing making sentence concurrent Page', () => {
   it('Check offence answers page after the last sentence is made concurrent', () => {
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
-    // let offenceEditOffencePage = null
-    // cy.get('[data-qa^="edit-offence-link-"]')
-    //   .eq(2)
-    //   .then($el => {
-    //     const href = $el.attr('href')
-    //     const match = href.match(/offences\/([a-f0-9-]+)\//)
-    //     if (match) {
-    //       const chargeUuid = match[1]
-    //       offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
-    //       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-    //       offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-serve-type').click()
-    //     }
-    //   })
-    //
-    // const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
-    // offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
-    // offenceSentenceServeTypePage.continueButton().click()
-    // offenceEditOffencePage.continueButton().click()
-    // offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(3, 'Concurrent')
+    cy.get('[data-qa^="edit-offence-link-"]')
+      .eq(2)
+      .then($el => {
+        const href = $el.attr('href')
+        const match = href.match(/offences\/([a-f0-9-]+)\//)
+        if (match) {
+          const chargeUuid = match[1]
+          offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+          const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+          offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-serve-type').click()
+          const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+          offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
+          offenceSentenceServeTypePage.continueButton().click()
+          offenceEditOffencePage.continueButton().click()
+          offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(3, 'Concurrent')
+        }
+      })
   })
 })

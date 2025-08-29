@@ -32,14 +32,10 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     courtCaseId: string,
     appearanceReference: string,
     chargeUuid: string,
-  ): PageElement => {
-    // Log the parameters for debugging
-
-    cy.log('editOffenceLink called with:', { personId, courtCaseId, appearanceReference, chargeUuid })
-    return cy.get(
+  ): PageElement =>
+    cy.get(
       `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/offences/${chargeUuid}/load-edit-offence"]`,
     )
-  }
 
   deleteOffenceLink = (
     personId: string,

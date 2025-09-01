@@ -11,6 +11,9 @@ import CannotDeleteSentencePage from '../../pages/cannotDeleteSentencePage'
 import SentencingDeleteSentenceInChainPage from '../../pages/sentencingDeleteSentenceInChainPage'
 import OffenceSentenceServeTypePage from '../../pages/offenceSentenceServeTypePage'
 import OffenceEditSentenceTypePage from '../../pages/offenceEditSentenceTypePage'
+import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
+import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
+import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -518,10 +521,74 @@ context('Sentencing appearance details Page', () => {
         'Conviction date': '',
         'Sentence type': 'A Nomis sentence type description',
         'Section 86 of 2000 act': '5 years 0 months 0 weeks 0 days',
-        'Consecutive or concurrent': 'Unknown',
+        'Consecutive or concurrent': 'Concurrent',
       })
       offenceEditOffencePage.continueButton().click()
       Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+    })
+
+    it('editing charge with legacy outcome to sentencing results in adding sentence information', () => {
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      })
+      cy.task('stubSearchSentenceTypes', {
+        convictionDate: '2023-12-17',
+        offenceDate: '2023-12-15',
+      })
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3f20856f-fa17-493b-89c7-205970c749b8',
+          '9ac07cd8-dbb8-4136-87a2-002b7496fc5f',
+        )
+        .click()
+      let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('9ac07cd8-dbb8-4136-87a2-002b7496fc5f', 'offence-outcome').click()
+      const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+        OffenceOffenceOutcomePage,
+        'Select the outcome for this offence',
+      )
+      offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
+      offenceOffenceOutcomePage.continueButton().click()
+
+      const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
+      offenceCountNumberPage.radioLabelSelector('true').click()
+      offenceCountNumberPage.input().clear()
+      offenceCountNumberPage.input().type('2')
+      offenceCountNumberPage.continueButton().click()
+
+      const offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
+      offenceConvictionDatePage.dayDateInput('convictionDate').clear().type('17')
+      offenceConvictionDatePage.monthDateInput('convictionDate').clear().type('12')
+      offenceConvictionDatePage.yearDateInput('convictionDate').clear().type('2023')
+      offenceConvictionDatePage.continueButton().click()
+
+      const offenceSentenceTypePage = Page.verifyOnPage(OffenceEditSentenceTypePage)
+      offenceSentenceTypePage.radioLabelContains('SDS (Standard Determinate Sentence)').click()
+      offenceSentenceTypePage.continueButton().click()
+
+      const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
+      offencePeriodLengthPage.yearsInput().clear().type('4')
+      offencePeriodLengthPage.monthsInput().clear().type('5')
+      offencePeriodLengthPage.continueButton().click()
+
+      const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
+      offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
+      offenceSentenceServeTypePage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 2',
+        Offence: 'PS90037 An offence description',
+        Outcome: 'Imprisonment',
+        'Committed on': '15/12/2023',
+        'Conviction date': '17/12/2023',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Concurrent',
+      })
     })
   })
 })

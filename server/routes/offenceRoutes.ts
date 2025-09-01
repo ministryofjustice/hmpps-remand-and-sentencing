@@ -413,7 +413,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     const potentialOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (
-      existingOffence.outcomeUuid &&
+      (existingOffence.outcomeUuid || this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) &&
       (!existingOffence.sentence || !potentialOffence.sentence) &&
       outcome.outcomeType === 'SENTENCING'
     ) {

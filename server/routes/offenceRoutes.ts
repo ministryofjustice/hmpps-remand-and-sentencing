@@ -396,7 +396,7 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
       appearanceReference,
     ) ?? { chargeUuid: crypto.randomUUID() }
-    const { errors, outcome } = await this.offenceService.setOffenceOutcome(
+    const { errors, outcome, hasSentencesAfter } = await this.offenceService.setOffenceOutcome(
       req.session,
       nomsId,
       courtCaseReference,
@@ -409,6 +409,11 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+    if (hasSentencesAfter) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/cannot-remove-sentence-outcome`,
       )
     }
     const potentialOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)

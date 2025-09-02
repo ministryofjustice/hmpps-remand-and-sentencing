@@ -1006,7 +1006,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { username } = req.user
-    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
       offence.sentence.sentenceUuid,
       username,

@@ -194,6 +194,10 @@ context('Check Offence Answers Page', () => {
           outcomeType: 'NON_CUSTODIAL',
         },
       ])
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuid: '{sentenceUuid}',
+        hasSentenceAfterOnOtherCourtAppearance: false,
+      })
       let offenceEditOffencePage = null
       cy.get('[data-qa^="edit-offence-link-"]').each($el => {
         const href = $el.attr('href')
@@ -277,6 +281,10 @@ context('Check Offence Answers Page', () => {
       ])
       cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
       cy.task('stubGetCourtsByIds')
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuid: '{sentenceUuid}',
+        hasSentenceAfterOnOtherCourtAppearance: false,
+      })
       cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1')
       offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
         OffenceCheckOffenceAnswersPage,

@@ -342,6 +342,7 @@ export default class OffenceService {
       href: string
     }[]
     outcome: OffenceOutcome
+    hasSentencesAfter: boolean
   }> {
     const errors = validate(
       offenceOutcomeForm,
@@ -352,16 +353,23 @@ export default class OffenceService {
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
-      offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
-      offence.updatedOutcome = true
-      outcome = await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, username)
-      if (outcome.outcomeType !== 'SENTENCING') {
+      outcome = await this.offenceOutcomeService.getOutcomeById(offenceOutcomeForm.offenceOutcome, username)
+      if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
+        const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
+          offence.sentence.sentenceUuid,
+          username,
+        )
+        if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
+          return { errors, outcome, hasSentencesAfter: hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance }
+        }
         delete offence.sentence
       }
+      offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
+      offence.updatedOutcome = true
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-    return { errors, outcome }
+    return { errors, outcome, hasSentencesAfter: false }
   }
 
   updateOffenceOutcome(

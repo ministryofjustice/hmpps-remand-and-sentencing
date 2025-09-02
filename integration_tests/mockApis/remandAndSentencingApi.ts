@@ -3090,7 +3090,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/remand-and-sentencing-api/sentence/${sentenceUuid}/has-sentences-after-on-other-court-appearance`,
+        urlPathTemplate: `/remand-and-sentencing-api/sentence/${sentenceUuid}/has-sentences-after-on-other-court-appearance`,
       },
       response: {
         status: 200,

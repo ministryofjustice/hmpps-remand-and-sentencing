@@ -2065,6 +2065,7 @@ export default class OffenceRoutes extends BaseRoutes {
           (PERIOD_TYPE_PRIORITY[a.type] ?? PERIOD_TYPE_PRIORITY.UNSUPPORTED) -
           (PERIOD_TYPE_PRIORITY[b.type] ?? PERIOD_TYPE_PRIORITY.UNSUPPORTED),
       ),
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 

@@ -531,6 +531,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -730,6 +731,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -1058,6 +1060,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       mainOutcomes,
       subListOutcomes,
       legacyCaseOutcome,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -1238,6 +1241,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -1327,6 +1331,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       currentlySetTypeDescription,
       errors: req.flash('errors') || [],
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -1420,6 +1425,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 

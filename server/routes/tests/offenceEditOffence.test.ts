@@ -43,7 +43,6 @@ describe('GET Edit offence', () => {
       sentence: {
         sentenceReference: '111-222-333',
         sentenceUuid: '111-222-333',
-        periodLengths: [],
         sentenceTypeId: '56',
       },
     })

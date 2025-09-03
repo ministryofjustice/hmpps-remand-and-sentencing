@@ -2004,17 +2004,19 @@ export default class OffenceRoutes extends BaseRoutes {
     ])
 
     let sentenceType: SentenceType
-    const periodLengths =
-      offence.sentence?.periodLengths.map(periodLength => {
-        const key =
-          periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription
-        return {
-          key,
-          type: periodLength.periodLengthType,
-          value: periodLength,
-        }
-      }) ?? []
+    let periodLengths = []
+
     if (offence.sentence) {
+      periodLengths =
+        offence.sentence.periodLengths?.map(periodLength => {
+          const key =
+            periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription
+          return {
+            key,
+            type: periodLength.periodLengthType,
+            value: periodLength,
+          }
+        }) ?? []
       if (offence.sentence.sentenceTypeId) {
         sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
           offence.sentence?.sentenceTypeId,

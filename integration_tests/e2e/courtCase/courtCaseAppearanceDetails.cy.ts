@@ -330,7 +330,7 @@ context('Court Case Appearance details Page', () => {
       offenceOutcomePage.radioLabelContains('Remanded in custody').click()
       offenceOutcomePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         Offence: 'PS90037 An offence description',
         'Committed on': 'Not entered',
         Outcome: 'Remanded in custody',

@@ -188,7 +188,8 @@
         <h1 class="govuk-heading-l">Edit offence details</h1>
 
         {{ govukSummaryList({
-            rows: summaryRows
+            rows: summaryRows,
+            attributes: { 'data-qa': 'edit-summary-list'}
         }) }}
 
         {{ govukButton({

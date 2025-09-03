@@ -222,6 +222,7 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
         description: 'EDS (Extended Determinate Sentence)',
+        classification: 'EXTENDED',
       })
       offenceEditOffencePage.editFieldLink(chargeUuid, 'sentence-type').click()
       const offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
@@ -285,6 +286,7 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
         description: 'EDS (Extended Determinate Sentence)',
+        classification: 'EXTENDED',
       })
       cy.task('stubSearchSentenceTypes', {
         convictionDate: '2023-05-13',
@@ -327,6 +329,7 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
         description: 'EDS (Extended Determinate Sentence)',
+        classification: 'EXTENDED',
       })
       cy.task('stubSearchSentenceTypes', {
         convictionDate: '2023-05-13',

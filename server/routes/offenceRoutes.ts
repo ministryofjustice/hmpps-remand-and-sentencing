@@ -18,7 +18,10 @@ import type {
 } from 'forms'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
-import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import {
+  ConsecutiveToDetails,
+  PERIOD_TYPE_PRIORITY,
+} from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import trimForm from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -47,7 +50,10 @@ import CourtRegisterService from '../services/courtRegisterService'
 import BaseRoutes from './baseRoutes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import InvalidatedFrom from '../resources/invalidatedFromTypes'
-import { SentenceConsecutiveToDetails } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import {
+  SentenceConsecutiveToDetails,
+  SentenceType,
+} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 
 export default class OffenceRoutes extends BaseRoutes {
@@ -1997,12 +2003,34 @@ export default class OffenceRoutes extends BaseRoutes {
       await this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
     ])
 
-    let sentenceType: string
+    let sentenceType: SentenceType
+    const periodLengths =
+      offence.sentence?.periodLengths.map(periodLength => {
+        const key =
+          periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription
+        return {
+          key,
+          type: periodLength.periodLengthType,
+          value: periodLength,
+        }
+      }) ?? []
     if (offence.sentence) {
       if (offence.sentence.sentenceTypeId) {
-        sentenceType = (
-          await this.remandAndSentencingService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
-        ).description
+        sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
+          offence.sentence?.sentenceTypeId,
+          req.user.username,
+        )
+
+        const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentenceType.classification]?.periodLengths ?? []
+        expectedPeriodLengthTypes
+          .filter(expectedType => !periodLengths.some(periodLength => periodLength.type === expectedType.type))
+          .map(expectedType => {
+            return {
+              key: periodLengthTypeHeadings[expectedType.type].toLowerCase(),
+              type: expectedType.type,
+            }
+          })
+          .forEach(periodLength => periodLengths.push(periodLength))
       }
     }
     let outcome
@@ -2030,11 +2058,16 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       offenceMap,
-      sentenceType,
+      sentenceType: sentenceType?.description,
       outcome,
       periodLengthTypeHeadings,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       consecutiveToDetails,
+      periodLengths: periodLengths.sort(
+        (a, b) =>
+          (PERIOD_TYPE_PRIORITY[a.type] ?? PERIOD_TYPE_PRIORITY.UNSUPPORTED) -
+          (PERIOD_TYPE_PRIORITY[b.type] ?? PERIOD_TYPE_PRIORITY.UNSUPPORTED),
+      ),
     })
   }
 

@@ -20,58 +20,60 @@
         <div class="govuk-grid-column-two-thirds">
             {% block pageContent %}{% endblock %}
         </div>
-        <div class="govuk-grid-column-one-third">
-            <div class="offence-summary">
-                <h2 class="govuk-heading-m govuk-!-margin-top-4">Appearance details</h2>
-                {{ govukSummaryList({
-                    classes: "govuk-summary-list--no-border offences-summary-card-content",
-                    rows: [
-                        {
-                            key: { text: "Case reference" },
-                            value: { text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered' },
-                            classes: "offences-summary-card-court-details-row"
-                        },
-                        {
-                            key: { text: "Court name" },
-                            value: { text: courtAppearanceCourtName },
-                            classes: "offences-summary-card-court-details-row"
-                        },
-                        {
-                            key: { text: "Warrant date" },
-                            value: { text: courtAppearance.warrantDate | formatDate},
-                            classes: "offences-summary-card-court-details-row"
-                        },
-                        {
-                            key: { text: "Overall case outcome" },
-                            value: { text: overallCaseOutcome },
-                            classes: "offences-summary-card-court-details-row"
-                        }
-                    ],
-                    attributes: {
-                        'data-qa': 'appearanceDetails'
-                    }
-                }) }}
-
-                {% if (offences | length > 0) and not hideOffences %}
-                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-                    <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Offences</h2>
+        {% if showAppearanceDetails %}
+            <div class="govuk-grid-column-one-third">
+                <div class="offence-summary">
+                    <h2 class="govuk-heading-m govuk-!-margin-top-4">Appearance details</h2>
                     {{ govukSummaryList({
                         classes: "govuk-summary-list--no-border offences-summary-card-content",
                         rows: [
                             {
-                                key: { text: "Offences added" },
-                                value: { text: offences | length },
-                                classes: "offences-summary-card-offence-details-row"
+                                key: { text: "Case reference" },
+                                value: { text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered' },
+                                classes: "offences-summary-card-court-details-row"
+                            },
+                            {
+                                key: { text: "Court name" },
+                                value: { text: courtAppearanceCourtName },
+                                classes: "offences-summary-card-court-details-row"
+                            },
+                            {
+                                key: { text: "Warrant date" },
+                                value: { text: courtAppearance.warrantDate | formatDate},
+                                classes: "offences-summary-card-court-details-row"
+                            },
+                            {
+                                key: { text: "Overall case outcome" },
+                                value: { text: overallCaseOutcome },
+                                classes: "offences-summary-card-court-details-row"
                             }
                         ],
-                        attributes: { 'data-qa': 'offences-summary-card' }
+                        attributes: {
+                            'data-qa': 'appearanceDetails'
+                        }
                     }) }}
-                    {{ govukDetails({
-                        summaryText: "Show offences",
-                        html: offenceDetailHtml
-                    }) }}
-                {% endif %}
+
+                    {% if (offences | length > 0) and not hideOffences %}
+                        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                        <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Offences</h2>
+                        {{ govukSummaryList({
+                            classes: "govuk-summary-list--no-border offences-summary-card-content",
+                            rows: [
+                                {
+                                    key: { text: "Offences added" },
+                                    value: { text: offences | length },
+                                    classes: "offences-summary-card-offence-details-row"
+                                }
+                            ],
+                            attributes: { 'data-qa': 'offences-summary-card' }
+                        }) }}
+                        {{ govukDetails({
+                            summaryText: "Show offences",
+                            html: offenceDetailHtml
+                        }) }}
+                    {% endif %}
+                </div>
             </div>
-        </div>
+        {% endif %}
     </div>
 {% endblock %}

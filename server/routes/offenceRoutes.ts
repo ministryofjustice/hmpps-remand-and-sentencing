@@ -1653,10 +1653,6 @@ export default class OffenceRoutes extends BaseRoutes {
       },
       [[], []],
     )
-
-    const showCountWarning = custodialOffences.some(
-      offence => !offence.sentence?.countNumber || offence.sentence?.countNumber === '-1',
-    )
     const allSentenceUuids = offences
       .map(offence => offence.sentence?.sentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
@@ -1686,7 +1682,6 @@ export default class OffenceRoutes extends BaseRoutes {
       offences,
       custodialOffences,
       nonCustodialOffences,
-      showCountWarning,
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),

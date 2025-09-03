@@ -45,8 +45,6 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
 
   noCustodialOutcomeInset = (): PageElement => cy.get('[data-qa="noCustodialOutcomeInset"]')
 
-  countWarning = (): PageElement => cy.get('[data-qa="countWarning"]')
-
   checkConsecutiveOrConcurrentForCount(countNumber: number, expectedText: string): void {
     cy.get('[data-qa="custodialOffences"]')
       .contains('.offence-card', `Count ${countNumber}`)

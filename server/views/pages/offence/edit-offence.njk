@@ -114,23 +114,30 @@
                     }
                 }] )) %}
 
-            {% for periodLength in offence.sentence.periodLengths %}
+            {% for periodLength in periodLengths %}
+                {% set periodLengthEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.type +"&submitToEditOffence=true" %}
+                {% set periodLengthValue = {
+                        html: '<a href="' + periodLengthEditLink + '" class="govuk-link" data-qa="edit-period-length-' + periodLength.type + '-' + chargeUuid + '"> Enter ' + periodLength.key + '</a>'
+                    } %}
+                {% if periodLength.value %}
+                    {% set periodLengthValue = {
+                        text: periodLength.value | formatLengths
+                    } %}
+                {% endif %}
                 {% set summaryRows = (summaryRows.concat({
                     key: {
-                        text: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize
+                        text: periodLength.key | capitalize
                     },
-                        value: {
-                            text: periodLength | formatLengths
-                        },
+                    value: periodLengthValue,
                     actions: {
                         items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.periodLengthType +"&submitToEditOffence=true",
+                            href: periodLengthEditLink,
                             text: "Edit",
-                            visuallyHiddenText: periodLengthTypeHeadings[periodLength.periodLengthType] | periodLengthValueOrLegacy(periodLength.legacyData) | capitalize,
+                            visuallyHiddenText: periodLength.key | capitalize,
                             attributes: {
-                                'data-qa': 'edit-period-length-'+ periodLength.periodLengthType +'-' + chargeUuid
+                                'data-qa': 'edit-period-length-'+ periodLength.type + '-' + chargeUuid
                             }
-                    }]
+                    }] if periodLength.value else []
                 }
                 })) %}
             {% endfor %}

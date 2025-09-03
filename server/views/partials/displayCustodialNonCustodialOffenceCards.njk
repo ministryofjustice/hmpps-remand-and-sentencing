@@ -1,18 +1,8 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
-{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 
 <h2 class="govuk-heading-m">Offences with custodial outcomes</h2>
-{% if showCountWarning %}
-    {{ govukWarningText({
-        text: "There are missing count numbers. Please add these where possible",
-        iconFallbackText: "Warning",
-        attributes: {
-            'data-qa': 'countWarning'
-        }
-    }) }}
-{% endif %}
 <span data-qa="custodialOffences">
     {% for offence in custodialOffences %}
         {% set offenceId = 'offences.' + offence.index %}

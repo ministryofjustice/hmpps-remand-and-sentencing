@@ -84,8 +84,10 @@
   <script src="{{ '/assets/js/session-warning.js' | assetMap }}" nonce="{{ cspNonce }}"></script>
   <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
   {% if feComponents.jsIncludes %}
-    {% for js in feComponents.jsIncludes %}
-      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
-    {% endfor %}
-  {% endif %}
+      {% for js in feComponents.jsIncludes %}
+        <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+      {% endfor %}
+    {% endif %}
+  {% block javascripts %}
+    {% endblock %}
 {% endblock %}

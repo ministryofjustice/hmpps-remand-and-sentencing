@@ -124,6 +124,11 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-remove-sentence-outcome',
+    sentencingRoutes.getCannotRemoveSentenceOutcome,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/sentence-length-mismatch',
     sentencingRoutes.getSentenceLengthMismatch,
   )

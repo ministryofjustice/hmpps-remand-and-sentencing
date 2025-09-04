@@ -14,6 +14,7 @@ import OffenceEditSentenceTypePage from '../../pages/offenceEditSentenceTypePage
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
+import CannotChangeSentenceOutcomePage from '../../pages/cannotChangeSentenceOutcomePage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -167,7 +168,7 @@ context('Sentencing appearance details Page', () => {
       offencePeriodLengthPage.yearsInput().type('2')
       offencePeriodLengthPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 3',
         Offence: 'PS90037 An offence description',
         Outcome: 'Remanded in custody',
@@ -375,6 +376,49 @@ context('Sentencing appearance details Page', () => {
         ])
     })
 
+    it('cannot amend outcome to non custodial when there are sentences after', () => {
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+        description: 'EDS (Extended Determinate Sentence)',
+        classification: 'EXTENDED',
+      })
+      cy.task('stubGetChargeOutcomeById', {})
+      cy.task('stubGetChargeOutcomeById', {
+        outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+        outcomeName: 'Lie on file',
+        outcomeType: 'NON_CUSTODIAL',
+      })
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        hasSentenceAfterOnOtherCourtAppearance: true,
+      })
+      cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {})
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'a6d6dbaf-9dc8-443d-acb4-5b52dd919f11',
+        )
+        .click()
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('a6d6dbaf-9dc8-443d-acb4-5b52dd919f11', 'offence-outcome').click()
+      const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+        OffenceOffenceOutcomePage,
+        'Select the outcome for this offence',
+      )
+      offenceOffenceOutcomePage.radioLabelContains('Lie on file').click()
+      offenceOffenceOutcomePage.continueButton().click()
+      const cannotChangeSentenceOutcomePage = Page.verifyOnPage(CannotChangeSentenceOutcomePage)
+      cannotChangeSentenceOutcomePage
+        .appearanceDetails()
+        .getListItems()
+        .should('deep.equal', [
+          'Case  CASE123 at Accrington Youth Court on 17/05/2002',
+          'Case  at Southampton Magistrate Court on 28/01/2010',
+        ])
+    })
+
     it('Fine amount should not be displayed if the sentence type is changed from FINE to any other', () => {
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
@@ -513,7 +557,7 @@ context('Sentencing appearance details Page', () => {
       offencePeriodLengthPage.yearsInput().clear().type('5')
       offencePeriodLengthPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
         Outcome: 'A Nomis description',
@@ -579,7 +623,7 @@ context('Sentencing appearance details Page', () => {
       offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
       offenceSentenceServeTypePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 2',
         Offence: 'PS90037 An offence description',
         Outcome: 'Imprisonment',

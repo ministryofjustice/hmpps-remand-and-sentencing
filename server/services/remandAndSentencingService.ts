@@ -335,8 +335,9 @@ export default class RemandAndSentencingService {
     return offence.sentence.consecutiveToSentenceUuid
       ? offence.sentence.consecutiveToSentenceUuid
       : offence.sentence.consecutiveToSentenceReference &&
-          sessionCourtAppearance.offences.find(
-            o => o.sentence.sentenceReference === offence.sentence.consecutiveToSentenceReference,
-          ).sentence.sentenceUuid
+          sessionCourtAppearance.offences
+            .filter(o => o.sentence)
+            .find(o => o.sentence.sentenceReference === offence.sentence.consecutiveToSentenceReference).sentence
+            .sentenceUuid
   }
 }

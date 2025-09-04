@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
@@ -7,10 +7,8 @@
 
 {% set pageTitle = applicationName + " - Add a case reference" %}
 
-{% block content %}
+{% block pageContent %}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-reference{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/appearanceCaption.njk" %}
@@ -46,10 +44,6 @@
                     attributes: {  'data-qa': 'continue-button' }
                 }) }}
             </form>
-
-        </div>
-    </div>
-
 {% endblock %}
 
 {% block javascripts %}

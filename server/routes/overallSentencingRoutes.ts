@@ -320,6 +320,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       mainOutcomes,
       subListOutcomes,
       legacyCaseOutcome,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 

@@ -168,7 +168,7 @@
         },
         actions: {
             items: [{
-                href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true",
+                href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true",
                 text: "Edit",
                 visuallyHiddenText: "consecutive or concurrent",
                 attributes: {
@@ -185,7 +185,7 @@
         } %}
         {% if consecutiveToDetails %}
             {% set consecutiveToValue = {
-                text: consecutiveToDetails | consecutiveToDetailsToDescription
+                text: consecutiveToDetails | consecutiveToDetailsToDescription | removeTo
             } %}
         {% endif %}
         {% set summaryRows = (summaryRows.concat({

@@ -254,4 +254,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addGlobal('featureToggles', config.featureToggles)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
+
+  // Remove leading "to " if present
+  njkEnv.addFilter('removeTo', (str: string) => {
+    if (!str) return str
+    return str.trim().toLowerCase().startsWith('to ') ? str.trim().substring(3) : str
+  })
 }

@@ -3,57 +3,57 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set summaryRows=[{
-                    key: {
-                        text: "Offence"
-                    },
-                    value: {
-                        text: offence.offenceCode + " " +  offenceMap[offence.offenceCode]
-                    },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-code?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "offence code",
-                            attributes: {
-                                'data-qa': 'edit-offence-code-' + chargeUuid
-                            }
-                        }]
-                    }
-                },
-                {
-                    key: {
-                        text: "Committed on"
-                    }, value: {
-                        text: (offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered') + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
-                    },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-date?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "committed on",
-                            attributes: {
-                                'data-qa': 'edit-offence-date-' + chargeUuid
-                            }
-                        }]
-                    }
-                },
-                {
-                    key: {
-                        text: "Outcome"
-                    }, value: {
-                        text: outcome | outcomeValueOrLegacy(offence.legacyData)
-                    },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-outcome?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "outcome",
-                            attributes: {
-                                'data-qa': 'edit-offence-outcome-' + chargeUuid
-                            }
-                        }]
-                    }
-                }] %}
+    key: {
+        text: "Offence"
+    },
+    value: {
+        text: offence.offenceCode + " " +  offenceMap[offence.offenceCode]
+    },
+    actions: {
+        items: [{
+            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-code?submitToEditOffence=true",
+            text: "Edit",
+            visuallyHiddenText: "offence code",
+            attributes: {
+                'data-qa': 'edit-offence-code-' + chargeUuid
+            }
+        }]
+    }
+},
+    {
+        key: {
+        text: "Committed on"
+    }, value: {
+        text: (offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered') + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
+    },
+        actions: {
+        items: [{
+            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-date?submitToEditOffence=true",
+            text: "Edit",
+            visuallyHiddenText: "committed on",
+            attributes: {
+                'data-qa': 'edit-offence-date-' + chargeUuid
+            }
+        }]
+    }
+    },
+    {
+        key: {
+        text: "Outcome"
+    }, value: {
+        text: outcome | outcomeValueOrLegacy(offence.legacyData)
+    },
+        actions: {
+        items: [{
+            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-outcome?submitToEditOffence=true",
+            text: "Edit",
+            visuallyHiddenText: "outcome",
+            attributes: {
+                'data-qa': 'edit-offence-outcome-' + chargeUuid
+            }
+        }]
+    }
+    }] %}
 
 {% if offence.sentence %}
     {% if offence.sentence.countNumber and offence.sentence.countNumber !== '-1' %}
@@ -62,127 +62,157 @@
         {% set countNumber = "Not entered" %}
     {% endif %}
     {% set summaryRows = ([{
-                    key: {
-                    text: "Count number"
-                },
-                    value: {
-                    text: countNumber
-                },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/count-number?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "count number",
-                            attributes: {
-                                'data-qa': 'edit-count-number-' + chargeUuid
-                            }
-                        }]
-                    }
-                }].concat(summaryRows,[{
-                    key: {
-                        text: "Conviction date"
-                    }, value: {
-                        text: (offence.sentence.convictionDate | formatDate if offence.sentence.convictionDate else '')
-                    },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/conviction-date?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "conviction date",
-                            attributes: {
-                                'data-qa': 'edit-conviction-date-' + chargeUuid
-                            }
-                        }]
-                    }
-                },
-                {
-                    key: {
-                    text: "Sentence type"
-                },
-                    value: {
-                    text: sentenceType | sentenceTypeValueOrLegacy(offence.sentence.legacyData)
-                },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-type?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "sentence type",
-                            attributes: {
-                                'data-qa': 'edit-sentence-type-' + chargeUuid
-                            }
-                        }]
-                    }
-                }] )) %}
-
-            {% for periodLength in periodLengths %}
-                {% set periodLengthEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.type +"&submitToEditOffence=true" %}
-                {% set periodLengthValue = {
-                        html: '<a href="' + periodLengthEditLink + '" class="govuk-link" data-qa="edit-period-length-' + periodLength.type + '-' + chargeUuid + '"> Enter ' + periodLength.key + '</a>'
-                    } %}
-                {% if periodLength.value %}
-                    {% set periodLengthValue = {
-                        text: periodLength.value | formatLengths
-                    } %}
-                {% endif %}
-                {% set summaryRows = (summaryRows.concat({
-                    key: {
-                        text: periodLength.key | capitalize
-                    },
-                    value: periodLengthValue,
-                    actions: {
-                        items: [{
-                            href: periodLengthEditLink,
-                            text: "Edit",
-                            visuallyHiddenText: periodLength.key | capitalize,
-                            attributes: {
-                                'data-qa': 'edit-period-length-'+ periodLength.type + '-' + chargeUuid
-                            }
-                    }] if periodLength.value else []
+        key: {
+            text: "Count number"
+        },
+        value: {
+            text: countNumber
+        },
+        actions: {
+            items: [{
+                href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/count-number?submitToEditOffence=true",
+                text: "Edit",
+                visuallyHiddenText: "count number",
+                attributes: {
+                    'data-qa': 'edit-count-number-' + chargeUuid
                 }
-                })) %}
-            {% endfor %}
-
-            {% if offence.sentence.fineAmount %}
-                                    {% set summaryRows = summaryRows.concat({
-                                        key: { text: "Fine Amount" },
-                                        value: { text: "£" + offence.sentence.fineAmount },
-                                        actions: {
-                                            items: [{
-                                                       href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/fine-amount?submitToEditOffence=true",
-                                                       text: "Edit",
-                                                       visuallyHiddenText: "fine amount",
-                                                       attributes: {
-                                                           'data-qa': 'edit-fine-amount-' + chargeUuid
-                                                       }
-                                                   }]
-                                               }
-                                    }) %}
-                                {% endif %}
-
-            {% set summaryRows = (summaryRows.concat({
-                    key: {
-                    text: "Consecutive or concurrent"
-                },
-                    value: {
-                    text: offence.sentence.sentenceServeType | capitalize + (consecutiveToDetails | consecutiveToDetailsToDescription if consecutiveToDetails else '')
-                },
-                    actions: {
-                        items: [{
-                            href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true",
-                            text: "Edit",
-                            visuallyHiddenText: "consecutive or concurrent",
-                            attributes: {
-                                'data-qa': 'edit-sentence-serve-type-' + chargeUuid
-                            }
-                    }]
+            }]
+        }
+    }].concat(summaryRows,[{
+        key: {
+            text: "Conviction date"
+        }, value: {
+            text: (offence.sentence.convictionDate | formatDate if offence.sentence.convictionDate else '')
+        },
+        actions: {
+            items: [{
+                href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/conviction-date?submitToEditOffence=true",
+                text: "Edit",
+                visuallyHiddenText: "conviction date",
+                attributes: {
+                    'data-qa': 'edit-conviction-date-' + chargeUuid
                 }
-            })) %}
+            }]
+        }
+    },
+        {
+            key: {
+            text: "Sentence type"
+        },
+            value: {
+            text: sentenceType | sentenceTypeValueOrLegacy(offence.sentence.legacyData)
+        },
+            actions: {
+            items: [{
+                href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-type?submitToEditOffence=true",
+                text: "Edit",
+                visuallyHiddenText: "sentence type",
+                attributes: {
+                    'data-qa': 'edit-sentence-type-' + chargeUuid
+                }
+            }]
+        }
+        }] )) %}
+
+    {% for periodLength in periodLengths %}
+        {% set periodLengthEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.type +"&submitToEditOffence=true" %}
+        {% set periodLengthValue = {
+            html: '<a href="' + periodLengthEditLink + '" class="govuk-link" data-qa="edit-period-length-' + periodLength.type + '-' + chargeUuid + '"> Enter ' + periodLength.key + '</a>'
+        } %}
+        {% if periodLength.value %}
+            {% set periodLengthValue = {
+                text: periodLength.value | formatLengths
+            } %}
+        {% endif %}
+        {% set summaryRows = (summaryRows.concat({
+            key: {
+                text: periodLength.key | capitalize
+            },
+            value: periodLengthValue,
+            actions: {
+                items: [{
+                    href: periodLengthEditLink,
+                    text: "Edit",
+                    visuallyHiddenText: periodLength.key | capitalize,
+                    attributes: {
+                        'data-qa': 'edit-period-length-'+ periodLength.type + '-' + chargeUuid
+                    }
+                }] if periodLength.value else []
+            }
+        })) %}
+    {% endfor %}
+
+    {% if offence.sentence.fineAmount %}
+        {% set summaryRows = summaryRows.concat({
+            key: { text: "Fine Amount" },
+            value: { text: "£" + offence.sentence.fineAmount },
+            actions: {
+                items: [{
+                    href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/fine-amount?submitToEditOffence=true",
+                    text: "Edit",
+                    visuallyHiddenText: "fine amount",
+                    attributes: {
+                        'data-qa': 'edit-fine-amount-' + chargeUuid
+                    }
+                }]
+            }
+        }) %}
+    {% endif %}
+
+    {% set summaryRows = (summaryRows.concat({
+        key: {
+            text: "Consecutive or concurrent"
+        },
+        value: {
+            text: offence.sentence.sentenceServeType | capitalize
+        },
+        actions: {
+            items: [{
+                href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true",
+                text: "Edit",
+                visuallyHiddenText: "consecutive or concurrent",
+                attributes: {
+                    'data-qa': 'edit-sentence-serve-type-' + chargeUuid
+                }
+            }]
+        }
+    })) %}
+
+    {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
+        {% set consecutiveToEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
+        {% set consecutiveToValue = {
+            html: '<a href="' + consecutiveToEditLink + '" class="govuk-link" data-qa="edit-consecutive-to-' + chargeUuid + '">Enter details</a>'
+        } %}
+        {% if consecutiveToDetails %}
+            {% set consecutiveToValue = {
+                text: consecutiveToDetails | consecutiveToDetailsToDescription
+            } %}
+        {% endif %}
+        {% set summaryRows = (summaryRows.concat({
+            key: {
+                text: "Consecutive to"
+            },
+            value: consecutiveToValue,
+            actions: {
+                items: [{
+                    href: consecutiveToEditLink,
+                    text: "Edit",
+                    visuallyHiddenText: "consecutive to",
+                    attributes: {
+                        'data-qa': 'edit-consecutive-to-' + chargeUuid
+                    }
+                }] if consecutiveToDetails else []
+            }
+        })) %}
+    {% endif %}
+
 {% endif %}
 
 {% set pageTitle = applicationName + " - Edit an offence" %}
 {% block pageContent %}
     {{ super() }}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-edit-offence">
+    <form method="post"
+          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-edit-offence">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/offenceCaption.njk" %}
         <h1 class="govuk-heading-l">Edit offence details</h1>

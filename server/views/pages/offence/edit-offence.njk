@@ -185,7 +185,7 @@
         } %}
         {% if consecutiveToDetails %}
             {% set consecutiveToValue = {
-                text: consecutiveToDetails | consecutiveToDetailsToDescription | removeTo
+                text: consecutiveToDetails | consecutiveToDetailsToDescription | removeTo | capitalize
             } %}
         {% endif %}
         {% set summaryRows = (summaryRows.concat({

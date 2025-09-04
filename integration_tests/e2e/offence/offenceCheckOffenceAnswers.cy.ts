@@ -1,7 +1,6 @@
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
-import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceDeleteOffencePage from '../../pages/offenceDeleteOffencePage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
@@ -178,7 +177,6 @@ context('Check Offence Answers Page', () => {
         .noNonCustodialOutcomeInset()
         .trimTextContent()
         .should('equal', 'There are no offences with non-custodial outcomes.')
-      offenceCheckOffenceAnswersPage.countWarning().should('not.exist')
     })
 
     it('non custodial offences appear in non custodial offences heading', () => {
@@ -194,6 +192,10 @@ context('Check Offence Answers Page', () => {
           outcomeType: 'NON_CUSTODIAL',
         },
       ])
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuid: '{sentenceUuid}',
+        hasSentenceAfterOnOtherCourtAppearance: false,
+      })
       let offenceEditOffencePage = null
       cy.get('[data-qa^="edit-offence-link-"]').each($el => {
         const href = $el.attr('href')
@@ -229,32 +231,6 @@ context('Check Offence Answers Page', () => {
         .noCustodialOutcomeInset()
         .trimTextContent()
         .should('equal', 'There are no offences with custodial outcomes.')
-      offenceCheckOffenceAnswersPage.countWarning().should('not.exist')
-    })
-
-    it('display count number warning when at least 1 offence has no count', () => {
-      let offenceEditOffencePage = null
-      cy.get('[data-qa^="edit-offence-link-"]').each($el => {
-        const href = $el.attr('href')
-        const match = href.match(/offences\/([a-f0-9-]+)\//)
-        if (match) {
-          const chargeUuid = match[1]
-          offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
-          offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-          offenceEditOffencePage.editFieldLink(chargeUuid, 'count-number').click()
-        }
-      })
-
-      const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
-      offenceCountNumberPage.radioLabelSelector('false').click()
-      offenceCountNumberPage.continueButton().click()
-      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.continueButton().click()
-      offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-      offenceCheckOffenceAnswersPage
-        .countWarning()
-        .trimTextContent()
-        .should('equal', '! Warning There are missing count numbers. Please add these where possible')
     })
 
     it('changing outcome from custodial to non custodial resets the consecutive chain', () => {
@@ -277,6 +253,10 @@ context('Check Offence Answers Page', () => {
       ])
       cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
       cy.task('stubGetCourtsByIds')
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuid: '{sentenceUuid}',
+        hasSentenceAfterOnOtherCourtAppearance: false,
+      })
       cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1')
       offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
         OffenceCheckOffenceAnswersPage,

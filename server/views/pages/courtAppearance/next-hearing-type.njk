@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
@@ -33,37 +33,32 @@
 
 
 {% set pageTitle = applicationName + " - Next hearing type" %}
-{% block content %}
+{% block pageContent %}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-            <form method="post">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/nextAppearanceCaption.njk" %}
-                {{ govukRadios(radiosData) }}
+    <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/nextAppearanceCaption.njk" %}
+        {{ govukRadios(radiosData) }}
 
-                <div class="govuk-button-group">
-                    <button type="submit"
-                            class="govuk-button"
-                            data-module="govuk-button"
-                            data-qa="continue-button"
-                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
-                        Continue
-                    </button>
+        <div class="govuk-button-group">
+            <button type="submit"
+                    class="govuk-button"
+                    data-module="govuk-button"
+                    data-qa="continue-button"
+                    formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                Continue
+            </button>
 
-                    {% if featureToggles.saveDraftEnabled %}
-                        <button type="submit"
-                                class="govuk-button govuk-button--secondary"
-                                data-module="govuk-button"
-                                data-qa="save-draft-button"
-                                formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
-                            Save as draft
-                        </button>
-                    {% endif %}
-                </div>
-            </form>
-
+            {% if featureToggles.saveDraftEnabled %}
+                <button type="submit"
+                        class="govuk-button govuk-button--secondary"
+                        data-module="govuk-button"
+                        data-qa="save-draft-button"
+                        formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                    Save as draft
+                </button>
+            {% endif %}
         </div>
-    </div>
+    </form>
 
 {% endblock %}

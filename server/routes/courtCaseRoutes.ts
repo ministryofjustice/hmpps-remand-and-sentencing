@@ -358,7 +358,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
@@ -366,7 +366,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-    } else if (addOrEditCourtCase === 'edit-court-case' && referenceNumberSelect !== undefined) {
+    } else if (
+      this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) &&
+      referenceNumberSelect !== undefined
+    ) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-reference`
     }
 
@@ -380,6 +383,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -530,6 +534,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -729,6 +734,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -1057,6 +1063,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       mainOutcomes,
       subListOutcomes,
       legacyCaseOutcome,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -1237,6 +1244,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -1326,6 +1334,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       currentlySetTypeDescription,
       errors: req.flash('errors') || [],
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -1419,6 +1428,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 

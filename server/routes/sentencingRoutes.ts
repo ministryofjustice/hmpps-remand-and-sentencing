@@ -967,12 +967,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { username } = req.user
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-    const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
+    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
       offence.sentence.sentenceUuid,
       username,
@@ -988,6 +983,45 @@ export default class SentencingRoutes extends BaseRoutes {
     ])
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
     return res.render('pages/sentencing/cannot-delete-offence', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offence,
+      offenceDetails,
+      courtMap,
+      backLink,
+      sentencesAfterDetails,
+    })
+  }
+
+  public getCannotRemoveSentenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { username } = req.user
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
+      offence.sentence.sentenceUuid,
+      username,
+    )
+    const courtIds = Array.from(new Set(sentencesAfterDetails.appearances.map(appearance => appearance.courtCode)))
+    const [courtMap, offenceDetails] = await Promise.all([
+      this.courtRegisterService.getCourtMap(courtIds, username),
+      this.manageOffencesService.getOffenceByCode(
+        offence.offenceCode,
+        username,
+        offence.legacyData?.offenceDescription,
+      ),
+    ])
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome?submitToEditOffence=true`
+    return res.render('pages/sentencing/cannot-remove-sentence-outcome', {
       nomsId,
       courtCaseReference,
       appearanceReference,

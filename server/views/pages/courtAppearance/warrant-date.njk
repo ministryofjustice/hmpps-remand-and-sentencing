@@ -1,57 +1,51 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 
 
 {% set pageTitle = applicationName + " - Add a court case Warrant Date" %}
 
-{% block content %}
+{% block pageContent %}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-warrant-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/appearanceCaption.njk" %}
-                {{ govukDateInput({
-                    id: "warrant-date",
-                    namePrefix: "warrantDate",
-                    errorMessage: errors | findErrorsBeginningWith('warrantDate'),
-                    fieldset: {
-                        legend: {
-                            text: "Enter the warrant date",
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--l"
-                        }
-                    },
-                    items: [
-                        {
-                            id: 'warrantDate-day',
-                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('warrantDate-day') else ''),
-                            name:"day",
-                            value: warrantDateDay
-                        },
-                        {
-                            id: 'warrantDate-month',
-                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('warrantDate-month') else ''),
-                            name:"month",
-                            value: warrantDateMonth
-                        },
-                        {
-                            id: 'warrantDate-year',
-                            classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('warrantDate-year') else ''),
-                            name:"year",
-                            value: warrantDateYear
-                        }
-                    ]
-                }) }}
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-warrant-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/appearanceCaption.njk" %}
+        {{ govukDateInput({
+            id: "warrant-date",
+            namePrefix: "warrantDate",
+            errorMessage: errors | findErrorsBeginningWith('warrantDate'),
+            fieldset: {
+                legend: {
+                    text: "Enter the warrant date",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            },
+            items: [
+                {
+                    id: 'warrantDate-day',
+                    classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('warrantDate-day') else ''),
+                    name:"day",
+                    value: warrantDateDay
+                },
+                {
+                    id: 'warrantDate-month',
+                    classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('warrantDate-month') else ''),
+                    name:"month",
+                    value: warrantDateMonth
+                },
+                {
+                    id: 'warrantDate-year',
+                    classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('warrantDate-year') else ''),
+                    name:"year",
+                    value: warrantDateYear
+                }
+            ]
+        }) }}
 
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
-            </form>
-
-        </div>
-    </div>
-
+        {{ govukButton({
+            text: "Continue",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
+    </form>
 {% endblock %}

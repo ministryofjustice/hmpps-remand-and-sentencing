@@ -24,7 +24,7 @@ describe('RemandAndSentencingService', () => {
       offences: [{ sentence: { sentenceUuid: 'uuid-1', sentenceReference: 'ref-1' } }],
     } as unknown as CourtAppearance
 
-    it('Source sentence has not beed added to sentences yet', async () => {
+    it('Source sentence has not been added to sentences yet - no errors', async () => {
       const response = await service.validateConsecutiveLoops(
         true,
         'uuid3',
@@ -56,7 +56,7 @@ describe('RemandAndSentencingService', () => {
       ])
     })
 
-    it('calls API with correct request using cnsecutiveToSentenceUuid', async () => {
+    it('calls API with correct request using consecutiveToSentenceUuid - no errors, passes validation', async () => {
       const courtAppearance = {
         appearanceUuid: 'app1',
         offences: [
@@ -79,8 +79,16 @@ describe('RemandAndSentencingService', () => {
 
       remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(false)
 
-      await service.validateConsecutiveLoops(false, 'uuid-3', courtAppearance, 'AB123A', 'uuid-1', 'user')
+      const errors = await service.validateConsecutiveLoops(
+        false,
+        'uuid-3',
+        courtAppearance,
+        'AB123A',
+        'uuid-1',
+        'user',
+      )
 
+      expect(errors).toEqual([])
       expect(remandAndSentencingApiClient.hasLoopInChain).toHaveBeenCalledTimes(1)
       const req = remandAndSentencingApiClient.hasLoopInChain.mock.calls[0][0]
 
@@ -97,7 +105,7 @@ describe('RemandAndSentencingService', () => {
       ])
     })
 
-    it('calls API with correct request using cnsecutiveToSentenceRef', async () => {
+    it('calls API with correct request using cnsecutiveToSentenceRef - no errors, passes validation', async () => {
       const courtAppearance = {
         appearanceUuid: 'app1',
         offences: [
@@ -120,8 +128,16 @@ describe('RemandAndSentencingService', () => {
 
       remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(false)
 
-      await service.validateConsecutiveLoops(false, 'uuid-3', courtAppearance, 'AB123A', 'uuid-1', 'user')
+      const errors = await service.validateConsecutiveLoops(
+        false,
+        'uuid-3',
+        courtAppearance,
+        'AB123A',
+        'uuid-1',
+        'user',
+      )
 
+      expect(errors).toEqual([])
       expect(remandAndSentencingApiClient.hasLoopInChain).toHaveBeenCalledTimes(1)
       const req = remandAndSentencingApiClient.hasLoopInChain.mock.calls[0][0]
 
@@ -138,7 +154,7 @@ describe('RemandAndSentencingService', () => {
       ])
     })
 
-    it('offences without sentences get filtered out when running loop validation', async () => {
+    it('offences without sentences get filtered out when running loop validation - no errors, passes validation', async () => {
       const courtAppearance = {
         appearanceUuid: 'app1',
         offences: [
@@ -165,8 +181,9 @@ describe('RemandAndSentencingService', () => {
 
       remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(false)
 
-      await service.validateConsecutiveLoops(true, 'REF-2', courtAppearance, 'AB123A', 'uuid-1', 'user')
+      const errors = await service.validateConsecutiveLoops(true, 'REF-2', courtAppearance, 'AB123A', 'uuid-1', 'user')
 
+      expect(errors).toEqual([])
       expect(remandAndSentencingApiClient.hasLoopInChain).toHaveBeenCalledTimes(1)
       const req = remandAndSentencingApiClient.hasLoopInChain.mock.calls[0][0]
 
@@ -175,6 +192,59 @@ describe('RemandAndSentencingService', () => {
         appearanceUuid: 'app1',
         sourceSentenceUuid: 'uuid-1',
         targetSentenceUuid: 'uuid-2',
+      })
+
+      expect(req.sentences).toEqual([
+        { sentenceUuid: 'uuid-1' },
+        { sentenceUuid: 'uuid-2', consecutiveToSentenceUuid: 'uuid-1' },
+      ])
+    })
+
+    it('Runs full validation correctly if there is a offence without a sentence along with a consecutive relationship', async () => {
+      const courtAppearance = {
+        appearanceUuid: 'app1',
+        offences: [
+          {
+            offenceId: 'uuid-0',
+            offenceCode: 'PC02021C', // no sentence
+          },
+          {
+            sentence: {
+              sentenceUuid: 'uuid-1',
+              sentenceReference: 'REF-1',
+              consecutiveToSentenceUuid: null,
+            },
+          },
+          {
+            sentence: {
+              sentenceUuid: 'uuid-2',
+              sentenceReference: 'REF-2',
+              consecutiveToSentenceReference: 'REF-1',
+            },
+          },
+        ],
+      } as unknown as CourtAppearance
+
+      remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(false)
+
+      const errors = await service.validateConsecutiveLoops(
+        false,
+        'uuid-3',
+        courtAppearance,
+        'AB123A',
+        'uuid-1',
+        'user',
+      )
+
+      expect(errors).toEqual([])
+      expect(remandAndSentencingApiClient.hasLoopInChain).toHaveBeenCalledTimes(1)
+      const req = remandAndSentencingApiClient.hasLoopInChain.mock.calls[0][0]
+
+      expect(req).toMatchObject({
+        prisonerId: 'AB123A',
+        appearanceUuid: 'app1',
+        sourceSentenceUuid: 'uuid-1',
+        targetSentenceUuid: 'uuid-3',
       })
 
       expect(req.sentences).toEqual([

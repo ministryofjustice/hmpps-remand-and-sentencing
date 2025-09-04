@@ -43,6 +43,10 @@
       appInsights.trackPageView();
     </script>
   {% endif %}
+  <script nonce="{{ cspNonce }}">
+    window.__INACTIVITY_LIMIT__ = Number("{{ INACTIVITY_LIMIT_MS }}");
+    window.__POPUP_COUNTDOWN__ = Number("{{ POPUP_COUNTDOWN_S }}");
+  </script>
 
 {% endblock %}
 
@@ -52,7 +56,6 @@
   {% if feComponents.header %}
     {{ feComponents.header | safe }}
   {% else %}
-    {% include "./header.njk" %}
   {% endif %}
   {{
       serviceHeader({
@@ -63,6 +66,7 @@
 {% endblock %}
 
 {% block bodyStart %}
+  {% include "./_session-warning.njk" %}
 {% endblock %}
 
 {% block footer %}
@@ -77,12 +81,11 @@
 {% endblock %}
 
 {% block bodyEnd %}
+  <script src="{{ '/assets/js/session-warning.js' | assetMap }}" nonce="{{ cspNonce }}"></script>
   <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
   {% if feComponents.jsIncludes %}
-      {% for js in feComponents.jsIncludes %}
-        <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
-      {% endfor %}
-    {% endif %}
-  {% block javascripts %}
-    {% endblock %}
+    {% for js in feComponents.jsIncludes %}
+      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+    {% endfor %}
+  {% endif %}
 {% endblock %}

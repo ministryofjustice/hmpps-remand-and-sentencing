@@ -1,0 +1,23 @@
+{% extends "../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% set pageTitle = "Session timed out" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="get" action="/person/{{ nomsId }}">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                            <h1 class="govuk-heading-l">The appearance information you entered has been deleted</h1>
+                            <p class="govuk-body">Because you have been inactive for 30 minutes, for security, the information was deleted.</p>
+                {{ govukButton({
+                    text: "Go to Court cases",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

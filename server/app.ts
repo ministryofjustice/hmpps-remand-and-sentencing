@@ -44,6 +44,12 @@ export default function createApp(services: Services): express.Application {
 
   nunjucksSetup(app, services.applicationInfo)
 
+  app.use((req, res, next) => {
+    res.locals.INACTIVITY_LIMIT_MS = process.env.INACTIVITY_LIMIT_MS || '1680000'
+    res.locals.POPUP_COUNTDOWN_S = process.env.POPUP_COUNTDOWN_S || '120'
+    next()
+  })
+
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware(['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']))
   app.use(setUpCsrf())

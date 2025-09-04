@@ -2055,7 +2055,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       offenceMap,
-      sentenceType: sentenceType?.description ?? offence.sentence?.legacyData?.sentenceTypeDesc,
+      sentenceType: sentenceTypeValueOrLegacy(sentenceType?.description, offence.sentence?.legacyData),
       outcome,
       periodLengthTypeHeadings,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),

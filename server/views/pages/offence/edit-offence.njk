@@ -168,7 +168,7 @@
         },
         actions: {
             items: [{
-                href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true",
+                href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-serve-type?submitToEditOffence=true",
                 text: "Edit",
                 visuallyHiddenText: "consecutive or concurrent",
                 attributes: {
@@ -179,7 +179,7 @@
     })) %}
 
     {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
-        {% set consecutiveToEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
+        {% set consecutiveToEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
         {% set consecutiveToValue = {
             html: '<a href="' + consecutiveToEditLink + '" class="govuk-link" data-qa="edit-consecutive-to-' + chargeUuid + '">Enter details</a>'
         } %}

@@ -101,6 +101,8 @@
                 },
                     value: {
                     text: sentenceType | sentenceTypeValueOrLegacy(offence.sentence.legacyData)
+                } if sentenceType else {
+                    html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/sentence-type?submitToEditOffence=true" data-qa="edit-sentence-type- ' + chargeUuid + '">Enter sentence type</a>'
                 },
                     actions: {
                         items: [{
@@ -110,7 +112,7 @@
                             attributes: {
                                 'data-qa': 'edit-sentence-type-' + chargeUuid
                             }
-                        }]
+                        }] if sentenceType else []
                     }
                 }] )) %}
 

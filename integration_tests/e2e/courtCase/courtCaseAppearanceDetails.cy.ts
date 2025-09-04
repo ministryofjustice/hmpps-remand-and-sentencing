@@ -116,6 +116,12 @@ context('Court Case Appearance details Page', () => {
       courtCaseReferencePage.captionText().contains('Add appearance information')
       courtCaseReferencePage.noCaseReferenceCheckbox().should('not.be.checked')
       courtCaseReferencePage.input().clear().type('T12345678')
+      courtCaseReferencePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'C894623',
+        'Court name': 'Southampton Magistrate Court',
+        'Warrant date': '15/12/2023',
+        'Overall case outcome': 'Remanded in custody',
+      })
       courtCaseReferencePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
@@ -148,6 +154,12 @@ context('Court Case Appearance details Page', () => {
         .click()
 
       const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'Edit the court name')
+      courtCaseCourtNamePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'C894623',
+        'Court name': 'Southampton Magistrate Court',
+        'Warrant date': '15/12/2023',
+        'Overall case outcome': 'Remanded in custody',
+      })
       courtCaseCourtNamePage.autoCompleteInput().clear()
       courtCaseCourtNamePage.autoCompleteInput().type('cou')
       courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')

@@ -25,7 +25,7 @@ const stubComponentsFail = () =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/components/header',
+      urlPattern: '/components/components\\?component=header',
     },
     response: {
       status: 500,
@@ -48,8 +48,24 @@ const stubComponentsPing = (httpStatus = 200) =>
     },
   })
 
+// Add this to integration_tests/mockApis/components.ts
+const stubComponentsRootFail = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/components$',
+    },
+    response: {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+    },
+  })
+
 export default {
   stubComponents,
   stubComponentsFail,
   stubComponentsPing,
+  stubComponentsRootFail, // export the new stub
 }

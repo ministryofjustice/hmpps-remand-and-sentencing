@@ -26,25 +26,30 @@ export default function setUpWebSession(): Router {
       secret: config.session.secret,
       resave: false, // redis implements touch so shouldn't need this
       saveUninitialized: false,
-      rolling: true,
+      rolling: false,
     }),
   )
 
   // Update a value in the cookie so that the set-cookie will be sent.
   // Only changes every minute so that it's not sent with every request.
   router.use((req, res, next) => {
-    req.session.nowInMinutes = Math.floor(Date.now() / 60e3)
-    if (!req.session.courtCases) {
-      req.session.courtCases = new Map<string, CourtCase>()
-    }
-    if (!req.session.savedCourtCases) {
-      req.session.savedCourtCases = new Map<string, CourtCase>()
-    }
-    if (!req.session.offences) {
-      req.session.offences = new Map<string, Offence>()
-    }
-    if (!req.session.courtAppearances) {
-      req.session.courtAppearances = new Map<string, CourtAppearance>()
+    const nowInMinutes = Math.floor(Date.now() / 60e3)
+    if (req.session) {
+      if (req.session.nowInMinutes !== nowInMinutes) {
+        req.session.nowInMinutes = nowInMinutes
+      }
+      if (!req.session.courtCases) {
+        req.session.courtCases = new Map<string, CourtCase>()
+      }
+      if (!req.session.savedCourtCases) {
+        req.session.savedCourtCases = new Map<string, CourtCase>()
+      }
+      if (!req.session.offences) {
+        req.session.offences = new Map<string, Offence>()
+      }
+      if (!req.session.courtAppearances) {
+        req.session.courtAppearances = new Map<string, CourtAppearance>()
+      }
     }
     next()
   })

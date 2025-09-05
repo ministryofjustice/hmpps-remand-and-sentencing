@@ -8,10 +8,12 @@ import sentenceTypeRoutes from './sentenceTypesRoutes'
 import OverallSentencingRoutes from './overallSentencingRoutes'
 import SentencingRoutes from './sentencingRoutes'
 import RemandRoutes from './remandRoutes'
+import utilityRoutes from './utilityRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
 
+  router.use('/', utilityRoutes(services))
   router.use('/sentence-types', sentenceTypeRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(

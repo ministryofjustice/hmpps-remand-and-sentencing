@@ -524,7 +524,6 @@ export default class SentencingRoutes extends BaseRoutes {
     )
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const { sentence } = offence
-    const consecutiveToId = sentence?.consecutiveToSentenceUuid || sentence?.consecutiveToSentenceReference
     const [offenceDetails, sentencesToChainTo] = await Promise.all([
       this.manageOffencesService.getOffenceByCode(
         offence.offenceCode,
@@ -610,7 +609,6 @@ export default class SentencingRoutes extends BaseRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       submitQuery,
       backLink,
-      consecutiveToId,
     })
   }
 

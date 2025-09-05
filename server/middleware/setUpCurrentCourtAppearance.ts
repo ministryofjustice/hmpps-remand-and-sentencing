@@ -39,6 +39,7 @@ export default function setupCurrentCourtAppearance(
       ? (await appearanceOutcomeService.getOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username))
           .outcomeName
       : 'Not entered'
+    res.locals.showAppearanceDetails = true
     next()
   }
 }

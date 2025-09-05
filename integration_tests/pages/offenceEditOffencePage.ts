@@ -18,4 +18,6 @@ export default class OffenceEditOffencePage extends Page {
     cy.get(
       `a[href="/person/${personId}/${addOrEdit}-court-case/${courtCaseReference}/${addOrEdit}-court-appearance/${appearanceReference}/offences/${chargeUuid}/period-length?periodLengthType=${periodLengthType}&submitToEditOffence=true"]`,
     )
+
+  editSummaryList = (): PageElement => cy.get('[data-qa=edit-summary-list]')
 }

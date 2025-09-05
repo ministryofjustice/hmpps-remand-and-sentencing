@@ -177,7 +177,8 @@ context('Sentencing appearance details Page', () => {
         'Sentence type': 'EDS (Extended Determinate Sentence)',
         'Custodial term': '2 years 0 months 0 weeks 0 days',
         'Licence period': '2 years 0 months 0 weeks 0 days',
-        'Consecutive or concurrent': 'Consecutive to count 1',
+        'Consecutive or concurrent': 'Consecutive',
+        'Consecutive to': 'Count 1',
       })
       offenceEditOffencePage.continueButton().click()
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')

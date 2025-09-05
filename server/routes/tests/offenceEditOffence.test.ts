@@ -66,6 +66,28 @@ describe('GET Edit offence', () => {
       })
   })
 
+  it('should render sentence type call to action when no sentence type', () => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      sentence: {
+        sentenceReference: '111-222-333',
+        sentenceUuid: '111-222-333',
+      },
+    })
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+    })
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const enterSentenceTypeCallToActionLink = $('[data-qa=edit-sentence-type-cta]').text()
+        expect(enterSentenceTypeCallToActionLink).toContain('Enter sentence type')
+      })
+  })
+
   it('should render missing consecutive to', () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',

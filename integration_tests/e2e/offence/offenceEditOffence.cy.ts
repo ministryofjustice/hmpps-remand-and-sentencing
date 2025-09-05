@@ -453,7 +453,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('show fields as not entered when null', () => {
-      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Committed on': 'Not entered',
         Offence: 'PS90037 An offence description',
         Outcome: 'Remanded in custody',

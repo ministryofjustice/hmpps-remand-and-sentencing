@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 
@@ -6,38 +6,32 @@
 
 {% set pageTitle = applicationName + " - Add a court case court name" %}
 
-{% block content %}
+{% block pageContent %}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <input type="hidden" name="courtCode" id="court-code" value="{{courtNameForm.courtCode}}">
-                {% include "../../partials/appearanceCaption.njk" %}
-                {{ govukSelect({
-                    label: {
-                        text: "What is the court name?" if isAddCourtAppearance else "Edit the court name",
-                        classes: "govuk-label--l",
-                        isPageHeading: true
-                    },
-                    hint: {
-                        text: "Start typing the name of the court from the warrant."
-                    },
-                    id: "court-name",
-                    name: "courtName",
-                    errorMessage: errors | findError('courtCode'),
-                    items: []
-                }) }}
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="courtCode" id="court-code" value="{{courtNameForm.courtCode}}">
+        {% include "../../partials/appearanceCaption.njk" %}
+        {{ govukSelect({
+            label: {
+                text: "What is the court name?" if isAddCourtAppearance else "Edit the court name",
+                classes: "govuk-label--l",
+                isPageHeading: true
+            },
+            hint: {
+                text: "Start typing the name of the court from the warrant."
+            },
+            id: "court-name",
+            name: "courtName",
+            errorMessage: errors | findError('courtCode'),
+            items: []
+        }) }}
 
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
-            </form>
-
-        </div>
-    </div>
-
+        {{ govukButton({
+            text: "Continue",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
+    </form>
 {% endblock %}
 
 {% block javascripts %}

@@ -168,7 +168,7 @@ context('Sentencing appearance details Page', () => {
       offencePeriodLengthPage.yearsInput().type('2')
       offencePeriodLengthPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 3',
         Offence: 'PS90037 An offence description',
         Outcome: 'Remanded in custody',
@@ -557,7 +557,7 @@ context('Sentencing appearance details Page', () => {
       offencePeriodLengthPage.yearsInput().clear().type('5')
       offencePeriodLengthPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
         Outcome: 'A Nomis description',
@@ -623,7 +623,7 @@ context('Sentencing appearance details Page', () => {
       offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
       offenceSentenceServeTypePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 2',
         Offence: 'PS90037 An offence description',
         Outcome: 'Imprisonment',

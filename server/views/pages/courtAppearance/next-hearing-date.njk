@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
@@ -6,94 +6,89 @@
 
 {% set pageTitle = applicationName + " - Add a court case Next Court Date" %}
 
-{% block content %}
+{% block pageContent %}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-            <form method="post">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/nextAppearanceCaption.njk" %}
+    <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/nextAppearanceCaption.njk" %}
 
-                {% call govukFieldset({
+        {% call govukFieldset({
+            legend: {
+                text: "Enter the date of the next court appearance" if isAddCourtAppearance else "Edit the date of the next court appearance",
+                classes: "govuk-fieldset__legend--l",
+                isPageHeading: true
+            }
+        }) %}
+            
+            {{ govukDateInput({
+                id: "next-hearing-date",
+                namePrefix: "nextHearingDate",
+                errorMessage: errors | findErrorsBeginningWith('nextHearingDate'),
+                fieldset: {
                     legend: {
-                        text: "Enter the date of the next court appearance" if isAddCourtAppearance else "Edit the date of the next court appearance",
-                        classes: "govuk-fieldset__legend--l",
-                        isPageHeading: true
+                        text: "Next court date",
+                        classes: "govuk-label--s govuk-!-font-weight-bold"
                     }
-                }) %}
-                    
-                    {{ govukDateInput({
-                        id: "next-hearing-date",
-                        namePrefix: "nextHearingDate",
-                        errorMessage: errors | findErrorsBeginningWith('nextHearingDate'),
-                        fieldset: {
-                            legend: {
-                                text: "Next court date",
-                                classes: "govuk-label--s govuk-!-font-weight-bold"
-                            }
 
-                        },
-                        items: [
-                            {
-                                id: 'nextHearingDate-day',
-                                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextHearingDate-day') else ''),
-                                name:"day",
-                                value: nextHearingDateDay
-                            },
-                            {
-                                id: 'nextHearingDate-month',
-                                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextHearingDate-month') else ''),
-                                name:"month",
-                                value: nextHearingDateMonth
-                            },
-                            {
-                                id: 'nextHearingDate-year',
-                                classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('nextHearingDate-year') else ''),
-                                name:"year",
-                                value: nextHearingDateYear
-                            }
-                        ]
-                    }) }}
+                },
+                items: [
+                    {
+                        id: 'nextHearingDate-day',
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextHearingDate-day') else ''),
+                        name:"day",
+                        value: nextHearingDateDay
+                    },
+                    {
+                        id: 'nextHearingDate-month',
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextHearingDate-month') else ''),
+                        name:"month",
+                        value: nextHearingDateMonth
+                    },
+                    {
+                        id: 'nextHearingDate-year',
+                        classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('nextHearingDate-year') else ''),
+                        name:"year",
+                        value: nextHearingDateYear
+                    }
+                ]
+            }) }}
 
-                    {{ govukInput({
-                        label: {
-                            text: "Time of next court appearance (optional)",
-                            classes: "govuk-label--s"
-                        },
-                        hint: {
-                            text: "For example, 13:00"
-                        },
-                        classes: "govuk-input--width-4",
-                        id: "nextHearingTime",
-                        name: "nextHearingTime",
-                        errorMessage: errors | findError('nextHearingTime'),
-                        value: nextHearingTime
-                    }) }}
+            {{ govukInput({
+                label: {
+                    text: "Time of next court appearance (optional)",
+                    classes: "govuk-label--s"
+                },
+                hint: {
+                    text: "For example, 13:00"
+                },
+                classes: "govuk-input--width-4",
+                id: "nextHearingTime",
+                name: "nextHearingTime",
+                errorMessage: errors | findError('nextHearingTime'),
+                value: nextHearingTime
+            }) }}
 
-                {% endcall %}
+        {% endcall %}
 
-                <div class="govuk-button-group">
-                    <button type="submit"
-                            class="govuk-button"
-                            data-module="govuk-button"
-                            data-qa="continue-button"
-                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
-                        Continue
-                    </button>
+        <div class="govuk-button-group">
+            <button type="submit"
+                    class="govuk-button"
+                    data-module="govuk-button"
+                    data-qa="continue-button"
+                    formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+                Continue
+            </button>
 
-                    {% if featureToggles.saveDraftEnabled %}
-                        <button type="submit"
-                                class="govuk-button govuk-button--secondary"
-                                data-module="govuk-button"
-                                data-qa="save-draft-button"
-                                formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
-                            Save as draft
-                        </button>
-                    {% endif %}
-                </div>
-            </form>
-
+            {% if featureToggles.saveDraftEnabled %}
+                <button type="submit"
+                        class="govuk-button govuk-button--secondary"
+                        data-module="govuk-button"
+                        data-qa="save-draft-button"
+                        formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                    Save as draft
+                </button>
+            {% endif %}
         </div>
-    </div>
+    </form>
 
 {% endblock %}

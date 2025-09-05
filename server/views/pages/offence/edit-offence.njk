@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
@@ -100,7 +100,9 @@
                     text: "Sentence type"
                 },
                     value: {
-                    text: sentenceType | sentenceTypeValueOrLegacy(offence.sentence.legacyData)
+                    text: sentenceType
+                } if sentenceType else {
+                    html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/sentence-type?submitToEditOffence=true" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
                 },
                     actions: {
                         items: [{
@@ -110,7 +112,7 @@
                             attributes: {
                                 'data-qa': 'edit-sentence-type-' + chargeUuid
                             }
-                        }]
+                        }] if sentenceType else []
                     }
                 }] )) %}
 
@@ -180,24 +182,21 @@
 {% endif %}
 
 {% set pageTitle = applicationName + " - Edit an offence" %}
-{% block content %}
+{% block pageContent %}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-edit-offence">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/offenceCaption.njk" %}
-                <h1 class="govuk-heading-l">Edit offence details</h1>
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-edit-offence">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/offenceCaption.njk" %}
+        <h1 class="govuk-heading-l">Edit offence details</h1>
 
-                {{ govukSummaryList({
-                    rows: summaryRows
-                }) }}
+        {{ govukSummaryList({
+            rows: summaryRows,
+            attributes: { 'data-qa': 'edit-summary-list'}
+        }) }}
 
-                {{ govukButton({
-                    text: "Accept changes",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
-            </form>
-        </div>
-    </div>
+        {{ govukButton({
+            text: "Accept changes",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
+    </form>
 {% endblock %}

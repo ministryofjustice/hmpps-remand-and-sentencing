@@ -255,9 +255,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('featureToggles', config.featureToggles)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
 
-  // Remove leading "to " if present
+  // Remove leading "to " if present, then uppercase the first character
   njkEnv.addFilter('removeTo', (str: string) => {
     if (!str) return str
-    return str.trim().toLowerCase().startsWith('to ') ? str.trim().substring(3) : str
+    const cleaned = str.trim().replace(/^to\s+/i, '')
+    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
   })
 }

@@ -65,4 +65,83 @@ describe('GET Edit offence', () => {
         expect(enterPeriodLengthLink).toContain('Enter sentence length')
       })
   })
+
+  it('should render missing consecutive to', () => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      sentence: {
+        sentenceReference: '111-222-333',
+        sentenceUuid: '111-222-333',
+        sentenceTypeId: '56',
+        sentenceServeType: 'CONSECUTIVE',
+      },
+    })
+    defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
+      sentenceTypeUuid: '56',
+      description: 'SDS',
+      classification: 'STANDARD',
+      displayOrder: 10,
+    })
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const enterConsecutiveToLink = $('[data-qa=edit-consecutive-to-1]').text()
+        expect(enterConsecutiveToLink).toContain('Enter details')
+      })
+  })
+
+  it('should render consecutive to correctly when populated', () => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      sentence: {
+        sentenceReference: '111-222-333',
+        sentenceUuid: '111-222-333',
+        sentenceTypeId: '56',
+        sentenceServeType: 'CONSECUTIVE',
+        consecutiveToSentenceUuid: 'SENT123',
+      },
+    })
+    defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
+      sentenceTypeUuid: '56',
+      description: 'SDS',
+      classification: 'STANDARD',
+      displayOrder: 10,
+    })
+    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
+      sentences: [
+        {
+          sentenceUuid: 'SENT123',
+          offenceCode: 'OFF456',
+          courtCode: null,
+          appearanceDate: null,
+          offenceStartDate: '2025-01-01',
+        },
+      ],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+      OFF456: 'Offence code description',
+    })
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
+      ACCRYC: 'Court description',
+    })
+
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        const consecutiveToText = $('.govuk-summary-list__row')
+          .find('dt:contains("Consecutive to")')
+          .next('.govuk-summary-list__value')
+          .text()
+          .trim()
+
+        expect(consecutiveToText).toContain('OFF456 - Offence code description committed on 01/01/2025')
+        const enterConsecutiveToLink = $('[data-qa=edit-consecutive-to-1]').text()
+        expect(enterConsecutiveToLink).toContain('Edit')
+      })
+  })
 })

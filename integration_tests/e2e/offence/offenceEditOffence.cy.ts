@@ -273,8 +273,8 @@ context('Add Offence Edit offence Page', () => {
         'Conviction date': '13/05/2023',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
-        'Consecutive or concurrent':
-          'Consecutive to count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
+        'Consecutive or concurrent': 'Consecutive',
+        'Consecutive to': 'Count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
       })
     })
 

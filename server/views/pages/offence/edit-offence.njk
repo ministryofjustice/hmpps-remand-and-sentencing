@@ -166,7 +166,7 @@
                     text: "Consecutive or concurrent"
                 },
                     value: {
-                    text: offence.sentence.sentenceServeType | capitalize + (consecutiveToDetails | consecutiveToDetailsToDescription if consecutiveToDetails else '')
+                    text: offence.sentence.sentenceServeType | capitalize
                 },
                     actions: {
                         items: [{
@@ -179,6 +179,34 @@
                     }]
                 }
             })) %}
+
+    {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
+        {% set consecutiveToEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
+        {% set consecutiveToValue = {
+            html: '<a href="' + consecutiveToEditLink + '" class="govuk-link" data-qa="edit-consecutive-to-' + chargeUuid + '">Enter details</a>'
+        } %}
+        {% if consecutiveToDetails %}
+            {% set consecutiveToValue = {
+                text: consecutiveToDetails | consecutiveToDetailsToDescription | removeTo
+            } %}
+        {% endif %}
+        {% set summaryRows = (summaryRows.concat({
+            key: {
+                text: "Consecutive to"
+            },
+            value: consecutiveToValue,
+            actions: {
+                items: [{
+                    href: consecutiveToEditLink,
+                    text: "Edit",
+                    visuallyHiddenText: "consecutive to",
+                    attributes: {
+                        'data-qa': 'edit-consecutive-to-' + chargeUuid
+                    }
+                }] if consecutiveToDetails else []
+            }
+        })) %}
+    {% endif %}
 {% endif %}
 
 {% set pageTitle = applicationName + " - Edit an offence" %}

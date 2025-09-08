@@ -2052,7 +2052,6 @@ export default class OffenceRoutes extends BaseRoutes {
     } else if (offence.sentence?.consecutiveToSentenceReference) {
       consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
     }
-    console.log('submitToEditOffence', submitToEditOffence)
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,

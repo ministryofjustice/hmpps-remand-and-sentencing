@@ -9,7 +9,9 @@
     <form method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <input type="hidden" name="courtCode" id="court-code" value="{{nextHearingCourtNameForm.courtCode}}">
-        {% include "../../partials/nextAppearanceCaption.njk" %}
+        {% if addOrEditCourtAppearance == 'add-court-appearance' %}
+          {% include "../../partials/nextAppearanceCaption.njk" %}
+        {% endif %}
         {{ govukSelect({
             label: {
                 text: "What court is the next hearing at?"  if isAddCourtAppearance else "Edit next court hearing location",

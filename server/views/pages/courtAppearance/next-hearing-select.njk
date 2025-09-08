@@ -7,7 +7,9 @@
     {{ super() }}
     <form method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        {% include "../../partials/nextAppearanceCaption.njk" %}
+        {% if addOrEditCourtAppearance == 'add-court-appearance' %}
+          {% include "../../partials/nextAppearanceCaption.njk" %}
+        {% endif %}
         {{ govukRadios({
             name: "nextHearingSelect",
             fieldset: {

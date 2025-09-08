@@ -17,4 +17,12 @@ context('Next hearing been set page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem You must select the hearing has been set')
   })
+
+  it('caption should only be shown for add next court appearance journey', () => {
+    courtCaseNextHearingSetPage
+      .captionText()
+      .invoke('text')
+      .then(text => text.trim())
+      .should('equal', 'Add next court appearance')
+  })
 })

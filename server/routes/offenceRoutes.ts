@@ -109,7 +109,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const isFirstOffence = offences.length === 0
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     if (submitToEditOffence || invalidatedFrom) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'REMAND') {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
@@ -133,6 +133,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceEndDateDay,
       offenceEndDateMonth,
       offenceEndDateYear,
+      submitToEditOffence,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       isFirstOffence,
       errors: req.flash('errors') || [],
@@ -187,7 +188,7 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     return res.redirect(
@@ -357,7 +358,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence || offence.onFinishGoToEdit === true) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
@@ -435,7 +436,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     if (outcome.outcomeType === 'SENTENCING') {
@@ -482,7 +483,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     } else if (courtAppearance.caseOutcomeAppliedAll !== 'true' || offence.onFinishGoToEdit) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
     }
@@ -539,7 +540,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
@@ -580,7 +581,7 @@ export default class OffenceRoutes extends BaseRoutes {
       this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)?.offenceCode
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date`
     if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     }
     return res.render('pages/offence/offence-code', {
       nomsId,
@@ -724,7 +725,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     return res.redirect(
@@ -831,7 +832,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
       if (submitToEditOffence) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
         )
       }
       if (outcome.outcomeType === 'SENTENCING') {
@@ -852,7 +853,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     return res.redirect(
@@ -922,7 +923,7 @@ export default class OffenceRoutes extends BaseRoutes {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/conviction-date${submitQuery}`
       }
     } else if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     }
 
     return res.render('pages/offence/sentence-type', {
@@ -935,6 +936,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceSentenceTypeForm,
       sentenceTypes,
       legacySentenceType,
+      submitToEditOffence,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink,
@@ -989,7 +991,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
 
@@ -1033,7 +1035,7 @@ export default class OffenceRoutes extends BaseRoutes {
       currentPeriodLength?.legacyData?.sentenceTermDescription
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type${this.queryParametersToString(submitToEditOffence, invalidatedFrom)}`
     if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     } else if (expectedPeriodLengthTypeIndex >= 1) {
       const backSubmitQuery = this.periodLengthQueryParameterToString(
         sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths[expectedPeriodLengthTypeIndex - 1]
@@ -1057,6 +1059,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       periodLengthType,
+      submitToEditOffence,
       periodLengthForm,
       periodLengthHeader,
       sentenceTypeHint,
@@ -1118,7 +1121,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (submitToEditOffence || invalidatedFrom) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`,
       )
     }
     return this.determineSentenceServeType(
@@ -1154,7 +1157,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${submitQuery}`
     if (submitToEditOffence && !invalidatedFrom) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     }
 
     return res.render('pages/offence/fine-amount', {
@@ -1166,6 +1169,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceFineAmountForm,
       chargeUuid,
       backLink,
+      submitToEditOffence,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       submitQuery,
@@ -1201,7 +1205,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     return this.determineSentenceServeType(
@@ -1250,6 +1254,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       offenceAlternativeSentenceLengthForm,
+      submitToEditOffence,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${submitQuery}`,
@@ -1309,7 +1314,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (submitToEditOffence) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     return this.determineSentenceServeType(
@@ -1372,7 +1377,7 @@ export default class OffenceRoutes extends BaseRoutes {
     if (invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
     } else if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     } else if (sentence?.sentenceTypeClassification === 'FINE') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/fine-amount`
     } else if (expectedPeriodLengthsSize) {
@@ -1392,6 +1397,7 @@ export default class OffenceRoutes extends BaseRoutes {
         sentenceServeType === 'FORTHWITH' || (!forthwithAlreadySelected && !sentenceConsecutiveToAnotherCase),
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       sentenceServeType,
+      submitToEditOffence,
       submitQuery,
       backLink,
     })
@@ -1460,7 +1466,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
       // Go back to edit screen as fallback
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
 
@@ -1507,7 +1513,7 @@ export default class OffenceRoutes extends BaseRoutes {
     if (invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     } else if (submitToEditOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     }
 
     return res.render('pages/offence/offence-conviction-date', {
@@ -1520,6 +1526,7 @@ export default class OffenceRoutes extends BaseRoutes {
       convictionDateDay,
       convictionDateMonth,
       convictionDateYear,
+      submitToEditOffence,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       submitQuery,
@@ -1580,7 +1587,7 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     return res.redirect(
@@ -1952,7 +1959,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
     )
   }
 
@@ -1965,7 +1972,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-
+    const submitToEditOffence = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const courtCodes = []
     const offenceCodes = [offence.offenceCode]
@@ -2045,6 +2052,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } else if (offence.sentence?.consecutiveToSentenceReference) {
       consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
     }
+    console.log('submitToEditOffence', submitToEditOffence)
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,
@@ -2060,6 +2068,7 @@ export default class OffenceRoutes extends BaseRoutes {
       periodLengthTypeHeadings,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       consecutiveToDetails,
+      submitToEditOffence,
       periodLengths: periodLengths.sort(
         (a, b) =>
           (PERIOD_TYPE_PRIORITY[a.type] ?? PERIOD_TYPE_PRIORITY.UNSUPPORTED) -

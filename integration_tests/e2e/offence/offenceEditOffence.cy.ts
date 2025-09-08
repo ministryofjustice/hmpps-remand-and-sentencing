@@ -109,7 +109,11 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('caption should not show up for edit offence', () => {
-      offenceEditOffencePage.captionText().should('not.exist')
+      offenceEditOffencePage
+        .captionText()
+        .invoke('text')
+        .then(text => text.trim())
+        .should('equal', '')
     })
   })
 

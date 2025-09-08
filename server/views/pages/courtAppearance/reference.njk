@@ -11,9 +11,7 @@
     {{ super() }}
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-reference{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% if addOrEditCourtAppearance == 'add-court-appearance' %}
                   {% include "../../partials/appearanceCaption.njk" %}
-                {% endif %}
                 {{ govukInput({
                     label: {
                         text: "Enter the case reference" if isAddCourtAppearance else "Edit case reference",

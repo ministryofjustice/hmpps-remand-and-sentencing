@@ -262,7 +262,11 @@ context('Court Case Warrant Date Page', () => {
       const courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       editWarrantDate(courtCaseAppearanceDetailsPage)
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-      courtCaseWarrantDatePage.captionText().should('not.exist')
+      courtCaseWarrantDatePage
+        .captionText()
+        .invoke('text')
+        .then(text => text.trim())
+        .should('equal', '')
     })
   })
   context('Tests for editing via check-your-answers whilst in the add journey', () => {

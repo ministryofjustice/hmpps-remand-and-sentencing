@@ -9,7 +9,7 @@
     {{ super() }}
     <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-warrant-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        {% include "../../partials/appearanceCaption.njk" %}
+          {% include "../../partials/appearanceCaption.njk" %}
         {{ govukDateInput({
             id: "warrant-date",
             namePrefix: "warrantDate",

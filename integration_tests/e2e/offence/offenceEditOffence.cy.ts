@@ -107,6 +107,14 @@ context('Add Offence Edit offence Page', () => {
         Outcome: 'Remanded in custody',
       })
     })
+
+    it('caption should not show up for edit offence', () => {
+      offenceEditOffencePage
+        .captionText()
+        .invoke('text')
+        .then(text => text.trim())
+        .should('equal', '')
+    })
   })
 
   context('sentence', () => {

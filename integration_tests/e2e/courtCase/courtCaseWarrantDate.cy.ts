@@ -100,6 +100,14 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage.continueButton().click()
       Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
     })
+
+    it('caption should only be shown for add court appearance journey', () => {
+      courtCaseWarrantDatePage
+        .captionText()
+        .invoke('text')
+        .then(text => text.trim())
+        .should('equal', 'Add appearance information')
+    })
   })
 
   context('Edit court case and add appearance journey', () => {
@@ -237,6 +245,28 @@ context('Court Case Warrant Date Page', () => {
       expectHearingDateError(courtCaseWarrantDatePage)
       enterWarrantDate(courtCaseWarrantDatePage, '14', '12', '2024')
       Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+    })
+
+    it('caption should not be shown for edit court appearance journey', () => {
+      const startPage = Page.verifyOnPage(StartPage)
+      startPage.editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
+      const courtCaseDetailsPage = Page.verifyOnPageTitle(
+        CourtCaseDetailsPage,
+        'Appearances for C894623 at Accrington Youth Court',
+      )
+
+      courtCaseDetailsPage
+        .editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
+        .click()
+
+      const courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      editWarrantDate(courtCaseAppearanceDetailsPage)
+      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage
+        .captionText()
+        .invoke('text')
+        .then(text => text.trim())
+        .should('equal', '')
     })
   })
   context('Tests for editing via check-your-answers whilst in the add journey', () => {

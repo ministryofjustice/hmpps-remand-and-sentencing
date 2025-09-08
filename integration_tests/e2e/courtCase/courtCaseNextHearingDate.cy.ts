@@ -67,4 +67,12 @@ context('Next hearing date page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem The next court appearance must be within 1 year of today’s date')
   })
+
+  it('caption should only be shown for add next court appearance journey', () => {
+    courtCaseNextHearingDatePage
+      .captionText()
+      .invoke('text')
+      .then(text => text.trim())
+      .should('equal', 'Add next court appearance')
+  })
 })

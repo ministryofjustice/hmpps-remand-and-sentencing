@@ -1319,9 +1319,9 @@ export default class CourtAppearanceService {
 
   private resetChain(deletedSentenceReference: string, courtAppearance: CourtAppearance) {
     const { offences } = courtAppearance
-    const nextSentencesInChainIndexes = offences
-      .filter(offence => offence.sentence?.consecutiveToSentenceReference === deletedSentenceReference)
-      .map((_, index) => index)
+    const nextSentencesInChainIndexes = offences.flatMap((offence, index) =>
+      offence.sentence?.consecutiveToSentenceReference === deletedSentenceReference ? index : [],
+    )
     while (nextSentencesInChainIndexes.length) {
       const nextChainIndex = nextSentencesInChainIndexes.pop()
       const nextChainOffence = courtAppearance.offences[nextChainIndex]
@@ -1334,12 +1334,16 @@ export default class CourtAppearanceService {
       nextChainOffence.sentence = sentence
       offences[nextChainIndex] = nextChainOffence
       offences
-        .filter(
-          (offence, index) =>
+        .flatMap((offence, index) => {
+          if (
             offence.sentence?.consecutiveToSentenceReference === nextSentenceInChainSentenceReference &&
-            !nextSentencesInChainIndexes.includes(index),
-        )
-        .forEach((_, index) => nextSentencesInChainIndexes.push(index))
+            !nextSentencesInChainIndexes.includes(index)
+          ) {
+            return index
+          }
+          return []
+        })
+        .forEach(index => nextSentencesInChainIndexes.push(index))
     }
   }
 

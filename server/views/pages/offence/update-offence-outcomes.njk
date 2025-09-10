@@ -182,7 +182,7 @@
                 }) }}
     {% endfor %}
 
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-update-offence-outcomes">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-update-offence-outcomes" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {{ govukRadios({
                         name: "finishedReviewOffenceOutcomes",

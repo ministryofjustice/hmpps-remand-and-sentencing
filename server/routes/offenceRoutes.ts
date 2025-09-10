@@ -1605,17 +1605,20 @@ export default class OffenceRoutes extends BaseRoutes {
   }
 
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
+    console.log(' 1 getCheckOffenceAnswers')
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
       appearanceReference,
     )
+    console.log(' 2getCheckOffenceAnswers')
     const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(
       req,
       nomsId,
       appearanceReference,
     )
+    console.log(' 3 getCheckOffenceAnswers')
     const sentenceTypeIds = Array.from(
       new Set(
         courtAppearance.offences
@@ -1623,6 +1626,7 @@ export default class OffenceRoutes extends BaseRoutes {
           .map(offence => offence.sentence?.sentenceTypeId),
       ),
     )
+    console.log(' 4 getCheckOffenceAnswers')
     const offenceCodes = Array.from(
       new Set(
         courtAppearance.offences
@@ -1630,10 +1634,12 @@ export default class OffenceRoutes extends BaseRoutes {
           .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
       ),
     )
+    console.log(' 5 getCheckOffenceAnswers')
     const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
     const courtIds = Array.from(
       new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
     )
+    console.log(' 6 getCheckOffenceAnswers')
     const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
         offenceCodes,
@@ -1644,10 +1650,12 @@ export default class OffenceRoutes extends BaseRoutes {
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
+    console.log(' 7 getCheckOffenceAnswers')
 
     const offences = courtAppearance.offences.map((offence, index) => {
       return { ...offence, index }
     })
+    console.log(' 8 getCheckOffenceAnswers')
 
     const [custodialOffences, nonCustodialOffences] = offences.reduce(
       ([custodialList, nonCustodialList], offence, index) => {
@@ -1666,6 +1674,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
+    console.log(' 9 getCheckOffenceAnswers')
     // TODO this is now mapped by uuid - check njk usage
     const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
       req,
@@ -1673,6 +1682,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
       appearanceReference,
     )
+    console.log(' 10 getCheckOffenceAnswers')
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,

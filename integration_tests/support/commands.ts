@@ -496,7 +496,14 @@ Cypress.Commands.add(
     offenceSentenceServeTypePage.radioLabelSelector('CONSECUTIVE').click()
     offenceSentenceServeTypePage.continueButton().click()
     const sentenceSentenceConsecutiveToPage = Page.verifyOnPage(SentenceSentenceConsecutiveToPage)
-    sentenceSentenceConsecutiveToPage.radioLabelSelector(consecutiveToSelect).click()
+    // sentenceSentenceConsecutiveToPage.radioLabelSelector(consecutiveToSelect).click()
+    // TODO
+    cy.contains('h2', 'Sentences on this case')
+      .nextAll('.govuk-radios__item')
+      .first()
+      .find('input[type="radio"]')
+      .check()
+
     sentenceSentenceConsecutiveToPage.continueButton().click()
   },
 )

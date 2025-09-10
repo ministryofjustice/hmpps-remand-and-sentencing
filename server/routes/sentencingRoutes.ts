@@ -593,6 +593,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    console.log('1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     const { submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const sentenceConsecutiveToForm = trimForm<SentenceConsecutiveToForm>(req.body)
@@ -605,6 +606,7 @@ export default class SentencingRoutes extends BaseRoutes {
       this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference),
       req.user.username,
     )
+    console.log('2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
 
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -613,11 +615,13 @@ export default class SentencingRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${chargeUuid}/sentence-consecutive-to${submitQuery}`,
       )
     }
+    console.log('3 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
+    console.log('4 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     return this.saveSessionOffenceInAppearance(
       req,
       res,

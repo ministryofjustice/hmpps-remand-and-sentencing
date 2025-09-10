@@ -64,18 +64,21 @@ export default abstract class BaseRoutes {
     appearanceReference: string,
     chargeUuid: string,
   ) {
+    console.log('5 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (offence.onFinishGoToEdit) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
+    console.log('6 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
     }
+    console.log('7 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
@@ -87,26 +90,38 @@ export default abstract class BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
+    console.log('8 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     if (warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
       )
     }
+    console.log('9 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
   }
 
+  // TODO Get consecutive to's where in the DB I think  - better name ??getSessionConsecutiveToSentenceDetailsFromDB
   protected async getSessionConsecutiveToSentenceDetails(
     req,
     nomsId: string,
     appearanceReference: string,
   ): Promise<SentenceConsecutiveToDetailsResponse> {
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const consecutiveToSentenceUuids = appearance.offences
-      .map(offence => offence.sentence?.consecutiveToSentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    return this.remandAndSentencingService.getConsecutiveToDetails(consecutiveToSentenceUuids, req.user.username)
+
+    const sentenceUuidsInSession = appearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
+    const consecutiveToSentenceUuidsNotInSession = appearance.offences
+      .filter(
+        o =>
+          o.sentence?.consecutiveToSentenceUuid &&
+          !sentenceUuidsInSession.some(uuid => uuid === o.sentence?.consecutiveToSentenceUuid),
+      )
+      .map(o => o.sentence?.consecutiveToSentenceUuid)
+    return this.remandAndSentencingService.getConsecutiveToDetails(
+      consecutiveToSentenceUuidsNotInSession,
+      req.user.username,
+    )
   }
 
   protected getConsecutiveToSentenceDetailsMap(

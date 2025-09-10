@@ -25,7 +25,6 @@ import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConv
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
-import OffenceSentenceLengthMismatchPage from '../../pages/offenceSentenceLengthMismatchPage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 
@@ -477,9 +476,6 @@ context('New Court Case journey', () => {
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
-
-    const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
-    offenceSentenceLengthMismatchPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage

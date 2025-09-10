@@ -16,6 +16,7 @@ import {
   DraftCreateCourtCase,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
+  LatestOffenceDate,
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
   OffenceOutcome,
@@ -426,15 +427,14 @@ export default class RemandAndSentencingApiClient extends RestClient {
     courtCaseUuid: string,
     username: string,
     appearanceUuidToExclude?: string,
-  ): Promise<string | null> {
+  ): Promise<LatestOffenceDate> {
     const query = appearanceUuidToExclude ? `?appearanceUuidToExclude=${appearanceUuidToExclude}` : ''
-    const result = await this.get<string>(
+    return this.get<LatestOffenceDate>(
       {
         path: `/court-case/${courtCaseUuid}/latest-offence-date${query}`,
       },
       asSystem(username),
     )
-    return result ?? null
   }
 
   async hasSentenceAfterOnOtherCourtAppearance(

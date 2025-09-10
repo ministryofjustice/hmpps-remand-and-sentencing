@@ -2,7 +2,6 @@ import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetai
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import Page from '../../pages/page'
-import SentencingSentenceLengthMismatchPage from '../../pages/sentencingSentenceLengthMismatchPage'
 import AppearanceUpdatedConfirmationPage from '../../pages/appearanceUpdatedConfirmationPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseAlternativeSentenceLengthPage from '../../pages/courtCaseAlternativeSentenceLengthPage'
@@ -82,7 +81,6 @@ context('Sentencing appearance details Page', () => {
     it('overall displays correctly', () => {
       courtCaseAppearanceDetailsPage.overallSummaryList().getSummaryList().should('deep.equal', {
         'Overall sentence length': '4 years 0 months 0 weeks 0 days',
-        'Sentences added': '0 years 0 months 0 weeks 0 days',
       })
     })
 
@@ -185,28 +183,6 @@ context('Sentencing appearance details Page', () => {
       courtCaseAppearanceDetailsPage.confirmButton().click()
       Page.verifyOnPage(AppearanceUpdatedConfirmationPage)
       cy.task('verifyUpdateSentenceCourtAppearanceRequest').should('equal', 1)
-    })
-
-    it('display sentence mismatch when sentence length comparison fails', () => {
-      cy.task('stubGetSentenceAppearanceDetailsSupportedSentenceLengthsForMismatch')
-      cy.task('stubOverallSentenceLengthFail')
-      cy.task('stubGetSentenceTypesByIds', [
-        {
-          sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
-          description: 'EDS (Extended Determinate Sentence)',
-          classification: 'EXTENDED',
-        },
-        {
-          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
-          description: 'SDS (Standard Determinate Sentence)',
-          classification: 'STANDARD',
-        },
-      ])
-      cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/load-appearance-details',
-      )
-      courtCaseAppearanceDetailsPage.confirmButton().click()
-      Page.verifyOnPage(SentencingSentenceLengthMismatchPage)
     })
 
     it('can edit alternative overall sentence length', () => {

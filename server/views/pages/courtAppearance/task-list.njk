@@ -41,7 +41,7 @@
                 not be able to return to this page, but can edit the details in the Court cases tab.</p>
             <div class="govuk-button-group">
                 <form method="post"
-                      action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-task-list">
+                      action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-task-list" autocomplete="off">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                     {{ govukButton({
                         text: "Finish and save",
@@ -54,7 +54,7 @@
                 </form>
                 {% if featureToggles.saveDraftEnabled %}
                     <form method="post"
-                          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft">
+                          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-draft" autocomplete="off">
                         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                         {{ govukButton({
                             text: "Save and come back later",

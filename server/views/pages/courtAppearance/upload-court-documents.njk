@@ -7,7 +7,7 @@
 
 {% block pageContent %}
 <div class="govuk-!-margin-right-8">
-<form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-upload-court-documents">
+<form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-upload-court-documents" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       {% if addOrEditCourtAppearance == 'edit-court-appearance' %}
         <h1 class="govuk-heading-l">Manage court documents</h1>

@@ -5,7 +5,7 @@
 {% set pageTitle = applicationName + " - Is sentence consecutive to" %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ chargeUuid }}/submit-is-sentence-consecutive-to{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/offences/{{ chargeUuid }}/submit-is-sentence-consecutive-to{{ "?submitToEditOffence=true" if submitToEditOffence }}" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 

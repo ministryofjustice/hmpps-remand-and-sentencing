@@ -7,7 +7,7 @@
 
 {% block pageContent %}
 <div class="govuk-!-margin-right-8">
- <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-upload-court-documents">
+ <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-upload-court-documents" autocomplete="off">
 {% if addOrEditCourtAppearance == 'edit-court-appearance' %}
   <h1 class="govuk-heading-l">Manage court documents</h1>
 {% else %}

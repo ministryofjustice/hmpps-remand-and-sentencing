@@ -50,7 +50,7 @@
 
         {% if offences.length > 0 %}
             <div class="govuk-button-group govuk-!-margin-top-8">
-                <form method="post">
+                <form method="post" autocomplete="off">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                     {{ govukRadios({
                         id: "finishedAddingOffences",

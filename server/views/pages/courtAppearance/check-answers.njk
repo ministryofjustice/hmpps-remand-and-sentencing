@@ -118,7 +118,7 @@
                 rows: checkAnswersRows
             }) }}
 
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {{ govukButton({
                     text: "Confirm and continue",

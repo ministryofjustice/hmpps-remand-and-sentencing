@@ -7,7 +7,7 @@
 {% set pageTitle = applicationName + " - Add a court case Warrant Date" %}
 
 {% block pageContent %}
-            <form method="post">
+            <form method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 

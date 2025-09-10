@@ -38,4 +38,12 @@ context('Court Case Reference Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem Case references should include at least one number')
   })
+
+  it('caption should only be shown for add court appearance journey', () => {
+    courtCaseReferencePage
+      .captionText()
+      .invoke('text')
+      .then(text => text.trim())
+      .should('equal', 'Add appearance information')
+  })
 })

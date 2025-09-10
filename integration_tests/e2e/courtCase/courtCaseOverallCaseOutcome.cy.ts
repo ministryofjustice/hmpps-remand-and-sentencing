@@ -51,4 +51,12 @@ context('Court Case Overall Case Outcome Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem You cannot submit after confirming appearance information')
   })
+
+  it('caption should only be shown for add court case journey', () => {
+    courtCaseOverallCaseOutcomePage
+      .captionText()
+      .invoke('text')
+      .then(text => text.trim())
+      .should('equal', 'Add appearance information')
+  })
 })

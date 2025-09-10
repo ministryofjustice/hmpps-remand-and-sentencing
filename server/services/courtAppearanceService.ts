@@ -1316,11 +1316,12 @@ export default class CourtAppearanceService {
 
   private resetChain(deletedSentenceReference: string, courtAppearance: CourtAppearance) {
     const { offences } = courtAppearance
-    let nextSentenceInChainIndex = offences.findIndex(
-      offence => offence.sentence?.consecutiveToSentenceReference === deletedSentenceReference,
+    const nextSentencesInChainIndexes = offences.flatMap((offence, index) =>
+      offence.sentence?.consecutiveToSentenceReference === deletedSentenceReference ? index : [],
     )
-    while (nextSentenceInChainIndex !== -1) {
-      const nextChainOffence = courtAppearance.offences[nextSentenceInChainIndex]
+    while (nextSentencesInChainIndexes.length) {
+      const nextChainIndex = nextSentencesInChainIndexes.pop()
+      const nextChainOffence = courtAppearance.offences[nextChainIndex]
       const { sentence } = nextChainOffence
       const nextSentenceInChainSentenceReference = sentence.sentenceReference
       delete sentence.consecutiveToSentenceReference
@@ -1328,10 +1329,18 @@ export default class CourtAppearanceService {
       delete sentence.sentenceServeType
       delete sentence.isSentenceConsecutiveToAnotherCase
       nextChainOffence.sentence = sentence
-      offences[nextSentenceInChainIndex] = nextChainOffence
-      nextSentenceInChainIndex = offences.findIndex(
-        offence => offence.sentence?.consecutiveToSentenceReference === nextSentenceInChainSentenceReference,
-      )
+      offences[nextChainIndex] = nextChainOffence
+      offences
+        .flatMap((offence, index) => {
+          if (
+            offence.sentence?.consecutiveToSentenceReference === nextSentenceInChainSentenceReference &&
+            !nextSentencesInChainIndexes.includes(index)
+          ) {
+            return index
+          }
+          return []
+        })
+        .forEach(index => nextSentencesInChainIndexes.push(index))
     }
   }
 

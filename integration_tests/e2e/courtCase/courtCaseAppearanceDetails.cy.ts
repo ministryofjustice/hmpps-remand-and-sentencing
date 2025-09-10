@@ -113,7 +113,6 @@ context('Court Case Appearance details Page', () => {
         .click()
 
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
-      courtCaseReferencePage.captionText().contains('Add appearance information')
       courtCaseReferencePage.noCaseReferenceCheckbox().should('not.be.checked')
       courtCaseReferencePage.input().clear().type('T12345678')
       courtCaseReferencePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {

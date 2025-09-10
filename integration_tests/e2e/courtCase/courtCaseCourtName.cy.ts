@@ -42,4 +42,12 @@ context('Court Case Court Name Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem You must enter the court name')
   })
+
+  it('caption should only be shown for add court APPEARANCE journey', () => {
+    courtCaseCourtNamePage
+      .captionText()
+      .invoke('text')
+      .then(text => text.trim())
+      .should('equal', 'Add appearance information')
+  })
 })

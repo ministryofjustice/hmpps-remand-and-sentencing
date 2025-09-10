@@ -38,4 +38,11 @@ context('Add Offence Offence Code Page', () => {
       .trimTextContent()
       .should('equal', 'There is a problem You must enter the offence code')
   })
+  it('caption should show for adding an offence', () => {
+    offenceOffenceCodePage
+      .captionText()
+      .invoke('text')
+      .then(text => text.trim())
+      .should('equal', 'Add offences')
+  })
 })

@@ -74,7 +74,7 @@
                                                id="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}"
                                                name="consecutiveToSentenceUuid" type="radio"
                                                {% if sentenceConsecutiveToForm.consecutiveToSentenceUuid == sentence.sentenceUuid %}checked{% endif %}
-                                               value="{{ sentence.sentenceUuid }}|OTHER">
+                                               value="{{ sentence.sentenceUuid }}">
                                         <label class="govuk-label govuk-radios__label"
                                                for="consecutiveToSentenceUuid{{ '-' + radioIdIndex if radioIdIndex > 0 else '' }}">
                                             {% if sentence.countNumber and sentence.countNumber !== '-1' %}

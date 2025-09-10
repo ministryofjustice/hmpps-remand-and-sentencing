@@ -225,6 +225,7 @@ export default class RemandAndSentencingService {
     sentenceUuids: string[],
     username: string,
   ): Promise<SentenceConsecutiveToDetailsResponse> {
+    console.log(`ALL >>> = ${JSON.stringify(sentenceUuids.filter(sentenceUuid => sentenceUuid))}`)
     console.log(`length >>> = ${sentenceUuids.filter(sentenceUuid => sentenceUuid).length}`)
     return sentenceUuids.filter(sentenceUuid => sentenceUuid).length
       ? this.remandAndSentencingApiClient.consecutiveToDetails(sentenceUuids, username)

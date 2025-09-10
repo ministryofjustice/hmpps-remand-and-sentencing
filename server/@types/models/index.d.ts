@@ -67,8 +67,8 @@ declare module 'models' {
     legacyData?: SentenceLegacyData
     isSentenceConsecutiveToAnotherCase?: string
     consecutiveToSentenceUuid?: string
-    sentenceReference: string
-    consecutiveToSentenceReference?: string
+    // sentenceReference: string // TODO remove
+    // consecutiveToSentenceReference?: string // TODO remove
   }
 
   export interface SentenceLength {

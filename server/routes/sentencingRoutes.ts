@@ -31,6 +31,7 @@ import SameCaseSentenceToChainTo from './data/SameCaseSentenceToChainTo'
 import {
   AppearanceToChainTo,
   SentencesToChainToResponse,
+  SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class SentencingRoutes extends BaseRoutes {
@@ -579,8 +580,7 @@ export default class SentencingRoutes extends BaseRoutes {
           offenceEndDate: sessionOffence.offenceEndDate,
           offenceCode: sessionOffence.offenceCode,
           sentenceUuid: sessionOffence.sentence.sentenceUuid,
-          sentenceReference: sessionOffence.sentence.sentenceReference,
-        } as unknown as SameCaseSentenceToChainTo
+        } as unknown as SentenceToChainTo
       })
     const sentencedAppearancesOnOtherCases = this.getAppearancesToChainToOnOtherCases(
       courtAppearance,

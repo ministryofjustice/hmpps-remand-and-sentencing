@@ -1688,7 +1688,7 @@ export interface components {
     }
     CreateSentence: {
       /** Format: uuid */
-      sentenceUuid?: string
+      sentenceUuid: string
       chargeNumber?: string
       periodLengths: components['schemas']['CreatePeriodLength'][]
       sentenceServeType: string
@@ -1700,8 +1700,6 @@ export interface components {
       convictionDate?: string
       fineAmount?: components['schemas']['CreateFineAmount']
       prisonId?: string
-      sentenceReference: string
-      consecutiveToSentenceReference?: string
     }
     UploadedDocument: {
       /** Format: uuid */

@@ -40,7 +40,7 @@
                                 isSentenced: offence.sentence,
                                 periodLengths: offence.sentence.periodLengths,
                                 sentenceServeType: offence.sentence.sentenceServeType,
-                                consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
+                                consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence,
                                 sentenceType: sentenceType.description if sentenceType,
                                 fineAmount: offence.sentence.fineAmount
                             })

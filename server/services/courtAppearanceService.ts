@@ -1242,7 +1242,6 @@ export default class CourtAppearanceService {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
       sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
-      delete sentence.consecutiveToSentenceReference
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence
@@ -1258,7 +1257,6 @@ export default class CourtAppearanceService {
         sentenceReference: offenceReference.toString(),
         sentenceUuid: crypto.randomUUID(),
       }
-      delete sentence.consecutiveToSentenceReference
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence
@@ -1296,7 +1294,6 @@ export default class CourtAppearanceService {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
       sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
-      delete sentence.consecutiveToSentenceReference
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence

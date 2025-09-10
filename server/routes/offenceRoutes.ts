@@ -28,7 +28,6 @@ import ManageOffencesService from '../services/manageOffencesService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import {
-  offenceToConsecutiveToDetails,
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
@@ -975,7 +974,6 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const nextPeriodLengthType = getNextPeriodLengthType(
       this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference).sentence ?? {
-        sentenceReference: '',
         sentenceUuid: crypto.randomUUID(),
       },
       null,
@@ -1815,10 +1813,9 @@ export default class OffenceRoutes extends BaseRoutes {
       req.user.username,
     )
     let sessionConsecutiveTo
-    if (offence.sentence?.consecutiveToSentenceReference) {
+    if (offence.sentence?.sentenceUuid) {
       sessionConsecutiveTo = courtAppearance.offences.find(
-        appearanceOffence =>
-          appearanceOffence.sentence?.sentenceReference === offence.sentence?.consecutiveToSentenceReference,
+        appearanceOffence => appearanceOffence.sentence?.sentenceUuid === offence.sentence?.sentenceUuid,
       )
     }
 
@@ -1862,7 +1859,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let sessionConsecutiveToSentenceDetailsMap = {}
     if (sessionConsecutiveTo) {
       sessionConsecutiveToSentenceDetailsMap = {
-        [offence.sentence?.consecutiveToSentenceReference]: {
+        [offence.sentence?.consecutiveToSentenceUuid]: {
           countNumber: sessionConsecutiveTo.sentence.countNumber,
           offenceCode: sessionConsecutiveTo.offenceCode,
           offenceDescription: offenceMap[sessionConsecutiveTo.offenceCode],
@@ -1980,14 +1977,6 @@ export default class OffenceRoutes extends BaseRoutes {
       sentenceConsecutiveToDetails = consecutiveToDetails.sentences[0]
       courtCodes.push(sentenceConsecutiveToDetails.courtCode)
       offenceCodes.push(sentenceConsecutiveToDetails.offenceCode)
-    } else if (offence.sentence?.consecutiveToSentenceReference) {
-      consecutiveToOffence = this.courtAppearanceService.getOffenceBySentenceReference(
-        req.session,
-        nomsId,
-        offence.sentence.consecutiveToSentenceReference,
-        appearanceReference,
-      )
-      offenceCodes.push(consecutiveToOffence.offenceCode)
     }
     const [offenceMap, courtMap] = await Promise.all([
       await this.manageOffencesService.getOffenceMap(
@@ -2042,8 +2031,6 @@ export default class OffenceRoutes extends BaseRoutes {
         courtMap,
         false,
       )
-    } else if (offence.sentence?.consecutiveToSentenceReference) {
-      consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
     }
     return res.render('pages/offence/edit-offence', {
       nomsId,

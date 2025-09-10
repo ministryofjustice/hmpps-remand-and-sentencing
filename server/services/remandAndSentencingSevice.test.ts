@@ -21,7 +21,7 @@ describe('RemandAndSentencingService', () => {
   describe('validateConsecutiveLoops', () => {
     const sessionCourtAppearance = {
       appearanceUuid: 'app1',
-      offences: [{ sentence: { sentenceUuid: 'uuid-1', sentenceReference: 'ref-1' } }],
+      offences: [{ sentence: { sentenceUuid: 'uuid-1' } }],
     } as unknown as CourtAppearance
 
     it('Source sentence has not been added to sentences yet - no errors', async () => {

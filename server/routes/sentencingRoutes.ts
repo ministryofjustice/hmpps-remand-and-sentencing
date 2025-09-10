@@ -27,7 +27,6 @@ import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import SameCaseSentenceToChainTo from './data/SameCaseSentenceToChainTo'
 import {
   AppearanceToChainTo,
   SentencesToChainToResponse,

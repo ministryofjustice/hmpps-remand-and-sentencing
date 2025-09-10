@@ -25,7 +25,6 @@ describe('courtAppearanceService', () => {
       chargeUuid: '123',
       sentence: {
         sentenceUuid: '123',
-        sentenceReference: '0',
       },
     } as Offence
 

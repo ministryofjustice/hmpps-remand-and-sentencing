@@ -196,10 +196,10 @@ export const pagedAppearancePeriodLengthToSentenceLength = (
   return null
 }
 
-export const apiSentenceToSentence = (apiSentence: APISentence, index: number): Sentence => {
+export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
-    sentenceReference: index.toString(),
+    // sentenceReference: index.toString(),
     countNumber: apiSentence.chargeNumber,
     periodLengths: apiSentence.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
     sentenceServeType: apiSentence.sentenceServeType,
@@ -212,7 +212,7 @@ export const apiSentenceToSentence = (apiSentence: APISentence, index: number): 
   } as Sentence
 }
 
-export const chargeToOffence = (charge: Charge, index: number): Offence => {
+export const chargeToOffence = (charge: Charge): Offence => {
   return {
     offenceCode: charge.offenceCode,
     outcomeUuid: charge.outcome?.outcomeUuid,
@@ -220,28 +220,28 @@ export const chargeToOffence = (charge: Charge, index: number): Offence => {
     terrorRelated: charge.terrorRelated,
     ...(charge.offenceStartDate && { offenceStartDate: dayjs(charge.offenceStartDate).toDate() }),
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
-    ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence, index) }),
+    ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
     ...(charge.mergedFromCase && { mergedFromCase: charge.mergedFromCase }),
   } as Offence
 }
 
-export const pagedChargeToOffence = (pagedCharge: PagedCharge, index: number): Offence => {
+export const pagedChargeToOffence = (pagedCharge: PagedCharge): Offence => {
   return {
     offenceCode: pagedCharge.offenceCode,
     outcomeUuid: pagedCharge.outcome?.outcomeUuid,
     ...(pagedCharge.offenceStartDate && { offenceStartDate: dayjs(pagedCharge.offenceStartDate).toDate() }),
     ...(pagedCharge.offenceEndDate && { offenceEndDate: dayjs(pagedCharge.offenceEndDate).toDate() }),
     ...(pagedCharge.legacyData && { legacyData: { ...pagedCharge.legacyData } }),
-    ...(pagedCharge.sentence && { sentence: pagedSentenceToSentence(pagedCharge.sentence, index) }),
+    ...(pagedCharge.sentence && { sentence: pagedSentenceToSentence(pagedCharge.sentence) }),
     ...(pagedCharge.mergedFromCase && { mergedFromCase: pagedCharge.mergedFromCase }),
   } as Offence
 }
 
-export const pagedSentenceToSentence = (pagedSentence: PagedSentence, index: number): Sentence => {
+export const pagedSentenceToSentence = (pagedSentence: PagedSentence): Sentence => {
   return {
     sentenceUuid: pagedSentence.sentenceUuid,
-    sentenceReference: index.toString(),
+    // sentenceReference: index.toString(),
     countNumber: pagedSentence.chargeNumber,
     periodLengths: pagedSentence.periodLengths.map(periodLength =>
       pagedSentencePeriodLengthToSentenceLength(periodLength),

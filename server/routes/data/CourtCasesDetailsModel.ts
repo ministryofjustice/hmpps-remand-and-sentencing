@@ -100,7 +100,8 @@ export default class CourtCasesDetailsModel {
         return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
       })
       .slice(0, 6)
-    this.offences = orderOffences(charges?.map((charge, index) => pagedChargeToOffence(charge, index)))
+    // TODO test if removing index works
+    this.offences = orderOffences(charges?.map(charge => pagedChargeToOffence(charge)))
     this.sentenceTypeMap = Object.fromEntries(
       charges
         ?.filter(charge => charge.sentence?.sentenceType)

@@ -85,7 +85,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Add next court appearance',
+          name: 'Next court appearance',
           status: 'Cannot start yet',
         },
         {
@@ -147,8 +147,8 @@ context('New Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Add next court appearance',
-          status: 'Optional',
+          name: 'Next court appearance',
+          status: 'Incomplete',
         },
         {
           name: 'Upload court documents',
@@ -201,8 +201,8 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add next court appearance',
-          status: 'Optional',
+          name: 'Next court appearance',
+          status: 'Incomplete',
         },
         {
           name: 'Upload court documents',
@@ -255,7 +255,7 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add next court appearance',
+          name: 'Next court appearance',
           status: 'Completed',
         },
         {

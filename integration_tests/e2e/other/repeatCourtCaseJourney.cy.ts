@@ -87,7 +87,7 @@ context('Repeat Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Add next court appearance',
+          name: 'Next court appearance',
           status: 'Cannot start yet',
         },
         {
@@ -150,8 +150,8 @@ context('Repeat Court Case journey', () => {
           status: 'Optional',
         },
         {
-          name: 'Add next court appearance',
-          status: 'Optional',
+          name: 'Next court appearance',
+          status: 'Incomplete',
         },
         {
           name: 'Upload court documents',
@@ -194,8 +194,8 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add next court appearance',
-          status: 'Optional',
+          name: 'Next court appearance',
+          status: 'Incomplete',
         },
         {
           name: 'Upload court documents',
@@ -240,7 +240,7 @@ context('Repeat Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add next court appearance',
+          name: 'Next court appearance',
           status: 'Completed',
         },
         {

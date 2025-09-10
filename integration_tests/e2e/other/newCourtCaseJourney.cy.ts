@@ -209,7 +209,7 @@ context('New Court Case journey', () => {
           status: 'Optional',
         },
       ])
-    courtCaseTaskListPage.addNextCourtAppearanceLink().click()
+    courtCaseTaskListPage.nextCourtAppearanceLink().click()
 
     const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
     courtCaseNextHearingSetPage.radioLabelSelector('true').click()

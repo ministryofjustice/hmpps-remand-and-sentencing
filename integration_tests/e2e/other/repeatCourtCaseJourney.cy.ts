@@ -203,7 +203,7 @@ context('Repeat Court Case journey', () => {
         },
       ])
 
-    courtCaseTaskListPage.addNextCourtAppearanceLink().click()
+    courtCaseTaskListPage.nextCourtAppearanceLink().click()
 
     const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
     courtCaseNextHearingSetPage.radioLabelSelector('true').click()

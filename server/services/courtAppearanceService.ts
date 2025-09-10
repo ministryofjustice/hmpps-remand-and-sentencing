@@ -969,6 +969,16 @@ export default class CourtAppearanceService {
     return courtAppearance.offences.find(offence => offence.chargeUuid === chargeUuid)
   }
 
+  getSessionOffenceBySentenceUuid(
+    session: Partial<SessionData>,
+    nomsId: string,
+    sentenceUuid: string,
+    appearanceUuid: string,
+  ): Offence {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    return courtAppearance.offences.find(offence => offence.sentence?.sentenceUuid === sentenceUuid)
+  }
+
   getCountNumbers(
     session: Partial<SessionData>,
     nomsId: string,
@@ -1237,10 +1247,10 @@ export default class CourtAppearanceService {
     }
   }
 
-
   // TODO not sure if this will still work. may rely on order of sentenceRefs
   private resetChain(deletedSentenceUuid: string, courtAppearance: CourtAppearance) {
     const { offences } = courtAppearance
+    // TODO what does index do here
     const nextSentencesInChainIndexes = offences.flatMap((offence, index) =>
       offence.sentence?.consecutiveToSentenceUuid === deletedSentenceUuid ? index : [],
     )
@@ -1249,7 +1259,6 @@ export default class CourtAppearanceService {
       const nextChainOffence = courtAppearance.offences[nextChainIndex]
       const { sentence } = nextChainOffence
       const nextSentenceInChainUuid = sentence.sentenceUuid
-      delete sentence.consecutiveToSentenceUuid
       delete sentence.consecutiveToSentenceUuid
       delete sentence.sentenceServeType
       delete sentence.isSentenceConsecutiveToAnotherCase

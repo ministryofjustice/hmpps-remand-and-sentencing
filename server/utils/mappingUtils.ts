@@ -53,7 +53,7 @@ export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): 
       sentenceTypeId: sentence.sentenceTypeId,
       prisonId,
       sentenceUuid: sentence.sentenceUuid, // TODO check this is always populated
-      consecutiveToSentenceUuid: sentence.consecutiveToSentenceUuid, // TODO check this is populated correctly
+      consecutiveToSentenceUuid: sentence.consecutiveToSentenceUuid ?? undefined, // TODO check this is populated correctly
       // TODO remove
       // sentenceReference: sentence.sentenceReference,
       // consecutiveToSentenceReference: sentence.consecutiveToSentenceReference,
@@ -205,7 +205,7 @@ export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     sentenceServeType: apiSentence.sentenceServeType,
     sentenceTypeId: apiSentence.sentenceType?.sentenceTypeUuid,
     sentenceTypeClassification: apiSentence.sentenceType?.classification,
-    consecutiveToSentenceUuid: apiSentence.consecutiveToSentenceUuid,
+    consecutiveToSentenceUuid: apiSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: apiSentence.fineAmount?.fineAmount,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
     ...(apiSentence.legacyData && { legacyData: { ...apiSentence.legacyData } }),
@@ -249,7 +249,7 @@ export const pagedSentenceToSentence = (pagedSentence: PagedSentence): Sentence 
     sentenceServeType: pagedSentence.sentenceServeType,
     sentenceTypeId: pagedSentence.sentenceType?.sentenceTypeUuid,
     sentenceTypeClassification: pagedSentence.sentenceType?.classification,
-    consecutiveToSentenceUuid: pagedSentence.consecutiveToSentenceUuid,
+    consecutiveToSentenceUuid: pagedSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: pagedSentence.fineAmount,
     ...(pagedSentence.convictionDate && { convictionDate: dayjs(pagedSentence.convictionDate).toDate() }),
     ...(pagedSentence.legacyData && { legacyData: { ...pagedSentence.legacyData } }),
@@ -493,6 +493,7 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
   courtMap: { [key: string]: string },
   isInSameAppearance: boolean,
 ): ConsecutiveToDetails {
+  console.log(`1 sentenceConsecutiveToDetailsToConsecutiveToDetails ${JSON.stringify(sentenceConsecutiveToDetails)}`)
   let consecutiveToDetailsEntry = {
     countNumber: sentenceConsecutiveToDetails.countNumber,
     offenceCode: sentenceConsecutiveToDetails.offenceCode,
@@ -505,7 +506,9 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
       sentenceConsecutiveToDetails.offenceEndDate &&
       dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
   } as ConsecutiveToDetails
+  console.log('2 sentenceConsecutiveToDetailsToConsecutiveToDetails')
   if (isInSameAppearance) {
+    console.log('2.1 sentenceConsecutiveToDetailsToConsecutiveToDetails')
     consecutiveToDetailsEntry = {
       countNumber: sentenceConsecutiveToDetails.countNumber,
       offenceCode: sentenceConsecutiveToDetails.offenceCode,
@@ -516,5 +519,6 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
         dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
     }
   }
+  console.log('3 sentenceConsecutiveToDetailsToConsecutiveToDetails')
   return consecutiveToDetailsEntry
 }

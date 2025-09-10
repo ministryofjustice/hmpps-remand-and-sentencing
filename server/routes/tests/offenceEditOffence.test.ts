@@ -21,6 +21,7 @@ describe('GET Edit offence', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
       warrantType: 'REMAND',
+      offences: [],
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/edit-offence')
@@ -48,6 +49,7 @@ describe('GET Edit offence', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
       warrantType: 'SENTENCING',
+      offences: [],
     })
     defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
       sentenceTypeUuid: '56',
@@ -75,6 +77,7 @@ describe('GET Edit offence', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
       warrantType: 'SENTENCING',
+      offences: [],
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
@@ -100,6 +103,11 @@ describe('GET Edit offence', () => {
       description: 'SDS',
       classification: 'STANDARD',
       displayOrder: 10,
+    })
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+      offences: [],
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
@@ -143,6 +151,11 @@ describe('GET Edit offence', () => {
     })
     defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
       ACCRYC: 'Court description',
+    })
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+      offences: [],
     })
 
     return request(app)

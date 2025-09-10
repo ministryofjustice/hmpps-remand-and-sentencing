@@ -141,14 +141,13 @@ export default abstract class BaseRoutes {
     const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     return Object.fromEntries(
       offences
-        .filter(offence => offence.sentence?.consecutiveToSentenceReference)
+        .filter(offence => offence.sentence?.consecutiveToSentenceUuid)
         .map(consecutiveOffence => {
           const consecutiveToOffence = offences.find(
-            offence =>
-              offence.sentence?.sentenceReference === consecutiveOffence.sentence.consecutiveToSentenceReference,
+            offence => offence.sentence?.sentenceUuid === consecutiveOffence.sentence.consecutiveToSentenceUuid,
           )
           return [
-            consecutiveOffence.sentence.consecutiveToSentenceReference,
+            consecutiveOffence.sentence.consecutiveToSentenceUuid,
             offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap),
           ]
         }),

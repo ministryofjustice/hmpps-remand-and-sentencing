@@ -298,7 +298,7 @@ export default class RemandAndSentencingService {
       .map(offence => {
         return {
           sentenceUuid: offence.sentence.sentenceUuid,
-          consecutiveToSentenceUuid: offence.sentence.consecutiveToSentenceUuid,
+          consecutiveToSentenceUuid: offence.sentence.consecutiveToSentenceUuid || undefined,
         } as SentenceDetailsForConsecValidation
       })
 

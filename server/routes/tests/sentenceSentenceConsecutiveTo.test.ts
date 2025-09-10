@@ -25,7 +25,6 @@ describe('GET Sentence consecutive to', () => {
           offenceCode: 'BB6557',
           sentence: {
             sentenceUuid: '3',
-            sentenceReference: '1',
           },
         },
       ],
@@ -35,7 +34,6 @@ describe('GET Sentence consecutive to', () => {
       offenceCode: 'CC12345',
       sentence: {
         sentenceUuid: '2',
-        sentenceReference: '0',
       },
     })
     defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({

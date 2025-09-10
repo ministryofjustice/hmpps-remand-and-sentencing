@@ -1666,6 +1666,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
+    // TODO this is now mapped by uuid - check njk usage
     const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
       req,
       nomsId,
@@ -2233,6 +2234,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
+    // TODO this is now mapped by uuid - check njk usage
     const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
       req,
       nomsId,

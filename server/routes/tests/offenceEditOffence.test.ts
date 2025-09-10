@@ -41,7 +41,6 @@ describe('GET Edit offence', () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
       sentence: {
-        sentenceReference: '111-222-333',
         sentenceUuid: '111-222-333',
         sentenceTypeId: '56',
       },
@@ -70,7 +69,6 @@ describe('GET Edit offence', () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
       sentence: {
-        sentenceReference: '111-222-333',
         sentenceUuid: '111-222-333',
       },
     })
@@ -92,7 +90,6 @@ describe('GET Edit offence', () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
       sentence: {
-        sentenceReference: '111-222-333',
         sentenceUuid: '111-222-333',
         sentenceTypeId: '56',
         sentenceServeType: 'CONSECUTIVE',
@@ -118,7 +115,6 @@ describe('GET Edit offence', () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
       sentence: {
-        sentenceReference: '111-222-333',
         sentenceUuid: '111-222-333',
         sentenceTypeId: '56',
         sentenceServeType: 'CONSECUTIVE',

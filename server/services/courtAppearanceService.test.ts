@@ -18,6 +18,7 @@ describe('courtAppearanceService', () => {
     service = new CourtAppearanceService(remandAndSentencingService, documentManagementService)
   })
 
+  // TODO add a few more tests for this
   it('must reset chain when multiple sentences are consecutive to same sentence', () => {
     const nomsId = 'P123'
     const toBeDeletedOffence = {
@@ -32,21 +33,19 @@ describe('courtAppearanceService', () => {
       chargeUuid: '456',
       sentence: {
         sentenceUuid: '456',
-        sentenceReference: '1',
-        consecutiveToSentenceReference: '0',
+        consecutiveToSentenceUuid: '123',
       },
     } as Offence
     const secondConsecutiveTo = {
       chargeUuid: '789',
       sentence: {
         sentenceUuid: '789',
-        sentenceReference: '2',
-        consecutiveToSentenceReference: '0',
+        consecutiveToSentenceUuid: '123',
       },
     } as Offence
     const courtAppearance = {
       appearanceUuid: '1234567',
-      offences: [toBeDeletedOffence, firstConsecutiveTo, secondConsecutiveTo],
+      offences: [firstConsecutiveTo, secondConsecutiveTo, toBeDeletedOffence],
     } as CourtAppearance
     const session = {
       courtAppearances: {
@@ -54,7 +53,7 @@ describe('courtAppearanceService', () => {
       },
     } as unknown as Partial<SessionData>
     service.deleteSentenceInChain(session, nomsId, toBeDeletedOffence.chargeUuid, courtAppearance.appearanceUuid)
-    expect(firstConsecutiveTo.sentence.consecutiveToSentenceReference).toBeUndefined()
-    expect(secondConsecutiveTo.sentence.consecutiveToSentenceReference).toBeUndefined()
+    expect(firstConsecutiveTo.sentence.consecutiveToSentenceUuid).toBeUndefined()
+    expect(secondConsecutiveTo.sentence.consecutiveToSentenceUuid).toBeUndefined()
   })
 })

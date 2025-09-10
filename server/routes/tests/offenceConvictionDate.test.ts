@@ -19,7 +19,6 @@ describe('GET Offence Conviction Date', () => {
       chargeUuid: '1',
       sentence: {
         sentenceUuid: '2',
-        sentenceReference: '0',
       },
     })
     return request(app)

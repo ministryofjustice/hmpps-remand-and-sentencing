@@ -26,7 +26,6 @@ describe('RemandAndSentencingService', () => {
 
     it('Source sentence has not been added to sentences yet - no errors', async () => {
       const response = await service.validateConsecutiveLoops(
-        true,
         'uuid3',
         sessionCourtAppearance,
         'AB123A',
@@ -40,7 +39,6 @@ describe('RemandAndSentencingService', () => {
     it('If validation api call fails correct errors are returned', async () => {
       remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(true)
       const response = await service.validateConsecutiveLoops(
-        false,
         'uuid3',
         sessionCourtAppearance,
         'AB123A',
@@ -63,14 +61,12 @@ describe('RemandAndSentencingService', () => {
           {
             sentence: {
               sentenceUuid: 'uuid-1',
-              sentenceReference: 'REF-1',
               consecutiveToSentenceUuid: null,
             },
           },
           {
             sentence: {
               sentenceUuid: 'uuid-2',
-              sentenceReference: 'REF-2',
               consecutiveToSentenceUuid: 'uuid-1',
             },
           },
@@ -79,63 +75,7 @@ describe('RemandAndSentencingService', () => {
 
       remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(false)
 
-      const errors = await service.validateConsecutiveLoops(
-        false,
-        'uuid-3',
-        courtAppearance,
-        'AB123A',
-        'uuid-1',
-        'user',
-      )
-
-      expect(errors).toEqual([])
-      expect(remandAndSentencingApiClient.hasLoopInChain).toHaveBeenCalledTimes(1)
-      const req = remandAndSentencingApiClient.hasLoopInChain.mock.calls[0][0]
-
-      expect(req).toMatchObject({
-        prisonerId: 'AB123A',
-        appearanceUuid: 'app1',
-        sourceSentenceUuid: 'uuid-1',
-        targetSentenceUuid: 'uuid-3',
-      })
-
-      expect(req.sentences).toEqual([
-        { sentenceUuid: 'uuid-1' },
-        { sentenceUuid: 'uuid-2', consecutiveToSentenceUuid: 'uuid-1' },
-      ])
-    })
-
-    it('calls API with correct request using cnsecutiveToSentenceRef - no errors, passes validation', async () => {
-      const courtAppearance = {
-        appearanceUuid: 'app1',
-        offences: [
-          {
-            sentence: {
-              sentenceUuid: 'uuid-1',
-              sentenceReference: 'REF-1',
-              consecutiveToSentenceUuid: null,
-            },
-          },
-          {
-            sentence: {
-              sentenceUuid: 'uuid-2',
-              sentenceReference: 'REF-2',
-              consecutiveToSentenceReference: 'REF-1',
-            },
-          },
-        ],
-      } as unknown as CourtAppearance
-
-      remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(false)
-
-      const errors = await service.validateConsecutiveLoops(
-        false,
-        'uuid-3',
-        courtAppearance,
-        'AB123A',
-        'uuid-1',
-        'user',
-      )
+      const errors = await service.validateConsecutiveLoops('uuid-3', courtAppearance, 'AB123A', 'uuid-1', 'user')
 
       expect(errors).toEqual([])
       expect(remandAndSentencingApiClient.hasLoopInChain).toHaveBeenCalledTimes(1)
@@ -162,15 +102,13 @@ describe('RemandAndSentencingService', () => {
             chargeUuid: 'charge1',
             sentence: {
               sentenceUuid: 'uuid-1',
-              sentenceReference: 'REF-1',
               consecutiveToSentenceUuid: null,
             },
           },
           {
             sentence: {
               sentenceUuid: 'uuid-2',
-              sentenceReference: 'REF-2',
-              consecutiveToSentenceReference: 'REF-1',
+              consecutiveToSentenceUuid: 'uuid-1',
             },
           },
           {
@@ -181,7 +119,7 @@ describe('RemandAndSentencingService', () => {
 
       remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(false)
 
-      const errors = await service.validateConsecutiveLoops(true, 'REF-2', courtAppearance, 'AB123A', 'uuid-1', 'user')
+      const errors = await service.validateConsecutiveLoops('uuid-2', courtAppearance, 'AB123A', 'uuid-1', 'user')
 
       expect(errors).toEqual([])
       expect(remandAndSentencingApiClient.hasLoopInChain).toHaveBeenCalledTimes(1)
@@ -211,15 +149,13 @@ describe('RemandAndSentencingService', () => {
           {
             sentence: {
               sentenceUuid: 'uuid-1',
-              sentenceReference: 'REF-1',
               consecutiveToSentenceUuid: null,
             },
           },
           {
             sentence: {
               sentenceUuid: 'uuid-2',
-              sentenceReference: 'REF-2',
-              consecutiveToSentenceReference: 'REF-1',
+              consecutiveToSentenceUuid: 'uuid-1',
             },
           },
         ],
@@ -227,14 +163,7 @@ describe('RemandAndSentencingService', () => {
 
       remandAndSentencingApiClient.hasLoopInChain.mockResolvedValue(false)
 
-      const errors = await service.validateConsecutiveLoops(
-        false,
-        'uuid-3',
-        courtAppearance,
-        'AB123A',
-        'uuid-1',
-        'user',
-      )
+      const errors = await service.validateConsecutiveLoops('uuid-3', courtAppearance, 'AB123A', 'uuid-1', 'user')
 
       expect(errors).toEqual([])
       expect(remandAndSentencingApiClient.hasLoopInChain).toHaveBeenCalledTimes(1)

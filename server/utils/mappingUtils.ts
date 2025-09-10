@@ -53,7 +53,7 @@ export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): 
       sentenceTypeId: sentence.sentenceTypeId,
       prisonId,
       sentenceUuid: sentence.sentenceUuid, // TODO check this is always populated
-      consecutiveToSentenceUuid: sentence.consecutiveToSentenceReference, // TODO check this is populated correctly
+      consecutiveToSentenceUuid: sentence.consecutiveToSentenceUuid, // TODO check this is populated correctly
       // TODO remove
       // sentenceReference: sentence.sentenceReference,
       // consecutiveToSentenceReference: sentence.consecutiveToSentenceReference,
@@ -380,7 +380,7 @@ export function sentenceLengthFormToSentenceLength(
   } as SentenceLength
 }
 
-const populateConsecutiveToSentenceReference = (offences: Offence[]) => {
+const populateConsecutiveToSentenceUuid = (offences: Offence[]) => {
   offences
     .filter(offence => offence.sentence?.consecutiveToSentenceUuid)
     .forEach(offence => {
@@ -389,9 +389,7 @@ const populateConsecutiveToSentenceReference = (offences: Offence[]) => {
       )
       if (consecutiveToSentence) {
         // eslint-disable-next-line no-param-reassign
-        offence.sentence.consecutiveToSentenceReference = consecutiveToSentence.sentence.sentenceReference
-        // eslint-disable-next-line no-param-reassign
-        delete offence.sentence.consecutiveToSentenceUuid
+        offence.sentence.consecutiveToSentenceUuid = consecutiveToSentence.sentence.sentenceUuid
       }
     })
 }
@@ -404,7 +402,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
       return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
     })
     .map(chargeToOffence)
-  populateConsecutiveToSentenceReference(offences)
+  populateConsecutiveToSentenceUuid(offences)
   return {
     appearanceUuid: pageCourtCaseAppearance.appearanceUuid,
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,

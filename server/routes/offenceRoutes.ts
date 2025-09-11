@@ -2054,6 +2054,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } else if (offence.sentence?.consecutiveToSentenceReference) {
       consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
     }
+    req.session.offenceEditCompleted = false
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,
@@ -2091,6 +2092,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    req.session.offenceEditCompleted = true
 
     return this.editOffenceCompletionRouting(
       addOrEditCourtCase,
@@ -2107,6 +2109,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.resetSessionCourtAppearances(req.session, nomsId)
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+    req.session.offenceEditCompleted = true
 
     return this.editOffenceCompletionRouting(
       addOrEditCourtCase,

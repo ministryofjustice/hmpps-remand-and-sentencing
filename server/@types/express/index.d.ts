@@ -12,6 +12,7 @@ export declare module 'express-session' {
     originalCourtAppearance: CourtAppearance
     savedCourtCases: Map<string, CourtCase>
     offences: Map<string, Offence>
+    offenceEditCompleted: boolean
   }
 }
 

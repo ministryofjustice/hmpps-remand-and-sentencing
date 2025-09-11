@@ -15,7 +15,6 @@ import type {
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
-  OffenceCountNumberForm,
   OffenceFinishedAddingForm,
   SentenceLengthForm,
 } from 'forms'
@@ -29,7 +28,6 @@ import {
 import RemandAndSentencingService from './remandAndSentencingService'
 import { extractKeyValue, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
-import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
@@ -1252,10 +1250,8 @@ export default class CourtAppearanceService {
     }
   }
 
-  // TODO not sure if this will still work. may rely on order of sentenceRefs
   private resetChain(deletedSentenceUuid: string, courtAppearance: CourtAppearance) {
     const { offences } = courtAppearance
-    // TODO what does index do here
     const nextSentencesInChainIndexes = offences.flatMap((offence, index) =>
       offence.sentence?.consecutiveToSentenceUuid === deletedSentenceUuid ? index : [],
     )

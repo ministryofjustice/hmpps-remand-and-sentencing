@@ -1346,7 +1346,6 @@ export default class OffenceRoutes extends BaseRoutes {
   }
 
   public getSentenceServeType: RequestHandler = async (req, res): Promise<void> => {
-    console.log('1 getSentenceServeType')
     const {
       nomsId,
       courtCaseReference,
@@ -1385,14 +1384,6 @@ export default class OffenceRoutes extends BaseRoutes {
         sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths[expectedPeriodLengthsSize - 1].type
       }`
     }
-    console.log(`1 getSentenceServeType forthwithAlreadySelected: ${forthwithAlreadySelected}`)
-    console.log(`1 getSentenceServeType sentenceConsecutiveToAnotherCase: ${sentenceConsecutiveToAnotherCase}`)
-
-    console.log(
-      `1 getSentenceServeType showorthWith${
-        sentenceServeType === 'FORTHWITH' || (!forthwithAlreadySelected && !sentenceConsecutiveToAnotherCase)
-      }`,
-    )
     return res.render('pages/offence/sentence-serve-type', {
       nomsId,
       courtCaseReference,
@@ -1615,16 +1606,13 @@ export default class OffenceRoutes extends BaseRoutes {
   }
 
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
-    console.log(' 1 getCheckOffenceAnswers')
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
       appearanceReference,
     )
-    console.log(' 2getCheckOffenceAnswers')
     const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
-    console.log(' 3 getCheckOffenceAnswers')
     const sentenceTypeIds = Array.from(
       new Set(
         courtAppearance.offences
@@ -1632,7 +1620,6 @@ export default class OffenceRoutes extends BaseRoutes {
           .map(offence => offence.sentence?.sentenceTypeId),
       ),
     )
-    console.log(' 4 getCheckOffenceAnswers')
     const offenceCodes = Array.from(
       new Set(
         courtAppearance.offences
@@ -1640,12 +1627,10 @@ export default class OffenceRoutes extends BaseRoutes {
           .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
       ),
     )
-    console.log(' 5 getCheckOffenceAnswers')
     const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
     const courtIds = Array.from(
       new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
     )
-    console.log(' 6 getCheckOffenceAnswers')
     const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
         offenceCodes,
@@ -1656,12 +1641,10 @@ export default class OffenceRoutes extends BaseRoutes {
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
-    console.log(' 7 getCheckOffenceAnswers')
 
     const offences = courtAppearance.offences.map((offence, index) => {
       return { ...offence, index }
     })
-    console.log(' 8 getCheckOffenceAnswers')
 
     const [custodialOffences, nonCustodialOffences] = offences.reduce(
       ([custodialList, nonCustodialList], offence, index) => {
@@ -1680,14 +1663,12 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
-    console.log(' 9 getCheckOffenceAnswers')
     const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
       req,
       nomsId,
       offenceMap,
       appearanceReference,
     )
-    console.log(' 10 getCheckOffenceAnswers')
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,
@@ -1806,7 +1787,6 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
     )
     const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
-    // start // TODO maybe tidy a bit more
     const sentenceUuidsInSession = courtAppearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
     let consecutiveToSentenceDetails = { sentences: [] }
     let sessionConsecutiveTo
@@ -1822,17 +1802,6 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
     }
-    // finish
-    // const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
-    //   [offence.sentence?.consecutiveToSentenceUuid],
-    //   req.user.username,
-    // )
-    // let sessionConsecutiveTo
-    // if (offence.sentence?.sentenceUuid) {
-    //   sessionConsecutiveTo = courtAppearance.offences.find(
-    //     appearanceOffence => appearanceOffence.sentence?.sentenceUuid === offence.sentence?.sentenceUuid,
-    //   )
-    // }
 
     const [offenceMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
@@ -1961,11 +1930,8 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    console.log('loadEditOffence 1')
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
-    console.log('loadEditOffence 2')
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
-    console.log('loadEditOffence 3')
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
     )
@@ -1980,24 +1946,20 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    console.log('getEditOffence 1')
     const { submitToEditOffence } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const courtCodes = []
     const offenceCodes = [offence.offenceCode]
     let sentenceConsecutiveToDetails: SentenceConsecutiveToDetails | undefined
     let consecutiveToOffence
-    console.log('getEditOffence 2')
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     const sentenceUuidsInSession = appearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
     if (offence.sentence?.consecutiveToSentenceUuid) {
       if (!sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid)) {
-        console.log('getEditOffence 2.1')
         const consecutiveToDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
           [offence.sentence.consecutiveToSentenceUuid],
           req.user.username,
         )
-        console.log('getEditOffence 2.2')
         // eslint-disable-next-line prefer-destructuring
         sentenceConsecutiveToDetails = consecutiveToDetails.sentences[0]
         courtCodes.push(sentenceConsecutiveToDetails.courtCode)
@@ -2012,7 +1974,6 @@ export default class OffenceRoutes extends BaseRoutes {
         offenceCodes.push(consecutiveToOffence.offenceCode)
       }
     }
-    console.log('getEditOffence 3')
     const [offenceMap, courtMap] = await Promise.all([
       await this.manageOffencesService.getOffenceMap(
         offenceCodes,
@@ -2025,10 +1986,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let sentenceType: SentenceType
     let periodLengths = []
 
-    console.log('getEditOffence 4')
-
     if (offence.sentence) {
-      console.log('getEditOffence 4.1')
       periodLengths =
         offence.sentence.periodLengths?.map(periodLength => {
           const key =
@@ -2062,13 +2020,8 @@ export default class OffenceRoutes extends BaseRoutes {
       outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
     }
     let consecutiveToDetails
-    console.log('getEditOffence 5')
-    console.log('getEditOffence 6')
-    // TODO Ive made an assumption that the old check was testing if consec-to is in session or not
     if (offence.sentence?.consecutiveToSentenceUuid) {
-      console.log('getEditOffence 6.1')
       if (!sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid)) {
-        console.log('getEditOffence 6.1.1')
         consecutiveToDetails = sentenceConsecutiveToDetailsToConsecutiveToDetails(
           sentenceConsecutiveToDetails,
           offenceMap,
@@ -2076,12 +2029,9 @@ export default class OffenceRoutes extends BaseRoutes {
           false,
         )
       } else {
-        console.log('getEditOffence 6.1.2')
         consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
-        console.log(`getEditOffence 6.1.2${JSON.stringify(consecutiveToDetails)}`)
       }
     }
-    console.log('getEditOffence 7')
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,

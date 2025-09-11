@@ -64,21 +64,18 @@ export default abstract class BaseRoutes {
     appearanceReference: string,
     chargeUuid: string,
   ) {
-    console.log('5 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (offence.onFinishGoToEdit) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
-    console.log('6 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
     }
-    console.log('7 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
@@ -90,13 +87,11 @@ export default abstract class BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
-    console.log('8 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     if (warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
       )
     }
-    console.log('9 >>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>')
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )

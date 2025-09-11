@@ -489,7 +489,6 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
   courtMap: { [key: string]: string },
   isInSameAppearance: boolean,
 ): ConsecutiveToDetails {
-  console.log(`1 sentenceConsecutiveToDetailsToConsecutiveToDetails ${JSON.stringify(sentenceConsecutiveToDetails)}`)
   let consecutiveToDetailsEntry = {
     countNumber: sentenceConsecutiveToDetails.countNumber,
     offenceCode: sentenceConsecutiveToDetails.offenceCode,
@@ -502,9 +501,7 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
       sentenceConsecutiveToDetails.offenceEndDate &&
       dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
   } as ConsecutiveToDetails
-  console.log('2 sentenceConsecutiveToDetailsToConsecutiveToDetails')
   if (isInSameAppearance) {
-    console.log('2.1 sentenceConsecutiveToDetailsToConsecutiveToDetails')
     consecutiveToDetailsEntry = {
       countNumber: sentenceConsecutiveToDetails.countNumber,
       offenceCode: sentenceConsecutiveToDetails.offenceCode,
@@ -515,6 +512,5 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
         dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
     }
   }
-  console.log('3 sentenceConsecutiveToDetailsToConsecutiveToDetails')
   return consecutiveToDetailsEntry
 }

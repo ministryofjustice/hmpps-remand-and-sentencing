@@ -18,7 +18,6 @@ describe('courtAppearanceService', () => {
     service = new CourtAppearanceService(remandAndSentencingService, documentManagementService)
   })
 
-  // TODO add a few more tests for this
   it('must reset chain when multiple sentences are consecutive to same sentence', () => {
     const nomsId = 'P123'
     const toBeDeletedOffence = {

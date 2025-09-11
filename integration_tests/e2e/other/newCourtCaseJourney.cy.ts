@@ -25,7 +25,6 @@ import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConv
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
-import OffenceSentenceLengthMismatchPage from '../../pages/offenceSentenceLengthMismatchPage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 
@@ -86,7 +85,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Add next court appearance',
+          name: 'Next court appearance',
           status: 'Cannot start yet',
         },
         {
@@ -148,8 +147,8 @@ context('New Court Case journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Add next court appearance',
-          status: 'Optional',
+          name: 'Next court appearance',
+          status: 'Incomplete',
         },
         {
           name: 'Upload court documents',
@@ -202,15 +201,15 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add next court appearance',
-          status: 'Optional',
+          name: 'Next court appearance',
+          status: 'Incomplete',
         },
         {
           name: 'Upload court documents',
           status: 'Optional',
         },
       ])
-    courtCaseTaskListPage.addNextCourtAppearanceLink().click()
+    courtCaseTaskListPage.nextCourtAppearanceLink().click()
 
     const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
     courtCaseNextHearingSetPage.radioLabelSelector('true').click()
@@ -256,7 +255,7 @@ context('New Court Case journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Add next court appearance',
+          name: 'Next court appearance',
           status: 'Completed',
         },
         {
@@ -477,9 +476,6 @@ context('New Court Case journey', () => {
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
-
-    const offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
-    offenceSentenceLengthMismatchPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage

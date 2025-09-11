@@ -17,7 +17,7 @@ export default class CourtCaseTaskListPage extends Page {
 
   updateOffenceOutcomesLink = (): PageElement => cy.get('a:contains("Update offence outcomes")')
 
-  addNextCourtAppearanceLink = (): PageElement => cy.get('a:contains("Add next court appearance")')
+  nextCourtAppearanceLink = (): PageElement => cy.get('a:contains("Next court appearance")')
 
   saveDraftParagraph = (): PageElement =>
     cy.get('p:contains("To save a draft of the court case, you must first complete the appearance information.")')

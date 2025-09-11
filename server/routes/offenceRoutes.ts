@@ -1636,7 +1636,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const courtIds = Array.from(
       new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
     )
-    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison, courtMap] = await Promise.all([
+    const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
         offenceCodes,
         req.user.username,
@@ -1644,7 +1644,6 @@ export default class OffenceRoutes extends BaseRoutes {
       ),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
-      this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
 
@@ -1685,7 +1684,6 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
       sentenceTypeMap,
       outcomeMap,
-      overallSentenceLengthComparison,
       offences,
       custodialOffences,
       nonCustodialOffences,
@@ -1713,29 +1711,6 @@ export default class OffenceRoutes extends BaseRoutes {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
       )
-    }
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-    if (
-      courtAppearance.warrantType === 'SENTENCING' &&
-      offenceFinishedAddingForm.finishedAddingOffences === 'true' &&
-      courtAppearance.hasOverallSentenceLength
-    ) {
-      const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
-        courtAppearance,
-        req.user.username,
-      )
-      if (
-        overallSentenceComparison.custodialLengthMatches === false ||
-        overallSentenceComparison.licenseLengthMatches === false
-      ) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/sentence-length-mismatch`,
-        )
-      }
     }
     this.courtAppearanceService.setOffenceSentenceAccepted(
       req.session,
@@ -2239,7 +2214,7 @@ export default class OffenceRoutes extends BaseRoutes {
       ),
     )
 
-    const [offenceMap, sentenceTypeMap, outcomeMap, overallSentenceLengthComparison, courtMap] = await Promise.all([
+    const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
         offenceCodes,
         req.user.username,
@@ -2247,7 +2222,6 @@ export default class OffenceRoutes extends BaseRoutes {
       ),
       this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
-      this.calculateReleaseDatesService.compareOverallSentenceLength(courtAppearance, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
 
@@ -2306,7 +2280,6 @@ export default class OffenceRoutes extends BaseRoutes {
       courtAppearance,
       warrantType,
       backLink,
-      overallSentenceLengthComparison,
       consecutiveToSentenceDetailsMap,
       sessionConsecutiveToSentenceDetailsMap,
       mergedFromText,
@@ -2334,30 +2307,6 @@ export default class OffenceRoutes extends BaseRoutes {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
       )
-    }
-
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-
-    if (
-      updateOffenceOutcomesForm.finishedReviewOffenceOutcomes === 'true' &&
-      courtAppearance.hasOverallSentenceLength
-    ) {
-      const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
-        courtAppearance,
-        req.user.username,
-      )
-      if (
-        overallSentenceComparison.custodialLengthMatches === false ||
-        overallSentenceComparison.licenseLengthMatches === false
-      ) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/sentence-length-mismatch`,
-        )
-      }
     }
 
     this.courtAppearanceService.setOffenceSentenceAccepted(

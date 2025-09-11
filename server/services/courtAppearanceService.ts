@@ -219,7 +219,7 @@ export default class CourtAppearanceService {
     let latestOffenceDate = null
     if (addOrEditCourtCase === 'edit-court-case') {
       // For the edit-court-appearance journey we omit the appearance from getLatestOffenceDate call
-      const latestOffenceDateStr =
+      const latestOffenceDateResponse =
         addOrEditCourtAppearance === 'add-court-appearance'
           ? await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(courtCaseReference, username)
           : await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
@@ -227,7 +227,7 @@ export default class CourtAppearanceService {
               username,
               appearanceUuid,
             )
-      latestOffenceDate = latestOffenceDateStr ? dayjs(latestOffenceDateStr) : null
+      latestOffenceDate = latestOffenceDateResponse.offenceDate ? dayjs(latestOffenceDateResponse.offenceDate) : null
     }
 
     const sessionOffenceDateRaw = this.getLatestOffenceDateInSession(session, nomsId, appearanceUuid)
@@ -252,12 +252,12 @@ export default class CourtAppearanceService {
     courtCaseReference: string,
     username: string,
   ): Promise<{ text: string; href: string }[] | null> {
-    const latestOffenceDateStr = await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
+    const latestOffenceDateResponse = await this.remandAndSentencingService.getLatestOffenceDateForCourtCase(
       courtCaseReference,
       username,
     )
-    if (latestOffenceDateStr) {
-      const latestOffenceDate = dayjs(latestOffenceDateStr)
+    if (latestOffenceDateResponse.offenceDate) {
+      const latestOffenceDate = dayjs(latestOffenceDateResponse.offenceDate)
       if (!overallConvictionDate.isAfter(latestOffenceDate)) {
         return [
           {

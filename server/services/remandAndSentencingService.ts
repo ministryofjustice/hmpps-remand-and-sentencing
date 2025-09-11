@@ -11,6 +11,7 @@ import {
   DraftCourtCaseCreatedResponse,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
+  LatestOffenceDate,
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
   PageCourtCaseAppearance,
@@ -260,7 +261,7 @@ export default class RemandAndSentencingService {
     courtCaseUuid: string,
     username: string,
     appearanceUuidToExclude?: string,
-  ): Promise<string | null> {
+  ): Promise<LatestOffenceDate> {
     return this.remandAndSentencingApiClient.getLatestOffenceDateForCourtCase(
       courtCaseUuid,
       username,

@@ -536,6 +536,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/legacy/court-case/merge/person/{retainedPrisonerNumber}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Merge prisoner
+     * @description Merges all records between two prisoner numbers
+     */
+    post: operations['process']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/court-case/booking': {
     parameters: {
       query?: never
@@ -1495,24 +1515,24 @@ export interface components {
       eventType:
         | 'COURT_CASE_INSERTED'
         | 'COURT_CASE_UPDATED'
-        | 'COURT_CASE_DELETED'
         | 'CHARGE_INSERTED'
         | 'CHARGE_UPDATED'
-        | 'CHARGE_DELETED'
         | 'COURT_APPEARANCE_INSERTED'
         | 'COURT_APPEARANCE_UPDATED'
-        | 'COURT_APPEARANCE_DELETED'
         | 'SENTENCE_INSERTED'
         | 'SENTENCE_FIX_SINGLE_CHARGE_INSERTED'
         | 'SENTENCE_UPDATED'
-        | 'SENTENCE_DELETED'
         | 'LEGACY_COURT_CASE_REFERENCES_UPDATED'
         | 'RECALL_INSERTED'
         | 'RECALL_UPDATED'
-        | 'RECALL_DELETED'
         | 'PERIOD_LENGTH_INSERTED'
         | 'PERIOD_LENGTH_UPDATED'
         | 'PERIOD_LENGTH_DELETED'
+        | 'RECALL_DELETED'
+        | 'SENTENCE_DELETED'
+        | 'CHARGE_DELETED'
+        | 'COURT_APPEARANCE_DELETED'
+        | 'COURT_CASE_DELETED'
         | 'METADATA_ONLY'
       periodLengthId?: string
       sentenceIds?: string[]
@@ -1536,6 +1556,8 @@ export interface components {
       offenderCaseReference: string
       /** Format: date-time */
       updatedDate: string
+      /** @enum {string} */
+      source?: 'NOMIS' | 'DPS'
     }
     CourtCaseLegacyData: {
       caseReferences: components['schemas']['CaseReferenceLegacyData'][]
@@ -1553,7 +1575,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 10:01:55.148588038 */
+      /** @example 15:49:40.949102 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1655,7 +1677,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:01:55.148588038 */
+      /** @example 15:49:40.949102 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -1903,6 +1925,120 @@ export interface components {
       /** Format: uuid */
       sentenceUuid: string
       sentenceNOMISId: components['schemas']['MigrationSentenceId']
+    }
+    DeactivatedCourtCase: {
+      dpsCourtCaseUuid: string
+      active: boolean
+    }
+    DeactivatedSentence: {
+      /** Format: uuid */
+      dpsSentenceUuid: string
+      active: boolean
+    }
+    MergeCreateCharge: {
+      /** Format: int64 */
+      chargeNOMISId: number
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string
+      /** Format: date */
+      offenceEndDate?: string
+      legacyData: components['schemas']['ChargeLegacyData']
+      sentence?: components['schemas']['MergeCreateSentence']
+      /** Format: int64 */
+      mergedFromCaseId?: number
+      /** Format: date */
+      mergedFromDate?: string
+    }
+    MergeCreateCourtAppearance: {
+      /** Format: int64 */
+      eventId: number
+      courtCode: string
+      /** Format: date */
+      appearanceDate: string
+      /** Format: uuid */
+      appearanceTypeUuid: string
+      legacyData: components['schemas']['CourtAppearanceLegacyData']
+      charges: components['schemas']['MergeCreateCharge'][]
+    }
+    MergeCreateCourtCase: {
+      /** Format: int64 */
+      caseId: number
+      active: boolean
+      courtCaseLegacyData: components['schemas']['CourtCaseLegacyData']
+      appearances: components['schemas']['MergeCreateCourtAppearance'][]
+      merged?: boolean
+    }
+    MergeCreateFine: {
+      fineAmount: number
+    }
+    MergeCreatePeriodLength: {
+      periodLengthId: components['schemas']['NomisPeriodLengthId']
+      /** Format: int32 */
+      periodYears?: number
+      /** Format: int32 */
+      periodMonths?: number
+      /** Format: int32 */
+      periodWeeks?: number
+      /** Format: int32 */
+      periodDays?: number
+      legacyData: components['schemas']['PeriodLengthLegacyData']
+    }
+    MergeCreateSentence: {
+      sentenceId: components['schemas']['MergeSentenceId']
+      fine?: components['schemas']['MergeCreateFine']
+      active: boolean
+      legacyData: components['schemas']['SentenceLegacyData']
+      consecutiveToSentenceId?: components['schemas']['MergeSentenceId']
+      periodLengths: components['schemas']['MergeCreatePeriodLength'][]
+      /** Format: date */
+      returnToCustodyDate?: string
+    }
+    MergePerson: {
+      removedPrisonerNumber: string
+      casesCreated: components['schemas']['MergeCreateCourtCase'][]
+      casesDeactivated: components['schemas']['DeactivatedCourtCase'][]
+      sentencesDeactivated: components['schemas']['DeactivatedSentence'][]
+    }
+    MergeSentenceId: {
+      /** Format: int64 */
+      offenderBookingId: number
+      /** Format: int32 */
+      sequence: number
+    }
+    MergeCreateChargeResponse: {
+      /** Format: uuid */
+      chargeUuid: string
+      /** Format: int64 */
+      chargeNOMISId: number
+    }
+    MergeCreateCourtAppearanceResponse: {
+      /** Format: uuid */
+      appearanceUuid: string
+      /** Format: int64 */
+      eventId: number
+    }
+    MergeCreateCourtCaseResponse: {
+      courtCaseUuid: string
+      /** Format: int64 */
+      caseId: number
+    }
+    MergeCreateCourtCasesResponse: {
+      courtCases: components['schemas']['MergeCreateCourtCaseResponse'][]
+      appearances: components['schemas']['MergeCreateCourtAppearanceResponse'][]
+      charges: components['schemas']['MergeCreateChargeResponse'][]
+      sentences: components['schemas']['MergeCreateSentenceResponse'][]
+      sentenceTerms: components['schemas']['MergeCreatePeriodLengthResponse'][]
+    }
+    MergeCreatePeriodLengthResponse: {
+      /** Format: uuid */
+      periodLengthUuid: string
+      sentenceTermNOMISId: components['schemas']['NomisPeriodLengthId']
+    }
+    MergeCreateSentenceResponse: {
+      /** Format: uuid */
+      sentenceUuid: string
+      sentenceNOMISId: components['schemas']['MergeSentenceId']
     }
     BookingCreateCharge: {
       /** Format: int64 */
@@ -2272,6 +2408,8 @@ export interface components {
         | 'MERGED'
         | 'MANY_CHARGES_DATA_FIX'
         | 'DUPLICATE'
+        | 'RECALL_APPEARANCE'
+        | 'IMMIGRATION_APPEARANCE'
       latestAppearance?: components['schemas']['CourtAppearance']
       appearances: components['schemas']['CourtAppearance'][]
       legacyData?: components['schemas']['CourtCaseLegacyData']
@@ -2299,7 +2437,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:01:55.148588038 */
+      /** @example 15:49:40.949102 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -2494,7 +2632,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:01:55.148588038 */
+      /** @example 15:49:40.949102 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -2502,7 +2640,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:01:55.148588038 */
+      /** @example 15:49:40.949102 */
       appearanceTime?: string
       courtId: string
     }
@@ -2535,7 +2673,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:01:55.148588038 */
+      /** @example 15:49:40.949102 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -2553,7 +2691,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:01:55.148588038 */
+      /** @example 15:49:40.949102 */
       appearanceTime?: string
       courtId: string
     }
@@ -2606,6 +2744,8 @@ export interface components {
         | 'MERGED'
         | 'MANY_CHARGES_DATA_FIX'
         | 'DUPLICATE'
+        | 'RECALL_APPEARANCE'
+        | 'IMMIGRATION_APPEARANCE'
       isSentenced: boolean
       sentences: components['schemas']['RecallableCourtCaseSentence'][]
       /** Format: date */
@@ -2638,6 +2778,7 @@ export interface components {
         | 'LEGACY_RECALL'
         | 'UNKNOWN'
       systemOfRecord: string
+      fineAmount?: number
       periodLengths: components['schemas']['PeriodLength'][]
       /** Format: date */
       convictionDate?: string
@@ -2655,6 +2796,10 @@ export interface components {
     RecallableCourtCasesResponse: {
       cases: components['schemas']['RecallableCourtCase'][]
     }
+    LatestOffenceDate: {
+      /** Format: date */
+      offenceDate?: string
+    }
     CourtCaseCountNumber: {
       countNumber: string
     }
@@ -2669,10 +2814,10 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
@@ -2681,20 +2826,20 @@ export interface components {
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      /** Format: int32 */
+      pageSize?: number
       unpaged?: boolean
     }
     SortObject: {
@@ -2703,10 +2848,10 @@ export interface components {
       unsorted?: boolean
     }
     PagePagedCourtCase: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
@@ -2715,9 +2860,9 @@ export interface components {
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -2772,6 +2917,8 @@ export interface components {
         | 'MERGED'
         | 'MANY_CHARGES_DATA_FIX'
         | 'DUPLICATE'
+        | 'RECALL_APPEARANCE'
+        | 'IMMIGRATION_APPEARANCE'
       legacyData?: components['schemas']['CourtCaseLegacyData']
       /** Format: int64 */
       appearanceCount: number
@@ -2816,7 +2963,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:01:55.148588038 */
+      /** @example 15:49:40.949102 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -4605,6 +4752,50 @@ export interface operations {
       }
     }
   }
+  process: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        retainedPrisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MergePerson']
+      }
+    }
+    responses: {
+      /** @description court case created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MergeCreateCourtCasesResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MergeCreateCourtCasesResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MergeCreateCourtCasesResponse']
+        }
+      }
+    }
+  }
   create_5: {
     parameters: {
       query?: never
@@ -5925,7 +6116,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': string
+          'application/json': components['schemas']['LatestOffenceDate']
         }
       }
       /** @description No offence dates found */
@@ -5934,7 +6125,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': string
+          'application/json': components['schemas']['LatestOffenceDate']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -5943,7 +6134,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': string
+          'application/json': components['schemas']['LatestOffenceDate']
         }
       }
       /** @description Forbidden, requires an appropriate role */
@@ -5952,7 +6143,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': string
+          'application/json': components['schemas']['LatestOffenceDate']
         }
       }
     }

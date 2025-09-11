@@ -1802,16 +1802,33 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
     )
     const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
-    const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
-      [offence.sentence?.consecutiveToSentenceUuid],
-      req.user.username,
-    )
+    // start // TODO maybe tidy a bit more
+    const sentenceUuidsInSession = courtAppearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
+    let consecutiveToSentenceDetails = { sentences: [] }
     let sessionConsecutiveTo
-    if (offence.sentence?.sentenceUuid) {
-      sessionConsecutiveTo = courtAppearance.offences.find(
-        appearanceOffence => appearanceOffence.sentence?.sentenceUuid === offence.sentence?.sentenceUuid,
-      )
+    if (offence.sentence?.consecutiveToSentenceUuid) {
+      if (!sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid)) {
+        consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
+          [offence.sentence?.consecutiveToSentenceUuid],
+          req.user.username,
+        )
+      } else {
+        sessionConsecutiveTo = courtAppearance.offences.find(
+          appearanceOffence => appearanceOffence.sentence?.sentenceUuid === offence.sentence?.sentenceUuid,
+        )
+      }
     }
+    // finish
+    // const consecutiveToSentenceDetails = await this.remandAndSentencingService.getConsecutiveToDetails(
+    //   [offence.sentence?.consecutiveToSentenceUuid],
+    //   req.user.username,
+    // )
+    // let sessionConsecutiveTo
+    // if (offence.sentence?.sentenceUuid) {
+    //   sessionConsecutiveTo = courtAppearance.offences.find(
+    //     appearanceOffence => appearanceOffence.sentence?.sentenceUuid === offence.sentence?.sentenceUuid,
+    //   )
+    // }
 
     const [offenceMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(

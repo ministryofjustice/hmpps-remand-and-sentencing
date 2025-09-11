@@ -46,7 +46,7 @@
 {% endif %}
 
 {% block pageContent %}
-            <form method="post">
+            <form method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <input type="hidden" name="offenceCode" value="{{ offence.code }}">
                 <input type="hidden" name="offenceName" value="{{ offence.description }}">

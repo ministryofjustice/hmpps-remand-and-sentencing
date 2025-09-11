@@ -10,7 +10,7 @@
 {% block pageContent %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/submit-delete-document">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/submit-delete-document" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
                 {{ govukRadios({

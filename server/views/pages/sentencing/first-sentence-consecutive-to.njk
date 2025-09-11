@@ -10,7 +10,7 @@
 {% set errorMessage = errors | findError('consecutiveToSentenceUuid') %}
 {% set radioIdIndex = 0 %}
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/SENTENCING/offences/{{ chargeUuid }}/submit-first-sentence-consecutive-to{{ "?submitToEditOffence=true" if submitToEditOffence }}">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/SENTENCING/offences/{{ chargeUuid }}/submit-first-sentence-consecutive-to{{ "?submitToEditOffence=true" if submitToEditOffence }}" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
                 <div class="govuk-form-group {%- if errorMessage %} govuk-form-group--error{% endif %}">

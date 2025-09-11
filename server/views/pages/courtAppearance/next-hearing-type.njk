@@ -35,7 +35,7 @@
 {% set pageTitle = applicationName + " - Next hearing type" %}
 {% block pageContent %}
     {{ super() }}
-    <form method="post">
+    <form method="post" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/nextAppearanceCaption.njk" %}
         {{ govukRadios(radiosData) }}

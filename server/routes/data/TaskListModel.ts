@@ -319,7 +319,7 @@ export default class TaskListModel {
   }
 
   private getNextCourtAppearanceTitleText(): string {
-    return 'Add next court appearance'
+    return 'Next court appearance'
   }
 
   private getNextCourtAppearanceHref(courtAppearance: CourtAppearance): string {
@@ -336,8 +336,8 @@ export default class TaskListModel {
   private getNextCourtAppearanceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
     let status: TaskListItemStatus = {
       tag: {
-        text: 'Optional',
-        classes: 'govuk-tag--grey',
+        text: 'Incomplete',
+        classes: 'govuk-tag--blue',
       },
     }
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {

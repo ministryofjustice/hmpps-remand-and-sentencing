@@ -212,7 +212,7 @@
 {% set pageTitle = applicationName + " - Edit an offence" %}
 {% block pageContent %}
     {{ super() }}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-edit-offence">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-edit-offence" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/offenceCaption.njk" %}
         <h1 class="govuk-heading-l">Edit offence details</h1>

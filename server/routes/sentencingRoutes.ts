@@ -237,27 +237,19 @@ export default class SentencingRoutes extends BaseRoutes {
           .then(appearanceType => appearanceType.description)
       : Promise.resolve('Not entered')
     const { offences } = appearance
-    const [
-      offenceMap,
-      courtMap,
-      sentenceTypeMap,
-      overallCaseOutcome,
-      outcomeMap,
-      appearanceTypeDescription,
-      overallSentenceLengthComparison,
-    ] = await Promise.all([
-      this.manageOffencesService.getOffenceMap(
-        Array.from(new Set(chargeCodes)),
-        req.user.username,
-        offencesToOffenceDescriptions(appearance.offences, consecutiveToSentenceDetails.sentences),
-      ),
-      this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
-      this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
-      outcomePromise,
-      this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
-      appearanceTypePromise,
-      this.calculateReleaseDatesService.compareOverallSentenceLength(appearance, req.user.username),
-    ])
+    const [offenceMap, courtMap, sentenceTypeMap, overallCaseOutcome, outcomeMap, appearanceTypeDescription] =
+      await Promise.all([
+        this.manageOffencesService.getOffenceMap(
+          Array.from(new Set(chargeCodes)),
+          req.user.username,
+          offencesToOffenceDescriptions(appearance.offences, consecutiveToSentenceDetails.sentences),
+        ),
+        this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
+        this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
+        outcomePromise,
+        this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
+        appearanceTypePromise,
+      ])
     const [custodialOffences, nonCustodialOffences] = offences
       .map((offence, index) => ({ ...offence, index })) // Add an index to each offence
       .reduce(
@@ -315,7 +307,6 @@ export default class SentencingRoutes extends BaseRoutes {
       overallCaseOutcome,
       outcomeMap,
       appearanceTypeDescription,
-      overallSentenceLengthComparison,
       custodialOffences: orderOffences(custodialOffences),
       nonCustodialOffences: orderOffences(nonCustodialOffences),
       consecutiveToSentenceDetailsMap,
@@ -339,25 +330,6 @@ export default class SentencingRoutes extends BaseRoutes {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
       )
-    }
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-    if (courtAppearance.hasOverallSentenceLength === 'true') {
-      const overallSentenceComparison = await this.calculateReleaseDatesService.compareOverallSentenceLength(
-        courtAppearance,
-        req.user.username,
-      )
-      if (
-        overallSentenceComparison.custodialLengthMatches === false ||
-        overallSentenceComparison.licenseLengthMatches === false
-      ) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/sentence-length-mismatch`,
-        )
-      }
     }
     return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference)
   }

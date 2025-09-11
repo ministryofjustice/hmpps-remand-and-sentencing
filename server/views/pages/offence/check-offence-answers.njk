@@ -7,27 +7,6 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set hideOffences = true %}
-{% set overallSummaryRows = [
-                    {
-                        key: {
-                            text: "Overall sentence length"
-                        },
-                        value: {
-                            text: courtAppearance.overallSentenceLength | formatLengths if courtAppearance.overallSentenceLength else "Not entered"
-                        }
-                    }]%}
-
-{% if courtAppearance.hasOverallSentenceLength === 'true' %}
-    {%set overallSummaryRows = overallSummaryRows.concat({
-                        key: {
-                            text: "Offences added"
-                        },
-                        value: {
-                            text: overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder
-                        }
-                    })%}
-{% endif %}
-
 
 {% set pageTitle = applicationName + " - Check offences" %}
 
@@ -39,7 +18,15 @@
         
         {% if courtAppearance.warrantType === 'SENTENCING' %}
             {{ govukSummaryList({
-                rows: overallSummaryRows,
+                rows: [
+                    {
+                        key: {
+                            text: "Overall sentence length"
+                        },
+                        value: {
+                            text: courtAppearance.overallSentenceLength | formatLengths if courtAppearance.overallSentenceLength else "Not entered"
+                        }
+                    }],
                 attributes: {
                     "data-qa": "overallSentenceLengthComparison"
                 }
@@ -63,7 +50,7 @@
 
         {% if offences.length > 0 %}
             <div class="govuk-button-group govuk-!-margin-top-8">
-                <form method="post">
+                <form method="post" autocomplete="off">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                     {{ govukRadios({
                         id: "finishedAddingOffences",

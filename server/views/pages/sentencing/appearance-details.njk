@@ -89,13 +89,6 @@
                 }
             ]
         }
-    }, {
-        key: {
-                text: "Sentences added"
-            },
-        value: {
-                text: overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder
-            }
     }
     ] %}
 
@@ -301,7 +294,7 @@
                         }) }}
             {% endfor %}
 
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-details-edit">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-details-edit" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <div class="govuk-button-group">
                     {{ govukButton({

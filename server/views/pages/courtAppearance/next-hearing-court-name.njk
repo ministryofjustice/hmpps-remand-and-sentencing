@@ -6,7 +6,7 @@
 
 {% block pageContent %}
     {{ super() }}
-    <form method="post">
+    <form method="post" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <input type="hidden" name="courtCode" id="court-code" value="{{nextHearingCourtNameForm.courtCode}}">
         {% include "../../partials/nextAppearanceCaption.njk" %}

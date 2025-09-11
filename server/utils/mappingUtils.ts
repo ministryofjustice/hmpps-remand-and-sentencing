@@ -195,7 +195,6 @@ export const pagedAppearancePeriodLengthToSentenceLength = (
 export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
-    // sentenceReference: index.toString(),
     countNumber: apiSentence.chargeNumber,
     periodLengths: apiSentence.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
     sentenceServeType: apiSentence.sentenceServeType,
@@ -237,7 +236,6 @@ export const pagedChargeToOffence = (pagedCharge: PagedCharge): Offence => {
 export const pagedSentenceToSentence = (pagedSentence: PagedSentence): Sentence => {
   return {
     sentenceUuid: pagedSentence.sentenceUuid,
-    // sentenceReference: index.toString(),
     countNumber: pagedSentence.chargeNumber,
     periodLengths: pagedSentence.periodLengths.map(periodLength =>
       pagedSentencePeriodLengthToSentenceLength(periodLength),

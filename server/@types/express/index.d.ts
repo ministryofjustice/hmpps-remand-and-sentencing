@@ -9,6 +9,7 @@ export declare module 'express-session' {
     nowInMinutes: number
     courtCases: Map<string, CourtCase>
     courtAppearances: Map<string, CourtAppearance>
+    originalCourtAppearance: CourtAppearance
     savedCourtCases: Map<string, CourtCase>
     offences: Map<string, Offence>
   }

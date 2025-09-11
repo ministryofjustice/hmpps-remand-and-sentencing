@@ -1958,6 +1958,8 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
+    this.courtAppearanceService.storeOriginalAppearanceState(req.session, nomsId, appearanceReference)
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
     )
@@ -2103,7 +2105,9 @@ export default class OffenceRoutes extends BaseRoutes {
 
   public cancelOffenceInputs = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    this.courtAppearanceService.resetSessionCourtAppearances(req.session, nomsId)
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+
     return this.editOffenceCompletionRouting(
       addOrEditCourtCase,
       addOrEditCourtAppearance,

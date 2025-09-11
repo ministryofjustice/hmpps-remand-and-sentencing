@@ -1384,6 +1384,19 @@ export default class CourtAppearanceService {
     delete session.courtAppearances[nomsId]
   }
 
+  resetSessionCourtAppearances(session: Partial<SessionData>, nomsId: string) {
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = session.originalCourtAppearance
+    // eslint-disable-next-line no-param-reassign
+    delete session.originalCourtAppearance
+  }
+
+  storeOriginalAppearanceState(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    // eslint-disable-next-line no-param-reassign
+    session.originalCourtAppearance = JSON.parse(JSON.stringify(courtAppearance))
+  }
+
   private getCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {
     return session.courtAppearances[nomsId] ?? { offences: [], appearanceUuid }
   }

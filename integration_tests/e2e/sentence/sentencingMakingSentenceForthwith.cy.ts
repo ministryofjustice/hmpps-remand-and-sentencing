@@ -43,11 +43,11 @@ context('Check offence answers page after making forthwith', () => {
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
     courtCaseWarrantDatePage.continueButton().click()
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
-    cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1', '2', '0|SAME')
+    cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1', '2', 0)
   })
 
   it('Check that intercept fires after changing sentence to forthwith - also check offence card displays correctly', () => {
-    cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
+    cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', 1)
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
     cy.get('[data-qa^="edit-offence-link-"]')
       .eq(0)

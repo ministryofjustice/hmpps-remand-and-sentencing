@@ -438,7 +438,7 @@ Cypress.Commands.add(
     appearanceReference: string,
     offenceReference: string,
     countNumber: string = '2',
-    consecutiveToSelect: string = '0|SAME',
+    position: number = 0,
   ) => {
     cy.visit(
       `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/add-another-offence`,
@@ -500,7 +500,7 @@ Cypress.Commands.add(
     // TODO
     cy.contains('h2', 'Sentences on this case')
       .nextAll('.govuk-radios__item')
-      .first()
+      .eq(position)
       .find('input[type="radio"]')
       .check()
 

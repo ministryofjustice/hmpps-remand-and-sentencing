@@ -2042,6 +2042,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let consecutiveToDetails
     console.log('getEditOffence 5')
     console.log('getEditOffence 6')
+    // TODO Ive made an assumption that the old check was testing if consec-to is in session or not
     if (offence.sentence?.consecutiveToSentenceUuid) {
       console.log('getEditOffence 6.1')
       if (!sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid)) {

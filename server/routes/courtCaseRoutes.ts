@@ -785,7 +785,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         .sort((a, b) => {
           return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
         })
-        .map(charge => chargeToOffence(charge)) // TODO tp test if removing inedex works
+        .map(charge => chargeToOffence(charge))
         .forEach(offence =>
           this.courtAppearanceService.addOffence(req.session, nomsId, offence.chargeUuid, offence, appearanceReference),
         )

@@ -438,7 +438,7 @@ Cypress.Commands.add(
     appearanceReference: string,
     offenceReference: string,
     countNumber: string = '2',
-    position: number = 0,
+    indexOfConsecutiveTo: number = 0,
   ) => {
     cy.visit(
       `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/add-another-offence`,
@@ -496,14 +496,7 @@ Cypress.Commands.add(
     offenceSentenceServeTypePage.radioLabelSelector('CONSECUTIVE').click()
     offenceSentenceServeTypePage.continueButton().click()
     const sentenceSentenceConsecutiveToPage = Page.verifyOnPage(SentenceSentenceConsecutiveToPage)
-    // sentenceSentenceConsecutiveToPage.radioLabelSelector(consecutiveToSelect).click()
-    // TODO
-    cy.contains('h2', 'Sentences on this case')
-      .nextAll('.govuk-radios__item')
-      .eq(position)
-      .find('input[type="radio"]')
-      .check()
-
+    sentenceSentenceConsecutiveToPage.sentencesOnSameCaseRadio(indexOfConsecutiveTo).click()
     sentenceSentenceConsecutiveToPage.continueButton().click()
   },
 )

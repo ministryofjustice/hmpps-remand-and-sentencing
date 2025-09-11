@@ -102,8 +102,7 @@ export default abstract class BaseRoutes {
     )
   }
 
-  // TODO Get consecutive to's where in the DB I think  - better name ??getSessionConsecutiveToSentenceDetailsFromDB
-  protected async getSessionConsecutiveToSentenceDetails(
+  protected async getConsecutiveToFromApi(
     req,
     nomsId: string,
     appearanceReference: string,

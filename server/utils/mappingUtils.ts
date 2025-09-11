@@ -40,7 +40,6 @@ const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, pris
   } as CreatePeriodLength
 }
 
-// TODO check where this is called. > done only called on vcreate so ok to ro refactor
 export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): CreateSentence | undefined => {
   let createSentence
   if (sentence) {
@@ -52,11 +51,8 @@ export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): 
       sentenceServeType: sentence.sentenceServeType,
       sentenceTypeId: sentence.sentenceTypeId,
       prisonId,
-      sentenceUuid: sentence.sentenceUuid, // TODO check this is always populated
-      consecutiveToSentenceUuid: sentence.consecutiveToSentenceUuid ?? undefined, // TODO check this is populated correctly
-      // TODO remove
-      // sentenceReference: sentence.sentenceReference,
-      // consecutiveToSentenceReference: sentence.consecutiveToSentenceReference,
+      sentenceUuid: sentence.sentenceUuid,
+      consecutiveToSentenceUuid: sentence.consecutiveToSentenceUuid ?? undefined,
       ...(sentence.convictionDate && { convictionDate: dayjs(sentence.convictionDate).format('YYYY-MM-DD') }),
       ...(sentence.fineAmount && { fineAmount: { fineAmount: sentence.fineAmount } }),
       ...(sentence.sentenceUuid && { sentenceUuid: sentence.sentenceUuid }),

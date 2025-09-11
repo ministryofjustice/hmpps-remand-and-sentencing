@@ -1623,11 +1623,7 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
     )
     console.log(' 2getCheckOffenceAnswers')
-    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(
-      req,
-      nomsId,
-      appearanceReference,
-    )
+    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
     console.log(' 3 getCheckOffenceAnswers')
     const sentenceTypeIds = Array.from(
       new Set(
@@ -1685,7 +1681,6 @@ export default class OffenceRoutes extends BaseRoutes {
       courtMap,
     )
     console.log(' 9 getCheckOffenceAnswers')
-    // TODO this is now mapped by uuid - check njk usage
     const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
       req,
       nomsId,
@@ -2239,11 +2234,7 @@ export default class OffenceRoutes extends BaseRoutes {
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
 
-    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(
-      req,
-      nomsId,
-      appearanceReference,
-    )
+    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
 
     const sentenceTypeIds = Array.from(
       new Set(
@@ -2306,7 +2297,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
-    // TODO this is now mapped by uuid - check njk usage
+
     const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
       req,
       nomsId,

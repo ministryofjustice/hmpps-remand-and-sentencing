@@ -210,11 +210,7 @@ export default class SentencingRoutes extends BaseRoutes {
       )
     }
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(
-      req,
-      nomsId,
-      appearanceReference,
-    )
+    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
     const chargeCodes = appearance.offences
       .map(offences => offences.offenceCode)
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
@@ -275,7 +271,6 @@ export default class SentencingRoutes extends BaseRoutes {
       courtMap,
     )
 
-    // TODO this is now mapped by uuid - check njk usage
     const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
       req,
       nomsId,

@@ -36,7 +36,7 @@
                 <div class="govuk-radios" data-module="govuk-radios" data-govuk-radios-init="">
 
                     {% if sentencesOnSameCase.length %}
-                        <h2 class="govuk-heading-m">Sentences on this case</h2>
+                        <h2 class="govuk-heading-m" data-qa="sentencesOnSameCaseHeader">Sentences on this case</h2>
                         {% for sentence in sentencesOnSameCase | sortByCountNumber %}
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"

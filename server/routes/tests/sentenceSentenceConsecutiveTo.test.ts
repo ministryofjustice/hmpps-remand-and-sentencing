@@ -89,6 +89,7 @@ describe('GET Sentence consecutive to', () => {
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/0/sentence-consecutive-to')
       .expect('Content-Type', /html/)
       .expect(res => {
+        console.log(res.text)
         const $ = cheerio.load(res.text)
         const prisonerBanner = $('.mini-profile').text()
         expect(prisonerBanner).toContain('Meza, Cormac')
@@ -97,8 +98,19 @@ describe('GET Sentence consecutive to', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
-        const otherCourtCaseSentenceRadio = $(':radio[value=3|OTHER]')
-        expect(otherCourtCaseSentenceRadio.length).toBe(0)
+        const radiosContainer = $('.govuk-radios')
+
+        const sameCaseSection = radiosContainer
+          .find('> h2[data-qa="sentencesOnSameCaseHeader"]')
+          .nextUntil('h2.govuk-heading-m')
+
+        expect(sameCaseSection.find('input[type="radio"][value="3"]').length).toBe(1)
+
+        const otherCasesSection = radiosContainer
+          .find('> h2[data-qa="sentencesOnOtherCasesHeader"]')
+          .nextUntil('h2.govuk-heading-m')
+
+        expect(otherCasesSection.find('input[type="radio"][value="3"]').length).toBe(0)
       })
   })
 })

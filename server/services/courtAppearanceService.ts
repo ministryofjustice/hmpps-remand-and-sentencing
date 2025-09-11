@@ -924,7 +924,12 @@ export default class CourtAppearanceService {
       offences.splice(index, 1)
     }
 
-    return offences.some(offence => offence.sentence?.consecutiveToSentenceUuid)
+    const sentenceUuidsInSession = courtAppearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
+    return offences.some(
+      offence =>
+        offence.sentence?.consecutiveToSentenceUuid &&
+        !sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid),
+    )
   }
 
   hasNoSentences(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {

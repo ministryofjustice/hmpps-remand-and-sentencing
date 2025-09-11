@@ -1346,6 +1346,7 @@ export default class OffenceRoutes extends BaseRoutes {
   }
 
   public getSentenceServeType: RequestHandler = async (req, res): Promise<void> => {
+    console.log('1 getSentenceServeType')
     const {
       nomsId,
       courtCaseReference,
@@ -1384,6 +1385,14 @@ export default class OffenceRoutes extends BaseRoutes {
         sentenceTypePeriodLengths[sentence.sentenceTypeClassification].periodLengths[expectedPeriodLengthsSize - 1].type
       }`
     }
+    console.log(`1 getSentenceServeType forthwithAlreadySelected: ${forthwithAlreadySelected}`)
+    console.log(`1 getSentenceServeType sentenceConsecutiveToAnotherCase: ${sentenceConsecutiveToAnotherCase}`)
+
+    console.log(
+      `1 getSentenceServeType showorthWith${
+        sentenceServeType === 'FORTHWITH' || (!forthwithAlreadySelected && !sentenceConsecutiveToAnotherCase)
+      }`,
+    )
     return res.render('pages/offence/sentence-serve-type', {
       nomsId,
       courtCaseReference,
@@ -2024,6 +2033,7 @@ export default class OffenceRoutes extends BaseRoutes {
     console.log('getEditOffence 4')
 
     if (offence.sentence) {
+      console.log('getEditOffence 4.1')
       periodLengths =
         offence.sentence.periodLengths?.map(periodLength => {
           const key =

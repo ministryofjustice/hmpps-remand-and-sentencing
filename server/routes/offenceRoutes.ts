@@ -1786,7 +1786,7 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       } else {
         sessionConsecutiveTo = courtAppearance.offences.find(
-          appearanceOffence => appearanceOffence.sentence?.sentenceUuid === offence.sentence?.sentenceUuid,
+          appearanceOffence => appearanceOffence.sentence?.sentenceUuid === offence.sentence?.consecutiveToSentenceUuid,
         )
       }
     }
@@ -1849,6 +1849,8 @@ export default class OffenceRoutes extends BaseRoutes {
         cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     }
+    console.log(`sessionConsecutiveToSentenceDetailsMap${JSON.stringify(sessionConsecutiveToSentenceDetailsMap)}`)
+    console.log(`consec to${offence.sentence.consecutiveToSentenceUuid}`)
 
     return res.render('pages/offence/delete-offence', {
       nomsId,

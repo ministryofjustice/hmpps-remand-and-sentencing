@@ -1394,6 +1394,7 @@ export default class CourtAppearanceService {
   }
 
   resetSessionCourtAppearances(session: Partial<SessionData>, nomsId: string) {
+    if (!session.originalCourtAppearance) return
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = session.originalCourtAppearance
     // eslint-disable-next-line no-param-reassign

@@ -89,7 +89,6 @@ describe('GET Sentence consecutive to', () => {
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/offences/0/sentence-consecutive-to')
       .expect('Content-Type', /html/)
       .expect(res => {
-        console.log(res.text)
         const $ = cheerio.load(res.text)
         const prisonerBanner = $('.mini-profile').text()
         expect(prisonerBanner).toContain('Meza, Cormac')

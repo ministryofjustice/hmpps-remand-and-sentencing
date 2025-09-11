@@ -1,5 +1,5 @@
 import { PagePagedCourtCase } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import mojPaginationFromPagePagedCourtCase from './pagination'
+import { govukPaginationFromPagePagedCourtCase, getPaginationResults } from './pagination'
 
 describe('pagination tests', () => {
   const baseUrl = new URL('http://localhost/')
@@ -32,7 +32,7 @@ describe('pagination tests', () => {
       numberOfElements: 1,
       empty: false,
     } as PagePagedCourtCase
-    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
+    const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result).toBeNull()
   })
 
@@ -65,9 +65,8 @@ describe('pagination tests', () => {
       numberOfElements: 14,
       empty: false,
     }
-    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
+    const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.previous).toEqual({
-      text: 'Previous',
       href: `http://localhost/?pageNumber=1`,
     })
   })
@@ -101,9 +100,8 @@ describe('pagination tests', () => {
       numberOfElements: 20,
       empty: false,
     } as PagePagedCourtCase
-    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
+    const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.next).toEqual({
-      text: 'Next',
       href: `http://localhost/?pageNumber=2`,
     })
   })
@@ -137,15 +135,15 @@ describe('pagination tests', () => {
       numberOfElements: 14,
       empty: false,
     }
-    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
-    expect(result.results).toEqual({
+    const result = getPaginationResults(pageCourtCase)
+    expect(result).toEqual({
       from: 21,
       to: 34,
       count: 34,
     })
   })
 
-  it('shows dots between range and last', () => {
+  it('shows ellipsis between range and last', () => {
     const pageCourtCase = {
       content: [],
       pageable: {
@@ -174,25 +172,25 @@ describe('pagination tests', () => {
       numberOfElements: 8,
       empty: false,
     } as PagePagedCourtCase
-    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
+    const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.items).toEqual([
       {
-        text: '1',
+        number: 1,
         href: 'http://localhost/?pageNumber=1',
-        selected: true,
+        current: true,
       },
       {
-        text: '2',
+        number: 2,
         href: 'http://localhost/?pageNumber=2',
-        selected: false,
+        current: false,
       },
       {
-        type: 'dots',
+        ellipsis: true,
       },
       {
-        text: '5',
+        number: 5,
         href: 'http://localhost/?pageNumber=5',
-        selected: false,
+        current: false,
       },
     ])
   })
@@ -226,37 +224,37 @@ describe('pagination tests', () => {
       numberOfElements: 8,
       empty: false,
     } as PagePagedCourtCase
-    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
+    const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.items).toEqual([
       {
-        text: '1',
+        number: 1,
         href: 'http://localhost/?pageNumber=1',
-        selected: true,
+        current: true,
       },
       {
-        text: '2',
+        number: 2,
         href: 'http://localhost/?pageNumber=2',
-        selected: false,
+        current: false,
       },
       {
-        text: '3',
+        number: 3,
         href: 'http://localhost/?pageNumber=3',
-        selected: true,
+        current: true,
       },
       {
-        text: '4',
+        number: 4,
         href: 'http://localhost/?pageNumber=4',
-        selected: false,
+        current: false,
       },
       {
-        text: '5',
+        number: 5,
         href: 'http://localhost/?pageNumber=5',
-        selected: false,
+        current: false,
       },
     ])
   })
 
-  it('show dots between range and first', () => {
+  it('show ellipse between range and first', () => {
     const pageCourtCase = {
       content: [],
       pageable: {
@@ -285,30 +283,30 @@ describe('pagination tests', () => {
       numberOfElements: 8,
       empty: false,
     } as PagePagedCourtCase
-    const result = mojPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
+    const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.items).toEqual([
       {
-        text: '1',
+        number: 1,
         href: 'http://localhost/?pageNumber=1',
-        selected: false,
+        current: false,
       },
       {
-        type: 'dots',
+        ellipsis: true,
       },
       {
-        text: '3',
+        number: 3,
         href: 'http://localhost/?pageNumber=3',
-        selected: false,
+        current: false,
       },
       {
-        text: '4',
+        number: 4,
         href: 'http://localhost/?pageNumber=4',
-        selected: true,
+        current: true,
       },
       {
-        text: '5',
+        number: 5,
         href: 'http://localhost/?pageNumber=5',
-        selected: false,
+        current: false,
       },
     ])
   })

@@ -182,7 +182,7 @@ export default class OffenceRoutes extends BaseRoutes {
         appearanceReference,
       )
       if (hasInvalidatedOffence) {
-        this.offenceService.invalidateFromOffenceDate(req.session, nomsId, courtCaseReference, chargeUuid)
+        this.offenceService.invalidateFromOffenceDate(req.session, nomsId, courtCaseReference)
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type?invalidatedFrom=${InvalidatedFrom.OFFENCE_DATE}`,
         )
@@ -1568,7 +1568,7 @@ export default class OffenceRoutes extends BaseRoutes {
         appearanceReference,
       )
       if (hasInvalidatedOffence) {
-        this.offenceService.invalidateFromConvictionDate(req.session, nomsId, courtCaseReference, chargeUuid)
+        this.offenceService.invalidateFromConvictionDate(req.session, nomsId, courtCaseReference)
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type?invalidatedFrom=${InvalidatedFrom.CONVICTION_DATE}`,
         )
@@ -1849,8 +1849,6 @@ export default class OffenceRoutes extends BaseRoutes {
         cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
       }
     }
-    console.log(`sessionConsecutiveToSentenceDetailsMap${JSON.stringify(sessionConsecutiveToSentenceDetailsMap)}`)
-    console.log(`consec to${offence.sentence.consecutiveToSentenceUuid}`)
 
     return res.render('pages/offence/delete-offence', {
       nomsId,

@@ -909,12 +909,7 @@ export default class OffenceService {
     return id
   }
 
-  invalidateFromOffenceDate(
-    session: Partial<SessionData>,
-    nomsId: string,
-    courtCaseReference: string,
-    chargeUuid: string,
-  ) {
+  invalidateFromOffenceDate(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)
@@ -926,12 +921,7 @@ export default class OffenceService {
     session.offences[id] = offence
   }
 
-  invalidateFromConvictionDate(
-    session: Partial<SessionData>,
-    nomsId: string,
-    courtCaseReference: string,
-    chargeUuid: string,
-  ) {
+  invalidateFromConvictionDate(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)

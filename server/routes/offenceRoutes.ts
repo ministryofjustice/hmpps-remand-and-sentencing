@@ -1082,13 +1082,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
     const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
     const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    this.offenceService.setInitialPeriodLengths(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      sentence?.periodLengths ?? [],
-    )
+    this.offenceService.setInitialPeriodLengths(req.session, nomsId, courtCaseReference, sentence?.periodLengths ?? [])
     const errors = this.offenceService.setPeriodLength(
       req.session,
       nomsId,
@@ -1276,13 +1270,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
     const offenceAlternativeSentenceLengthForm = trimForm<OffenceAlternativePeriodLengthForm>(req.body)
     const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    this.offenceService.setInitialPeriodLengths(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      sentence?.periodLengths ?? [],
-    )
+    this.offenceService.setInitialPeriodLengths(req.session, nomsId, courtCaseReference, sentence?.periodLengths ?? [])
     const errors = this.offenceService.setAlternativePeriodLength(
       req.session,
       nomsId,
@@ -2247,7 +2235,6 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
-
     const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
       req,
       nomsId,

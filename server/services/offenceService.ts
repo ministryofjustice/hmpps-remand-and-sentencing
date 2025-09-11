@@ -493,7 +493,6 @@ export default class OffenceService {
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
-    chargeUuid: string,
     periodLengths: SentenceLength[],
   ) {
     const id = this.getOffenceId(nomsId, courtCaseReference)

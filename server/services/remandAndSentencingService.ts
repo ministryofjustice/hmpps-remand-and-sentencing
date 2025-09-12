@@ -1,4 +1,4 @@
-import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
+import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
 import {
   AppearanceType,
@@ -282,8 +282,7 @@ export default class RemandAndSentencingService {
   }
 
   async validateConsecutiveLoops(
-    useConsecutiveToRef: boolean,
-    targetSentenceReferenceOrUuId: string,
+    targetSentenceUuid: string,
     sessionCourtAppearance: CourtAppearance,
     nomsId: string,
     sourceSentenceUuid: string,
@@ -300,18 +299,12 @@ export default class RemandAndSentencingService {
       .map(offence => {
         return {
           sentenceUuid: offence.sentence.sentenceUuid,
-          consecutiveToSentenceUuid: this.getConsecutiveToSentenceUuid(offence, sessionCourtAppearance),
+          consecutiveToSentenceUuid: offence.sentence.consecutiveToSentenceUuid || undefined,
         } as SentenceDetailsForConsecValidation
       })
 
-    // Source sentence has not beed added to sentences yet, therefore cannot be part of a loop yet
+    // Source sentence has not been added to sentences yet, therefore cannot be part of a loop yet
     if (!sentences.some(s => s.sentenceUuid === sourceSentenceUuid)) return []
-
-    const targetSentenceUuid = useConsecutiveToRef
-      ? sessionCourtAppearance.offences
-          .filter(offence => offence.sentence)
-          .find(o => o.sentence.sentenceReference === targetSentenceReferenceOrUuId).sentence.sentenceUuid
-      : targetSentenceReferenceOrUuId
 
     const request: ConsecutiveChainValidationRequest = {
       prisonerId: nomsId,
@@ -330,15 +323,5 @@ export default class RemandAndSentencingService {
         },
       ]
     return []
-  }
-
-  private getConsecutiveToSentenceUuid(offence: Offence, sessionCourtAppearance: CourtAppearance) {
-    return offence.sentence.consecutiveToSentenceUuid
-      ? offence.sentence.consecutiveToSentenceUuid
-      : offence.sentence.consecutiveToSentenceReference &&
-          sessionCourtAppearance.offences
-            .filter(o => o.sentence)
-            .find(o => o.sentence.sentenceReference === offence.sentence.consecutiveToSentenceReference).sentence
-            .sentenceUuid
   }
 }

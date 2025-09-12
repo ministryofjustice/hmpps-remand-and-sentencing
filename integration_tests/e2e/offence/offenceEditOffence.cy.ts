@@ -275,7 +275,7 @@ context('Add Offence Edit offence Page', () => {
       offenceSentenceServeTypePage.radioLabelSelector('CONSECUTIVE').click()
       offenceSentenceServeTypePage.continueButton().click()
       const sentenceSentenceConsecutiveToPage = Page.verifyOnPage(SentenceSentenceConsecutiveToPage)
-      sentenceSentenceConsecutiveToPage.radioSelector('328fa693-3f99-46bf-9a94-d8578dc399af|OTHER').click()
+      sentenceSentenceConsecutiveToPage.radioSelector('328fa693-3f99-46bf-9a94-d8578dc399af').click()
       sentenceSentenceConsecutiveToPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {

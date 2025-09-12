@@ -45,7 +45,7 @@ describe('mapping API to session util tests', () => {
       },
       periodLengths: [],
     } as APISentence
-    const result = apiSentenceToSentence(apiSentence, 1)
+    const result = apiSentenceToSentence(apiSentence)
     expect(result.fineAmount).toEqual(apiSentence.fineAmount.fineAmount)
   })
 })

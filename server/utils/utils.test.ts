@@ -64,7 +64,6 @@ describe('trim', () => {
 describe('next period length type', () => {
   it('return null when current period length type is unsupported', () => {
     const sentence = {
-      sentenceReference: '0',
       sentenceTypeClassification: 'EXTENDED',
     } as Sentence
     expect(getNextPeriodLengthType(sentence, 'UNSUPPORTED')).toBeNull()

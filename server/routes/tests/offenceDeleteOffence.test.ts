@@ -26,7 +26,6 @@ describe('GET Delete offence', () => {
           outcomeUuid: '123',
           sentence: {
             sentenceUuid: '3',
-            sentenceReference: '0',
             convictionDate: new Date(),
             countNumber: '1',
             sentenceServeType: 'FORTHWITH',
@@ -94,7 +93,6 @@ describe('GET Delete offence', () => {
           outcomeUuid: '123',
           sentence: {
             sentenceUuid: '3',
-            sentenceReference: '0',
             convictionDate: new Date(),
             countNumber: '1',
             sentenceServeType: 'FORTHWITH',

@@ -97,16 +97,25 @@ export default abstract class BaseRoutes {
     )
   }
 
-  protected async getSessionConsecutiveToSentenceDetails(
+  protected async getConsecutiveToFromApi(
     req,
     nomsId: string,
     appearanceReference: string,
   ): Promise<SentenceConsecutiveToDetailsResponse> {
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const consecutiveToSentenceUuids = appearance.offences
-      .map(offence => offence.sentence?.consecutiveToSentenceUuid)
-      .filter(sentenceUuid => sentenceUuid)
-    return this.remandAndSentencingService.getConsecutiveToDetails(consecutiveToSentenceUuids, req.user.username)
+
+    const sentenceUuidsInSession = appearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
+    const consecutiveToSentenceUuidsNotInSession = appearance.offences
+      .filter(
+        o =>
+          o.sentence?.consecutiveToSentenceUuid &&
+          !sentenceUuidsInSession.some(uuid => uuid === o.sentence?.consecutiveToSentenceUuid),
+      )
+      .map(o => o.sentence?.consecutiveToSentenceUuid)
+    return this.remandAndSentencingService.getConsecutiveToDetails(
+      consecutiveToSentenceUuidsNotInSession,
+      req.user.username,
+    )
   }
 
   protected getConsecutiveToSentenceDetailsMap(
@@ -138,17 +147,22 @@ export default abstract class BaseRoutes {
   ): {
     [key: string]: ConsecutiveToDetails
   } {
-    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const sentenceUuidsInSession = appearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
+    const { offences } = appearance
     return Object.fromEntries(
       offences
-        .filter(offence => offence.sentence?.consecutiveToSentenceReference)
+        .filter(
+          offence =>
+            offence.sentence?.consecutiveToSentenceUuid &&
+            sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid),
+        )
         .map(consecutiveOffence => {
           const consecutiveToOffence = offences.find(
-            offence =>
-              offence.sentence?.sentenceReference === consecutiveOffence.sentence.consecutiveToSentenceReference,
+            offence => offence.sentence?.sentenceUuid === consecutiveOffence.sentence.consecutiveToSentenceUuid,
           )
           return [
-            consecutiveOffence.sentence.consecutiveToSentenceReference,
+            consecutiveOffence.sentence.consecutiveToSentenceUuid,
             offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap),
           ]
         }),

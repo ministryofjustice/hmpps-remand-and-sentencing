@@ -51,8 +51,8 @@ export const sentenceToCreateSentence = (sentence: Sentence, prisonId: string): 
       sentenceServeType: sentence.sentenceServeType,
       sentenceTypeId: sentence.sentenceTypeId,
       prisonId,
-      sentenceReference: sentence.sentenceReference,
-      consecutiveToSentenceReference: sentence.consecutiveToSentenceReference,
+      sentenceUuid: sentence.sentenceUuid,
+      consecutiveToSentenceUuid: sentence.consecutiveToSentenceUuid ?? undefined,
       ...(sentence.convictionDate && { convictionDate: dayjs(sentence.convictionDate).format('YYYY-MM-DD') }),
       ...(sentence.fineAmount && { fineAmount: { fineAmount: sentence.fineAmount } }),
       ...(sentence.sentenceUuid && { sentenceUuid: sentence.sentenceUuid }),
@@ -192,23 +192,22 @@ export const pagedAppearancePeriodLengthToSentenceLength = (
   return null
 }
 
-export const apiSentenceToSentence = (apiSentence: APISentence, index: number): Sentence => {
+export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   return {
     sentenceUuid: apiSentence.sentenceUuid,
-    sentenceReference: index.toString(),
     countNumber: apiSentence.chargeNumber,
     periodLengths: apiSentence.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
     sentenceServeType: apiSentence.sentenceServeType,
     sentenceTypeId: apiSentence.sentenceType?.sentenceTypeUuid,
     sentenceTypeClassification: apiSentence.sentenceType?.classification,
-    consecutiveToSentenceUuid: apiSentence.consecutiveToSentenceUuid,
+    consecutiveToSentenceUuid: apiSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: apiSentence.fineAmount?.fineAmount,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
     ...(apiSentence.legacyData && { legacyData: { ...apiSentence.legacyData } }),
   } as Sentence
 }
 
-export const chargeToOffence = (charge: Charge, index: number): Offence => {
+export const chargeToOffence = (charge: Charge): Offence => {
   return {
     offenceCode: charge.offenceCode,
     outcomeUuid: charge.outcome?.outcomeUuid,
@@ -216,28 +215,27 @@ export const chargeToOffence = (charge: Charge, index: number): Offence => {
     terrorRelated: charge.terrorRelated,
     ...(charge.offenceStartDate && { offenceStartDate: dayjs(charge.offenceStartDate).toDate() }),
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
-    ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence, index) }),
+    ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
     ...(charge.legacyData && { legacyData: { ...charge.legacyData } }),
     ...(charge.mergedFromCase && { mergedFromCase: charge.mergedFromCase }),
   } as Offence
 }
 
-export const pagedChargeToOffence = (pagedCharge: PagedCharge, index: number): Offence => {
+export const pagedChargeToOffence = (pagedCharge: PagedCharge): Offence => {
   return {
     offenceCode: pagedCharge.offenceCode,
     outcomeUuid: pagedCharge.outcome?.outcomeUuid,
     ...(pagedCharge.offenceStartDate && { offenceStartDate: dayjs(pagedCharge.offenceStartDate).toDate() }),
     ...(pagedCharge.offenceEndDate && { offenceEndDate: dayjs(pagedCharge.offenceEndDate).toDate() }),
     ...(pagedCharge.legacyData && { legacyData: { ...pagedCharge.legacyData } }),
-    ...(pagedCharge.sentence && { sentence: pagedSentenceToSentence(pagedCharge.sentence, index) }),
+    ...(pagedCharge.sentence && { sentence: pagedSentenceToSentence(pagedCharge.sentence) }),
     ...(pagedCharge.mergedFromCase && { mergedFromCase: pagedCharge.mergedFromCase }),
   } as Offence
 }
 
-export const pagedSentenceToSentence = (pagedSentence: PagedSentence, index: number): Sentence => {
+export const pagedSentenceToSentence = (pagedSentence: PagedSentence): Sentence => {
   return {
     sentenceUuid: pagedSentence.sentenceUuid,
-    sentenceReference: index.toString(),
     countNumber: pagedSentence.chargeNumber,
     periodLengths: pagedSentence.periodLengths.map(periodLength =>
       pagedSentencePeriodLengthToSentenceLength(periodLength),
@@ -245,7 +243,7 @@ export const pagedSentenceToSentence = (pagedSentence: PagedSentence, index: num
     sentenceServeType: pagedSentence.sentenceServeType,
     sentenceTypeId: pagedSentence.sentenceType?.sentenceTypeUuid,
     sentenceTypeClassification: pagedSentence.sentenceType?.classification,
-    consecutiveToSentenceUuid: pagedSentence.consecutiveToSentenceUuid,
+    consecutiveToSentenceUuid: pagedSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: pagedSentence.fineAmount,
     ...(pagedSentence.convictionDate && { convictionDate: dayjs(pagedSentence.convictionDate).toDate() }),
     ...(pagedSentence.legacyData && { legacyData: { ...pagedSentence.legacyData } }),
@@ -376,7 +374,7 @@ export function sentenceLengthFormToSentenceLength(
   } as SentenceLength
 }
 
-const populateConsecutiveToSentenceReference = (offences: Offence[]) => {
+const populateConsecutiveToSentenceUuid = (offences: Offence[]) => {
   offences
     .filter(offence => offence.sentence?.consecutiveToSentenceUuid)
     .forEach(offence => {
@@ -385,9 +383,7 @@ const populateConsecutiveToSentenceReference = (offences: Offence[]) => {
       )
       if (consecutiveToSentence) {
         // eslint-disable-next-line no-param-reassign
-        offence.sentence.consecutiveToSentenceReference = consecutiveToSentence.sentence.sentenceReference
-        // eslint-disable-next-line no-param-reassign
-        delete offence.sentence.consecutiveToSentenceUuid
+        offence.sentence.consecutiveToSentenceUuid = consecutiveToSentence.sentence.sentenceUuid
       }
     })
 }
@@ -400,7 +396,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
       return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
     })
     .map(chargeToOffence)
-  populateConsecutiveToSentenceReference(offences)
+  populateConsecutiveToSentenceUuid(offences)
   return {
     appearanceUuid: pageCourtCaseAppearance.appearanceUuid,
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,

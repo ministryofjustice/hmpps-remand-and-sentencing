@@ -15,7 +15,6 @@ import type {
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
-  OffenceCountNumberForm,
   OffenceFinishedAddingForm,
   SentenceLengthForm,
 } from 'forms'
@@ -29,7 +28,6 @@ import {
 import RemandAndSentencingService from './remandAndSentencingService'
 import { extractKeyValue, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
-import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
@@ -924,7 +922,12 @@ export default class CourtAppearanceService {
       offences.splice(index, 1)
     }
 
-    return offences.some(offence => offence.sentence?.consecutiveToSentenceUuid)
+    const sentenceUuidsInSession = courtAppearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
+    return offences.some(
+      offence =>
+        offence.sentence?.consecutiveToSentenceUuid &&
+        !sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid),
+    )
   }
 
   hasNoSentences(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {
@@ -947,59 +950,11 @@ export default class CourtAppearanceService {
       const existingOffence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
       courtAppearance.offences[offenceReference] = offence
       if (existingOffence.sentence && !offence.sentence) {
-        this.resetChain(existingOffence.sentence.sentenceReference, courtAppearance)
+        this.resetChain(existingOffence.sentence.sentenceUuid, courtAppearance)
       }
     }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
-  }
-
-  setCountNumber(
-    session: Partial<SessionData>,
-    nomsId: string,
-    offenceReference: number,
-    countNumberForm: OffenceCountNumberForm,
-    appearanceUuid: string,
-  ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
-      const sentence = offence.sentence ?? {
-        sentenceReference: offenceReference.toString(),
-        sentenceUuid: crypto.randomUUID(),
-      }
-      sentence.hasCountNumber = countNumberForm.hasCountNumber
-      if (countNumberForm.hasCountNumber === 'true') {
-        sentence.countNumber = countNumberForm.countNumber
-      } else {
-        delete sentence.countNumber
-      }
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
-      // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
-    }
-  }
-
-  setOffenceOutcome(
-    session: Partial<SessionData>,
-    nomsId: string,
-    offenceReference: number,
-    offenceOutcome: OffenceOutcome,
-    appearanceUuid: string,
-  ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
-      offence.outcomeUuid = offenceOutcome.outcomeUuid
-      offence.updatedOutcome = true
-      if (offenceOutcome.outcomeType !== 'SENTENCING') {
-        delete offence.sentence
-      }
-      courtAppearance.offences[offenceReference] = offence
-      // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
-    }
   }
 
   deleteOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
@@ -1017,14 +972,14 @@ export default class CourtAppearanceService {
     return courtAppearance.offences.find(offence => offence.chargeUuid === chargeUuid)
   }
 
-  getOffenceBySentenceReference(
+  getSessionOffenceBySentenceUuid(
     session: Partial<SessionData>,
     nomsId: string,
-    sentenceReference: string,
+    sentenceUuid: string,
     appearanceUuid: string,
   ): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    return courtAppearance.offences.find(offence => offence.sentence?.sentenceReference === sentenceReference)
+    return courtAppearance.offences.find(offence => offence.sentence?.sentenceUuid === sentenceUuid)
   }
 
   getCountNumbers(
@@ -1218,29 +1173,11 @@ export default class CourtAppearanceService {
       const { sentence } = offence
       if (sentence) {
         sentenceInChain = courtAppearance.offences.some(
-          otherOffence => otherOffence.sentence?.consecutiveToSentenceReference === sentence.sentenceReference,
+          otherOffence => otherOffence.sentence?.consecutiveToSentenceUuid === sentence.sentenceUuid,
         )
       }
     }
     return sentenceInChain
-  }
-
-  setSentenceToConcurrent(
-    session: Partial<SessionData>,
-    nomsId: string,
-    offenceReference: number,
-    appearanceUuid: string,
-  ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
-      const { sentence } = offence
-      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)
-      delete sentence.consecutiveToSentenceReference
-      delete sentence.consecutiveToSentenceUuid
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
-    }
   }
 
   resetConsecutiveFields(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
@@ -1249,10 +1186,8 @@ export default class CourtAppearanceService {
     if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
       const offence = courtAppearance.offences[offenceReference]
       const sentence = offence.sentence ?? {
-        sentenceReference: offenceReference.toString(),
         sentenceUuid: crypto.randomUUID(),
       }
-      delete sentence.consecutiveToSentenceReference
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence
@@ -1272,7 +1207,6 @@ export default class CourtAppearanceService {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
       sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)
-      delete sentence.consecutiveToSentenceReference
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence
@@ -1290,7 +1224,6 @@ export default class CourtAppearanceService {
       const offence = courtAppearance.offences[offenceReference]
       const { sentence } = offence
       sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
-      delete sentence.consecutiveToSentenceReference
       delete sentence.consecutiveToSentenceUuid
       offence.sentence = sentence
       courtAppearance.offences[offenceReference] = offence
@@ -1302,26 +1235,25 @@ export default class CourtAppearanceService {
     const { offences } = courtAppearance
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
     if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
-      const { sentenceReference } = courtAppearance.offences[offenceReference].sentence
+      const { sentenceUuid } = courtAppearance.offences[offenceReference].sentence
       offences.splice(offenceReference, 1)
-      this.resetChain(sentenceReference, courtAppearance)
+      this.resetChain(sentenceUuid, courtAppearance)
       courtAppearance.offences = offences
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
   }
 
-  private resetChain(deletedSentenceReference: string, courtAppearance: CourtAppearance) {
+  private resetChain(deletedSentenceUuid: string, courtAppearance: CourtAppearance) {
     const { offences } = courtAppearance
     const nextSentencesInChainIndexes = offences.flatMap((offence, index) =>
-      offence.sentence?.consecutiveToSentenceReference === deletedSentenceReference ? index : [],
+      offence.sentence?.consecutiveToSentenceUuid === deletedSentenceUuid ? index : [],
     )
     while (nextSentencesInChainIndexes.length) {
       const nextChainIndex = nextSentencesInChainIndexes.pop()
       const nextChainOffence = courtAppearance.offences[nextChainIndex]
       const { sentence } = nextChainOffence
-      const nextSentenceInChainSentenceReference = sentence.sentenceReference
-      delete sentence.consecutiveToSentenceReference
+      const nextSentenceInChainUuid = sentence.sentenceUuid
       delete sentence.consecutiveToSentenceUuid
       delete sentence.sentenceServeType
       delete sentence.isSentenceConsecutiveToAnotherCase
@@ -1330,7 +1262,7 @@ export default class CourtAppearanceService {
       offences
         .flatMap((offence, index) => {
           if (
-            offence.sentence?.consecutiveToSentenceReference === nextSentenceInChainSentenceReference &&
+            offence.sentence?.consecutiveToSentenceUuid === nextSentenceInChainUuid &&
             !nextSentencesInChainIndexes.includes(index)
           ) {
             return index

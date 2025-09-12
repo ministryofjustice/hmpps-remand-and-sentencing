@@ -61,11 +61,7 @@ export default class RemandRoutes extends BaseRoutes {
     }
 
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(
-      req,
-      nomsId,
-      appearanceReference,
-    )
+    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
     const chargeCodes = appearance.offences
       .map(offences => offences.offenceCode)
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))

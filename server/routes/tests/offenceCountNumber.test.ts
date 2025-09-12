@@ -19,7 +19,6 @@ describe('GET Offence Count Number', () => {
       chargeUuid: '1',
       sentence: {
         sentenceUuid: '2',
-        sentenceReference: '0',
       },
     })
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({ appearanceUuid: '1' })

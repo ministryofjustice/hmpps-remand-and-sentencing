@@ -210,12 +210,14 @@ export default class SentencingRoutes extends BaseRoutes {
       )
     }
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
+    const consecutiveToSentenceDetailsFromApi = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
     const chargeCodes = appearance.offences
       .map(offences => offences.offenceCode)
-      .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
+      .concat(
+        consecutiveToSentenceDetailsFromApi.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode),
+      )
     const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode]
-      .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
+      .concat(consecutiveToSentenceDetailsFromApi.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
       .concat(appearance.offences.map(offence => offence.mergedFromCase?.courtCode))
       .filter(courtId => courtId !== undefined && courtId !== null)
     const sentenceTypeIds = appearance.offences
@@ -238,7 +240,7 @@ export default class SentencingRoutes extends BaseRoutes {
         this.manageOffencesService.getOffenceMap(
           Array.from(new Set(chargeCodes)),
           req.user.username,
-          offencesToOffenceDescriptions(appearance.offences, consecutiveToSentenceDetails.sentences),
+          offencesToOffenceDescriptions(appearance.offences, consecutiveToSentenceDetailsFromApi.sentences),
         ),
         this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
         this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
@@ -266,7 +268,7 @@ export default class SentencingRoutes extends BaseRoutes {
       .filter(sentenceUuid => sentenceUuid)
     const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
       allSentenceUuids,
-      consecutiveToSentenceDetails,
+      consecutiveToSentenceDetailsFromApi,
       offenceMap,
       courtMap,
     )
@@ -305,8 +307,10 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceTypeDescription,
       custodialOffences: orderOffences(custodialOffences),
       nonCustodialOffences: orderOffences(nonCustodialOffences),
-      consecutiveToSentenceDetailsMap,
-      sessionConsecutiveToSentenceDetailsMap,
+      consecutiveToSentenceMap: {
+        ...consecutiveToSentenceDetailsMap,
+        ...sessionConsecutiveToSentenceDetailsMap,
+      },
       documentsWithUiType,
       mergedFromText,
       errors: req.flash('errors') || [],

@@ -147,10 +147,16 @@ export default abstract class BaseRoutes {
   ): {
     [key: string]: ConsecutiveToDetails
   } {
-    const { offences } = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const sentenceUuidsInSession = appearance.offences.filter(o => o.sentence).map(o => o.sentence.sentenceUuid)
+    const { offences } = appearance
     return Object.fromEntries(
       offences
-        .filter(offence => offence.sentence?.consecutiveToSentenceUuid)
+        .filter(
+          offence =>
+            offence.sentence?.consecutiveToSentenceUuid &&
+            sentenceUuidsInSession.some(uuid => uuid === offence.sentence?.consecutiveToSentenceUuid),
+        )
         .map(consecutiveOffence => {
           const consecutiveToOffence = offences.find(
             offence => offence.sentence?.sentenceUuid === consecutiveOffence.sentence.consecutiveToSentenceUuid,

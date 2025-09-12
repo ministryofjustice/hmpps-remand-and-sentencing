@@ -438,7 +438,7 @@ Cypress.Commands.add(
     appearanceReference: string,
     offenceReference: string,
     countNumber: string = '2',
-    consecutiveToSelect: string = '0|SAME',
+    indexOfConsecutiveTo: number = 0,
   ) => {
     cy.visit(
       `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/add-another-offence`,
@@ -496,7 +496,7 @@ Cypress.Commands.add(
     offenceSentenceServeTypePage.radioLabelSelector('CONSECUTIVE').click()
     offenceSentenceServeTypePage.continueButton().click()
     const sentenceSentenceConsecutiveToPage = Page.verifyOnPage(SentenceSentenceConsecutiveToPage)
-    sentenceSentenceConsecutiveToPage.radioLabelSelector(consecutiveToSelect).click()
+    sentenceSentenceConsecutiveToPage.sentencesOnSameCaseRadio(indexOfConsecutiveTo).click()
     sentenceSentenceConsecutiveToPage.continueButton().click()
   },
 )

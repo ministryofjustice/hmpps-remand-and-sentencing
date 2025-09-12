@@ -19,7 +19,6 @@ describe('GET Offence alternative period length', () => {
       chargeUuid: '1',
       sentence: {
         sentenceUuid: '2',
-        sentenceReference: '0',
         periodLengths: [],
       },
     })

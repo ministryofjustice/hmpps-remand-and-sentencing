@@ -25,7 +25,6 @@ describe('GET Sentence consecutive to', () => {
           offenceCode: 'BB6557',
           sentence: {
             sentenceUuid: '3',
-            sentenceReference: '1',
           },
         },
       ],
@@ -35,7 +34,6 @@ describe('GET Sentence consecutive to', () => {
       offenceCode: 'CC12345',
       sentence: {
         sentenceUuid: '2',
-        sentenceReference: '0',
       },
     })
     defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({
@@ -99,8 +97,19 @@ describe('GET Sentence consecutive to', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
-        const otherCourtCaseSentenceRadio = $(':radio[value=3|OTHER]')
-        expect(otherCourtCaseSentenceRadio.length).toBe(0)
+        const radiosContainer = $('.govuk-radios')
+
+        const sameCaseSection = radiosContainer
+          .find('> h2[data-qa="sentencesOnSameCaseHeader"]')
+          .nextUntil('h2.govuk-heading-m')
+
+        expect(sameCaseSection.find('input[type="radio"][value="3"]').length).toBe(1)
+
+        const otherCasesSection = radiosContainer
+          .find('> h2[data-qa="sentencesOnOtherCasesHeader"]')
+          .nextUntil('h2.govuk-heading-m')
+
+        expect(otherCasesSection.find('input[type="radio"][value="3"]').length).toBe(0)
       })
   })
 })

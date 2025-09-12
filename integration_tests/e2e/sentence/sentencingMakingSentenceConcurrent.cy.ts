@@ -64,7 +64,7 @@ context('Sentencing making sentence concurrent Page', () => {
   })
 
   it('Check offence answers page after the last sentence is made concurrent', () => {
-    cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
+    cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', 1)
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
     cy.get('[data-qa^="edit-offence-link-"]')
       .eq(2)

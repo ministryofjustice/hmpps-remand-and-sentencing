@@ -27,10 +27,10 @@ import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
-import SameCaseSentenceToChainTo from './data/SameCaseSentenceToChainTo'
 import {
   AppearanceToChainTo,
   SentencesToChainToResponse,
+  SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class SentencingRoutes extends BaseRoutes {
@@ -210,11 +210,7 @@ export default class SentencingRoutes extends BaseRoutes {
       )
     }
     const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const consecutiveToSentenceDetails = await this.getSessionConsecutiveToSentenceDetails(
-      req,
-      nomsId,
-      appearanceReference,
-    )
+    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
     const chargeCodes = appearance.offences
       .map(offences => offences.offenceCode)
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
@@ -551,8 +547,7 @@ export default class SentencingRoutes extends BaseRoutes {
           offenceEndDate: sessionOffence.offenceEndDate,
           offenceCode: sessionOffence.offenceCode,
           sentenceUuid: sessionOffence.sentence.sentenceUuid,
-          sentenceReference: sessionOffence.sentence.sentenceReference,
-        } as unknown as SameCaseSentenceToChainTo
+        } as unknown as SentenceToChainTo
       })
     const sentencedAppearancesOnOtherCases = this.getAppearancesToChainToOnOtherCases(
       courtAppearance,

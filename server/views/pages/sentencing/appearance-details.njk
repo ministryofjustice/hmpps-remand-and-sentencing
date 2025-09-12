@@ -210,7 +210,7 @@
             isSentenced: offence.sentence,
             periodLengths: offence.sentence.periodLengths,
             sentenceServeType: offence.sentence.sentenceServeType,
-            consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceReference] if offence.sentence and offence.sentence.consecutiveToSentenceReference else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
+            consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence and offence.sentence.consecutiveToSentenceUuid else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
             sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] | sentenceTypeValueOrLegacy(offence.sentence.legacyData),
             fineAmount: offence.sentence.fineAmount,
             mergedFromCase: offence.mergedFromCase,

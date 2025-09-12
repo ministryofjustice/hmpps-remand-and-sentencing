@@ -47,7 +47,7 @@ context('Check offence answers page after making consecutive', () => {
   })
 
   it('Check that intercept fires after changing sentence to consecutive (and subsequent flow) - also check offence card displays correctly', () => {
-    cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', '1|SAME')
+    cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3', 1)
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offences')
     cy.get('[data-qa^="edit-offence-link-"]')
       .eq(1)
@@ -65,7 +65,8 @@ context('Check offence answers page after making consecutive', () => {
           const sentencingMakingSentenceConsecutivePage = Page.verifyOnPage(SentencingMakingSentenceConsecutivePage)
           sentencingMakingSentenceConsecutivePage.continueButton().click()
           const sentenceSentenceConsecutiveToPage = Page.verifyOnPage(SentenceSentenceConsecutiveToPage)
-          sentenceSentenceConsecutiveToPage.radioLabelSelector('0|SAME').click()
+          // Clicking Count 1 for 'Sentences on this case'
+          sentenceSentenceConsecutiveToPage.radioLabelContains('Committed on 12/05/2023').click()
           sentenceSentenceConsecutiveToPage.continueButton().click()
           offenceEditOffencePage.continueButton().click()
           offenceCheckOffenceAnswersPage.checkConsecutiveOrConcurrentForCount(2, 'Consecutive to count 1')

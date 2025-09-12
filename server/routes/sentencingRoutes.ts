@@ -277,6 +277,10 @@ export default class SentencingRoutes extends BaseRoutes {
       offenceMap,
       appearanceReference,
     )
+    const consecutiveToSentenceMap = {
+      ...consecutiveToSentenceDetailsMap,
+      ...sessionConsecutiveToSentenceDetailsMap,
+    }
 
     const documentsWithUiType = this.courtAppearanceService
       .getUploadedDocuments(req.session, nomsId, appearanceReference)
@@ -305,8 +309,9 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceTypeDescription,
       custodialOffences: orderOffences(custodialOffences),
       nonCustodialOffences: orderOffences(nonCustodialOffences),
-      consecutiveToSentenceDetailsMap,
-      sessionConsecutiveToSentenceDetailsMap,
+      // consecutiveToSentenceDetailsMap,
+      // sessionConsecutiveToSentenceDetailsMap,
+      consecutiveToSentenceMap,
       documentsWithUiType,
       mergedFromText,
       errors: req.flash('errors') || [],

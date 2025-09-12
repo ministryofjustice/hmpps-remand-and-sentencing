@@ -197,6 +197,7 @@ export default class SentencingRoutes extends BaseRoutes {
   public getAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { username } = res.locals.user
+    this.checkOffenceEditStarted(req, nomsId, courtCaseReference)
     if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId, appearanceReference)) {
       const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
         appearanceReference,

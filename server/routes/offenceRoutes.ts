@@ -1595,6 +1595,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    this.checkOffenceEditStarted(req, nomsId, appearanceReference)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -1922,6 +1923,8 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
+    this.courtAppearanceService.storeOriginalAppearanceState(req.session, nomsId, appearanceReference)
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
     )
@@ -2022,6 +2025,7 @@ export default class OffenceRoutes extends BaseRoutes {
         consecutiveToDetails = offenceToConsecutiveToDetails(consecutiveToOffence, offenceMap)
       }
     }
+    req.session.offenceEditCompleted = false
     return res.render('pages/offence/edit-offence', {
       nomsId,
       courtCaseReference,
@@ -2059,29 +2063,33 @@ export default class OffenceRoutes extends BaseRoutes {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    req.session.offenceEditCompleted = true
 
-    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      if (warrantType === 'SENTENCING') {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
-        )
-      }
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
-      )
-    }
-    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
-      )
-    }
-    if (warrantType === 'SENTENCING') {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
-      )
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+    return this.editOffenceCompletionRouting(
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      warrantType,
+      res,
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+    )
+  }
+
+  public cancelOffenceInputs = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    this.courtAppearanceService.resetSessionCourtAppearances(req.session, nomsId)
+    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+    req.session.offenceEditCompleted = true
+
+    return this.editOffenceCompletionRouting(
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference),
+      res,
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
     )
   }
 
@@ -2161,6 +2169,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
   public getUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    this.checkOffenceEditStarted(req, nomsId, courtCaseReference)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -2302,6 +2311,40 @@ export default class OffenceRoutes extends BaseRoutes {
 
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+    )
+  }
+
+  private editOffenceCompletionRouting(
+    addOrEditCourtCase: string,
+    addOrEditCourtAppearance: string,
+    warrantType: string,
+    res,
+    nomsId: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+  ) {
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      if (warrantType === 'SENTENCING') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+        )
+      }
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
+      )
+    }
+    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      )
+    }
+    if (warrantType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
   }
 

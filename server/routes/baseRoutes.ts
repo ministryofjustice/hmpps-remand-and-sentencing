@@ -202,4 +202,12 @@ export default abstract class BaseRoutes {
     if (parts.size === 0) return ''
     return `This appearance includes ${Array.from(parts).join(' and ')}`
   }
+
+  protected checkOffenceEditStarted(req, nomsId: string, courtCaseReference: string) {
+    if (req.session.offenceEditCompleted === false) {
+      this.courtAppearanceService.resetSessionCourtAppearances(req.session, nomsId)
+      this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+      req.session.offenceEditCompleted = true
+    }
+  }
 }

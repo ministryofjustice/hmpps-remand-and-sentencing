@@ -1608,6 +1608,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
   public getCheckOffenceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    this.checkOffenceEditStarted(req, nomsId, appearanceReference)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -2173,6 +2174,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
   public getUpdateOffenceOutcomes: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    this.checkOffenceEditStarted(req, nomsId, courtCaseReference)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,

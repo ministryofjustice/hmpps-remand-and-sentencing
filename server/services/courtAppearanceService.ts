@@ -1153,9 +1153,6 @@ export default class CourtAppearanceService {
           )
           if (!sentenceTypeStillValid.isStillValid) {
             hasInvalidated = true
-            delete sentence.sentenceTypeClassification
-            delete sentence.sentenceTypeId
-            delete sentence.periodLengths
           }
         }
         const appearanceOffence = courtAppearance.offences[offenceReference]
@@ -1196,9 +1193,6 @@ export default class CourtAppearanceService {
         )
         if (!sentenceTypeStillValid.isStillValid) {
           hasInvalidated = true
-          delete sentence.sentenceTypeClassification
-          delete sentence.sentenceTypeId
-          delete sentence.periodLengths
         }
       }
       const appearanceOffence = courtAppearance.offences[offenceReference]

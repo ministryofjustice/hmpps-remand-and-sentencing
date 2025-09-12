@@ -702,17 +702,19 @@ export default class OffenceService {
       )
       let offenceRules = ''
       if (offence.offenceEndDate) {
+        const offenceEndDate = dayjs(offence.offenceEndDate)
         const offenceEndDateString = toDateString(
-          offence.offenceEndDate.getFullYear().toString(),
-          (offence.offenceEndDate.getMonth() + 1).toString(),
-          offence.offenceEndDate.getDate().toString(),
+          offenceEndDate.year().toString(),
+          (offenceEndDate.month() + 1).toString(),
+          offenceEndDate.date().toString(),
         )
         offenceRules = `|isAfterOffenceEndDate:${offenceEndDateString},${convictionDateString}`
       } else if (offence.offenceStartDate) {
+        const offenceStartDate = dayjs(offence.offenceStartDate)
         const offenceStartDateString = toDateString(
-          offence.offenceStartDate.getFullYear().toString(),
-          (offence.offenceStartDate.getMonth() + 1).toString(),
-          offence.offenceStartDate.getDate().toString(),
+          offenceStartDate.year().toString(),
+          (offenceStartDate.month() + 1).toString(),
+          offenceStartDate.date().toString(),
         )
         offenceRules = `|isAfterOffenceStartDate:${offenceStartDateString},${convictionDateString}`
       }

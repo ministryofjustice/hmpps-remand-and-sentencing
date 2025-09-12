@@ -19,7 +19,7 @@
             isSentenced: offence.sentence,
             periodLengths: offence.sentence.periodLengths,
             sentenceServeType: offence.sentence.sentenceServeType,
-            consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence and offence.sentence.consecutiveToSentenceUuid else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
+            consecutiveTo: consecutiveToSentenceMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence,
             sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
             fineAmount: offence.sentence.fineAmount,
             consecutiveConcurrentLink: {
@@ -74,7 +74,7 @@
             isSentenced: offence.sentence,
             periodLengths: offence.sentence.periodLengths,
             sentenceServeType: offence.sentence.sentenceServeType,
-            consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence and offence.sentence.consecutiveToSentenceUuid else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
+            consecutiveTo: consecutiveToSentenceMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence,
             sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
             fineAmount: offence.sentence.fineAmount,
             actions: {

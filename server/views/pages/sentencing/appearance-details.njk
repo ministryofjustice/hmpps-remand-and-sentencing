@@ -260,7 +260,7 @@
                     isSentenced: offence.sentence,
                     periodLengths: offence.sentence.periodLengths,
                     sentenceServeType: offence.sentence.sentenceServeType,
-                    consecutiveTo: consecutiveToSentenceMap[offence.sentence.consecutiveToSentenceUuid],
+                    consecutiveTo: consecutiveToSentenceMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence,
                     sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
                     fineAmount: offence.sentence.fineAmount,
                     consecutiveConcurrentLink: {

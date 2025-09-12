@@ -683,6 +683,8 @@ export default class OffenceService {
     href: string
   }[] {
     let isValidConvictionDateRule = ''
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
     if (
       offenceConvictionDateForm['convictionDate-day'] &&
       offenceConvictionDateForm['convictionDate-month'] &&
@@ -693,7 +695,30 @@ export default class OffenceService {
         offenceConvictionDateForm['convictionDate-month'],
         offenceConvictionDateForm['convictionDate-day'],
       )
-      isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastOrCurrentDate:${convictionDateString}|isWithinLast100Years:${convictionDateString}`
+      const warrantDateString = toDateString(
+        warrantDate.getFullYear().toString(),
+        (warrantDate.getMonth() + 1).toString(),
+        warrantDate.getDate().toString(),
+      )
+      let offenceRules = ''
+      if (offence.offenceEndDate) {
+        const offenceEndDate = dayjs(offence.offenceEndDate)
+        const offenceEndDateString = toDateString(
+          offenceEndDate.year().toString(),
+          (offenceEndDate.month() + 1).toString(),
+          offenceEndDate.date().toString(),
+        )
+        offenceRules = `|isAfterOffenceEndDate:${offenceEndDateString},${convictionDateString}`
+      } else if (offence.offenceStartDate) {
+        const offenceStartDate = dayjs(offence.offenceStartDate)
+        const offenceStartDateString = toDateString(
+          offenceStartDate.year().toString(),
+          (offenceStartDate.month() + 1).toString(),
+          offenceStartDate.date().toString(),
+        )
+        offenceRules = `|isAfterOffenceStartDate:${offenceStartDateString},${convictionDateString}`
+      }
+      isValidConvictionDateRule = `|isValidDate:${convictionDateString}|isPastOrCurrentDate:${convictionDateString}|isWithinLast100Years:${convictionDateString}|isSameOrBeforeWarrantDate:${warrantDateString},${convictionDateString}${offenceRules}`
     }
 
     const errors = validate(
@@ -711,6 +736,10 @@ export default class OffenceService {
         'isPastOrCurrentDate.convictionDate-day': 'The conviction date cannot be a date in the future',
         'isWithinLast100Years.overallConvictionDate-day':
           'All dates must be within the last 100 years from today’s date',
+        'isSameOrBeforeWarrantDate.convictionDate-day': 'The conviction date must be on or before the warrant date',
+        'isAfterOffenceEndDate.convictionDate-day':
+          'The conviction date must be after the offence start date and offence end date',
+        'isAfterOffenceStartDate.convictionDate-day': 'The conviction date must be after the offence start date',
       },
     )
     if (errors.length === 0) {
@@ -719,41 +748,7 @@ export default class OffenceService {
         month: parseInt(offenceConvictionDateForm['convictionDate-month'], 10) - 1,
         day: offenceConvictionDateForm['convictionDate-day'],
       })
-      const id = this.getOffenceId(nomsId, courtCaseReference)
-      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
-
-      if (addOrEditCourtAppearance === 'add-court-appearance') {
-        if (warrantDate && convictionDate.isAfter(dayjs(warrantDate))) {
-          return [
-            {
-              text: 'The conviction date must be on or before the warrant date',
-              href: '#convictionDate',
-            },
-          ]
-        }
-
-        const offenceStartDate = dayjs(offence.offenceStartDate)
-        const offenceEndDate = offence.offenceEndDate ? dayjs(offence.offenceEndDate) : null
-
-        if (offenceEndDate && !convictionDate.isAfter(offenceEndDate)) {
-          return [
-            {
-              text: 'The conviction date must be after the offence start date and offence end date',
-              href: '#convictionDate',
-            },
-          ]
-        }
-
-        if (!offenceEndDate && !convictionDate.isAfter(offenceStartDate)) {
-          return [
-            {
-              text: 'The conviction date must be after the offence start date',
-              href: '#convictionDate',
-            },
-          ]
-        }
-      }
 
       sentence.convictionDate = convictionDate.toDate()
 

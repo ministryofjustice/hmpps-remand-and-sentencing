@@ -23,6 +23,9 @@ import isWithinLast100Years from './isWithinLast100Years'
 import isWithinNextOneYear from './isWithinNextOneYear'
 import isBeforeWarrantDate from './isBeforeWarrantDate'
 import isBeforeConvictionDate from './isBeforeConvictionDate'
+import isSameOrBeforeWarrantDate from './isSameOrBeforeWarrantDate'
+import isAfterOffenceEndDate from './isAfterOffenceEndDate'
+import isAfterOffenceStartDate from './isAfterOffenceStartDate'
 
 export default function validate<T>(
   form: T,
@@ -59,6 +62,9 @@ Validator.register('isAfterDate', isAfterDate, 'date must be after')
 Validator.register('isBeforeWarrantDate', isBeforeWarrantDate, 'date must be before warrant date')
 Validator.register('isBeforeConvictionDate', isBeforeConvictionDate, 'date must be before conviction date')
 Validator.register('isFutureOrCurrentDate', isFutureOrCurrentDate, 'date cannot be date in the past')
+Validator.register('isSameOrBeforeWarrantDate', isSameOrBeforeWarrantDate, 'date must be same or before warrant date')
+Validator.register('isAfterOffenceEndDate', isAfterOffenceEndDate, 'date must be after offence end date')
+Validator.register('isAfterOffenceStartDate', isAfterOffenceStartDate, 'date must be after offence end date')
 Validator.registerImplicit(
   'requireAlternativeSentenceLength',
   requireAlternativeSentenceLength,

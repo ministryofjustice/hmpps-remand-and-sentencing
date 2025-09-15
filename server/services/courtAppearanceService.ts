@@ -26,9 +26,8 @@ import {
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import RemandAndSentencingService from './remandAndSentencingService'
-import { extractKeyValue, toDateString } from '../utils/utils'
+import { toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
-import sentenceServeTypes from '../resources/sentenceServeTypes'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
 
@@ -1106,18 +1105,8 @@ export default class CourtAppearanceService {
             offenceDate,
             username,
           )
-          if (!sentenceTypeStillValid.isStillValid) {
-            hasInvalidated = true
-            delete sentence.sentenceTypeClassification
-            delete sentence.sentenceTypeId
-            delete sentence.periodLengths
-          }
+          hasInvalidated = !sentenceTypeStillValid.isStillValid
         }
-        const appearanceOffence = courtAppearance.offences[offenceReference]
-        appearanceOffence.sentence = sentence
-        courtAppearance.offences[offenceReference] = appearanceOffence
-        // eslint-disable-next-line no-param-reassign
-        session.courtAppearances[nomsId] = courtAppearance
       }
     }
     return hasInvalidated
@@ -1149,18 +1138,8 @@ export default class CourtAppearanceService {
           offenceDate,
           username,
         )
-        if (!sentenceTypeStillValid.isStillValid) {
-          hasInvalidated = true
-          delete sentence.sentenceTypeClassification
-          delete sentence.sentenceTypeId
-          delete sentence.periodLengths
-        }
+        hasInvalidated = !sentenceTypeStillValid.isStillValid
       }
-      const appearanceOffence = courtAppearance.offences[offenceReference]
-      appearanceOffence.sentence = sentence
-      courtAppearance.offences[offenceReference] = appearanceOffence
-      // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
     }
     return hasInvalidated
   }
@@ -1184,56 +1163,6 @@ export default class CourtAppearanceService {
       }
     }
     return sentenceInChain
-  }
-
-  resetConsecutiveFields(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
-      const sentence = offence.sentence ?? {
-        sentenceUuid: crypto.randomUUID(),
-      }
-      delete sentence.consecutiveToSentenceUuid
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
-      // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
-    }
-  }
-
-  setSentenceToForthwith(
-    session: Partial<SessionData>,
-    nomsId: string,
-    offenceReference: number,
-    appearanceUuid: string,
-  ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
-      const { sentence } = offence
-      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)
-      delete sentence.consecutiveToSentenceUuid
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
-    }
-  }
-
-  setSentenceToConsecutive(
-    session: Partial<SessionData>,
-    nomsId: string,
-    offenceReference: number,
-    appearanceUuid: string,
-  ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
-      const { sentence } = offence
-      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
-      delete sentence.consecutiveToSentenceUuid
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
-    }
   }
 
   deleteSentenceInChain(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {

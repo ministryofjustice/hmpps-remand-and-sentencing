@@ -2060,6 +2060,39 @@ export default class OffenceRoutes extends BaseRoutes {
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
 
+    return this.editOffenceCompletionRouting(
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      warrantType,
+      res,
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+    )
+  }
+
+  public cancelOffenceInputs = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    return this.editOffenceCompletionRouting(
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference),
+      res,
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+    )
+  }
+
+  private editOffenceCompletionRouting(
+    addOrEditCourtCase: string,
+    addOrEditCourtAppearance: string,
+    warrantType: string,
+    res,
+    nomsId: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+  ) {
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(

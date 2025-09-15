@@ -1108,16 +1108,8 @@ export default class CourtAppearanceService {
           )
           if (!sentenceTypeStillValid.isStillValid) {
             hasInvalidated = true
-            delete sentence.sentenceTypeClassification
-            delete sentence.sentenceTypeId
-            delete sentence.periodLengths
           }
         }
-        const appearanceOffence = courtAppearance.offences[offenceReference]
-        appearanceOffence.sentence = sentence
-        courtAppearance.offences[offenceReference] = appearanceOffence
-        // eslint-disable-next-line no-param-reassign
-        session.courtAppearances[nomsId] = courtAppearance
       }
     }
     return hasInvalidated
@@ -1151,16 +1143,8 @@ export default class CourtAppearanceService {
         )
         if (!sentenceTypeStillValid.isStillValid) {
           hasInvalidated = true
-          delete sentence.sentenceTypeClassification
-          delete sentence.sentenceTypeId
-          delete sentence.periodLengths
         }
       }
-      const appearanceOffence = courtAppearance.offences[offenceReference]
-      appearanceOffence.sentence = sentence
-      courtAppearance.offences[offenceReference] = appearanceOffence
-      // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
     }
     return hasInvalidated
   }

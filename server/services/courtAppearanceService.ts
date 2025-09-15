@@ -1106,9 +1106,7 @@ export default class CourtAppearanceService {
             offenceDate,
             username,
           )
-          if (!sentenceTypeStillValid.isStillValid) {
-            hasInvalidated = true
-          }
+          hasInvalidated = !sentenceTypeStillValid.isStillValid
         }
       }
     }
@@ -1141,9 +1139,7 @@ export default class CourtAppearanceService {
           offenceDate,
           username,
         )
-        if (!sentenceTypeStillValid.isStillValid) {
-          hasInvalidated = true
-        }
+        hasInvalidated = !sentenceTypeStillValid.isStillValid
       }
     }
     return hasInvalidated
@@ -1168,56 +1164,6 @@ export default class CourtAppearanceService {
       }
     }
     return sentenceInChain
-  }
-
-  resetConsecutiveFields(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    if (offenceReference !== -1 && courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
-      const sentence = offence.sentence ?? {
-        sentenceUuid: crypto.randomUUID(),
-      }
-      delete sentence.consecutiveToSentenceUuid
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
-      // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
-    }
-  }
-
-  setSentenceToForthwith(
-    session: Partial<SessionData>,
-    nomsId: string,
-    offenceReference: number,
-    appearanceUuid: string,
-  ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
-      const { sentence } = offence
-      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)
-      delete sentence.consecutiveToSentenceUuid
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
-    }
-  }
-
-  setSentenceToConsecutive(
-    session: Partial<SessionData>,
-    nomsId: string,
-    offenceReference: number,
-    appearanceUuid: string,
-  ) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    if (courtAppearance.offences.length > offenceReference) {
-      const offence = courtAppearance.offences[offenceReference]
-      const { sentence } = offence
-      sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONSECUTIVE)
-      delete sentence.consecutiveToSentenceUuid
-      offence.sentence = sentence
-      courtAppearance.offences[offenceReference] = offence
-    }
   }
 
   deleteSentenceInChain(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {

@@ -1449,8 +1449,6 @@ export default class OffenceRoutes extends BaseRoutes {
         return res.redirect(`${redirectBase}/sentence-consecutive-to${submitQuery}`)
       }
 
-      this.courtAppearanceService.resetConsecutiveFields(req.session, nomsId, chargeUuid, appearanceReference)
-
       // Go back to edit screen as fallback
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,

@@ -221,10 +221,13 @@
             rows: summaryRows,
             attributes: { 'data-qa': 'edit-summary-list'}
         }) }}
-
+<div class="govuk-button-group">
         {{ govukButton({
             text: "Accept changes",
             attributes: {  'data-qa': 'continue-button' }
         }) }}
+
+        <a class="govuk-link" data-qa="cancel-edit-offence" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/cancel-offence">Cancel changes</a>
+                </div>
     </form>
 {% endblock %}

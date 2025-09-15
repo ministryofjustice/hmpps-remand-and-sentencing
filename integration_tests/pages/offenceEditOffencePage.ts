@@ -20,4 +20,6 @@ export default class OffenceEditOffencePage extends Page {
     )
 
   editSummaryList = (): PageElement => cy.get('[data-qa=edit-summary-list]')
+
+  cancelEditLink = (): PageElement => cy.get('[data-qa=cancel-edit-offence]')
 }

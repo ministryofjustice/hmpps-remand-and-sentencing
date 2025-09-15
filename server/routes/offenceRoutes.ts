@@ -1463,8 +1463,6 @@ export default class OffenceRoutes extends BaseRoutes {
         return res.redirect(`${redirectBase}/sentence-consecutive-to${submitQuery}`)
       }
 
-      this.courtAppearanceService.resetConsecutiveFields(req.session, nomsId, chargeUuid, appearanceReference)
-
       // Go back to edit screen as fallback
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
@@ -2074,6 +2072,39 @@ export default class OffenceRoutes extends BaseRoutes {
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
 
+    return this.editOffenceCompletionRouting(
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      warrantType,
+      res,
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+    )
+  }
+
+  public cancelOffenceInputs = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    return this.editOffenceCompletionRouting(
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference),
+      res,
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+    )
+  }
+
+  private editOffenceCompletionRouting(
+    addOrEditCourtCase: string,
+    addOrEditCourtAppearance: string,
+    warrantType: string,
+    res,
+    nomsId: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+  ) {
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(

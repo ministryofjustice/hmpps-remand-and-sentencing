@@ -163,15 +163,15 @@ export default class RemandRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
       req.session,
       nomsId,
       appearanceReference,
+      chargeUuid,
     )
-    const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
-    if (offence.sentence?.sentenceUuid) {
+    if (sentenceUuidsInChain.length) {
       const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
-        offence.sentence.sentenceUuid,
+        sentenceUuidsInChain,
         req.user.username,
       )
       if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
@@ -195,6 +195,12 @@ export default class RemandRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { username } = req.user
+    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
+      req.session,
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+    )
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -202,7 +208,7 @@ export default class RemandRoutes extends BaseRoutes {
     )
     const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
     const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
-      offence.sentence.sentenceUuid,
+      sentenceUuidsInChain,
       username,
     )
     const courtIds = Array.from(new Set(sentencesAfterDetails.appearances.map(appearance => appearance.courtCode)))

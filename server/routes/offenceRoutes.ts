@@ -403,11 +403,18 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
       appearanceReference,
     ) ?? { chargeUuid: crypto.randomUUID() }
+    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
+      req.session,
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+    )
     const { errors, outcome, hasSentencesAfter } = await this.offenceService.setOffenceOutcome(
       req.session,
       nomsId,
       courtCaseReference,
       offenceOutcomeForm,
+      sentenceUuidsInChain,
       req.user.username,
     )
 
@@ -816,6 +823,12 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
     )
     if (caseOutcomeAppliedAll === 'true') {
+      const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
+        req.session,
+        nomsId,
+        appearanceReference,
+        chargeUuid,
+      )
       const { outcome } = await this.offenceService.setOffenceOutcome(
         req.session,
         nomsId,
@@ -827,6 +840,7 @@ export default class OffenceRoutes extends BaseRoutes {
             appearanceReference,
           ),
         },
+        sentenceUuidsInChain,
         req.user.username,
       )
 

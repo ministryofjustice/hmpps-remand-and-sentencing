@@ -438,24 +438,30 @@ export default class RemandAndSentencingApiClient extends RestClient {
   }
 
   async hasSentenceAfterOnOtherCourtAppearance(
-    sentenceUuid: string,
+    sentenceUuids: string[],
     username: string,
   ): Promise<HasSentenceAfterOnOtherCourtAppearanceResponse> {
     return (await this.get(
       {
-        path: `/sentence/${sentenceUuid}/has-sentences-after-on-other-court-appearance`,
+        path: `/sentence/has-sentences-after-on-other-court-appearance`,
+        query: {
+          sentenceUuids: sentenceUuids.join(','),
+        },
       },
       asSystem(username),
     )) as unknown as Promise<HasSentenceAfterOnOtherCourtAppearanceResponse>
   }
 
   async getSentencesAfterOnOtherCourtAppearanceDetails(
-    sentenceUuid: string,
+    sentenceUuids: string[],
     username: string,
   ): Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse> {
     return (await this.get(
       {
-        path: `/sentence/${sentenceUuid}/sentences-after-on-other-court-appearance-details`,
+        path: `/sentence/sentences-after-on-other-court-appearance-details`,
+        query: {
+          sentenceUuids: sentenceUuids.join(','),
+        },
       },
       asSystem(username),
     )) as unknown as Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse>

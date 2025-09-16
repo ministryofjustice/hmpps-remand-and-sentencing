@@ -6,7 +6,7 @@
 
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading{% if legacyCaseOutcome %} govuk-!-static-margin-bottom-3{% endif %}">Select the outcome for this offence</h1>
-    <p class="govuk-body-l" data-qa="offenceParagraph">{{ offenceDetails.code }} - {{ offenceDetails.description }}</p>
+    <p class="govuk-body-l govuk-!-margin-top-3" data-qa="offenceParagraph">{{ offenceDetails.code }} - {{ offenceDetails.description }}</p>
     {% if legacyCaseOutcome %}
     <p class="govuk-body-l govuk-!-static-margin-bottom-3" data-qa="legendParagraph">{{ legacyCaseOutcome }}</p>
     {% endif %}

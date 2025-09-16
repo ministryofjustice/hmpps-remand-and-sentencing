@@ -6,13 +6,13 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
-{%- from "moj/components/pagination/macro.njk" import mojPagination -%}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - Home" %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">Court cases</h1>
+    <h1 class="govuk-heading-xl">Court cases</h1>
     {{ thingsToDo(serviceDefinitions, 'courtCases') }}
     <div class="govuk-grid-row">
 
@@ -39,7 +39,7 @@
                             </span>
                         </div>
                         <div>
-                            <span class="govuk-body">Showing <strong>{{ courtCaseTotal }}</strong> court cases</span>
+                            <span class="govuk-body">Showing <strong>{{ paginationResults.from }}</strong> to <strong>{{ paginationResults.to }}</strong> of <strong>{{ paginationResults.count }}</strong> court cases</span>
                         </div>
                     </div>
                 </div>
@@ -203,7 +203,7 @@
                                     </div>
                             </div>
                             <hr class="govuk-section-break govuk-!-margin-top-4 govuk-section-break--visible">
-                            <p class="govuk-body govuk-!-margin-top-6">
+                            <p class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-2">
                                 <a class="govuk-link--no-visited-state govuk-!-font-weight-bold" href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}/details">
                                     {% if courtCaseDetails.allAppearancesHaveRecall %}
                                         View all appearances for this court case ({{ courtCaseDetails.appearanceTotal }})
@@ -270,7 +270,7 @@
             </div>
 
             {% if pagination %}
-                {{ mojPagination(pagination) }}
+                {{ govukPagination(pagination) }}
             {% endif %}
 
         </div>

@@ -44,7 +44,7 @@ import { PrisonUser } from '../interfaces/hmppsUser'
 import logger from '../../logger'
 import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
-import mojPaginationFromPageCourtCase from './data/pagination'
+import { govukPaginationFromPagePagedCourtCase, getPaginationResults } from './data/pagination'
 import config from '../config'
 import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
@@ -147,7 +147,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const newCourtCaseId = crypto.randomUUID()
     const paginationUrl = new URL(`/person/${nomsId}`, config.domain)
     paginationUrl.searchParams.set('sortBy', sortBy)
-    const pagination = mojPaginationFromPageCourtCase(courtCases, paginationUrl)
+    const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
+    const paginationResults = getPaginationResults(courtCases)
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
@@ -161,6 +162,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       pagination,
       consecutiveToSentenceDetailsMap,
       appearanceUuid: crypto.randomUUID(),
+      paginationResults,
     })
   }
 
@@ -785,7 +787,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         .sort((a, b) => {
           return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
         })
-        .map((charge, index) => chargeToOffence(charge, index))
+        .map(charge => chargeToOffence(charge))
         .forEach(offence =>
           this.courtAppearanceService.addOffence(req.session, nomsId, offence.chargeUuid, offence, appearanceReference),
         )

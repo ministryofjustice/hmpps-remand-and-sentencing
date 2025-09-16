@@ -19,7 +19,6 @@ describe('GET Offence fine amount', () => {
       chargeUuid: '1',
       sentence: {
         sentenceUuid: '2',
-        sentenceReference: '0',
       },
     })
     return request(app)

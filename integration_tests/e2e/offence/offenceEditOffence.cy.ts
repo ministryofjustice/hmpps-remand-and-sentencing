@@ -115,6 +115,11 @@ context('Add Offence Edit offence Page', () => {
         .then(text => text.trim())
         .should('equal', '')
     })
+
+    it('can cancel edit and return to check offence answers page', () => {
+      offenceEditOffencePage.cancelEditLink().click()
+      Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
+    })
   })
 
   context('sentence', () => {
@@ -270,7 +275,7 @@ context('Add Offence Edit offence Page', () => {
       offenceSentenceServeTypePage.radioLabelSelector('CONSECUTIVE').click()
       offenceSentenceServeTypePage.continueButton().click()
       const sentenceSentenceConsecutiveToPage = Page.verifyOnPage(SentenceSentenceConsecutiveToPage)
-      sentenceSentenceConsecutiveToPage.radioSelector('328fa693-3f99-46bf-9a94-d8578dc399af|OTHER').click()
+      sentenceSentenceConsecutiveToPage.radioSelector('328fa693-3f99-46bf-9a94-d8578dc399af').click()
       sentenceSentenceConsecutiveToPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
@@ -467,6 +472,11 @@ context('Add Offence Edit offence Page', () => {
         Outcome: 'Remanded in custody',
       })
     })
+
+    it('can cancel edit and return to appearance details page', () => {
+      offenceEditOffencePage.cancelEditLink().click()
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+    })
   })
   context('remand to sentencing', () => {
     beforeEach(() => {
@@ -585,6 +595,14 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       })
+    })
+
+    it('canceling the edit offence takes you back to the update offence outcome page', () => {
+      offenceEditOffencePage.cancelEditLink().click()
+      Page.verifyOnPageTitle(
+        OffenceUpdateOffenceOutcomesPage,
+        'Update offence outcomes for appearance on 13 May 2023 at Southampton Magistrate Court',
+      )
     })
   })
 })

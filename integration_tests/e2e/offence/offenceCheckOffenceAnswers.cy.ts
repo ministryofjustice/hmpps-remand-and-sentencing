@@ -193,7 +193,7 @@ context('Check Offence Answers Page', () => {
         },
       ])
       cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-        sentenceUuid: '{sentenceUuid}',
+        sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
         hasSentenceAfterOnOtherCourtAppearance: false,
       })
       let offenceEditOffencePage = null
@@ -254,7 +254,7 @@ context('Check Offence Answers Page', () => {
       cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
       cy.task('stubGetCourtsByIds')
       cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-        sentenceUuid: '{sentenceUuid}',
+        sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
         hasSentenceAfterOnOtherCourtAppearance: false,
       })
       cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1')

@@ -27,6 +27,10 @@ context('Sentencing appearance details Page', () => {
       courtId: 'STHHPM',
       courtName: 'Southampton Magistrate Court',
     })
+    cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+      sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
+      hasSentenceAfterOnOtherCourtAppearance: false,
+    })
   })
 
   context('DPS sentence appearance', () => {
@@ -497,7 +501,6 @@ context('Sentencing appearance details Page', () => {
         courtId: 'STHHPM',
         courtName: 'Southampton Magistrate Court',
       })
-
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3f20856f-fa17-493b-89c7-205970c749b8/sentencing/appearance-details',

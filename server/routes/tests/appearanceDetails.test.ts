@@ -14,7 +14,7 @@ afterEach(() => {
 })
 
 describe('GET /sentencing/appearance-details', () => {
-  it('Displays correct consecutive to details if consecutive to another case', async () => {
+  beforeEach(() => {
     defaultServices.courtAppearanceService.sessionCourtAppearanceExists.mockReturnValue(true)
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: 'appearance-uuid',
@@ -58,7 +58,11 @@ describe('GET /sentencing/appearance-details', () => {
         dispositionCode: 'CONVICTED',
       },
     })
-
+    defaultServices.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance.mockResolvedValue({
+      hasSentenceAfterOnOtherCourtAppearance: false,
+    })
+  })
+  it('Displays correct consecutive to details if consecutive to another case', async () => {
     await request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/appearance-details')
       .expect('Content-Type', /html/)
@@ -75,6 +79,26 @@ describe('GET /sentencing/appearance-details', () => {
           .trim()
 
         expect(consecutiveText).toContain('Consecutive to AB1234')
+      })
+  })
+
+  it('displays has sentences after on other court appearances when true', () => {
+    defaultServices.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance.mockResolvedValue({
+      hasSentenceAfterOnOtherCourtAppearance: true,
+    })
+
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/appearance-details')
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const hasSentenceAfterOnOtherCourtAppearanceInsetText = $(
+          '[data-qa="hasSentenceAfterOnOtherCourtAppearanceInset"]',
+        ).text()
+        expect(hasSentenceAfterOnOtherCourtAppearanceInsetText).toContain(
+          'One or more sentences on other cases are consecutive to a sentence on this case. If the consecutive status of a sentence is changed, check that any linked cases accurately reflect the correct warrant information.',
+        )
       })
   })
 })

@@ -3079,16 +3079,21 @@ export default {
   },
 
   stubHasSentencesAfterOnOtherCourtAppearance: ({
-    sentenceUuid = 'b0f83d31-efbe-462c-970d-5293975acb17',
+    sentenceUuids = 'b0f83d31-efbe-462c-970d-5293975acb17',
     hasSentenceAfterOnOtherCourtAppearance = false,
   }: {
-    sentenceUuid: string
+    sentenceUuids: string
     hasSentenceAfterOnOtherCourtAppearance: boolean
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPathTemplate: `/remand-and-sentencing-api/sentence/${sentenceUuid}/has-sentences-after-on-other-court-appearance`,
+        urlPathTemplate: `/remand-and-sentencing-api/sentence/has-sentences-after-on-other-court-appearance`,
+        queryParameters: {
+          sentenceUuids: {
+            matches: sentenceUuids,
+          },
+        },
       },
       response: {
         status: 200,
@@ -3101,14 +3106,19 @@ export default {
   },
 
   stubSentencesAfterOnOtherCourtAppearanceDetails: ({
-    sentenceUuid = 'b0f83d31-efbe-462c-970d-5293975acb17',
+    sentenceUuids = 'b0f83d31-efbe-462c-970d-5293975acb17',
   }: {
-    sentenceUuid: string
+    sentenceUuids: string
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/remand-and-sentencing-api/sentence/${sentenceUuid}/sentences-after-on-other-court-appearance-details`,
+        urlPath: `/remand-and-sentencing-api/sentence/sentences-after-on-other-court-appearance-details`,
+        queryParameters: {
+          sentenceUuids: {
+            matches: sentenceUuids,
+          },
+        },
       },
       response: {
         status: 200,

@@ -144,6 +144,16 @@
                             }) }}
                         {% endif %}
 
+                        {% if hasSentenceAfterOnOtherCourtAppearance %}
+                            {{ govukInsetText({
+                                text: "One or more sentences on other cases are consecutive to a sentence on this case. If the consecutive status of a sentence is changed, check that any linked cases accurately reflect the correct warrant information.",
+                                classes: "govuk-!-margin-bottom-3",
+                                attributes: {
+                                    "data-qa": "hasSentenceAfterOnOtherCourtAppearanceInset"
+                                }
+                            }) }}
+                        {% endif %}
+
             {{ govukSummaryList({
                 card: {
                     title: {

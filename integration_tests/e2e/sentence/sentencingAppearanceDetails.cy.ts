@@ -27,6 +27,10 @@ context('Sentencing appearance details Page', () => {
       courtId: 'STHHPM',
       courtName: 'Southampton Magistrate Court',
     })
+    cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+      sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
+      hasSentenceAfterOnOtherCourtAppearance: false,
+    })
   })
 
   context('DPS sentence appearance', () => {
@@ -208,7 +212,9 @@ context('Sentencing appearance details Page', () => {
     })
 
     it('can delete an offence sentences after on same case', () => {
-      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {})
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+      })
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
         description: 'EDS (Extended Determinate Sentence)',
@@ -329,10 +335,12 @@ context('Sentencing appearance details Page', () => {
 
     it('cannot delete an offence when there are sentences after', () => {
       cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
         hasSentenceAfterOnOtherCourtAppearance: true,
       })
-      cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {})
+      cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {
+        sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+      })
 
       courtCaseAppearanceDetailsPage
         .deleteOffenceLink(
@@ -366,10 +374,12 @@ context('Sentencing appearance details Page', () => {
         outcomeType: 'NON_CUSTODIAL',
       })
       cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
         hasSentenceAfterOnOtherCourtAppearance: true,
       })
-      cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {})
+      cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {
+        sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+      })
       courtCaseAppearanceDetailsPage
         .editOffenceLink(
           'A1234AB',
@@ -491,7 +501,6 @@ context('Sentencing appearance details Page', () => {
         courtId: 'STHHPM',
         courtName: 'Southampton Magistrate Court',
       })
-
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3f20856f-fa17-493b-89c7-205970c749b8/sentencing/appearance-details',

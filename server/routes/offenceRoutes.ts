@@ -2072,13 +2072,11 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const errors = this.offenceService.validateOffenceMandatoryFields(offence)
     if (errors.length > 0) {
-      console.log(`Errors: ${JSON.stringify(errors)})`)
       req.flash('errors', errors)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
-    console.log('No Errors')
 
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)

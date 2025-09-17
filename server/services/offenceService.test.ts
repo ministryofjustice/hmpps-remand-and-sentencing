@@ -69,6 +69,20 @@ describe('offenceService', () => {
           href: '#',
           text: 'You must enter the sentence type',
         },
+      ])
+    })
+
+    it('the correct errors are returned if there is a sentence type and no sentence length', () => {
+      const offence = {
+        sentence: {
+          sentenceServeType: 'CONSECUTIVE',
+          consecutiveToSentenceUuid: 'uuid1',
+          sentenceTypeClassification: 'UNKNOWN',
+          periodLengths: [],
+        },
+      } as Offence
+      const errors = service.validateOffenceMandatoryFields(offence)
+      expect(errors).toEqual([
         {
           href: '#',
           text: 'You must enter the (period length)',
@@ -91,6 +105,19 @@ describe('offenceService', () => {
           text: 'You must enter consecutive to details',
         },
       ])
+    })
+
+    it('no errors returned if all sentence mandatory details populated', () => {
+      const offence = {
+        sentence: {
+          sentenceServeType: 'CONSECUTIVE',
+          sentenceTypeClassification: 'UNKNOWN',
+          consecutiveToSentenceUuid: 'uuid1',
+          periodLengths: [{ periodLengthType: 'SENTENCE_LENGTH' }],
+        },
+      } as Offence
+      const errors = service.validateOffenceMandatoryFields(offence)
+      expect(errors).toEqual([])
     })
   })
 })

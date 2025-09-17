@@ -1004,9 +1004,7 @@ export default class OffenceService {
     }
     if (!offence.sentence?.sentenceTypeClassification) {
       errors.push({ text: 'You must enter the sentence type', href: '#' })
-    }
-
-    if (!offence.sentence?.periodLengths || offence.sentence?.periodLengths.length === 0) {
+    } else if (!offence.sentence?.periodLengths || offence.sentence?.periodLengths.length === 0) {
       errors.push({ text: 'You must enter the (period length)', href: '#' })
     }
 

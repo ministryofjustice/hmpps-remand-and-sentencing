@@ -268,17 +268,17 @@ export default class RemandAndSentencingService {
   }
 
   async hasSentenceAfterOnOtherCourtAppearance(
-    sentenceUuid: string,
+    sentenceUuids: string[],
     username: string,
   ): Promise<HasSentenceAfterOnOtherCourtAppearanceResponse> {
-    return this.remandAndSentencingApiClient.hasSentenceAfterOnOtherCourtAppearance(sentenceUuid, username)
+    return this.remandAndSentencingApiClient.hasSentenceAfterOnOtherCourtAppearance(sentenceUuids, username)
   }
 
   async getSentencesAfterOnOtherCourtAppearanceDetails(
-    sentenceUuid: string,
+    sentenceUuids: string[],
     username: string,
   ): Promise<SentencesAfterOnOtherCourtAppearanceDetailsResponse> {
-    return this.remandAndSentencingApiClient.getSentencesAfterOnOtherCourtAppearanceDetails(sentenceUuid, username)
+    return this.remandAndSentencingApiClient.getSentencesAfterOnOtherCourtAppearanceDetails(sentenceUuids, username)
   }
 
   async validateConsecutiveLoops(

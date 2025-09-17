@@ -334,6 +334,7 @@ export default class OffenceService {
     nomsId: string,
     courtCaseReference: string,
     offenceOutcomeForm: OffenceOffenceOutcomeForm,
+    sentenceUuidsInChain: string[],
     username: string,
   ): Promise<{
     errors: {
@@ -356,7 +357,7 @@ export default class OffenceService {
       outcome = await this.offenceOutcomeService.getOutcomeById(offenceOutcomeForm.offenceOutcome, username)
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
         const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
-          offence.sentence.sentenceUuid,
+          sentenceUuidsInChain,
           username,
         )
         if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {

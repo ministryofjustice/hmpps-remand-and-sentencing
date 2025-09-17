@@ -14,7 +14,7 @@ context('Add Offence Outcome Page', () => {
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-      sentenceUuid: '{sentenceUuid}',
+      sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
       hasSentenceAfterOnOtherCourtAppearance: false,
     })
     cy.signIn()

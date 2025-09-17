@@ -892,6 +892,40 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, appearanceUuid)
   }
 
+  getSentenceUuidsInChain(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    chargeUuid: string,
+  ): string[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    const { offences } = courtAppearance
+    const offence = offences.find(sessionOffence => sessionOffence.chargeUuid === chargeUuid)
+    const sentenceUuids: string[] = []
+    if (offence?.sentence) {
+      sentenceUuids.push(offence.sentence.sentenceUuid)
+      const checkedSentenceUuids = [offence.sentence.sentenceUuid]
+      while (checkedSentenceUuids.length) {
+        const nextChainSentenceUuid = checkedSentenceUuids.pop()
+        offences
+          .flatMap(sessionOffence => {
+            if (
+              sessionOffence.sentence?.consecutiveToSentenceUuid === nextChainSentenceUuid &&
+              !sentenceUuids.includes(sessionOffence.sentence.sentenceUuid)
+            ) {
+              return sessionOffence.sentence.sentenceUuid
+            }
+            return []
+          })
+          .forEach(sentenceUuid => {
+            sentenceUuids.push(sentenceUuid)
+            checkedSentenceUuids.push(sentenceUuid)
+          })
+      }
+    }
+    return sentenceUuids
+  }
+
   isForthwithAlreadySelected(
     session: Partial<SessionData>,
     nomsId: string,

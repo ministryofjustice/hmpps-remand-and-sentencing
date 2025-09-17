@@ -14,7 +14,7 @@
   <h1 class="govuk-heading-l">Upload court documents</h1>
 {% endif %}
 <p class="govuk-hint">
-    Uploading documents is optional. The selected file type should be among .PDF, .JPG, .PNG, .DOC and .DOCX under 50MB.
+    The file type must be a .PDF, JPG, .PNG, .DOC or .DOCX.
   </p>
 
   {% set documentTypesToDisplay = [
@@ -32,10 +32,6 @@
         {% set foundDoc = uploadedItem %}
       {% endif %}
     {% endfor %}
-
-{% if not foundDoc %}
-    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">{{ docTypeInfo.name }}</h2>
-{% endif %}
 
     {% if foundDoc %}
               {{ govukSummaryList({
@@ -60,7 +56,7 @@
                 ]
               }) }}
             {% else %}
-              <p class="govuk-body">
+              <p class="govuk-form-group govuk-!-margin-top-8 govuk-!-margin-bottom-8 govuk-body">
                 <a class="govuk-link" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ docTypeInfo.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">
                   Upload {{ docTypeInfo.name | lower }}
                 </a>
@@ -68,7 +64,7 @@
             {% endif %}
 
             {% if not loop.last %}
-              <hr class="govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+              <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible">
             {% endif %}
   {% endfor %}
 

@@ -996,4 +996,23 @@ export default class OffenceService {
   private getSentence(offence: Offence): Sentence {
     return offence.sentence ?? { sentenceUuid: crypto.randomUUID() }
   }
+
+  validateOffenceMandatoryFields(offence: Offence): { text: string; href: string }[] {
+    const errors: { text: string; href: string }[] = []
+    if (!offence.sentence) {
+      return errors
+    }
+    if (!offence.sentence?.sentenceTypeClassification) {
+      errors.push({ text: 'You must enter the sentence type', href: '#' })
+    }
+
+    if (!offence.sentence?.periodLengths || offence.sentence?.periodLengths.length === 0) {
+      errors.push({ text: 'You must enter the (period length)', href: '#' })
+    }
+
+    if (offence.sentence?.sentenceServeType === 'CONSECUTIVE' && !offence.sentence?.consecutiveToSentenceUuid) {
+      errors.push({ text: 'You must enter consecutive to details', href: '#' })
+    }
+    return errors
+  }
 }

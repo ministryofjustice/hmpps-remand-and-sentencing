@@ -53,4 +53,44 @@ describe('offenceService', () => {
     expect(errors.length).toBe(0)
     expect(offence.offenceEndDate).toBeUndefined()
   })
+
+  describe('validateOffenceMandatoryFields', () => {
+    it('no errors for if no sentence on offence', () => {
+      const offence = {} as Offence
+      const errors = service.validateOffenceMandatoryFields(offence)
+      expect(errors.length).toBe(0)
+    })
+
+    it('the correct errors are returned if no sentence type and no sentence length', () => {
+      const offence = { sentence: {} } as Offence
+      const errors = service.validateOffenceMandatoryFields(offence)
+      expect(errors).toEqual([
+        {
+          href: '#',
+          text: 'You must enter the sentence type',
+        },
+        {
+          href: '#',
+          text: 'You must enter the (period length)',
+        },
+      ])
+    })
+
+    it('correct errors returned if sentence type is CONSECUTIVE but sentence-consec-to is not set', () => {
+      const offence = {
+        sentence: {
+          sentenceServeType: 'CONSECUTIVE',
+          sentenceTypeClassification: 'UNKNOWN',
+          periodLengths: [{ periodLengthType: 'SENTENCE_LENGTH' }],
+        },
+      } as Offence
+      const errors = service.validateOffenceMandatoryFields(offence)
+      expect(errors).toEqual([
+        {
+          href: '#',
+          text: 'You must enter consecutive to details',
+        },
+      ])
+    })
+  })
 })

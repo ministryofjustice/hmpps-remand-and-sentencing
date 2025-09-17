@@ -1265,7 +1265,11 @@ export default {
                 ],
                 sentenceServeType: 'CONCURRENT',
                 consecutiveToChargeNumber: null,
-                sentenceType: null,
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
                 convictionDate: null,
                 fineAmount: null,
                 legacyData: {

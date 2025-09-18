@@ -90,6 +90,19 @@ describe('offenceService', () => {
       ])
     })
 
+    it('no errors are returned if there is an unknown sentence type (legacy) and no sentence lengths', () => {
+      const offence = {
+        sentence: {
+          sentenceServeType: 'CONSECUTIVE',
+          consecutiveToSentenceUuid: 'uuid1',
+          sentenceTypeClassification: 'LEGACY_UNKNOWN',
+          periodLengths: [],
+        },
+      } as Offence
+      const errors = service.validateOffenceMandatoryFields(offence)
+      expect(errors).toEqual([])
+    })
+
     it('the correct errors are returned if there is a sentence type of SOPC and no sentence lengths', () => {
       const offence = {
         sentence: {

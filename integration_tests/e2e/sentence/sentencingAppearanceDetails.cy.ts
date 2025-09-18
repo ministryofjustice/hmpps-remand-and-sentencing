@@ -501,6 +501,13 @@ context('Sentencing appearance details Page', () => {
         courtId: 'STHHPM',
         courtName: 'Southampton Magistrate Court',
       })
+      cy.task('stubGetSentenceTypesByIds', [
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
+        },
+      ])
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3f20856f-fa17-493b-89c7-205970c749b8/sentencing/appearance-details',
@@ -543,13 +550,26 @@ context('Sentencing appearance details Page', () => {
       offencePeriodLengthPage.yearsInput().clear().type('5')
       offencePeriodLengthPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage
+        .editPeriodLengthLink(
+          'A1234AB',
+          'edit',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3f20856f-fa17-493b-89c7-205970c749b8',
+          'b2565181-6066-4b55-b4a7-32c2ddf8c36d',
+          'SENTENCE_LENGTH',
+        )
+        .click()
+      offencePeriodLengthPage.yearsInput().clear().type('5')
+      offencePeriodLengthPage.continueButton().click()
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
         Outcome: 'A Nomis description',
         'Committed on': '15/12/2023',
         'Conviction date': '',
-        'Sentence type': 'A Nomis sentence type description',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '5 years 0 months 0 weeks 0 days',
         'Section 86 of 2000 act': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
       })

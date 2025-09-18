@@ -1004,8 +1004,21 @@ export default class OffenceService {
     }
     if (!offence.sentence?.sentenceTypeClassification) {
       errors.push({ text: 'You must enter the sentence type', href: '#' })
-    } else if (!offence.sentence?.periodLengths || offence.sentence?.periodLengths.length === 0) {
-      errors.push({ text: 'You must enter the (period length)', href: '#' })
+    } else {
+      const expectedPeriodLengthType =
+        sentenceTypePeriodLengths[offence.sentence?.sentenceTypeClassification]?.periodLengths ?? []
+
+      expectedPeriodLengthType.forEach(expectedPeriodLength => {
+        if (
+          !offence.sentence.periodLengths ||
+          !offence.sentence.periodLengths.some(pl => pl.periodLengthType === expectedPeriodLength.type)
+        ) {
+          errors.push({
+            text: `You must enter the ${periodLengthTypeHeadings[expectedPeriodLength.type].toLowerCase()}`,
+            href: '#',
+          })
+        }
+      })
     }
 
     if (offence.sentence?.sentenceServeType === 'CONSECUTIVE' && !offence.sentence?.consecutiveToSentenceUuid) {

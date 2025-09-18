@@ -72,12 +72,12 @@ describe('offenceService', () => {
       ])
     })
 
-    it('the correct errors are returned if there is a sentence type and no sentence length', () => {
+    it('the correct errors are returned if there is a sentence type of STANDARD and no sentence lengths', () => {
       const offence = {
         sentence: {
           sentenceServeType: 'CONSECUTIVE',
           consecutiveToSentenceUuid: 'uuid1',
-          sentenceTypeClassification: 'UNKNOWN',
+          sentenceTypeClassification: 'STANDARD',
           periodLengths: [],
         },
       } as Offence
@@ -85,7 +85,29 @@ describe('offenceService', () => {
       expect(errors).toEqual([
         {
           href: '#',
-          text: 'You must enter the (period length)',
+          text: 'You must enter the sentence length',
+        },
+      ])
+    })
+
+    it('the correct errors are returned if there is a sentence type of SOPC and no sentence lengths', () => {
+      const offence = {
+        sentence: {
+          sentenceServeType: 'CONSECUTIVE',
+          consecutiveToSentenceUuid: 'uuid1',
+          sentenceTypeClassification: 'SOPC',
+          periodLengths: [],
+        },
+      } as Offence
+      const errors = service.validateOffenceMandatoryFields(offence)
+      expect(errors).toEqual([
+        {
+          href: '#',
+          text: 'You must enter the sentence length',
+        },
+        {
+          href: '#',
+          text: 'You must enter the licence period',
         },
       ])
     })

@@ -966,40 +966,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       : this.remandAndSentencingService.createDraftCourtAppearance(username, courtCaseReference, courtAppearance)
   }
 
-  public getWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
-
-    return res.render('pages/courtAppearance/warrant-upload', {
-      nomsId,
-      submitToCheckAnswers,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    })
-  }
-
-  public submitWarrantUpload: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
-    const { username } = res.locals.user as PrisonUser
-
-    if (req.file) {
-      const warrantId = await this.documentManagementService.uploadWarrant(nomsId, req.file, username)
-      this.courtAppearanceService.setWarrantId(req.session, nomsId, warrantId, appearanceReference)
-    }
-
-    if (submitToCheckAnswers) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
-      )
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome`,
-    )
-  }
-
   public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers, backTo } = req.query

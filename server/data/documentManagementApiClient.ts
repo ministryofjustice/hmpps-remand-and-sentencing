@@ -8,27 +8,6 @@ export default class DocumentManagementApiClient extends RestClient {
     super('Document Management API', config.apis.documentManagementApi, logger, authenticationClient)
   }
 
-  async uploadWarrantDocument(
-    prisonerId: string,
-    documentId: string,
-    file: Express.Multer.File,
-    username: string,
-  ): Promise<void> {
-    return (await this.postMultiPart({
-      path: `/documents/HMCTS_WARRANT/${documentId}`,
-      fileToUpload: file,
-      metadata: {
-        prisonerId,
-        state: 'IN_PROGRESS',
-      },
-      headers: {
-        'Service-Name': 'Remand and Sentencing',
-        Username: username,
-      },
-      username,
-    })) as void
-  }
-
   async uploadDocument(
     prisonerId: string,
     documentId: string,

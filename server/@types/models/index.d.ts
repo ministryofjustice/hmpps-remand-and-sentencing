@@ -24,7 +24,6 @@ declare module 'models' {
     nextHearingTimeSet?: boolean
     offences?: Offence[]
     warrantType?: string
-    warrantId?: string
     overallSentenceLength?: SentenceLength
     referenceNumberSelect?: string
     appearanceInformationAccepted?: boolean

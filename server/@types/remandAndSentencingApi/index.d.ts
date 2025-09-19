@@ -32,6 +32,54 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/queue-admin/retry-dlq/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryDlq']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/retry-all-dlqs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryAllDlqs']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['purgeQueue']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/sentence/{lifetimeUuid}': {
     parameters: {
       query?: never
@@ -736,7 +784,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/sentence/{sentenceUuid}/sentences-after-on-other-court-appearance-details': {
+  '/sentence/sentences-after-on-other-court-appearance-details': {
     parameters: {
       query?: never
       header?: never
@@ -756,7 +804,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/sentence/{sentenceUuid}/has-sentences-after-on-other-court-appearance': {
+  '/sentence/has-sentences-after-on-other-court-appearance': {
     parameters: {
       query?: never
       header?: never
@@ -888,6 +936,22 @@ export interface paths {
      * @description This endpoint will retrieve  all recalls for a person
      */
     get: operations['getRecallsByPrisonerId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getDlqMessages']
     put?: never
     post?: never
     delete?: never
@@ -1460,6 +1524,14 @@ export interface components {
       /** Format: uuid */
       recallUuid: string
     }
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
     LegacyCreateFine: {
       fineAmount: number
     }
@@ -1575,7 +1647,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 18:06:34.993127281 */
+      /** @example 07:51:20.383137 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1654,7 +1726,6 @@ export interface components {
       courtCaseReference?: string
       /** Format: date */
       appearanceDate: string
-      warrantId?: string
       warrantType: string
       overallSentenceLength?: components['schemas']['CreatePeriodLength']
       nextCourtAppearance?: components['schemas']['CreateNextCourtAppearance']
@@ -1677,7 +1748,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 07:51:20.383137 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2301,6 +2372,19 @@ export interface components {
       sentences?: components['schemas']['Sentence'][]
       courtCaseIds?: string[]
     }
+    DlqMessage: {
+      body: {
+        [key: string]: unknown
+      }
+      messageId: string
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
+    }
     PersonDetails: {
       personId: string
       firstName: string
@@ -2372,7 +2456,6 @@ export interface components {
       courtCaseReference?: string
       /** Format: date */
       appearanceDate: string
-      warrantId?: string
       warrantType: string
       nextCourtAppearance?: components['schemas']['NextCourtAppearance']
       charges: components['schemas']['Charge'][]
@@ -2437,7 +2520,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 07:51:20.383137 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -2632,7 +2715,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 07:51:20.383137 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -2640,7 +2723,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 07:51:20.383137 */
       appearanceTime?: string
       courtId: string
     }
@@ -2673,7 +2756,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 07:51:20.383137 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -2691,7 +2774,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 07:51:20.383137 */
       appearanceTime?: string
       courtId: string
     }
@@ -2818,6 +2901,8 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
@@ -2827,8 +2912,6 @@ export interface components {
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      first?: boolean
-      last?: boolean
       empty?: boolean
     }
     PageableObject: {
@@ -2852,6 +2935,8 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['PagedCourtCase'][]
@@ -2861,8 +2946,6 @@ export interface components {
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
-      first?: boolean
-      last?: boolean
       empty?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -2963,7 +3046,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 07:51:20.383137 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -3167,6 +3250,70 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['DeleteRecallResponse']
+        }
+      }
+    }
+  }
+  retryDlq: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        queueName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
         }
       }
     }
@@ -5214,11 +5361,11 @@ export interface operations {
   }
   sentencesAfterOnOtherCourtAppearanceDetails: {
     parameters: {
-      query?: never
-      header?: never
-      path: {
-        sentenceUuid: string
+      query: {
+        sentenceUuids: string[]
       }
+      header?: never
+      path?: never
       cookie?: never
     }
     requestBody?: never
@@ -5254,11 +5401,11 @@ export interface operations {
   }
   hasSentencesAfterOnOtherCase: {
     parameters: {
-      query?: never
-      header?: never
-      path: {
-        sentenceUuid: string
+      query: {
+        sentenceUuids: string[]
       }
+      header?: never
+      path?: never
       cookie?: never
     }
     requestBody?: never
@@ -5536,6 +5683,30 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Recall'][]
+        }
+      }
+    }
+  }
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }

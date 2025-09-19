@@ -1,14 +1,15 @@
-import type { AppearanceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import getOrSetRefDataInCache from '../cache/refDataCache'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 
 export default class AppearanceOutcomeService {
   constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
 
-  async getAllOutcomes(username: string): Promise<AppearanceOutcome[]> {
-    return this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username)
+  async getAllOutcomes(username: string) {
+    const cacheKey = 'appearance-outcomes:all'
+    return getOrSetRefDataInCache(cacheKey, () => this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username))
   }
 
-  async getOutcomeByUuid(appearanceOutcomeUuid: string, username: string): Promise<AppearanceOutcome> {
+  async getOutcomeByUuid(appearanceOutcomeUuid: string, username: string) {
     return this.remandAndSentencingApiClient.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
   }
 }

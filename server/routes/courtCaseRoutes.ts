@@ -38,7 +38,7 @@ import {
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
-import { chargeToOffence, draftCourtAppearanceToCourtAppearance } from '../utils/mappingUtils'
+import { chargeToOffence } from '../utils/mappingUtils'
 import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import logger from '../../logger'
@@ -848,24 +848,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
     )
   }
 
-  public getDraftAppearance: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { username } = req.user
-
-    const draftAppearance = await this.remandAndSentencingService.getDraftCourtAppearanceByAppearanceUuid(
-      appearanceReference,
-      username,
-    )
-    this.courtAppearanceService.setSessionCourtAppearance(
-      req.session,
-      nomsId,
-      draftCourtAppearanceToCourtAppearance(draftAppearance),
-    )
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
-    )
-  }
-
   public getTaskList: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
@@ -931,39 +913,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/confirmation`,
     )
-  }
-
-  public submitTaskListAsDraft: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { username } = res.locals.user
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-    if (addOrEditCourtCase === 'add-court-case' && !courtAppearance.existingDraft) {
-      const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createDraftCourtCase(username, nomsId, courtCase)
-    } else {
-      await this.createOrUpdateDraftAppearance(username, courtCaseReference, courtAppearance)
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/save-court-case`,
-    )
-  }
-
-  private async createOrUpdateDraftAppearance(
-    username: string,
-    courtCaseReference: string,
-    courtAppearance: CourtAppearance,
-  ) {
-    return courtAppearance.existingDraft
-      ? this.remandAndSentencingService.updateDraftCourtAppearance(
-          username,
-          courtAppearance.appearanceUuid,
-          courtAppearance,
-        )
-      : this.remandAndSentencingService.createDraftCourtAppearance(username, courtCaseReference, courtAppearance)
   }
 
   public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
@@ -1943,27 +1892,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`,
     )
-  }
-
-  public getDraftConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference } = req.params
-    const { courtAppearanceCourtName } = res.locals
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    return res.render('pages/courtAppearance/save-court-case', {
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      addOrEditCourtAppearance,
-      appearanceReference,
-      courtAppearance,
-      courtAppearanceCourtName,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
-    })
   }
 
   private getDocumentName(documentType: string, warrantType: string): string {

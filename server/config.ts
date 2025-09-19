@@ -167,10 +167,6 @@ export default {
   sqs: {
     audit: auditConfig(),
   },
-  featureToggles: {
-    saveAsDraftEnabled: get('SAVE_AS_DRAFT_ENABLED', 'false') === 'true',
-  },
-
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),

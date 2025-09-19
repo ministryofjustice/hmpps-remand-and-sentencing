@@ -24,50 +24,6 @@ export default {
     })
   },
 
-  stubCreateDraftCourtCaseForRemand: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: '/remand-and-sentencing-api/draft/court-case',
-        bodyPatterns: [
-          {
-            equalToJson:
-              '{"prisonerId": "A1234AB", "draftAppearances": [{"sessionBlob": {"offences": [], "warrantType": "REMAND", "caseReferenceNumber": "T12345678", "warrantDate": "2023-05-12", "courtCode": "ACCRYC", "appearanceOutcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "relatedOffenceOutcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "caseOutcomeAppliedAll": "false", "appearanceInformationAccepted": true}}]}',
-          },
-        ],
-      },
-      response: {
-        status: 201,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
-        },
-      },
-    })
-  },
-
-  stubCreateDraftCourtCaseForSentencing: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: '/remand-and-sentencing-api/draft/court-case',
-        bodyPatterns: [
-          {
-            equalToJson:
-              '{"prisonerId": "A1234AB", "draftAppearances": [{"sessionBlob": {"offences": [], "warrantType": "SENTENCING", "caseReferenceNumber": "T12345678", "warrantDate": "2023-05-12", "courtCode": "ACCRYC", "appearanceOutcomeUuid": "4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d10", "relatedOffenceOutcomeUuid": "63920fee-e43a-45ff-a92d-4679f1af2527", "caseOutcomeAppliedAll": "true", "appearanceInformationAccepted": true}}]}',
-          },
-        ],
-      },
-      response: {
-        status: 201,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
-        },
-      },
-    })
-  },
-
   stubCreateSentenceCourtCase: (): SuperAgentRequest => {
     return stubFor({
       request: {

@@ -251,8 +251,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
       return consecutiveToDetailsResponse
     },
   )
-
-  njkEnv.addGlobal('featureToggles', config.featureToggles)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
 
   // Remove leading "to " if present, then uppercase the first character

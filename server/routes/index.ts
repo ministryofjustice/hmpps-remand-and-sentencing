@@ -177,11 +177,6 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/resume-draft',
-    courtCaseRoutes.getDraftAppearance,
-  )
-
-  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/task-list',
     courtCaseRoutes.getTaskList,
   )
@@ -189,11 +184,6 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-task-list',
     courtCaseRoutes.submitTaskList,
-  )
-
-  router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-draft',
-    courtCaseRoutes.submitTaskListAsDraft,
   )
 
   router.get(
@@ -639,11 +629,6 @@ export default function routes(services: Services): Router {
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/confirmation',
     sentencingRoutes.getConfirmationPage,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/save-court-case',
-    courtCaseRoutes.getDraftConfirmationPage,
   )
 
   router.get(

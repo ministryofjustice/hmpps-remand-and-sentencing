@@ -11,8 +11,6 @@ import {
   CreateNextCourtAppearance,
   CreatePeriodLength,
   CreateSentence,
-  DraftCourtAppearance,
-  DraftCreateCourtCase,
   NextCourtAppearance,
   PageCourtCaseAppearance,
   PagedAppearancePeriodLength,
@@ -434,36 +432,6 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextHearingDate,
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
   } as CourtAppearance
-}
-
-export function courtCaseToDraftCreateCourtCase(nomsId: string, courtCase: CourtCase): DraftCreateCourtCase {
-  const draftAppearances = courtCase.appearances.map(appearance =>
-    courtAppearanceToDraftCreateCourtAppearance(appearance),
-  )
-
-  return {
-    prisonerId: nomsId,
-    draftAppearances,
-  }
-}
-
-export function courtAppearanceToDraftCreateCourtAppearance(appearance: CourtAppearance) {
-  const entries = Object.entries(appearance).map(([key, value]) => {
-    if (key === 'warrantDate') {
-      return [key, dayjs(value as Date).format('YYYY-MM-DD')]
-    }
-    return [key, value]
-  })
-  return {
-    sessionBlob: Object.fromEntries(entries) as Record<string, never>,
-  }
-}
-
-export function draftCourtAppearanceToCourtAppearance(draftAppearance: DraftCourtAppearance): CourtAppearance {
-  const appearance = draftAppearance.sessionBlob as unknown as CourtAppearance
-  appearance.appearanceUuid = draftAppearance.draftUuid
-  appearance.existingDraft = true
-  return appearance
 }
 
 export function offenceToConsecutiveToDetails(

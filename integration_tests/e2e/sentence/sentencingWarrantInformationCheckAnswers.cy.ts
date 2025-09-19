@@ -1,11 +1,11 @@
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import Page from '../../pages/page'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 
 context('Warrant Information Check Answers Page', () => {
   let offenceCheckOverallAnswersPage: SentencingWarrantInformationCheckAnswersPage
@@ -46,7 +46,7 @@ context('Warrant Information Check Answers Page', () => {
     courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
     courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()

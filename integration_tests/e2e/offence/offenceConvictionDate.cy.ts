@@ -15,13 +15,13 @@ import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
+import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 
 context('Add Offence Conviction Date Page', () => {
   let offenceConvictionDatePage: OffenceConvictionDatePage
@@ -225,7 +225,7 @@ context('Add Offence Conviction Date Page tests with a full create court appeara
     courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 

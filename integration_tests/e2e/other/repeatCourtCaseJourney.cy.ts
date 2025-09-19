@@ -132,7 +132,7 @@ context('Repeat Court Case journey', () => {
       'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Is the outcome the same for all offences on the warrant?': 'Yes',
+      'Does this outcome apply to all offences on the warrant?': 'Yes',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 

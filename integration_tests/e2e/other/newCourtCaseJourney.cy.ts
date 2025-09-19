@@ -27,6 +27,7 @@ import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
+import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -129,7 +130,7 @@ context('New Court Case journey', () => {
       'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Is the outcome the same for all offences on the warrant?': 'No',
+      'Does this outcome apply to all offences on the warrant?': 'No',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 
@@ -396,7 +397,7 @@ context('New Court Case journey', () => {
     courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
     courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Imprisonment')
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()

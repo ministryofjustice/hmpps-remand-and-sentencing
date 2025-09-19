@@ -25,8 +25,6 @@ export default abstract class Page {
 
   confirmAndContinueButton = (): PageElement => cy.get('[data-qa=confirm-and-add-offence]')
 
-  saveDraftButton = (): PageElement => cy.get('[data-qa=save-draft-button]')
-
   prisonerBanner = (): PageElement => cy.get('.mini-profile')
 
   subnav = (): PageElement => cy.get('nav')

@@ -30,8 +30,6 @@ export default class CourtCaseDetailsModel {
 
   appearances: PageCourtCaseAppearance[]
 
-  draftAppearances: PageCourtCaseAppearance[]
-
   mergedToCaseDetails: MergedToCaseDetails
 
   mergedToInsetText?: string

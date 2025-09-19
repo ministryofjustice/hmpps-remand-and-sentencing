@@ -16,7 +16,7 @@ import type {
   DeleteDocumentForm,
   UploadedDocumentForm,
 } from 'forms'
-import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
+import type { CourtCase, UploadedDocument } from 'models'
 import dayjs from 'dayjs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import fs from 'fs'

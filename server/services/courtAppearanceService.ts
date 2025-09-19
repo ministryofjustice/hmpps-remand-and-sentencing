@@ -327,13 +327,6 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, appearanceUuid).warrantType
   }
 
-  setWarrantId(session: Partial<SessionData>, nomsId: string, warrantId: string, appearanceUuid: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    courtAppearance.warrantId = warrantId
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
-  }
-
   getNextHearingCourtSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
     return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingCourtSelect
   }

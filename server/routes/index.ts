@@ -247,16 +247,6 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/warrant-upload',
-    courtCaseRoutes.getWarrantUpload,
-  )
-
-  router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-warrant-upload',
-    courtCaseRoutes.submitWarrantUpload,
-  )
-
-  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/overall-case-outcome',
     courtCaseRoutes.getOverallCaseOutcome,
   )

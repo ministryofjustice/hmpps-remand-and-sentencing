@@ -44,7 +44,7 @@
                 }
             }) }}
 
-    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that have not been updated</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that need updating ({{ unchangedOffences.length }})</h2>
 
     {% for offence in unchangedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
@@ -94,7 +94,9 @@
                 }) }}
     {% endfor %}
 
-    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes</h2>
+    <hr class="govuk-section-break govuk-section-break--l govuk-!-margin-top-8 govuk-section-break--visible">
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes ({{custodialChangedOffences.length + nonCustodialChangedOffences.length}})</h2>
 
     <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with custodial outcomes</h3>
 

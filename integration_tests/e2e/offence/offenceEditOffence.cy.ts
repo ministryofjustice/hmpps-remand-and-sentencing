@@ -28,6 +28,7 @@ context('Add Offence Edit offence Page', () => {
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetAllChargeOutcomes')
+    cy.task('stubGetAllAppearanceOutcomes')
     cy.signIn()
   })
 
@@ -438,8 +439,6 @@ context('Add Offence Edit offence Page', () => {
         courtId: 'STHHPM',
         courtName: 'Southampton Magistrate Court',
       })
-      cy.task('stubGetAppearanceOutcomeById', {})
-      cy.task('stubGetAppearanceOutcomeById', {})
       cy.task('stubGetChargeOutcomesByIds', [
         {
           outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',

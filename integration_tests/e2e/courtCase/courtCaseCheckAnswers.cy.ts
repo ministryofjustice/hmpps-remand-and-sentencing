@@ -14,7 +14,6 @@ context('Court Case Check Answers Page', () => {
     cy.task('happyPathStubs')
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetCourtById', {})
-    cy.task('stubGetAppearanceOutcomeById', {})
     cy.signIn()
   })
 

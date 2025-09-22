@@ -51,7 +51,6 @@ context('New Court Case journey', () => {
   })
 
   it('fill in remand journey', () => {
-    cy.task('stubGetAppearanceOutcomeById', {})
     cy.task('stubGetChargeOutcomesByIds', [
       {
         outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
@@ -278,11 +277,6 @@ context('New Court Case journey', () => {
         classification: 'STANDARD',
       },
     ])
-    cy.task('stubGetAppearanceOutcomeById', {
-      outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
-      outcomeName: 'Imprisonment',
-      outcomeType: 'SENTENCING',
-    })
     cy.task('stubGetChargeOutcomesByIds', [
       {
         outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',

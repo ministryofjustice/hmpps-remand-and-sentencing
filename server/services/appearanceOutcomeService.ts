@@ -11,7 +11,6 @@ export default class AppearanceOutcomeService {
   }
 
   async getOutcomeByUuid(appearanceOutcomeUuid: string, username: string): Promise<AppearanceOutcome> {
-    const outcomes = await this.getAllOutcomes(username)
-    return outcomes.find(o => o.outcomeUuid === appearanceOutcomeUuid)
+    return this.remandAndSentencingApiClient.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
   }
 }

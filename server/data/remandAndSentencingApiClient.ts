@@ -169,15 +169,6 @@ export default class RemandAndSentencingApiClient extends RestClient {
     )) as unknown as Promise<AppearanceOutcome[]>
   }
 
-  async getAppearanceOutcomeByUuid(uuid: string, username: string): Promise<AppearanceOutcome> {
-    return (await this.get(
-      {
-        path: `/appearance-outcome/${uuid}`,
-      },
-      asSystem(username),
-    )) as unknown as Promise<AppearanceOutcome>
-  }
-
   async getAllChargeOutcomes(username: string): Promise<OffenceOutcome[]> {
     return (await this.get(
       {

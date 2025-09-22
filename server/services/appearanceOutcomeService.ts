@@ -11,7 +11,12 @@ export default class AppearanceOutcomeService {
   }
 
   async getOutcomeByUuid(appearanceOutcomeUuid: string, username: string): Promise<AppearanceOutcome> {
-    const outcomes = await this.getAllOutcomes(username)
-    return outcomes.find(o => o.outcomeUuid === appearanceOutcomeUuid)
+    const allActiveOutcomes = await this.getAllOutcomes(username)
+    const outcome = allActiveOutcomes.find(o => o.outcomeUuid === appearanceOutcomeUuid)
+    if (outcome) {
+      return outcome
+    }
+    // There is the potential that the outcome for the appearanceOutcomeUuid is inactive, therefore call the api in this scenario
+    return this.remandAndSentencingApiClient.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
   }
 }

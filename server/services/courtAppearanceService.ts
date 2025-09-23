@@ -1280,6 +1280,31 @@ export default class CourtAppearanceService {
     })
   }
 
+  checkAllOffencesHaveUpdatedOutcomes(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    const errors = validate(
+      courtAppearance,
+      {
+        'offences.*.outcomeUuid': 'required_with:offences',
+      },
+      {
+        'required_with.offences.*.outcomeUuid': 'Update the offence outcome',
+      },
+    )
+    return errors.map(error => {
+      const href = error.href.replace('.outcomeUuid', '')
+      return { ...error, href }
+    })
+  }
+
   clearSessionCourtAppearance(session: Partial<SessionData>, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]

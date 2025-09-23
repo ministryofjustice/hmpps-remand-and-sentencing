@@ -66,5 +66,15 @@ context('Update Offence Outcomes Page', () => {
           },
         ])
     })
+
+    it('shows error when there are offences which need outcome updating', () => {
+      offenceUpdateOffenceOutcomesPage.radioLabelSelector('true').click()
+      offenceUpdateOffenceOutcomesPage.continueButton().click()
+      offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
+      offenceUpdateOffenceOutcomesPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Update the offence outcome')
+    })
   })
 })

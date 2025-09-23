@@ -788,9 +788,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
           return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
         })
         .map(charge => chargeToOffence(charge))
-        .forEach(offence =>
-          this.courtAppearanceService.addOffence(req.session, nomsId, offence.chargeUuid, offence, appearanceReference),
-        )
+        .forEach(offence => {
+          this.courtAppearanceService.addOffence(req.session, nomsId, offence.chargeUuid, offence, appearanceReference)
+        })
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-type`,

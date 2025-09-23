@@ -54,8 +54,6 @@
             offenceName: offenceMap[offence.offenceCode],
             offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
             offenceEndDate: offence.offenceEndDate | formatDate,
-            outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
-            outcomeUpdated: offence.updatedOutcome,
             countNumber: offence.sentence.countNumber,
             lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
             convictionDate: offence.sentence.convictionDate | formatDate,

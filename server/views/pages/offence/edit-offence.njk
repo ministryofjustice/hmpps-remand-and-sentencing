@@ -41,6 +41,8 @@
                     key: {
                         text: "Outcome"
                     }, value: {
+                        html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/offence-outcome?submitToEditOffence=true" data-qa="edit-sentence-type-cta">Enter outcome</a>'
+                    } if showOutcomeCta else {
                         text: outcome | outcomeValueOrLegacy(offence.legacyData)
                     },
                     actions: {
@@ -51,7 +53,7 @@
                             attributes: {
                                 'data-qa': 'edit-offence-outcome-' + chargeUuid
                             }
-                        }]
+                        }] if not showOutcomeCta else []
                     }
                 }] %}
 

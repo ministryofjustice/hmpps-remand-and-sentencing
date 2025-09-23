@@ -432,7 +432,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     const potentialOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (
-      (existingOffence.outcomeUuid || this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) &&
+      (!existingOffence.updatedOutcome || this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) &&
       (!existingOffence.sentence || !potentialOffence.sentence) &&
       outcome.outcomeType === 'SENTENCING'
     ) {
@@ -2056,6 +2056,7 @@ export default class OffenceRoutes extends BaseRoutes {
           (PERIOD_TYPE_PRIORITY[b.type] ?? PERIOD_TYPE_PRIORITY.UNSUPPORTED),
       ),
       showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      showOutcomeCta: this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.updatedOutcome,
     })
   }
 

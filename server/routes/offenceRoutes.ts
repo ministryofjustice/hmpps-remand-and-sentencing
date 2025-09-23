@@ -205,6 +205,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const { submitToEditOffence } = req.query
     let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (Object.keys(offence).length === 1 && Object.keys(offence).includes('chargeUuid')) {
       const existingOffence = this.courtAppearanceService.getOffence(
@@ -255,6 +256,7 @@ export default class OffenceRoutes extends BaseRoutes {
       nonCustodialOutcomes,
       offenceDetails,
       offence,
+      submitToEditOffence,
     })
   }
 
@@ -267,6 +269,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
     const errors = this.offenceService.updateOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm)
 
@@ -282,6 +285,9 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceOutcomeForm.offenceOutcome,
       req.user.username,
     )
+    if (submitToEditOffence) {
+      this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference)
+    }
     if (outcome.outcomeType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
@@ -432,7 +438,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     const potentialOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (
-      (!existingOffence.updatedOutcome || this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) &&
+      (existingOffence.outcomeUuid || this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) &&
       (!existingOffence.sentence || !potentialOffence.sentence) &&
       outcome.outcomeType === 'SENTENCING'
     ) {

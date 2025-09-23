@@ -16,10 +16,10 @@
                 text: "This appearance has not been saved to NOMIS"
             }) }}
             <p class="govuk-body">
-                Court cases can only be saved to NOMIS when <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/task-list">all sections on the task list</a> are complete.
+                Court cases can only be saved to NOMIS when <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/task-list" class="govuk-link govuk-link--no-visited-state">all sections on the task list</a> are complete.
             </p>
             <p class="govuk-body">
-                You can return to finish adding court case and offence information from <a href="/person/{{ nomsId }}/">{{ prisoner | firstNameSpaceLastName | pluraliseName }} Court cases page</a>.
+                You can return to finish adding court case and offence information from <a href="/person/{{ nomsId }}/" class="govuk-link govuk-link--no-visited-state">{{ prisoner | firstNameSpaceLastName | pluraliseName }} Court cases page</a>.
             </p>
             {{ govukButton({
                 text: "Continue",

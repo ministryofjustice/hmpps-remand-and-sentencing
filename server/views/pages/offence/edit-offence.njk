@@ -102,7 +102,7 @@
                     value: {
                     text: sentenceType
                 } if sentenceType else {
-                    html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/sentence-type?submitToEditOffence=true" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
+                    html: '<a class="govuk-link govuk-link--no-visited-state" href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/sentence-type?submitToEditOffence=true" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
                 },
                     actions: {
                         items: [{
@@ -119,7 +119,7 @@
             {% for periodLength in periodLengths %}
                 {% set periodLengthEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.type +"&submitToEditOffence=true" %}
                 {% set periodLengthValue = {
-                        html: '<a href="' + periodLengthEditLink + '" class="govuk-link" data-qa="edit-period-length-' + periodLength.type + '-' + chargeUuid + '"> Enter ' + periodLength.key + '</a>'
+                        html: '<a href="' + periodLengthEditLink + '" class="govuk-link govuk-link--no-visited-state" data-qa="edit-period-length-' + periodLength.type + '-' + chargeUuid + '"> Enter ' + periodLength.key + '</a>'
                     } %}
                 {% if periodLength.value %}
                     {% set periodLengthValue = {
@@ -183,7 +183,7 @@
     {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
         {% set consecutiveToEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
         {% set consecutiveToValue = {
-            html: '<a href="' + consecutiveToEditLink + '" class="govuk-link" data-qa="edit-consecutive-to-' + chargeUuid + '">Enter details</a>'
+            html: '<a href="' + consecutiveToEditLink + '" class="govuk-link" data-qa="edit-consecutive-to-' + chargeUuid + '" class="govuk-link govuk-link--no-visited-state">Enter details</a>'
         } %}
         {% if consecutiveToDetails %}
             {% set consecutiveToValue = {
@@ -227,7 +227,7 @@
             attributes: {  'data-qa': 'continue-button' }
         }) }}
 
-        <a class="govuk-link" data-qa="cancel-edit-offence" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/cancel-offence">Cancel changes</a>
+        <a class="govuk-link govuk-link--no-visited-state" data-qa="cancel-edit-offence" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/cancel-offence">Cancel changes</a>
                 </div>
     </form>
 {% endblock %}

@@ -44,6 +44,7 @@
                 }
             }) }}
 
+
     <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that need updating ({{ unchangedOffences.length }})</h2>
     <span data-qa="offencesNeedUpdating">
         {% for offence in unchangedOffences %}
@@ -78,12 +79,11 @@
                 listItems: {
                     classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
                     items: [{
-                        html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/update-offence-outcome" data-qa="update-outcome-link-'+ offence.chargeUuid +'">Update outcome</a>'
+                        html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/update-offence-outcome" data-qa="update-outcome-link-'+ offence.chargeUuid +'"class="govuk-link govuk-link--no-visited-state">Update outcome</a>'
                     }]
                 },
                 id: offenceId,
                 errorMessage: errors | findErrorsBeginningWith(offenceId)
-
             })
         }}
         {% else %}

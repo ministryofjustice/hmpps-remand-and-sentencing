@@ -9,6 +9,8 @@ export default class OffenceUpdateOffenceOutcomesPage extends Page {
 
   updateOutcomeLink = (chargeUuid: string): PageElement => cy.get(`[data-qa="update-outcome-link-${chargeUuid}"]`)
 
+  offencesNeedUpdating = (): PageElement => cy.get('[data-qa=offencesNeedUpdating]')
+
   editOffenceLink = (
     personId: string,
     courtCaseId: string,

@@ -16,9 +16,9 @@ import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import StartPage from '../../pages/startPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import OffenceUpdateOffenceOutcomesPage from '../../pages/offenceUpdateOffenceOutcomesPage'
-import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 import OffenceFineAmountPage from '../../pages/offenceFineAmountPage'
+import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 
 context('Add Offence Edit offence Page', () => {
   let offenceEditOffencePage: OffenceEditOffencePage
@@ -546,13 +546,10 @@ context('Add Offence Edit offence Page', () => {
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence dates')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('12')
       offenceOffenceDatePage.continueButton().click()
-      offenceEditOffencePage.editFieldLink('71bb9f7e-971c-4c34-9a33-43478baee74f', 'offence-outcome').click()
-      const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
-        OffenceOffenceOutcomePage,
-        'Select the outcome for this offence',
-      )
-      offenceOffenceOutcomePage.radioLabelContains('Imprisonment').click()
-      offenceOffenceOutcomePage.continueButton().click()
+      offenceEditOffencePage.updateOutcomeCta().click()
+      const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+      offenceUpdateOutcomePage.radioLabelContains('Imprisonment').click()
+      offenceUpdateOutcomePage.continueButton().click()
 
       const offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
       offenceCountNumberPage.radioLabelSelector('true').click()

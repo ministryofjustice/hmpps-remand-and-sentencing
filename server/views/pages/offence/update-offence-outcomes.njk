@@ -45,55 +45,53 @@
             }) }}
 
     <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with outcomes that need updating ({{ unchangedOffences.length }})</h2>
+    <span data-qa="offencesNeedUpdating">
+        {% for offence in unchangedOffences %}
+            {% set offenceId = 'offences.' + offence.index %}
+            {{
+            offenceCard({
+                offenceCode: offence.offenceCode,
+                offenceName: offenceMap[offence.offenceCode],
+                offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
+                offenceEndDate: offence.offenceEndDate | formatDate,
+                countNumber: offence.sentence.countNumber,
+                lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
+                convictionDate: offence.sentence.convictionDate | formatDate,
+                terrorRelated: offence.terrorRelated,
+                isSentenced: offence.sentence,
+                periodLengths: offence.sentence.periodLengths,
+                sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
+                sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
+                consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence and offence.sentence.consecutiveToSentenceUuid else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
+                fineAmount: offence.sentence.fineAmount,
+                mergedFromCase: offence.mergedFromCase,
+                courtDetails: courtMap,
+                actions: {
+                    items: [
+                        {
+                            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
+                            text: "Edit",
+                            visuallyHiddenText: "edit offence"
+                        }
+                    ]
+                },
+                listItems: {
+                    classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+                    items: [{
+                        html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/update-offence-outcome" data-qa="update-outcome-link-'+ offence.chargeUuid +'">Update outcome</a>'
+                    }]
+                },
+                id: offenceId,
+                errorMessage: errors | findErrorsBeginningWith(offenceId)
 
-    {% for offence in unchangedOffences %}
-        {% set offenceId = 'offences.' + offence.index %}
-        {{
-        offenceCard({
-            offenceCode: offence.offenceCode,
-            offenceName: offenceMap[offence.offenceCode],
-            offenceStartDate: offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered',
-            offenceEndDate: offence.offenceEndDate | formatDate,
-            outcome: outcomeMap[offence.outcomeUuid] | chargeOutcomeOrLegacy(offence.legacyData),
-            outcomeUpdated: offence.updatedOutcome,
-            countNumber: offence.sentence.countNumber,
-            lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
-            convictionDate: offence.sentence.convictionDate | formatDate,
-            terrorRelated: offence.terrorRelated,
-            isSentenced: offence.sentence,
-            periodLengths: offence.sentence.periodLengths,
-            sentenceType: sentenceTypeMap[offence.sentence.sentenceTypeId] if offence.sentence,
-            sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,
-            consecutiveTo: sessionConsecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid] if offence.sentence and offence.sentence.consecutiveToSentenceUuid else consecutiveToSentenceDetailsMap[offence.sentence.consecutiveToSentenceUuid],
-            fineAmount: offence.sentence.fineAmount,
-            mergedFromCase: offence.mergedFromCase,
-            courtDetails: courtMap,
-            actions: {
-                items: [
-                    {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
-                        text: "Edit",
-                        visuallyHiddenText: "edit offence"
-                    }
-                ]
-            },
-            listItems: {
-                classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
-                items: [{
-                    html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/update-offence-outcome" data-qa="update-outcome-link-'+ offence.chargeUuid +'">Update outcome</a>'
-                }]
-            },
-            id: offenceId,
-            errorMessage: errors | findErrorsBeginningWith(offenceId)
-
-        })
-    }}
-    {% else %}
-        {{ govukInsetText({
-                    text: "There are no offences that need updating."
-                }) }}
-    {% endfor %}
-
+            })
+        }}
+        {% else %}
+            {{ govukInsetText({
+                        text: "There are no offences that need updating."
+                    }) }}
+        {% endfor %}
+    </span>
     <hr class="govuk-section-break govuk-section-break--l govuk-!-margin-top-8 govuk-section-break--visible">
 
     <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes ({{custodialChangedOffences.length + nonCustodialChangedOffences.length}})</h2>

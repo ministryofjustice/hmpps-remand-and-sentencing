@@ -41,10 +41,12 @@
                     key: {
                         text: "Outcome"
                     }, value: {
+                        html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/update-offence-outcome?submitToEditOffence=true" data-qa="update-outcome-cta">Update outcome</a>'
+                    } if showOutcomeCta else {
                         text: outcome | outcomeValueOrLegacy(offence.legacyData)
                     },
                     actions: {
-                        items: [{
+                        items: [] if showOutcomeCta else [{
                             href: "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-outcome?submitToEditOffence=true",
                             text: "Edit",
                             visuallyHiddenText: "outcome",

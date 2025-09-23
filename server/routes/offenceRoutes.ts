@@ -2345,7 +2345,12 @@ export default class OffenceRoutes extends BaseRoutes {
         nomsId,
         appearanceReference,
       )
-      errors = errors.concat(offenceErrors)
+      const updateOutcomeErrors = this.courtAppearanceService.checkAllOffencesHaveUpdatedOutcomes(
+        req.session,
+        nomsId,
+        appearanceReference,
+      )
+      errors = errors.concat(offenceErrors, updateOutcomeErrors)
     }
     if (errors.length > 0) {
       req.flash('errors', errors)

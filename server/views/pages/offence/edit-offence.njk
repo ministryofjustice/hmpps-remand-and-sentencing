@@ -185,7 +185,7 @@
     {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
         {% set consecutiveToEditLink = "/person/" +  nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
         {% set consecutiveToValue = {
-            html: '<a href="' + consecutiveToEditLink + '" class="govuk-link" data-qa="edit-consecutive-to-' + chargeUuid + '" class="govuk-link govuk-link--no-visited-state">Enter details</a>'
+            html: '<a href="' + consecutiveToEditLink + '" class="govuk-link govuk-link--no-visited-state" data-qa="edit-consecutive-to-' + chargeUuid + '">Enter details</a>'
         } %}
         {% if consecutiveToDetails %}
             {% set consecutiveToValue = {

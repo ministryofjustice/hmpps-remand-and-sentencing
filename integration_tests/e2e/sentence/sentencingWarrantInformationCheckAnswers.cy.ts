@@ -1,22 +1,17 @@
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import Page from '../../pages/page'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConvictionDatePage'
 import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 
 context('Warrant Information Check Answers Page', () => {
   let offenceCheckOverallAnswersPage: SentencingWarrantInformationCheckAnswersPage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetAllAppearanceOutcomes')
-    cy.task('stubGetAppearanceOutcomeById', {
-      outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
-      outcomeName: 'Imprisonment',
-      outcomeType: 'SENTENCING',
-    })
     cy.signIn()
 
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
@@ -46,7 +41,7 @@ context('Warrant Information Check Answers Page', () => {
     courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
     courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
@@ -101,11 +96,6 @@ context('Warrant Information Check Answers Page', () => {
   })
 
   it('clicking edit overall case outcome and submitting goes back to check answers page', () => {
-    cy.task('stubGetAppearanceOutcomeById', {
-      outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d11',
-      outcomeName: 'Another option',
-      outcomeType: 'SENTENCING',
-    })
     offenceCheckOverallAnswersPage.changeLink('A1234AB', '0', '0', 'sentencing/overall-case-outcome').click()
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,

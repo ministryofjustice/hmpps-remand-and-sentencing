@@ -9,11 +9,6 @@ import {
   CreateCourtAppearanceResponse,
   CreateCourtCase,
   CreateCourtCaseResponse,
-  DraftCourtAppearance,
-  DraftCourtAppearanceCreatedResponse,
-  DraftCourtCaseCreatedResponse,
-  DraftCreateCourtAppearance,
-  DraftCreateCourtCase,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LatestOffenceDate,
@@ -50,47 +45,6 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )) as unknown as Promise<CreateCourtCaseResponse>
-  }
-
-  async createDraftCourtCase(
-    draftCreateCourtCase: DraftCreateCourtCase,
-    username: string,
-  ): Promise<DraftCourtCaseCreatedResponse> {
-    return (await this.post(
-      {
-        data: draftCreateCourtCase,
-        path: '/draft/court-case',
-      },
-      asSystem(username),
-    )) as unknown as Promise<DraftCourtCaseCreatedResponse>
-  }
-
-  async createDraftCourtAppearance(
-    courtCaseUuid: string,
-    draftCreateCourtAppearance: DraftCreateCourtAppearance,
-    username: string,
-  ): Promise<DraftCourtAppearanceCreatedResponse> {
-    return (await this.post(
-      {
-        data: draftCreateCourtAppearance,
-        path: `/draft/court-case/${courtCaseUuid}/appearance`,
-      },
-      asSystem(username),
-    )) as unknown as Promise<DraftCourtAppearanceCreatedResponse>
-  }
-
-  async updateDraftCourtAppearance(
-    courtAppearanceUuid: string,
-    draftCreateCourtAppearance: DraftCreateCourtAppearance,
-    username: string,
-  ): Promise<void> {
-    return (await this.put(
-      {
-        data: draftCreateCourtAppearance,
-        path: `/draft/court-appearance/${courtAppearanceUuid}`,
-      },
-      asSystem(username),
-    )) as unknown as Promise<void>
   }
 
   async searchCourtCases(
@@ -142,15 +96,6 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )) as unknown as Promise<PageCourtCaseAppearance>
-  }
-
-  async getDraftCourtAppearanceByDraftUuid(appearanceUuid: string, username: string): Promise<DraftCourtAppearance> {
-    return (await this.get(
-      {
-        path: `/draft/court-appearance/${appearanceUuid}`,
-      },
-      asSystem(username),
-    )) as unknown as Promise<DraftCourtAppearance>
   }
 
   async deleteCourtAppearance(appearanceUuid: string, username: string): Promise<void> {

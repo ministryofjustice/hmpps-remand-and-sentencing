@@ -33,7 +33,6 @@ describe('GET task list', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Finish and save')
-        expect($('[data-qa=submitDraft]').length).toBe(0)
         expect($('[data-qa=back-link]').length).toBe(0)
       })
   })

@@ -319,19 +319,16 @@ export default class CourtAppearanceService {
   setWarrantType(session: Partial<SessionData>, nomsId: string, warrantType: string, appearanceUuid: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.warrantType = warrantType
+    if (warrantType === 'SENTENCING') {
+      // eslint-disable-next-line no-param-reassign
+      courtAppearance.offences.forEach(offence => delete offence.outcomeUuid)
+    }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
 
   getWarrantType(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
     return this.getCourtAppearance(session, nomsId, appearanceUuid).warrantType
-  }
-
-  setWarrantId(session: Partial<SessionData>, nomsId: string, warrantId: string, appearanceUuid: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    courtAppearance.warrantId = warrantId
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
   }
 
   getNextHearingCourtSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
@@ -1279,6 +1276,31 @@ export default class CourtAppearanceService {
     )
     return errors.map(error => {
       const href = error.href.replace('.sentence.sentenceServeType', '')
+      return { ...error, href }
+    })
+  }
+
+  checkAllOffencesHaveUpdatedOutcomes(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    const errors = validate(
+      courtAppearance,
+      {
+        'offences.*.outcomeUuid': 'required_with:offences',
+      },
+      {
+        'required_with.offences.*.outcomeUuid': 'Update the offence outcome',
+      },
+    )
+    return errors.map(error => {
+      const href = error.href.replace('.outcomeUuid', '')
       return { ...error, href }
     })
   }

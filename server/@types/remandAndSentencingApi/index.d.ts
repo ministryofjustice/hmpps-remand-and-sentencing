@@ -32,6 +32,54 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/queue-admin/retry-dlq/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryDlq']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/retry-all-dlqs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryAllDlqs']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['purgeQueue']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/sentence/{lifetimeUuid}': {
     parameters: {
       query?: never
@@ -271,34 +319,6 @@ export interface paths {
     put: operations['updateInAppearance']
     post?: never
     delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/draft/court-appearance/{draftUuid}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Retrieves a draft court appearance
-     * @description Retrieves a draft court appearance
-     */
-    get: operations['get_5']
-    /**
-     * Updates a draft court appearance
-     * @description Updates a draft court appearance for when a user wants to pause inputting a warrant and come back later
-     */
-    put: operations['update_5']
-    post?: never
-    /**
-     * deletes a draft court appearance
-     * @description deletes a draft court appearance
-     */
-    delete: operations['delete_4']
     options?: never
     head?: never
     patch?: never
@@ -616,46 +636,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/draft/court-case': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Create a draft court case
-     * @description Creates a draft court case for when a user wants to pause inputting a warrant and come back later
-     */
-    post: operations['create_8']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/draft/court-case/{courtCaseUuid}/appearance': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Create a draft court appearance in court case
-     * @description Creates a draft draft court appearance in court case for when a user wants to pause inputting a warrant and come back later
-     */
-    post: operations['createDraftAppearanceInCourtCase']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/court-case': {
     parameters: {
       query?: never
@@ -736,7 +716,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/sentence/{sentenceUuid}/sentences-after-on-other-court-appearance-details': {
+  '/sentence/sentences-after-on-other-court-appearance-details': {
     parameters: {
       query?: never
       header?: never
@@ -756,7 +736,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/sentence/{sentenceUuid}/has-sentences-after-on-other-court-appearance': {
+  '/sentence/has-sentences-after-on-other-court-appearance': {
     parameters: {
       query?: never
       header?: never
@@ -888,6 +868,22 @@ export interface paths {
      * @description This endpoint will retrieve  all recalls for a person
      */
     get: operations['getRecallsByPrisonerId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getDlqMessages']
     put?: never
     post?: never
     delete?: never
@@ -1067,7 +1063,7 @@ export interface paths {
      * retrieve a recall
      * @description This endpoint will retrieve legacy recall details.
      */
-    get: operations['get_6']
+    get: operations['get_5']
     put?: never
     post?: never
     delete?: never
@@ -1413,7 +1409,7 @@ export interface paths {
      * Delete Charge
      * @description Synchronise a deletion of charge from NOMIS offender charges into remand and sentencing API.
      */
-    delete: operations['delete_5']
+    delete: operations['delete_4']
     options?: never
     head?: never
     patch?: never
@@ -1459,6 +1455,14 @@ export interface components {
     SaveRecallResponse: {
       /** Format: uuid */
       recallUuid: string
+    }
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
     }
     LegacyCreateFine: {
       fineAmount: number
@@ -1575,7 +1579,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 18:06:34.993127281 */
+      /** @example 10:53:32.875719748 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1623,10 +1627,6 @@ export interface components {
     LegacyUpdateWholeCharge: {
       offenceCode: string
     }
-    DraftCreateCourtAppearance: {
-      sessionBlob: components['schemas']['JsonNode']
-    }
-    JsonNode: unknown
     CreateCharge: {
       /** Format: uuid */
       appearanceUuid?: string
@@ -1654,7 +1654,6 @@ export interface components {
       courtCaseReference?: string
       /** Format: date */
       appearanceDate: string
-      warrantId?: string
       warrantType: string
       overallSentenceLength?: components['schemas']['CreatePeriodLength']
       nextCourtAppearance?: components['schemas']['CreateNextCourtAppearance']
@@ -1677,7 +1676,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 10:53:32.875719748 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2159,18 +2158,6 @@ export interface components {
       offenceEndDate?: string
       legacyData: components['schemas']['ChargeLegacyData']
     }
-    DraftCreateCourtCase: {
-      prisonerId: string
-      draftAppearances: components['schemas']['DraftCreateCourtAppearance'][]
-    }
-    DraftCourtAppearanceCreatedResponse: {
-      /** Format: uuid */
-      draftUuid: string
-    }
-    DraftCourtCaseCreatedResponse: {
-      courtCaseUuid: string
-      draftAppearances: components['schemas']['DraftCourtAppearanceCreatedResponse'][]
-    }
     SentenceTypeUpdate: {
       /** Format: uuid */
       sentenceUuid: string
@@ -2301,6 +2288,19 @@ export interface components {
       sentences?: components['schemas']['Sentence'][]
       courtCaseIds?: string[]
     }
+    DlqMessage: {
+      body: {
+        [key: string]: unknown
+      }
+      messageId: string
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
+    }
     PersonDetails: {
       personId: string
       firstName: string
@@ -2372,7 +2372,6 @@ export interface components {
       courtCaseReference?: string
       /** Format: date */
       appearanceDate: string
-      warrantId?: string
       warrantType: string
       nextCourtAppearance?: components['schemas']['NextCourtAppearance']
       charges: components['schemas']['Charge'][]
@@ -2403,7 +2402,6 @@ export interface components {
         | 'INACTIVE'
         | 'EDITED'
         | 'DELETED'
-        | 'DRAFT'
         | 'FUTURE'
         | 'MERGED'
         | 'MANY_CHARGES_DATA_FIX'
@@ -2437,7 +2435,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 10:53:32.875719748 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -2632,7 +2630,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 10:53:32.875719748 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -2640,7 +2638,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 10:53:32.875719748 */
       appearanceTime?: string
       courtId: string
     }
@@ -2673,7 +2671,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 10:53:32.875719748 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -2691,7 +2689,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 10:53:32.875719748 */
       appearanceTime?: string
       courtId: string
     }
@@ -2724,11 +2722,6 @@ export interface components {
       consecutiveToSentenceUuid?: string
       periodLengths: components['schemas']['ReconciliationPeriodLength'][]
     }
-    DraftCourtAppearance: {
-      /** Format: uuid */
-      draftUuid: string
-      sessionBlob: components['schemas']['JsonNode']
-    }
     RecallableCourtCase: {
       courtCaseUuid: string
       reference: string
@@ -2739,7 +2732,6 @@ export interface components {
         | 'INACTIVE'
         | 'EDITED'
         | 'DELETED'
-        | 'DRAFT'
         | 'FUTURE'
         | 'MERGED'
         | 'MANY_CHARGES_DATA_FIX'
@@ -2912,7 +2904,6 @@ export interface components {
         | 'INACTIVE'
         | 'EDITED'
         | 'DELETED'
-        | 'DRAFT'
         | 'FUTURE'
         | 'MERGED'
         | 'MANY_CHARGES_DATA_FIX'
@@ -2963,7 +2954,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 18:06:34.993127281 */
+      /** @example 10:53:32.875719748 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -3167,6 +3158,70 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['DeleteRecallResponse']
+        }
+      }
+    }
+  }
+  retryDlq: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        queueName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
         }
       }
     }
@@ -4016,118 +4071,6 @@ export interface operations {
       }
     }
   }
-  get_5: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        draftUuid: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description court appearance updated */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DraftCourtAppearance']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DraftCourtAppearance']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DraftCourtAppearance']
-        }
-      }
-    }
-  }
-  update_5: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        draftUuid: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DraftCreateCourtAppearance']
-      }
-    }
-    responses: {
-      /** @description court appearance updated */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  delete_4: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        draftUuid: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description court appearance deleted */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
   getCourtCaseDetails: {
     parameters: {
       query?: never
@@ -4922,92 +4865,6 @@ export interface operations {
       }
     }
   }
-  create_8: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DraftCreateCourtCase']
-      }
-    }
-    responses: {
-      /** @description court case created */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DraftCourtCaseCreatedResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DraftCourtCaseCreatedResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DraftCourtCaseCreatedResponse']
-        }
-      }
-    }
-  }
-  createDraftAppearanceInCourtCase: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        courtCaseUuid: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DraftCreateCourtAppearance']
-      }
-    }
-    responses: {
-      /** @description draft court appearance created */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DraftCourtAppearanceCreatedResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DraftCourtAppearanceCreatedResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DraftCourtAppearanceCreatedResponse']
-        }
-      }
-    }
-  }
   createCourtCase: {
     parameters: {
       query?: never
@@ -5214,11 +5071,11 @@ export interface operations {
   }
   sentencesAfterOnOtherCourtAppearanceDetails: {
     parameters: {
-      query?: never
-      header?: never
-      path: {
-        sentenceUuid: string
+      query: {
+        sentenceUuids: string[]
       }
+      header?: never
+      path?: never
       cookie?: never
     }
     requestBody?: never
@@ -5254,11 +5111,11 @@ export interface operations {
   }
   hasSentencesAfterOnOtherCase: {
     parameters: {
-      query?: never
-      header?: never
-      path: {
-        sentenceUuid: string
+      query: {
+        sentenceUuids: string[]
       }
+      header?: never
+      path?: never
       cookie?: never
     }
     requestBody?: never
@@ -5536,6 +5393,30 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Recall'][]
+        }
+      }
+    }
+  }
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }
@@ -5898,7 +5779,7 @@ export interface operations {
       }
     }
   }
-  get_6: {
+  get_5: {
     parameters: {
       query?: never
       header?: never
@@ -6658,7 +6539,7 @@ export interface operations {
       }
     }
   }
-  delete_5: {
+  delete_4: {
     parameters: {
       query?: never
       header?: never

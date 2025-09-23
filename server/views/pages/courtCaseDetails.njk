@@ -41,13 +41,6 @@
                             Appearances ({{ courtCaseDetails.appearances | length }})
                         </a>
                     </li>
-                    {% if featureToggles.saveDraftEnabled %}
-                        <li class="govuk-tabs__list-item">
-                            <a class="govuk-tabs__tab" href="#drafts" data-qa="drafts-link">
-                                Drafts ({{ courtCaseDetails.draftAppearances | length }})
-                            </a>
-                        </li>
-                    {% endif %}
                 </ul>
 
                 <div class="govuk-tabs__panel" id="appearances" data-qa="appearances-tab">
@@ -59,30 +52,16 @@
                             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
                         {% endif %}
                         <div data-qa="appearance">
-                            {{ appearanceCard(appearance, courtCaseDetails, 'false') }}
+                            {{ appearanceCard(appearance, courtCaseDetails) }}
                         </div>
                     {% endfor %}
                 </div>
-
-                {% if featureToggles.saveDraftEnabled %}
-                    <div class="govuk-tabs__panel" id="drafts" data-qa="drafts-tab">
-                        {% if courtCaseDetails.draftAppearances | length == 0 %}
-                            <p>There are no draft appearances.</p>
-                        {% endif %}
-                        {% for appearance in courtCaseDetails.draftAppearances | reverse %}
-                            {% if loop.index != 1 %}
-                                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-                            {% endif %}
-                            {{ appearanceCard(appearance, courtCaseDetails, 'true') }}
-                        {% endfor %}
-                    </div>
-                {% endif %}
             </div>
         </div>
     </div>
 {% endblock %}
 
-{% macro appearanceCard(appearance, courtCaseDetails, draft) %}
+{% macro appearanceCard(appearance, courtCaseDetails) %}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
@@ -94,22 +73,14 @@
             <ul class="offence-card-actions-list" data-qa="appearanceActionList-{{appearance.appearanceUuid}}">
                 {% if not appearance.hasAnyRecalls %}
                     <li class="offence-card-action-link">
-
-                        {% if draft == 'true' %}
-                            <a class="govuk-link--no-visited-state"
-                            href="/person/{{ nomsId }}/add-court-case/{{ courtCaseDetails.courtCaseUuid }}/add-court-appearance/{{ appearance.appearanceUuid }}/resume-draft">
-                                Continue adding appearance information
-                            </a>
-                        {% else %}
-                            <a class="govuk-link--no-visited-state"
-                                href="{% if appearance.warrantType == 'REMAND' %}
-                                            /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand/load-appearance-details
-                                    {% else %}
-                                            /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing/load-appearance-details
-                                    {% endif %}">
-                                Edit
-                            </a>
-                        {% endif %}
+                        <a class="govuk-link--no-visited-state"
+                            href="{% if appearance.warrantType == 'REMAND' %}
+                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand/load-appearance-details
+                                {% else %}
+                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing/load-appearance-details
+                                {% endif %}">
+                            Edit
+                        </a>
                     </li>
                     {% if appearance.canDelete %}
                       <li class="offence-card-action-link">

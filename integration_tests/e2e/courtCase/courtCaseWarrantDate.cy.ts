@@ -191,7 +191,6 @@ context('Court Case Warrant Date Page', () => {
       ])
       cy.signIn()
       cy.visit('/person/A1234AB')
-      cy.task('stubGetAppearanceOutcomeById', {})
       cy.task('stubGetAppearanceTypeByUuid')
       cy.task('stubGetChargeOutcomeById', {
         outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
@@ -277,7 +276,6 @@ context('Court Case Warrant Date Page', () => {
       cy.task('stubGetCourtById', {})
       cy.task('stubGetCourtsByIds')
       cy.task('stubGetAllAppearanceOutcomes')
-      cy.task('stubGetAppearanceOutcomeById', {})
       cy.signIn()
       cy.visit('/person/A1234AB')
     })

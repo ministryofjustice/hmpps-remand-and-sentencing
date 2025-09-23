@@ -54,5 +54,27 @@ context('Update Offence Outcomes Page', () => {
         .trimTextContent()
         .should('equal', 'There is a problem Select whether you have finished reviewing offences.')
     })
+
+    it('do not show outcome in offences which need updating list', () => {
+      offenceUpdateOffenceOutcomesPage
+        .offencesNeedUpdating()
+        .getOffenceCards()
+        .should('deep.equal', [
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '12/05/2023',
+          },
+        ])
+    })
+
+    it('shows error when there are offences which need outcome updating', () => {
+      offenceUpdateOffenceOutcomesPage.radioLabelSelector('true').click()
+      offenceUpdateOffenceOutcomesPage.continueButton().click()
+      offenceUpdateOffenceOutcomesPage = Page.verifyOnPage(OffenceUpdateOffenceOutcomesPage)
+      offenceUpdateOffenceOutcomesPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Update the offence outcome')
+    })
   })
 })

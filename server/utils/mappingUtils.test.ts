@@ -27,7 +27,6 @@ describe('mapping API to session util tests', () => {
       courtCode: 'LEEDYC',
       courtCaseReference: 'T12345678',
       appearanceDate: '2024-08-29',
-      warrantId: null,
       warrantType: 'REMAND',
       nextCourtAppearance: null,
       charges: [],

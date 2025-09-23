@@ -7,7 +7,6 @@ context('Sentencing Warrant Overall Case Outcome Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetAllAppearanceOutcomes')
-    cy.task('stubGetAppearanceOutcomeById', {})
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)

@@ -3,7 +3,6 @@ import { PagedMergedFromCase } from '../remandAndSentencingApi/remandAndSentenci
 declare module 'models' {
   export interface CourtCase {
     uniqueIdentifier?: string
-    existingDraft?: boolean
     appearances?: CourtAppearance[]
   } // at some point this needs to change to appearance model
 
@@ -24,7 +23,6 @@ declare module 'models' {
     nextHearingTimeSet?: boolean
     offences?: Offence[]
     warrantType?: string
-    warrantId?: string
     overallSentenceLength?: SentenceLength
     referenceNumberSelect?: string
     appearanceInformationAccepted?: boolean
@@ -35,7 +33,6 @@ declare module 'models' {
     overallConvictionDateAppliedAll?: string
     legacyData?: Record<string, never>
     hasOverallSentenceLength?: string
-    existingDraft?: boolean
     uploadedDocuments?: UploadedDocument[]
     documentUploadAccepted?: boolean
   }

@@ -4,16 +4,6 @@ export type CreateCourtCase = components['schemas']['CreateCourtCase']
 
 export type CreateCourtAppearance = components['schemas']['CreateCourtAppearance']
 
-export type DraftCourtCaseCreatedResponse = components['schemas']['DraftCourtCaseCreatedResponse']
-
-export type DraftCreateCourtCase = components['schemas']['DraftCreateCourtCase']
-
-export type DraftCourtAppearanceCreatedResponse = components['schemas']['DraftCourtAppearanceCreatedResponse']
-
-export type DraftCourtAppearance = components['schemas']['DraftCourtAppearance']
-
-export type DraftCreateCourtAppearance = components['schemas']['DraftCreateCourtAppearance']
-
 export type CreateNextCourtAppearance = components['schemas']['CreateNextCourtAppearance']
 
 export type CreateCharge = components['schemas']['CreateCharge']

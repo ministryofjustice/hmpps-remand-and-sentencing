@@ -6,9 +6,6 @@ import {
   CourtCaseCountNumbers,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
-  DraftCourtAppearance,
-  DraftCourtAppearanceCreatedResponse,
-  DraftCourtCaseCreatedResponse,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LatestOffenceDate,
@@ -25,12 +22,7 @@ import {
   SentenceTypeIsValid,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
-import {
-  courtAppearanceToCreateCourtAppearance,
-  courtAppearanceToDraftCreateCourtAppearance,
-  courtCaseToCreateCourtCase,
-  courtCaseToDraftCreateCourtCase,
-} from '../utils/mappingUtils'
+import { courtAppearanceToCreateCourtAppearance, courtCaseToCreateCourtCase } from '../utils/mappingUtils'
 
 export default class RemandAndSentencingService {
   constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
@@ -71,41 +63,6 @@ export default class RemandAndSentencingService {
     return this.remandAndSentencingApiClient.putCourtAppearance(appearanceUuid, createCourtAppearance, username)
   }
 
-  async createDraftCourtCase(
-    username: string,
-    nomsId: string,
-    courtCase: CourtCase,
-  ): Promise<DraftCourtCaseCreatedResponse> {
-    const createDraftCourtCase = courtCaseToDraftCreateCourtCase(nomsId, courtCase)
-    return this.remandAndSentencingApiClient.createDraftCourtCase(createDraftCourtCase, username)
-  }
-
-  async createDraftCourtAppearance(
-    username: string,
-    courtCaseUuid: string,
-    courtAppearance: CourtAppearance,
-  ): Promise<DraftCourtAppearanceCreatedResponse> {
-    const createDraftCourtAppearance = courtAppearanceToDraftCreateCourtAppearance(courtAppearance)
-    return this.remandAndSentencingApiClient.createDraftCourtAppearance(
-      courtCaseUuid,
-      createDraftCourtAppearance,
-      username,
-    )
-  }
-
-  async updateDraftCourtAppearance(
-    username: string,
-    courtAppearanceUuid: string,
-    courtAppearance: CourtAppearance,
-  ): Promise<void> {
-    const createDraftCourtAppearance = courtAppearanceToDraftCreateCourtAppearance(courtAppearance)
-    return this.remandAndSentencingApiClient.updateDraftCourtAppearance(
-      courtAppearanceUuid,
-      createDraftCourtAppearance,
-      username,
-    )
-  }
-
   async updateCourtAppearance(
     username: string,
     courtCaseUuid: string,
@@ -131,10 +88,6 @@ export default class RemandAndSentencingService {
 
   async getCourtAppearanceByAppearanceUuid(appearanceUuid: string, username: string): Promise<PageCourtCaseAppearance> {
     return this.remandAndSentencingApiClient.getCourtAppearanceByAppearanceUuid(appearanceUuid, username)
-  }
-
-  async getDraftCourtAppearanceByAppearanceUuid(draftUuid: string, username: string): Promise<DraftCourtAppearance> {
-    return this.remandAndSentencingApiClient.getDraftCourtAppearanceByDraftUuid(draftUuid, username)
   }
 
   async deleteCourtAppearance(appearanceUuid: string, username: string): Promise<void> {

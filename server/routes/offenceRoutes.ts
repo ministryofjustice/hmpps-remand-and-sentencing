@@ -205,6 +205,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const { submitToEditOffence } = req.query
     let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     if (Object.keys(offence).length === 1 && Object.keys(offence).includes('chargeUuid')) {
       const existingOffence = this.courtAppearanceService.getOffence(
@@ -255,6 +256,7 @@ export default class OffenceRoutes extends BaseRoutes {
       nonCustodialOutcomes,
       offenceDetails,
       offence,
+      submitToEditOffence,
     })
   }
 
@@ -267,6 +269,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
     const errors = this.offenceService.updateOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm)
 
@@ -282,6 +285,9 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceOutcomeForm.offenceOutcome,
       req.user.username,
     )
+    if (submitToEditOffence) {
+      this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference)
+    }
     if (outcome.outcomeType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
@@ -2056,6 +2062,7 @@ export default class OffenceRoutes extends BaseRoutes {
           (PERIOD_TYPE_PRIORITY[b.type] ?? PERIOD_TYPE_PRIORITY.UNSUPPORTED),
       ),
       showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      showOutcomeCta: this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.updatedOutcome,
     })
   }
 
@@ -2069,6 +2076,15 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+
+    const errors = this.offenceService.validateOffenceMandatoryFields(offence)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+      )
+    }
+
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
 

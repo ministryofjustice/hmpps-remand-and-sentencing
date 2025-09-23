@@ -27,6 +27,7 @@ import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
+import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -50,7 +51,6 @@ context('New Court Case journey', () => {
   })
 
   it('fill in remand journey', () => {
-    cy.task('stubGetAppearanceOutcomeById', {})
     cy.task('stubGetChargeOutcomesByIds', [
       {
         outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
@@ -129,7 +129,7 @@ context('New Court Case journey', () => {
       'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Is the outcome the same for all offences on the warrant?': 'No',
+      'Does this outcome apply to all offences on the warrant?': 'No',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 
@@ -277,11 +277,6 @@ context('New Court Case journey', () => {
         classification: 'STANDARD',
       },
     ])
-    cy.task('stubGetAppearanceOutcomeById', {
-      outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
-      outcomeName: 'Imprisonment',
-      outcomeType: 'SENTENCING',
-    })
     cy.task('stubGetChargeOutcomesByIds', [
       {
         outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
@@ -396,7 +391,7 @@ context('New Court Case journey', () => {
     courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
     courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Imprisonment')
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()

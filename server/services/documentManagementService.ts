@@ -5,13 +5,6 @@ import DocumentManagementApiClient from '../data/documentManagementApiClient'
 export default class DocumentManagementService {
   constructor(private readonly documentManagementApiClient: DocumentManagementApiClient) {}
 
-  async uploadWarrant(prisonerId: string, fileToUpload: Express.Multer.File, username: string): Promise<string> {
-    const documentId = crypto.randomUUID()
-    await this.documentManagementApiClient.uploadWarrantDocument(prisonerId, documentId, fileToUpload, username)
-    fs.unlinkSync(fileToUpload.path)
-    return documentId
-  }
-
   async uploadDocument(
     prisonerId: string,
     fileToUpload: Express.Multer.File,

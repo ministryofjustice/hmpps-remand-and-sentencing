@@ -67,6 +67,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
+    if (req.session) {
+      req.session.nomsId = nomsId
+    }
     const { token, username } = res.locals.user
     const sortBy = getAsStringOrDefault(req.query.sortBy, 'STATUS_APPEARANCE_DATE_DESC')
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1

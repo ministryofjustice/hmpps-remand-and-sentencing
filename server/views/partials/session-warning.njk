@@ -1,0 +1,15 @@
+<div id="session-warning-popup" class="session-popup-overlay">
+  <div class="session-popup-content">
+    <h2 id="popup-header">You have been inactive for 30 minutes</h2>
+    <p id="popup-body">
+      For security, the appearance information you’ve entered will be deleted in
+      <span id="countdown-timer"></span>.
+    </p>
+    <div class="popup-actions">
+      <button id="continue-button" class="govuk-button govuk-button--start">
+        Continue adding appearance information
+      </button>
+      <a href="/person/{{ nomsId }}/timeout" class="govuk-link">Delete your answers</a>
+    </div>
+  </div>
+</div>

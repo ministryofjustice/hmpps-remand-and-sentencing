@@ -22,8 +22,8 @@ context('Remove document confirmation page', () => {
     const uploadDocumentPage = Page.verifyOnPageTitle(DocumentUploadPage, 'remand warrant')
     uploadDocumentPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
     uploadDocumentPage.continueButton().click()
-    Page.verifyOnPage(UploadRemandCourtDocumentsPage)
-    cy.contains('Delete').click()
+    const remandCourtDocPage = Page.verifyOnPage(UploadRemandCourtDocumentsPage)
+    remandCourtDocPage.deleteDocumentButton().click()
     removeDocumentConfirmationPage = Page.verifyOnPage(RemoveDocumentConfirmationPage)
   })
 

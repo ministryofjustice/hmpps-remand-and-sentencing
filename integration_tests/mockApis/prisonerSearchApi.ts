@@ -28,6 +28,23 @@ export default {
     })
   },
 
+  stubNotFoundPrisonerDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/prisoner-search-api/prisoner/A1234AB',
+      },
+      response: {
+        status: 404,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 404,
+          developerMessage: 'A1234AB not found',
+        },
+      },
+    })
+  },
+
   stubPrisonerSearchPing: (httpStatus = 200): SuperAgentRequest =>
     stubFor({
       request: {

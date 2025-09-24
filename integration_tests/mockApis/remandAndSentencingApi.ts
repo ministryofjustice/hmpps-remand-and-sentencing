@@ -2472,7 +2472,7 @@ export default {
     })
   },
 
-  stubGetAllChargeOutcomes: (): SuperAgentRequest => {
+  stubGetAllChargeOutcomes: (customResponseBody?): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -2486,7 +2486,7 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: [
+        jsonBody: customResponseBody ?? [
           {
             outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
             outcomeName: 'Remanded in custody',

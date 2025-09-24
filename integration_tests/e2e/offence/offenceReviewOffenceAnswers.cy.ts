@@ -17,6 +17,18 @@ context('Review Offences Page', () => {
     beforeEach(() => {
       cy.task('stubGetLatestCourtAppearance', {})
       cy.task('stubGetOffencesByCodes', {})
+      cy.task('stubGetAllChargeOutcomes', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+        {
+          outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+          outcomeName: 'Lie on file',
+          outcomeType: 'NON_CUSTODIAL',
+        },
+      ])
       cy.task('stubGetChargeOutcomesByIds', [
         {
           outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
@@ -38,20 +50,7 @@ context('Review Offences Page', () => {
     })
 
     it('update outcome and return to review offences page', () => {
-      cy.task('stubGetAllChargeOutcomes')
       cy.task('stubGetOffenceByCode', {})
-      cy.task('stubGetChargeOutcomesByIds', [
-        {
-          outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
-          outcomeName: 'Lie on file',
-          outcomeType: 'REMAND',
-        },
-      ])
-      cy.task('stubGetChargeOutcomeById', {
-        outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
-        outcomeName: 'Lie on file',
-        outcomeType: 'NON_CUSTODIAL',
-      })
       offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
 
       const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)

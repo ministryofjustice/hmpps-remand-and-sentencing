@@ -19,6 +19,9 @@ export default function populateCurrentPrisoner(prisonerSearchService: PrisonerS
         }
       } catch (error) {
         logger.error(error, `Failed to get prisoner with prisoner number: ${nomsId}`)
+        if (error.responseStatus === 404) {
+          throw FullPageError.notInCaseLoadError()
+        }
         next(error)
       }
     }

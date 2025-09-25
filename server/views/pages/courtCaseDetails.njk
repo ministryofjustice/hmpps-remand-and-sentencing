@@ -186,7 +186,7 @@
             {% endfor %}
             {% endset %}
             {{ govukDetails({
-                summaryText: '(' + appearance.charges | length  + ')',
+                summaryText: 'offences (' + appearance.charges | length  + ')',
                 html: offenceDetailsHtml,
                 classes: "filter white show-toggle govuk-!-margin-bottom-0",
                 attributes: {

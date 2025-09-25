@@ -1761,22 +1761,15 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { fromCourtCase } = req.query
+    const uploadedDocument =
+      fromCourtCase === 'true'
+        ? await this.documentManagementService.getDocument(documentId, res.locals.user.username)
+        : this.courtAppearanceService.getUploadedDocument(req.session, nomsId, documentId, appearanceReference)
 
-    if (fromCourtCase === 'true') {
-      const { username } = res.locals.user
-      await this.setAppearanceDetailsToSession(appearanceReference, username, req, nomsId, courtCaseReference)
-    }
-
-    const document: UploadedDocument | undefined = this.courtAppearanceService.getUploadedDocument(
-      req.session,
-      nomsId,
-      documentId,
-      appearanceReference,
-    )
     const { username } = res.locals.user as PrisonUser
     let errors = []
 
-    if (document === undefined) {
+    if (uploadedDocument === undefined) {
       errors = [{ text: 'Document not found.' }]
     }
 
@@ -1797,11 +1790,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
         throw new Error('Failed to retrieve document content.')
       }
 
-      res.setHeader('Content-Disposition', `attachment; filename="${document.fileName}"`)
+      res.setHeader('Content-Disposition', `attachment; filename="${uploadedDocument.fileName}"`)
       fileStream.pipe(res)
 
       fileStream.on('error', (streamError: Error) => {
-        logger.error(`Stream error during document download for ${document.documentUUID}: ${streamError.message}`)
+        logger.error(
+          `Stream error during document download for ${uploadedDocument.documentUUID}: ${streamError.message}`,
+        )
         if (!res.headersSent) {
           errors = [{ text: 'Error transferring document.' }]
         } else {

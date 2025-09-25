@@ -1,4 +1,4 @@
-import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength } from 'models'
+import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength, UploadedDocument } from 'models'
 import dayjs from 'dayjs'
 import type { SentenceLengthForm } from 'forms'
 import type { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
@@ -23,6 +23,7 @@ import {
 import { sortByDateDesc } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'
+import { Document } from '../@types/documentManagementApi/types'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, prisonId: string): CreatePeriodLength => {
   return {
@@ -477,4 +478,12 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
     }
   }
   return consecutiveToDetailsEntry
+}
+
+export function documentToUploadedDocument(document: Document): UploadedDocument {
+  return {
+    documentUUID: document.documentUuid,
+    documentType: document.documentType,
+    fileName: document.documentFilename,
+  }
 }

@@ -2,42 +2,40 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {%- from "govuk/components/tag/macro.njk" import govukTag -%}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
 
 {% set pageTitle = applicationName + " - upload court documents" %}
 
 {% block pageContent %}
 <div class="govuk-!-margin-right-8">
-<form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-upload-court-documents" autocomplete="off">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-      {% if addOrEditCourtAppearance == 'edit-court-appearance' %}
-        <h1 class="govuk-heading-l">Manage court documents</h1>
-      {% else %}
-        <h1 class="govuk-heading-l">Upload court documents</h1>
-      {% endif %}
+  <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-upload-court-documents" autocomplete="off">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% call govukFieldset({
+      legend: {
+        text: "Manage court documents" if isEditJourney else "Upload court documents",
+        classes: "govuk-fieldset__legend--l",
+        isPageHeading: true
+      }
+    }) %}
+
       <p class="govuk-hint">
         The file type must be a .PDF, JPG, .PNG, .DOC or .DOCX.
       </p>
 
-      {% set documentTypesToDisplay = [
-        { type: "HMCTS_WARRANT", name: "Remand warrant", uploadLinkSegment: "warrant" },
-        { type: "PRISON_COURT_REGISTER", name: "Prison court register", uploadLinkSegment: "prison-court-register" }
-      ] %}
+      {% for documentRow in documentRows %}
+        {% if documentRow.documentUUID %}
+          {% set documentKeyHtml %}
+            <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentRow.documentUUID}}/download-document">{{documentRow.fileName}}</a>
+            <div class="govuk-body govuk-!-margin-0">{{documentRow.name}}</div>
+          {% endset %}
 
-      {% for docTypeInfo in documentTypesToDisplay %}
-        {% set foundDoc = none %} {# Initialize to nothing found #}
-
-        {% for uploadedItem in uploadedDocuments %}
-          {% if uploadedItem.documentType == docTypeInfo.type %}
-            {% set foundDoc = uploadedItem %}
-          {% endif %}
-        {% endfor %}
-
-        {% if foundDoc %}
           {{ govukSummaryList({
+            classes: "govuk-summary-list--long-key govuk-!-margin-bottom-0",
             rows: [
               {
                 key: {
-                  html: '<a class="govuk-link govuk-link--no-visited-state" target="_blank"   href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/' + foundDoc.documentUUID + '/download-document"><strong>' + foundDoc.fileName + '</strong></a><br><span class="govuk-body-s">' + docTypeInfo.name + '</span>'
+                  html: documentKeyHtml
                 },
                 value: {
                   html: govukTag({text: "Uploaded", classes: "govuk-tag--green"})
@@ -45,8 +43,8 @@
                 actions: {
                   items: [
                     {
-                      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/" + foundDoc.documentUUID + "/delete-document",
-                      text: "Delete",
+                      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/" + documentRow.documentUUID + "/delete-document",
+                      text: "Remove",
                       visuallyHiddenText: "document"
                     }
                   ]
@@ -54,24 +52,31 @@
               }
             ]
           }) }}
-        {% else %}
-          <p class="govuk-form-group govuk-!-margin-top-8 govuk-!-margin-bottom-8 govuk-body">
-            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ docTypeInfo.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">
-              Upload {{ docTypeInfo.name | lower }}
-            </a>
-          </p>
-        {% endif %}
-
+        
         {% if not loop.last %}
-          <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible">
+          <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-4">
         {% endif %}
-          {% endfor %}
 
+        {% else %}
+          <div class="govuk-form-group {% if loop.first %}govuk-!-margin-top-8{% else %}govuk-!-margin-top-6{% endif %} govuk-body">
+            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ documentRow.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">
+              Upload {{ documentRow.name | lower }}
+            </a>
+          </div>
+        {% endif %}
 
-        {{ govukButton({
-            text: "Continue",
-            attributes: { 'data-qa': 'continue-button' }
-        }) }}
-      </form>
-      </div>
+        
+
+      {% endfor %}
+
+        <div class="govuk-button-group govuk-!-margin-top-8">
+          {{ govukButton({
+              text: "Continue",
+              attributes: { 'data-qa': 'continue-button' }
+          }) }}
+        </div>
+
+    {% endcall %}
+  </form>
+</div>
 {% endblock %}

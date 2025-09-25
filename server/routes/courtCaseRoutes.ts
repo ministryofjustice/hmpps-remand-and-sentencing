@@ -50,6 +50,7 @@ import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import { MergedFromCase } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import documentTypes from '../resources/documentTypes'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -1624,6 +1625,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
+    const expectedDocumentTypes = documentTypes.REMAND
+    const documentRows = expectedDocumentTypes.map(expectedType => {
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type)
+      if (uploadedDocument) {
+        return { ...expectedType, ...uploadedDocument }
+      }
+      return expectedType
+    })
     return res.render('pages/courtAppearance/upload-court-documents', {
       nomsId,
       courtCaseReference,
@@ -1632,6 +1641,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       courtAppearance,
       uploadedDocuments,
+      documentRows,
+      isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,

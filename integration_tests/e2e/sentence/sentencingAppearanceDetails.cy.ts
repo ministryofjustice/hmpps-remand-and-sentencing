@@ -21,7 +21,18 @@ context('Sentencing appearance details Page', () => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetOffenceByCode', {})
-    cy.task('stubGetAllChargeOutcomes')
+    cy.task('stubGetAllChargeOutcomes', [
+      {
+        outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+        outcomeName: 'Imprisonment',
+        outcomeType: 'SENTENCING',
+      },
+      {
+        outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+        outcomeName: 'Lie on file',
+        outcomeType: 'NON_CUSTODIAL',
+      },
+    ])
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetCourtById', {
       courtId: 'STHHPM',
@@ -141,6 +152,13 @@ context('Sentencing appearance details Page', () => {
       cy.task('stubGetChargeOutcomeById', {})
       cy.task('stubGetLatestCourtAppearanceWithSentencing', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
       cy.task('stubGetCourtById', {})
+      cy.task('stubGetAllChargeOutcomes', [
+        {
+          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          outcomeName: 'Remanded in custody',
+          outcomeType: 'REMAND',
+        },
+      ])
       courtCaseAppearanceDetailsPage
         .editOffenceLink(
           'A1234AB',

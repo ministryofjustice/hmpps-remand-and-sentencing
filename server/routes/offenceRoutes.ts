@@ -207,7 +207,10 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    if (Object.keys(offence).length === 1 && Object.keys(offence).includes('chargeUuid')) {
+    if (
+      (Object.keys(offence).length === 1 && Object.keys(offence).includes('chargeUuid')) ||
+      offence.chargeUuid !== chargeUuid
+    ) {
       const existingOffence = this.courtAppearanceService.getOffence(
         req.session,
         nomsId,

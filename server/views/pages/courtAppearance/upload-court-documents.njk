@@ -5,7 +5,7 @@
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 
-{% set pageTitle = applicationName + " - upload court documents" %}
+{% set pageTitle = applicationName + " - upload remand court documents" %}
 
 {% block pageContent %}
 <div class="govuk-!-margin-right-8">
@@ -26,7 +26,7 @@
       {% for documentRow in documentRows %}
         {% if documentRow.documentUUID %}
           {% set documentKeyHtml %}
-            <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentRow.documentUUID}}/download-document">{{documentRow.fileName}}</a>
+            <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentRow.documentUUID}}/download-document">{{ documentRow.fileName }}</a>
             <div class="govuk-body govuk-!-margin-0">{{documentRow.name}}</div>
           {% endset %}
 
@@ -45,7 +45,10 @@
                     {
                       href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/" + documentRow.documentUUID + "/delete-document",
                       text: "Remove",
-                      visuallyHiddenText: "document"
+                      visuallyHiddenText: "document",
+                      attributes: {
+                        'data-qa': 'remove-' + documentRow.type + '-document-link'
+                      }
                     }
                   ]
                 }

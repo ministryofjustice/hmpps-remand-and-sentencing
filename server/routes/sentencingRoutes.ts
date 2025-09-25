@@ -32,6 +32,7 @@ import {
   SentencesToChainToResponse,
   SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import documentTypes from '../resources/documentTypes'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -791,6 +792,11 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
     )
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
+    const expectedDocumentTypes = documentTypes.SENTENCING
+    const documentRows = expectedDocumentTypes.map(expectedType => {
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
+      return { ...expectedType, ...uploadedDocument }
+    })
     return res.render('pages/sentencing/upload-court-documents', {
       nomsId,
       courtCaseReference,
@@ -798,7 +804,8 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       courtAppearance,
-      uploadedDocuments,
+      documentRows,
+      isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,

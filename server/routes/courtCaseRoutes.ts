@@ -1627,11 +1627,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
     const expectedDocumentTypes = documentTypes.REMAND
     const documentRows = expectedDocumentTypes.map(expectedType => {
-      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type)
-      if (uploadedDocument) {
-        return { ...expectedType, ...uploadedDocument }
-      }
-      return expectedType
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
+      return { ...expectedType, ...uploadedDocument }
     })
     return res.render('pages/courtAppearance/upload-court-documents', {
       nomsId,
@@ -1640,7 +1637,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       courtAppearance,
-      uploadedDocuments,
       documentRows,
       isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)

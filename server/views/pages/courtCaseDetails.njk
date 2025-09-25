@@ -142,15 +142,15 @@
             {% endif %}
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Court documents</h3>
             <ul class="govuk-list govuk-list--no--bullet govuk-!-margin-bottom-3" data-qa="court-documents">
-                {% if documentsWithUiType | length == 0 %}
+                {% if appearance.documentsWithUiType | length == 0 %}
                     No documents uploaded
                 {% else %}
-                    {% for document in documentsWithUiType %}
+                    {% for document in appearance.documentsWithUiType %}
                       <span style="vertical-align: middle;">
                         <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
                           <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"></path>
                         </svg>
-                        <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/edit-court-appearance/{{ appearance.appearanceUuid }}/{{ document.documentUUID }}/download-document">
+                        <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/edit-court-appearance/{{ appearance.appearanceUuid }}/{{ document.documentUUID }}/download-document?fromCourtCase=true">
                           <strong>{{ document.documentType }}</strong>
                         </a>
                       </span>

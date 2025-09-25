@@ -243,13 +243,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
         return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
       }),
     )
-    let documentsWithUiType = []
-    if (Array.isArray(courtCaseDetails.latestAppearance?.documents)) {
-      documentsWithUiType = courtCaseDetails.latestAppearance.documents.map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, courtCaseDetails.latestAppearance.warrantType),
-      }))
-    }
 
     courtCaseDetails.appearances = courtCaseDetails.appearances.map(appearance => ({
       ...appearance,
@@ -258,6 +251,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
         appearance.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
         courtMap,
       ),
+      documentsWithUiType: Array.isArray(appearance.documents)
+        ? appearance.documents.map(document => ({
+            ...document,
+            documentType: getUiDocumentType(document.documentType, appearance.warrantType),
+          }))
+        : [],
     }))
 
     return res.render('pages/courtCaseDetails', {
@@ -266,7 +265,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       courtCaseDetails: new CourtCaseDetailsModel(courtCaseDetails, courtMap),
       offenceMap,
-      documentsWithUiType,
       courtMap,
       consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}`,
@@ -1769,24 +1767,18 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-
-    const document: UploadedDocument | undefined = this.courtAppearanceService.getUploadedDocument(
-      req.session,
-      nomsId,
-      documentId,
-      appearanceReference,
-    )
+    const { fromCourtCase } = req.query
     const { username } = res.locals.user as PrisonUser
     let errors = []
-
-    if (!document) {
-      errors = [{ text: 'Document not found.' }]
-    }
 
     let fileStream: Readable | undefined
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
 
     try {
+      const uploadedDocument =
+        fromCourtCase === 'true'
+          ? await this.documentManagementService.getDocument(documentId, res.locals.user.username)
+          : this.courtAppearanceService.getUploadedDocument(req.session, nomsId, documentId, appearanceReference)
       const result = await this.documentManagementService.downloadDocument(documentId, username)
 
       if (result instanceof Readable) {
@@ -1800,11 +1792,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
         throw new Error('Failed to retrieve document content.')
       }
 
-      res.setHeader('Content-Disposition', `attachment; filename="${document.fileName}"`)
+      res.setHeader('Content-Disposition', `attachment; filename="${uploadedDocument.fileName}"`)
       fileStream.pipe(res)
 
       fileStream.on('error', (streamError: Error) => {
-        logger.error(`Stream error during document download for ${document.documentUUID}: ${streamError.message}`)
+        logger.error(
+          `Stream error during document download for ${uploadedDocument.documentUUID}: ${streamError.message}`,
+        )
         if (!res.headersSent) {
           errors = [{ text: 'Error transferring document.' }]
         } else {

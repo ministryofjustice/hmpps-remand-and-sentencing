@@ -1,6 +1,9 @@
 import crypto from 'crypto'
 import fs from 'fs'
+// eslint-disable-next-line import/no-unresolved
+import { UploadedDocument } from 'models'
 import DocumentManagementApiClient from '../data/documentManagementApiClient'
+import { documentToUploadedDocument } from '../utils/mappingUtils'
 
 export default class DocumentManagementService {
   constructor(private readonly documentManagementApiClient: DocumentManagementApiClient) {}
@@ -33,6 +36,15 @@ export default class DocumentManagementService {
       await this.documentManagementApiClient.deleteDocument(documentId, username)
     } catch (error) {
       throw new Error(`Failed to delete document: ${error.message}`)
+    }
+  }
+
+  async getDocument(documentId: string, username: string): Promise<UploadedDocument> {
+    try {
+      const document = await this.documentManagementApiClient.getDocument(documentId, username)
+      return documentToUploadedDocument(document)
+    } catch (error) {
+      throw new Error(`Failed to get document: ${error.message}`)
     }
   }
 

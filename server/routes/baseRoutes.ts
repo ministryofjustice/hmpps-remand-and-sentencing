@@ -9,6 +9,7 @@ import {
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import {
   offenceToConsecutiveToDetails,
+  pageCourtCaseAppearanceToCourtAppearance,
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
 } from '../utils/mappingUtils'
 import { formatDate } from '../utils/utils'
@@ -215,5 +216,25 @@ export default abstract class BaseRoutes {
     }
     if (parts.size === 0) return ''
     return `This appearance includes ${Array.from(parts).join(' and ')}`
+  }
+
+  protected async setAppearanceDetailsToSession(
+    appearanceReference: string,
+    username: string,
+    req,
+    nomsId: string,
+    courtCaseReference: string,
+  ) {
+    const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+      appearanceReference,
+      username,
+    )
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+    this.courtAppearanceService.setSessionCourtAppearance(
+      req.session,
+      nomsId,
+      pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
+    )
   }
 }

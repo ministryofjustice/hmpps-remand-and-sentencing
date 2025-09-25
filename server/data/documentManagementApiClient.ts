@@ -2,6 +2,7 @@ import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
+import { Document } from '../@types/documentManagementApi/types'
 
 export default class DocumentManagementApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -47,6 +48,23 @@ export default class DocumentManagementApiClient extends RestClient {
       )
     } catch (error) {
       throw new Error(`Error deleting document: ${error.message}`)
+    }
+  }
+
+  async getDocument(documentId: string, username: string): Promise<Document> {
+    try {
+      return await this.get(
+        {
+          path: `/documents/${documentId}`,
+          headers: {
+            'Service-Name': 'Remand and Sentencing',
+            Username: username,
+          },
+        },
+        asSystem(username),
+      )
+    } catch (error) {
+      throw new Error(`Error getting document: ${error.message}`)
     }
   }
 

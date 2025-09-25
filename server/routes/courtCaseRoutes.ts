@@ -242,13 +242,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
         return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
       }),
     )
-    let documentsWithUiType = []
-    if (Array.isArray(courtCaseDetails.latestAppearance?.documents)) {
-      documentsWithUiType = courtCaseDetails.latestAppearance.documents.map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, courtCaseDetails.latestAppearance.warrantType),
-      }))
-    }
 
     courtCaseDetails.appearances = courtCaseDetails.appearances.map(appearance => ({
       ...appearance,
@@ -257,6 +250,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
         appearance.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
         courtMap,
       ),
+      documentsWithUiType: Array.isArray(appearance.documents)
+        ? appearance.documents.map(document => ({
+            ...document,
+            documentType: getUiDocumentType(document.documentType, appearance.warrantType),
+          }))
+        : [],
     }))
 
     return res.render('pages/courtCaseDetails', {
@@ -265,7 +264,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       courtCaseDetails: new CourtCaseDetailsModel(courtCaseDetails, courtMap),
       offenceMap,
-      documentsWithUiType,
       courtMap,
       consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}`,
@@ -1762,6 +1760,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const { fromCourtCase } = req.query
+
+    if (fromCourtCase === 'true') {
+      const { username } = res.locals.user
+      await this.setAppearanceDetailsToSession(appearanceReference, username, req, nomsId, courtCaseReference)
+    }
 
     const document: UploadedDocument | undefined = this.courtAppearanceService.getUploadedDocument(
       req.session,
@@ -1772,7 +1776,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { username } = res.locals.user as PrisonUser
     let errors = []
 
-    if (!document) {
+    if (document === undefined) {
       errors = [{ text: 'Document not found.' }]
     }
 

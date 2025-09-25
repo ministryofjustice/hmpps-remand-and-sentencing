@@ -16,17 +16,16 @@
         {% include "../../partials/offenceCaption.njk" %}
         <div class="govuk-form-group {%- if errorMessage %} govuk-form-group--error{% endif %}">
             {% call govukFieldset({
-                describedBy: "consecutiveToSentenceUuid-hint" + (" consecutiveToSentenceUuid-error" if errorMessage else ""),
+                describedBy: "consecutiveToSentenceUuid-error" if errorMessage else "",
                 legend: {
-                    text: "Which sentence is this sentence consecutive to?",
+                    text: "Select the sentence this is consecutive to",
                     isPageHeading: true,
                     classes: "govuk-fieldset__legend--l"
                 }
             }) %}
-                {{ govukHint({
-                    id: 'consecutiveToSentenceUuid-hint',
-                    text: offenceDetails.code + " " + offenceDetails.description + (" committed on " + offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else "") if offence.offenceStartDate)
-                }) }}
+
+                <p class="govuk-body-l">{{offenceDetails.code}} {{offenceDetails.description}}{% if offence.offenceStartDate%} committed on {{ offence.offenceStartDate | formatDate }}{%if offence.offenceEndDate %} to {{offence.offenceEndDate | formatDate}}{% endif %}{% endif %}</p>
+
                 {% if errorMessage %}
                     {{ govukErrorMessage({
                         id: "consecutiveToSentenceUuid-error",
@@ -62,7 +61,7 @@
                     {% endif %}
 
                     {% if sentencedAppearancesOnOtherCases.length %}
-                        <h2 class="govuk-heading-m" data-qa="sentencesOnOtherCasesHeader">Sentences on other cases</h2>
+                        <h2 class="govuk-heading-m govuk-!-margin-top-7" data-qa="sentencesOnOtherCasesHeader">Sentences on other cases</h2>
 
                         {% for appearance in sentencedAppearancesOnOtherCases | sortByAppearanceDate %}
                             <div class="govuk-!-margin-bottom-6">

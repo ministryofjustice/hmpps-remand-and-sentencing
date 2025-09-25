@@ -1761,22 +1761,17 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { fromCourtCase } = req.query
-    const uploadedDocument =
-      fromCourtCase === 'true'
-        ? await this.documentManagementService.getDocument(documentId, res.locals.user.username)
-        : this.courtAppearanceService.getUploadedDocument(req.session, nomsId, documentId, appearanceReference)
-
     const { username } = res.locals.user as PrisonUser
     let errors = []
-
-    if (uploadedDocument === undefined) {
-      errors = [{ text: 'Document not found.' }]
-    }
 
     let fileStream: Readable | undefined
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
 
     try {
+      const uploadedDocument =
+        fromCourtCase === 'true'
+          ? await this.documentManagementService.getDocument(documentId, res.locals.user.username)
+          : this.courtAppearanceService.getUploadedDocument(req.session, nomsId, documentId, appearanceReference)
       const result = await this.documentManagementService.downloadDocument(documentId, username)
 
       if (result instanceof Readable) {

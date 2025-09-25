@@ -66,6 +66,23 @@
   }
 }
 
+.filter.govuk-details[open] > .govuk-details__summary::before {
+  border-style: solid;
+  border-width: 2px 2px 0 0;
+  content: "";
+  display: inline-block;
+  height: 10px;
+  position: relative;
+  vertical-align: middle;
+  width: 10px;
+  border-color: initial;
+  clip-path: unset;
+  -webkit-transform: translateY(30%) rotate(-45deg) scale(1);
+  -ms-transform: translateY(30%) rotate(-45deg) scale(1);
+  transform: translateY(30%) rotate(-45deg) scale(1);
+  margin-right: 5px;
+}
+
 .filter.govuk-details > .govuk-details__summary::before {
   border-style: solid;
   border-width: 2px 2px 0 0;
@@ -77,7 +94,6 @@
   width: 10px;
   border-color: initial;
   clip-path: unset;
-  padding-left: 0 !important;
   -webkit-transform: translateY(-25%) rotate(135deg) scale(1);
   -ms-transform: translateY(-25%) rotate(135deg) scale(1);
   transform: translateY(-25%) rotate(135deg) scale(1);

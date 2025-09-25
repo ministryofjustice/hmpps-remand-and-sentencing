@@ -35,7 +35,7 @@ context('Court Case details Page', () => {
             'Next hearing': '15/12/2024 at Accrington Youth Court',
             'Court documents': 'No documents uploaded',
             Offences: {
-              'Offences (2)': [
+              'offences (2)': [
                 {
                   offenceCardHeader: 'PS90037 An offence description',
                   'Committed on': '15/12/2023',
@@ -57,7 +57,7 @@ context('Court Case details Page', () => {
             'Next hearing': '15/12/2023 at Birmingham Crown Court',
             'Court documents': 'No documents uploaded',
             Offences: {
-              'Offences (1)': [
+              'offences (1)': [
                 {
                   offenceCardHeader: 'PS90037 An offence description',
                   'Committed on': '15/12/2025',
@@ -126,7 +126,7 @@ context('Court Case details Page', () => {
             Outcome: 'Imprisonment',
             'Court documents': 'No documents uploaded',
             Offences: {
-              'Offences (4)': [
+              'offences (4)': [
                 {
                   offenceCardHeader: 'PS90037 An offence description',
                   'Committed on': '15/12/2023',
@@ -170,7 +170,7 @@ context('Court Case details Page', () => {
             Outcome: 'A Nomis Outcome',
             'Court documents': 'No documents uploaded',
             Offences: {
-              'Offences (1)': [
+              'offences (1)': [
                 {
                   offenceCardHeader: 'PS90037 An offence description',
                   'Committed on': '15/12/2023',

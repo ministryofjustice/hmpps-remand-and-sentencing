@@ -104,4 +104,11 @@ declare module 'models' {
     documentType: string
     fileName: string
   }
+
+  export interface FileDownload {
+    body: Buffer
+    header: {
+      [key: string]: string
+    }
+  }
 }

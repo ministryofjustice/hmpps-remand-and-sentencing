@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import fs from 'fs'
+import type { FileDownload } from 'models'
 import DocumentManagementApiClient from '../data/documentManagementApiClient'
 
 export default class DocumentManagementService {
@@ -42,5 +43,9 @@ export default class DocumentManagementService {
     } catch (error) {
       throw new Error(`Failed to download document: ${error.message}`)
     }
+  }
+
+  async downloadRawDocument(documentId: string, username: string): Promise<FileDownload> {
+    return this.documentManagementApiClient.downloadRawDocument(documentId, username)
   }
 }

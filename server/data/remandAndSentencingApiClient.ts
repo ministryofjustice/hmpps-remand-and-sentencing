@@ -18,6 +18,7 @@ import {
   PageCourtCaseAppearance,
   PageCourtCaseContent,
   PagePagedCourtCase,
+  PrisonerDocuments,
   SentenceConsecutiveToDetailsResponse,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
@@ -420,6 +421,15 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: '/sentence/consecutive-chain/has-a-loop',
         data: consecutiveChainValidationRequest,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getPrisonerDocuments(prisonerId: string, username: string): Promise<PrisonerDocuments> {
+    return this.get(
+      {
+        path: `/person/${prisonerId}/documents`,
       },
       asSystem(username),
     )

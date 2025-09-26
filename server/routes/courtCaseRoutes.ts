@@ -169,8 +169,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public documents: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
-    const { username } = res.locals.user
-    const prisonerCourtCasesDocuments = await this.remandAndSentencingService.getPrisonerDocuments(nomsId, username)
+    const { username, token } = res.locals.user
+    const [prisonerCourtCasesDocuments, serviceDefinitions] = await Promise.all([
+      this.remandAndSentencingService.getPrisonerDocuments(nomsId, username),
+      this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
+    ])
     const courtCodes = prisonerCourtCasesDocuments.courtCaseDocuments.flatMap(courtCaseDocuments =>
       Object.values(courtCaseDocuments.appearanceDocumentsByType)
         .flatMap(documents => documents.flatMap(document => document.courtCode))
@@ -206,6 +209,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       nomsId,
       courtCases,
       courtMap,
+      serviceDefinitions,
     })
   }
 

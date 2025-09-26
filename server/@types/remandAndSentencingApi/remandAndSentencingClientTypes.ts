@@ -105,3 +105,5 @@ export type ConsecutiveChainValidationRequest = components['schemas']['Consecuti
 export type SentenceDetailsForConsecValidation = components['schemas']['SentenceDetailsForConsecValidation']
 
 export type LatestOffenceDate = components['schemas']['LatestOffenceDate']
+
+export type PrisonerDocuments = components['schemas']['PrisonerDocuments']

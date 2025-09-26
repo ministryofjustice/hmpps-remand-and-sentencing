@@ -28,6 +28,7 @@ export default function routes(services: Services): Router {
     services.prisonerService,
     services.manageOffencesService,
     services.courtRegisterService,
+    services.documentManagementService,
   )
   const offenceRoutes = new OffenceRoutes(
     services.offenceService,
@@ -76,6 +77,10 @@ export default function routes(services: Services): Router {
 
   router.get('/api/search-offence', apiRoutes.searchOffence)
   router.get('/api/search-court', apiRoutes.searchCourts)
+
+  router.get('/api/document/:documentId/download', apiRoutes.downloadDocument)
+
+  router.get('/person/:nomsId/documents', courtCaseRoutes.documents)
 
   router.get('/person/:nomsId', courtCaseRoutes.start)
 

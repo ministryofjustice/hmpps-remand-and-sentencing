@@ -167,6 +167,52 @@ export default class CourtCaseRoutes extends BaseRoutes {
     })
   }
 
+  public documents: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const { username, token } = res.locals.user
+    const [prisonerCourtCasesDocuments, serviceDefinitions] = await Promise.all([
+      this.remandAndSentencingService.getPrisonerDocuments(nomsId, username),
+      this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
+    ])
+    const courtCodes = prisonerCourtCasesDocuments.courtCaseDocuments.flatMap(courtCaseDocuments =>
+      Object.values(courtCaseDocuments.appearanceDocumentsByType)
+        .flatMap(documents => documents.flatMap(document => document.courtCode))
+        .concat(courtCaseDocuments.latestAppearance.courtCode),
+    )
+
+    const courtMap = await this.courtRegisterService.getCourtMap(courtCodes, username)
+    const courtCases = prisonerCourtCasesDocuments.courtCaseDocuments
+      .sort((a, b) => sortByDateDesc(a.latestAppearance.appearanceDate, b.latestAppearance.appearanceDate))
+      .map(courtCase => {
+        return {
+          ...courtCase,
+          appearanceDocumentsByType: Object.entries(courtCase.appearanceDocumentsByType)
+            .flatMap(([type, documents]) => {
+              return documents.map(document => {
+                return {
+                  key:
+                    documentTypes[document.warrantType].find(documentType => documentType.type === type).name ??
+                    'Unknown document type',
+                  val: document,
+                }
+              })
+            })
+            .reduce((current, value) => {
+              const docs = current[value.key] ?? []
+              // eslint-disable-next-line no-param-reassign
+              current[value.key] = docs.concat(value.val).sort((a, b) => sortByDateDesc(a.warrantDate, b.warrantDate))
+              return current
+            }, {}),
+        }
+      })
+    return res.render('pages/documents', {
+      nomsId,
+      courtCases,
+      courtMap,
+      serviceDefinitions,
+    })
+  }
+
   public getCourtCaseDetails: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, addOrEditCourtCase } = req.params
     const { username } = res.locals.user

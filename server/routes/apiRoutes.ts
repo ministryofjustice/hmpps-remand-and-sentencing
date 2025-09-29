@@ -5,6 +5,7 @@ import PrisonerService from '../services/prisonerService'
 import ManageOffencesService from '../services/manageOffencesService'
 import CourtRegisterService from '../services/courtRegisterService'
 import DocumentManagementService from '../services/documentManagementService'
+import logger from '../../logger'
 
 const placeHolderImage = path.join(process.cwd(), '/dist/assets/images/prisoner-profile-image.png')
 export default class ApiRoutes {
@@ -44,13 +45,21 @@ export default class ApiRoutes {
 
   public downloadDocument: RequestHandler = async (req, res): Promise<void> => {
     const { documentId } = req.params
-    return this.documentManagementService.downloadRawDocument(documentId, res.locals.user.username).then(response => {
+    return this.documentManagementService.downloadDocument(documentId, res.locals.user.username).then(response => {
+      let fileStream: Readable | undefined
+      if (response.body instanceof Readable) {
+        fileStream = response.body
+      } else if (Buffer.isBuffer(response.body)) {
+        fileStream = new Readable()
+        fileStream.push(response.body)
+        fileStream.push(null)
+      } else {
+        logger.error(`Document management service returned unexpected type for documentId: ${documentId}`)
+        throw new Error('Failed to retrieve document content.')
+      }
       res.set('content-disposition', response.header['content-disposition'])
       res.set('content-length', response.header['content-length'])
       res.set('content-type', response.header['content-type'])
-      const fileStream = new Readable()
-      fileStream.push(response.body)
-      fileStream.push(null)
       fileStream.pipe(res)
     })
   }

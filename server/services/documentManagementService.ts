@@ -37,15 +37,7 @@ export default class DocumentManagementService {
     }
   }
 
-  async downloadDocument(documentId: string, username: string): Promise<Buffer> {
-    try {
-      return await this.documentManagementApiClient.downloadDocument(documentId, username)
-    } catch (error) {
-      throw new Error(`Failed to download document: ${error.message}`)
-    }
-  }
-
-  async downloadRawDocument(documentId: string, username: string): Promise<FileDownload> {
-    return this.documentManagementApiClient.downloadRawDocument(documentId, username)
+  async downloadDocument(documentId: string, username: string): Promise<FileDownload> {
+    return this.documentManagementApiClient.downloadDocument(documentId, username)
   }
 }

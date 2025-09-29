@@ -289,13 +289,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
         return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
       }),
     )
-    let documentsWithUiType = []
-    if (Array.isArray(courtCaseDetails.latestAppearance?.documents)) {
-      documentsWithUiType = courtCaseDetails.latestAppearance.documents.map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, courtCaseDetails.latestAppearance.warrantType),
-      }))
-    }
 
     courtCaseDetails.appearances = courtCaseDetails.appearances.map(appearance => ({
       ...appearance,
@@ -304,6 +297,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
         appearance.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
         courtMap,
       ),
+      documentsWithUiType: Array.isArray(appearance.documents)
+        ? appearance.documents.map(document => ({
+            ...document,
+            documentType: getUiDocumentType(document.documentType, appearance.warrantType),
+          }))
+        : [],
     }))
 
     return res.render('pages/courtCaseDetails', {
@@ -312,7 +311,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       courtCaseDetails: new CourtCaseDetailsModel(courtCaseDetails, courtMap),
       offenceMap,
-      documentsWithUiType,
       courtMap,
       consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}`,
@@ -1802,7 +1800,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
     return 'The selected file could not be uploaded - try again.'
   }
 
-  // eslint-disable-next-line consistent-return
   public downloadUploadedDocument: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
@@ -1812,70 +1809,107 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-
-    const document: UploadedDocument | undefined = this.courtAppearanceService.getUploadedDocument(
-      req.session,
-      nomsId,
-      documentId,
-      appearanceReference,
-    )
     const { username } = res.locals.user as PrisonUser
-    let errors = []
 
-    if (!document) {
-      errors = [{ text: 'Document not found.' }]
-    }
-
-    let fileStream: Readable | undefined
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
 
     try {
       const result = await this.documentManagementService.downloadDocument(documentId, username)
 
-      if (result instanceof Readable) {
-        fileStream = result
-      } else if (Buffer.isBuffer(result)) {
+      let fileStream: Readable
+      if (result.body instanceof Readable) {
+        fileStream = result.body
+      } else if (Buffer.isBuffer(result.body)) {
         fileStream = new Readable()
-        fileStream.push(result)
+        fileStream.push(result.body)
         fileStream.push(null)
       } else {
-        logger.error(`Document management service returned unexpected type for documentId: ${documentId}`)
-        throw new Error('Failed to retrieve document content.')
+        throw new Error(`Unexpected body type for documentId=${documentId}`)
       }
 
-      res.setHeader('Content-Disposition', `attachment; filename="${document.fileName}"`)
-      fileStream.pipe(res)
+      // Copy headers from API response
+      if (result.header['content-disposition']) {
+        res.set('content-disposition', result.header['content-disposition'])
+      }
+      if (result.header['content-length']) {
+        res.set('content-length', result.header['content-length'])
+      }
+      if (result.header['content-type']) {
+        res.set('content-type', result.header['content-type'])
+      }
 
-      fileStream.on('error', (streamError: Error) => {
-        logger.error(`Stream error during document download for ${document.documentUUID}: ${streamError.message}`)
-        if (!res.headersSent) {
-          errors = [{ text: 'Error transferring document.' }]
-        } else {
-          res.end()
-        }
-      })
+      // Stream to client
+      fileStream.pipe(res)
 
       fileStream.on('end', () => {
         logger.info(`Successfully streamed document ${documentId} to client.`)
       })
-    } catch (error) {
-      logger.error(`Error downloading document ${documentId}: ${error.message}`)
+
+      fileStream.on('error', err => {
+        logger.error(`Stream error during document download ${documentId}: ${err.message}`)
+        if (!res.headersSent) {
+          this.redirectWithError(res, {
+            nomsId,
+            courtCaseReference,
+            appearanceReference,
+            addOrEditCourtCase,
+            addOrEditCourtAppearance,
+            warrantType,
+            message: 'Error transferring document.',
+          })
+        } else {
+          res.end()
+        }
+      })
+    } catch (err) {
+      logger.error(`Error downloading document ${documentId}: ${err.message}`)
       if (!res.headersSent) {
-        errors = [{ text: 'Error downloading document.' }]
-      }
-      res.end()
-    }
-    if (errors.length > 0) {
-      let redirectPath: string
-      if (addOrEditCourtCase === 'edit-court-case') {
-        redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
-      } else if (warrantType === 'SENTENCING') {
-        redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+        this.redirectWithError(res, {
+          nomsId,
+          courtCaseReference,
+          appearanceReference,
+          addOrEditCourtCase,
+          addOrEditCourtAppearance,
+          warrantType,
+          message: 'Error downloading document.',
+        })
       } else {
-        redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`
+        res.end()
       }
-      return res.redirect(redirectPath)
     }
+  }
+
+  private redirectWithError(
+    res,
+    opts: {
+      nomsId: string
+      courtCaseReference: string
+      appearanceReference: string
+      addOrEditCourtCase: string
+      addOrEditCourtAppearance: string
+      warrantType: string
+      message: string
+    },
+  ): void {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      warrantType,
+    } = opts
+
+    let redirectPath: string
+    if (addOrEditCourtCase === 'edit-court-case') {
+      redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+    } else if (warrantType === 'SENTENCING') {
+      redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/upload-court-documents`
+    } else {
+      redirectPath = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/upload-court-documents`
+    }
+
+    res.redirect(redirectPath)
   }
 
   public confirmDeleteUploadedDocument: RequestHandler = async (req, res): Promise<void> => {

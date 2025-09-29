@@ -77,6 +77,7 @@ export default class DocumentManagementApiClient extends RestClient {
           'Service-Name': 'Remand and Sentencing',
           Username: username,
         },
+        responseType: 'blob',
         raw: true,
       },
       asSystem(username),

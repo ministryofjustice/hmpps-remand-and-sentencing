@@ -48,7 +48,7 @@ describe('GET /sentencing/appearance-details', () => {
       ],
     })
     defaultServices.courtAppearanceService.getUploadedDocuments.mockReturnValue([])
-    defaultServices.offenceOutcomeService.getOutcomeMap.mockResolvedValue({
+    defaultServices.refDataService.getChargeOutcomeMap.mockResolvedValue({
       '123': {
         outcomeUuid: '123',
         outcomeName: 'Guilty',

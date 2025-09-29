@@ -29,16 +29,16 @@ import ManageOffencesService from './manageOffencesService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
-import OffenceOutcomeService from './offenceOutcomeService'
 import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
+import RefDataService from './refDataService'
 
 export default class OffenceService {
   constructor(
     private readonly manageOffencesService: ManageOffencesService,
-    private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly remandAndSentencingService: RemandAndSentencingService,
+    private readonly refDataService: RefDataService,
   ) {}
 
   setOffenceDates(
@@ -354,7 +354,7 @@ export default class OffenceService {
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference)
       const offence = this.getOffence(session.offences, id)
-      outcome = await this.offenceOutcomeService.getOutcomeById(offenceOutcomeForm.offenceOutcome, username)
+      outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
         const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
           sentenceUuidsInChain,

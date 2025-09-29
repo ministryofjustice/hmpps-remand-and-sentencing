@@ -35,9 +35,9 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.courtAppearanceService,
     services.remandAndSentencingService,
-    services.offenceOutcomeService,
     services.calculateReleaseDatesService,
     services.courtRegisterService,
+    services.refDataService,
   )
 
   const overallSentencingRoutes = new OverallSentencingRoutes(
@@ -54,7 +54,6 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.courtRegisterService,
     services.calculateReleaseDatesService,
-    services.offenceOutcomeService,
     services.refDataService,
   )
 
@@ -64,7 +63,6 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.courtRegisterService,
     services.manageOffencesService,
-    services.offenceOutcomeService,
     services.refDataService,
   )
 

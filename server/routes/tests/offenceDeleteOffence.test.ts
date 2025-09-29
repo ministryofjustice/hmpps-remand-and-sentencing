@@ -57,7 +57,7 @@ describe('GET Delete offence', () => {
       description: 'A sentence type description',
       displayOrder: 10,
     })
-    defaultServices.offenceOutcomeService.getOutcomeById.mockResolvedValue({
+    defaultServices.refDataService.getChargeOutcomeById.mockResolvedValue({
       outcomeUuid: '123',
       dispositionCode: 'F',
       nomisCode: '10',
@@ -124,7 +124,7 @@ describe('GET Delete offence', () => {
       description: 'A sentence type description',
       displayOrder: 10,
     })
-    defaultServices.offenceOutcomeService.getOutcomeById.mockResolvedValue({
+    defaultServices.refDataService.getChargeOutcomeById.mockResolvedValue({
       outcomeUuid: '123',
       dispositionCode: 'F',
       nomisCode: '10',

@@ -3,25 +3,25 @@ import type { OffenceOffenceDateForm } from 'forms'
 import { SessionData } from 'express-session'
 import dayjs from 'dayjs'
 import ManageOffencesService from './manageOffencesService'
-import OffenceOutcomeService from './offenceOutcomeService'
 import OffenceService from './offenceService'
 import RemandAndSentencingService from './remandAndSentencingService'
+import RefDataService from './refDataService'
 
 jest.mock('./manageOffencesService')
-jest.mock('./offenceOutcomeService')
+jest.mock('./refDataService')
 jest.mock('./remandAndSentencingService')
 
 describe('offenceService', () => {
   let manageOffencesService: jest.Mocked<ManageOffencesService>
-  let offenceOutcomeService: jest.Mocked<OffenceOutcomeService>
+  let refDataService: jest.Mocked<RefDataService>
   let remandAndSentencingService: jest.Mocked<RemandAndSentencingService>
   let service: OffenceService
 
   beforeEach(() => {
     manageOffencesService = new ManageOffencesService(null) as jest.Mocked<ManageOffencesService>
-    offenceOutcomeService = new OffenceOutcomeService(null) as jest.Mocked<OffenceOutcomeService>
+    refDataService = new RefDataService(null) as jest.Mocked<RefDataService>
     remandAndSentencingService = new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>
-    service = new OffenceService(manageOffencesService, offenceOutcomeService, remandAndSentencingService)
+    service = new OffenceService(manageOffencesService, remandAndSentencingService, refDataService)
   })
 
   it('must clear offence end date', () => {

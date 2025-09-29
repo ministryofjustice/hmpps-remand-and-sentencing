@@ -11,7 +11,6 @@ import AuditService from './auditService'
 import UserService from './userService'
 import CourtRegisterService from './courtRegisterService'
 import RefDataService from './refDataService'
-import OffenceOutcomeService from './offenceOutcomeService'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
 
@@ -36,10 +35,9 @@ export const services = () => {
   const auditService = new AuditService(data.hmppsAuditClient)
   const courtRegisterService = new CourtRegisterService(data.courtRegisterApiClient)
   const refDataService = new RefDataService(data.remandAndSentencingApiClient)
-  const offenceOutcomeService = new OffenceOutcomeService(data.remandAndSentencingApiClient)
   const courtAppearanceService = new CourtAppearanceService(remandAndSentencingService, documentManagementService)
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(data.courtCasesReleaseDatesApiClient)
-  const offenceService = new OffenceService(manageOffencesService, offenceOutcomeService, remandAndSentencingService)
+  const offenceService = new OffenceService(manageOffencesService, remandAndSentencingService, refDataService)
 
   return {
     applicationInfo: data.applicationInfo,
@@ -54,7 +52,6 @@ export const services = () => {
     prisonerSearchService,
     auditService,
     courtRegisterService,
-    offenceOutcomeService,
     calculateReleaseDatesService,
     courtCasesReleaseDatesService,
     refDataService,

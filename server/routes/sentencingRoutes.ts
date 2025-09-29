@@ -24,7 +24,6 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtRegisterService from '../services/courtRegisterService'
 
 import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
-import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
   AppearanceToChainTo,
@@ -42,7 +41,6 @@ export default class SentencingRoutes extends BaseRoutes {
     private readonly manageOffencesService: ManageOffencesService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService)
@@ -259,7 +257,7 @@ export default class SentencingRoutes extends BaseRoutes {
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
       this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
       outcomePromise,
-      this.offenceOutcomeService.getOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
+      this.refDataService.getChargeOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
       appearanceTypePromise,
       hasSentenceAfterOnOtherCourtAppearancePromise,
     ])

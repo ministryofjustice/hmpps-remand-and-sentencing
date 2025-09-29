@@ -23,7 +23,6 @@ import {
 import { sortByDateDesc } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'
-import { Document } from '../@types/documentManagementApi/types'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, prisonId: string): CreatePeriodLength => {
   return {
@@ -478,12 +477,4 @@ export function sentenceConsecutiveToDetailsToConsecutiveToDetails(
     }
   }
   return consecutiveToDetailsEntry
-}
-
-export function documentToUploadedDocument(document: Document): UploadedDocument {
-  return {
-    documentUUID: document.documentUuid,
-    documentType: document.documentType,
-    fileName: document.documentFilename,
-  }
 }

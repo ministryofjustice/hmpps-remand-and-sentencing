@@ -45,7 +45,7 @@ export default class ApiRoutes {
 
   public downloadDocument: RequestHandler = async (req, res): Promise<void> => {
     const { documentId } = req.params
-    return this.documentManagementService.downloadRawDocument(documentId, res.locals.user.username).then(response => {
+    return this.documentManagementService.downloadDocument(documentId, res.locals.user.username).then(response => {
       let fileStream: Readable | undefined
       if (response.body instanceof Readable) {
         fileStream = response.body

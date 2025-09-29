@@ -101,7 +101,7 @@ export default class RemandRoutes extends BaseRoutes {
         offencesToOffenceDescriptions(appearance.offences, consecutiveToSentenceDetails.sentences),
       ),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
-      this.remandAndSentencingService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
+      this.refDataService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
       outcomePromise,
       this.refDataService.getChargeOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
       appearanceTypePromise,

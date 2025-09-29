@@ -21,7 +21,7 @@ describe('GET Check offence answers page', () => {
     })
     defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({})
-    defaultServices.remandAndSentencingService.getSentenceTypeMap.mockResolvedValue({})
+    defaultServices.refDataService.getSentenceTypeMap.mockResolvedValue({})
     defaultServices.refDataService.getChargeOutcomeMap.mockResolvedValue({})
     defaultServices.calculateReleaseDatesService.compareOverallSentenceLength.mockResolvedValue({
       custodialLength: { years: 0, months: 0, weeks: 0, days: 0 },

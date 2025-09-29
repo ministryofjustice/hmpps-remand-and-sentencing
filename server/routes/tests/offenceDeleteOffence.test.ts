@@ -51,7 +51,7 @@ describe('GET Delete offence', () => {
       CC12345: 'An offence description',
     })
     defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
-    defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
       sentenceTypeUuid: '456',
       classification: 'STANDARD',
       description: 'A sentence type description',
@@ -118,7 +118,7 @@ describe('GET Delete offence', () => {
       CC12345: 'An offence description',
     })
     defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
-    defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
       sentenceTypeUuid: '456',
       classification: 'STANDARD',
       description: 'A sentence type description',

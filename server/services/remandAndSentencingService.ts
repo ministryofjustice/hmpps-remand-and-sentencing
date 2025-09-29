@@ -19,7 +19,6 @@ import {
   SentenceDetailsForConsecValidation,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
-  SentenceType,
   SentenceTypeIsValid,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
@@ -97,39 +96,6 @@ export default class RemandAndSentencingService {
 
   async getCourtCaseDetails(courtCaseUuid: string, username: string): Promise<PageCourtCaseContent> {
     return this.remandAndSentencingApiClient.getCourtCaseByUuid(courtCaseUuid, username)
-  }
-
-  async getSentenceTypes(
-    age: number,
-    convictionDate: Dayjs,
-    offenceDate: Dayjs,
-    username: string,
-  ): Promise<SentenceType[]> {
-    return this.remandAndSentencingApiClient.searchSentenceTypes(
-      age,
-      convictionDate.format('YYYY-MM-DD'),
-      offenceDate.format('YYYY-MM-DD'),
-      username,
-    )
-  }
-
-  async getSentenceTypeById(sentenceTypeId: string, username: string): Promise<SentenceType> {
-    return this.remandAndSentencingApiClient.getSentenceTypeById(sentenceTypeId, username)
-  }
-
-  async getSentenceTypeMap(sentenceTypeIds: string[], username: string): Promise<{ [key: string]: string }> {
-    let sentenceTypeMap = {}
-    const sentenceTypeIdsToSearch = sentenceTypeIds.filter(sentenceTypeId => sentenceTypeId)
-    if (sentenceTypeIdsToSearch.length) {
-      const sentenceTypes = await this.remandAndSentencingApiClient.getSentenceTypesByIds(
-        sentenceTypeIdsToSearch,
-        username,
-      )
-      sentenceTypeMap = Object.fromEntries(
-        sentenceTypes.map(sentenceType => [sentenceType.sentenceTypeUuid, sentenceType.description]),
-      )
-    }
-    return sentenceTypeMap
   }
 
   async getAllAppearanceTypes(username: string): Promise<AppearanceType[]> {

@@ -35,7 +35,7 @@ describe('GET /sentencing/appearance-details', () => {
     })
 
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({})
-    defaultServices.remandAndSentencingService.getSentenceTypeMap.mockResolvedValue({})
+    defaultServices.refDataService.getSentenceTypeMap.mockResolvedValue({})
     defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
     defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
       sentences: [

@@ -903,19 +903,14 @@ export default class OffenceRoutes extends BaseRoutes {
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
     const offenceDate = dayjs(offence?.offenceEndDate ?? offence?.offenceStartDate)
     const sentenceTypes = (
-      await this.remandAndSentencingService.getSentenceTypes(
-        ageAtConviction,
-        convictionDate,
-        offenceDate,
-        req.user.username,
-      )
+      await this.refDataService.getSentenceTypes(ageAtConviction, convictionDate, offenceDate, req.user.username)
     ).sort((a, b) => a.displayOrder - b.displayOrder)
     let legacySentenceType
     if (
       offence.sentence?.sentenceTypeId &&
       !sentenceTypes.map(sentenceType => sentenceType.sentenceTypeUuid).includes(offence.sentence?.sentenceTypeId)
     ) {
-      const sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
+      const sentenceType = await this.refDataService.getSentenceTypeById(
         offence.sentence.sentenceTypeId,
         req.user.username,
       )
@@ -1066,9 +1061,8 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     let sentenceTypeHint
     if (sentence?.sentenceTypeId) {
-      sentenceTypeHint = (
-        await this.remandAndSentencingService.getSentenceTypeById(sentence.sentenceTypeId, req.user.username)
-      ).hintText
+      sentenceTypeHint = (await this.refDataService.getSentenceTypeById(sentence.sentenceTypeId, req.user.username))
+        .hintText
     }
     return res.render('pages/offence/period-length', {
       nomsId,
@@ -1643,7 +1637,7 @@ export default class OffenceRoutes extends BaseRoutes {
         req.user.username,
         offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
       ),
-      this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.refDataService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.refDataService.getChargeOutcomeMap(outcomeIds, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
@@ -1830,10 +1824,7 @@ export default class OffenceRoutes extends BaseRoutes {
     ])
     let sentenceType
     if (offence.sentence?.sentenceTypeId) {
-      sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
-        offence.sentence?.sentenceTypeId,
-        req.user.username,
-      )
+      sentenceType = await this.refDataService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
     }
     let outcome
     if (offence.outcomeUuid) {
@@ -2006,7 +1997,7 @@ export default class OffenceRoutes extends BaseRoutes {
           }
         }) ?? []
       if (offence.sentence.sentenceTypeId) {
-        sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
+        sentenceType = await this.refDataService.getSentenceTypeById(
           offence.sentence?.sentenceTypeId,
           req.user.username,
         )
@@ -2171,7 +2162,7 @@ export default class OffenceRoutes extends BaseRoutes {
         req.user.username,
         offencesToOffenceDescriptions(offences, []),
       ),
-      this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.refDataService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.refDataService.getChargeOutcomeMap(outcomeIds, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
@@ -2265,7 +2256,7 @@ export default class OffenceRoutes extends BaseRoutes {
         req.user.username,
         offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
       ),
-      this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.refDataService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
       this.refDataService.getChargeOutcomeMap(outcomeIds, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])

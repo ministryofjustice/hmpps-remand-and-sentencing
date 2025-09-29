@@ -1,4 +1,9 @@
-import { AppearanceOutcome, OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { Dayjs } from 'dayjs'
+import {
+  AppearanceOutcome,
+  OffenceOutcome,
+  SentenceType,
+} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import getOrSetRefDataInCache from '../cache/refDataCache'
 
@@ -49,5 +54,38 @@ export default class RefDataService {
     }
     // There is the potential that the outcome for the appearanceOutcomeUuid is inactive, therefore call the api in this scenario
     return this.remandAndSentencingApiClient.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
+  }
+
+  async getSentenceTypes(
+    age: number,
+    convictionDate: Dayjs,
+    offenceDate: Dayjs,
+    username: string,
+  ): Promise<SentenceType[]> {
+    return this.remandAndSentencingApiClient.searchSentenceTypes(
+      age,
+      convictionDate.format('YYYY-MM-DD'),
+      offenceDate.format('YYYY-MM-DD'),
+      username,
+    )
+  }
+
+  async getSentenceTypeById(sentenceTypeId: string, username: string): Promise<SentenceType> {
+    return this.remandAndSentencingApiClient.getSentenceTypeById(sentenceTypeId, username)
+  }
+
+  async getSentenceTypeMap(sentenceTypeIds: string[], username: string): Promise<{ [key: string]: string }> {
+    let sentenceTypeMap = {}
+    const sentenceTypeIdsToSearch = sentenceTypeIds.filter(sentenceTypeId => sentenceTypeId)
+    if (sentenceTypeIdsToSearch.length) {
+      const sentenceTypes = await this.remandAndSentencingApiClient.getSentenceTypesByIds(
+        sentenceTypeIdsToSearch,
+        username,
+      )
+      sentenceTypeMap = Object.fromEntries(
+        sentenceTypes.map(sentenceType => [sentenceType.sentenceTypeUuid, sentenceType.description]),
+      )
+    }
+    return sentenceTypeMap
   }
 }

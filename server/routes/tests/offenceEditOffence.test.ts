@@ -51,7 +51,7 @@ describe('GET Edit offence', () => {
       warrantType: 'SENTENCING',
       offences: [],
     })
-    defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
       sentenceTypeUuid: '56',
       description: 'SDS',
       classification: 'STANDARD',
@@ -98,7 +98,7 @@ describe('GET Edit offence', () => {
         sentenceServeType: 'CONSECUTIVE',
       },
     })
-    defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
       sentenceTypeUuid: '56',
       description: 'SDS',
       classification: 'STANDARD',
@@ -129,7 +129,7 @@ describe('GET Edit offence', () => {
         consecutiveToSentenceUuid: 'SENT123',
       },
     })
-    defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
       sentenceTypeUuid: '56',
       description: 'SDS',
       classification: 'STANDARD',

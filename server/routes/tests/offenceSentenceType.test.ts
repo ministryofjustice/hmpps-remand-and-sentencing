@@ -25,7 +25,7 @@ describe('GET Offence Sentence Type', () => {
         convictionDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
       },
     })
-    defaultServices.remandAndSentencingService.getSentenceTypes.mockResolvedValue([
+    defaultServices.refDataService.getSentenceTypes.mockResolvedValue([
       {
         sentenceTypeUuid: '1',
         description: 'A sentence type',

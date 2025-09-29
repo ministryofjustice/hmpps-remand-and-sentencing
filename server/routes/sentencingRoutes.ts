@@ -229,7 +229,7 @@ export default class SentencingRoutes extends BaseRoutes {
           .then(outcome => outcome.outcomeName)
       : Promise.resolve(appearance.legacyData?.outcomeDescription ?? 'Not entered')
     const appearanceTypePromise = appearance.nextHearingTypeUuid
-      ? this.remandAndSentencingService
+      ? this.refDataService
           .getAppearanceTypeByUuid(appearance.nextHearingTypeUuid, req.user.username)
           .then(appearanceType => appearanceType.description)
       : Promise.resolve('Not entered')

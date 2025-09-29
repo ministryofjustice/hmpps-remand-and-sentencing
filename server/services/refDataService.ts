@@ -1,6 +1,7 @@
 import { Dayjs } from 'dayjs'
 import {
   AppearanceOutcome,
+  AppearanceType,
   OffenceOutcome,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -87,5 +88,13 @@ export default class RefDataService {
       )
     }
     return sentenceTypeMap
+  }
+
+  async getAllAppearanceTypes(username: string): Promise<AppearanceType[]> {
+    return this.remandAndSentencingApiClient.getAppearanceTypes(username)
+  }
+
+  async getAppearanceTypeByUuid(appearanceTypeUuid: string, username: string): Promise<AppearanceType> {
+    return this.remandAndSentencingApiClient.getAppearanceTypeByUuid(appearanceTypeUuid, username)
   }
 }

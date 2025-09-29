@@ -1,7 +1,6 @@
 import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
 import {
-  AppearanceType,
   ConsecutiveChainValidationRequest,
   CourtCaseCountNumbers,
   CreateCourtAppearanceResponse,
@@ -96,14 +95,6 @@ export default class RemandAndSentencingService {
 
   async getCourtCaseDetails(courtCaseUuid: string, username: string): Promise<PageCourtCaseContent> {
     return this.remandAndSentencingApiClient.getCourtCaseByUuid(courtCaseUuid, username)
-  }
-
-  async getAllAppearanceTypes(username: string): Promise<AppearanceType[]> {
-    return this.remandAndSentencingApiClient.getAppearanceTypes(username)
-  }
-
-  async getAppearanceTypeByUuid(appearanceTypeUuid: string, username: string): Promise<AppearanceType> {
-    return this.remandAndSentencingApiClient.getAppearanceTypeByUuid(appearanceTypeUuid, username)
   }
 
   async getLegacySentenceTypesSummaryAll(username: string): Promise<LegacySentenceTypeGroupingSummary[]> {

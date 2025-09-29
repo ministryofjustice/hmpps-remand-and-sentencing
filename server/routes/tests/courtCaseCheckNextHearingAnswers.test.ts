@@ -35,7 +35,7 @@ describe('GET Check Next Hearing Answers', () => {
     } as AppearanceType
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue(courtAppearance)
     defaultServices.courtRegisterService.findCourtById.mockResolvedValue(court)
-    defaultServices.remandAndSentencingService.getAppearanceTypeByUuid.mockResolvedValue(appearanceType)
+    defaultServices.refDataService.getAppearanceTypeByUuid.mockResolvedValue(appearanceType)
 
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-hearing-answers')

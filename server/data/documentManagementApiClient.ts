@@ -3,7 +3,6 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import type { FileDownload } from 'models'
 import config from '../config'
 import logger from '../../logger'
-import { Document } from '../@types/documentManagementApi/types'
 
 export default class DocumentManagementApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {

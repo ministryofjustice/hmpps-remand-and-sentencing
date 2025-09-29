@@ -52,42 +52,7 @@ export default class DocumentManagementApiClient extends RestClient {
     }
   }
 
-  async getDocument(documentId: string, username: string): Promise<Document> {
-    try {
-      return await this.get(
-        {
-          path: `/documents/${documentId}`,
-          headers: {
-            'Service-Name': 'Remand and Sentencing',
-            Username: username,
-          },
-        },
-        asSystem(username),
-      )
-    } catch (error) {
-      throw new Error(`Error getting document: ${error.message}`)
-    }
-  }
-
-  async downloadDocument(documentId: string, username: string): Promise<Buffer> {
-    try {
-      return await this.get(
-        {
-          path: `/documents/${documentId}/file`,
-          responseType: 'arraybuffer',
-          headers: {
-            'Service-Name': 'Remand and Sentencing',
-            Username: username,
-          },
-        },
-        asSystem(username),
-      )
-    } catch (error) {
-      throw new Error(`Error downloading document: ${error.message}`)
-    }
-  }
-
-  async downloadRawDocument(documentId: string, username: string): Promise<FileDownload> {
+  async downloadDocument(documentId: string, username: string): Promise<FileDownload> {
     return this.get(
       {
         path: `/documents/${documentId}/file`,

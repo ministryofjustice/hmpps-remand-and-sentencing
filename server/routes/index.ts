@@ -21,8 +21,8 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.documentManagementService,
     services.courtRegisterService,
-    services.appearanceOutcomeService,
     services.courtCasesReleaseDatesService,
+    services.refDataService,
   )
   const apiRoutes = new ApiRoutes(
     services.prisonerService,
@@ -44,7 +44,7 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.offenceService,
     services.remandAndSentencingService,
-    services.appearanceOutcomeService,
+    services.refDataService,
   )
 
   const sentencingRoutes = new SentencingRoutes(
@@ -52,10 +52,10 @@ export default function routes(services: Services): Router {
     services.offenceService,
     services.remandAndSentencingService,
     services.manageOffencesService,
-    services.appearanceOutcomeService,
     services.courtRegisterService,
     services.calculateReleaseDatesService,
     services.offenceOutcomeService,
+    services.refDataService,
   )
 
   const remandRoutes = new RemandRoutes(
@@ -64,8 +64,8 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.courtRegisterService,
     services.manageOffencesService,
-    services.appearanceOutcomeService,
     services.offenceOutcomeService,
+    services.refDataService,
   )
 
   router.get('/', async (req, res, next) => {

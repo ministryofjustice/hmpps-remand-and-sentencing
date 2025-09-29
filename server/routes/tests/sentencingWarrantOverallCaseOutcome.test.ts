@@ -19,7 +19,7 @@ describe('Court Case Overall Case Outcome', () => {
       appearanceUuid: '1',
       warrantType: 'SENTENCING',
     })
-    defaultServices.appearanceOutcomeService.getAllOutcomes.mockResolvedValue([
+    defaultServices.refDataService.getAllAppearanceOutcomes.mockResolvedValue([
       {
         outcomeUuid: '123',
         outcomeType: 'SENTENCING',

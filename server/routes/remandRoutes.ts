@@ -6,10 +6,10 @@ import ManageOffencesService from '../services/manageOffencesService'
 
 import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
-import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtRegisterService from '../services/courtRegisterService'
 import OffenceOutcomeService from '../services/offenceOutcomeService'
 import { getUiDocumentType, offencesToOffenceDescriptions, orderOffences } from '../utils/utils'
+import RefDataService from '../services/refDataService'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -18,8 +18,8 @@ export default class RemandRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly manageOffencesService: ManageOffencesService,
-    private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly offenceOutcomeService: OffenceOutcomeService,
+    private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
@@ -73,8 +73,8 @@ export default class RemandRoutes extends BaseRoutes {
       .map(offence => offence.sentence?.sentenceTypeId)
     const offenceOutcomeIds = appearance.offences.map(offence => offence.outcomeUuid)
     const outcomePromise = appearance.appearanceOutcomeUuid
-      ? this.appearanceOutcomeService
-          .getOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
+      ? this.refDataService
+          .getAppearanceOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
           .then(outcome => outcome.outcomeName)
       : Promise.resolve(appearance.legacyData?.outcomeDescription ?? 'Not entered')
     const appearanceTypePromise = appearance.nextHearingTypeUuid

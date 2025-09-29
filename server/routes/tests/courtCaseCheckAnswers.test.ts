@@ -38,7 +38,7 @@ describe('GET Court Case Check Answers', () => {
     } as CourtDto
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue(courtAppearance)
     defaultServices.courtRegisterService.findCourtById.mockResolvedValue(court)
-    defaultServices.appearanceOutcomeService.getOutcomeByUuid.mockResolvedValue(appearanceOutcome)
+    defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue(appearanceOutcome)
 
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-answers')

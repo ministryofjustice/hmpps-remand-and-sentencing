@@ -56,7 +56,7 @@ export default function createApp(services: Services): express.Application {
       services.courtAppearanceService,
       services.courtRegisterService,
       services.manageOffencesService,
-      services.appearanceOutcomeService,
+      services.refDataService,
     ),
   )
   app.use(

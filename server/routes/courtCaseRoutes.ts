@@ -42,7 +42,6 @@ import { chargeToOffence } from '../utils/mappingUtils'
 import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import logger from '../../logger'
-import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
 import { govukPaginationFromPagePagedCourtCase, getPaginationResults } from './data/pagination'
 import config from '../config'
@@ -51,6 +50,7 @@ import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import { MergedFromCase } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import documentTypes from '../resources/documentTypes'
+import RefDataService from '../services/refDataService'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -60,8 +60,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
     private readonly manageOffencesService: ManageOffencesService,
     private readonly documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
-    private readonly appearanceOutcomeService: AppearanceOutcomeService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
+    private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
@@ -987,7 +987,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     }
     const { warrantType, appearanceOutcomeUuid } = courtAppearance
-    const caseOutcomes = await this.appearanceOutcomeService.getAllOutcomes(req.user.username)
+    const caseOutcomes = await this.refDataService.getAllAppearanceOutcomes(req.user.username)
     const [subListOutcomes, mainOutcomes] = caseOutcomes
       .filter(caseOutcome => caseOutcome.outcomeType === warrantType)
       .sort((a, b) => a.displayOrder - b.displayOrder)
@@ -1005,7 +1005,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         .map(outcome => outcome.outcomeUuid)
         .includes(appearanceOutcomeUuid)
     ) {
-      const outcome = await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+      const outcome = await this.refDataService.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
       legacyCaseOutcome = outcome.outcomeName
     } else if (!appearanceOutcomeUuid && !res.locals.isAddCourtAppearance) {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, courtAppearance.legacyData)
@@ -1070,7 +1070,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const overallCaseOutcome = (
-      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+      await this.refDataService.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName
 
     let caseOutcomeAppliedAllForm = (req.flash('caseOutcomeAppliedAllForm')[0] ||
@@ -1138,7 +1138,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let overallCaseOutcome = ''
     if (courtAppearance.warrantType !== 'SENTENCING') {
       overallCaseOutcome = (
-        await this.appearanceOutcomeService.getOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username)
+        await this.refDataService.getAppearanceOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username)
       ).outcomeName
     }
 

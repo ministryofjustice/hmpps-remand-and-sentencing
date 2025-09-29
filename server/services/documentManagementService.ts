@@ -1,10 +1,7 @@
 import crypto from 'crypto'
 import fs from 'fs'
-// eslint-disable-next-line import/no-unresolved
-import { UploadedDocument } from 'models'
 import type { FileDownload } from 'models'
 import DocumentManagementApiClient from '../data/documentManagementApiClient'
-import { documentToUploadedDocument } from '../utils/mappingUtils'
 
 export default class DocumentManagementService {
   constructor(private readonly documentManagementApiClient: DocumentManagementApiClient) {}

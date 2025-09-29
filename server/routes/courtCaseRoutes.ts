@@ -50,6 +50,7 @@ import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import { MergedFromCase } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import documentTypes from '../resources/documentTypes'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -163,6 +164,52 @@ export default class CourtCaseRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       appearanceUuid: crypto.randomUUID(),
       paginationResults,
+    })
+  }
+
+  public documents: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const { username, token } = res.locals.user
+    const [prisonerCourtCasesDocuments, serviceDefinitions] = await Promise.all([
+      this.remandAndSentencingService.getPrisonerDocuments(nomsId, username),
+      this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
+    ])
+    const courtCodes = prisonerCourtCasesDocuments.courtCaseDocuments.flatMap(courtCaseDocuments =>
+      Object.values(courtCaseDocuments.appearanceDocumentsByType)
+        .flatMap(documents => documents.flatMap(document => document.courtCode))
+        .concat(courtCaseDocuments.latestAppearance.courtCode),
+    )
+
+    const courtMap = await this.courtRegisterService.getCourtMap(courtCodes, username)
+    const courtCases = prisonerCourtCasesDocuments.courtCaseDocuments
+      .sort((a, b) => sortByDateDesc(a.latestAppearance.appearanceDate, b.latestAppearance.appearanceDate))
+      .map(courtCase => {
+        return {
+          ...courtCase,
+          appearanceDocumentsByType: Object.entries(courtCase.appearanceDocumentsByType)
+            .flatMap(([type, documents]) => {
+              return documents.map(document => {
+                return {
+                  key:
+                    documentTypes[document.warrantType].find(documentType => documentType.type === type).name ??
+                    'Unknown document type',
+                  val: document,
+                }
+              })
+            })
+            .reduce((current, value) => {
+              const docs = current[value.key] ?? []
+              // eslint-disable-next-line no-param-reassign
+              current[value.key] = docs.concat(value.val).sort((a, b) => sortByDateDesc(a.warrantDate, b.warrantDate))
+              return current
+            }, {}),
+        }
+      })
+    return res.render('pages/documents', {
+      nomsId,
+      courtCases,
+      courtMap,
+      serviceDefinitions,
     })
   }
 
@@ -1622,6 +1669,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
+    const expectedDocumentTypes = documentTypes.REMAND
+    const documentRows = expectedDocumentTypes.map(expectedType => {
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
+      return { ...expectedType, ...uploadedDocument }
+    })
     return res.render('pages/courtAppearance/upload-court-documents', {
       nomsId,
       courtCaseReference,
@@ -1629,7 +1681,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       courtAppearance,
-      uploadedDocuments,
+      documentRows,
+      isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,

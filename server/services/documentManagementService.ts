@@ -2,6 +2,7 @@ import crypto from 'crypto'
 import fs from 'fs'
 // eslint-disable-next-line import/no-unresolved
 import { UploadedDocument } from 'models'
+import type { FileDownload } from 'models'
 import DocumentManagementApiClient from '../data/documentManagementApiClient'
 import { documentToUploadedDocument } from '../utils/mappingUtils'
 
@@ -54,5 +55,9 @@ export default class DocumentManagementService {
     } catch (error) {
       throw new Error(`Failed to download document: ${error.message}`)
     }
+  }
+
+  async downloadRawDocument(documentId: string, username: string): Promise<FileDownload> {
+    return this.documentManagementApiClient.downloadRawDocument(documentId, username)
   }
 }

@@ -1,5 +1,6 @@
 import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import type { FileDownload } from 'models'
 import config from '../config'
 import logger from '../../logger'
 import { Document } from '../@types/documentManagementApi/types'
@@ -84,6 +85,21 @@ export default class DocumentManagementApiClient extends RestClient {
     } catch (error) {
       throw new Error(`Error downloading document: ${error.message}`)
     }
+  }
+
+  async downloadRawDocument(documentId: string, username: string): Promise<FileDownload> {
+    return this.get(
+      {
+        path: `/documents/${documentId}/file`,
+        headers: {
+          'Service-Name': 'Remand and Sentencing',
+          Username: username,
+        },
+        responseType: 'blob',
+        raw: true,
+      },
+      asSystem(username),
+    )
   }
 
   async postMultiPart<Response = unknown>({

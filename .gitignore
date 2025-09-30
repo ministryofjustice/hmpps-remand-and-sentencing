@@ -115,6 +115,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Accessibility test reports
+a11y-report.txt
 
 .idea
 .vscode

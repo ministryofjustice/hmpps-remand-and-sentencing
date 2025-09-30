@@ -9,12 +9,41 @@ export default abstract class Page {
     return new constructor(parameter)
   }
 
+  public skipAxe(): boolean {
+    return false
+  }
+
   protected constructor(private readonly title: string) {
     this.checkOnPage()
   }
 
   checkOnPage(): void {
     cy.get('h1:first').contains(this.title)
+
+    if (!this.skipAxe()) {
+      cy.injectAxe()
+
+      // ✅ run axe manually (no assertion, just logging)
+      cy.window({ log: false }).then(win => {
+        return win.axe.run().then(results => {
+          if (results.violations.length) {
+            cy.task('log', `\n[${new Date().toISOString()}] ${this.title}`)
+            cy.task('log', `⚠️ ${results.violations.length} accessibility violation(s) detected`)
+
+            results.violations.forEach(v => {
+              cy.task('log', `${v.id} [${v.impact}] - ${v.help}`)
+              v.nodes.forEach(node => {
+                cy.task('log', `  ${node.target}`)
+              })
+            })
+
+            cy.task('log', '---') // separator
+          }
+
+          // 🚨 important: do not throw → tests keep running
+        })
+      })
+    }
   }
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')

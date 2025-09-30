@@ -65,6 +65,7 @@ jobs:
             coverage/
             test_results/
             ctrf/
+            a11y-report.txt
       - name: publish test report
         if: ${{ !cancelled() && github.event.repository.visibility == 'public' }}
         uses: dorny/test-reporter@v2

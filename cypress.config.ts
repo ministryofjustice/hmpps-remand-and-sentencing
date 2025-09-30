@@ -1,4 +1,6 @@
 import { defineConfig } from 'cypress'
+import fs from 'fs'
+import path from 'path'
 import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
@@ -24,6 +26,10 @@ export default defineConfig({
   taskTimeout: 60000,
   e2e: {
     setupNodeEvents(on) {
+      // 🧹 Clear report file at start of each Cypress run
+      const logPath = path.join(__dirname, 'a11y-report.txt')
+      fs.writeFileSync(logPath, '')
+
       on('task', {
         reset: resetStubs,
         happyPathStubs: async () => {
@@ -62,6 +68,13 @@ export default defineConfig({
             }),
           ])
         },
+
+        // 📝 Append logs to the accessibility report
+        log(message: string) {
+          fs.appendFileSync(logPath, `${message}\n`)
+          return null
+        },
+
         ...auth,
         ...tokenVerification,
         ...manageOffencesApi,

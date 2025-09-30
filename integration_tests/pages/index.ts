@@ -5,10 +5,6 @@ export default class IndexPage extends Page {
     super('This site is under construction...')
   }
 
-  public skipAxe(): boolean {
-    return false
-  }
-
   fallbackHeaderUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
 
   fallbackHeaderPhaseBanner = (): PageElement => cy.get('[data-qa=header-phase-banner]')

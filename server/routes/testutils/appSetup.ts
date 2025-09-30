@@ -21,10 +21,9 @@ import FeComponentsService from '../../services/feComponentsService'
 import DocumentManagementService from '../../services/documentManagementService'
 import PrisonerSearchService from '../../services/prisonerSearchService'
 import CourtRegisterService from '../../services/courtRegisterService'
-import AppearanceOutcomeService from '../../services/appearanceOutcomeService'
-import OffenceOutcomeService from '../../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
+import RefDataService from '../../services/refDataService'
 
 jest.mock('../../services/auditService')
 jest.mock('../../services/courtAppearanceService')
@@ -37,10 +36,9 @@ jest.mock('../../services/feComponentsService')
 jest.mock('../../services/documentManagementService')
 jest.mock('../../services/prisonerSearchService')
 jest.mock('../../services/courtRegisterService')
-jest.mock('../../services/appearanceOutcomeService')
-jest.mock('../../services/offenceOutcomeService')
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/courtCasesReleaseDatesService')
+jest.mock('../../services/refDataService')
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
@@ -64,10 +62,9 @@ export const defaultServices = {
   prisonerSearchService: new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>,
   auditService: new AuditService(null) as jest.Mocked<AuditService>,
   courtRegisterService: new CourtRegisterService(null) as jest.Mocked<CourtRegisterService>,
-  appearanceOutcomeService: new AppearanceOutcomeService(null) as jest.Mocked<AppearanceOutcomeService>,
-  offenceOutcomeService: new OffenceOutcomeService(null) as jest.Mocked<OffenceOutcomeService>,
   calculateReleaseDatesService: new CalculateReleaseDatesService(null) as jest.Mocked<CalculateReleaseDatesService>,
   courtCasesReleaseDatesService: new CourtCasesReleaseDatesService(null) as jest.Mocked<CourtCasesReleaseDatesService>,
+  refDataService: new RefDataService(null) as jest.Mocked<RefDataService>,
 }
 
 export const user: HmppsUser = {

@@ -12,18 +12,18 @@ import {
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
-import AppearanceOutcomeService from '../services/appearanceOutcomeService'
 import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import { outcomeValueOrLegacy } from '../utils/utils'
+import RefDataService from '../services/refDataService'
 
 export default class OverallSentencingRoutes extends BaseRoutes {
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
-    private readonly appearanceOutcomeService: AppearanceOutcomeService,
+    private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
@@ -283,7 +283,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       }
     }
     const { warrantType, appearanceOutcomeUuid } = courtAppearance
-    const caseOutcomes = await this.appearanceOutcomeService.getAllOutcomes(req.user.username)
+    const caseOutcomes = await this.refDataService.getAllAppearanceOutcomes(req.user.username)
     const [subListOutcomes, mainOutcomes] = caseOutcomes
       .filter(caseOutcome => caseOutcome.outcomeType === warrantType)
       .sort((a, b) => a.displayOrder - b.displayOrder)
@@ -301,7 +301,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
         .map(outcome => outcome.outcomeUuid)
         .includes(appearanceOutcomeUuid)
     ) {
-      const outcome = await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+      const outcome = await this.refDataService.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
       legacyCaseOutcome = outcome.outcomeName
     } else if (!appearanceOutcomeUuid && !res.locals.isAddCourtAppearance) {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, courtAppearance.legacyData)
@@ -366,7 +366,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       appearanceReference,
     )
     const overallCaseOutcome = (
-      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+      await this.refDataService.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName
 
     let caseOutcomeAppliedAllForm = (req.flash('caseOutcomeAppliedAllForm')[0] ||
@@ -433,7 +433,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
     )
     const { appearanceOutcomeUuid } = courtAppearance
     const overallCaseOutcome = (
-      await this.appearanceOutcomeService.getOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+      await this.refDataService.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName
     const isAddJourney = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
     return res.render('pages/overallSentencing/check-overall-answers', {

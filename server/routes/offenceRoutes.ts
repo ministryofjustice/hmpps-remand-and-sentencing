@@ -44,7 +44,6 @@ import {
   outcomeValueOrLegacy,
   sentenceTypeValueOrLegacy,
 } from '../utils/utils'
-import OffenceOutcomeService from '../services/offenceOutcomeService'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import CourtRegisterService from '../services/courtRegisterService'
 import BaseRoutes from './baseRoutes'
@@ -55,6 +54,7 @@ import {
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
+import RefDataService from '../services/refDataService'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -62,9 +62,9 @@ export default class OffenceRoutes extends BaseRoutes {
     private readonly manageOffencesService: ManageOffencesService,
     courtAppearanceService: CourtAppearanceService,
     remandAndSentencingService: RemandAndSentencingService,
-    private readonly offenceOutcomeService: OffenceOutcomeService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly courtRegisterService: CourtRegisterService,
+    private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService)
   }
@@ -221,7 +221,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offence = existingOffence
     }
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-    const caseOutcomes = await this.offenceOutcomeService.getAllOutcomes(req.user.username)
+    const caseOutcomes = await this.refDataService.getAllChargeOutcomes(req.user.username)
 
     const [warrantTypeOutcomes, nonCustodialOutcomes] = caseOutcomes
       .filter(caseOutcome => caseOutcome.outcomeType === warrantType || caseOutcome.outcomeType === 'NON_CUSTODIAL')
@@ -284,10 +284,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    const outcome = await this.offenceOutcomeService.getOutcomeById(
-      offenceOutcomeForm.offenceOutcome,
-      req.user.username,
-    )
+    const outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, req.user.username)
     if (submitToEditOffence) {
       this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference)
     }
@@ -331,7 +328,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const [caseOutcomes, offenceDetails] = await Promise.all([
-      this.offenceOutcomeService.getAllOutcomes(req.user.username),
+      this.refDataService.getAllChargeOutcomes(req.user.username),
       this.manageOffencesService.getOffenceByCode(
         offence.offenceCode,
         req.user.username,
@@ -359,7 +356,7 @@ export default class OffenceRoutes extends BaseRoutes {
         .map(outcome => outcome.outcomeUuid)
         .includes(offence.outcomeUuid)
     ) {
-      const outcome = await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)
+      const outcome = await this.refDataService.getChargeOutcomeById(offence.outcomeUuid, req.user.username)
       legacyCaseOutcome = outcome.outcomeName
     } else if (!offence.outcomeUuid && submitToEditOffence) {
       legacyCaseOutcome = outcomeValueOrLegacy(undefined, offence.legacyData)
@@ -906,19 +903,14 @@ export default class OffenceRoutes extends BaseRoutes {
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
     const offenceDate = dayjs(offence?.offenceEndDate ?? offence?.offenceStartDate)
     const sentenceTypes = (
-      await this.remandAndSentencingService.getSentenceTypes(
-        ageAtConviction,
-        convictionDate,
-        offenceDate,
-        req.user.username,
-      )
+      await this.refDataService.getSentenceTypes(ageAtConviction, convictionDate, offenceDate, req.user.username)
     ).sort((a, b) => a.displayOrder - b.displayOrder)
     let legacySentenceType
     if (
       offence.sentence?.sentenceTypeId &&
       !sentenceTypes.map(sentenceType => sentenceType.sentenceTypeUuid).includes(offence.sentence?.sentenceTypeId)
     ) {
-      const sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
+      const sentenceType = await this.refDataService.getSentenceTypeById(
         offence.sentence.sentenceTypeId,
         req.user.username,
       )
@@ -1069,9 +1061,8 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     let sentenceTypeHint
     if (sentence?.sentenceTypeId) {
-      sentenceTypeHint = (
-        await this.remandAndSentencingService.getSentenceTypeById(sentence.sentenceTypeId, req.user.username)
-      ).hintText
+      sentenceTypeHint = (await this.refDataService.getSentenceTypeById(sentence.sentenceTypeId, req.user.username))
+        .hintText
     }
     return res.render('pages/offence/period-length', {
       nomsId,
@@ -1646,8 +1637,8 @@ export default class OffenceRoutes extends BaseRoutes {
         req.user.username,
         offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
       ),
-      this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
-      this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
+      this.refDataService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.refDataService.getChargeOutcomeMap(outcomeIds, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
 
@@ -1833,14 +1824,11 @@ export default class OffenceRoutes extends BaseRoutes {
     ])
     let sentenceType
     if (offence.sentence?.sentenceTypeId) {
-      sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
-        offence.sentence?.sentenceTypeId,
-        req.user.username,
-      )
+      sentenceType = await this.refDataService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
     }
     let outcome
     if (offence.outcomeUuid) {
-      outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
+      outcome = (await this.refDataService.getChargeOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
     }
     const allSentenceUuids = courtAppearance.offences
       .map(appearanceOffence => appearanceOffence.sentence?.sentenceUuid)
@@ -2009,7 +1997,7 @@ export default class OffenceRoutes extends BaseRoutes {
           }
         }) ?? []
       if (offence.sentence.sentenceTypeId) {
-        sentenceType = await this.remandAndSentencingService.getSentenceTypeById(
+        sentenceType = await this.refDataService.getSentenceTypeById(
           offence.sentence?.sentenceTypeId,
           req.user.username,
         )
@@ -2028,7 +2016,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     let outcome
     if (offence.outcomeUuid) {
-      outcome = (await this.offenceOutcomeService.getOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
+      outcome = (await this.refDataService.getChargeOutcomeById(offence.outcomeUuid, req.user.username)).outcomeName
     }
     let consecutiveToDetails
     if (offence.sentence?.consecutiveToSentenceUuid) {
@@ -2174,8 +2162,8 @@ export default class OffenceRoutes extends BaseRoutes {
         req.user.username,
         offencesToOffenceDescriptions(offences, []),
       ),
-      this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
-      this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
+      this.refDataService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.refDataService.getChargeOutcomeMap(outcomeIds, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
     const [changedOffences, unchangedOffences] = offences.reduce(
@@ -2268,8 +2256,8 @@ export default class OffenceRoutes extends BaseRoutes {
         req.user.username,
         offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
       ),
-      this.remandAndSentencingService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
-      this.offenceOutcomeService.getOutcomeMap(outcomeIds, req.user.username),
+      this.refDataService.getSentenceTypeMap(sentenceTypeIds, req.user.username),
+      this.refDataService.getChargeOutcomeMap(outcomeIds, req.user.username),
       this.courtRegisterService.getCourtMap(courtIds, req.user.username),
     ])
 

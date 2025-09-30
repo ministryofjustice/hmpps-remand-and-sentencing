@@ -32,7 +32,7 @@ describe('GET Update Offence outcome', () => {
       changedDate: dayjs().subtract(2, 'days').format('YYYY-MM-DD'),
       isChild: false,
     })
-    defaultServices.offenceOutcomeService.getAllOutcomes.mockResolvedValue([
+    defaultServices.refDataService.getAllChargeOutcomes.mockResolvedValue([
       {
         outcomeUuid: '1',
         outcomeType: 'REMAND',

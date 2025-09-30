@@ -35,7 +35,7 @@ describe('GET /sentencing/appearance-details', () => {
     })
 
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({})
-    defaultServices.remandAndSentencingService.getSentenceTypeMap.mockResolvedValue({})
+    defaultServices.refDataService.getSentenceTypeMap.mockResolvedValue({})
     defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
     defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({
       sentences: [
@@ -48,7 +48,7 @@ describe('GET /sentencing/appearance-details', () => {
       ],
     })
     defaultServices.courtAppearanceService.getUploadedDocuments.mockReturnValue([])
-    defaultServices.offenceOutcomeService.getOutcomeMap.mockResolvedValue({
+    defaultServices.refDataService.getChargeOutcomeMap.mockResolvedValue({
       '123': {
         outcomeUuid: '123',
         outcomeName: 'Guilty',

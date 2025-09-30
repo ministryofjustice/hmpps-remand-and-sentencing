@@ -20,8 +20,8 @@ describe('GET Review offence answers page', () => {
       offences: [],
     })
     defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({})
-    defaultServices.remandAndSentencingService.getSentenceTypeMap.mockResolvedValue({})
-    defaultServices.offenceOutcomeService.getOutcomeMap.mockResolvedValue({})
+    defaultServices.refDataService.getSentenceTypeMap.mockResolvedValue({})
+    defaultServices.refDataService.getChargeOutcomeMap.mockResolvedValue({})
     return request(app)
       .get('/person/A1234AB/edit-court-case/0/add-court-appearance/0/review-offences')
       .expect('Content-Type', /html/)

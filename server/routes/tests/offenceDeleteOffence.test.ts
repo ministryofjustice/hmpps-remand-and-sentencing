@@ -51,13 +51,13 @@ describe('GET Delete offence', () => {
       CC12345: 'An offence description',
     })
     defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
-    defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
       sentenceTypeUuid: '456',
       classification: 'STANDARD',
       description: 'A sentence type description',
       displayOrder: 10,
     })
-    defaultServices.offenceOutcomeService.getOutcomeById.mockResolvedValue({
+    defaultServices.refDataService.getChargeOutcomeById.mockResolvedValue({
       outcomeUuid: '123',
       dispositionCode: 'F',
       nomisCode: '10',
@@ -118,13 +118,13 @@ describe('GET Delete offence', () => {
       CC12345: 'An offence description',
     })
     defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({})
-    defaultServices.remandAndSentencingService.getSentenceTypeById.mockResolvedValue({
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
       sentenceTypeUuid: '456',
       classification: 'STANDARD',
       description: 'A sentence type description',
       displayOrder: 10,
     })
-    defaultServices.offenceOutcomeService.getOutcomeById.mockResolvedValue({
+    defaultServices.refDataService.getChargeOutcomeById.mockResolvedValue({
       outcomeUuid: '123',
       dispositionCode: 'F',
       nomisCode: '10',

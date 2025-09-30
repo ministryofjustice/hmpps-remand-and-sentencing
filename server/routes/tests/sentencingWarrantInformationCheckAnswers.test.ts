@@ -32,7 +32,7 @@ describe('GET Warrant Information Check Answers', () => {
         periodLengthType: 'OVERALL_SENTENCE_LENGTH',
       },
     })
-    defaultServices.appearanceOutcomeService.getOutcomeByUuid.mockResolvedValue({
+    defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue({
       outcomeUuid: '123',
       outcomeType: 'SENTENCING',
       displayOrder: 10,

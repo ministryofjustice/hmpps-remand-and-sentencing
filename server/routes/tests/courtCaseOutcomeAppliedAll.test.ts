@@ -22,7 +22,7 @@ describe('GET Court Case Case Outcome applied all', () => {
       outcomeName: 'Appearance outcome',
     } as AppearanceOutcome
     defaultServices.courtAppearanceService.getAppearanceOutcomeUuid.mockReturnValue(outcomeUuid)
-    defaultServices.appearanceOutcomeService.getOutcomeByUuid.mockResolvedValue(appearanceOutcome)
+    defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue(appearanceOutcome)
 
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/case-outcome-applied-all')

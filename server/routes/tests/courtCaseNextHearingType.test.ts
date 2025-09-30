@@ -15,7 +15,7 @@ afterEach(() => {
 
 describe('GET Next hearing type', () => {
   it('should render page on new journey', () => {
-    defaultServices.remandAndSentencingService.getAllAppearanceTypes.mockResolvedValue([
+    defaultServices.refDataService.getAllAppearanceTypes.mockResolvedValue([
       {
         appearanceTypeUuid: '1',
         description: 'Appearance Type',

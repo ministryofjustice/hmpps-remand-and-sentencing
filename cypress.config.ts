@@ -62,6 +62,13 @@ export default defineConfig({
             }),
           ])
         },
+
+        // 👇 add this logger
+        log(message: string) {
+          console.log(message)
+          return null
+        },
+
         ...auth,
         ...tokenVerification,
         ...manageOffencesApi,

@@ -27,14 +27,19 @@ export default abstract class Page {
       cy.window({ log: false }).then(win => {
         return win.axe.run().then(results => {
           if (results.violations.length) {
+            cy.task('log', `\n[${new Date().toISOString()}] ${this.title}`)
             cy.task('log', `⚠️ ${results.violations.length} accessibility violation(s) detected`)
+
             results.violations.forEach(v => {
               cy.task('log', `${v.id} [${v.impact}] - ${v.help}`)
               v.nodes.forEach(node => {
                 cy.task('log', `  ${node.target}`)
               })
             })
+
+            cy.task('log', '---') // separator
           }
+
           // 🚨 important: do not throw → tests keep running
         })
       })

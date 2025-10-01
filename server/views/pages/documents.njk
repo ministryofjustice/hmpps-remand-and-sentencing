@@ -1,6 +1,11 @@
 {% extends "../partials/prisonerBannerLayout.njk" %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "hmpps/components/court-cases-release-dates/things-to-do/macro.njk" import thingsToDo %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "hmpps/components/date-picker/macro.njk" import hmppsDatePicker %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
 
 {% set pageTitle = applicationName + " - Documents" %}
 
@@ -10,9 +15,35 @@
     {{ thingsToDo(serviceDefinitions, 'courtCases') }}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+        <form method="get" action="/person/{{ nomsId }}/documents" autocomplete="off">
+                {{ govukInput({
+                    label: {
+                        text: "Search" ,
+                        classes: "govuk-!-font-weight-bold"   
+                    },
+                    id: "searchQuery",
+                    name: "searchQuery",
+                    value: searchQuery
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Search",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {% if searchQuery %}
+                        <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/documents">Clear</a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+            
+        <div class="govuk-grid-column-two-thirds">
+
             {% for courtCase in courtCases %}
                 <h2 class="govuk-heading-l">{% if courtCase.latestAppearance.courtCaseReference %}{{ courtCase.latestAppearance.courtCaseReference }} {% endif %} at {{ courtMap[courtCase.latestAppearance.courtCode] }} </h2>
-
                 {% for documentType, documents in courtCase.appearanceDocumentsByType %}
                     <h3 class="govuk-heading-m"> {{ documentType }}</h3>
                     {% set summaryListRows = [] %}
@@ -45,4 +76,8 @@
             {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/assets/datepicker.js"></script>
 {% endblock %}

@@ -48,7 +48,7 @@ import config from '../config'
 import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
-import { MergedFromCase } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { MergedFromCase, SearchDocuments } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
 
@@ -170,8 +170,19 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public documents: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { username, token } = res.locals.user
+    const { searchQuery } = req.query
+    const searchDocuments: SearchDocuments = {
+      warrantTypeDocumentTypes: Object.entries(documentTypes).flatMap(([warrantType, expectedDocumentTypes]) =>
+        expectedDocumentTypes
+          .filter(documentType =>
+            documentType.name.toLocaleLowerCase().includes(searchQuery?.toLocaleString().toLocaleLowerCase()),
+          )
+          .map(documentType => `${warrantType}|${documentType.type}`),
+      ),
+      caseReference: searchQuery as string,
+    }
     const [prisonerCourtCasesDocuments, serviceDefinitions] = await Promise.all([
-      this.remandAndSentencingService.getPrisonerDocuments(nomsId, username),
+      this.remandAndSentencingService.getPrisonerDocuments(nomsId, searchDocuments, username),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
     const courtCodes = prisonerCourtCasesDocuments.courtCaseDocuments.flatMap(courtCaseDocuments =>
@@ -210,6 +221,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       courtCases,
       courtMap,
       serviceDefinitions,
+      searchQuery,
     })
   }
 

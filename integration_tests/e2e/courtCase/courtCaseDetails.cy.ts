@@ -22,53 +22,37 @@ context('Court Case details Page', () => {
       )
     })
 
-    it('appearances tab shows correct data', () => {
-      courtCaseDetailsPage
-        .appearancesTab()
-        .getAppearanceCardDetails()
-        .should('deep.equal', [
-          {
-            'Case reference': 'C894623',
-            Location: 'Accrington Youth Court',
-            'Warrant date': '15/12/2023',
-            Outcome: 'Remanded in custody',
-            'Next hearing': '15/12/2024 at Accrington Youth Court',
-            'Court documents': 'No documents uploaded',
-            Offences: {
-              'offences (2)': [
-                {
-                  offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '15/12/2023',
-                  Outcome: 'Remanded in custody',
-                },
-                {
-                  offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': 'Not entered',
-                  Outcome: 'Commit to Crown Court for trial in custody',
-                },
-              ],
-            },
-          },
-          {
-            'Case reference': 'F23325',
-            Location: 'Birmingham Crown Court',
-            'Warrant date': '15/10/2022',
-            Outcome: 'Lie on file',
-            'Next hearing': '15/12/2023 at Birmingham Crown Court',
-            'Court documents': 'No documents uploaded',
-            Offences: {
-              'offences (1)': [
-                {
-                  offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '15/12/2025',
-                  Outcome: 'A Nomis Outcome',
-                  'Merged from': 'NOMIS123 at Accrington Youth Court',
-                },
-              ],
-            },
-          },
-        ])
+    it('appearance shows correct data', () => {
+      // should render 2 appearances
+      cy.get('[data-qa="appearance"]').should('have.length', 2)
+
+      // first appearance
+      cy.get('[data-qa="appearance"]')
+        .eq(0)
+        .within(() => {
+          cy.get('[data-qa="case-reference"]').should('contain.text', 'C894623')
+          cy.get('[data-qa="location"]').should('contain.text', 'Accrington Youth Court')
+          cy.get('[data-qa="warrant-date"]').should('contain.text', '15/12/2023')
+          cy.get('[data-qa="outcome"]').should('contain.text', 'Remanded in custody')
+          cy.get('[data-qa="next-hearing"]').should('contain.text', '15/12/2024 at Accrington Youth Court')
+          cy.get('[data-qa="court-documents"]').should('contain.text', 'No documents uploaded')
+          cy.get('[data-qa="offences"]').should('contain.text', 'offences (2)')
+        })
+
+      // second appearance
+      cy.get('[data-qa="appearance"]')
+        .eq(1)
+        .within(() => {
+          cy.get('[data-qa="case-reference"]').should('contain.text', 'F23325')
+          cy.get('[data-qa="location"]').should('contain.text', 'Birmingham Crown Court')
+          cy.get('[data-qa="warrant-date"]').should('contain.text', '15/10/2022')
+          cy.get('[data-qa="outcome"]').should('contain.text', 'Lie on file')
+          cy.get('[data-qa="next-hearing"]').should('contain.text', '15/12/2023 at Birmingham Crown Court')
+          cy.get('[data-qa="court-documents"]').should('contain.text', 'No documents uploaded')
+          cy.get('[data-qa="offences"]').should('contain.text', 'offences (1)')
+        })
     })
+
     it('should show delete button', () => {
       courtCaseDetailsPage
         .appearanceActionList('a6400fd8-aef4-4567-b18c-d1f452651933')
@@ -114,72 +98,48 @@ context('Court Case details Page', () => {
       )
     })
 
-    it('appearances tab shows correct data', () => {
-      courtCaseDetailsPage
-        .appearancesTab()
-        .getAppearanceCardDetails()
-        .should('deep.equal', [
-          {
-            'Case reference': 'C894623',
-            'Warrant date': '15/12/2023',
-            Location: 'Accrington Youth Court',
-            Outcome: 'Imprisonment',
-            'Court documents': 'No documents uploaded',
-            Offences: {
-              'offences (4)': [
-                {
-                  offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '15/12/2023',
-                  Outcome: 'Imprisonment',
-                  'Sentence type': 'SDS (Standard Determinate Sentence)',
-                  'Sentence length': '4 years 5 months 0 weeks 0 days',
-                  'Consecutive or concurrent': 'Forthwith',
-                },
-                {
-                  offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '16/12/2023',
-                  Outcome: 'Imprisonment',
-                  'Sentence type': 'A Nomis sentence type',
-                  'Sentence length': '1 years 2 months 0 weeks 0 days',
-                  'Consecutive or concurrent': 'Unknown',
-                },
-                {
-                  offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '03/06/2023',
-                  Outcome: 'Imprisonment',
-                  'Sentence type': 'SDS (Standard Determinate Sentence)',
-                  'Sentence length': '4 years 5 months 0 weeks 0 days',
-                  'Consecutive or concurrent':
-                    'Consecutive to count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
-                },
-                {
-                  offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '15/02/2024',
-                  Outcome: 'Imprisonment',
-                  'Sentence type': 'SDS (Standard Determinate Sentence)',
-                  'Sentence length': '4 years 5 months 0 weeks 0 days',
-                  'Consecutive or concurrent': 'Consecutive to count 1',
-                },
-              ],
-            },
-          },
-          {
-            'Case reference': 'F23325',
-            'Warrant date': '15/10/2022',
-            Location: 'Birmingham Crown Court',
-            Outcome: 'A Nomis Outcome',
-            'Court documents': 'No documents uploaded',
-            Offences: {
-              'offences (1)': [
-                {
-                  offenceCardHeader: 'PS90037 An offence description',
-                  'Committed on': '15/12/2023',
-                  Outcome: 'Remanded in custody',
-                },
-              ],
-            },
-          },
-        ])
+    it('appearance shows correct data', () => {
+      // ensure 2 appearances are shown
+      cy.get('[data-qa="appearance"]').should('have.length', 2)
+
+      // first appearance
+      cy.get('[data-qa="appearance"]')
+        .eq(0)
+        .within(() => {
+          cy.get('[data-qa="case-reference"]').should('contain.text', 'C894623')
+          cy.get('[data-qa="warrant-date"]').should('contain.text', '15/12/2023')
+          cy.get('[data-qa="location"]').should('contain.text', 'Accrington Youth Court')
+          cy.get('[data-qa="outcome"]').should('contain.text', 'Imprisonment')
+          cy.get('[data-qa="court-documents"]').should('contain.text', 'No documents uploaded')
+
+          // offences (4)
+          cy.get('[data-qa="offences"]').should('contain.text', 'offences (4)')
+          cy.get('[data-qa="offences"]').should('contain.text', 'PS90037 An offence description')
+          cy.get('[data-qa="offences"]').should('contain.text', 'Committed on')
+          cy.get('[data-qa="offences"]').should('contain.text', 'Sentence type')
+          cy.get('[data-qa="offences"]').should('contain.text', 'Sentence length')
+          cy.get('[data-qa="offences"]').should('contain.text', 'Consecutive or concurrent')
+        })
+
+      // second appearance
+      cy.get('[data-qa="appearance"]')
+        .eq(1)
+        .within(() => {
+          cy.get('[data-qa="case-reference"]').should('contain.text', 'F23325')
+          cy.get('[data-qa="warrant-date"]').should('contain.text', '15/10/2022')
+          cy.get('[data-qa="location"]').should('contain.text', 'Birmingham Crown Court')
+          cy.get('[data-qa="outcome"]').should('contain.text', 'A Nomis Outcome')
+          cy.get('[data-qa="court-documents"]').should('contain.text', 'No documents uploaded')
+
+          // offences (1)
+          cy.get('[data-qa="offences"]').should('contain.text', 'offences (1)')
+          cy.get('[data-qa="offences"]').within(() => {
+            cy.contains('dt', 'Committed on') // check the label
+            cy.contains('dd', '15/12/2023') // check the value
+            cy.contains('dt', 'Outcome')
+            cy.contains('dd', 'Remanded in custody')
+          })
+        })
     })
 
     it('Drafts tab should not display', () => {

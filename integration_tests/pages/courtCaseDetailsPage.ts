@@ -5,8 +5,6 @@ export default class CourtCaseDetailsPage extends Page {
     super(title)
   }
 
-  appearancesTab = (): PageElement => cy.get('[data-qa=appearances-tab]')
-
   draftsTab = (): PageElement => cy.get('[data-qa=drafts-tab]')
 
   appearanceActionList = (appearanceUuid: string): PageElement =>

@@ -156,38 +156,34 @@
 {% set documentSummaryRows = [] %}
 
 {% for document in documentsWithUiType %}
-    {% set documentRowHtml %}
-        <span style="vertical-align: middle;">
-            <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
-                <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"></path>
-            </svg>
-            <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/download-document">
-                <strong>{{ document.documentType }}</strong>
-            </a>
-        </span>
-    {% endset %}
-    {% set documentSummaryRows = documentSummaryRows.concat([
-            {
-                key: {
-                    html: documentRowHtml
-                },
-                value: {
-                    text: ""
-                }
-            }
-        ]) %}
+  {% set documentRowHtml %}
+    <a class="govuk-link govuk-link--no-visited-state" target="_blank"
+       href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/download-document">
+      <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 16 20" width="20" height="16">
+        <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"></path>
+      </svg>
+      {{ document.documentType }}
+    </a>
+  {% endset %}
+
+  {% set documentSummaryRows = documentSummaryRows.concat([
+    {
+      key: {
+        html: documentRowHtml
+      }
+    }
+  ]) %}
 {% else %}
-    {% set documentSummaryRows = documentSummaryRows.concat([
-            {
-                key: {
-                    text: ""
-                },
-                value: {
-                    text: "No documents uploaded"
-                }
-            }
-        ]) %}
+  {% set documentSummaryRows = documentSummaryRows.concat([
+    {
+      key: {
+        text: "No documents uploaded"
+      }
+    }
+  ]) %}
 {% endfor %}
+
 
 
 {% block content %}
@@ -260,7 +256,7 @@
                     }
             })}}
 
-            <h2 class="govuk-heading-m">Offences <span class="govuk-body">({{ appearance.offences | length }})</span></h2>
+            <h2 class="govuk-heading-m">Offences ({{ appearance.offences | length }})</h2>
 
             {{ govukButton({
                 text: "Add an offence" ,
@@ -316,9 +312,6 @@
                         }}
             {% endfor %}
         </span>
-
-
-
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/remand/submit-details-edit" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <div class="govuk-button-group">

@@ -13,14 +13,18 @@
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-full">
+          <div class="govuk-grid-row">
+                  <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-l">
+            <h1 class="govuk-heading-l govuk-!-margin-top-4">
                 {% if courtCaseDetails.appearances | length == 0 %}
                     Appearances
                 {% else %}
                     Appearances{{ ' for ' + courtCaseDetails.latestCaseReference if courtCaseDetails.latestCaseReference }} at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }}
                 {% endif %}
             </h1>
+            </div>
+            </div>
             {% if courtCaseDetails.mergedToInsetText %}
                 {{ govukInsetText({
                     text: courtCaseDetails.mergedToInsetText,
@@ -30,20 +34,9 @@
                 }) }}
             {% endif %}
 
-            <div class="govuk-tabs" data-module="govuk-tabs">
-                <h2 class="govuk-tabs__title">
-                    Appearances
-                </h2>
 
-                <ul class="govuk-tabs__list">
-                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                        <a class="govuk-tabs__tab" href="#appearances" data-qa="appearances-link">
-                            Appearances ({{ courtCaseDetails.appearances | length }})
-                        </a>
-                    </li>
-                </ul>
+<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-                <div class="govuk-tabs__panel" id="appearances" data-qa="appearances-tab">
                     {% if courtCaseDetails.appearances | length == 0 %}
                         <p>There are no saved appearances.</p>
                     {% endif %}
@@ -55,8 +48,7 @@
                             {{ appearanceCard(appearance, courtCaseDetails) }}
                         </div>
                     {% endfor %}
-                </div>
-            </div>
+
         </div>
     </div>
 {% endblock %}
@@ -64,12 +56,12 @@
 {% macro appearanceCard(appearance, courtCaseDetails) %}
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
+        <div class="govuk-grid-column-three-quarters">
             <h2 class="govuk-heading-m">{{ appearance.courtCaseReference + ' at ' if appearance.courtCaseReference }}{{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
                 on {{ appearance.appearanceDate | formatDate }}</h2>
         </div>
 
-        <div class="govuk-grid-column-one-half">
+        <div class="govuk-grid-column-one-quarter">
             <ul class="offence-card-actions-list" data-qa="appearanceActionList-{{appearance.appearanceUuid}}">
                 {% if not appearance.hasAnyRecalls %}
                     <li class="offence-card-action-link">
@@ -94,7 +86,7 @@
     {% if appearance.mergedFromCases and appearance.mergedFromCases | length > 0 %}
       {{ govukInsetText({
         html: appearance.mergedFromCases | join('<br>'),
-        classes: "govuk-!-margin-bottom-3",
+        classes: "govuk-!-margin-0",
         attributes: {
           "data-qa": "mergedFromText"
         }
@@ -102,7 +94,8 @@
     {% endif %}
     {% if not appearance.canDelete %}
       {{ govukInsetText({
-        text: "You cannot delete an appearance that includes sentences."
+        text: "You cannot delete an appearance that includes sentences.",
+        classes: "govuk-!-margin-0"
       }) }}
     {% endif %}
     <div class="govuk-grid-row govuk-!-padding-bottom-2 govuk-!-margin-top-2">

@@ -24,7 +24,7 @@ context('Court Case details Page', () => {
 
     it('appearances tab shows correct data', () => {
       courtCaseDetailsPage
-        .appearancesTab()
+        .appearancesSection()
         .getAppearanceCardDetails()
         .should('deep.equal', [
           {
@@ -69,6 +69,7 @@ context('Court Case details Page', () => {
           },
         ])
     })
+
     it('should show delete button', () => {
       courtCaseDetailsPage
         .appearanceActionList('a6400fd8-aef4-4567-b18c-d1f452651933')
@@ -114,9 +115,10 @@ context('Court Case details Page', () => {
       )
     })
 
-    it('appearances tab shows correct data', () => {
+    it('appearance shows correct data', () => {
+      // ensure 2 appearances are shown
       courtCaseDetailsPage
-        .appearancesTab()
+        .appearancesSection()
         .getAppearanceCardDetails()
         .should('deep.equal', [
           {

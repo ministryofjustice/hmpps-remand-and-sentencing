@@ -13,7 +13,7 @@
     {{ thingsToDo(serviceDefinitions, 'courtCases') }}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-        <form method="get" action="/person/{{ nomsId }}/documents" autocomplete="off">
+        <form method="get" autocomplete="off">
                 {{ govukInput({
                     label: {
                         text: "Search" ,
@@ -47,14 +47,13 @@
                     {% set summaryListRows = [] %}
                     {% for document in documents %}
                         {% set documentKeyHtml %}
-                            <a class="govuk-link govuk-link--no-visited-state" href="/api/document/{{document.documentUUID}}/download">{{ document.fileName }}</a> on {{ document.warrantDate | formatDate }} at {{ courtMap[document.courtCode] }}
+                            <span data-qa="document-details-{{document.documentUUID}}">
+                                <a class="govuk-link govuk-link--no-visited-state" href="/api/document/{{document.documentUUID}}/download">{{ document.fileName }}</a> on {{ document.warrantDate | formatDate }} at {{ courtMap[document.courtCode] }}
+                            </span>
                         {% endset %}
                         {% set summaryListRows = summaryListRows.concat({
                             key: {
                                 html: documentKeyHtml
-                            }, 
-                            value: {
-                                text: ''
                             }
                         })%}
                     {% endfor %}

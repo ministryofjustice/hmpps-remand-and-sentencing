@@ -89,6 +89,8 @@ describe('GET Court case documents', () => {
         expect(prisonerBanner).toContain('A1234AB')
         expect(prisonerBanner).toContain('EstablishmentHMP Bedford')
         expect(prisonerBanner).toContain('Cell numberCELL-1')
+        const documentDetails = $('[data-qa="document-details-567"]').text().trim()
+        expect(documentDetails).toBe('aRemandWarrant.pdf on 01/01/2025 at A court description')
       })
   })
 })

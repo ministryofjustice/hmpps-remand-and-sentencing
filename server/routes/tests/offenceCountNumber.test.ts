@@ -33,7 +33,7 @@ describe('GET Offence Count Number', () => {
         expect(prisonerBanner).toContain('EstablishmentHMP Bedford')
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
-        expect(continueButton).toContain('Save and continue')
+        expect(continueButton).toContain('Continue')
       })
   })
 })

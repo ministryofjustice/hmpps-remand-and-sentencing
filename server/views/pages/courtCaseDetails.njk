@@ -14,51 +14,55 @@
 
         <div class="govuk-grid-column-full">
           <div class="govuk-grid-row">
-                  <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-two-thirds">
+              <h1 class="govuk-heading-l govuk-!-margin-top-4">
+                  {% if courtCaseDetails.appearances | length == 0 %}
+                      Appearances
+                  {% else %}
+                      Appearances{{ ' for ' + courtCaseDetails.latestCaseReference if courtCaseDetails.latestCaseReference }} at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }}
+                  {% endif %}
+              </h1>
+            </div>
+          </div>
 
-            <h1 class="govuk-heading-l govuk-!-margin-top-4">
-                {% if courtCaseDetails.appearances | length == 0 %}
-                    Appearances
-                {% else %}
-                    Appearances{{ ' for ' + courtCaseDetails.latestCaseReference if courtCaseDetails.latestCaseReference }} at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }}
+          {% if courtCaseDetails.mergedToInsetText %}
+              {{ govukInsetText({
+                  text: courtCaseDetails.mergedToInsetText,
+                  attributes: {
+                      "data-qa": "mergedToInsetText"
+                  }
+              }) }}
+          {% endif %}
+
+          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+          {% if courtCaseDetails.appearances | length == 0 %}
+              <p>There are no saved appearances.</p>
+          {% endif %}
+
+          <div data-qa="appearances-section">
+            {% for appearance in courtCaseDetails.appearances %}
+                {% if loop.index != 1 %}
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
                 {% endif %}
-            </h1>
-            </div>
-            </div>
-            {% if courtCaseDetails.mergedToInsetText %}
-                {{ govukInsetText({
-                    text: courtCaseDetails.mergedToInsetText,
-                    attributes: {
-                        "data-qa": "mergedToInsetText"
-                    }
-                }) }}
-            {% endif %}
-
-
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-
-                    {% if courtCaseDetails.appearances | length == 0 %}
-                        <p>There are no saved appearances.</p>
-                    {% endif %}
-                    {% for appearance in courtCaseDetails.appearances %}
-                        {% if loop.index != 1 %}
-                            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-                        {% endif %}
-                        <div data-qa="appearance">
-                            {{ appearanceCard(appearance, courtCaseDetails) }}
-                        </div>
-                    {% endfor %}
+                <div data-qa="appearance">
+                    {{ appearanceCard(appearance, courtCaseDetails) }}
+                </div>
+            {% endfor %}
+          </div>
 
         </div>
     </div>
 {% endblock %}
 
 {% macro appearanceCard(appearance, courtCaseDetails) %}
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            <h2 class="govuk-heading-m">{{ appearance.courtCaseReference + ' at ' if appearance.courtCaseReference }}{{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
-                on {{ appearance.appearanceDate | formatDate }}</h2>
+            <h2 class="govuk-heading-m">
+              {{ appearance.courtCaseReference + ' at ' if appearance.courtCaseReference }}
+              {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
+              on {{ appearance.appearanceDate | formatDate }}
+            </h2>
         </div>
 
         <div class="govuk-grid-column-one-quarter">
@@ -66,72 +70,78 @@
                 {% if not appearance.hasAnyRecalls %}
                     <li class="offence-card-action-link">
                         <a class="govuk-link--no-visited-state"
-                            href="{% if appearance.warrantType == 'REMAND' %}
-                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand/load-appearance-details
-                                {% else %}
-                                        /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing/load-appearance-details
-                                {% endif %}">
+                           href="{% if appearance.warrantType == 'REMAND' %}
+                                      /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand/load-appearance-details
+                                  {% else %}
+                                      /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing/load-appearance-details
+                                  {% endif %}">
                             Edit
                         </a>
                     </li>
                     {% if appearance.canDelete %}
                       <li class="offence-card-action-link">
-                        <a href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/{{ appearance.appearanceUuid }}/confirm-delete" class="govuk-link--no-visited-state">Delete</a>
+                        <a href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/{{ appearance.appearanceUuid }}/confirm-delete"
+                           class="govuk-link--no-visited-state">Delete</a>
                       </li>
                     {% endif %}
                 {% endif %}
             </ul>
         </div>
     </div>
+
     {% if appearance.mergedFromCases and appearance.mergedFromCases | length > 0 %}
       {{ govukInsetText({
         html: appearance.mergedFromCases | join('<br>'),
         classes: "govuk-!-margin-0",
-        attributes: {
-          "data-qa": "mergedFromText"
-        }
+        attributes: { "data-qa": "mergedFromText" }
       }) }}
     {% endif %}
+
     {% if not appearance.canDelete %}
       {{ govukInsetText({
         text: "You cannot delete an appearance that includes sentences.",
         classes: "govuk-!-margin-0"
       }) }}
     {% endif %}
+
     <div class="govuk-grid-row govuk-!-padding-bottom-2 govuk-!-margin-top-2">
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Case reference</h3>
-            <p data-qa="case-reference"
-               class="govuk-body govuk-!-margin-bottom-3">{{ appearance.courtCaseReference if appearance.courtCaseReference else 'Not entered' }}</p>
+            <p data-qa="case-reference" class="govuk-body govuk-!-margin-bottom-3">
+              {{ appearance.courtCaseReference if appearance.courtCaseReference else 'Not entered' }}
+            </p>
 
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant date</h3>
-            <p data-qa="warrant-date"
-               class="govuk-body govuk-!-margin-bottom-3">{{ appearance.appearanceDate | formatDate }}</p>
+            <p data-qa="warrant-date" class="govuk-body govuk-!-margin-bottom-3">
+              {{ appearance.appearanceDate | formatDate }}
+            </p>
 
             {% if appearance.warrantType == 'SENTENCING' and appearance.overallConvictionDate %}
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
-                <p data-qa="conviction-date"
-                   class="govuk-body govuk-!-margin-bottom-2">{{ appearance.overallConvictionDate | formatDate }}</p>
+                <p data-qa="conviction-date" class="govuk-body govuk-!-margin-bottom-2">
+                  {{ appearance.overallConvictionDate | formatDate }}
+                </p>
             {% endif %}
         </div>
 
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="location">
-                {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
+              {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
             </p>
 
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
             <p class="govuk-body govuk-!-margin-bottom-3" data-qa="outcome">
-                {{ appearance.outcome | appearanceOutcomeOrLegacy(appearance.legacyData) }}
+              {{ appearance.outcome | appearanceOutcomeOrLegacy(appearance.legacyData) }}
             </p>
         </div>
 
         <div class="govuk-grid-one-third">
             {% if appearance.warrantType == 'REMAND' %}
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next hearing</h3>
-                <p class="govuk-body govuk-!-margin-bottom-2"
-                   data-qa="next-hearing">{{ appearance.nextCourtAppearance | formatNextHearing(courtMap) }}</p>
+                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="next-hearing">
+                  {{ appearance.nextCourtAppearance | formatNextHearing(courtMap) }}
+                </p>
             {% endif %}
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Court documents</h3>
             <ul class="govuk-list govuk-list--no--bullet govuk-!-margin-bottom-3" data-qa="court-documents">
@@ -143,7 +153,9 @@
                         <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
                           <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"></path>
                         </svg>
-                        <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/edit-court-appearance/{{ appearance.appearanceUuid }}/{{ document.documentUUID }}/download-document">
+                        <a class="govuk-link govuk-link--no-visited-state"
+                           target="_blank"
+                           href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/edit-court-appearance/{{ appearance.appearanceUuid }}/{{ document.documentUUID }}/download-document">
                           <strong>{{ document.documentType }}</strong>
                         </a>
                       </span>
@@ -152,39 +164,38 @@
                 {% endif %}
             </ul>
         </div>
+
         <div class="govuk-grid-column-full govuk-!-margin-top-4">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Offences</h3>
             {% set offenceDetailsHtml %}
-            {% for charge in appearance.charges %}
-                {{ offenceCard({
-                        offenceCode: charge.offenceCode,
-                        offenceName: offenceMap[charge.offenceCode],
-                        offenceStartDate: charge.offenceStartDate | formatDate if charge.offenceStartDate else 'Not entered',
-                        offenceEndDate: charge.offenceEndDate | formatDate,
-                        outcome: charge.outcome | chargeOutcomeOrLegacy(charge.legacyData),
-                        countNumber: charge.sentence.chargeNumber,
-                        lineNumber: charge.sentence.legacyData.nomisLineReference if charge.sentence and charge.sentence.legacyData,
-                        convictionDate: charge.sentence.convictionDate | formatDate,
-                        terrorRelated: charge.terrorRelated,
-                        isSentenced: charge.sentence,
-                        periodLengths: charge.sentence.periodLengths | periodLengthsToSentenceLengths,
-                        sentenceServeType: charge.sentence.sentenceServeType,
-                        consecutiveTo: consecutiveToSentenceDetailsMap[charge.sentence.consecutiveToSentenceUuid],
-                        sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
-                        fineAmount: charge.sentence.fineAmount.fineAmount,
-                        detailsClasses: 'govuk-!-padding-4',
-                        mergedFromCase: charge.mergedFromCase,
-                        courtDetails: courtMap
-                    }) }}
-            {% endfor %}
+              {% for charge in appearance.charges %}
+                  {{ offenceCard({
+                      offenceCode: charge.offenceCode,
+                      offenceName: offenceMap[charge.offenceCode],
+                      offenceStartDate: charge.offenceStartDate | formatDate if charge.offenceStartDate else 'Not entered',
+                      offenceEndDate: charge.offenceEndDate | formatDate,
+                      outcome: charge.outcome | chargeOutcomeOrLegacy(charge.legacyData),
+                      countNumber: charge.sentence.chargeNumber,
+                      lineNumber: charge.sentence.legacyData.nomisLineReference if charge.sentence and charge.sentence.legacyData,
+                      convictionDate: charge.sentence.convictionDate | formatDate,
+                      terrorRelated: charge.terrorRelated,
+                      isSentenced: charge.sentence,
+                      periodLengths: charge.sentence.periodLengths | periodLengthsToSentenceLengths,
+                      sentenceServeType: charge.sentence.sentenceServeType,
+                      consecutiveTo: consecutiveToSentenceDetailsMap[charge.sentence.consecutiveToSentenceUuid],
+                      sentenceType: charge.sentence.sentenceType.description | sentenceTypeValueOrLegacy(charge.sentence.legacyData),
+                      fineAmount: charge.sentence.fineAmount.fineAmount,
+                      detailsClasses: 'govuk-!-padding-4',
+                      mergedFromCase: charge.mergedFromCase,
+                      courtDetails: courtMap
+                  }) }}
+              {% endfor %}
             {% endset %}
             {{ govukDetails({
                 summaryText: 'offences (' + appearance.charges | length  + ')',
                 html: offenceDetailsHtml,
                 classes: "filter white show-toggle govuk-!-margin-bottom-0",
-                attributes: {
-                    "data-qa": "offences"
-                }
+                attributes: { "data-qa": "offences" }
             }) }}
         </div>
     </div>

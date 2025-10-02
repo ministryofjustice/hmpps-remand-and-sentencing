@@ -19,6 +19,7 @@ import {
   PageCourtCaseContent,
   PagePagedCourtCase,
   PrisonerDocuments,
+  SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
@@ -426,10 +427,17 @@ export default class RemandAndSentencingApiClient extends RestClient {
     )
   }
 
-  async getPrisonerDocuments(prisonerId: string, username: string): Promise<PrisonerDocuments> {
+  async getPrisonerDocuments(
+    prisonerId: string,
+    searchDocuments: SearchDocuments,
+    username: string,
+  ): Promise<PrisonerDocuments> {
     return this.get(
       {
         path: `/person/${prisonerId}/documents`,
+        query: {
+          ...searchDocuments,
+        },
       },
       asSystem(username),
     )

@@ -107,3 +107,5 @@ export type SentenceDetailsForConsecValidation = components['schemas']['Sentence
 export type LatestOffenceDate = components['schemas']['LatestOffenceDate']
 
 export type PrisonerDocuments = components['schemas']['PrisonerDocuments']
+
+export type SearchDocuments = components['schemas']['SearchDocuments']

@@ -21,7 +21,7 @@
         {% endblock %}
     </aside>
     {% block subNavigation %}
-        {{ subNavigation(serviceDefinitions.services, 'courtCases') }}
+        {{ subNavigation(serviceDefinitions.services,subNavigationService if subNavigationService else 'courtCases') }}
     {% endblock %}
 {% endblock %}
 

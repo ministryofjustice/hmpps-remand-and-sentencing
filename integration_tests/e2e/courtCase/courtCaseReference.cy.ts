@@ -46,4 +46,12 @@ context('Court Case Reference Page', () => {
       .then(text => text.trim())
       .should('equal', 'Add appearance information')
   })
+  it('submtting greater than 13 characters results in an error', () => {
+    courtCaseReferencePage.input().type('ABCDEFGHIJKLM1')
+    courtCaseReferencePage.continueButton().click()
+    courtCaseReferencePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Case references must not be longer than 13 characters')
+  })
 })

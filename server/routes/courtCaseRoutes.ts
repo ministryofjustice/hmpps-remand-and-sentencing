@@ -831,11 +831,15 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public newJourney: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    let courtAppearanceUuid = appearanceReference
     if (!res.locals.isAddCourtCase) {
       const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
         req.user.username,
         courtCaseReference,
       )
+      if (latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid) {
+        courtAppearanceUuid = latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid
+      }
       latestCourtAppearance.charges
         .filter(charge => {
           const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
@@ -846,11 +850,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
         })
         .map(charge => chargeToOffence(charge))
         .forEach(offence =>
-          this.courtAppearanceService.addOffence(req.session, nomsId, offence.chargeUuid, offence, appearanceReference),
+          this.courtAppearanceService.addOffence(req.session, nomsId, offence.chargeUuid, offence, courtAppearanceUuid),
         )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-type`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/warrant-type`,
     )
   }
 

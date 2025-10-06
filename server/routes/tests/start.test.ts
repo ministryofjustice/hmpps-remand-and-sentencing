@@ -37,6 +37,7 @@ describe('GET Start', () => {
               appearanceTime: '10:30:00.000000000',
               courtCode: 'BCC',
               appearanceTypeDescription: 'Court appearance',
+              futureSkeletonAppearanceUuid: '456',
             },
             charges: [
               {

@@ -52,6 +52,8 @@ export default class CourtCasesDetailsModel {
 
   mergedToCase: PagedMergedToCase
 
+  newAppearanceUuid: string
+
   constructor(pagedCourtCase: PagedCourtCase, courtMap: { [key: string]: string }) {
     let titleValue = courtMap[pagedCourtCase.latestCourtAppearance?.courtCode]
     if (pagedCourtCase.latestCourtAppearance?.caseReference) {
@@ -110,5 +112,7 @@ export default class CourtCasesDetailsModel {
     this.mergedFromCases = pagedCourtCase.mergedFromCases
     this.allAppearancesHaveRecall = pagedCourtCase.allAppearancesHaveRecall
     this.mergedToCase = pagedCourtCase.mergedToCase
+    this.newAppearanceUuid =
+      pagedCourtCase.latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid ?? crypto.randomUUID()
   }
 }

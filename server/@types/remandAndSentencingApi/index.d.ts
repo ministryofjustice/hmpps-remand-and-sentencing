@@ -1088,26 +1088,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/legacy/court-case/{courtCaseUuid}/test': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Retrieve court case details for testing
-     * @description This endpoint will retrieve court case details for testing
-     */
-    get: operations['getTest']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/legacy/court-case/{courtCaseUuid}/reconciliation': {
     parameters: {
       query?: never
@@ -1595,7 +1575,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 13:29:12.573594 */
+      /** @example 15:24:53.121405 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1692,7 +1672,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:29:12.573594 */
+      /** @example 15:24:53.121405 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2451,10 +2431,12 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:29:12.573594 */
+      /** @example 15:24:53.121405 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
+      /** Format: uuid */
+      futureSkeletonAppearanceUuid: string
     }
     HasSentenceToChainToResponse: {
       hasSentenceToChainTo: boolean
@@ -2649,51 +2631,6 @@ export interface components {
       caseReference?: string
       caseReferences: components['schemas']['CaseReferenceLegacyData'][]
     }
-    LegacyCharge: {
-      prisonerId: string
-      courtCaseUuid: string
-      /** Format: uuid */
-      lifetimeUuid: string
-      nomisOutcomeCode?: string
-      offenceCode: string
-      /** Format: date */
-      offenceStartDate?: string
-      /** Format: date */
-      offenceEndDate?: string
-      legacyData?: components['schemas']['ChargeLegacyData']
-    }
-    LegacyCourtAppearance: {
-      /** Format: uuid */
-      lifetimeUuid: string
-      courtCaseUuid: string
-      prisonerId: string
-      nomisOutcomeCode?: string
-      courtCode: string
-      /** Format: date */
-      appearanceDate: string
-      /** @example 13:29:12.573594 */
-      appearanceTime: string
-      charges: components['schemas']['LegacyCharge'][]
-      nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
-    }
-    LegacyNextCourtAppearance: {
-      /** Format: date */
-      appearanceDate: string
-      /** @example 13:29:12.573594 */
-      appearanceTime?: string
-      courtId: string
-    }
-    TestCourtCase: {
-      courtCaseUuid: string
-      prisonerId: string
-      active: boolean
-      /** Format: date */
-      startDate?: string
-      courtId?: string
-      caseReference?: string
-      caseReferences: components['schemas']['CaseReferenceLegacyData'][]
-      appearances: components['schemas']['LegacyCourtAppearance'][]
-    }
     ReconciliationCharge: {
       /** Format: uuid */
       chargeUuid: string
@@ -2712,7 +2649,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 13:29:12.573594 */
+      /** @example 15:24:53.121405 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -2730,7 +2667,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:29:12.573594 */
+      /** @example 15:24:53.121405 */
       appearanceTime?: string
       courtId: string
     }
@@ -2762,6 +2699,42 @@ export interface components {
       /** Format: uuid */
       consecutiveToSentenceUuid?: string
       periodLengths: components['schemas']['ReconciliationPeriodLength'][]
+    }
+    LegacyCharge: {
+      prisonerId: string
+      courtCaseUuid: string
+      /** Format: uuid */
+      lifetimeUuid: string
+      nomisOutcomeCode?: string
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string
+      /** Format: date */
+      offenceEndDate?: string
+      legacyData?: components['schemas']['ChargeLegacyData']
+    }
+    LegacyCourtAppearance: {
+      /** Format: uuid */
+      lifetimeUuid: string
+      courtCaseUuid: string
+      prisonerId: string
+      nomisOutcomeCode?: string
+      courtCode: string
+      /** Format: date */
+      appearanceDate: string
+      /** @example 15:24:53.121405 */
+      appearanceTime: string
+      charges: components['schemas']['LegacyCharge'][]
+      nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
+      /** Format: uuid */
+      appearanceTypeUuid: string
+    }
+    LegacyNextCourtAppearance: {
+      /** Format: date */
+      appearanceDate: string
+      /** @example 15:24:53.121405 */
+      appearanceTime?: string
+      courtId: string
     }
     RecallableCourtCase: {
       courtCaseUuid: string
@@ -2847,10 +2820,10 @@ export interface components {
       sort?: string[]
     }
     PageCourtCase: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
@@ -2859,32 +2832,32 @@ export interface components {
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject']
+      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
       /** Format: int32 */
       pageSize?: number
-      unpaged?: boolean
     }
     SortObject: {
       empty?: boolean
-      sorted?: boolean
       unsorted?: boolean
+      sorted?: boolean
     }
     PagePagedCourtCase: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       last?: boolean
       /** Format: int32 */
@@ -2893,9 +2866,9 @@ export interface components {
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      pageable?: components['schemas']['PageableObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -2995,10 +2968,12 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:29:12.573594 */
+      /** @example 15:24:53.121405 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
+      /** Format: uuid */
+      futureSkeletonAppearanceUuid: string
     }
     PagedSentence: {
       /** Format: uuid */
@@ -5880,55 +5855,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['LegacyRecall']
-        }
-      }
-    }
-  }
-  getTest: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        courtCaseUuid: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Returns court case details for testing */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['TestCourtCase']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['TestCourtCase']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['TestCourtCase']
-        }
-      }
-      /** @description Not found if no court case at uuid */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['TestCourtCase']
         }
       }
     }

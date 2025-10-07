@@ -8,17 +8,17 @@
 
 {% block content %}
 
-    {% if isAddCourtCase %}
-        {% set savedEntity = "Court case" %}
-    {% else %}
-        {% set savedEntity = "Appearance" %}
-    {% endif %}
-    {% set panelTitle = savedEntity ~ " successfully saved" %}
+    {# Define a block variable with HTML inside #}
+    {% set titleHtml %}
+        <span class="govuk-!-font-size-36">
+            {{ "Court case" if isAddCourtCase else "Appearance" }} successfully saved
+        </span>
+    {% endset %}
 
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             {{ govukPanel({
-                titleHtml: '<span class="govuk-!-font-size-36">' ~ panelTitle ~ '</span>',
+                titleHtml: titleHtml,
                 classes: "govuk-!-margin-bottom-6"
             }) }}
 

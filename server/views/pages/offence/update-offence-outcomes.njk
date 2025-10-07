@@ -96,7 +96,7 @@
 
     <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes ({{custodialChangedOffences.length + nonCustodialChangedOffences.length}})</h2>
 
-    <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with custodial outcomes</h3>
+    <h3 class="govuk-heading-s">Offences with custodial outcomes</h3>
 
     {% for offence in custodialChangedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
@@ -139,7 +139,7 @@
                 }) }}
     {% endfor %}
 
-    <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with non-custodial outcomes</h3>
+    <h3 class="govuk-heading-s">Offences with non-custodial outcomes</h3>
 
     {% for offence in nonCustodialChangedOffences %}
         {% set offenceId = 'offences.' + offence.index %}

@@ -79,6 +79,7 @@ declare module 'models' {
       | 'TARIFF_LENGTH'
       | 'TERM_LENGTH'
       | 'OVERALL_SENTENCE_LENGTH'
+      | 'UNSUPPORTED'
     legacyData?: PeriodLengthLegacyData
     description?: string
     uuid: string

@@ -4,6 +4,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set yesHtml %}
   {{ govukInput({
@@ -26,9 +27,24 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
                 <h1 class="govuk-heading-l">Is there a count number for this offence?</h1>
+                {% if submitToEditOffence !== 'true' %}
+                    <p class="govuk-body-l govuk-!-margin-top-3" data-qa="offenceParagraph">{{ offence.offenceCode }} - {{ offenceDetails.description }} committed on {{ offence.offenceStartDate | formatDate }}{{" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate }}</p>
+                {% endif %}
+                {{ govukInsetText({
+                                            text: "By adding the count number, this service can accurately determine the consecutive chain"
+                                        }) }}
+                {% set countNumberHelpHtml %}
+                  <p class="govuk-body">You can find the count number on the:</p>
+                  <ul class="govuk-list govuk-list--bullet">
+                    <li>prison court register</li>
+                    <li>warrant</li>
+                    <li>indictment</li>
+                    <li>Common Platform</li>
+                  </ul>
+                {% endset %}
                 {{ govukDetails({
-                  summaryText: "Why is this number important?",
-                  text: "Sometimes the offences are given a number on the warrant, which needs to be reflected in this service. These are called count or offence numbers. Identifying the sentences can impact the accuracy of the release dates."
+                  summaryText: "Where to find the count number",
+                  html: countNumberHelpHtml
                 }) }}
 
                 {{ govukRadios({

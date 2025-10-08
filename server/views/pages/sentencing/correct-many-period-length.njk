@@ -1,0 +1,102 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+
+
+{% set noneHtml %}
+    {{ govukDateInput({
+        id: "periodLength",
+        namePrefix: "periodLength",
+        errorMessage: errors | findErrorsBeginningWith('periodLength'),
+        fieldset: {
+            legend: {
+            text: "Enter the " + periodLengthHeader,
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+            }
+        },
+        items: [
+        {
+            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
+            label: "Years",
+            name:"years",
+            value: correctManyPeriodLengthsForm["sentenceLength-years"]
+        },
+        {
+            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
+            label: "Months",
+            name:"months",
+            value: correctManyPeriodLengthsForm["sentenceLength-months"]
+        },
+        {
+            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
+            label: "Weeks",
+            name:"weeks",
+            value: correctManyPeriodLengthsForm["sentenceLength-weeks"]
+        },
+        {
+            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
+            label: "Days",
+            name:"days",
+            value: correctManyPeriodLengthsForm["sentenceLength-days"]
+        }
+        ]
+    }) }}
+    <p class="govuk-body">
+        <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/alternative-correct-many-period-length?periodLengthType={{periodLengthType}}" class="govuk-link govuk-link--no-visited-state">The {{ periodLengthHeader }} is formatted differently</a>
+    </p>
+{% endset %}
+
+{% set radios = [] %}
+
+{% for periodLength in currentPeriodLengths %}
+    {% set radios = radios.concat({
+        value: periodLength.uuid,
+        text: periodLength | formatLengths,
+        checked: correctManyPeriodLengthsForm.correctPeriodLengthUuid === periodLength.uuid
+    })%}
+{% endfor %}
+
+{% set radios = radios.concat({
+    value: 'NONE',
+    text: 'None of the above',
+    checked: correctManyPeriodLengthsForm.correctPeriodLengthUuid === 'NONE',
+    conditional: {
+        html: noneHtml
+    }
+})%}
+
+{% set pageTitle = applicationName + " - Correct many period lengths of same type" %}
+
+{% block pageContent %}
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-correct-many-period-length?periodLengthType={{periodLengthType}}{{("&legacyCode=" + legacyCode) if legacyCode}}" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    
+        {{ govukRadios({
+            name: "correctPeriodLengthUuid",
+            fieldset: {
+                legend: {
+                    text: "Select the correct " + periodLengthHeader + " for this sentence",
+                    classes: "govuk-fieldset__legend--l",
+                    isPageHeading: true
+                }
+            },
+            hint: {
+                text: offenceCode + " - " + offenceDescription
+            },
+            errorMessage: errors | findError('correctPeriodLengthUuid'),
+            items: radios
+        }) }}
+
+
+
+        {{ govukButton({
+            text: "Continue",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
+    </form>
+
+{% endblock %}

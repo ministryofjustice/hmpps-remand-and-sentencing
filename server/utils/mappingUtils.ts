@@ -1,6 +1,6 @@
 import type { CourtAppearance, CourtCase, Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
-import type { SentenceLengthForm } from 'forms'
+import type { CorrectManyPeriodLengthsForm, SentenceLengthForm } from 'forms'
 import type { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
   APISentence,
@@ -354,7 +354,7 @@ export function sentenceLengthToSentenceLengthForm(
 }
 
 export function sentenceLengthFormToSentenceLength(
-  sentenceLengthForm: SentenceLengthForm,
+  sentenceLengthForm: SentenceLengthForm | CorrectManyPeriodLengthsForm,
   periodLengthType: string,
   description: string,
 ): SentenceLength {

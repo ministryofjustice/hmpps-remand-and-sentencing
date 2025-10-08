@@ -178,4 +178,13 @@ declare module 'forms' {
   export interface UploadedDocumentForm {
     _csrf?: string
   }
+
+  export interface CorrectManyPeriodLengthsForm {
+    correctPeriodLengthUuid?: string
+    'sentenceLength-years'?: string
+    'sentenceLength-months'?: string
+    'sentenceLength-weeks'?: string
+    'sentenceLength-days'?: string
+    hasOverallSentenceLength?: string
+  }
 }

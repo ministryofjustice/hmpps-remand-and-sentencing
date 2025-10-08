@@ -513,6 +513,7 @@ export default class OffenceRoutes extends BaseRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       backLink,
+      offence,
     })
   }
 

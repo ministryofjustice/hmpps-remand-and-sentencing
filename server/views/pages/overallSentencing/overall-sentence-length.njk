@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -47,7 +47,7 @@
 
 {% set pageTitle = applicationName + " - Add overall sentence length" %}
 
-{% block content %}
+{% block pageContent %}
     {{ super() }}
     <form method="post"
           action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">

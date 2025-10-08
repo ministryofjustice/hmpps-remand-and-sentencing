@@ -1219,7 +1219,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
-      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 

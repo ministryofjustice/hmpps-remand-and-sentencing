@@ -17,6 +17,7 @@ describe('GET Sentence correct many period lengths', () => {
   it('should render page', () => {
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
+      offenceCode: '123',
       sentence: {
         sentenceUuid: '2',
         periodLengths: [
@@ -40,6 +41,16 @@ describe('GET Sentence correct many period lengths', () => {
           },
         ],
       },
+    })
+
+    defaultServices.manageOffencesService.getOffenceByCode.mockResolvedValue({
+      changedDate: '',
+      code: '123',
+      id: 1,
+      isChild: false,
+      revisionId: 1,
+      startDate: '',
+      description: 'Offence description',
     })
     return request(app)
       .get(

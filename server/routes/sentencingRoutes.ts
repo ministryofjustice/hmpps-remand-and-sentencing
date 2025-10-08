@@ -1060,6 +1060,11 @@ export default class SentencingRoutes extends BaseRoutes {
     } = req.params
     const { periodLengthType, legacyCode } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
     const currentPeriodLengths = offence.sentence.periodLengths?.filter(
       periodLength =>
         periodLength.periodLengthType === periodLengthType ||
@@ -1087,6 +1092,8 @@ export default class SentencingRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       correctManyPeriodLengthsForm,
       backLink,
+      offenceCode: offence.offenceCode,
+      offenceDescription: offenceDetails.description,
     })
   }
 

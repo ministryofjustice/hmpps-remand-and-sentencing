@@ -10,7 +10,7 @@
 
 {% block content %}
     <h1 class="govuk-heading-xl">Court cases documents</h1>
-    
+
     {{ thingsToDo(serviceDefinitions, 'documents') }}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -18,7 +18,7 @@
                 {{ govukInput({
                     label: {
                         text: "Search" ,
-                        classes: "govuk-!-font-weight-bold"   
+                        classes: "govuk-!-font-weight-bold"
                     },
                     id: "searchQuery",
                     name: "searchQuery",
@@ -38,7 +38,7 @@
         </div>
     </div>
     <div class="govuk-grid-row">
-            
+
         <div class="govuk-grid-column-two-thirds">
 
             {% for courtCase in courtCases %}
@@ -54,7 +54,8 @@
                         {% endset %}
                         {% set summaryListRows = summaryListRows.concat({
                             key: {
-                                html: documentKeyHtml
+                                html: documentKeyHtml,
+                                classes: "govuk-!-font-weight-regular"
                             }
                         })%}
                     {% endfor %}

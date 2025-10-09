@@ -125,8 +125,22 @@
     {% set periodLengthValue = {
       html: '<a href="' + periodLengthEditLink + '" class="govuk-link govuk-link--no-visited-state" data-qa="edit-period-length-' + periodLength.type + '-' + chargeUuid + '">Enter ' + periodLength.key + '</a>'
     } %}
-    {% if periodLength.value %}
-      {% set periodLengthValue = { text: periodLength.value | formatLengths } %}
+    {% if periodLength.lengths.length > 0 %}
+      {% if periodLength.lengths.length === 1 %}
+        {% set periodLengthValue = { text: periodLength.lengths[0] | formatLengths } %}
+      {% else %}
+        {% set periodLengthValueHtml = '' %}
+
+        {% for specificLength in periodLength.lengths %}
+            {% set periodLengthValueHtml = periodLengthValueHtml + (specificLength | formatLengths) %}
+            {% if not loop.last %}
+              {% set periodLengthValueHtml = periodLengthValueHtml + '<br>' %}
+            {% endif %}
+        {% endfor %}
+        {% set periodLengthValue = {
+          html:  periodLengthValueHtml} %}
+        {% set periodLengthEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/correct-many-period-length?periodLengthType=" + periodLength.type + (("&legacyCode= " + periodLength.legacyCode) if periodLength.legacyCode) %}
+      {% endif %}
     {% endif %}
     {% set summaryRows = (summaryRows.concat({
       key: { text: periodLength.key | capitalize },
@@ -140,7 +154,7 @@
           attributes: {
             'data-qa': 'edit-period-length-' + periodLength.type + '-' + chargeUuid
           }
-        }] if periodLength.value else []
+        }] if periodLength.lengths.length else []
       }
     })) %}
   {% endfor %}

@@ -46,7 +46,7 @@
         ]
     }) }}
     <p class="govuk-body">
-        <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/alternative-correct-many-period-length?periodLengthType={{periodLengthType}}" class="govuk-link govuk-link--no-visited-state">The {{ periodLengthHeader }} is formatted differently</a>
+        <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/alternative-correct-many-period-length{{ submitQuery }}" class="govuk-link govuk-link--no-visited-state">The {{ periodLengthHeader }} is formatted differently</a>
     </p>
 {% endset %}
 
@@ -72,7 +72,7 @@
 {% set pageTitle = applicationName + " - Correct many period lengths of same type" %}
 
 {% block pageContent %}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-correct-many-period-length?periodLengthType={{periodLengthType}}{{("&legacyCode=" + legacyCode) if legacyCode}}" autocomplete="off">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-correct-many-period-length?{{ submitQuery }}" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     
         {{ govukRadios({

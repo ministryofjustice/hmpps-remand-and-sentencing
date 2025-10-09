@@ -4,6 +4,7 @@ import type {
   CorrectManyPeriodLengthsForm,
   SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
+  CorrectAlternativeManyPeriodLengthsForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
@@ -1059,6 +1060,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { periodLengthType, legacyCode } = req.query
+    const submitQuery = this.correctManyPeriodLengthSubmitQuery(periodLengthType, legacyCode)
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const offenceDetails = await this.manageOffencesService.getOffenceByCode(
       offence.offenceCode,
@@ -1085,7 +1087,7 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      periodLengthType,
+      submitQuery,
       legacyCode,
       periodLengthHeader,
       currentPeriodLengths,
@@ -1107,6 +1109,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { periodLengthType, legacyCode } = req.query
+    const submitQuery = this.correctManyPeriodLengthSubmitQuery(periodLengthType, legacyCode)
     const correctManyPeriodLengthsForm = trimForm<CorrectManyPeriodLengthsForm>(req.body)
     const errors = this.offenceService.correctManyPeriodLengths(
       req.session,
@@ -1120,12 +1123,92 @@ export default class SentencingRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('correctManyPeriodLengthsForm', { ...correctManyPeriodLengthsForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-period-length?periodLengthType=${periodLengthType}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-period-length${submitQuery}`,
       )
     }
 
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
     )
+  }
+
+  public getAlternativeCorrectManyPeriodLength: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { periodLengthType, legacyCode } = req.query
+    const submitQuery = this.correctManyPeriodLengthSubmitQuery(periodLengthType, legacyCode)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+
+    const correctAlternativeManyPeriodLengthsForm = (req.flash('correctAlternativeManyPeriodLengthsForm')[0] ||
+      {}) as CorrectAlternativeManyPeriodLengthsForm
+
+    const currentPeriodLength = sentence.periodLengths?.find(
+      periodLength =>
+        periodLength.periodLengthType === periodLengthType ||
+        (legacyCode && periodLength.legacyData?.sentenceTermCode === legacyCode),
+    )
+    const periodLengthHeader =
+      periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
+      currentPeriodLength?.legacyData?.sentenceTermDescription
+
+    return res.render('pages/sentencing/correct-many-alternative-period-length', {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      correctAlternativeManyPeriodLengthsForm,
+      errors: req.flash('errors') || [],
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-period-length${submitQuery}`,
+      submitQuery,
+      periodLengthHeader,
+    })
+  }
+
+  public submitAlternativeCorrectManyPeriodLength: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { periodLengthType, legacyCode } = req.query
+    const submitQuery = this.correctManyPeriodLengthSubmitQuery(periodLengthType, legacyCode)
+    const correctAlternativeManyPeriodLengthsForm = trimForm<CorrectAlternativeManyPeriodLengthsForm>(req.body)
+    const errors = this.offenceService.correctManyAlternativePeriodLength(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      correctAlternativeManyPeriodLengthsForm,
+      periodLengthType as string,
+      legacyCode as string,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('correctAlternativeManyPeriodLengthsForm', { ...correctAlternativeManyPeriodLengthsForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-alternative-period-length${submitQuery}`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+    )
+  }
+
+  private correctManyPeriodLengthSubmitQuery(periodLengthType, legacyCode): string {
+    const submitQueries: string[] = [`periodLengthType=${periodLengthType}`]
+    if (legacyCode) {
+      submitQueries.push(`legacyCode=${legacyCode}`)
+    }
+    return `?${submitQueries.join('&')}`
   }
 }

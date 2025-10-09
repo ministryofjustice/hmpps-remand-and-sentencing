@@ -1,4 +1,5 @@
 import type {
+  CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
   OffenceAlternativePeriodLengthForm,
@@ -606,7 +607,7 @@ export default class OffenceService {
         const newPeriodLength = sentenceLengthFormToSentenceLength(
           correctManyPeriodLengthsForm,
           periodLengthType,
-          periodLengthTypeHeadings[periodLengthType],
+          periodLengthHeader,
         )
         sentence.periodLengths = sentence.periodLengths
           .filter(
@@ -626,6 +627,61 @@ export default class OffenceService {
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
+    }
+    return errors
+  }
+
+  correctManyAlternativePeriodLength(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    correctAlternativeManyPeriodLengthsForm: CorrectAlternativeManyPeriodLengthsForm,
+    periodLengthType: string,
+    legacyCode: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = this.getSentence(offence)
+    const periodLengths =
+      sentence.periodLengths.filter(
+        periodLength =>
+          periodLength.periodLengthType === periodLengthType ||
+          (legacyCode && periodLength.legacyData?.sentenceTermCode === legacyCode),
+      ) ?? []
+    const periodLengthHeader =
+      periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
+      periodLengths.at(0)?.legacyData?.sentenceTermDescription
+    const errors = validate(
+      correctAlternativeManyPeriodLengthsForm,
+      {
+        'firstSentenceLength-value':
+          'requireAlternativeSentenceLength|minWholeNumber:0|requireOneNonZeroAlternativeSentenceLength',
+        'secondSentenceLength-value': 'minWholeNumber:0',
+        'thirdSentenceLength-value': 'minWholeNumber:0',
+        'fourthSentenceLength-value': 'minWholeNumber:0',
+      },
+      {
+        'requireAlternativeSentenceLength.firstSentenceLength-value': `You must enter the ${periodLengthHeader}`,
+        'minWholeNumber.firstSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.fourthSentenceLength-value': 'The number must be a whole number, or 0',
+        'requireOneNonZeroAlternativeSentenceLength.firstSentenceLength-value': `The ${periodLengthHeader} cannot be 0`,
+      },
+    )
+    if (errors.length === 0) {
+      const newPeriodLength = alternativeSentenceLengthFormToSentenceLength<CorrectAlternativeManyPeriodLengthsForm>(
+        correctAlternativeManyPeriodLengthsForm,
+        periodLengthType,
+        periodLengthHeader,
+      )
+      sentence.periodLengths = sentence.periodLengths
+        .filter(
+          periodLength =>
+            periodLength.periodLengthType !== periodLengthType ||
+            (legacyCode && periodLength.legacyData.sentenceTermCode !== legacyCode),
+        )
+        .concat(newPeriodLength)
     }
     return errors
   }

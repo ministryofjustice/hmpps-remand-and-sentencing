@@ -1,0 +1,67 @@
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "../../components/alternativeSentenceLength/macro.njk" import alternativeSentenceLength%}
+{% set pageTitle = applicationName + " - Correct many " + periodLengthHeader %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-correct-many-alternative-period-length{{ submitQuery }}" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% call govukFieldset({
+                    legend: {
+                        text: "Enter the " + periodLengthHeader,
+                        classes: "govuk-fieldset__legend--l",
+                        isPageHeading: true
+                    }
+                }) %}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "firstSentenceLength",
+                        name: "firstSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('firstSentenceLength'),
+                        selectedItem: correctAlternativeManyPeriodLengthsForm['firstSentenceLength-period'],
+                        value: correctAlternativeManyPeriodLengthsForm['firstSentenceLength-value']
+                    })
+                }}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "secondSentenceLength",
+                        name: "secondSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('secondSentenceLength'),
+                        selectedItem: correctAlternativeManyPeriodLengthsForm['secondSentenceLength-period'],
+                        value: correctAlternativeManyPeriodLengthsForm['secondSentenceLength-value']
+                    })
+                }}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "thirdSentenceLength",
+                        name: "thirdSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('thirdSentenceLength'),
+                        selectedItem: correctAlternativeManyPeriodLengthsForm['thirdSentenceLength-period'],
+                        value: correctAlternativeManyPeriodLengthsForm['thirdSentenceLength-value']
+                    })
+                }}
+
+                {{
+                    alternativeSentenceLength({
+                        id: "fourthSentenceLength",
+                        name: "fourthSentenceLength",
+                        errorMessage: errors | findErrorsBeginningWith('fourthSentenceLength'),
+                        selectedItem: correctAlternativeManyPeriodLengthsForm['fourthSentenceLength-period'],
+                        value: correctAlternativeManyPeriodLengthsForm['fourthSentenceLength-value']
+                    })
+                }}
+
+
+                {% endcall %}
+
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+            </form>
+
+{% endblock %}

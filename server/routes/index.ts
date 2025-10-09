@@ -415,6 +415,16 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/correct-many-alternative-period-length',
+    sentencingRoutes.getAlternativeCorrectManyPeriodLength,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-correct-many-alternative-period-length',
+    sentencingRoutes.submitAlternativeCorrectManyPeriodLength,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/fine-amount',
     offenceRoutes.getFineAmount,
   )

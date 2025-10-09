@@ -187,4 +187,15 @@ declare module 'forms' {
     'sentenceLength-days'?: string
     hasOverallSentenceLength?: string
   }
+
+  export interface CorrectAlternativeManyPeriodLengthsForm {
+    'firstSentenceLength-value'?: string
+    'firstSentenceLength-period'?: string
+    'secondSentenceLength-value'?: string
+    'secondSentenceLength-period'?: string
+    'thirdSentenceLength-value'?: string
+    'thirdSentenceLength-period'?: string
+    'fourthSentenceLength-value'?: string
+    'fourthSentenceLength-period'?: string
+  }
 }

@@ -1987,16 +1987,21 @@ export default class OffenceRoutes extends BaseRoutes {
     let periodLengths = []
 
     if (offence.sentence) {
-      periodLengths =
-        offence.sentence.periodLengths?.map(periodLength => {
-          const key =
-            periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription
-          return {
+      const periodLengthsByType =
+        offence.sentence?.periodLengths?.reduce((periodLengthTypes, periodLength) => {
+          const [key, legacyCode] = periodLengthTypeHeadings[periodLength.periodLengthType]
+            ? [periodLengthTypeHeadings[periodLength.periodLengthType]]
+            : [periodLength.legacyData?.sentenceTermDescription, periodLength.legacyData?.sentenceTermCode]
+          const existingPeriodLengths = periodLengthTypes[key] ?? {
             key,
             type: periodLength.periodLengthType,
-            value: periodLength,
+            legacyCode,
+            lengths: [],
           }
-        }) ?? []
+          existingPeriodLengths.lengths.push(periodLength)
+          return { ...periodLengthTypes, [key]: existingPeriodLengths }
+        }, {}) ?? {}
+      periodLengths = Object.values(periodLengthsByType)
       if (offence.sentence.sentenceTypeId) {
         sentenceType = await this.refDataService.getSentenceTypeById(
           offence.sentence?.sentenceTypeId,

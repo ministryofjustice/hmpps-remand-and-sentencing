@@ -1,5 +1,9 @@
 import type { Offence } from 'models'
-import type { CorrectManyPeriodLengthsForm, OffenceOffenceDateForm } from 'forms'
+import type {
+  CorrectAlternativeManyPeriodLengthsForm,
+  CorrectManyPeriodLengthsForm,
+  OffenceOffenceDateForm,
+} from 'forms'
 import { SessionData } from 'express-session'
 import dayjs from 'dayjs'
 import ManageOffencesService from './manageOffencesService'
@@ -312,5 +316,60 @@ describe('offenceService', () => {
       const periodLength = offence.sentence.periodLengths[0]
       expect(periodLength.years).toBe(correctManyPeriodLengthsForm['sentenceLength-years'])
     })
+  })
+
+  it('clear all types and replace with new alternative period length', () => {
+    const nomsId = 'P123'
+    const courtCaseReference = '1'
+    const offence = {
+      chargeUuid: '1',
+      sentence: {
+        sentenceUuid: '2',
+        periodLengths: [
+          {
+            uuid: '5',
+            years: '5',
+            periodOrder: ['years', 'months', 'weeks', 'days'],
+            periodLengthType: 'SENTENCE_LENGTH',
+          },
+          {
+            uuid: '6',
+            years: '6',
+            periodOrder: ['years', 'months', 'weeks', 'days'],
+            periodLengthType: 'SENTENCE_LENGTH',
+          },
+          {
+            uuid: '7',
+            years: '7',
+            periodOrder: ['years', 'months', 'weeks', 'days'],
+            periodLengthType: 'SENTENCE_LENGTH',
+          },
+        ],
+      },
+    } as Offence
+    const session = {
+      offences: {
+        [`${nomsId}-${courtCaseReference}`]: offence,
+      },
+    } as unknown as Partial<SessionData>
+    const correctManyAlterantivePeriodLengthsForm = {
+      'firstSentenceLength-value': '5',
+      'firstSentenceLength-period': 'months',
+      'secondSentenceLength-value': '2',
+      'secondSentenceLength-period': 'years',
+    } as CorrectAlternativeManyPeriodLengthsForm
+
+    const errors = service.correctManyAlternativePeriodLength(
+      session,
+      nomsId,
+      courtCaseReference,
+      correctManyAlterantivePeriodLengthsForm,
+      'SENTENCE_LENGTH',
+      undefined,
+    )
+    expect(errors.length).toBe(0)
+    expect(offence.sentence.periodLengths.length).toBe(1)
+    const periodLength = offence.sentence.periodLengths[0]
+    expect(periodLength.years).toBe(correctManyAlterantivePeriodLengthsForm['secondSentenceLength-value'])
   })
 })

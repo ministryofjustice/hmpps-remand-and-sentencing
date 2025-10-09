@@ -19,6 +19,7 @@ import OffenceUpdateOffenceOutcomesPage from '../../pages/offenceUpdateOffenceOu
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 import OffenceFineAmountPage from '../../pages/offenceFineAmountPage'
 import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
+import SentencingCorrectManyPeriodLengthPage from '../../pages/sentencingCorrectManyPeriodLengthPage'
 
 context('Add Offence Edit offence Page', () => {
   let offenceEditOffencePage: OffenceEditOffencePage
@@ -430,7 +431,7 @@ context('Add Offence Edit offence Page', () => {
     })
   })
 
-  context('edit', () => {
+  context('edit remand', () => {
     let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
     beforeEach(() => {
       cy.task('stubGetRemandNomisAppearanceDetails')
@@ -475,6 +476,77 @@ context('Add Offence Edit offence Page', () => {
     it('can cancel edit and return to appearance details page', () => {
       offenceEditOffencePage.cancelEditLink().click()
       Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+    })
+  })
+  context('edit sentence many period lengths of same type', () => {
+    let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
+    beforeEach(() => {
+      cy.task('stubGetSentenceAppearanceDetailsManyPeriodLengthsSameType')
+      cy.task('stubGetCourtsByIds')
+      cy.task('stubGetCourtById', {
+        courtId: 'STHHPM',
+        courtName: 'Southampton Magistrate Court',
+      })
+      cy.task('stubGetSentenceTypesByIds', [
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
+        },
+      ])
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
+        hasSentenceAfterOnOtherCourtAppearance: false,
+      })
+      cy.visit(
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/appearance-details',
+      )
+      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          '71bb9f7e-971c-4c34-9a33-43478baee74f',
+        )
+        .click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    })
+
+    it('shows period length types grouped', () => {
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
+        'Committed on': '15/12/2023',
+        'Consecutive or concurrent': 'Forthwith',
+        'Conviction date': '',
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        Outcome: 'Imprisonment',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '4 years 0 months 0 weeks 0 days 4 years 0 months 0 weeks 0 days',
+      })
+    })
+
+    it('correcting period length type to a single length', () => {
+      offenceEditOffencePage
+        .editFieldLink('71bb9f7e-971c-4c34-9a33-43478baee74f', 'period-length-SENTENCE_LENGTH')
+        .click()
+      const sentencingCorrectManyPeriodLengthPage = Page.verifyOnPageTitle(
+        SentencingCorrectManyPeriodLengthPage,
+        'sentence length',
+      )
+      sentencingCorrectManyPeriodLengthPage.radioLabelSelector('bf6e75e4-2137-48ee-84fe-df0a18e65047').click()
+      sentencingCorrectManyPeriodLengthPage.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
+        'Committed on': '15/12/2023',
+        'Consecutive or concurrent': 'Forthwith',
+        'Conviction date': '',
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        Outcome: 'Imprisonment',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '4 years 0 months 0 weeks 0 days',
+      })
     })
   })
   context('remand to sentencing', () => {

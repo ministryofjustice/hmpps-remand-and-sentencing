@@ -1096,6 +1096,82 @@ export default {
     })
   },
 
+  stubGetSentenceAppearanceDetailsManyPeriodLengthsSameType: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          outcome: {
+            outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
+            outcomeName: 'Imprisonment',
+            nomisCode: '09753',
+            outcomeType: 'SENTENCING',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          },
+          warrantType: 'SENTENCING',
+          courtCode: 'STHHPM',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2023-12-15',
+          overallConvictionDate: '2024-09-12',
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-12-15',
+              outcome: {
+                outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: '3a0a10d5-1ba0-403b-86d6-8cc75ee88454',
+                chargeNumber: '1',
+                periodLengths: [
+                  {
+                    periodLengthUuid: 'bf6e75e4-2137-48ee-84fe-df0a18e65047',
+                    years: 4,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                  {
+                    periodLengthUuid: '1dc4f0d4-4967-4717-b174-400a86e55a6c',
+                    years: 4,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                ],
+                sentenceServeType: 'FORTHWITH',
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
+              },
+            },
+          ],
+          overallSentenceLength: {
+            years: 4,
+            months: null,
+            weeks: null,
+            days: null,
+            periodOrder: 'years',
+            periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+          },
+        },
+      },
+    })
+  },
+
   stubGetLegacyAppearanceDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {

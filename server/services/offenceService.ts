@@ -1,4 +1,5 @@
 import type {
+  CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
@@ -552,6 +553,76 @@ export default class OffenceService {
         periodLengths.push(sentenceLength)
       }
       sentence.periodLengths = periodLengths
+      offence.sentence = sentence
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
+  correctManyPeriodLengths(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    correctManyPeriodLengthsForm: CorrectManyPeriodLengthsForm,
+    periodLengthType: string,
+    legacyCode: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = this.getSentence(offence)
+    const periodLengths =
+      sentence.periodLengths.filter(
+        periodLength =>
+          periodLength.periodLengthType === periodLengthType ||
+          (legacyCode && periodLength.legacyData?.sentenceTermCode === legacyCode),
+      ) ?? []
+    const periodLengthHeader =
+      periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
+      periodLengths.at(0)?.legacyData?.sentenceTermDescription
+    const errors = validate(
+      correctManyPeriodLengthsForm,
+      {
+        correctPeriodLengthUuid: 'required',
+        'sentenceLength-years':
+          'requireSentenceLength_if:correctPeriodLengthUuid,NONE|minWholeNumber:0|requireOneNonZeroSentenceLength',
+        'sentenceLength-months': 'minWholeNumber:0',
+        'sentenceLength-weeks': 'minWholeNumber:0',
+        'sentenceLength-days': 'minWholeNumber:0',
+      },
+      {
+        'required.correctPeriodLengthUuid': `You must select the correct ${periodLengthHeader} for this sentence`,
+        'requireSentenceLength_if.sentenceLength-years': `You must enter the ${periodLengthHeader}`,
+        'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
+        'requireOneNonZeroSentenceLength.sentenceLength-years': `The ${periodLengthHeader} cannot be 0`,
+      },
+    )
+
+    if (errors.length === 0) {
+      if (correctManyPeriodLengthsForm.correctPeriodLengthUuid === 'NONE') {
+        const newPeriodLength = sentenceLengthFormToSentenceLength(
+          correctManyPeriodLengthsForm,
+          periodLengthType,
+          periodLengthTypeHeadings[periodLengthType],
+        )
+        sentence.periodLengths = sentence.periodLengths
+          .filter(
+            periodLength =>
+              periodLength.periodLengthType !== periodLengthType ||
+              (legacyCode && periodLength.legacyData.sentenceTermCode !== legacyCode),
+          )
+          .concat(newPeriodLength)
+      } else {
+        sentence.periodLengths = sentence.periodLengths.filter(
+          periodLength =>
+            periodLength.periodLengthType !== periodLengthType ||
+            (legacyCode && periodLength.legacyData.sentenceTermCode !== legacyCode) ||
+            periodLength.uuid === correctManyPeriodLengthsForm.correctPeriodLengthUuid,
+        )
+      }
       offence.sentence = sentence
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence

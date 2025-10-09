@@ -8,25 +8,44 @@
 
 {% block content %}
 
+    {# Define a block variable with HTML inside #}
+    {% set titleHtml %}
+        <span class="govuk-!-font-size-36">
+            {{ "Court case" if isAddCourtCase else "Appearance" }} successfully saved
+        </span>
+    {% endset %}
+
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             {{ govukPanel({
-                titleText: ("Court case" if isAddCourtCase else "Appearance") + " successfully saved",
+                titleHtml: titleHtml,
                 classes: "govuk-!-margin-bottom-6"
             }) }}
+
             <div class="govuk-!-margin-top-6">
                 <h2 class="govuk-heading-l">What you can do next</h2>
                 <div class="govuk-body govuk-!-margin-top-6">
                     <span>You can go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
                     <ul class="govuk-list govuk-!-margin-top-2">
-                        <li><a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}">Court case information</a></li>
-                        <li><a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ nomsId }}">Prisoner
-                                profile</a></li>
+                        <li>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}">
+                                Court case information
+                            </a>
+                        </li>
+                        <li>
+                            <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ nomsId }}">
+                                Prisoner profile
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="govuk-!-margin-top-6">
-                    <p class="govuk-body">Or, go to the <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}"> DPS
-                            homepage</a>.</p>
+                    <p class="govuk-body">
+                        Or, go to the
+                        <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}">
+                            DPS homepage
+                        </a>.
+                    </p>
                 </div>
             </div>
         </div>

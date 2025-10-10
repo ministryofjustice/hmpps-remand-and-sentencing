@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
@@ -7,10 +7,8 @@
     <h1 class="govuk-fieldset__heading govuk-!-static-margin-bottom-3">Is the next appearance at the same court?</h1>
     <p class="govuk-body-l govuk-!-static-margin-bottom-3">{{ courtName }}</p>
 {% endset %}
-{% block content %}
+{% block pageContent%}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
             <form method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/nextAppearanceCaption.njk" %}
@@ -46,8 +44,5 @@
                     </button>
                 </div>
             </form>
-
-        </div>
-    </div>
 
 {% endblock %}

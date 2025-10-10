@@ -1,16 +1,14 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Add a court case Outcome applied to all" %}      
+{% set pageTitle = applicationName + " - Add a court case Outcome applied to all" %}
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading govuk-!-static-margin-bottom-3">Is the outcome the same for all offences on the warrant?</h1>
     <p class="govuk-body-l govuk-!-static-margin-bottom-3">{{ overallCaseOutcome }}</p>
 {% endset %}
-{% block content %}
+{% block pageContent %}
     {{ super() }}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-case-outcome-applied-all{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/overallWarrantInformationCaption.njk" %}
@@ -21,7 +19,7 @@
                             html: fieldSetHtml,
                             classes: "govuk-fieldset__legend--l"
                         }
-                    },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                    },
                     items: [
                         {
                             value: "true",
@@ -42,8 +40,5 @@
                     attributes: {  'data-qa': 'continue-button' }
                 }) }}
             </form>
-
-        </div>
-    </div>
 
 {% endblock %}

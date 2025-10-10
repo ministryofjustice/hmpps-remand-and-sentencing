@@ -405,6 +405,16 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/correct-many-period-length-interrupt',
+    offenceRoutes.getCorrectManyPeriodLengthInterrupt,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/correct-many-period-length-interrupt',
+    sentencingRoutes.getCorrectManyPeriodLengthInterrupt,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/correct-many-period-length',
     sentencingRoutes.getCorrectManyPeriodLength,
   )

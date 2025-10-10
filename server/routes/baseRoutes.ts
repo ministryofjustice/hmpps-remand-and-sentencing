@@ -13,6 +13,8 @@ import {
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
 } from '../utils/mappingUtils'
 import { formatDate } from '../utils/utils'
+import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
+import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -236,5 +238,23 @@ export default abstract class BaseRoutes {
       nomsId,
       pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
     )
+  }
+
+  protected groupPeriodLengthsByType(offence: Offence): GroupedPeriodLengths[] {
+    const periodLengthsByType =
+      offence.sentence?.periodLengths?.reduce((periodLengthTypes, periodLength) => {
+        const [key, legacyCode] = periodLengthTypeHeadings[periodLength.periodLengthType]
+          ? [periodLengthTypeHeadings[periodLength.periodLengthType]]
+          : [periodLength.legacyData?.sentenceTermDescription, periodLength.legacyData?.sentenceTermCode]
+        const existingPeriodLengths = periodLengthTypes[key] ?? {
+          key,
+          type: periodLength.periodLengthType,
+          legacyCode,
+          lengths: [],
+        }
+        existingPeriodLengths.lengths.push(periodLength)
+        return { ...periodLengthTypes, [key]: existingPeriodLengths }
+      }, {}) ?? {}
+    return Object.values(periodLengthsByType)
   }
 }

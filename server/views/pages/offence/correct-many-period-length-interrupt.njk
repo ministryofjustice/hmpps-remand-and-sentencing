@@ -1,0 +1,35 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "moj/components/interruption-card/macro.njk" import interruptionCard %}
+
+{% set pageTitle = "offence - invalid number of period lengths interrupt" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% call interruptionCard({
+                heading: "This sentence has an invalid number of period lengths",
+                primaryAction: {
+                    text: "Continue",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/"+ chargeUuid +"/edit-offence",
+                    attributes: {
+                        "data-qa": "continue-button"
+                    }
+                },
+                secondaryAction: {
+                    text: "Go back",
+                    href: backLink
+                }
+            })%}
+                <p class="govuk-body-l govuk-!-width-three-quarters">
+                    {% if countNumber and countNumber !== '-1'%}
+                        Count {{ countNumber }}<br>
+                    {% elif lineNumber %}
+                        NOMIS line number {{ lineNumber }}<br>
+                    {% endif %}
+                    <strong>{{ offenceCode }} {{ offenceDescription }}</strong><br>
+                </p>
+                <p class="govuk-body">You need to update the offence details to reflect the period on the sentencing warrant</p>
+            {%- endcall %}
+        </div>
+    </div>
+{% endblock %}

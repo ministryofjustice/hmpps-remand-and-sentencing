@@ -1331,6 +1331,36 @@ export default class OffenceRoutes extends BaseRoutes {
     )
   }
 
+  public getCorrectManyPeriodLengthInterrupt: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
+    return res.render('pages/offence/correct-many-period-length-interrupt', {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      countNumber: offence.sentence?.countNumber,
+      lineNumber: offence.sentence?.legacyData?.nomisLineReference,
+      offenceCode: offence.offenceCode,
+      offenceDescription: offenceDetails.description,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
+    })
+  }
+
   public getSelectConsecutiveConcurrent: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
@@ -1932,6 +1962,22 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      const hasManyPeriodLengthsSameType = this.groupPeriodLengthsByType(offence).find(
+        periodLength => periodLength.lengths.length > 1,
+      )
+      if (hasManyPeriodLengthsSameType) {
+        const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+        if (warrantType === 'SENTENCING') {
+          return res.redirect(
+            `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/correct-many-period-length-interrupt`,
+          )
+        }
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-period-length-interrupt`,
+        )
+      }
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
     )
@@ -1987,21 +2033,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let periodLengths = []
 
     if (offence.sentence) {
-      const periodLengthsByType =
-        offence.sentence?.periodLengths?.reduce((periodLengthTypes, periodLength) => {
-          const [key, legacyCode] = periodLengthTypeHeadings[periodLength.periodLengthType]
-            ? [periodLengthTypeHeadings[periodLength.periodLengthType]]
-            : [periodLength.legacyData?.sentenceTermDescription, periodLength.legacyData?.sentenceTermCode]
-          const existingPeriodLengths = periodLengthTypes[key] ?? {
-            key,
-            type: periodLength.periodLengthType,
-            legacyCode,
-            lengths: [],
-          }
-          existingPeriodLengths.lengths.push(periodLength)
-          return { ...periodLengthTypes, [key]: existingPeriodLengths }
-        }, {}) ?? {}
-      periodLengths = Object.values(periodLengthsByType)
+      periodLengths = this.groupPeriodLengthsByType(offence)
       if (offence.sentence.sentenceTypeId) {
         sentenceType = await this.refDataService.getSentenceTypeById(
           offence.sentence?.sentenceTypeId,

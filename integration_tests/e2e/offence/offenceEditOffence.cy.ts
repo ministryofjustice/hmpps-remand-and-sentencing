@@ -20,6 +20,7 @@ import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceC
 import OffenceFineAmountPage from '../../pages/offenceFineAmountPage'
 import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import SentencingCorrectManyPeriodLengthPage from '../../pages/sentencingCorrectManyPeriodLengthPage'
+import SentencingCorrectManyPeriodLengthInterruptPage from '../../pages/sentencingCorrectManyPeriodLengthInterruptPage'
 
 context('Add Offence Edit offence Page', () => {
   let offenceEditOffencePage: OffenceEditOffencePage
@@ -510,6 +511,10 @@ context('Add Offence Edit offence Page', () => {
           '71bb9f7e-971c-4c34-9a33-43478baee74f',
         )
         .click()
+      const sentencingCorrectManyPeriodLengthInterruptPage = Page.verifyOnPage(
+        SentencingCorrectManyPeriodLengthInterruptPage,
+      )
+      sentencingCorrectManyPeriodLengthInterruptPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 

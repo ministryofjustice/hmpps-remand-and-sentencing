@@ -1050,6 +1050,36 @@ export default class SentencingRoutes extends BaseRoutes {
     })
   }
 
+  public getCorrectManyPeriodLengthInterrupt: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
+    return res.render('pages/sentencing/correct-many-period-length-interrupt', {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      countNumber: offence.sentence?.countNumber,
+      lineNumber: offence.sentence?.legacyData?.nomisLineReference,
+      offenceCode: offence.offenceCode,
+      offenceDescription: offenceDetails.description,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+    })
+  }
+
   public getCorrectManyPeriodLength: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,

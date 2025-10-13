@@ -171,6 +171,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { nomsId } = req.params
     const { username, token } = res.locals.user
     const { searchQuery } = req.query
+    const courts = searchQuery ? await this.courtRegisterService.searchCourts(searchQuery.toString(), username) : []
     const searchDocuments: SearchDocuments = {
       warrantTypeDocumentTypes: Object.entries(documentTypes).flatMap(([warrantType, expectedDocumentTypes]) =>
         expectedDocumentTypes
@@ -179,7 +180,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
           )
           .map(documentType => `${warrantType}|${documentType.type}`),
       ),
-      caseReference: searchQuery as string,
+      keyword: searchQuery as string,
+      courtCodes: courts.map(court => court.courtId),
     }
     const [prisonerCourtCasesDocuments, serviceDefinitions] = await Promise.all([
       this.remandAndSentencingService.getPrisonerDocuments(nomsId, searchDocuments, username),

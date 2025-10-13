@@ -8,9 +8,9 @@
 
 {% set noneHtml %}
     {{ govukDateInput({
-        id: "periodLength",
-        namePrefix: "periodLength",
-        errorMessage: errors | findErrorsBeginningWith('periodLength'),
+        id: "sentenceLength",
+        namePrefix: "sentenceLength",
+        errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
         fieldset: {
             legend: {
             text: "Enter the " + periodLengthHeader,

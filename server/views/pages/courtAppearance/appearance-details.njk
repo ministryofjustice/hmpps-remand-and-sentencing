@@ -6,19 +6,32 @@
 
 {% set pageTitle = applicationName + " - Appearance details" %}
 
-{% set appearanceSummaryRows = [
-  {
+{% set caseReferenceHref = "/person/" ~ nomsId ~ "/" ~ addOrEditCourtCase ~ "/" ~ courtCaseReference ~ "/" ~ addOrEditCourtAppearance ~ "/" ~ appearanceReference ~ "/reference" %}
+
+{% if appearance.caseReferenceNumber %}
+  {% set caseReferenceRow = {
     key: { text: "Case reference" },
     value: { text: appearance.caseReferenceNumber },
     actions: {
       items: [{
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference",
+        href: caseReferenceHref,
         text: "Edit",
         visuallyHiddenText: "case reference",
         classes: "govuk-link--no-visited-state"
       }]
     }
-  },
+  } %}
+{% else %}
+  {% set caseReferenceRow = {
+    key: { text: "Case reference" },
+    value: {
+      html: '<a class="govuk-link govuk-link--no-visited-state" href="' ~ caseReferenceHref ~ '">Enter case reference</a>'
+    }
+  } %}
+{% endif %}
+
+{% set appearanceSummaryRows = [
+  caseReferenceRow,
   {
     key: { text: "Warrant date" },
     value: { text: appearance.warrantDate | formatDate },
@@ -33,18 +46,6 @@
   }
 ] %}
 
-{% set appearanceSummaryRows = appearanceSummaryRows.concat({
-  key: { text: "Location" },
-  value: { text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode },
-  actions: {
-    items: [{
-      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/court-name",
-      text: "Edit",
-      visuallyHiddenText: "location",
-      classes: "govuk-link--no-visited-state"
-    }]
-  }
-}) %}
 
 {% set appearanceSummaryRows = appearanceSummaryRows.concat({
   key: { text: "Overall case outcome" },

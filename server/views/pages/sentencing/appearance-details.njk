@@ -6,7 +6,7 @@
 
 {% set pageTitle = applicationName + " - Appearance details" %}
 
-{% set caseReferenceHref = "/person/" ~ nomsId ~ "/" ~ addOrEditCourtCase ~ "/" ~ courtCaseReference ~ "/" ~ addOrEditCourtAppearance ~ "/" ~ appearanceReference ~ "/reference" %}
+{% set caseReferenceHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference" %}
 
 {% if appearance.caseReferenceNumber %}
   {% set caseReferenceRow = {
@@ -25,7 +25,7 @@
   {% set caseReferenceRow = {
     key: { text: "Case reference" },
     value: {
-      html: '<a class="govuk-link govuk-link--no-visited-state" href="' ~ caseReferenceHref ~ '">Enter case reference</a>'
+      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>'
     }
   } %}
 {% endif %}

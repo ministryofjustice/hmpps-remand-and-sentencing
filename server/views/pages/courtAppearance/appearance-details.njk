@@ -46,6 +46,19 @@
   }
 ] %}
 
+{% set appearanceSummaryRows = appearanceSummaryRows.concat({
+  key: { text: "Location" },
+  value: { text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode },
+  actions: {
+    items: [{
+      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/court-name",
+      text: "Edit",
+      visuallyHiddenText: "location",
+      classes: "govuk-link--no-visited-state"
+    }]
+  }
+}) %}
+
 
 {% set appearanceSummaryRows = appearanceSummaryRows.concat({
   key: { text: "Overall case outcome" },

@@ -1258,7 +1258,7 @@ export default class SentencingRoutes extends BaseRoutes {
     const chargeCodes = chargeDescriptions.map(([offenceCode]) => offenceCode)
     const courtIds = sentenceEnvelopes.sentenceEnvelopes
       .flatMap(sentenceEnvelope => sentenceEnvelope.sentences)
-      .map(sentence => sentence.courtCode)
+      .flatMap(sentence => [sentence.courtCode, sentence.mergedFromCase?.courtCode])
     const [offenceMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username, chargeDescriptions),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),

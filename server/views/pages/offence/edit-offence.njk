@@ -73,7 +73,10 @@
           href: countNumberHref,
           text: "Edit",
           visuallyHiddenText: "count number",
-          classes: "govuk-link--no-visited-state"
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+                    'data-qa': 'edit-count-number-' + chargeUuid
+                  }
         }]
       }
     } %}
@@ -81,8 +84,11 @@
     {% set countNumberRow = {
       key: { text: "Count number" },
       value: {
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="'+countNumberHref+'">Enter count number</a>'
-      }
+          html: '<a class="govuk-link govuk-link--no-visited-state" href="' + countNumberHref + '">Enter count number</a>',
+          attributes: {
+            'data-qa': 'enter-count-number-' + chargeUuid
+          }
+        }
     } %}
   {% endif %}
 

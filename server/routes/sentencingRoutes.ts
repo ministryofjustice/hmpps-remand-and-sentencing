@@ -8,6 +8,7 @@ import type {
 } from 'forms'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
+import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OffenceService from '../services/offenceService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import BaseRoutes from './baseRoutes'
@@ -21,6 +22,7 @@ import {
   offencesToOffenceDescriptions,
   orderOffences,
   sentencesToChainToResponseToOffenceDescriptions,
+  sortByDateDesc,
 } from '../utils/utils'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtRegisterService from '../services/courtRegisterService'
@@ -35,6 +37,7 @@ import {
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
+import config from '../config'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -1240,5 +1243,61 @@ export default class SentencingRoutes extends BaseRoutes {
       submitQueries.push(`legacyCode=${legacyCode}`)
     }
     return `?${submitQueries.join('&')}`
+  }
+
+  public getSentenceEnvelopes: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const sentenceEnvelopes = await this.remandAndSentencingService.getSentenceEnvelopes(nomsId, req.user.username)
+    const chargeDescriptions: [string, string][] = Array.from(
+      new Set(
+        sentenceEnvelopes.sentenceEnvelopes
+          .flatMap(sentenceEnvelope => sentenceEnvelope.sentences)
+          .map(sentence => [sentence.offenceCode, sentence.offenceDescription]),
+      ),
+    )
+    const chargeCodes = chargeDescriptions.map(([offenceCode]) => offenceCode)
+    const courtIds = sentenceEnvelopes.sentenceEnvelopes
+      .flatMap(sentenceEnvelope => sentenceEnvelope.sentences)
+      .map(sentence => sentence.courtCode)
+    const [offenceMap, courtMap] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(Array.from(new Set(chargeCodes)), req.user.username, chargeDescriptions),
+      this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
+    ])
+
+    const consecutiveToSentenceDetailsMap = Object.fromEntries(
+      sentenceEnvelopes.sentenceEnvelopes
+        .flatMap(sentenceEnvelope => sentenceEnvelope.sentences)
+        .map(sentence => {
+          return [
+            sentence.sentenceUuid,
+            {
+              countNumber: sentence.countNumber,
+              offenceCode: sentence.offenceCode,
+              offenceDescription: offenceMap[sentence.offenceCode],
+              courtCaseReference: sentence.caseReference,
+              courtName: courtMap[sentence.courtCode],
+              warrantDate: sentence.appearanceDate,
+              offenceStartDate: sentence.offenceStartDate && dayjs(sentence.offenceStartDate).format(config.dateFormat),
+              offenceEndDate: sentence.offenceEndDate && dayjs(sentence.offenceEndDate).format(config.dateFormat),
+            } as ConsecutiveToDetails,
+          ]
+        }),
+    )
+    const sortedSentenceEnvelopes = sentenceEnvelopes.sentenceEnvelopes
+      .map(sentenceEnvelope => {
+        return {
+          ...sentenceEnvelope,
+          sentences: sentenceEnvelope.sentences.sort((a, b) => a.orderInChain - b.orderInChain),
+        }
+      })
+      .sort((a, b) => sortByDateDesc(a.envelopeStartDate, b.envelopeStartDate))
+
+    return res.render('pages/sentenceEnvelopes', {
+      nomsId,
+      offenceMap,
+      courtMap,
+      sentenceEnvelopes: sortedSentenceEnvelopes,
+      consecutiveToSentenceDetailsMap,
+    })
   }
 }

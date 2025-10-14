@@ -63,27 +63,30 @@
 }] %}
 
 {% if offence.sentence %}
+  {% set countNumberHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/count-number?submitToEditOffence=true" %}
   {% if offence.sentence.countNumber and offence.sentence.countNumber !== '-1' %}
-    {% set countNumber = "Count " + offence.sentence.countNumber %}
+    {% set countNumberRow = {
+      key: { text: "Count number" },
+      value: { text: "Count " + offence.sentence.countNumber },
+      actions: {
+        items: [{
+          href: countNumberHref,
+          text: "Edit",
+          visuallyHiddenText: "count number",
+          classes: "govuk-link--no-visited-state"
+        }]
+      }
+    } %}
   {% else %}
-    {% set countNumber = "Not entered" %}
+    {% set countNumberRow = {
+      key: { text: "Count number" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="'+countNumberHref+'">Enter count number</a>'
+      }
+    } %}
   {% endif %}
 
-  {% set summaryRows = ([{
-    key: { text: "Count number" },
-    value: { text: countNumber },
-    actions: {
-      items: [{
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/count-number?submitToEditOffence=true",
-        text: "Edit",
-        visuallyHiddenText: "count number",
-        classes: "govuk-link--no-visited-state",
-        attributes: {
-          'data-qa': 'edit-count-number-' + chargeUuid
-        }
-      }]
-    }
-  }].concat(summaryRows, [{
+  {% set summaryRows = ([countNumberRow].concat(summaryRows, [{
     key: { text: "Conviction date" },
     value: {
       text: (offence.sentence.convictionDate | formatDate if offence.sentence.convictionDate else '')

@@ -8,9 +8,9 @@
 
 {% set noneHtml %}
     {{ govukDateInput({
-        id: "periodLength",
-        namePrefix: "periodLength",
-        errorMessage: errors | findErrorsBeginningWith('periodLength'),
+        id: "sentenceLength",
+        namePrefix: "sentenceLength",
+        errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
         fieldset: {
             legend: {
             text: "Enter the " + periodLengthHeader,
@@ -45,7 +45,7 @@
         }
         ]
     }) }}
-    <p class="govuk-body">
+    <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-6">
         <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/alternative-correct-many-period-length{{ submitQuery }}" class="govuk-link govuk-link--no-visited-state">The {{ periodLengthHeader }} is formatted differently</a>
     </p>
 {% endset %}

@@ -28,7 +28,9 @@
                       consecutiveTo: consecutiveToSentenceDetailsMap[sentence.consecutiveToSentenceUuid],
                       sentenceType: sentence.sentenceTypeDescription,
                       fineAmount: sentence.fineAmount,
-                      detailsClasses: 'govuk-!-padding-4'
+                      detailsClasses: 'govuk-!-padding-4',
+                      mergedFromCase: sentence.mergedFromCase,
+                      courtDetails: courtMap
                   })
                 }}
               {% endfor %}

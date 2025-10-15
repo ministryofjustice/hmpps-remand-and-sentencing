@@ -85,7 +85,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.907.0",
+    "@aws-sdk/client-sqs": "^3.908.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.10",
     "@microsoft/applicationinsights-web": "^3.3.10",
     "@ministryofjustice/frontend": "^5.2.1",
@@ -166,7 +166,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-jinja-template": "^2.1.0",
     "supertest": "^7.1.4",
-    "ts-jest": "^29.4.4",
+    "ts-jest": "^29.4.5",
     "typescript": "^5.9.3"
   },
   "overrides": {

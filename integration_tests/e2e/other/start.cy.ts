@@ -99,8 +99,6 @@ context('Start Page', () => {
       'First day in custody': '23/01/2024 (Sentencing)',
       'Overall case outcome': 'Imprisonment',
       'Overall sentence length': '1 years 0 months 0 weeks 0 days',
-      'Conviction date': '23/10/2023',
-      'Next hearing': 'No future appearance scheduled',
     })
   })
 

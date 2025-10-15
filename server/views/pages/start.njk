@@ -78,21 +78,17 @@
                                 {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat([{
                                         key: { text: "Overall sentence length"},
                                         value: { text: courtCaseDetails.overallSentenceLength | formatLengths if courtCaseDetails.overallSentenceLength else 'Not entered' }
-                                    },
-                                    {
-                                        key: { text: "Conviction date"},
-                                        value: { text: courtCaseDetails.convictionDate }
                                     }
                                     ]))%}
                             {% endif %}
-
-                            {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat(
-                                    {
-                                        key: { text: "Next hearing"},
-                                        value: { html: nextHearingHtml }
-                                    }
-                            ))%}
-
+                            {% if courtCaseDetails.warrantType !== 'SENTENCING' %}
+                              {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat(
+                                      {
+                                          key: { text: "Next hearing"},
+                                          value: { html: nextHearingHtml }
+                                      }
+                              ))%}
+                            {% endif %}
                             {% if courtCaseDetails.hasARecall and not user.hasRecallsAccess %}
 
                                 {{ govukInsetText({

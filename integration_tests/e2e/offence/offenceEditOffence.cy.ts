@@ -522,7 +522,7 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Committed on': '15/12/2023',
         'Consecutive or concurrent': 'Forthwith',
-        'Conviction date': '',
+        'Conviction date': 'Enter conviction date',
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
         Outcome: 'Imprisonment',
@@ -545,7 +545,7 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         'Committed on': '15/12/2023',
         'Consecutive or concurrent': 'Forthwith',
-        'Conviction date': '',
+        'Conviction date': 'Enter conviction date',
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
         Outcome: 'Imprisonment',

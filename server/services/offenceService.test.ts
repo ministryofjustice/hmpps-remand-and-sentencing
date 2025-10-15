@@ -146,6 +146,34 @@ describe('offenceService', () => {
       ])
     })
 
+    it('correct errors returned if many period lengths of the same type', () => {
+      const offence = {
+        sentence: {
+          sentenceServeType: 'FORTHWITH',
+          sentenceTypeClassification: 'UNKNOWN',
+          periodLengths: [
+            {
+              uuid: '5',
+              periodOrder: ['years', 'months', 'weeks', 'days'],
+              periodLengthType: 'SENTENCE_LENGTH',
+            },
+            {
+              uuid: '6',
+              periodOrder: ['years', 'months', 'weeks', 'days'],
+              periodLengthType: 'SENTENCE_LENGTH',
+            },
+          ],
+        },
+      } as Offence
+      const errors = service.validateOffenceMandatoryFields(offence)
+      expect(errors).toEqual([
+        {
+          href: '#',
+          text: 'This sentence has an invalid number of period lengths',
+        },
+      ])
+    })
+
     it('no errors returned if all sentence mandatory details populated', () => {
       const offence = {
         sentence: {
@@ -194,6 +222,7 @@ describe('offenceService', () => {
       } as unknown as Partial<SessionData>
       const correctManyPeriodLengthsForm = {
         correctPeriodLengthUuid: '6',
+        'sentenceLength-years': 'c',
       } as CorrectManyPeriodLengthsForm
       const errors = service.correctManyPeriodLengths(
         session,

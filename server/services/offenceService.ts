@@ -21,6 +21,7 @@ import type {
 import type { Offence, Sentence, SentenceLength, CourtAppearance } from 'models'
 import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
+import { groupAndSortPeriodLengths } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import validate from '../validation/validation'
 import { extractKeyValue, toDateString } from '../utils/utils'
 import {
@@ -581,12 +582,20 @@ export default class OffenceService {
     const periodLengthHeader =
       periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
       periodLengths.at(0)?.legacyData?.sentenceTermDescription
+    if (correctManyPeriodLengthsForm.correctPeriodLengthUuid !== 'NONE') {
+      // eslint-disable-next-line no-param-reassign
+      delete correctManyPeriodLengthsForm['sentenceLength-days']
+      // eslint-disable-next-line no-param-reassign
+      delete correctManyPeriodLengthsForm['sentenceLength-months']
+      // eslint-disable-next-line no-param-reassign
+      delete correctManyPeriodLengthsForm['sentenceLength-years']
+    }
     const errors = validate(
       correctManyPeriodLengthsForm,
       {
         correctPeriodLengthUuid: 'required',
         'sentenceLength-years':
-          'requireSentenceLength_if:correctPeriodLengthUuid,NONE|minWholeNumber:0|requireOneNonZeroSentenceLength',
+          'requireSentenceLength_if:correctPeriodLengthUuid,NONE|requireOneNonZeroSentenceLength_if:correctPeriodLengthUuid,NONE|minWholeNumber:0',
         'sentenceLength-months': 'minWholeNumber:0',
         'sentenceLength-weeks': 'minWholeNumber:0',
         'sentenceLength-days': 'minWholeNumber:0',
@@ -1146,6 +1155,16 @@ export default class OffenceService {
           })
         }
       })
+
+      if (offence.sentence.periodLengths) {
+        const groupedPeriodLengths = groupAndSortPeriodLengths(offence.sentence.periodLengths)
+        if (groupedPeriodLengths.find(groupedPeriodLength => groupedPeriodLength.lengths.length > 1)) {
+          errors.push({
+            text: `This sentence has an invalid number of period lengths`,
+            href: '#',
+          })
+        }
+      }
     }
 
     if (offence.sentence?.sentenceServeType === 'CONSECUTIVE' && !offence.sentence?.consecutiveToSentenceUuid) {

@@ -59,6 +59,7 @@ describe('GET Court case documents', () => {
                 documentUUID: '567',
               },
             ],
+            source: 'DPS',
           },
           appearanceDocumentsByType: {
             HMCTS_WARRANT: [

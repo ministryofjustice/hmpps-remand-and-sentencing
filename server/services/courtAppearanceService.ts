@@ -184,7 +184,7 @@ export default class CourtAppearanceService {
         addOrEditCourtCase,
       )
 
-      if (courtCaseDatesErrors) return courtCaseDatesErrors
+      if (courtCaseDatesErrors.length) return courtCaseDatesErrors
 
       if (courtAppearance.nextHearingDate) {
         const nextHearingDate = dayjs(courtAppearance.nextHearingDate)

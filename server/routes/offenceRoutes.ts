@@ -1483,19 +1483,6 @@ export default class OffenceRoutes extends BaseRoutes {
     const redirectBase = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}`
 
     if (submitToEditOffence) {
-      /*  Might be used in future
-      const newType = serveType
-      if (sentenceIsInChain && existingSentenceServeType !== newType) {
-        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)) {
-          return res.redirect(`${redirectBase}/making-sentence-concurrent${submitQuery}`)
-        }
-        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)) {
-          return res.redirect(`${redirectBase}/making-sentence-forthwith${submitQuery}`)
-        }
-        if (isConsecutive) {
-          return res.redirect(`${redirectBase}/making-sentence-consecutive${submitQuery}`)
-        }
-      }  */
       if (isConsecutive) {
         return res.redirect(`${redirectBase}/sentence-consecutive-to${submitQuery}`)
       }

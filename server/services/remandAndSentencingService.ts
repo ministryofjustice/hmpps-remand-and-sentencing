@@ -3,6 +3,7 @@ import { Dayjs } from 'dayjs'
 import {
   ConsecutiveChainValidationRequest,
   CourtCaseCountNumbers,
+  CourtCaseValidationDate,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
@@ -174,6 +175,18 @@ export default class RemandAndSentencingService {
     appearanceUuidToExclude?: string,
   ): Promise<LatestOffenceDate> {
     return this.remandAndSentencingApiClient.getLatestOffenceDateForCourtCase(
+      courtCaseUuid,
+      username,
+      appearanceUuidToExclude,
+    )
+  }
+
+  async getValidationDatesForCourtCase(
+    courtCaseUuid: string,
+    username: string,
+    appearanceUuidToExclude: string,
+  ): Promise<CourtCaseValidationDate> {
+    return this.remandAndSentencingApiClient.getValidationDatesForCourtCase(
       courtCaseUuid,
       username,
       appearanceUuidToExclude,

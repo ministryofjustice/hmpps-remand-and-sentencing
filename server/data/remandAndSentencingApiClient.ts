@@ -5,6 +5,7 @@ import {
   AppearanceType,
   ConsecutiveChainValidationRequest,
   CourtCaseCountNumbers,
+  CourtCaseValidationDate,
   CreateCourtAppearance,
   CreateCourtAppearanceResponse,
   CreateCourtCase,
@@ -380,6 +381,22 @@ export default class RemandAndSentencingApiClient extends RestClient {
     return this.get<LatestOffenceDate>(
       {
         path: `/court-case/${courtCaseUuid}/latest-offence-date${query}`,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getValidationDatesForCourtCase(
+    courtCaseUuid: string,
+    username: string,
+    appearanceUuidToExclude: string,
+  ): Promise<CourtCaseValidationDate> {
+    return this.get<CourtCaseValidationDate>(
+      {
+        path: `/court-case/${courtCaseUuid}/validation-dates`,
+        query: {
+          appearanceUuidToExclude,
+        },
       },
       asSystem(username),
     )

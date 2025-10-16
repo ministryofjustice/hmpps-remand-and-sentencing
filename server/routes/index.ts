@@ -492,46 +492,6 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/making-sentence-concurrent',
-    sentencingRoutes.getMakingSentenceConcurrent,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/continue-making-sentence-concurrent',
-    sentencingRoutes.continueMakingSentenceConcurrent,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/making-sentence-forthwith',
-    sentencingRoutes.getMakingSentenceForthwith,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/continue-making-sentence-forthwith',
-    sentencingRoutes.continueMakingSentenceForthwith,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/making-sentence-consecutive',
-    sentencingRoutes.getMakingSentenceConsecutive,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/continue-making-sentence-consecutive',
-    sentencingRoutes.continueMakingSentenceConsecutive,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/making-sentence-concurrent',
-    sentencingRoutes.getMakingSentenceConcurrent,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/continue-making-sentence-concurrent',
-    sentencingRoutes.continueMakingSentenceConcurrent,
-  )
-
-  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/check-offence-answers',
     offenceRoutes.getCheckOffenceAnswers,
   )

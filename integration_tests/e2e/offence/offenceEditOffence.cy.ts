@@ -569,7 +569,7 @@ context('Add Offence Edit offence Page', () => {
           outcomeType: 'REMAND',
         },
       ])
-      cy.task('stubGetLatestOffenceDate', {})
+      cy.task('stubGetCourtCaseValidationDates', {})
       cy.task('stubSearchSentenceTypes', {
         convictionDate: '2023-05-13',
         offenceDate: '2023-05-12',

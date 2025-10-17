@@ -3058,6 +3058,31 @@ export default {
     })
   },
 
+  stubGetCourtCaseValidationDates({
+    courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    offenceDate = '2000-01-01',
+    latestRemandAppearanceDate = '2000-01-01',
+  }: {
+    courtCaseUuid?: string
+    offenceDate?: string
+    latestRemandAppearanceDate?: string
+  }) {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/validation-dates`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          offenceDate,
+          latestRemandAppearanceDate,
+        },
+      },
+    })
+  },
+
   stubUploadDocument: (): SuperAgentRequest => {
     return stubFor({
       request: {

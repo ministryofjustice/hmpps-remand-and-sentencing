@@ -610,7 +610,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
-      addOrEditCourtAppearance,
       username,
     )
     if (errors.length > 0) {

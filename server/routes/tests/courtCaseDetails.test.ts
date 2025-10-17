@@ -358,3 +358,73 @@ describe('GET tests for inset text', () => {
     )
   })
 })
+
+describe('GET tests for NOMIS tag', () => {
+  const prisonerId = 'A1234AB'
+  const path = `/person/${prisonerId}/edit-court-case/1/details`
+
+  const createCourtCase = (source: string | undefined): PageCourtCaseContent => {
+    const appearance = {
+      appearanceUuid: '1',
+      appearanceDate: '2025-07-25',
+      courtCode: 'ACCRYC',
+      warrantType: 'REMAND',
+      courtCaseReference: 'A123',
+      outcome: { outcomeUuid: '1', outcomeName: 'Appearance outcome' },
+      charges: [
+        {
+          chargeUuid: '1',
+          offenceCode: 'OFF123',
+          offenceStartDate: '2025-01-01',
+          outcome: { outcomeUuid: '1', outcomeName: 'Offence outcome' },
+        },
+      ],
+      source,
+    }
+    return {
+      courtCaseUuid: '1',
+      prisonerId,
+      status: 'ACTIVE',
+      latestAppearance: appearance,
+      appearances: [appearance],
+    } as PageCourtCaseContent
+  }
+
+  beforeEach(() => {
+    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ OFF123: 'Offence code description' })
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({ ACCRYC: 'Court description' })
+  })
+
+  it('should display the NOMIS tag when appearance source is NOMIS', async () => {
+    const courtCase = createCourtCase('NOMIS')
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+
+    const res = await request(app).get(path).expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const nomisTag = $('.govuk-tag').text().trim()
+    expect(nomisTag).toEqual('From NOMIS')
+  })
+
+  it('should not display the NOMIS tag when appearance source is not NOMIS', async () => {
+    const courtCase = createCourtCase('DPS')
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+
+    const res = await request(app).get(path).expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    // Expect no tag with the specific text to be present
+    const nomisTag = $('.govuk-tag').filter((i, el) => $(el).text().trim() === 'From NOMIS')
+    expect(nomisTag.length).toBe(0)
+  })
+
+  it('should not display the NOMIS tag when appearance source is undefined', async () => {
+    const courtCase = createCourtCase(undefined)
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+
+    const res = await request(app).get(path).expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    // Expect no tag with the specific text to be present
+    const nomisTag = $('.govuk-tag').filter((i, el) => $(el).text().trim() === 'From NOMIS')
+    expect(nomisTag.length).toBe(0)
+  })
+})

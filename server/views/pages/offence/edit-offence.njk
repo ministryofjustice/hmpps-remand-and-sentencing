@@ -91,24 +91,38 @@
         }
     } %}
   {% endif %}
-
-  {% set summaryRows = ([countNumberRow].concat(summaryRows, [{
-    key: { text: "Conviction date" },
-    value: {
-      text: (offence.sentence.convictionDate | formatDate if offence.sentence.convictionDate else '')
-    },
-    actions: {
-      items: [{
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/conviction-date?submitToEditOffence=true",
-        text: "Edit",
-        visuallyHiddenText: "conviction date",
-        classes: "govuk-link--no-visited-state",
+  {% set convictionDateHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/conviction-date?submitToEditOffence=true" %}
+  {% if offence.sentence.convictionDate %}
+    {% set convictionDateRow = {
+      key: { text: "Conviction date" },
+      value: {
+        text: (offence.sentence.convictionDate | formatDate)
+      },
+      actions: {
+        items: [{
+          href: convictionDateHref,
+          text: "Edit",
+          visuallyHiddenText: "conviction date",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+                    'data-qa': 'edit-conviction-date-' + chargeUuid
+                  }
+        }]
+    }
+    } %}
+    {% else %}
+    {% set convictionDateRow = {
+      key: { text: "Conviction date" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + convictionDateHref + '">Enter conviction date</a>',
         attributes: {
           'data-qa': 'edit-conviction-date-' + chargeUuid
         }
-      }]
-    }
-  },
+      }
+    }%}
+    {% endif %}
+
+  {% set summaryRows = ([countNumberRow, convictionDateRow].concat(summaryRows, [
   {
     key: { text: "Sentence type" },
     value: {

@@ -116,7 +116,7 @@ context('Court Case Warrant Date Page', () => {
       cy.signIn()
       cy.task('stubGetCourtById', {})
       cy.task('stubGetLatestCourtAppearance', {})
-      cy.task('stubGetLatestOffenceDate', {})
+      cy.task('stubGetCourtCaseValidationDates', {})
       cy.visit(
         '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/warrant-date',
       )
@@ -199,7 +199,7 @@ context('Court Case Warrant Date Page', () => {
       })
       cy.task('stubGetCourtCaseRemandLatest')
       cy.task('stubGetRemandAppearanceDetails', 'a6400fd8-aef4-4567-b18c-d1f452651933')
-      cy.task('stubGetLatestOffenceDateExcludeAppearance', {})
+      cy.task('stubGetCourtCaseValidationDates', {})
     })
 
     it('Edit Remand journey validation - warrant date must be after offence dates', () => {

@@ -124,7 +124,6 @@ export default class CourtAppearanceService {
     courtCaseReference: string,
     appearanceUuid: string,
     addOrEditCourtCase: string,
-    addOrEditCourtAppearance: string,
     username: string,
   ): Promise<
     {

@@ -1,8 +1,22 @@
 import type { CourtAppearance, Offence } from 'models'
 import { SessionData } from 'express-session'
-import CourtAppearanceService from './courtAppearanceService'
-import DocumentManagementService from './documentManagementService'
+import type { CourtCaseWarrantDateForm } from 'forms'
+import dayjs from 'dayjs'
+import objectSupport from 'dayjs/plugin/objectSupport'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import RemandAndSentencingService from './remandAndSentencingService'
+import DocumentManagementService from './documentManagementService'
+import CourtAppearanceService from './courtAppearanceService'
+
+dayjs.extend(isSameOrBefore)
+dayjs.extend(customParseFormat)
+dayjs.extend(objectSupport)
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.tz.setDefault('Europe/London')
 
 jest.mock('./documentManagementService')
 jest.mock('./remandAndSentencingService')
@@ -53,5 +67,37 @@ describe('courtAppearanceService', () => {
     service.deleteSentenceInChain(session, nomsId, toBeDeletedOffence.chargeUuid, courtAppearance.appearanceUuid)
     expect(firstConsecutiveTo.sentence.consecutiveToSentenceUuid).toBeUndefined()
     expect(secondConsecutiveTo.sentence.consecutiveToSentenceUuid).toBeUndefined()
+  })
+
+  describe('validate warrant date', () => {
+    it('submitting a sentencing warrant date before an existing remand appearance returns error', async () => {
+      const nomsId = 'P123'
+      remandAndSentencingService.getValidationDatesForCourtCase.mockResolvedValue({
+        offenceDate: '2000-01-01',
+        latestRemandAppearanceDate: '2025-01-01',
+      })
+      const courtAppearance = {
+        appearanceUuid: '1234567',
+        warrantType: 'SENTENCING',
+        offences: [],
+      } as CourtAppearance
+      const session = {
+        courtAppearances: {
+          [`${nomsId}`]: courtAppearance,
+        },
+      } as unknown as Partial<SessionData>
+      const warrantDateForm = {
+        'warrantDate-day': '10',
+        'warrantDate-month': '10',
+        'warrantDate-year': '2024',
+      } as CourtCaseWarrantDateForm
+      const errors = await service.setWarrantDate(session, nomsId, warrantDateForm, '1', '1', 'edit-court-case', 'user')
+      expect(errors.length).toBe(1)
+      const error = errors[0]
+      expect(error).toStrictEqual({
+        text: 'The date of a sentencing warrant cannot be before the date of a remand warrant',
+        href: '#warrantDate',
+      })
+    })
   })
 })

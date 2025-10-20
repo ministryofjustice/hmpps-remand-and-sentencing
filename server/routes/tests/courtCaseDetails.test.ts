@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 import { PageCourtCaseContent } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import config from '../../config'
 
 let app: Express
 
@@ -14,56 +15,60 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET court name', () => {
-  it('should render page on new journey', () => {
-    const courtAppearance = {
-      appearanceUuid: '1',
-      appearanceDate: '2025-07-25',
-      courtCode: 'ACCRYC',
-      warrantType: 'REMAND',
-      courtCaseReference: 'A123',
-      outcome: {
-        outcomeUuid: '1',
-        outcomeName: 'Appearance outcome',
+const createCourtCase = (source: string | undefined): PageCourtCaseContent => {
+  const appearance = {
+    appearanceUuid: '1',
+    appearanceDate: '2025-07-25',
+    courtCode: 'ACCRYC',
+    warrantType: 'REMAND',
+    courtCaseReference: 'A123',
+    outcome: { outcomeUuid: '1', outcomeName: 'Appearance outcome' },
+    charges: [
+      {
+        chargeUuid: '1',
+        offenceCode: 'OFF123',
+        offenceStartDate: '2025-01-01',
+        outcome: { outcomeUuid: '1', outcomeName: 'Offence outcome' },
       },
-      charges: [
-        {
-          chargeUuid: '1',
-          offenceCode: 'OFF123',
-          offenceStartDate: '2025-01-01',
-          outcome: {
-            outcomeUuid: '1',
-            outcomeName: 'Offence outcome',
-          },
-        },
-      ],
-    }
-    const courtCase = {
-      courtCaseUuid: '1',
-      prisonerId: 'A1234AB',
-      status: 'ACTIVE',
-      latestAppearance: courtAppearance,
-      appearances: [courtAppearance],
-    } as PageCourtCaseContent
+    ],
+    source,
+  }
+  return {
+    courtCaseUuid: '1',
+    prisonerId: 'A1234AB',
+    status: 'ACTIVE',
+    latestAppearance: appearance,
+    appearances: [appearance],
+  } as PageCourtCaseContent
+}
+
+const setupDefaultMocks = () => {
+  defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })
+  defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+    OFF123: 'Offence code description',
+  })
+  defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
+    ACCRYC: 'Court description',
+  })
+}
+
+describe('GET court case details', () => {
+  it('should render page on new journey', async () => {
+    const courtCase = createCourtCase('DPS')
     defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })
-    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
-      OFF123: 'Offence code description',
-    })
-    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
-      ACCRYC: 'Court description',
-    })
-    return request(app)
-      .get('/person/A1234AB/edit-court-case/1/details')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const prisonerBanner = $('.mini-profile').text()
-        expect(prisonerBanner).toContain('Meza, Cormac')
-        expect(prisonerBanner).toContain('A1234AB')
-        expect(prisonerBanner).toContain('EstablishmentHMP Bedford')
-        expect(prisonerBanner).toContain('Cell numberCELL-1')
-      })
+
+    setupDefaultMocks()
+    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details').expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const prisonerBanner = $('.mini-profile').text()
+    expect(prisonerBanner).toContain('Meza, Cormac')
+    expect(prisonerBanner).toContain('A1234AB')
+    expect(prisonerBanner).toContain('EstablishmentHMP Bedford')
+    expect(prisonerBanner).toContain('Cell numberCELL-1')
+    const editLink = $('a[href*="load-appearance-details"]')
+    expect(editLink.length).toEqual(1)
+    const deleteLink = $('a[href*="confirm-delete"]')
+    expect(deleteLink.length).toEqual(1)
   })
 })
 
@@ -316,9 +321,7 @@ describe('GET tests for inset text', () => {
   } as PageCourtCaseContent
 
   beforeEach(() => {
-    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })
-    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ OFF123: 'Offence code description' })
-    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({ ACCRYC: 'Court description' })
+    setupDefaultMocks()
   })
 
   const expectInsetText = async (courtCase: PageCourtCaseContent, expected: string) => {
@@ -363,37 +366,8 @@ describe('GET tests for NOMIS tag', () => {
   const prisonerId = 'A1234AB'
   const path = `/person/${prisonerId}/edit-court-case/1/details`
 
-  const createCourtCase = (source: string | undefined): PageCourtCaseContent => {
-    const appearance = {
-      appearanceUuid: '1',
-      appearanceDate: '2025-07-25',
-      courtCode: 'ACCRYC',
-      warrantType: 'REMAND',
-      courtCaseReference: 'A123',
-      outcome: { outcomeUuid: '1', outcomeName: 'Appearance outcome' },
-      charges: [
-        {
-          chargeUuid: '1',
-          offenceCode: 'OFF123',
-          offenceStartDate: '2025-01-01',
-          outcome: { outcomeUuid: '1', outcomeName: 'Offence outcome' },
-        },
-      ],
-      source,
-    }
-    return {
-      courtCaseUuid: '1',
-      prisonerId,
-      status: 'ACTIVE',
-      latestAppearance: appearance,
-      appearances: [appearance],
-    } as PageCourtCaseContent
-  }
-
   beforeEach(() => {
-    defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })
-    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({ OFF123: 'Offence code description' })
-    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({ ACCRYC: 'Court description' })
+    setupDefaultMocks()
   })
 
   it('should display the NOMIS tag when appearance source is NOMIS', async () => {
@@ -426,5 +400,23 @@ describe('GET tests for NOMIS tag', () => {
     // Expect no tag with the specific text to be present
     const nomisTag = $('.govuk-tag').filter((i, el) => $(el).text().trim() === 'From NOMIS')
     expect(nomisTag.length).toBe(0)
+  })
+})
+
+describe('view only feature enabled', () => {
+  beforeEach(() => {
+    setupDefaultMocks()
+  })
+
+  it('should not display edit or delete links', async () => {
+    const courtCase = createCourtCase('DPS')
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+    config.featureToggles.viewOnlyEnabled = true
+    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details').expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const editLink = $('a[href*="load-appearance-details"]')
+    expect(editLink.length).toEqual(0)
+    const deleteLink = $('a[href*="confirm-delete"]')
+    expect(deleteLink.length).toEqual(0)
   })
 })

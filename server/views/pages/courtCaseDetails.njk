@@ -68,7 +68,7 @@
 
         <div class="govuk-grid-column-one-quarter">
             <ul class="offence-card-actions-list" data-qa="appearanceActionList-{{appearance.appearanceUuid}}">
-                {% if not appearance.hasAnyRecalls %}
+                {% if not appearance.hasAnyRecalls and not viewOnlyEnabled %}
                     <li class="offence-card-action-link">
                         <a class="govuk-link--no-visited-state"
                            href="{% if appearance.warrantType == 'REMAND' %}
@@ -211,14 +211,4 @@
             }) }}
         </div>
     </div>
-{% endmacro %}
-
-{% macro documentLink(document) %}
-    <a href="/" class="govuk-link--no-visited-state" target="_blank">
-        <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg"
-             viewBox="0 0 16 20" width="20" height="16">
-            <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"></path>
-        </svg>
-        {{ document | capitalize }}
-    </a>
 {% endmacro %}

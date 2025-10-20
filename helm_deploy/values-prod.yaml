@@ -23,6 +23,7 @@ generic-service:
     AUDIT_ENABLED: "false"
     COURT_CASES_RELEASE_DATES_API_URL: "https://court-cases-release-dates-api.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: PROD
+    FEATURES_VIEW_ONLY_ENABLED: 'true'
 
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts

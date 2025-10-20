@@ -2110,9 +2110,6 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-
-    console.log(offence)
-
     const errors = this.offenceService.validateOffenceMandatoryFields(offence)
     if (errors.length > 0) {
       req.flash('errors', errors)

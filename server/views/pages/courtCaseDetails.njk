@@ -90,6 +90,14 @@
         </div>
     </div>
 
+    <div class="govuk-!-margin-bottom-6">
+    {% if appearance.source == 'NOMIS' %}
+        {{ govukTag({
+                          text: "From NOMIS"
+                        }) }}
+                        {% endif %}
+    </div>
+
     {% if appearance.mergedFromCases and appearance.mergedFromCases | length > 0 %}
       {{ govukInsetText({
         html: appearance.mergedFromCases | join('<br>'),
@@ -105,13 +113,7 @@
       }) }}
     {% endif %}
 
-<div class="govuk-!-margin-bottom-6">
-{% if appearance.source == 'NOMIS' %}
-    {{ govukTag({
-                      text: "From NOMIS"
-                    }) }}
-                    {% endif %}
-</div>
+
 
 
     <div class="govuk-grid-row govuk-!-padding-bottom-2 govuk-!-margin-top-2">

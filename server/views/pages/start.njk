@@ -226,7 +226,7 @@
                             html: govukTag({ text: "Recalled", classes: "govuk-tag--purple" }),
                             visuallyHiddenText: "Recalled"
                           }) %}
-                        {% elif courtCaseDetails.warrantType !== 'SENTENCING' %}
+                        {% elif courtCaseDetails.warrantType !== 'SENTENCING' and not viewOnlyEnabled %}
                           {% set _ = actions.push({
                             href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/new-journey",
                             text: "Add appearance",
@@ -259,7 +259,9 @@
                         }}
                 {% else %}
                     <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
-                    <p class="gouk-body"><a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey">Add a court case now</a>
+                    {% if not viewOnlyEnabled %}
+                        <p class="gouk-body"><a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey">Add a court case now</a>
+                    {% endif %}
                     </p>
                 {% endfor %}
 
@@ -271,16 +273,17 @@
             {% endif %}
 
         </div>
+        {% if not viewOnlyEnabled %}
+            <div class="govuk-grid-column-one-third">
 
-        <div class="govuk-grid-column-one-third">
-
-            <div class="actions-list">
-                <ul class="govuk-list actions-list-list">
-                    <span class="govuk-heading-m actions-list-header">Actions</span>
-                    <li><a href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey" class="govuk-link govuk-link--no-visited-state">Add a new court case</a></li>
-                </ul>
+                <div class="actions-list">
+                    <ul class="govuk-list actions-list-list">
+                        <span class="govuk-heading-m actions-list-header">Actions</span>
+                        <li><a href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey" class="govuk-link govuk-link--no-visited-state">Add a new court case</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
+        {% endif %}
     </div>
 
 {% endblock %}

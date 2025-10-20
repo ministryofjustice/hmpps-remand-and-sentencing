@@ -1483,6 +1483,18 @@ export default class OffenceRoutes extends BaseRoutes {
     const redirectBase = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}`
 
     if (submitToEditOffence) {
+      const newType = serveType
+      if (sentenceIsInChain && existingSentenceServeType !== newType) {
+        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.CONCURRENT)) {
+          this.offenceService.setSentenceToConcurrent(req.session, nomsId, courtCaseReference, chargeUuid)
+        }
+        if (newType === extractKeyValue(sentenceServeTypes, sentenceServeTypes.FORTHWITH)) {
+          this.offenceService.setSentenceToForthwith(req.session, nomsId, courtCaseReference, chargeUuid)
+        }
+        if (isConsecutive) {
+          this.offenceService.setSentenceToConsecutive(req.session, nomsId, courtCaseReference, chargeUuid)
+        }
+      }
       if (isConsecutive) {
         return res.redirect(`${redirectBase}/sentence-consecutive-to${submitQuery}`)
       }
@@ -2098,6 +2110,8 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+
+    console.log(offence)
 
     const errors = this.offenceService.validateOffenceMandatoryFields(offence)
     if (errors.length > 0) {

@@ -108,9 +108,9 @@
                     'data-qa': 'edit-conviction-date-' + chargeUuid
                   }
         }]
-    }
+      }
     } %}
-    {% else %}
+  {% else %}
     {% set convictionDateRow = {
       key: { text: "Conviction date" },
       value: {
@@ -120,28 +120,36 @@
         }
       }
     }%}
-    {% endif %}
+  {% endif %}
+  {% set sentenceTypeHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-type?submitToEditOffence=true"%}
+  {% if sentenceType %}
+    {% set sentenceTypeRow = {
+      key: { text: "Sentence type" },
+      value: {
+        text: sentenceType
+      },
+      actions: {
+        items: [{
+          href: sentenceTypeHref,
+          text: "Edit",
+          visuallyHiddenText: "sentence type",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-sentence-type-' + chargeUuid
+          }
+        }]
+      }
+    } %}
+  {% else %}
+    {% set sentenceTypeRow = {
+      key: { text: "Sentence type" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceTypeHref + '" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
+      }
+    }%}
+  {% endif %}
 
-  {% set summaryRows = ([countNumberRow, convictionDateRow].concat(summaryRows, [
-  {
-    key: { text: "Sentence type" },
-    value: {
-      text: sentenceType
-    } if sentenceType else {
-      html: '<a class="govuk-link govuk-link--no-visited-state" href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/sentence-type?submitToEditOffence=true" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
-    },
-    actions: {
-      items: [{
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-type?submitToEditOffence=true",
-        text: "Edit",
-        visuallyHiddenText: "sentence type",
-        classes: "govuk-link--no-visited-state",
-        attributes: {
-          'data-qa': 'edit-sentence-type-' + chargeUuid
-        }
-      }] if sentenceType else []
-    }
-  }])) %}
+  {% set summaryRows = ([countNumberRow].concat(summaryRows, [convictionDateRow, sentenceTypeRow])) %}
 
   {% for periodLength in periodLengths %}
     {% set periodLengthEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.type + "&submitToEditOffence=true" %}
@@ -150,18 +158,21 @@
     } %}
     {% if periodLength.lengths.length > 0 %}
       {% if periodLength.lengths.length === 1 %}
-        {% set periodLengthValue = { text: periodLength.lengths[0] | formatLengths } %}
+        {% set periodLengthValue = {
+          text: periodLength.lengths[0] | formatLengths
+        } %}
       {% else %}
         {% set periodLengthValueHtml = '' %}
 
         {% for specificLength in periodLength.lengths %}
-            {% set periodLengthValueHtml = periodLengthValueHtml + (specificLength | formatLengths) %}
-            {% if not loop.last %}
-              {% set periodLengthValueHtml = periodLengthValueHtml + '<br>' %}
-            {% endif %}
+          {% set periodLengthValueHtml = periodLengthValueHtml + (specificLength | formatLengths) %}
+          {% if not loop.last %}
+            {% set periodLengthValueHtml = periodLengthValueHtml + '<br>' %}
+          {% endif %}
         {% endfor %}
         {% set periodLengthValue = {
-          html:  periodLengthValueHtml} %}
+          html: periodLengthValueHtml
+        } %}
         {% set periodLengthEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/correct-many-period-length?periodLengthType=" + periodLength.type + (("&legacyCode= " + periodLength.legacyCode) if periodLength.legacyCode) %}
       {% endif %}
     {% endif %}

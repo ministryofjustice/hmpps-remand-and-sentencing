@@ -175,4 +175,31 @@ describe('GET Edit offence', () => {
         expect(enterConsecutiveToLink).toContain('Edit')
       })
   })
+
+  it('should render fine amount cta when sentence type is fine and no fine amount is entered', async () => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      sentence: {
+        sentenceUuid: '111-222-333',
+        sentenceTypeId: '56',
+      },
+    })
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+      offences: [],
+    })
+    defaultServices.refDataService.getSentenceTypeById.mockResolvedValue({
+      sentenceTypeUuid: '56',
+      description: 'A Fine',
+      classification: 'FINE',
+      displayOrder: 20,
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const enterFineAmountCtaLink = $('[data-qa=edit-fine-amount-cta]').text()
+    expect(enterFineAmountCtaLink).toContain('Enter fine amount')
+  })
 })

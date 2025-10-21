@@ -103,9 +103,6 @@ const defaultPrisoner: PrisonerSearchApiPrisoner = {
   imprisonmentStatusDescription: 'Sentenced with a sentence c',
 } as PrisonerSearchApiPrisoner
 
-export const flashProvider = jest.fn()
-flashProvider.mockReturnValue([])
-
 function appSetup(
   services: Services,
   production: boolean,
@@ -113,7 +110,8 @@ function appSetup(
   prisoner: PrisonerSearchApiPrisoner,
 ): Express {
   const app = express()
-
+  const flashProvider = jest.fn()
+  flashProvider.mockReturnValue([])
   app.set('view engine', 'njk')
 
   nunjucksSetup(app, services.applicationInfo)

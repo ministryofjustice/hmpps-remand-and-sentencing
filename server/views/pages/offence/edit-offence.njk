@@ -193,13 +193,15 @@
     })) %}
   {% endfor %}
 
-  {% if offence.sentence.fineAmount %}
-    {% set summaryRows = summaryRows.concat({
+  {% if sentenceTypeClassification === 'FINE' %}
+    {% set fineAmountHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/fine-amount?submitToEditOffence=true" %}
+    {% if offence.sentence.fineAmount %}
+      {% set fineAmountRow = {
       key: { text: "Fine Amount" },
       value: { text: "£" + offence.sentence.fineAmount },
       actions: {
         items: [{
-          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/fine-amount?submitToEditOffence=true",
+          href: fineAmountHref,
           text: "Edit",
           visuallyHiddenText: "fine amount",
           classes: "govuk-link--no-visited-state",
@@ -208,7 +210,16 @@
           }
         }]
       }
-    }) %}
+      } %}
+    {% else %}
+      {% set fineAmountRow = {
+      key: { text: "Fine Amount" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + fineAmountHref + '" data-qa="edit-fine-amount-cta">Enter fine amount</a>'
+      }
+    }%}
+    {% endif %}
+    {% set summaryRows = summaryRows.concat([fineAmountRow]) %}
   {% endif %}
 
   {% set summaryRows = (summaryRows.concat({

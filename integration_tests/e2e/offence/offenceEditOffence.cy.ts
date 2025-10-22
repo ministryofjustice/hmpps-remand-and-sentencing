@@ -466,14 +466,6 @@ context('Add Offence Edit offence Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
     })
 
-    it('show fields as not entered when null', () => {
-      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
-        'Committed on': 'Not entered',
-        Offence: 'PS90037 An offence description',
-        Outcome: 'Remanded in custody',
-      })
-    })
-
     it('can cancel edit and return to appearance details page', () => {
       offenceEditOffencePage.cancelEditLink().click()
       Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')

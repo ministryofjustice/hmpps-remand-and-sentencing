@@ -8,7 +8,6 @@ import type {
 } from 'forms'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
-import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OffenceService from '../services/offenceService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import BaseRoutes from './baseRoutes'
@@ -17,6 +16,7 @@ import ManageOffencesService from '../services/manageOffencesService'
 import trimForm from '../utils/trim'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import {
+  convertToTitleCase,
   extractKeyValue,
   getUiDocumentType,
   offencesToOffenceDescriptions,
@@ -31,6 +31,7 @@ import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
   AppearanceToChainTo,
+  PrisonerSentenceEnvelopeSentence,
   SentencesToChainToResponse,
   SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -1134,32 +1135,53 @@ export default class SentencingRoutes extends BaseRoutes {
             sentence.sentenceUuid,
             {
               countNumber: sentence.countNumber,
-              offenceCode: sentence.offenceCode,
-              offenceDescription: offenceMap[sentence.offenceCode],
-              courtCaseReference: sentence.caseReference,
-              courtName: courtMap[sentence.courtCode],
-              warrantDate: sentence.appearanceDate,
-              offenceStartDate: sentence.offenceStartDate && dayjs(sentence.offenceStartDate).format(config.dateFormat),
-              offenceEndDate: sentence.offenceEndDate && dayjs(sentence.offenceEndDate).format(config.dateFormat),
-            } as ConsecutiveToDetails,
+              lineNumber: sentence.lineNumber,
+            },
           ]
         }),
     )
-    const sortedSentenceEnvelopes = sentenceEnvelopes.sentenceEnvelopes
-      .map(sentenceEnvelope => {
-        return {
-          ...sentenceEnvelope,
-          sentences: sentenceEnvelope.sentences.sort((a, b) => a.orderInChain - b.orderInChain),
-        }
-      })
+    const sentenceRows = sentenceEnvelopes.sentenceEnvelopes
       .sort((a, b) => sortByDateDesc(a.envelopeStartDate, b.envelopeStartDate))
+      .flatMap(sentenceEnvelope => {
+        return sentenceEnvelope.sentences
+          .sort((a, b) => a.orderInChain - b.orderInChain)
+          .map(sentence => [
+            {
+              text: dayjs(sentence.appearanceDate).format(config.dateFormat),
+            },
+            {
+              text: sentence.caseReference ?? 'Not entered',
+            },
+            {
+              text: sentence.countNumber ? `Count ${sentence.countNumber}` : `NOMIS line number ${sentence.lineNumber}`,
+            },
+            {
+              text: sentence.sentenceTypeDescription,
+            },
+            {
+              text: this.consecutiveOrConcurrentDescription(sentence, consecutiveToSentenceDetailsMap),
+            },
+          ])
+      })
 
     return res.render('pages/sentenceEnvelopes', {
       nomsId,
       offenceMap,
       courtMap,
-      sentenceEnvelopes: sortedSentenceEnvelopes,
+      sentenceRows,
       consecutiveToSentenceDetailsMap,
     })
+  }
+
+  private consecutiveOrConcurrentDescription(
+    sentence: PrisonerSentenceEnvelopeSentence,
+    consecutiveToSentenceDetailsMap: { [sentenceUuid: string]: { countNumber?: string; lineNumber?: string } },
+  ): string {
+    let description = convertToTitleCase(sentence.sentenceServeType)
+    if (sentence.sentenceServeType === 'CONSECUTIVE' && sentence.consecutiveToSentenceUuid) {
+      const consecutiveSentence = consecutiveToSentenceDetailsMap[sentence.consecutiveToSentenceUuid]
+      description += ` to ${consecutiveSentence.countNumber ? `Count ${consecutiveSentence.countNumber}` : `NOMIS line number ${consecutiveSentence.lineNumber}`}`
+    }
+    return description
   }
 }

@@ -2,6 +2,37 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% set offenceDateHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-date?submitToEditOffence=true" %}
+{% if offence.offenceStartDate %}
+  {% set offenceDateRow = {
+  key: {
+    text: "Committed on"
+  },
+  value: {
+    text: offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
+  },
+  actions: {
+    items: [{
+      href: offenceDateHref,
+      text: "Edit",
+      visuallyHiddenText: "committed on",
+      classes: "govuk-link--no-visited-state",
+      attributes: {
+        'data-qa': 'edit-offence-date-' + chargeUuid
+      }
+    }]
+  }
+}%}
+{% else %}
+{% set offenceDateRow = {
+      key: { text: "Committed on" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + offenceDateHref + '" data-qa="edit-offence-date-cta">Enter offence date</a>'
+      }
+    }%}
+{% endif %}
+
+
 {% set summaryRows=[{
   key: {
     text: "Offence"
@@ -21,25 +52,7 @@
     }]
   }
 },
-{
-  key: {
-    text: "Committed on"
-  },
-  value: {
-    text: (offence.offenceStartDate | formatDate if offence.offenceStartDate else 'Not entered') + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
-  },
-  actions: {
-    items: [{
-      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-date?submitToEditOffence=true",
-      text: "Edit",
-      visuallyHiddenText: "committed on",
-      classes: "govuk-link--no-visited-state",
-      attributes: {
-        'data-qa': 'edit-offence-date-' + chargeUuid
-      }
-    }]
-  }
-},
+offenceDateRow,
 {
   key: {
     text: "Outcome"

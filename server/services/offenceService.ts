@@ -1167,6 +1167,13 @@ export default class OffenceService {
       }
     }
 
+    if (!offence.offenceStartDate) {
+      errors.push({
+        text: `You must enter the offence date`,
+        href: '#',
+      })
+    }
+
     if (offence.sentence?.sentenceServeType === 'CONSECUTIVE' && !offence.sentence?.consecutiveToSentenceUuid) {
       errors.push({ text: 'You must enter consecutive to details', href: '#' })
     }

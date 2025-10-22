@@ -216,6 +216,7 @@ export default class CourtAppearanceService {
   ): Promise<{ text: string; href: string }[] | null> {
     let latestOffenceDate = null
     let latestRemandAppearanceDate = null
+    let latestSentencingAppearanceDate = null
     const errors = []
     if (addOrEditCourtCase === 'edit-court-case') {
       const courtCaseValidationDates = await this.remandAndSentencingService.getValidationDatesForCourtCase(
@@ -226,6 +227,9 @@ export default class CourtAppearanceService {
       latestOffenceDate = courtCaseValidationDates.offenceDate ? dayjs(courtCaseValidationDates.offenceDate) : null
       latestRemandAppearanceDate = courtCaseValidationDates.latestRemandAppearanceDate
         ? dayjs(courtCaseValidationDates.latestRemandAppearanceDate)
+        : null
+      latestSentencingAppearanceDate = courtCaseValidationDates.latestSentenceAppearanceDate
+        ? dayjs(courtCaseValidationDates.latestSentenceAppearanceDate)
         : null
     }
 
@@ -252,6 +256,18 @@ export default class CourtAppearanceService {
         href: '#warrantDate',
       })
     }
+
+    if (
+      latestSentencingAppearanceDate &&
+      warrantType === 'REMAND' &&
+      warrantDate.isAfter(latestSentencingAppearanceDate)
+    ) {
+      errors.push({
+        text: 'The date of a remand warrant cannot be after the date of a sentencing warrant on the same court case',
+        href: '#warrantDate',
+      })
+    }
+
     return errors
   }
 

@@ -66,7 +66,7 @@ describe('offenceService', () => {
     })
 
     it('the correct errors are returned if no sentence type and no sentence length', () => {
-      const offence = { sentence: {} } as Offence
+      const offence = { sentence: {}, offenceStartDate: new Date() } as Offence
       const errors = service.validateOffenceMandatoryFields(offence)
       expect(errors).toEqual([
         {
@@ -74,6 +74,15 @@ describe('offenceService', () => {
           text: 'You must enter the sentence type',
         },
       ])
+    })
+
+    it('the correct error is returned if no offence date is entered', () => {
+      const offence = { sentence: {} } as Offence
+      const errors = service.validateOffenceMandatoryFields(offence)
+      expect(errors).toContainEqual({
+        href: '#',
+        text: 'You must enter the offence date',
+      })
     })
 
     it('the correct errors are returned if there is a sentence type of STANDARD and no sentence lengths', () => {
@@ -84,6 +93,7 @@ describe('offenceService', () => {
           sentenceTypeClassification: 'STANDARD',
           periodLengths: [],
         },
+        offenceStartDate: new Date(),
       } as Offence
       const errors = service.validateOffenceMandatoryFields(offence)
       expect(errors).toEqual([
@@ -102,6 +112,7 @@ describe('offenceService', () => {
           sentenceTypeClassification: 'LEGACY_UNKNOWN',
           periodLengths: [],
         },
+        offenceStartDate: new Date(),
       } as Offence
       const errors = service.validateOffenceMandatoryFields(offence)
       expect(errors).toEqual([])
@@ -115,6 +126,7 @@ describe('offenceService', () => {
           sentenceTypeClassification: 'SOPC',
           periodLengths: [],
         },
+        offenceStartDate: new Date(),
       } as Offence
       const errors = service.validateOffenceMandatoryFields(offence)
       expect(errors).toEqual([
@@ -136,6 +148,7 @@ describe('offenceService', () => {
           sentenceTypeClassification: 'UNKNOWN',
           periodLengths: [{ periodLengthType: 'SENTENCE_LENGTH' }],
         },
+        offenceStartDate: new Date(),
       } as Offence
       const errors = service.validateOffenceMandatoryFields(offence)
       expect(errors).toEqual([
@@ -164,6 +177,7 @@ describe('offenceService', () => {
             },
           ],
         },
+        offenceStartDate: new Date(),
       } as Offence
       const errors = service.validateOffenceMandatoryFields(offence)
       expect(errors).toEqual([
@@ -182,6 +196,7 @@ describe('offenceService', () => {
           consecutiveToSentenceUuid: 'uuid1',
           periodLengths: [{ periodLengthType: 'SENTENCE_LENGTH' }],
         },
+        offenceStartDate: new Date(),
       } as Offence
       const errors = service.validateOffenceMandatoryFields(offence)
       expect(errors).toEqual([])

@@ -202,4 +202,21 @@ describe('GET Edit offence', () => {
     const enterFineAmountCtaLink = $('[data-qa=edit-fine-amount-cta]').text()
     expect(enterFineAmountCtaLink).toContain('Enter fine amount')
   })
+
+  it('should render offence date cta when no offence dates', async () => {
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+    })
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+      offences: [],
+    })
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/edit-offence')
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const enterOffenceDateCtaLink = $('[data-qa=edit-offence-date-cta]').text()
+    expect(enterOffenceDateCtaLink).toContain('Enter offence date')
+  })
 })

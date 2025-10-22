@@ -342,7 +342,7 @@ context('Court Case Appearance details Page', () => {
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         Offence: 'PS90037 An offence description',
-        'Committed on': 'Not entered',
+        'Committed on': 'Enter offence date',
         Outcome: 'Remanded in custody',
       })
       offenceEditOffencePage.continueButton().click()

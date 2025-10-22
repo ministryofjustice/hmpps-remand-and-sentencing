@@ -99,5 +99,41 @@ describe('courtAppearanceService', () => {
         href: '#warrantDate',
       })
     })
+
+    it('submitting a remand warrant date after an existing sentencing appearance returns error', async () => {
+      const nomsId = 'P123'
+      remandAndSentencingService.getValidationDatesForCourtCase.mockResolvedValue({
+        offenceDate: '2000-01-01',
+        latestRemandAppearanceDate: null,
+        latestSentenceAppearanceDate: '2025-10-01',
+      })
+
+      const courtAppearance = {
+        appearanceUuid: '1234567',
+        warrantType: 'REMAND',
+        offences: [],
+      } as CourtAppearance
+
+      const session = {
+        courtAppearances: {
+          [nomsId]: courtAppearance,
+        },
+      } as unknown as Partial<SessionData>
+
+      // 👇 This date is *after* the sentencing date above (2025-10-01)
+      const warrantDateForm = {
+        'warrantDate-day': '10',
+        'warrantDate-month': '10',
+        'warrantDate-year': '2025',
+      } as CourtCaseWarrantDateForm
+
+      const errors = await service.setWarrantDate(session, nomsId, warrantDateForm, '1', '1', 'edit-court-case', 'user')
+
+      expect(errors.length).toBe(1)
+      expect(errors[0]).toStrictEqual({
+        text: 'The date of a remand warrant cannot be after the date of a sentencing warrant on the same court case',
+        href: '#warrantDate',
+      })
+    })
   })
 })

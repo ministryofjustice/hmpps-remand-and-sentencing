@@ -1,43 +1,29 @@
 {% extends "../partials/prisonerBannerBackLayout.njk" %}
-{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
-{% set pageTitle = applicationName + " - Sentence envelopes" %}
+{% set pageTitle = applicationName + " - Sentences" %}
 
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-           <h1 class="govuk-heading-l govuk-!-margin-top-4">Sentence envelopes</h1>  
-
-           {% for sentenceEnvelope in sentenceEnvelopes %}
-              <h2 class="govuk-heading-m govuk-!-margin-top-4">Start date: {{ sentenceEnvelope.envelopeStartDate | formatDate }} </h2>
-              {% for sentence in sentenceEnvelope.sentences %}
-                {{
-                  offenceCard({
-                      offenceCode: sentence.offenceCode,
-                      offenceName: offenceMap[sentence.offenceCode],
-                      offenceStartDate: sentence.offenceStartDate | formatDate if sentence.offenceStartDate else 'Not entered',
-                      offenceEndDate: sentence.offenceEndDate | formatDate,
-                      outcome: sentence.offenceOutcome,
-                      countNumber: sentence.countNumber,
-                      lineNumber: sentence.lineNumber,
-                      convictionDate: sentence.convictionDate | formatDate,
-                      isSentenced: true,
-                      periodLengths: sentence.periodLengths,
-                      sentenceServeType: sentence.sentenceServeType,
-                      consecutiveTo: consecutiveToSentenceDetailsMap[sentence.consecutiveToSentenceUuid],
-                      sentenceType: sentence.sentenceTypeDescription,
-                      fineAmount: sentence.fineAmount,
-                      detailsClasses: 'govuk-!-padding-4',
-                      mergedFromCase: sentence.mergedFromCase,
-                      courtDetails: courtMap
-                  })
-                }}
-              {% endfor %}
-              {% if not loop.last %}
-                    <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-4">
-                {% endif %}
-           {% endfor %}
+        <div class="govuk-grid-column-full">
+           <h1 class="govuk-heading-l govuk-!-margin-top-4">Sentences</h1>  
+              {{ govukTable({
+                head: [
+                  {
+                    text: 'Sentence Warrant Date'
+                  },{
+                    text: 'Case reference'
+                  },{
+                    text: 'Sentence reference'
+                  },{
+                    text: 'Sentence type'
+                  },{
+                    text: 'Consec or concurrent'
+                  }
+                ],
+                rows: sentenceRows
+              })}}
         </div>
     </div>
 {% endblock %}

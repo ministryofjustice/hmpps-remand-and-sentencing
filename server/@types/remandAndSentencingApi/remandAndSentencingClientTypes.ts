@@ -112,4 +112,6 @@ export type SearchDocuments = components['schemas']['SearchDocuments']
 
 export type PrisonerSentenceEnvelopes = components['schemas']['PrisonerSentenceEnvelopes']
 
+export type PrisonerSentenceEnvelopeSentence = components['schemas']['PrisonerSentenceEnvelopeSentence']
+
 export type CourtCaseValidationDate = components['schemas']['CourtCaseValidationDate']

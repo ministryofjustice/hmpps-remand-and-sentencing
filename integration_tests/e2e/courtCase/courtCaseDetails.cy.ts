@@ -90,6 +90,7 @@ context('Court Case details Page', () => {
         .click()
 
       const deleteAppearancePage = Page.verifyOnPage(CourtCaseDeleteAppearancePage)
+      deleteAppearancePage.description().should('contain.text', 'C894623 at Accrington Youth Court on 15/12/2023')
       deleteAppearancePage.deleteButton().click()
       courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,

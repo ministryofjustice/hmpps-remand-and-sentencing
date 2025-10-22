@@ -359,7 +359,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       username,
     )
     const courtDetails = await this.courtRegisterService.findCourtById(appearance.courtCode, req.user.username)
-    const description = `${appearance.courtCaseReference ? appearance.courtCaseReference : 'Case held'} at ${courtDetails.courtName} on ${appearance.appearanceDate}`
+    const description = `${appearance.courtCaseReference ? appearance.courtCaseReference : 'Case held'} at ${courtDetails.courtName} on ${dayjs(appearance.appearanceDate).format(config.dateFormat)}`
     const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
     const lastAppearance = courtCaseDetails.appearances.length === 1
     return res.render('pages/courtAppearance/delete-appearance', {

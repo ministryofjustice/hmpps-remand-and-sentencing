@@ -6,4 +6,6 @@ export default class CourtCaseDeleteAppearancePage extends Page {
   }
 
   deleteButton = (): PageElement => cy.get('[data-qa=delete-button]')
+
+  description = (): PageElement => cy.get('[data-qa=appearance-description]')
 }

@@ -85,7 +85,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.911.0",
+    "@aws-sdk/client-sqs": "^3.913.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.10",
     "@microsoft/applicationinsights-web": "^3.3.10",
     "@ministryofjustice/frontend": "^5.2.1",
@@ -145,7 +145,7 @@
     "cheerio": "^1.1.2",
     "chokidar": "^4.0.3",
     "concurrently": "^9.2.1",
-    "cypress": "^15.4.0",
+    "cypress": "^15.5.0",
     "cypress-axe": "^1.7.0",
     "cypress-multi-reporters": "^2.0.5",
     "esbuild": "^0.25.8",

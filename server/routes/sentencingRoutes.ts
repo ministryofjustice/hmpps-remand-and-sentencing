@@ -1153,7 +1153,7 @@ export default class SentencingRoutes extends BaseRoutes {
               text: sentence.caseReference ?? 'Not entered',
             },
             {
-              text: sentence.countNumber ? `Count ${sentence.countNumber}` : `NOMIS line number ${sentence.lineNumber}`,
+              text: sentence.countNumber ? `Count ${sentence.countNumber}` : `Line ${sentence.lineNumber}`,
             },
             {
               text: sentence.sentenceTypeDescription,
@@ -1177,10 +1177,14 @@ export default class SentencingRoutes extends BaseRoutes {
     sentence: PrisonerSentenceEnvelopeSentence,
     consecutiveToSentenceDetailsMap: { [sentenceUuid: string]: { countNumber?: string; lineNumber?: string } },
   ): string {
-    let description = convertToTitleCase(sentence.sentenceServeType)
+    let description
     if (sentence.sentenceServeType === 'CONSECUTIVE' && sentence.consecutiveToSentenceUuid) {
       const consecutiveSentence = consecutiveToSentenceDetailsMap[sentence.consecutiveToSentenceUuid]
-      description += ` to ${consecutiveSentence.countNumber ? `Count ${consecutiveSentence.countNumber}` : `NOMIS line number ${consecutiveSentence.lineNumber}`}`
+      description = consecutiveSentence.countNumber
+        ? `Count ${consecutiveSentence.countNumber}`
+        : `Line ${consecutiveSentence.lineNumber}`
+    } else {
+      description = `(${convertToTitleCase(sentence.sentenceServeType)})`
     }
     return description
   }

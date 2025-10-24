@@ -1,0 +1,32 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+
+{% set pageTitle = applicationName + " - Sentence details" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+           <h1 class="govuk-heading-l govuk-!-margin-top-4">Sentence details</h1>
+            {{ offenceCard({
+                      offenceCode: sentenceDetails.charge.offenceCode,
+                      offenceName: offenceMap[sentenceDetails.charge.offenceCode],
+                      offenceStartDate: sentenceDetails.charge.offenceStartDate | formatDate if sentenceDetails.charge.offenceStartDate else 'Not entered',
+                      offenceEndDate: sentenceDetails.charge.offenceEndDate | formatDate,
+                      outcome: sentenceDetails.charge.outcome.outcomeName | outcomeValueOrLegacy(sentenceDetails.charge.legacyData),
+                      countNumber: sentenceDetails.countNumber,
+                      lineNumber: sentenceDetails.legacyData.nomisLineReference,
+                      convictionDate: sentenceDetails.convictionDate | formatDate,
+                      isSentenced: true,
+                      periodLengths: periodLengths,
+                      sentenceServeType: sentenceDetails.sentenceServeType,
+                      consecutiveTo: consecutiveToDetails,
+                      sentenceType: sentenceDetails.sentenceType.description | sentenceTypeValueOrLegacy(sentenceDetails.legacyData),
+                      fineAmount: sentenceDetails.fineAmount,
+                      mergedFromCase: sentenceDetails.charge.mergedFromCase,
+                      courtDetails: courtMap
+                  }) }}
+        </div>
+    </div>
+
+{% endblock %}

@@ -8,6 +8,7 @@ import type {
 } from 'forms'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
+import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OffenceService from '../services/offenceService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import BaseRoutes from './baseRoutes'
@@ -27,11 +28,12 @@ import {
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtRegisterService from '../services/courtRegisterService'
 
-import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
+import { pageCourtCaseAppearanceToCourtAppearance, periodLengthToSentenceLength } from '../utils/mappingUtils'
 import CalculateReleaseDatesService from '../services/calculateReleaseDatesService'
 import {
   AppearanceToChainTo,
   PrisonerSentenceEnvelopeSentence,
+  SentenceConsecutiveToDetails,
   SentencesToChainToResponse,
   SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -1108,7 +1110,7 @@ export default class SentencingRoutes extends BaseRoutes {
     return `?${submitQueries.join('&')}`
   }
 
-  public getSentenceEnvelopes: RequestHandler = async (req, res): Promise<void> => {
+  public getSentences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const sentenceEnvelopes = await this.remandAndSentencingService.getSentenceEnvelopes(nomsId, req.user.username)
     const chargeDescriptions: [string, string][] = Array.from(
@@ -1161,6 +1163,9 @@ export default class SentencingRoutes extends BaseRoutes {
             {
               text: this.consecutiveOrConcurrentDescription(sentence, consecutiveToSentenceDetailsMap),
             },
+            {
+              html: `<a href="/person/${nomsId}/view-sentence/${sentence.sentenceUuid}" class="govuk-link--no-visited-state">View details</a>`,
+            },
           ])
       })
 
@@ -1170,6 +1175,63 @@ export default class SentencingRoutes extends BaseRoutes {
       courtMap,
       sentenceRows,
       consecutiveToSentenceDetailsMap,
+    })
+  }
+
+  public getSentenceDetails: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, sentenceUuid } = req.params
+    const sentenceDetails = await this.remandAndSentencingService.getSentenceDetails(sentenceUuid, req.user.username)
+    const offenceDescriptions: [string, string][] = [
+      [sentenceDetails.charge.offenceCode, sentenceDetails.charge.legacyData?.offenceDescription],
+    ]
+    let sentenceConsecutiveToDetails: SentenceConsecutiveToDetails
+    const courtCodes = [sentenceDetails.charge.mergedFromCase?.courtCode]
+    const offenceCodes = [sentenceDetails.charge.offenceCode]
+    if (sentenceDetails.consecutiveToSentenceUuid) {
+      sentenceConsecutiveToDetails = (
+        await this.remandAndSentencingService.getConsecutiveToDetails(
+          [sentenceDetails.consecutiveToSentenceUuid],
+          req.user.username,
+        )
+      ).sentences.find(
+        consecutiveToSentence => consecutiveToSentence.sentenceUuid === sentenceDetails.consecutiveToSentenceUuid,
+      )
+      offenceDescriptions.push([
+        sentenceConsecutiveToDetails.offenceCode,
+        sentenceConsecutiveToDetails.chargeLegacyData?.offenceDescription,
+      ])
+      courtCodes.push(sentenceConsecutiveToDetails.courtCode)
+      offenceCodes.push(sentenceConsecutiveToDetails.offenceCode)
+    }
+    const [offenceMap, courtMap] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(offenceCodes, req.user.username, offenceDescriptions),
+      this.courtRegisterService.getCourtMap(courtCodes, req.user.username),
+    ])
+    let consecutiveToDetails: ConsecutiveToDetails
+    if (sentenceConsecutiveToDetails) {
+      consecutiveToDetails = {
+        countNumber: sentenceConsecutiveToDetails.countNumber,
+        offenceCode: sentenceConsecutiveToDetails.offenceCode,
+        offenceDescription: offenceMap[sentenceConsecutiveToDetails.offenceCode],
+        courtCaseReference: sentenceConsecutiveToDetails.courtCaseReference,
+        courtName: courtMap[sentenceConsecutiveToDetails.courtCode],
+        warrantDate: dayjs(sentenceConsecutiveToDetails.appearanceDate).format(config.dateFormat),
+        offenceStartDate:
+          sentenceConsecutiveToDetails.offenceStartDate &&
+          dayjs(sentenceConsecutiveToDetails.offenceStartDate).format(config.dateFormat),
+        offenceEndDate:
+          sentenceConsecutiveToDetails.offenceEndDate &&
+          dayjs(sentenceConsecutiveToDetails.offenceEndDate).format(config.dateFormat),
+      }
+    }
+    return res.render('pages/sentence/details', {
+      nomsId,
+      offenceMap,
+      courtMap,
+      consecutiveToDetails,
+      sentenceDetails,
+      periodLengths: sentenceDetails.periodLengths.map(periodLength => periodLengthToSentenceLength(periodLength)),
+      backLink: `/person/${nomsId}/view-sentences`,
     })
   }
 

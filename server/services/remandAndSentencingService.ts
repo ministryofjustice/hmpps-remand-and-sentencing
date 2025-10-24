@@ -18,6 +18,7 @@ import {
   PrisonerSentenceEnvelopes,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
+  SentenceDetails,
   SentenceDetailsForConsecValidation,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
@@ -261,5 +262,9 @@ export default class RemandAndSentencingService {
 
   async getSentenceEnvelopes(prisonerId: string, username: string): Promise<PrisonerSentenceEnvelopes> {
     return this.remandAndSentencingApiClient.getSentenceEnvelopes(prisonerId, username)
+  }
+
+  async getSentenceDetails(sentenceUuid: string, username: string): Promise<SentenceDetails> {
+    return this.remandAndSentencingApiClient.getSentenceDetails(sentenceUuid, username)
   }
 }

@@ -704,9 +704,25 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Retrieve sentence details
-     * @description This endpoint will retrieve sentence details
+     * Retrieve sentence information
+     * @description This endpoint will retrieve sentence information
      */
+    get: operations['getSentence']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sentence/{sentenceUuid}/details': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     get: operations['getSentenceDetails']
     put?: never
     post?: never
@@ -1153,11 +1169,9 @@ export interface paths {
     }
     /**
      * Retrieve all dates to be used in validation
-     * @description
-     *           This endpoint returns the most recent offence start or end date across all appearances and charges for a given court case.
+     * @description This endpoint returns the most recent offence start or end date across all appearances and charges for a given court case.
      *           This endpoint also returns the latest remand appearance date for a given court case.
      *           Optionally, the result can exclude offences tied to a specific court appearance, used when editing a court appearance in the UI (the latest version of the offence dates are in the UI session).
-     *
      */
     get: operations['getValidationDates']
     put?: never
@@ -1177,10 +1191,8 @@ export interface paths {
     }
     /**
      * Retrieve the latest offence date for a court case (checks both offence start and end dates)
-     * @description
-     *           This endpoint returns the most recent offence start or end date across all appearances and charges for a given court case.
+     * @description This endpoint returns the most recent offence start or end date across all appearances and charges for a given court case.
      *           Optionally, the result can exclude offences tied to a specific court appearance, used when editing a court appearance in the UI (the latest version of the offence dates are in the UI session).
-     *
      */
     get: operations['getLatestOffenceDate']
     put?: never
@@ -1615,7 +1627,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 08:43:13.299325076 */
+      /** @example 13:39:39.709671 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1712,7 +1724,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 08:43:13.299325076 */
+      /** @example 13:39:39.709671 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2269,6 +2281,52 @@ export interface components {
       /** Format: int32 */
       displayOrder: number
     }
+    ChargeOutcome: {
+      /** Format: uuid */
+      outcomeUuid: string
+      outcomeName: string
+      nomisCode: string
+      outcomeType: string
+      /** Format: int32 */
+      displayOrder: number
+      dispositionCode: string
+    }
+    MergedFromCase: {
+      caseReference?: string
+      courtCode: string
+      /** Format: date */
+      warrantDate: string
+      /** Format: date */
+      mergedFromDate?: string
+    }
+    SentenceDetails: {
+      /** Format: uuid */
+      sentenceUuid: string
+      chargeNumber?: string
+      periodLengths: components['schemas']['PeriodLength'][]
+      sentenceServeType: string
+      sentenceType?: components['schemas']['SentenceType']
+      /** Format: date */
+      convictionDate?: string
+      fineAmount?: components['schemas']['FineAmount']
+      legacyData?: components['schemas']['SentenceLegacyData']
+      /** Format: uuid */
+      consecutiveToSentenceUuid?: string
+      hasRecall: boolean
+      charge: components['schemas']['SentenceDetailsCharge']
+    }
+    SentenceDetailsCharge: {
+      /** Format: uuid */
+      chargeUuid: string
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string
+      /** Format: date */
+      offenceEndDate?: string
+      outcome?: components['schemas']['ChargeOutcome']
+      legacyData?: components['schemas']['ChargeLegacyData']
+      mergedFromCase?: components['schemas']['MergedFromCase']
+    }
     CourtAppearanceAfterSentence: {
       /** Format: uuid */
       appearanceUuid: string
@@ -2390,16 +2448,6 @@ export interface components {
       legacyData?: components['schemas']['ChargeLegacyData']
       mergedFromCase?: components['schemas']['MergedFromCase']
     }
-    ChargeOutcome: {
-      /** Format: uuid */
-      outcomeUuid: string
-      outcomeName: string
-      nomisCode: string
-      outcomeType: string
-      /** Format: int32 */
-      displayOrder: number
-      dispositionCode: string
-    }
     CourtAppearance: {
       /** Format: uuid */
       appearanceUuid: string
@@ -2444,14 +2492,6 @@ export interface components {
     CourtCases: {
       courtCases: components['schemas']['CourtCase'][]
     }
-    MergedFromCase: {
-      caseReference?: string
-      courtCode: string
-      /** Format: date */
-      warrantDate: string
-      /** Format: date */
-      mergedFromDate?: string
-    }
     MergedToCaseDetails: {
       /** Format: date */
       mergedToDate?: string
@@ -2463,7 +2503,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 08:43:13.299325076 */
+      /** @example 13:39:39.709671 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -2741,7 +2781,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 08:43:13.299325076 */
+      /** @example 13:39:39.709671 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -2761,7 +2801,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 08:43:13.299325076 */
+      /** @example 13:39:39.709671 */
       appearanceTime?: string
       courtId: string
     }
@@ -2816,7 +2856,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 08:43:13.299325076 */
+      /** @example 13:39:39.709671 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -2826,7 +2866,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 08:43:13.299325076 */
+      /** @example 13:39:39.709671 */
       appearanceTime?: string
       courtId: string
     }
@@ -2933,17 +2973,17 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
+      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      unpaged?: boolean
+      /** Format: int32 */
+      pageSize?: number
     }
     SortObject: {
       empty?: boolean
-      sorted?: boolean
       unsorted?: boolean
+      sorted?: boolean
     }
     PagePagedCourtCase: {
       /** Format: int64 */
@@ -3050,7 +3090,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 08:43:13.299325076 */
+      /** @example 13:39:39.709671 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -5118,7 +5158,7 @@ export interface operations {
       }
     }
   }
-  getSentenceDetails: {
+  getSentence: {
     parameters: {
       query?: never
       header?: never
@@ -5129,7 +5169,7 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description Returns sentence details */
+      /** @description Returns sentence information */
       200: {
         headers: {
           [name: string]: unknown
@@ -5163,6 +5203,28 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['Sentence']
+        }
+      }
+    }
+  }
+  getSentenceDetails: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        sentenceUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SentenceDetails']
         }
       }
     }

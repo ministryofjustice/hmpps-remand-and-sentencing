@@ -80,7 +80,8 @@ export default function routes(services: Services): Router {
 
   router.get('/person/:nomsId/documents', courtCaseRoutes.documents)
 
-  router.get('/person/:nomsId/sentence-envelopes', sentencingRoutes.getSentenceEnvelopes)
+  router.get('/person/:nomsId/view-sentences', sentencingRoutes.getSentences)
+  router.get('/person/:nomsId/view-sentence/:sentenceUuid', sentencingRoutes.getSentenceDetails)
 
   router.get('/person/:nomsId', courtCaseRoutes.start)
 

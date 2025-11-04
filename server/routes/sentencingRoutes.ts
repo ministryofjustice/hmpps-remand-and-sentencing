@@ -134,7 +134,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('sentenceIsSentenceConsecutiveToForm', { ...sentenceIsSentenceConsecutiveToForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/is-sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/is-sentence-consecutive-to?hasErrors=true${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
       )
     }
 
@@ -352,7 +352,7 @@ export default class SentencingRoutes extends BaseRoutes {
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details?hasErrors=true`,
       )
     }
     return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference)
@@ -483,7 +483,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('firstSentenceConsecutiveToForm', { ...firstSentenceConsecutiveToForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${chargeUuid}/first-sentence-consecutive-to${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${chargeUuid}/first-sentence-consecutive-to?hasErrors=true${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
       )
     }
     if (submitToEditOffence) {
@@ -633,7 +633,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('sentenceConsecutiveToForm', { ...sentenceConsecutiveToForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${chargeUuid}/sentence-consecutive-to${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/SENTENCING/offences/${chargeUuid}/sentence-consecutive-to${submitQuery.length > 0 ? `${submitQuery}&hasErrors=true` : '?hasErrors=true'}`,
       )
     }
     if (submitToEditOffence) {
@@ -1021,7 +1021,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('correctManyPeriodLengthsForm', { ...correctManyPeriodLengthsForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-period-length${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-period-length${submitQuery.length > 0 ? `${submitQuery}&hasErrors=true` : '?hasErrors=true'}`,
       )
     }
 
@@ -1094,7 +1094,7 @@ export default class SentencingRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('correctAlternativeManyPeriodLengthsForm', { ...correctAlternativeManyPeriodLengthsForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-alternative-period-length${submitQuery}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/correct-many-alternative-period-length${submitQuery.length > 0 ? `${submitQuery}&hasErrors=true` : '?hasErrors=true'}`,
       )
     }
     return res.redirect(

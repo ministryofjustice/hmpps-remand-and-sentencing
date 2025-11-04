@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "@tsconfig/node24/tsconfig.json",
   "compileOnSave": true,
   "compilerOptions": {
     "isolatedModules": true,
@@ -16,7 +16,7 @@
   "exclude": [
     "node_modules",
     "assets/**/*.js",
-    "integration_tests",
+    "integration_tests/**/*.ts",
     "dist",
     "cypress.config.ts",
     "esbuild",

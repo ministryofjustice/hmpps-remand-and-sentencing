@@ -1,6 +1,7 @@
 {% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/hint/macro.njk" import govukHint %}
 
 {% set pageTitle = applicationName + " - Update offence outcome" %}
 
@@ -9,7 +10,11 @@
         <span class="govuk-caption-l">Update offence outcomes</span>
         What is the new outcome for this offence?
     </h1>
-    <p class="govuk-body-l govuk-!-margin-top-3" data-qa="offenceParagraph">{{ offence.offenceCode }} - {{ offenceDetails.description }} committed on {{ offence.offenceStartDate | formatDate }}{{" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate }}</p>
+    {% if offenceHint %}
+        {{
+            govukHint(offenceHint)
+        }}
+    {% endif %}
 {% endset %}
 
 {% set radiosData = {

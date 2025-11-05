@@ -240,11 +240,7 @@ export default class OffenceRoutes extends BaseRoutes {
         },
         [[], []],
       )
-    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
-      offence.offenceCode,
-      req.user.username,
-      offence.legacyData?.offenceDescription,
-    )
+    const offenceHint = await this.getOffenceHint(offence, req.user.username)
     let backLink
     if (warrantType === 'SENTENCING') {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
@@ -263,7 +259,7 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink,
       warrantTypeOutcomes,
       nonCustodialOutcomes,
-      offenceDetails,
+      offenceHint,
       offence,
       submitToEditOffence,
     })
@@ -333,13 +329,9 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-    const [caseOutcomes, offenceDetails] = await Promise.all([
+    const [caseOutcomes, offenceHint] = await Promise.all([
       this.refDataService.getAllChargeOutcomes(req.user.username),
-      this.manageOffencesService.getOffenceByCode(
-        offence.offenceCode,
-        req.user.username,
-        offence.legacyData?.offenceDescription,
-      ),
+      this.getOffenceHint(offence, req.user.username),
     ])
 
     const [warrantTypeOutcomes, nonCustodialOutcomes] = caseOutcomes
@@ -393,7 +385,7 @@ export default class OffenceRoutes extends BaseRoutes {
       warrantTypeOutcomes,
       nonCustodialOutcomes,
       legacyCaseOutcome,
-      offenceDetails,
+      offenceHint,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
@@ -506,7 +498,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } else if (courtAppearance.caseOutcomeAppliedAll !== 'true' || offence.onFinishGoToEdit) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
     }
-
+    const offenceHint = await this.getOffenceHint(offence, req.user.username)
     return res.render('pages/offence/count-number', {
       nomsId,
       courtCaseReference,
@@ -520,6 +512,7 @@ export default class OffenceRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       backLink,
       offence,
+      offenceHint,
     })
   }
 

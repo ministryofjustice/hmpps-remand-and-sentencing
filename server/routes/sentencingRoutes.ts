@@ -375,12 +375,8 @@ export default class SentencingRoutes extends BaseRoutes {
     )
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const { sentence } = offence
-    const [offenceDetails, sentencesToChainTo] = await Promise.all([
-      this.manageOffencesService.getOffenceByCode(
-        offence.offenceCode,
-        req.user.username,
-        offence.legacyData?.offenceDescription,
-      ),
+    const [offenceHint, sentencesToChainTo] = await Promise.all([
+      this.getOffenceHint(offence, req.user.username),
       this.remandAndSentencingService.getSentencesToChainTo(
         nomsId,
         dayjs(courtAppearance.warrantDate),
@@ -433,8 +429,7 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offenceDetails,
-      offence,
+      offenceHint,
       firstSentenceConsecutiveToForm,
       sentencedAppearancesOnOtherCases,
       offenceMap,

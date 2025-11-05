@@ -265,7 +265,10 @@ export default abstract class BaseRoutes {
     return Object.values(periodLengthsByType)
   }
 
-  protected async getOffenceHint(offence: Offence, username: string): Promise<{ text: string }> | undefined {
+  protected async getOffenceHint(
+    offence: Offence,
+    username: string,
+  ): Promise<{ text: string; attributes: { [key: string]: string } }> | undefined {
     let hint
     if (offence.offenceCode) {
       const apiOffence = await this.manageOffencesService.getOffenceByCode(
@@ -282,6 +285,9 @@ export default abstract class BaseRoutes {
       }
       hint = {
         text: `${offence.offenceCode} - ${apiOffence.description}${dateText}`,
+        attributes: {
+          'data-qa': 'offenceParagraph',
+        },
       }
     }
     return hint

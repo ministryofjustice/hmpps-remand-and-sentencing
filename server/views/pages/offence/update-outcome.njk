@@ -1,7 +1,6 @@
 {% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% from "govuk/components/hint/macro.njk" import govukHint %}
 
 {% set pageTitle = applicationName + " - Update offence outcome" %}
 
@@ -10,11 +9,6 @@
         <span class="govuk-caption-l">Update offence outcomes</span>
         What is the new outcome for this offence?
     </h1>
-    {% if offenceHint %}
-        {{
-            govukHint(offenceHint)
-        }}
-    {% endif %}
 {% endset %}
 
 {% set radiosData = {
@@ -25,6 +19,7 @@
             classes: "govuk-fieldset__legend--l"
             }
         },
+        hint: offenceHint,
         items: []
     } %}
 

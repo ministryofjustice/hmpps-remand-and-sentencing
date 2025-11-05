@@ -12,6 +12,8 @@
       id: "fineAmount",
       name: "fineAmount",
       value: offenceFineAmountForm.fineAmount,
+      hint: offenceHint,
+      errorMessage:  errors | findError('fineAmount'),
       label: {
         text: "What is the fine amount?",
         classes: "govuk-label--l",

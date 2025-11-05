@@ -1,7 +1,9 @@
 import type { Offence } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
+import dayjs from 'dayjs'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
+import ManageOffencesService from '../services/manageOffencesService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import {
   MergedFromCase,
@@ -15,6 +17,7 @@ import {
 import { formatDate } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
+import config from '../config'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -23,14 +26,18 @@ export default abstract class BaseRoutes {
 
   remandAndSentencingService: RemandAndSentencingService
 
+  manageOffencesService: ManageOffencesService
+
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
+    manageOffencesService: ManageOffencesService,
   ) {
     this.courtAppearanceService = courtAppearanceService
     this.offenceService = offenceService
     this.remandAndSentencingService = remandAndSentencingService
+    this.manageOffencesService = manageOffencesService
   }
 
   protected isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
@@ -256,5 +263,27 @@ export default abstract class BaseRoutes {
         return { ...periodLengthTypes, [key]: existingPeriodLengths }
       }, {}) ?? {}
     return Object.values(periodLengthsByType)
+  }
+
+  protected async getOffenceHint(offence: Offence, username: string): Promise<{ text: string }> | undefined {
+    let hint
+    if (offence.offenceCode) {
+      const apiOffence = await this.manageOffencesService.getOffenceByCode(
+        offence.offenceCode,
+        username,
+        offence.legacyData?.offenceDescription,
+      )
+      let dateText = ''
+      if (offence.offenceStartDate) {
+        dateText = ` committed on ${dayjs(offence.offenceStartDate).format(config.dateFormat)}`
+        if (offence.offenceEndDate) {
+          dateText += ` to ${dayjs(offence.offenceEndDate).format(config.dateFormat)}`
+        }
+      }
+      hint = {
+        text: `${offence.offenceCode} - ${apiOffence.description}${dateText}`,
+      }
+    }
+    return hint
   }
 }

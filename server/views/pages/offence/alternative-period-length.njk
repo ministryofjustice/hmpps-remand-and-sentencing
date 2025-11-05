@@ -1,6 +1,7 @@
 {% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/hint/macro.njk" import govukHint %}
 {% from "../../components/alternativeSentenceLength/macro.njk" import alternativeSentenceLength%}
 {% set pageTitle = applicationName + " - Add " + periodLengthHeader %}
 
@@ -16,6 +17,12 @@
                         isPageHeading: true
                     }
                 }) %}
+
+                {% if offenceHint %}
+                    {{
+                        govukHint(offenceHint)
+                    }}
+                {% endif %}
 
                 {{
                     alternativeSentenceLength({

@@ -27,7 +27,14 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-count-number{{ "?submitToEditOffence=true" if submitToEditOffence }}" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
-                <h1 class="govuk-heading-l">Is there a count number for this offence?</h1>
+                {% call govukFieldset({
+                        describedBy: "hasCountNumber-error" if errorMessage else "",
+                        legend: {
+                            text: "Is there a count number for this offence?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    }) %}
                  {% if offenceHint %}
                     {{
                       govukHint(offenceHint)
@@ -73,6 +80,8 @@
                   text: "Continue",
                   attributes: {  'data-qa': 'continue-button' }
                 }) }}
+
+                {% endcall %}
             </form>
 
 {% endblock %}

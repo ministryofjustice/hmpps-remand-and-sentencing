@@ -47,12 +47,12 @@ export default class SentencingRoutes extends BaseRoutes {
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
-    private readonly manageOffencesService: ManageOffencesService,
+    manageOffencesService: ManageOffencesService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
 
   public getIsSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
@@ -375,12 +375,8 @@ export default class SentencingRoutes extends BaseRoutes {
     )
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const { sentence } = offence
-    const [offenceDetails, sentencesToChainTo] = await Promise.all([
-      this.manageOffencesService.getOffenceByCode(
-        offence.offenceCode,
-        req.user.username,
-        offence.legacyData?.offenceDescription,
-      ),
+    const [offenceHint, sentencesToChainTo] = await Promise.all([
+      this.getOffenceHint(offence, req.user.username),
       this.remandAndSentencingService.getSentencesToChainTo(
         nomsId,
         dayjs(courtAppearance.warrantDate),
@@ -433,8 +429,7 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offenceDetails,
-      offence,
+      offenceHint,
       firstSentenceConsecutiveToForm,
       sentencedAppearancesOnOtherCases,
       offenceMap,
@@ -520,12 +515,8 @@ export default class SentencingRoutes extends BaseRoutes {
     )
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
     const { sentence } = offence
-    const [offenceDetails, sentencesToChainTo] = await Promise.all([
-      this.manageOffencesService.getOffenceByCode(
-        offence.offenceCode,
-        req.user.username,
-        offence.legacyData?.offenceDescription,
-      ),
+    const [offenceHint, sentencesToChainTo] = await Promise.all([
+      this.getOffenceHint(offence, req.user.username),
       this.remandAndSentencingService.getSentencesToChainTo(
         nomsId,
         dayjs(courtAppearance.warrantDate),
@@ -593,8 +584,7 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offenceDetails,
-      offence,
+      offenceHint,
       sentenceConsecutiveToForm,
       sentencedAppearancesOnOtherCases,
       sentencesOnSameCase,
@@ -960,11 +950,6 @@ export default class SentencingRoutes extends BaseRoutes {
     const { periodLengthType, legacyCode } = req.query
     const submitQuery = this.correctManyPeriodLengthSubmitQuery(periodLengthType, legacyCode)
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    const offenceDetails = await this.manageOffencesService.getOffenceByCode(
-      offence.offenceCode,
-      req.user.username,
-      offence.legacyData?.offenceDescription,
-    )
     const currentPeriodLengths = offence.sentence.periodLengths?.filter(
       periodLength =>
         periodLength.periodLengthType === periodLengthType ||
@@ -977,7 +962,7 @@ export default class SentencingRoutes extends BaseRoutes {
       periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
       currentPeriodLengths.at(0)?.legacyData?.sentenceTermDescription
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
-
+    const offenceHint = await this.getOffenceHint(offence, req.user.username)
     return res.render('pages/sentencing/correct-many-period-length', {
       nomsId,
       courtCaseReference,
@@ -992,8 +977,7 @@ export default class SentencingRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       correctManyPeriodLengthsForm,
       backLink,
-      offenceCode: offence.offenceCode,
-      offenceDescription: offenceDetails.description,
+      offenceHint,
     })
   }
 

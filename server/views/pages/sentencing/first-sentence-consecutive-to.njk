@@ -23,8 +23,11 @@
                         }
                     }) %}
                     
-                    <p class="govuk-body-l">{{offenceDetails.code}} {{offenceDetails.description}}{% if offence.offenceStartDate%} committed on {{ offence.offenceStartDate | formatDate }}{%if offence.offenceEndDate %} to {{offence.offenceEndDate | formatDate}}{% endif %}{% endif %}</p>
-
+                    {% if offenceHint %}
+                        {{
+                            govukHint(offenceHint)
+                        }}
+                    {% endif %}
                     {% if errorMessage %}
                         {{ govukErrorMessage({
                             id: "consecutiveToSentenceUuid-error",

@@ -57,13 +57,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
     offenceService: OffenceService,
     courtAppearanceService: CourtAppearanceService,
     remandAndSentencingService: RemandAndSentencingService,
-    private readonly manageOffencesService: ManageOffencesService,
+    manageOffencesService: ManageOffencesService,
     private readonly documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
 
   public start: RequestHandler = async (req, res): Promise<void> => {

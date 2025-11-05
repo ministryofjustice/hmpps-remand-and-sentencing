@@ -84,9 +84,7 @@
                     isPageHeading: true
                 }
             },
-            hint: {
-                text: offenceCode + " - " + offenceDescription
-            },
+            hint: offenceHint,
             errorMessage: errors | findError('correctPeriodLengthUuid'),
             items: radios
         }) }}

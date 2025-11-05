@@ -16,10 +16,10 @@ export default class RemandRoutes extends BaseRoutes {
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
     private readonly courtRegisterService: CourtRegisterService,
-    private readonly manageOffencesService: ManageOffencesService,
+    manageOffencesService: ManageOffencesService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
 
   public loadAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {

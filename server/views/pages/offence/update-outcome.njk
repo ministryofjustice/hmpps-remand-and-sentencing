@@ -9,7 +9,6 @@
         <span class="govuk-caption-l">Update offence outcomes</span>
         What is the new outcome for this offence?
     </h1>
-    <p class="govuk-body-l govuk-!-margin-top-3" data-qa="offenceParagraph">{{ offence.offenceCode }} - {{ offenceDetails.description }} committed on {{ offence.offenceStartDate | formatDate }}{{" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate }}</p>
 {% endset %}
 
 {% set radiosData = {
@@ -20,6 +19,7 @@
             classes: "govuk-fieldset__legend--l"
             }
         },
+        hint: offenceHint,
         items: []
     } %}
 

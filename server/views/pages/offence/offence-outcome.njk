@@ -1,12 +1,12 @@
 {% extends "../../partials/appearanceDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/hint/macro.njk" import govukHint %}
 
 {% set pageTitle = applicationName + " - Add a offence outcome" %}
 
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading{% if legacyCaseOutcome %} govuk-!-static-margin-bottom-3{% endif %}">Select the outcome for this offence</h1>
-    <p class="govuk-body-l govuk-!-margin-top-3" data-qa="offenceParagraph">{{ offenceDetails.code }} - {{ offenceDetails.description }}</p>
     {% if legacyCaseOutcome %}
     <p class="govuk-body-l govuk-!-static-margin-bottom-3" data-qa="legendParagraph">{{ legacyCaseOutcome }}</p>
     {% endif %}
@@ -20,6 +20,7 @@
                         classes: "govuk-fieldset__legend--l"
                         }
                     },
+                    hint: offenceHint,
                     items: []
     } %}
 

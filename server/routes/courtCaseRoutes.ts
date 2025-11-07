@@ -869,6 +869,24 @@ export default class CourtCaseRoutes extends BaseRoutes {
       warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     }
 
+    const warrantTypeOptions = [
+      {
+        value: 'REMAND',
+        text: 'Remand',
+      },
+      {
+        value: 'SENTENCING',
+        text: 'Sentencing',
+      },
+    ]
+
+    if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      warrantTypeOptions.push({
+        value: 'NON_CUSTODIAL',
+        text: 'Non-custodial event',
+      })
+    }
+
     return res.render('pages/courtAppearance/warrant-type', {
       nomsId,
       submitToCheckAnswers,
@@ -878,6 +896,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      warrantTypeOptions,
       backLink: submitToCheckAnswers
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
         : `/person/${nomsId}`,

@@ -21,6 +21,15 @@ describe('GET warrant type', () => {
         expect(continueButton).toContain('Continue')
         const captionText = $('.govuk-caption-l').text()
         expect(captionText).toContain('Add a court case')
+        const radioOptions = $('.govuk-radios__label')
+          .toArray()
+          .map(radioLabelElement =>
+            $(radioLabelElement)
+              .text()
+              .trim()
+              .replace(/(\r\n|\n|\r)/gm, ''),
+          )
+        expect(radioOptions).toEqual(expect.arrayContaining(['Remand', 'Sentencing']))
       })
   })
 
@@ -32,6 +41,15 @@ describe('GET warrant type', () => {
         const $ = cheerio.load(res.text)
         const captionText = $('.govuk-caption-l').text()
         expect(captionText).toContain('Add an appearance')
+        const radioOptions = $('.govuk-radios__label')
+          .toArray()
+          .map(radioLabelElement =>
+            $(radioLabelElement)
+              .text()
+              .trim()
+              .replace(/(\r\n|\n|\r)/gm, ''),
+          )
+        expect(radioOptions).toEqual(expect.arrayContaining(['Remand', 'Sentencing', 'Non-custodial event']))
       })
   })
 })

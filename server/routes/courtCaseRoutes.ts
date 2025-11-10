@@ -39,7 +39,6 @@ import {
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
 import { chargeToOffence } from '../utils/mappingUtils'
-import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import logger from '../../logger'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
@@ -51,6 +50,8 @@ import CourtRegisterService from '../services/courtRegisterService'
 import { MergedFromCase, SearchDocuments } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
+import RemandTaskListModel from './data/RemandTaskListModel'
+import SentencingTaskListModel from './data/SentencingTaskListModel'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -947,6 +948,33 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
       caseReferenceSet = !!latestCourtAppearance.courtCaseReference
     }
+    let model
+    switch (courtAppearance.warrantType) {
+      case 'REMAND':
+        model = new RemandTaskListModel(
+          nomsId,
+          addOrEditCourtCase,
+          addOrEditCourtAppearance,
+          courtCaseReference,
+          appearanceReference,
+          courtAppearance,
+          caseReferenceSet,
+        )
+        break
+      case 'SENTENCING':
+        model = new SentencingTaskListModel(
+          nomsId,
+          addOrEditCourtCase,
+          addOrEditCourtAppearance,
+          courtCaseReference,
+          appearanceReference,
+          courtAppearance,
+          caseReferenceSet,
+        )
+        break
+      default:
+        logger.info(`no task list model for warrant type ${courtAppearance.warrantType}`)
+    }
     return res.render('pages/courtAppearance/task-list', {
       nomsId,
       warrantType,
@@ -954,15 +982,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      model: new TaskListModel(
-        nomsId,
-        addOrEditCourtCase,
-        addOrEditCourtAppearance,
-        courtCaseReference,
-        appearanceReference,
-        courtAppearance,
-        caseReferenceSet,
-      ),
+      model,
     })
   }
 

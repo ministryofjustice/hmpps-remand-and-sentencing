@@ -35,7 +35,9 @@
 {% endfor %}
 
 {% if subListOutcomes.length %}
-    {{ radiosData.items.push({ divider: "or"}) }}
+    {% if mainOutcomes.length %}
+        {{ radiosData.items.push({ divider: "or"}) }}
+    {% endif %}
 
     {% for caseOutcome in subListOutcomes %}
          {% set caseOutcomeValue = caseOutcome.outcomeUuid + '|' + caseOutcome.relatedChargeOutcomeUuid %}

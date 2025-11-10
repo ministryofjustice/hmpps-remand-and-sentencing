@@ -62,6 +62,7 @@ const setupCourtCase = () => {
         firstDayInCustody: '',
         mergedFromCases: [],
         allAppearancesHaveRecall: false,
+        firstDayInCustodyWarrantType: 'REMAND',
       },
     ],
     number: 0,

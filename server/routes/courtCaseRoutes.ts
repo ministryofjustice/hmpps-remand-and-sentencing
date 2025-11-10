@@ -52,6 +52,7 @@ import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
 import RemandTaskListModel from './data/RemandTaskListModel'
 import SentencingTaskListModel from './data/SentencingTaskListModel'
+import NonCustodialTaskListModel from './data/NonCustodialTaskListModel'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -963,6 +964,17 @@ export default class CourtCaseRoutes extends BaseRoutes {
         break
       case 'SENTENCING':
         model = new SentencingTaskListModel(
+          nomsId,
+          addOrEditCourtCase,
+          addOrEditCourtAppearance,
+          courtCaseReference,
+          appearanceReference,
+          courtAppearance,
+          caseReferenceSet,
+        )
+        break
+      case 'NON_CUSTODIAL':
+        model = new NonCustodialTaskListModel(
           nomsId,
           addOrEditCourtCase,
           addOrEditCourtAppearance,

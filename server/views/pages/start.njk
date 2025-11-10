@@ -67,7 +67,7 @@
                                     },
                                     {
                                         key: { text: "First day in custody"},
-                                        value: { text: courtCaseDetails.firstDayInCustody + ( ' (' + courtCaseDetails.warrantType | capitalize + ')' if courtCaseDetails.warrantType else '') }
+                                        value: { text: courtCaseDetails.firstDayInCustody + ( ' (' + courtCaseDetails.firstDayInCustodyWarrantType | capitalize + ')' if courtCaseDetails.firstDayInCustodyWarrantType else '') }
                                     },
                                     {
                                         key: { text: "Overall case outcome"},

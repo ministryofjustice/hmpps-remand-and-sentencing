@@ -77,6 +77,7 @@ export default {
               appearanceCount: 2,
               caseReferences: ['C894623', 'F23325', 'J39596'],
               firstDayInCustody: '2022-10-15',
+              firstDayInCustodyWarrantType: 'REMAND',
               latestCourtAppearance: {
                 caseReference: 'C894623',
                 courtCode: 'ACCRYC',
@@ -135,6 +136,7 @@ export default {
               appearanceCount: 1,
               caseReferences: ['C894623'],
               firstDayInCustody: '2023-12-15',
+              firstDayInCustodyWarrantType: 'REMAND',
               latestCourtAppearance: {
                 caseReference: 'C894623',
                 courtCode: 'ACCRYC',
@@ -187,6 +189,7 @@ export default {
               appearanceCount: 1,
               caseReferences: ['XX1234', 'YY1234'],
               firstDayInCustody: '2024-01-23',
+              firstDayInCustodyWarrantType: 'SENTENCING',
               overallSentenceLength: {
                 years: 1,
                 months: null,
@@ -361,6 +364,7 @@ export default {
               appearanceCount: 1,
               caseReferences: ['XX1234'],
               firstDayInCustody: '2024-01-23',
+              firstDayInCustodyWarrantType: 'SENTENCING',
               latestCourtAppearance: {
                 caseReference: 'XX1234',
                 courtCode: 'ACCRYC',
@@ -425,6 +429,7 @@ export default {
               appearanceCount: 1,
               caseReferences: ['NOMIS123'],
               firstDayInCustody: '2025-06-05',
+              firstDayInCustodyWarrantType: 'REMAND',
               overallSentenceLength: null,
               latestCourtAppearance: {
                 caseReference: 'NOMIS123',

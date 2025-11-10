@@ -105,7 +105,7 @@ export default abstract class TaskListModel {
   getCourtDocumentsItem(courtAppearance: CourtAppearance): TaskListItem {
     return {
       title: {
-        text: 'Add appearance information',
+        text: 'Upload court documents',
         classes: 'govuk-link--no-visited-state',
       },
       href: this.getCourtDocumentsHref(courtAppearance),

@@ -67,7 +67,7 @@
     }
 ] %}
 
-{% if isRemandWarrant %}
+{% if courtAppearance.warrantType !== 'SENTENCING' %}
     {% set checkAnswersRows = checkAnswersRows.concat([
         {
             key: {

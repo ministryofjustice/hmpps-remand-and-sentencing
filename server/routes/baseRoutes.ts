@@ -1,6 +1,7 @@
 import type { Offence } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import dayjs from 'dayjs'
+import { off } from 'bunyan-format'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -81,12 +82,6 @@ export default abstract class BaseRoutes {
       )
     }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
-    if (offence.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
-      this.offenceService.setOffenceBeingReplaced(req.session, offence)
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date?willReplace=true`,
-      )
-    }
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
@@ -97,6 +92,17 @@ export default abstract class BaseRoutes {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+        )
+      }
+      if (offence.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
+        this.offenceService.setOffenceBeingReplaced(req.session, offence)
+        const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+          req.session,
+          nomsId,
+          appearanceReference,
+        ).offences.length
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true&&?submitToEditOffence=true`,
         )
       }
       return res.redirect(

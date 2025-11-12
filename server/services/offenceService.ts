@@ -1138,6 +1138,10 @@ export default class OffenceService {
     session.offenceBeingReplaced = offence
   }
 
+  getReplacedOffence(session: Partial<SessionData>): Offence {
+    return session.offenceBeingReplaced
+  }
+
   validateOffenceMandatoryFields(offence: Offence): { text: string; href: string }[] {
     const errors: { text: string; href: string }[] = []
     if (!offence.sentence) {

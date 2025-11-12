@@ -510,7 +510,7 @@ context('Repeat Court Case journey', () => {
     courtCaseSelectReferencePage.radioLabelSelector('true').click()
     courtCaseSelectReferencePage.continueButton().click()
 
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'appearance')
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
@@ -538,10 +538,10 @@ context('Repeat Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Non_custodial',
       'Case reference': 'C894623',
-      'Warrant date': '13/05/2023',
+      'Appearance date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Lie on file',
-      'Does this outcome apply to all offences on the warrant?': 'Yes',
+      'Does this outcome apply to all offences on the appearance?': 'Yes',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 

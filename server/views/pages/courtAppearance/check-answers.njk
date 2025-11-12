@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set isRemandWarrant = courtAppearance.warrantType == 'REMAND'%}
+{% set warrantOrAppearance = 'Appearance' if courtAppearance.warrantType === 'NON_CUSTODIAL' else 'Warrant' %}
 {% set checkAnswersRows = [
     {
         key: {
@@ -30,7 +31,7 @@
     },
     {
         key: {
-            text: "Warrant date"
+            text: warrantOrAppearance + " date"
         },
         value: {
             text: courtAppearance.warrantDate | formatDate
@@ -40,7 +41,7 @@
                 {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
                     text: "Edit",
-                    visuallyHiddenText: "warrant date",
+                    visuallyHiddenText: warrantOrAppearance + " date",
                     attributes: {
                         "data-qa": "edit-warrant-date-link"
                     }
@@ -67,7 +68,7 @@
     }
 ] %}
 
-{% if isRemandWarrant %}
+{% if courtAppearance.warrantType !== 'SENTENCING' %}
     {% set checkAnswersRows = checkAnswersRows.concat([
         {
             key: {
@@ -88,7 +89,7 @@
         },
         {
             key: {
-                text: "Does this outcome apply to all offences on the warrant?"
+                text: "Does this outcome apply to all offences on the "+ warrantOrAppearance | lower + "?"
             },
             value: {
                 text: "Yes" if courtAppearance.caseOutcomeAppliedAll == 'true' else "No"
@@ -97,8 +98,7 @@
                 items: [
                     {
                         href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
-                        text: "Edit",
-                        visuallyHiddenText: "Is the outcome the same for all offences on the warrant?"
+                        text: "Edit"
                     }
                 ] if courtAppearance.appearanceInformationAccepted !== true
             }

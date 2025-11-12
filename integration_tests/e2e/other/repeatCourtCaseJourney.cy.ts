@@ -556,7 +556,45 @@ context('Repeat Court Case journey', () => {
         },
         {
           name: 'Review offences',
-          status: 'Incomplete',
+          status: 'Optional',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
+    courtCaseTaskListPage.reviewOffencesLink().click()
+    let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    offenceReviewOffencesPage.addAnotherButton().click()
+
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    offenceOffenceDatePage.continueButton().click()
+
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.continueButton().click()
+
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.continueButton().click()
+
+    offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    offenceReviewOffencesPage.radioLabelSelector('true').click()
+    offenceReviewOffencesPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Review offences',
+          status: 'Completed',
         },
         {
           name: 'Upload court documents',

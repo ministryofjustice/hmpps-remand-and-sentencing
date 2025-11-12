@@ -39,7 +39,6 @@ import {
 import DocumentManagementService from '../services/documentManagementService'
 import validate from '../validation/validation'
 import { chargeToOffence } from '../utils/mappingUtils'
-import TaskListModel from './data/TaskListModel'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import logger from '../../logger'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
@@ -51,6 +50,9 @@ import CourtRegisterService from '../services/courtRegisterService'
 import { MergedFromCase, SearchDocuments } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
+import RemandTaskListModel from './data/RemandTaskListModel'
+import SentencingTaskListModel from './data/SentencingTaskListModel'
+import NonCustodialTaskListModel from './data/NonCustodialTaskListModel'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -582,6 +584,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
     }
 
+    let warrantOrAppearance = 'warrant'
+    if (warrantType === 'NON_CUSTODIAL') {
+      warrantOrAppearance = 'appearance'
+    }
+
     return res.render('pages/courtAppearance/warrant-date', {
       nomsId,
       submitToCheckAnswers,
@@ -595,6 +602,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       backLink,
       showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      warrantOrAppearance,
     })
   }
 
@@ -869,6 +877,24 @@ export default class CourtCaseRoutes extends BaseRoutes {
       warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     }
 
+    const warrantTypeOptions = [
+      {
+        value: 'REMAND',
+        text: 'Remand',
+      },
+      {
+        value: 'SENTENCING',
+        text: 'Sentencing',
+      },
+    ]
+
+    if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      warrantTypeOptions.push({
+        value: 'NON_CUSTODIAL',
+        text: 'Non-custodial event',
+      })
+    }
+
     return res.render('pages/courtAppearance/warrant-type', {
       nomsId,
       submitToCheckAnswers,
@@ -878,6 +904,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      warrantTypeOptions,
       backLink: submitToCheckAnswers
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
         : `/person/${nomsId}`,
@@ -928,6 +955,44 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
       caseReferenceSet = !!latestCourtAppearance.courtCaseReference
     }
+    let model
+    switch (courtAppearance.warrantType) {
+      case 'REMAND':
+        model = new RemandTaskListModel(
+          nomsId,
+          addOrEditCourtCase,
+          addOrEditCourtAppearance,
+          courtCaseReference,
+          appearanceReference,
+          courtAppearance,
+          caseReferenceSet,
+        )
+        break
+      case 'SENTENCING':
+        model = new SentencingTaskListModel(
+          nomsId,
+          addOrEditCourtCase,
+          addOrEditCourtAppearance,
+          courtCaseReference,
+          appearanceReference,
+          courtAppearance,
+          caseReferenceSet,
+        )
+        break
+      case 'NON_CUSTODIAL':
+        model = new NonCustodialTaskListModel(
+          nomsId,
+          addOrEditCourtCase,
+          addOrEditCourtAppearance,
+          courtCaseReference,
+          appearanceReference,
+          courtAppearance,
+          caseReferenceSet,
+        )
+        break
+      default:
+        logger.info(`no task list model for warrant type ${courtAppearance.warrantType}`)
+    }
     return res.render('pages/courtAppearance/task-list', {
       nomsId,
       warrantType,
@@ -935,15 +1000,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      model: new TaskListModel(
-        nomsId,
-        addOrEditCourtCase,
-        addOrEditCourtAppearance,
-        courtCaseReference,
-        appearanceReference,
-        courtAppearance,
-        caseReferenceSet,
-      ),
+      model,
     })
   }
 

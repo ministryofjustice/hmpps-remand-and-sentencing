@@ -20,6 +20,8 @@ export default class CourtCasesDetailsModel {
 
   firstDayInCustody: string
 
+  firstDayInCustodyWarrantType: string
+
   overallCaseOutcome: string
 
   overallSentenceLength: SentenceLength
@@ -63,7 +65,7 @@ export default class CourtCasesDetailsModel {
     this.courtCaseUuid = pagedCourtCase.courtCaseUuid
     this.caseReferences = pagedCourtCase.caseReferences.join(', ')
     this.firstDayInCustody = dayjs(pagedCourtCase.firstDayInCustody).format(config.dateFormat)
-
+    this.firstDayInCustodyWarrantType = pagedCourtCase.firstDayInCustodyWarrantType
     this.overallCaseOutcome = pagedCourtCase.latestCourtAppearance.outcome ?? 'Not entered'
     if (pagedCourtCase.overallSentenceLength) {
       this.overallSentenceLength = pagedAppearancePeriodLengthToSentenceLength(pagedCourtCase.overallSentenceLength)

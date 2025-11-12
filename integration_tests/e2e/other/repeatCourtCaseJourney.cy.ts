@@ -477,4 +477,91 @@ context('Repeat Court Case journey', () => {
     cy.task('verifyCreateSentenceCourtAppearanceRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
   })
+
+  it('remand to non custodial', () => {
+    const startPage = Page.verifyOnPage(StartPage)
+    startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
+
+    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
+    courtCaseWarrantTypePage.radioLabelSelector('NON_CUSTODIAL').click()
+    courtCaseWarrantTypePage.continueButton().click()
+
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Review offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Cannot start yet',
+        },
+      ])
+    courtCaseTaskListPage.appearanceInformationLink().click()
+
+    const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
+    courtCaseSelectReferencePage.radioLabelSelector('true').click()
+    courtCaseSelectReferencePage.continueButton().click()
+
+    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'appearance')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.continueButton().click()
+
+    const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
+      CourtCaseSelectCourtNamePage,
+      'Was the appearance at Accrington Youth Court?',
+    )
+    courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
+    courtCaseSelectCourtNamePage.continueButton().click()
+
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Lie on file').click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
+
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
+
+    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
+    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Warrant type': 'Non_custodial',
+      'Case reference': 'C894623',
+      'Appearance date': '13/05/2023',
+      'Court name': 'Accrington Youth Court',
+      'Overall case outcome': 'Lie on file',
+      'Does this outcome apply to all offences on the appearance?': 'Yes',
+    })
+    courtCaseCheckAnswersPage.continueButton().click()
+
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Review offences',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
+  })
 })

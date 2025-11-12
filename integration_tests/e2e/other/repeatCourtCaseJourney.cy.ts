@@ -556,7 +556,7 @@ context('Repeat Court Case journey', () => {
         },
         {
           name: 'Review offences',
-          status: 'Incomplete',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',

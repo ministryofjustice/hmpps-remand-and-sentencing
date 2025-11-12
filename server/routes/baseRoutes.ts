@@ -81,6 +81,12 @@ export default abstract class BaseRoutes {
       )
     }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
+    if (offence.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
+      this.offenceService.setOffenceBeingReplaced(req.session, offence)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date?willReplace=true`,
+      )
+    }
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
@@ -198,13 +204,16 @@ export default abstract class BaseRoutes {
     return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`)
   }
 
-  protected queryParametersToString(submitToEditOffence, invalidatedFrom): string {
+  protected queryParametersToString(submitToEditOffence, invalidatedFrom, willReplace = false): string {
     const submitQueries: string[] = []
     if (submitToEditOffence) {
       submitQueries.push('submitToEditOffence=true')
     }
     if (invalidatedFrom) {
       submitQueries.push(`invalidatedFrom=${invalidatedFrom}`)
+    }
+    if (willReplace) {
+      submitQueries.push('willReplace=true')
     }
     return submitQueries.length ? `?${submitQueries.join('&')}` : ''
   }

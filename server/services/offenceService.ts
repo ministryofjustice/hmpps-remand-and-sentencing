@@ -1133,6 +1133,11 @@ export default class OffenceService {
     return offence.sentence ?? { sentenceUuid: crypto.randomUUID() }
   }
 
+  setOffenceBeingReplaced(session: Partial<SessionData>, offence: Offence) {
+    // eslint-disable-next-line no-param-reassign
+    session.offenceBeingReplaced = offence
+  }
+
   validateOffenceMandatoryFields(offence: Offence): { text: string; href: string }[] {
     const errors: { text: string; href: string }[] = []
     if (!offence.sentence) {

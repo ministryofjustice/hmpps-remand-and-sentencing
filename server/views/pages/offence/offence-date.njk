@@ -22,6 +22,11 @@
                         isPageHeading: true
                     }
                 }) %}
+                {% if offenceName %}
+                                        <div id="fieldset-hint" class="govuk-hint">
+                                           {{ offenceName }}
+                                        </div>
+                                    {% endif %}
 
                     {{ govukDateInput({
                         id: "offenceStartDate",

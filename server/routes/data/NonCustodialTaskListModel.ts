@@ -73,6 +73,14 @@ export default class NonCustodialTaskListModel extends TaskListModel {
         text: 'Completed',
       }
     }
+    if (courtAppearance.caseOutcomeAppliedAll === 'true') {
+      return {
+        tag: {
+          text: 'Optional',
+          classes: 'govuk-tag--grey',
+        },
+      }
+    }
     return {
       tag: {
         text: 'Incomplete',

@@ -28,6 +28,8 @@ import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import OffenceUpdateOffenceOutcomesPage from '../../pages/offenceUpdateOffenceOutcomesPage'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
+import UploadNonCustodialCourtDocumentsPage from '../../pages/uploadNonCustodialCourtDocumentsPage'
+import DocumentUploadPage from '../../pages/documentUpload'
 
 context('Repeat Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -479,6 +481,9 @@ context('Repeat Court Case journey', () => {
   })
 
   it('remand to non custodial', () => {
+    cy.task('stubUploadTempDocument', { type: 'PRISON_COURT_REGISTER' })
+    cy.task('stubUploadDocument')
+    cy.task('stubCreateNonCustodialCourtAppearance')
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
 
@@ -601,5 +606,35 @@ context('Repeat Court Case journey', () => {
           status: 'Optional',
         },
       ])
+    courtCaseTaskListPage.uploadCourtDocumentsLink().click()
+    let uploadNonCustodialCourtDocumentsPage = Page.verifyOnPage(UploadNonCustodialCourtDocumentsPage)
+    uploadNonCustodialCourtDocumentsPage.uploadLinks().trimTextContent().should('equal', 'Upload prison court register')
+    uploadNonCustodialCourtDocumentsPage.uploadDocumentLink('prison-court-register').click()
+    const documentUploadPage = Page.verifyOnPageTitle(DocumentUploadPage, 'prison court register')
+    documentUploadPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
+    documentUploadPage.continueButton().click()
+    uploadNonCustodialCourtDocumentsPage = Page.verifyOnPage(UploadNonCustodialCourtDocumentsPage)
+    uploadNonCustodialCourtDocumentsPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add appearance information',
+          status: 'Completed',
+        },
+        {
+          name: 'Review offences',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Completed',
+        },
+      ])
+    courtCaseTaskListPage.continueButton().click()
+    cy.task('verifyCreateNonCustodialCourtAppearanceRequest').should('equal', 1)
+    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
   })
 })

@@ -3197,4 +3197,69 @@ export default {
       },
     })
   },
+
+  stubCreateNonCustodialCourtAppearance: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
+        bodyPatterns: [
+          {
+            equalToJson:
+              // eslint-disable-next-line no-template-curly-in-string
+              '{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "outcomeUuid": "7fd9efee-200e-4579-a766-e6bf9a499096", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-13", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "66032e17-977a-40f9-b634-1bc2b45e874d", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f"}, {"chargeUuid": "${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "66032e17-977a-40f9-b634-1bc2b45e874d", "prisonId": "MDI"}], "warrantType": "NON_CUSTODIAL", "documents": [{"documentUUID": "${json-unit.any-string}", "documentType": "PRISON_COURT_REGISTER", "fileName": "testfile.doc"}]}',
+          },
+        ],
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
+        },
+      },
+    })
+  },
+
+  verifyCreateNonCustodialCourtAppearanceRequest: (): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/court-appearance/5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
+      method: 'PUT',
+      body: {
+        courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        appearanceUuid: '5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
+        outcomeUuid: '7fd9efee-200e-4579-a766-e6bf9a499096',
+        courtCode: 'ACCRYC',
+        courtCaseReference: 'C894623',
+        appearanceDate: '2023-05-13',
+        prisonId: 'MDI',
+        charges: [
+          {
+            offenceCode: 'PS90037',
+            offenceStartDate: '2023-05-12',
+            outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+            prisonId: 'MDI',
+            chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+          },
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            chargeUuid: '${json-unit.any-string}',
+            offenceCode: 'PS90037',
+            offenceStartDate: '2023-05-10',
+            outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+            prisonId: 'MDI',
+          },
+        ],
+        warrantType: 'NON_CUSTODIAL',
+        documents: [
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            documentUUID: '${json-unit.any-string}',
+            documentType: 'PRISON_COURT_REGISTER',
+            fileName: 'testfile.doc',
+          },
+        ],
+      },
+    })
+  },
 }

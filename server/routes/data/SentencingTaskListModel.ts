@@ -100,7 +100,7 @@ export default class SentencingTaskListModel extends TaskListModel {
 
   getOffenceSentenceHref(courtAppearance: CourtAppearance): string {
     let href
-    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+    if (this.allWarrantInformationFilledOut(courtAppearance)) {
       if (courtAppearance.offences.length) {
         if (this.isAddCourtCase()) {
           href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`

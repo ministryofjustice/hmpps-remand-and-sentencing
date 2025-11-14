@@ -78,7 +78,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, invalidatedFrom } = req.query
+    const { submitToEditOffence, invalidatedFrom, willReplace } = req.query
     const offenceDateForm = (req.flash('offenceDateForm')[0] || {}) as OffenceOffenceDateForm
     let offenceStartDateDay: number | string = offenceDateForm['offenceStartDate-day']
     let offenceStartDateMonth: number | string = offenceDateForm['offenceStartDate-month']
@@ -86,6 +86,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let offenceEndDateDay: number | string = offenceDateForm['offenceEndDate-day']
     let offenceEndDateMonth: number | string = offenceDateForm['offenceEndDate-month']
     let offenceEndDateYear: number | string = offenceDateForm['offenceEndDate-year']
+    let offenceName: string
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
 
     if (offence.offenceStartDate && Object.keys(offenceDateForm).length === 0) {
@@ -106,8 +107,18 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
+
+    if (willReplace === 'true') {
+      const offenceBeingReplaced = this.offenceService.getReplacedOffence(req.session)
+      const offenceDesc = await this.manageOffencesService.getOffenceByCode(
+        offenceBeingReplaced.offenceCode,
+        res.locals.user.username,
+        offenceBeingReplaced.legacyData?.offenceDescription,
+      )
+      offenceName = `This offence will replace ${offenceDesc.code} - ${offenceDesc.description}`
+    }
     const isFirstOffence = offences.length === 0
-    const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
+    const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom, willReplace === 'true')
     if (submitToEditOffence || invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
@@ -140,6 +151,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceEndDateMonth,
       offenceEndDateYear,
       submitToEditOffence,
+      offenceName,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       isFirstOffence,
       errors: req.flash('errors') || [],
@@ -157,7 +169,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, invalidatedFrom } = req.query
+    const { submitToEditOffence, invalidatedFrom, willReplace } = req.query
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     const offenceDateForm = trimForm<OffenceOffenceDateForm>(req.body)
     const errors = this.offenceService.setOffenceDates(
@@ -193,8 +205,18 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type?invalidatedFrom=${InvalidatedFrom.OFFENCE_DATE}`,
         )
       }
+      if (willReplace === 'true') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code?willReplace=true&&submitToEditOffence=true`,
+        )
+      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
+      )
+    }
+    if (willReplace === 'true') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code?willReplace=true`,
       )
     }
     return res.redirect(
@@ -300,11 +322,23 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    if (outcome.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
+      this.offenceService.setOffenceBeingReplaced(req.session, offence)
+      const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+        req.session,
+        nomsId,
+        appearanceReference,
+      ).offences.length
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true`,
+      )
+    }
     if (warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes?backTo=OUTCOME&chargeUuid=${chargeUuid}`,
       )
     }
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
     )
@@ -421,7 +455,6 @@ export default class OffenceRoutes extends BaseRoutes {
       sentenceUuidsInChain,
       req.user.username,
     )
-
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
@@ -445,7 +478,7 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
     }
-    if (submitToEditOffence) {
+    if (submitToEditOffence && outcome.outcomeUuid !== '68e56c1f-b179-43da-9d00-1272805a7ad3') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
@@ -587,11 +620,21 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence, willReplace } = req.query
     const offenceCodeForm = (req.flash('offenceCodeForm')[0] || {}) as OffenceOffenceCodeForm
     const offenceCode =
       offenceCodeForm.offenceCode ||
       this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)?.offenceCode
+    let offenceName: string
+    if (willReplace === 'true') {
+      const offenceBeingReplaced = this.offenceService.getReplacedOffence(req.session)
+      const offenceDesc = await this.manageOffencesService.getOffenceByCode(
+        offenceBeingReplaced.offenceCode,
+        res.locals.user.username,
+        offenceBeingReplaced.legacyData?.offenceDescription,
+      )
+      offenceName = `This offence will replace ${offenceDesc.code} - ${offenceDesc.description}`
+    }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
@@ -608,6 +651,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       submitToEditOffence,
+      offenceName,
       backLink,
     })
   }
@@ -2267,7 +2311,6 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
     )
     const { offences, warrantType } = courtAppearance
-
     const { backTo, chargeUuid } = req.query // Query parameter to determine navigation context
     const backLink =
       backTo === 'OUTCOME'

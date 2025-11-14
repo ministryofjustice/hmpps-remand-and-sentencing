@@ -93,6 +93,17 @@ export default abstract class BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
         )
       }
+      if (offence.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
+        this.offenceService.setOffenceBeingReplaced(req.session, offence)
+        const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+          req.session,
+          nomsId,
+          appearanceReference,
+        ).offences.length
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true&&?submitToEditOffence=true`,
+        )
+      }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
@@ -198,13 +209,16 @@ export default abstract class BaseRoutes {
     return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`)
   }
 
-  protected queryParametersToString(submitToEditOffence, invalidatedFrom): string {
+  protected queryParametersToString(submitToEditOffence, invalidatedFrom, willReplace = false): string {
     const submitQueries: string[] = []
     if (submitToEditOffence) {
       submitQueries.push('submitToEditOffence=true')
     }
     if (invalidatedFrom) {
       submitQueries.push(`invalidatedFrom=${invalidatedFrom}`)
+    }
+    if (willReplace) {
+      submitQueries.push('willReplace=true')
     }
     return submitQueries.length ? `?${submitQueries.join('&')}` : ''
   }

@@ -1133,13 +1133,17 @@ export default class OffenceService {
     return offence.sentence ?? { sentenceUuid: crypto.randomUUID() }
   }
 
-  setOffenceBeingReplaced(session: Partial<SessionData>, offence: Offence) {
+  addOffenceBeingReplaced(session: Partial<SessionData>, offence: Offence, offenceId: string) {
+    if (!session.offencesBeingReplaced) {
+      // eslint-disable-next-line no-param-reassign
+      session.offencesBeingReplaced = new Map<string, Offence>()
+    }
     // eslint-disable-next-line no-param-reassign
-    session.offenceBeingReplaced = offence
+    session.offencesBeingReplaced[offenceId] = offence
   }
 
-  getReplacedOffence(session: Partial<SessionData>): Offence {
-    return session.offenceBeingReplaced
+  getReplacedOffence(session: Partial<SessionData>, offenceId: string): Offence {
+    return session.offencesBeingReplaced?.[offenceId]
   }
 
   validateOffenceMandatoryFields(offence: Offence): { text: string; href: string }[] {

@@ -78,8 +78,13 @@ const courtAppearanceToCreateNextCourtAppearance = (
   return nextCourtAppearance
 }
 
-const offenceToCreateCharge = (offence: Offence, prisonId: string): CreateCharge => {
+const offenceToCreateCharge = (
+  offence: Offence,
+  prisonId: string,
+  offencesBeingReplaced: Map<string, Offence>,
+): CreateCharge => {
   const sentence = sentenceToCreateSentence(offence.sentence, prisonId)
+  const replacingOffence = offencesBeingReplaced[offence.chargeUuid]
   return {
     offenceCode: offence.offenceCode,
     offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),
@@ -90,6 +95,7 @@ const offenceToCreateCharge = (offence: Offence, prisonId: string): CreateCharge
     ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),
     ...(sentence && { sentence }),
     ...(offence.legacyData && { legacyData: { ...offence.legacyData } }),
+    ...(replacingOffence && { replacingChargeUuid: replacingOffence.chargeUuid }),
   } as CreateCharge
 }
 
@@ -98,6 +104,7 @@ export const courtAppearanceToCreateCourtAppearance = (
   prisonId: string,
   courtCaseUuid: string,
   appearanceUuid: string,
+  offencesBeingReplaced: Map<string, Offence>,
 ): CreateCourtAppearance => {
   const nextCourtAppearance = courtAppearanceToCreateNextCourtAppearance(courtAppearance, prisonId)
   return {
@@ -107,7 +114,7 @@ export const courtAppearanceToCreateCourtAppearance = (
     courtCode: courtAppearance.courtCode,
     courtCaseReference: courtAppearance.caseReferenceNumber,
     appearanceDate: dayjs(courtAppearance.warrantDate).format('YYYY-MM-DD'),
-    charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence, prisonId)),
+    charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence, prisonId, offencesBeingReplaced)),
     warrantType: courtAppearance.warrantType,
     documents: courtAppearance.uploadedDocuments,
     prisonId,
@@ -127,9 +134,16 @@ export const courtCaseToCreateCourtCase = (
   courtCase: CourtCase,
   prisonId: string,
   courtCaseUuid: string,
+  offencesBeingReplaced: Map<string, Offence>,
 ): CreateCourtCase => {
   const appearances = courtCase.appearances.map(courtAppearance =>
-    courtAppearanceToCreateCourtAppearance(courtAppearance, prisonId, courtCaseUuid, courtAppearance.appearanceUuid),
+    courtAppearanceToCreateCourtAppearance(
+      courtAppearance,
+      prisonId,
+      courtCaseUuid,
+      courtAppearance.appearanceUuid,
+      offencesBeingReplaced,
+    ),
   )
 
   return {

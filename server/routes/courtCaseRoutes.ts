@@ -1015,7 +1015,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
     )
     if (addOrEditCourtCase === 'add-court-case') {
       const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createCourtCase(nomsId, username, courtCase, prisonId, courtCaseReference)
+      await this.remandAndSentencingService.createCourtCase(
+        nomsId,
+        username,
+        courtCase,
+        prisonId,
+        courtCaseReference,
+        req.session.offencesBeingReplaced,
+      )
     } else {
       await this.remandAndSentencingService.createCourtAppearance(
         username,
@@ -1023,6 +1030,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         appearanceReference,
         courtAppearance,
         prisonId,
+        req.session.offencesBeingReplaced,
       )
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)

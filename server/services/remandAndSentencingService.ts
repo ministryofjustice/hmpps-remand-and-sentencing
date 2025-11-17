@@ -1,4 +1,4 @@
-import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
+import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
 import {
   ConsecutiveChainValidationRequest,
@@ -36,8 +36,15 @@ export default class RemandAndSentencingService {
     courtCase: CourtCase,
     prisonId: string,
     courtCaseUuid: string,
+    offencesBeingReplaced: Map<string, Offence>,
   ): Promise<CreateCourtCaseResponse> {
-    const createCourtCase = courtCaseToCreateCourtCase(prisonerId, courtCase, prisonId, courtCaseUuid)
+    const createCourtCase = courtCaseToCreateCourtCase(
+      prisonerId,
+      courtCase,
+      prisonId,
+      courtCaseUuid,
+      offencesBeingReplaced,
+    )
     return this.remandAndSentencingApiClient.putCourtCase(createCourtCase, courtCaseUuid, username)
   }
 
@@ -56,12 +63,14 @@ export default class RemandAndSentencingService {
     appearanceUuid: string,
     courtAppearance: CourtAppearance,
     prisonId: string,
+    offencesBeingReplaced: Map<string, Offence>,
   ): Promise<CreateCourtAppearanceResponse> {
     const createCourtAppearance = courtAppearanceToCreateCourtAppearance(
       courtAppearance,
       prisonId,
       courtCaseUuid,
       appearanceUuid,
+      offencesBeingReplaced,
     )
     return this.remandAndSentencingApiClient.putCourtAppearance(appearanceUuid, createCourtAppearance, username)
   }
@@ -72,12 +81,14 @@ export default class RemandAndSentencingService {
     appearanceUuid: string,
     courtAppearance: CourtAppearance,
     prisonId: string,
+    offencesBeingReplaced: Map<string, Offence>,
   ): Promise<CreateCourtAppearanceResponse> {
     const updateCourtAppearance = courtAppearanceToCreateCourtAppearance(
       courtAppearance,
       prisonId,
       courtCaseUuid,
       appearanceUuid,
+      offencesBeingReplaced,
     )
     return this.remandAndSentencingApiClient.putCourtAppearance(appearanceUuid, updateCourtAppearance, username)
   }

@@ -109,7 +109,7 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     if (willReplace === 'true') {
-      const offenceBeingReplaced = this.offenceService.getReplacedOffence(req.session)
+      const offenceBeingReplaced = this.offenceService.getReplacedOffence(req.session, chargeUuid)
       const offenceDesc = await this.manageOffencesService.getOffenceByCode(
         offenceBeingReplaced.offenceCode,
         res.locals.user.username,
@@ -323,12 +323,12 @@ export default class OffenceRoutes extends BaseRoutes {
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (outcome.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
-      this.offenceService.setOffenceBeingReplaced(req.session, offence)
       const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
         req.session,
         nomsId,
         appearanceReference,
       ).offences.length
+      this.offenceService.addOffenceBeingReplaced(req.session, offence, totalSavedOffencesInAppearance.toString())
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true`,
       )
@@ -627,7 +627,7 @@ export default class OffenceRoutes extends BaseRoutes {
       this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)?.offenceCode
     let offenceName: string
     if (willReplace === 'true') {
-      const offenceBeingReplaced = this.offenceService.getReplacedOffence(req.session)
+      const offenceBeingReplaced = this.offenceService.getReplacedOffence(req.session, chargeUuid)
       const offenceDesc = await this.manageOffencesService.getOffenceByCode(
         offenceBeingReplaced.offenceCode,
         res.locals.user.username,
@@ -893,6 +893,13 @@ export default class OffenceRoutes extends BaseRoutes {
         sentenceUuidsInChain,
         req.user.username,
       )
+
+      const isGettingReplaced = this.offenceService.getReplacedOffence(req.session, chargeUuid) !== undefined
+      if (isGettingReplaced) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`,
+        )
+      }
 
       if (submitToEditOffence) {
         return res.redirect(

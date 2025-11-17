@@ -11,7 +11,7 @@ export declare module 'express-session' {
     courtAppearances: Map<string, CourtAppearance>
     savedCourtCases: Map<string, CourtCase>
     offences: Map<string, Offence>
-    offenceBeingReplaced: Offence
+    offencesBeingReplaced: Map<string, Offence>
   }
 }
 

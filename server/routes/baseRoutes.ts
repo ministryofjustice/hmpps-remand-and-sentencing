@@ -81,6 +81,17 @@ export default abstract class BaseRoutes {
       )
     }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
+    if (offence.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
+      const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+        req.session,
+        nomsId,
+        appearanceReference,
+      ).offences.length
+      this.offenceService.addOffenceBeingReplaced(req.session, offence, totalSavedOffencesInAppearance.toString())
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true&&?submitToEditOffence=true`,
+      )
+    }
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
@@ -91,17 +102,6 @@ export default abstract class BaseRoutes {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
-        )
-      }
-      if (offence.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
-        this.offenceService.setOffenceBeingReplaced(req.session, offence)
-        const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-          req.session,
-          nomsId,
-          appearanceReference,
-        ).offences.length
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true&&?submitToEditOffence=true`,
         )
       }
       return res.redirect(
@@ -204,6 +204,7 @@ export default abstract class BaseRoutes {
       appearanceReference,
       courtAppearance,
       prisonId,
+      req.session,
     )
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`)

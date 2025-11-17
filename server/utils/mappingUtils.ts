@@ -81,10 +81,22 @@ const courtAppearanceToCreateNextCourtAppearance = (
 const offenceToCreateCharge = (
   offence: Offence,
   prisonId: string,
-  offencesBeingReplaced: Map<string, Offence>,
+  offencesBeingReplaced?: Map<string, Offence> | { [key: string]: Offence },
 ): CreateCharge => {
+  const getReplacedOffence = (
+    container?: Map<string, Offence> | { [key: string]: Offence },
+    id?: string,
+  ): Offence | undefined => {
+    if (!container || !id) return undefined
+    if (typeof (container as Map<string, Offence>).get === 'function') {
+      return (container as Map<string, Offence>).get(id)
+    }
+    return (container as { [key: string]: Offence })[id]
+  }
+
   const sentence = sentenceToCreateSentence(offence.sentence, prisonId)
-  const replacingOffence = offencesBeingReplaced[offence.chargeUuid]
+  const replacingOffence = getReplacedOffence(offencesBeingReplaced, offence.chargeUuid)
+
   return {
     offenceCode: offence.offenceCode,
     offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),

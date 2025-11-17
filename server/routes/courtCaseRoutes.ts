@@ -1747,7 +1747,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
-    const expectedDocumentTypes = documentTypes.REMAND
+    const expectedDocumentTypes = documentTypes[courtAppearance.warrantType] ?? documentTypes.REMAND
     const documentRows = expectedDocumentTypes.map(expectedType => {
       const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
       return { ...expectedType, ...uploadedDocument }

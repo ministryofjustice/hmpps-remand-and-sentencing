@@ -62,7 +62,7 @@
 
         {% else %}
           <div class="govuk-form-group {% if loop.first %}govuk-!-margin-top-8{% else %}govuk-!-margin-top-6{% endif %} govuk-body">
-            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ documentRow.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">
+            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ documentRow.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}" data-qa="upload-document-link-{{ documentRow.uploadLinkSegment }}">
               Upload {{ documentRow.name | lower }}
             </a>
           </div>

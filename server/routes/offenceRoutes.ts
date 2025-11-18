@@ -56,6 +56,8 @@ import {
 import config from '../config'
 import RefDataService from '../services/refDataService'
 
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
+
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
     offenceService: OffenceService,
@@ -322,7 +324,7 @@ export default class OffenceRoutes extends BaseRoutes {
     if (outcome.outcomeType === 'NON_CUSTODIAL') {
       delete offence.sentence
     }
-    if (outcome.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
+    if (outcome.outcomeUuid === REPLACEMENT_OUTCOME_UUID) {
       this.offenceService.setOffenceOutcomeUuid(req.session, nomsId, courtCaseReference, oldOutcomeUuid)
       this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
       const totalSavedOffencesInAppearance =
@@ -480,7 +482,7 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
     }
-    if (submitToEditOffence && outcome.outcomeUuid !== '68e56c1f-b179-43da-9d00-1272805a7ad3') {
+    if (submitToEditOffence && outcome.outcomeUuid !== REPLACEMENT_OUTCOME_UUID) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )

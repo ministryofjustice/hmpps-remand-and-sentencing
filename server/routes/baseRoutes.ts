@@ -19,6 +19,8 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
 
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
+
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
 
@@ -87,7 +89,7 @@ export default abstract class BaseRoutes {
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const replacedOffence = this.offenceService.getReplacedOffence(req.session, chargeUuid)
     if (replacedOffence) {
-      replacedOffence.outcomeUuid = '68e56c1f-b179-43da-9d00-1272805a7ad3'
+      replacedOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
       this.saveOffenceInAppearance(
         req,
         nomsId,
@@ -98,7 +100,7 @@ export default abstract class BaseRoutes {
         true,
       )
     }
-    if (offence.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
+    if (offence.outcomeUuid === REPLACEMENT_OUTCOME_UUID) {
       const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
         req.session,
         nomsId,

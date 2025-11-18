@@ -402,6 +402,20 @@ export default class OffenceService {
     return errors
   }
 
+  setOffenceOutcomeUuid(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    offenceOutcomeUuid: string,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference)
+    const offence = this.getOffence(session.offences, id)
+    offence.outcomeUuid = offenceOutcomeUuid
+    offence.updatedOutcome = true
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
+  }
+
   setSentenceType(
     session: Partial<SessionData>,
     nomsId: string,

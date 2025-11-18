@@ -59,7 +59,10 @@ export default abstract class BaseRoutes {
     chargeUuid: string,
     offence: Offence,
     appearanceReference: string,
+    replacingOffence: boolean = false,
   ) {
+    if (replacingOffence)
+      this.courtAppearanceService.deleteOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.courtAppearanceService.addOffence(req.session, nomsId, chargeUuid, offence, appearanceReference)
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
   }
@@ -80,7 +83,21 @@ export default abstract class BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
+
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
+    const replacedOffence = this.offenceService.getReplacedOffence(req.session, chargeUuid)
+    if (replacedOffence) {
+      replacedOffence.outcomeUuid = '68e56c1f-b179-43da-9d00-1272805a7ad3'
+      this.saveOffenceInAppearance(
+        req,
+        nomsId,
+        courtCaseReference,
+        replacedOffence.chargeUuid,
+        replacedOffence,
+        appearanceReference,
+        true,
+      )
+    }
     if (offence.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
       const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
         req.session,
@@ -89,7 +106,7 @@ export default abstract class BaseRoutes {
       ).offences.length
       this.offenceService.addOffenceBeingReplaced(req.session, offence, totalSavedOffencesInAppearance.toString())
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true&&?submitToEditOffence=true`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true&&submitToEditOffence=true`,
       )
     }
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {

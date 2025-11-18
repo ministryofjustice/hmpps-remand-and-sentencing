@@ -206,8 +206,9 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
       if (willReplace === 'true') {
+        this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference)
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code?willReplace=true&&submitToEditOffence=true`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code?willReplace=true`,
         )
       }
       return res.redirect(
@@ -298,6 +299,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
+    const oldOutcomeUuid = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference).outcomeUuid
     const errors = this.offenceService.updateOffenceOutcome(req.session, nomsId, courtCaseReference, offenceOutcomeForm)
 
     if (errors.length > 0) {
@@ -320,19 +322,19 @@ export default class OffenceRoutes extends BaseRoutes {
     if (outcome.outcomeType === 'NON_CUSTODIAL') {
       delete offence.sentence
     }
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (outcome.outcomeUuid === '68e56c1f-b179-43da-9d00-1272805a7ad3') {
-      const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-        req.session,
-        nomsId,
-        appearanceReference,
-      ).offences.length
+      this.offenceService.setOffenceOutcomeUuid(req.session, nomsId, courtCaseReference, oldOutcomeUuid)
+      this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
+      const totalSavedOffencesInAppearance =
+        this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference).offences
+          .length + 1
       this.offenceService.addOffenceBeingReplaced(req.session, offence, totalSavedOffencesInAppearance.toString())
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true`,
       )
     }
+    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (warrantType === 'SENTENCING') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes?backTo=OUTCOME&chargeUuid=${chargeUuid}`,

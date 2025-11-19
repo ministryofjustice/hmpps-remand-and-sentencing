@@ -297,26 +297,19 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
     if (offenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID) {
-      // 1. Get the current offence, which is loaded into the session by the GET handler
       const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
 
       // Store the intended new outcome *temporarily*. The actual outcomeUuid remains the old one.
       offence.pendingOutcomeUuid = REPLACEMENT_OUTCOME_UUID
       offence.updatedOutcome = true // Mark that the user has interacted
 
-      // 2. Save the session offence *back* into the Appearance list.
-      //    Crucially, since we didn't call updateOffenceOutcome(), offence.outcomeUuid still holds
-      //    the OLD value, but the new temporary flag is set. The offence is now safe in the list.
       this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
 
-      // 3. Get the now-empty session offence and set the flag.
       const newOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
       newOffence.onFinishGoToEdit = true
 
-      // 4. Update the session with the new offence (containing the flag).
       this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, newOffence)
 
-      // 4. Redirect to start adding a *new* offence, generating a fresh UUID for it
       const newOffenceUuid = crypto.randomUUID()
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${newOffenceUuid}/offence-date`,
@@ -466,27 +459,19 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     if (isEditingExistingOffence && offenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID) {
-      // 1. Commit status on the OLD offence (which is currently in the session).
       const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
 
       // Store the intended new outcome *temporarily*. The actual outcomeUuid remains the old one.
       offence.pendingOutcomeUuid = REPLACEMENT_OUTCOME_UUID
       offence.updatedOutcome = true // Mark that the user has interacted
 
-      console.log(offence)
-      // 2. Save the session offence *back* into the Appearance list.
-      //    Crucially, since we didn't call updateOffenceOutcome(), offence.outcomeUuid still holds
-      //    the OLD value, but the new temporary flag is set. The offence is now safe in the list.
       this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
 
-      // 3. Get the now-empty session offence and set the flag.
       const newOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
       newOffence.onFinishGoToEdit = true
 
-      // 4. Update the session with the new offence (containing the flag).
       this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, newOffence)
 
-      // 5. Redirect to the start of the 'Add New Offence' flow.
       const newOffenceUuid = newOffence.chargeUuid // Use the UUID assigned in getSessionOffence
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${newOffenceUuid}/offence-date`,

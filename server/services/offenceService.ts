@@ -1068,7 +1068,6 @@ export default class OffenceService {
   setOnFinishGoToEdit(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
     const id = this.getOffenceId(nomsId, courtCaseReference)
     const offence = this.getOffence(session.offences, id)
-    console.log(offence)
     offence.onFinishGoToEdit = true
   }
 

@@ -12,6 +12,8 @@ export declare module 'express-session' {
     savedCourtCases: Map<string, CourtCase>
     offences: Map<string, Offence>
     offencesBeingReplaced: Map<string, Offence>
+    outcomeGettingReplaced: string
+    onReplacementCompletionGoToEdit: boolean
   }
 }
 

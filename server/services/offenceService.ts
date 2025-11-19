@@ -1156,8 +1156,33 @@ export default class OffenceService {
     session.offencesBeingReplaced[offenceId] = offence
   }
 
+  setOnReplacementCompletionGoToEdit(session: Partial<SessionData>) {
+    // eslint-disable-next-line no-param-reassign
+    session.onReplacementCompletionGoToEdit = true
+  }
+
+  setOutcomeGettingReplaced(session: Partial<SessionData>, outcome: string) {
+    // eslint-disable-next-line no-param-reassign
+    session.outcomeGettingReplaced = outcome
+  }
+
   getReplacedOffence(session: Partial<SessionData>, offenceId: string): Offence {
     return session.offencesBeingReplaced?.[offenceId]
+  }
+
+  getOnReplacementCompletionGoToEdit(session: Partial<SessionData>) {
+    return session.onReplacementCompletionGoToEdit
+  }
+
+  getOutcomeGettingReplaced(session: Partial<SessionData>) {
+    return session.outcomeGettingReplaced
+  }
+
+  cleanReplacedOffence(session: Partial<SessionData>, offenceId: string) {
+    // eslint-disable-next-line no-param-reassign
+    delete session.offencesBeingReplaced[offenceId]
+    // eslint-disable-next-line no-param-reassign
+    delete session.onReplacementCompletionGoToEdit
   }
 
   validateOffenceMandatoryFields(offence: Offence): { text: string; href: string }[] {

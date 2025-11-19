@@ -65,6 +65,19 @@ export default abstract class BaseRoutes {
   ) {
     if (replacingOffence)
       this.courtAppearanceService.deleteOffence(req.session, nomsId, chargeUuid, appearanceReference)
+
+    const replacedOffence = this.offenceService.getReplacedOffence(req.session, chargeUuid)
+    if (replacedOffence) {
+      replacedOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
+      this.courtAppearanceService.addOffence(
+        req.session,
+        nomsId,
+        replacedOffence.chargeUuid,
+        replacedOffence,
+        appearanceReference,
+      )
+      this.offenceService.cleanReplacedOffence(req.session, chargeUuid)
+    }
     this.courtAppearanceService.addOffence(req.session, nomsId, chargeUuid, offence, appearanceReference)
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
   }
@@ -80,12 +93,16 @@ export default abstract class BaseRoutes {
     chargeUuid: string,
   ) {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
-    if (offence.onFinishGoToEdit) {
+    const isReplacingOffence = offence.outcomeUuid === REPLACEMENT_OUTCOME_UUID
+    if (offence.onFinishGoToEdit || this.offenceService.getOnReplacementCompletionGoToEdit(req.session)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
-
+    const replacedOutcome = this.offenceService.getOutcomeGettingReplaced(req.session)
+    if (replacedOutcome) {
+      this.offenceService.setOffenceOutcomeUuid(req.session, nomsId, courtCaseReference, replacedOutcome)
+    }
     this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
     const replacedOffence = this.offenceService.getReplacedOffence(req.session, chargeUuid)
     if (replacedOffence) {
@@ -99,8 +116,9 @@ export default abstract class BaseRoutes {
         appearanceReference,
         true,
       )
+      this.offenceService.cleanReplacedOffence(req.session, chargeUuid)
     }
-    if (offence.outcomeUuid === REPLACEMENT_OUTCOME_UUID) {
+    if (isReplacingOffence) {
       const totalSavedOffencesInAppearance = this.courtAppearanceService.getSessionCourtAppearance(
         req.session,
         nomsId,

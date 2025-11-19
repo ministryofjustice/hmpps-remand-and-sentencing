@@ -331,6 +331,7 @@ export default class OffenceRoutes extends BaseRoutes {
         this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference).offences
           .length + 1
       this.offenceService.addOffenceBeingReplaced(req.session, offence, totalSavedOffencesInAppearance.toString())
+      if (submitToEditOffence === 'true') this.offenceService.setOnReplacementCompletionGoToEdit(req.session)
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${totalSavedOffencesInAppearance}/offence-date?willReplace=true`,
       )
@@ -491,6 +492,10 @@ export default class OffenceRoutes extends BaseRoutes {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
+    }
+
+    if (outcome.outcomeUuid === REPLACEMENT_OUTCOME_UUID) {
+      this.offenceService.setOutcomeGettingReplaced(req.session, existingOffence.outcomeUuid)
     }
     return this.saveSessionOffenceInAppearance(
       req,
@@ -2194,7 +2199,28 @@ export default class OffenceRoutes extends BaseRoutes {
   }
 
   public cancelOffenceInputs = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      chargeUuid,
+    } = req.params
+    // const replacedOffence = this.offenceService.getReplacedOffence(req.session, chargeUuid)
+    // if (replacedOffence) {
+    //   replacedOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
+    //   this.saveOffenceInAppearance(
+    //     req,
+    //     nomsId,
+    //     courtCaseReference,
+    //     replacedOffence.chargeUuid,
+    //     replacedOffence,
+    //     appearanceReference,
+    //     true,
+    //   )
+    //   this.offenceService.cleanReplacedOffence(req.session, chargeUuid)
+    // }
     return this.editOffenceCompletionRouting(
       addOrEditCourtCase,
       addOrEditCourtAppearance,

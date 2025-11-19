@@ -993,10 +993,6 @@ export default class CourtAppearanceService {
     return !courtAppearance.offences.some(offence => offence.sentence)
   }
 
-  // CourtAppearanceService.ts (Finalized addOffence)
-
-  // Assuming REPLACED_WITH_ANOTHER_OFFENCE_UUID is available here
-
   addOffence(
     session: Partial<SessionData>,
     nomsId: string,

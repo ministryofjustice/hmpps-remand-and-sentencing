@@ -2199,28 +2199,7 @@ export default class OffenceRoutes extends BaseRoutes {
   }
 
   public cancelOffenceInputs = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      chargeUuid,
-    } = req.params
-    // const replacedOffence = this.offenceService.getReplacedOffence(req.session, chargeUuid)
-    // if (replacedOffence) {
-    //   replacedOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
-    //   this.saveOffenceInAppearance(
-    //     req,
-    //     nomsId,
-    //     courtCaseReference,
-    //     replacedOffence.chargeUuid,
-    //     replacedOffence,
-    //     appearanceReference,
-    //     true,
-    //   )
-    //   this.offenceService.cleanReplacedOffence(req.session, chargeUuid)
-    // }
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     return this.editOffenceCompletionRouting(
       addOrEditCourtCase,
       addOrEditCourtAppearance,

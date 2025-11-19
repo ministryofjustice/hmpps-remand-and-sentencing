@@ -1,5 +1,6 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor, verifyRequest } from './wiremock'
+import REPLACEMENT_OUTCOME_UUID from '../../server/utils/constants'
 
 export default {
   stubCreateCourtCase: ({ nextHearingDate = '' }: { nextHearingDate: string }): SuperAgentRequest => {
@@ -2584,6 +2585,13 @@ export default {
             nomisCode: '09753',
             outcomeType: 'SENTENCING',
             displayOrder: 10,
+          },
+          {
+            outcomeUuid: REPLACEMENT_OUTCOME_UUID,
+            outcomeName: 'Replaced with Another Offence',
+            nomisCode: '2060',
+            outcomeType: 'NON_CUSTODIAL',
+            displayOrder: 30,
           },
         ],
       },

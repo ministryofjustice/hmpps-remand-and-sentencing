@@ -60,6 +60,15 @@ export default abstract class BaseRoutes {
     offence: Offence,
     appearanceReference: string,
   ) {
+    const oldOffenceToReplace = this.courtAppearanceService.findOffenceByPendingOutcome(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    if (oldOffenceToReplace) {
+      // eslint-disable-next-line no-param-reassign
+      offence.replacesOffenceUuid = oldOffenceToReplace.chargeUuid
+    }
     this.courtAppearanceService.addOffence(req.session, nomsId, chargeUuid, offence, appearanceReference)
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
   }

@@ -49,6 +49,8 @@ declare module 'models' {
     updatedOutcome?: boolean
     mergedFromCase?: PagedMergedFromCase
     onFinishGoToEdit?: boolean
+    pendingOutcomeUuid?: string
+    replacesOffenceUuid?: string
   }
 
   export interface Sentence {

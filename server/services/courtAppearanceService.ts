@@ -30,6 +30,7 @@ import { toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default class CourtAppearanceService {
   constructor(
@@ -992,6 +993,10 @@ export default class CourtAppearanceService {
     return !courtAppearance.offences.some(offence => offence.sentence)
   }
 
+  // CourtAppearanceService.ts (Finalized addOffence)
+
+  // Assuming REPLACED_WITH_ANOTHER_OFFENCE_UUID is available here
+
   addOffence(
     session: Partial<SessionData>,
     nomsId: string,
@@ -1001,17 +1006,57 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+
+    // --- START: STATUS COMMIT LOGIC (New Offence being added commits status on Old Offence) ---
+
+    // Check if this new offence being added carries a link to an old offence
+    if (offence.replacesOffenceUuid) {
+      const oldOffenceIndex = courtAppearance.offences.findIndex(o => o.chargeUuid === offence.replacesOffenceUuid)
+
+      if (oldOffenceIndex !== -1) {
+        const oldOffence = courtAppearance.offences[oldOffenceIndex]
+
+        // 1. COMMIT STATUS: The old offence remains, but its outcome is finalized.
+        //    We assume the outcomeUuid has ALREADY been set to the special UUID
+        //    in the controller (submitOffenceOutcome), but we finalize any temporary flags here.
+
+        // Set the outcome to the final required value just to be certain.
+        oldOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
+        delete oldOffence.pendingOutcomeUuid
+        oldOffence.updatedOutcome = true
+
+        courtAppearance.offences[oldOffenceIndex] = oldOffence
+      }
+    }
+
+    // --- END: STATUS COMMIT LOGIC ---
+
+    // Original Logic: Add the current/new offence to the list.
     if (offenceReference === -1 || offenceReference > courtAppearance.offences.length) {
+      // This adds the new offence (the replacement) to the array.
       courtAppearance.offences.push(offence)
     } else {
+      // This handles editing an existing offence (e.g., editing the new offence's details)
       const existingOffence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
       courtAppearance.offences[offenceReference] = offence
       if (existingOffence.sentence && !offence.sentence) {
         this.resetChain(existingOffence.sentence.sentenceUuid, courtAppearance)
       }
     }
+
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  findOffenceByReplacementOutcome(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+  ): Offence | undefined {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+
+    // Find the offence whose outcome is the special replacement UUID.
+    return courtAppearance.offences.find(offence => offence.outcomeUuid === REPLACEMENT_OUTCOME_UUID)
   }
 
   deleteOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
@@ -1354,5 +1399,10 @@ export default class CourtAppearanceService {
     )
 
     return offenceDates.reduce((latest, current) => (current > latest ? current : latest))
+  }
+
+  findOffenceByPendingOutcome(session, nomsId: string, appearanceReference: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceReference)
+    return courtAppearance.offences.find(offence => offence.pendingOutcomeUuid)
   }
 }

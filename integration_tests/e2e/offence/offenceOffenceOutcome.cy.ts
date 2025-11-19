@@ -40,6 +40,10 @@ context('Add Offence Outcome Page', () => {
           label: 'Lie on file',
           checked: false,
         },
+        {
+          label: 'Replaced with Another Offence',
+          checked: false,
+        },
       ])
   }
 
@@ -83,6 +87,10 @@ context('Add Offence Outcome Page', () => {
           },
           {
             label: 'Lie on file',
+            checked: false,
+          },
+          {
+            label: 'Replaced with Another Offence',
             checked: false,
           },
         ])
@@ -131,6 +139,10 @@ context('Add Offence Outcome Page', () => {
             label: 'Lie on file',
             checked: false,
           },
+          {
+            label: 'Replaced with Another Offence',
+            checked: false,
+          },
         ])
     })
   })
@@ -167,6 +179,10 @@ context('Add Offence Outcome Page', () => {
           },
           {
             label: 'Lie on file',
+            checked: false,
+          },
+          {
+            label: 'Replaced with Another Offence',
             checked: false,
           },
         ]))

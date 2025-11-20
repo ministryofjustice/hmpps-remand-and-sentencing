@@ -1,4 +1,4 @@
-export default class journeyUrls {
+export default class JourneyUrls {
   static updateOffenceOutcome = (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -20,7 +20,7 @@ export const urlMapByName = {
     courtAppearanceUuid: string,
     chargeUuid: string,
   ) =>
-    journeyUrls.updateOffenceOutcome(
+    JourneyUrls.updateOffenceOutcome(
       nomsId,
       addOrEditCourtCase,
       courtCaseUuid,

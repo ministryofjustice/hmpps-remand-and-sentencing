@@ -56,7 +56,6 @@ import {
 import config from '../config'
 import RefDataService from '../services/refDataService'
 import { buildReturnUrlFromKey } from './data/JourneyUrls'
-import type { ReturnKey } from './data/JourneyUrls'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -228,6 +227,12 @@ export default class OffenceRoutes extends BaseRoutes {
       this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, existingOffence)
       offence = existingOffence
     }
+    let offenceOutcomeForm = (req.flash('offenceOutcomeForm')[0] || {}) as OffenceOffenceOutcomeForm
+    if (Object.keys(offenceOutcomeForm).length === 0) {
+      offenceOutcomeForm = {
+        offenceOutcome: offence.outcomeUuid,
+      }
+    }
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const caseOutcomes = await this.refDataService.getAllChargeOutcomes(req.user.username)
 
@@ -263,6 +268,7 @@ export default class OffenceRoutes extends BaseRoutes {
       nonCustodialOutcomes,
       offenceHint,
       offence,
+      offenceOutcomeForm,
       submitToEditOffence,
     })
   }
@@ -282,6 +288,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (errors.length > 0) {
       req.flash('errors', errors)
+      req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true`,
       )
@@ -504,7 +511,7 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
-    } else if (offence.sentence?.returnUrlKey === 'update-offence-outcome') {
+    } else if (offence.sentence?.returnUrlKey) {
       backLink = buildReturnUrlFromKey(
         offence.sentence?.returnUrlKey,
         nomsId,

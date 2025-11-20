@@ -30,6 +30,7 @@ import { toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default class CourtAppearanceService {
   constructor(
@@ -1001,6 +1002,23 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+
+    // Check if this new offence being added carries a link to an old offence
+    if (offence.replacesOffenceUuid) {
+      const oldOffenceIndex = courtAppearance.offences.findIndex(o => o.chargeUuid === offence.replacesOffenceUuid)
+
+      if (oldOffenceIndex !== -1) {
+        const oldOffence = courtAppearance.offences[oldOffenceIndex]
+
+        // Set the outcome to the final required value just to be certain.
+        oldOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
+        delete oldOffence.pendingOutcomeUuid
+        oldOffence.updatedOutcome = true
+
+        courtAppearance.offences[oldOffenceIndex] = oldOffence
+      }
+    }
+
     if (offenceReference === -1 || offenceReference > courtAppearance.offences.length) {
       courtAppearance.offences.push(offence)
     } else {
@@ -1010,6 +1028,7 @@ export default class CourtAppearanceService {
         this.resetChain(existingOffence.sentence.sentenceUuid, courtAppearance)
       }
     }
+
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }
@@ -1354,5 +1373,10 @@ export default class CourtAppearanceService {
     )
 
     return offenceDates.reduce((latest, current) => (current > latest ? current : latest))
+  }
+
+  findOffenceByPendingOutcome(session, nomsId: string, appearanceReference: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceReference)
+    return courtAppearance.offences.find(offence => offence.pendingOutcomeUuid)
   }
 }

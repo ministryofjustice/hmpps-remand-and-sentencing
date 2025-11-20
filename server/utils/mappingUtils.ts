@@ -90,6 +90,7 @@ const offenceToCreateCharge = (offence: Offence, prisonId: string): CreateCharge
     ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),
     ...(sentence && { sentence }),
     ...(offence.legacyData && { legacyData: { ...offence.legacyData } }),
+    ...{ replacingChargeUuid: offence.replacesOffenceUuid },
   } as CreateCharge
 }
 

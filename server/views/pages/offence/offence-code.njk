@@ -5,6 +5,10 @@
 
 
 {% set pageTitle = applicationName + " - Enter the offence code" %}
+{% set hintText = "" %}
+{% if offenceName %}
+    {% set hintText = offenceName %}
+{% endif %}
 
 {% block pageContent %}
             <form method="post" autocomplete="off">
@@ -17,6 +21,9 @@
                         classes: "govuk-label--l",
                         isPageHeading: true
                     },
+                    hint:{
+                                        text: hintText
+                                        },
                     id: "offence-code",
                     name: "offenceCode",
                     errorMessage: errors | findError('offenceCode'),

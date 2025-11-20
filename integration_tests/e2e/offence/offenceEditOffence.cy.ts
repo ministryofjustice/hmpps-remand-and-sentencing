@@ -662,6 +662,15 @@ context('Add Offence Edit offence Page', () => {
       })
     })
 
+    it('should redirect to enter offence date if replaced by another offence is chosen while editing outcome', () => {
+      offenceEditOffencePage.updateOutcomeCta().click()
+      const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+      offenceUpdateOutcomePage.radioLabelContains('Replaced with Another Offence').click()
+      offenceUpdateOutcomePage.continueButton().click()
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+      offenceOffenceDatePage.hintText().should('contain', 'This offence will replace PS90037 - An offence description')
+    })
+
     it('canceling the edit offence takes you back to the update offence outcome page', () => {
       offenceEditOffencePage.cancelEditLink().click()
       Page.verifyOnPageTitle(

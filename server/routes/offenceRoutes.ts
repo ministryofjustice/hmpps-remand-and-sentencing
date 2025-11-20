@@ -55,6 +55,8 @@ import {
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 import RefDataService from '../services/refDataService'
+import { buildReturnUrlFromKey } from './data/JourneyUrls'
+import type { ReturnKey } from './data/JourneyUrls'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -291,6 +293,13 @@ export default class OffenceRoutes extends BaseRoutes {
       this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference)
     }
     if (outcome.outcomeType === 'SENTENCING') {
+      this.offenceService.setSentenceReturnUrlKey(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        chargeUuid,
+        'updateOffenceOutcome',
+      )
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
@@ -495,6 +504,16 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
+    } else if (offence.sentence?.returnUrlKey === 'update-offence-outcome') {
+      backLink = buildReturnUrlFromKey(
+        offence.sentence?.returnUrlKey,
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+      )
     } else if (courtAppearance.caseOutcomeAppliedAll !== 'true' || offence.onFinishGoToEdit) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
     }

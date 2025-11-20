@@ -13,12 +13,16 @@ export default function setupCurrentCourtAppearance(
   refDataService: RefDataService,
 ): RequestHandler {
   return async (req, res, next) => {
-    const { nomsId, addOrEditCourtAppearance, appearanceReference } = req.params
+    const { nomsId, addOrEditCourtCase, addOrEditCourtAppearance, appearanceReference } = req.params
     const courtAppearance = courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
 
     res.locals.courtAppearance = courtAppearance
     res.locals.offences = courtAppearance.offences
     res.locals.isAddCourtAppearance = addOrEditCourtAppearance === 'add-court-appearance'
+    res.locals.isRemandToSentencingJourney =
+      addOrEditCourtCase === 'edit-court-case' &&
+      addOrEditCourtAppearance === 'add-court-appearance' &&
+      courtAppearance.warrantType === 'SENTENCING'
     const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
     res.locals.offenceNameMap = await manageOffenceService.getOffenceMap(
       offenceCodes,

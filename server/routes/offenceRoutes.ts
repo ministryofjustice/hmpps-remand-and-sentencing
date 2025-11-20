@@ -224,6 +224,7 @@ export default class OffenceRoutes extends BaseRoutes {
         chargeUuid,
         appearanceReference,
       )
+      delete existingOffence.outcomeUuid
       this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, existingOffence)
       offence = existingOffence
     }

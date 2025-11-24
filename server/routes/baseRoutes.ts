@@ -70,7 +70,7 @@ export default abstract class BaseRoutes {
       offence.replacesOffenceUuid = oldOffenceToReplace.chargeUuid
     }
     this.courtAppearanceService.addOffence(req.session, nomsId, chargeUuid, offence, appearanceReference)
-    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference, chargeUuid)
   }
 
   protected saveSessionOffenceInAppearance(
@@ -83,7 +83,7 @@ export default abstract class BaseRoutes {
     appearanceReference: string,
     chargeUuid: string,
   ) {
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     if (offence.onFinishGoToEdit) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
@@ -248,7 +248,7 @@ export default abstract class BaseRoutes {
       username,
     )
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+    this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     this.courtAppearanceService.setSessionCourtAppearance(
       req.session,
       nomsId,

@@ -1012,13 +1012,10 @@ export default class CourtAppearanceService {
         oldOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
         oldOffence.updatedOutcome = true
         delete oldOffence.pendingOutcomeUuid // Clean up temporary field if used in old logic
+
         courtAppearance.offences[oldOffenceIndex] = oldOffence
       }
     }
-
-    // --- END: STATUS COMMIT LOGIC ---
-
-    // Original Logic: Add the current/new offence to the list.
     if (offenceReference === -1 || offenceReference > courtAppearance.offences.length) {
       courtAppearance.offences.push(offence)
     } else {

@@ -593,16 +593,6 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
-    } else if (offence.sentence?.returnUrlKey) {
-      backLink = buildReturnUrlFromKey(
-        offence.sentence?.returnUrlKey,
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-        chargeUuid,
-      )
     } else if (courtAppearance.caseOutcomeAppliedAll !== 'true' || offence.onFinishGoToEdit) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
     }
@@ -2276,7 +2266,6 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       courtCaseReference,
       appearanceReference,
-      req.session,
     )
   }
 
@@ -2290,7 +2279,6 @@ export default class OffenceRoutes extends BaseRoutes {
       nomsId,
       courtCaseReference,
       appearanceReference,
-      req.session,
     )
   }
 
@@ -2302,9 +2290,7 @@ export default class OffenceRoutes extends BaseRoutes {
     nomsId: string,
     courtCaseReference: string,
     appearanceReference: string,
-    session: unknown,
   ) {
-    this.courtAppearanceService.clearPendingOutcome(session, nomsId, appearanceReference)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(

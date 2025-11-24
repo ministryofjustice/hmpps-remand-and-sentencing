@@ -53,8 +53,8 @@ export default class OffenceService {
     overallConvictionDate: Date,
     chargeUuid: string,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     let convictionDateString = ''
     if (offence.sentence?.convictionDate) {
       const convictionDate = new Date(offence.sentence.convictionDate)
@@ -205,8 +205,8 @@ export default class OffenceService {
       }
     }
     if (errors.length === 0 && offenceCodeForm.offenceCode) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, chargeUuid)
       offence.offenceCode = offenceCodeForm.offenceCode
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
@@ -247,8 +247,8 @@ export default class OffenceService {
       }
     }
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       offence.offenceCode = offenceCode
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
@@ -263,15 +263,15 @@ export default class OffenceService {
     confirmOffenceForm: OffenceConfirmOffenceForm,
     chargeUuid: string,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     offence.offenceCode = confirmOffenceForm.offenceCode
     // eslint-disable-next-line no-param-reassign
     session.offences[id] = offence
   }
 
   getOffenceCode(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, chargeUuid: string) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
     return this.getOffence(session.offences, id).offenceCode
   }
 
@@ -314,8 +314,8 @@ export default class OffenceService {
       },
     )
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       sentence.hasCountNumber = countNumberForm.hasCountNumber
       if (countNumberForm.hasCountNumber === 'true') {
@@ -355,8 +355,8 @@ export default class OffenceService {
     )
     let outcome: OffenceOutcome
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
         const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
@@ -376,8 +376,6 @@ export default class OffenceService {
     return { errors, outcome, hasSentencesAfter: false }
   }
 
-  // OffenceService.ts
-
   updateOffenceOutcome(
     session: Partial<SessionData>,
     nomsId: string,
@@ -395,7 +393,7 @@ export default class OffenceService {
       { 'required.offenceOutcome': 'You must select the new outcome for this offence' },
     )
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
 
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
@@ -413,7 +411,7 @@ export default class OffenceService {
     chargeUuid: string,
     returnUrlKey: string,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
     const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)
     sentence.returnUrlKey = returnUrlKey
@@ -439,8 +437,8 @@ export default class OffenceService {
       },
     )
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       const [sentenceTypeId, sentenceTypeClassification] = offenceSentenceTypeForm.sentenceType.split('|')
       sentence.sentenceTypeId = sentenceTypeId
@@ -473,8 +471,8 @@ export default class OffenceService {
       },
     )
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       sentence.fineAmount = offenceFineAmountForm.fineAmount
       // eslint-disable-next-line no-param-reassign
@@ -496,8 +494,8 @@ export default class OffenceService {
     const currentPeriodLengths =
       currentOffence.sentence?.periodLengths?.map(periodLength => periodLength.periodLengthType) ?? []
     if (!expectedPeriodLengthTypes.every(type => currentPeriodLengths.includes(type))) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       const autoAddPeriodLengths = sentenceTypePeriodLengths[
         currentOffence.sentence.sentenceTypeClassification
@@ -520,8 +518,8 @@ export default class OffenceService {
     periodLengths: SentenceLength[],
     chargeUuid: string,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)
     sentence.periodLengths = periodLengths
     offence.sentence = sentence
@@ -555,8 +553,8 @@ export default class OffenceService {
       },
     )
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       const periodLengths = sentence.periodLengths ?? []
       const sentenceLength = sentenceLengthFormToSentenceLength(
@@ -592,8 +590,8 @@ export default class OffenceService {
     legacyCode: string,
     chargeUuid: string,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)
     const periodLengths =
       sentence.periodLengths.filter(
@@ -671,7 +669,7 @@ export default class OffenceService {
     legacyCode: string,
     chargeUuid: string,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
     const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)
     const periodLengths =
@@ -750,8 +748,8 @@ export default class OffenceService {
         periodLengthType,
         periodLengthTypeHeadings[periodLengthType],
       )
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       const periodLengths = sentence.periodLengths ?? []
       const index = periodLengths.findIndex(periodLength => periodLength.periodLengthType === periodLengthType)
@@ -792,8 +790,8 @@ export default class OffenceService {
       },
     )
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       if (
         !existingSentenceServeType ||
@@ -819,8 +817,8 @@ export default class OffenceService {
     chargeUuid: string,
     convictionDate: Date,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)
     sentence.convictionDate = convictionDate
     offence.sentence = sentence
@@ -842,8 +840,8 @@ export default class OffenceService {
     href: string
   }[] {
     let isValidConvictionDateRule = ''
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     if (
       offenceConvictionDateForm['convictionDate-day'] &&
       offenceConvictionDateForm['convictionDate-month'] &&
@@ -954,8 +952,8 @@ export default class OffenceService {
       },
     )
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       sentence.isSentenceConsecutiveToAnotherCase =
         sentenceIsSentenceConsecutiveToForm.isSentenceConsecutiveToAnotherCase
@@ -987,8 +985,8 @@ export default class OffenceService {
       },
     )
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       sentence.consecutiveToSentenceUuid = firstSentenceConsecutiveToForm.consecutiveToSentenceUuid
       offence.sentence = sentence
@@ -1023,8 +1021,8 @@ export default class OffenceService {
       },
     )
     if (errors.length === 0) {
-      const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       const sentence = this.getSentence(offence)
       const sentenceUuid = sentenceConsecutiveToForm.consecutiveToSentenceUuid
       const sourceSentenceUuid = sentence.sentenceUuid
@@ -1050,10 +1048,10 @@ export default class OffenceService {
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
-    chargeUuid: string, // This parameter might be empty/undefined if pulled from a faulty source
+    chargeUuid: string,
   ): Offence {
     const effectiveChargeUuid = chargeUuid || crypto.randomUUID()
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, effectiveChargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, effectiveChargeUuid)
     return this.getOffence(session.offences, id, effectiveChargeUuid)
   }
 
@@ -1065,9 +1063,9 @@ export default class OffenceService {
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
-    offence: Offence, // This object might come in with chargeUuid: undefined
+    offence: Offence,
   ): string {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, offence.chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, offence.chargeUuid)
     // eslint-disable-next-line no-param-reassign
     session.offences[id] = offence
     return id
@@ -1079,8 +1077,8 @@ export default class OffenceService {
     courtCaseReference: string,
     chargeUuid: string,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)
     delete sentence.sentenceTypeClassification
     delete sentence.sentenceTypeId
@@ -1096,8 +1094,8 @@ export default class OffenceService {
     courtCaseReference: string,
     chargeUuid: string,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)
     delete sentence.sentenceTypeClassification
     delete sentence.sentenceTypeId
@@ -1146,8 +1144,8 @@ export default class OffenceService {
     chargeUuid: string,
     sentenceServeType: string,
   ) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     const sentence = this.getSentence(offence)
     sentence.sentenceServeType = extractKeyValue(sentenceServeTypes, sentenceServeType)
     delete sentence.consecutiveToSentenceUuid
@@ -1157,7 +1155,7 @@ export default class OffenceService {
   }
 
   clearOffence(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, chargeUuid: string) {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
     // eslint-disable-next-line no-param-reassign
     delete session.offences[id]
   }
@@ -1166,27 +1164,17 @@ export default class OffenceService {
     return offence.sentence ?? { sentenceUuid: crypto.randomUUID() }
   }
 
-  private getOffenceCompositeId(nomsId: string, courtCaseReference: string, chargeUuid: string): string {
+  private getOffenceId(nomsId: string, courtCaseReference: string, chargeUuid: string): string {
     return `${nomsId}-${courtCaseReference}-${chargeUuid}`
   }
 
   clearAllOffences(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
-    if (session.offences && !(session.offences instanceof Map)) {
-      // Convert the plain JavaScript object back into a Map instance
-      // eslint-disable-next-line no-param-reassign
-      session.offences = new Map(Object.entries(session.offences))
-    }
-
-    if (!session.offences) {
-      return
-    }
-
     const prefix = `${nomsId}-${courtCaseReference}-`
 
-    // The .keys() method is now safe to call, as session.offences is guaranteed to be a Map.
-    for (const id of session.offences.keys()) {
+    for (const id of Object.keys(session.offences)) {
       if (id.startsWith(prefix)) {
-        session.offences.delete(id)
+        // eslint-disable-next-line no-param-reassign
+        delete session.offences[id]
       }
     }
   }

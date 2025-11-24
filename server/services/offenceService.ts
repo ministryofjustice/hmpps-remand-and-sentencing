@@ -1226,7 +1226,7 @@ export default class OffenceService {
     return errors
   }
 
-  getAllOffences(session: Partial<SessionData>) {
+  getAllOffences(session: Partial<SessionData>): Map<string, Offence> {
     return session.offences
   }
 }

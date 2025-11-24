@@ -56,7 +56,6 @@ import {
 import config from '../config'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
-import { buildReturnUrlFromKey } from './data/JourneyUrls'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(

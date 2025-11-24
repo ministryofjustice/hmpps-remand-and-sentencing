@@ -523,8 +523,6 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     const potentialOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-    console.log(outcome)
-    console.log(potentialOffence)
 
     if (
       (existingOffence.outcomeUuid || this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) &&

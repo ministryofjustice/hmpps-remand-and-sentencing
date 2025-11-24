@@ -1154,10 +1154,7 @@ export default class OffenceService {
     return `${nomsId}-${courtCaseReference}-${chargeUuid}`
   }
 
-  // OffenceService.ts (Corrected clearAllOffences)
-
   clearAllOffences(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
-    // --- FIX START: Reconstitute Map if session.offences is a plain object ---
     if (session.offences && !(session.offences instanceof Map)) {
       // Convert the plain JavaScript object back into a Map instance
       // eslint-disable-next-line no-param-reassign
@@ -1167,7 +1164,6 @@ export default class OffenceService {
     if (!session.offences) {
       return
     }
-    // --- FIX END ---
 
     const prefix = `${nomsId}-${courtCaseReference}-`
 

@@ -110,7 +110,7 @@ export default class OffenceRoutes extends BaseRoutes {
     )
     const isFirstOffence = offences.length === 0
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
-    const offenceName = await this.getOffenceDescription(req, res, nomsId, appearanceReference)
+    const offenceName = await this.getOffenceDescription(req, res)
     if (submitToEditOffence || invalidatedFrom) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
@@ -152,13 +152,20 @@ export default class OffenceRoutes extends BaseRoutes {
     })
   }
 
-  private async getOffenceDescription(req, res, nomsId: string, appearanceReference: string) {
+  private async getOffenceDescription(req, res) {
     let offenceName: string
-    const replacingOffence = this.courtAppearanceService.findOffenceByPendingOutcome(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
+    const allOffencesData = this.offenceService.getAllOffences(req.session)
+    let allOffencesArray
+    if (allOffencesData instanceof Map) {
+      allOffencesArray = Array.from(allOffencesData.values())
+    } else if (allOffencesData) {
+      allOffencesArray = Object.values(allOffencesData)
+    } else {
+      // If allOffencesData is null or undefined, initialize an empty array
+      // to prevent subsequent crashes.
+      allOffencesArray = []
+    }
+    const replacingOffence = allOffencesArray.find(offence => offence.outcomeUuid === REPLACEMENT_OUTCOME_UUID)
     if (replacingOffence) {
       const offenceDesc = await this.manageOffencesService.getOffenceByCode(
         replacingOffence.offenceCode,
@@ -706,7 +713,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceCodeForm.offenceCode ||
       this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)?.offenceCode
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date`
-    const offenceName = await this.getOffenceDescription(req, res, nomsId, appearanceReference)
+    const offenceName = await this.getOffenceDescription(req, res)
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     }

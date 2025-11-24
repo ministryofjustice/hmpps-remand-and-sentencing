@@ -206,7 +206,7 @@ export default class OffenceService {
     }
     if (errors.length === 0 && offenceCodeForm.offenceCode) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
-      const offence = this.getOffence(session.offences, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
       offence.offenceCode = offenceCodeForm.offenceCode
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
@@ -1056,7 +1056,7 @@ export default class OffenceService {
   }
 
   private getOffence(offences: Map<string, Offence>, id: string, effectiveChargeUuid?: string): Offence {
-    return offences[id] ?? { chargeUuid: effectiveChargeUuid }
+    return offences[id] ?? { chargeUuid: effectiveChargeUuid ?? crypto.randomUUID() }
   }
 
   setSessionOffence(

@@ -28,7 +28,6 @@ describe('offenceService', () => {
     service = new OffenceService(manageOffencesService, remandAndSentencingService, refDataService)
   })
 
-  // Offence start/end date test (Failing test fixed)
   it('must clear offence end date', () => {
     const nomsId = 'P123'
     const courtCaseReference = '1'
@@ -39,7 +38,6 @@ describe('offenceService', () => {
       offenceEndDate: new Date(),
     } as Offence
     const session = {
-      // FIX: Use composite key format
       offences: {
         [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
       },
@@ -50,7 +48,6 @@ describe('offenceService', () => {
       'offenceStartDate-year': '2025',
     } as OffenceOffenceDateForm
 
-    // FIX: Pass chargeUuid to setOffenceDates
     const errors = service.setOffenceDates(
       session,
       nomsId,
@@ -65,7 +62,6 @@ describe('offenceService', () => {
   })
 
   describe('validateOffenceMandatoryFields', () => {
-    // ... (All validateOffenceMandatoryFields tests are unchanged as they don't call OffenceService) ...
     it('no errors for if no sentence on offence', () => {
       const offence = {} as Offence
       const errors = service.validateOffenceMandatoryFields(offence)
@@ -239,7 +235,6 @@ describe('offenceService', () => {
         },
       } as Offence
       const session = {
-        // FIX: Use composite key format
         offences: {
           [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
         },
@@ -300,7 +295,6 @@ describe('offenceService', () => {
         },
       } as Offence
       const session = {
-        // FIX: Use composite key format
         offences: {
           [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
         },
@@ -353,7 +347,6 @@ describe('offenceService', () => {
         },
       } as Offence
       const session = {
-        // FIX: Use composite key format
         offences: {
           [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
         },
@@ -409,7 +402,6 @@ describe('offenceService', () => {
       },
     } as Offence
     const session = {
-      // FIX: Use composite key format
       offences: {
         [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
       },

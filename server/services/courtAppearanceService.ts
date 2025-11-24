@@ -1002,9 +1002,6 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-
-    // --- START: STATUS COMMIT LOGIC (New Offence being added commits status on Old Offence) ---
-
     // Check if this new offence being added carries a link to an old offence
     if (offence.replacesOffenceUuid) {
       const oldOffenceIndex = courtAppearance.offences.findIndex(o => o.chargeUuid === offence.replacesOffenceUuid)
@@ -1012,17 +1009,10 @@ export default class CourtAppearanceService {
       if (oldOffenceIndex !== -1) {
         const oldOffence = courtAppearance.offences[oldOffenceIndex]
 
-        // 1. COMMIT STATUS: The old offence remains, but its outcome is finalized.
         oldOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
         oldOffence.updatedOutcome = true
         delete oldOffence.pendingOutcomeUuid // Clean up temporary field if used in old logic
-
-        // 2. Commit the updated oldOffence back to the array index (Fixing the reference bug)
         courtAppearance.offences[oldOffenceIndex] = oldOffence
-
-        // 3. Clear the temporary linking field from the new offence
-        // eslint-disable-next-line no-param-reassign
-        delete offence.replacesOffenceUuid
       }
     }
 

@@ -406,6 +406,22 @@ export default class OffenceService {
     return errors
   }
 
+  setSentenceReturnUrlKey(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    chargeUuid: string,
+    returnUrlKey: string,
+  ) {
+    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
+    const sentence = this.getSentence(offence)
+    sentence.returnUrlKey = returnUrlKey
+    offence.sentence = sentence
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
+  }
+
   setSentenceType(
     session: Partial<SessionData>,
     nomsId: string,

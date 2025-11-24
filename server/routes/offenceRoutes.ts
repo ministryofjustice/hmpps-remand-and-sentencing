@@ -56,6 +56,7 @@ import {
 import config from '../config'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
+import { buildReturnUrlFromKey } from './data/JourneyUrls'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -234,27 +235,27 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
 
-    // 1. Retrieve the existing, committed offence details from the main list.
-    // This object contains all permanent data (dates, codes, etc.).
-    const existingOffence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
-
-    // 2. Load the full existing offence object into the session map under its chargeUuid.
-    // FIX: This ensures all fields (dates, codes, etc.) are available for rendering.
-    this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, existingOffence)
-
-    // 3. Retrieve the fully loaded offence from the session map for processing and rendering.
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-
-    // Start original flow logic:
-
-    // Initialize form data, preferring flashed errors or the saved outcome from the loaded offence.
+    let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    if (
+      (Object.keys(offence).length === 1 && Object.keys(offence).includes('chargeUuid')) ||
+      offence.chargeUuid !== chargeUuid
+    ) {
+      const existingOffence = this.courtAppearanceService.getOffence(
+        req.session,
+        nomsId,
+        chargeUuid,
+        appearanceReference,
+      )
+      delete existingOffence.outcomeUuid
+      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, existingOffence)
+      offence = existingOffence
+    }
     let offenceOutcomeForm = (req.flash('offenceOutcomeForm')[0] || {}) as OffenceOffenceOutcomeForm
     if (Object.keys(offenceOutcomeForm).length === 0) {
       offenceOutcomeForm = {
         offenceOutcome: offence.outcomeUuid,
       }
     }
-
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const caseOutcomes = await this.refDataService.getAllChargeOutcomes(req.user.username)
 
@@ -336,6 +337,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (errors.length > 0) {
       req.flash('errors', errors)
+      req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true`,
       )
@@ -350,6 +352,13 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     if (outcome.outcomeType === 'SENTENCING') {
+      this.offenceService.setSentenceReturnUrlKey(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        chargeUuid,
+        'updateOffenceOutcome',
+      )
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
@@ -584,6 +593,16 @@ export default class OffenceRoutes extends BaseRoutes {
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code`
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
+    } else if (offence.sentence?.returnUrlKey) {
+      backLink = buildReturnUrlFromKey(
+        offence.sentence?.returnUrlKey,
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+      )
     } else if (courtAppearance.caseOutcomeAppliedAll !== 'true' || offence.onFinishGoToEdit) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-outcome`
     }
@@ -2439,8 +2458,6 @@ export default class OffenceRoutes extends BaseRoutes {
       (acc, offence, index) => {
         const [unchangedList, custodialList, nonCustodialList] = acc
 
-        // The core logic for categorization remains the same:
-        // An offence is 'changed' if it has an outcomeUuid AND the updatedOutcome flag is true.
         if (offence.outcomeUuid && offence.updatedOutcome) {
           const outcome = outcomeMap[offence.outcomeUuid]
 

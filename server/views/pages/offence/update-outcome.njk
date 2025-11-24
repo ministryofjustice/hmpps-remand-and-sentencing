@@ -26,7 +26,8 @@
 {% for caseOutcome in warrantTypeOutcomes %}
     {%- set caseOutcomeRow = {
         value: caseOutcome.outcomeUuid,
-        text: caseOutcome.outcomeName
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
     } -%}
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
@@ -37,7 +38,8 @@
     {% for caseOutcome in nonCustodialOutcomes %}
     {%- set caseOutcomeRow = {
             value: caseOutcome.outcomeUuid,
-            text: caseOutcome.outcomeName
+            text: caseOutcome.outcomeName,
+            checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
         } -%}
         {{ radiosData.items.push(caseOutcomeRow) }}
     {% endfor %}

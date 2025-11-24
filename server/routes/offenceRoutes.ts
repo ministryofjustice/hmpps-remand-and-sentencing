@@ -349,6 +349,12 @@ export default class OffenceRoutes extends BaseRoutes {
       this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference, chargeUuid)
     }
 
+    if (outcome.outcomeType === 'SENTENCING') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
+      )
+    }
+
     // Delete sentence if non-custodial
     if (outcome.outcomeType === 'NON_CUSTODIAL') {
       delete offence.sentence
@@ -517,6 +523,9 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     const potentialOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    console.log(outcome)
+    console.log(potentialOffence)
+
     if (
       (existingOffence.outcomeUuid || this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) &&
       (!existingOffence.sentence || !potentialOffence.sentence) &&

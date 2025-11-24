@@ -1146,23 +1146,6 @@ export default class OffenceService {
     delete session.offences[id]
   }
 
-  private getOffenceFromMap(
-    session: Partial<SessionData>,
-    nomsId: string,
-    courtCaseReference: string,
-    chargeUuid: string,
-  ): Offence {
-    const id = this.getOffenceCompositeId(nomsId, courtCaseReference, chargeUuid)
-
-    // Check if the map exists before attempting to get the value
-    if (session.offences) {
-      return session.offences.get(id) ?? { chargeUuid } // FIX: Use .get(id)
-    }
-
-    // If session.offences is null/undefined, return a fresh offence object
-    return { chargeUuid }
-  }
-
   private getSentence(offence: Offence): Sentence {
     return offence.sentence ?? { sentenceUuid: crypto.randomUUID() }
   }
@@ -1171,16 +1154,24 @@ export default class OffenceService {
     return `${nomsId}-${courtCaseReference}-${chargeUuid}`
   }
 
+  // OffenceService.ts (Corrected clearAllOffences)
+
   clearAllOffences(session: Partial<SessionData>, nomsId: string, courtCaseReference: string) {
+    // --- FIX START: Reconstitute Map if session.offences is a plain object ---
+    if (session.offences && !(session.offences instanceof Map)) {
+      // Convert the plain JavaScript object back into a Map instance
+      // eslint-disable-next-line no-param-reassign
+      session.offences = new Map(Object.entries(session.offences))
+    }
+
     if (!session.offences) {
       return
     }
+    // --- FIX END ---
 
-    // Generate the prefix used for all composite keys related to this case
     const prefix = `${nomsId}-${courtCaseReference}-`
 
-    // Iterate through all entries in the Map and delete those that match the prefix.
-    // Note: session.offences is Map<string, Offence>
+    // The .keys() method is now safe to call, as session.offences is guaranteed to be a Map.
     for (const id of session.offences.keys()) {
       if (id.startsWith(prefix)) {
         session.offences.delete(id)

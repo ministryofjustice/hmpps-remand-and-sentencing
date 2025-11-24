@@ -1,6 +1,7 @@
 import type { Offence } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import dayjs from 'dayjs'
+import { SessionData } from 'express-session'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -18,6 +19,7 @@ import { formatDate } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -73,6 +75,30 @@ export default abstract class BaseRoutes {
     this.offenceService.clearOffence(req.session, nomsId, courtCaseReference, chargeUuid)
   }
 
+  protected saveAllOffencesToAppearance(session: Partial<SessionData>, nomsId: string, appearanceReference: string) {
+    const allOffencesData = this.offenceService.getAllOffences(session)
+    let allOffencesArray
+    if (allOffencesData instanceof Map) {
+      allOffencesArray = Array.from(allOffencesData.values())
+    } else {
+      allOffencesArray = Object.values(allOffencesData)
+    }
+    if (allOffencesArray.length === 2) {
+      const offenceToReplace = allOffencesArray.find(o => o.pendingOutcomeUuid === REPLACEMENT_OUTCOME_UUID)
+      const newOffence = allOffencesArray.find(o => o.chargeUuid !== offenceToReplace?.chargeUuid)
+      if (offenceToReplace && newOffence) {
+        newOffence.replacesOffenceUuid = offenceToReplace.chargeUuid
+        offenceToReplace.updatedOutcome = true
+        delete offenceToReplace.pendingOutcomeUuid
+      }
+    }
+
+    allOffencesArray.forEach(offence => {
+      this.courtAppearanceService.addOffence(session, nomsId, offence.chargeUuid, offence, appearanceReference)
+    })
+    this.offenceService.clearAllOffences(session, nomsId, appearanceReference)
+  }
+
   protected saveSessionOffenceInAppearance(
     req,
     res,
@@ -89,7 +115,7 @@ export default abstract class BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
+    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,

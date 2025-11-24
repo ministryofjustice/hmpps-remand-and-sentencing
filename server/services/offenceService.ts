@@ -1225,4 +1225,8 @@ export default class OffenceService {
     }
     return errors
   }
+
+  getAllOffences(session: Partial<SessionData>) {
+    return session.offences
+  }
 }

@@ -312,9 +312,12 @@ export default class OffenceRoutes extends BaseRoutes {
     if (offenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID) {
       const oldOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
-      oldOffence.pendingOutcomeUuid = REPLACEMENT_OUTCOME_UUID
+      oldOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
+      oldOffence.updatedOutcome = true
 
-      this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, oldOffence, appearanceReference)
+      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, oldOffence)
+
+      // this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, oldOffence, appearanceReference)
 
       const newOffenceUuid = crypto.randomUUID()
       const newOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, newOffenceUuid)
@@ -369,7 +372,7 @@ export default class OffenceRoutes extends BaseRoutes {
       delete offence.sentence
     }
 
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
+    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference)
 
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (warrantType === 'SENTENCING') {
@@ -492,11 +495,13 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (isEditingExistingOffence && offenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID) {
       const oldOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-      oldOffence.pendingOutcomeUuid = REPLACEMENT_OUTCOME_UUID
+      oldOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
+      oldOffence.updatedOutcome = true
+      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, oldOffence)
 
-      this.courtAppearanceService.addOffence(req.session, nomsId, chargeUuid, oldOffence, appearanceReference)
-
-      this.offenceService.clearOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+      // this.courtAppearanceService.addOffence(req.session, nomsId, chargeUuid, oldOffence, appearanceReference)
+      //
+      // this.offenceService.clearOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
       const newOffenceUuid = crypto.randomUUID()
       const newOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, newOffenceUuid)
@@ -2265,7 +2270,7 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    this.saveOffenceInAppearance(req, nomsId, courtCaseReference, chargeUuid, offence, appearanceReference)
+    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
 
     return this.editOffenceCompletionRouting(

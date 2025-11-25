@@ -49,7 +49,7 @@ context('Add Offence Outcome Page', () => {
 
   context('Submitting Remand', () => {
     beforeEach(() => {
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('false').click()
       receivedCustodialSentencePage.continueButton().click()
@@ -149,7 +149,7 @@ context('Add Offence Outcome Page', () => {
 
   context('Submitting Sentencing', () => {
     beforeEach(() => {
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('true').click()
       receivedCustodialSentencePage.continueButton().click()

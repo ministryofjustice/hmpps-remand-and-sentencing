@@ -10,7 +10,7 @@ context('Upload remand court document page', () => {
     cy.task('stubUploadDocument')
 
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
     receivedCustodialSentencePage.radioLabelSelector('false').click()
     receivedCustodialSentencePage.continueButton().click()

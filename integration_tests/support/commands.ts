@@ -244,7 +244,7 @@ Cypress.Commands.add(
   'createOffence',
   (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/warrant-type`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/received-custodial-sentence`,
     )
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
     receivedCustodialSentencePage.radioLabelSelector('false').click()
@@ -290,7 +290,7 @@ Cypress.Commands.add(
       offenceDate: '2023-05-12',
     })
     cy.visit(
-      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/warrant-type`,
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/received-custodial-sentence`,
     )
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
     receivedCustodialSentencePage.radioLabelSelector('true').click()

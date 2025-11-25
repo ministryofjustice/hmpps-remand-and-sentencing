@@ -8,7 +8,7 @@ context('Add Offence Count number Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
     receivedCustodialSentencePage.radioLabelSelector('true').click()
     receivedCustodialSentencePage.continueButton().click()

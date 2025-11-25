@@ -43,7 +43,7 @@ context('Check Offence Answers Page', () => {
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
       courtCaseWarrantDatePage.continueButton().click()
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('false').click()
       receivedCustodialSentencePage.continueButton().click()
@@ -127,7 +127,7 @@ context('Check Offence Answers Page', () => {
         },
       ])
       cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       cy.task('stubHasLoopInChain')
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('true').click()

@@ -47,7 +47,7 @@ context('Add Offence Offence Name Page', () => {
   })
 
   it('Entering an offence via the Offence Name route navigates to the offence-confirmation page', () => {
-    cy.visit(`/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type`)
+    cy.visit(`/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence`)
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
     receivedCustodialSentencePage.radioLabelSelector('false').click()
     receivedCustodialSentencePage.continueButton().click()

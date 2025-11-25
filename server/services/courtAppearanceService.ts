@@ -114,10 +114,6 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getCaseReferenceNumber(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).caseReferenceNumber
-  }
-
   async setWarrantDate(
     session: Partial<SessionData>,
     nomsId: string,
@@ -897,10 +893,6 @@ export default class CourtAppearanceService {
     return overallConvictionDate ? new Date(overallConvictionDate) : undefined
   }
 
-  getOverallConvictionDateAppliedAll(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).overallConvictionDateAppliedAll
-  }
-
   sessionCourtAppearanceExists(session: Partial<SessionData>, nomsId: string, appearanceReference: string): boolean {
     return (
       session.courtAppearances[nomsId] !== undefined &&
@@ -1011,7 +1003,6 @@ export default class CourtAppearanceService {
 
         oldOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
         oldOffence.updatedOutcome = true
-        delete oldOffence.pendingOutcomeUuid // Clean up temporary field if used in old logic
 
         courtAppearance.offences[oldOffenceIndex] = oldOffence
       }
@@ -1370,20 +1361,5 @@ export default class CourtAppearanceService {
     )
 
     return offenceDates.reduce((latest, current) => (current > latest ? current : latest))
-  }
-
-  findOffenceByPendingOutcome(session, nomsId: string, appearanceReference: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceReference)
-    // Find the single offence in the appearance list that has the temporary flag set.
-    return courtAppearance.offences.find(offence => offence.pendingOutcomeUuid)
-  }
-
-  clearPendingOutcome(session, nomsId: string, appearanceReference: string) {
-    const oldOffenceToReplace = this.findOffenceByPendingOutcome(session, nomsId, appearanceReference)
-
-    if (oldOffenceToReplace) {
-      delete oldOffenceToReplace.pendingOutcomeUuid
-      this.addOffence(session, nomsId, oldOffenceToReplace.chargeUuid, oldOffenceToReplace, appearanceReference)
-    }
   }
 }

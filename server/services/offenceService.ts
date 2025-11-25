@@ -1226,7 +1226,15 @@ export default class OffenceService {
     return errors
   }
 
-  getAllOffences(session: Partial<SessionData>): Map<string, Offence> {
-    return session.offences
+  getAllOffences(session: Partial<SessionData>, nomsId: string, courtCaseReference: string): Offence[] {
+    const allOffences: Offence[] = []
+    const prefix = `${nomsId}-${courtCaseReference}-`
+
+    for (const id of Object.keys(session.offences)) {
+      if (id.startsWith(prefix)) {
+        allOffences.push(session.offences[id])
+      }
+    }
+    return allOffences
   }
 }

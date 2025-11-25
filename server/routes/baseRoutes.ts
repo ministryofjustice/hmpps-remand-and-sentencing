@@ -19,7 +19,6 @@ import { formatDate } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
-import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -54,25 +53,14 @@ export default abstract class BaseRoutes {
     return addOrEditCourtCase === 'edit-court-case' && addOrEditCourtAppearance === 'edit-court-appearance'
   }
 
-  protected saveAllOffencesToAppearance(session: Partial<SessionData>, nomsId: string, appearanceReference: string) {
-    const allOffencesData = this.offenceService.getAllOffences(session)
-    let allOffencesArray
-    if (allOffencesData instanceof Map) {
-      allOffencesArray = Array.from(allOffencesData.values())
-    } else {
-      allOffencesArray = Object.values(allOffencesData)
-    }
-    if (allOffencesArray.length === 2) {
-      const offenceToReplace = allOffencesArray.find(o => o.pendingOutcomeUuid === REPLACEMENT_OUTCOME_UUID)
-      const newOffence = allOffencesArray.find(o => o.chargeUuid !== offenceToReplace?.chargeUuid)
-      if (offenceToReplace && newOffence) {
-        newOffence.replacesOffenceUuid = offenceToReplace.chargeUuid
-        offenceToReplace.updatedOutcome = true
-        delete offenceToReplace.pendingOutcomeUuid
-      }
-    }
-
-    allOffencesArray.forEach(offence => {
+  protected saveAllOffencesToAppearance(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceReference: string,
+    courtCaseReference: string,
+  ) {
+    const allOffencesData = this.offenceService.getAllOffences(session, nomsId, courtCaseReference)
+    allOffencesData.forEach(offence => {
       this.courtAppearanceService.addOffence(session, nomsId, offence.chargeUuid, offence, appearanceReference)
     })
     this.offenceService.clearAllOffences(session, nomsId, appearanceReference)
@@ -94,7 +82,7 @@ export default abstract class BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
       )
     }
-    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference)
+    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
-import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
@@ -67,9 +67,9 @@ context('New Court Case journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('false').click()
+    receivedCustodialSentencePage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -294,9 +294,9 @@ context('New Court Case journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
 
     courtCaseTaskListPage

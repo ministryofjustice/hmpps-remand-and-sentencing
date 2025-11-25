@@ -1,5 +1,5 @@
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
-import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import Page from '../../pages/page'
 
@@ -9,9 +9,9 @@ context('Add Offence Count number Page', () => {
     cy.task('happyPathStubs')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/count-number')
     offenceCountNumberPage = Page.verifyOnPage(OffenceCountNumberPage)
   })

@@ -1,7 +1,7 @@
 import Page from '../../pages/page'
 import OffenceSentenceLengthMismatchPage from '../../pages/offenceSentenceLengthMismatchPage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
-import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 
 context('Offence sentence length mismatch', () => {
   let offenceSentenceLengthMismatchPage: OffenceSentenceLengthMismatchPage
@@ -9,9 +9,9 @@ context('Offence sentence length mismatch', () => {
     cy.task('happyPathStubs')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/sentence-length-mismatch')
     offenceSentenceLengthMismatchPage = Page.verifyOnPage(OffenceSentenceLengthMismatchPage)
   })

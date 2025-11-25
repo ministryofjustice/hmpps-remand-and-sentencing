@@ -13,7 +13,7 @@ import CourtCaseSelectCourtNamePage from '../../pages/courtCaseSelectCourtNamePa
 import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
-import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
@@ -28,8 +28,6 @@ import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import OffenceUpdateOffenceOutcomesPage from '../../pages/offenceUpdateOffenceOutcomesPage'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
-import UploadNonCustodialCourtDocumentsPage from '../../pages/uploadNonCustodialCourtDocumentsPage'
-import DocumentUploadPage from '../../pages/documentUpload'
 
 context('Repeat Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -71,9 +69,9 @@ context('Repeat Court Case journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
 
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('false').click()
+    receivedCustodialSentencePage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
     courtCaseTaskListPage
@@ -289,9 +287,9 @@ context('Repeat Court Case journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
 
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
     courtCaseTaskListPage
@@ -477,164 +475,6 @@ context('Repeat Court Case journey', () => {
     courtCaseTaskListPage.continueButton().click()
 
     cy.task('verifyCreateSentenceCourtAppearanceRequest').should('equal', 1)
-    Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
-  })
-
-  it('remand to non custodial', () => {
-    cy.task('stubUploadTempDocument', { type: 'PRISON_COURT_REGISTER' })
-    cy.task('stubUploadDocument')
-    cy.task('stubCreateNonCustodialCourtAppearance')
-    const startPage = Page.verifyOnPage(StartPage)
-    startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
-
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('NON_CUSTODIAL').click()
-    courtCaseWarrantTypePage.continueButton().click()
-
-    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Incomplete',
-        },
-        {
-          name: 'Review offences',
-          status: 'Cannot start yet',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Cannot start yet',
-        },
-      ])
-    courtCaseTaskListPage.appearanceInformationLink().click()
-
-    const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
-    courtCaseSelectReferencePage.radioLabelSelector('true').click()
-    courtCaseSelectReferencePage.continueButton().click()
-
-    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'appearance')
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
-    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
-    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
-    courtCaseWarrantDatePage.continueButton().click()
-
-    const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
-      CourtCaseSelectCourtNamePage,
-      'Was the appearance at Accrington Youth Court?',
-    )
-    courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
-    courtCaseSelectCourtNamePage.continueButton().click()
-
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-      CourtCaseOverallCaseOutcomePage,
-      'Select the overall case outcome',
-    )
-    courtCaseOverallCaseOutcomePage.radioLabelContains('Lie on file').click()
-    courtCaseOverallCaseOutcomePage.continueButton().click()
-
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
-    const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Warrant type': 'Non_custodial',
-      'Case reference': 'C894623',
-      'Appearance date': '13/05/2023',
-      'Court name': 'Accrington Youth Court',
-      'Overall case outcome': 'Lie on file',
-      'Does this outcome apply to all offences on the appearance?': 'Yes',
-    })
-    courtCaseCheckAnswersPage.continueButton().click()
-
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Completed',
-        },
-        {
-          name: 'Review offences',
-          status: 'Optional',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-      ])
-    courtCaseTaskListPage.reviewOffencesLink().click()
-    let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.addAnotherButton().click()
-
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('10')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.continueButton().click()
-
-    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-    offenceOffenceCodePage.input().type('PS90037')
-    offenceOffenceCodePage.continueButton().click()
-
-    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
-    offenceOffenceCodeConfirmPage.continueButton().click()
-
-    offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    offenceReviewOffencesPage.radioLabelSelector('true').click()
-    offenceReviewOffencesPage.continueButton().click()
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Completed',
-        },
-        {
-          name: 'Review offences',
-          status: 'Completed',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Optional',
-        },
-      ])
-    courtCaseTaskListPage.uploadCourtDocumentsLink().click()
-    let uploadNonCustodialCourtDocumentsPage = Page.verifyOnPage(UploadNonCustodialCourtDocumentsPage)
-    uploadNonCustodialCourtDocumentsPage.uploadLinks().trimTextContent().should('equal', 'Upload prison court register')
-    uploadNonCustodialCourtDocumentsPage.uploadDocumentLink('prison-court-register').click()
-    const documentUploadPage = Page.verifyOnPageTitle(DocumentUploadPage, 'prison court register')
-    documentUploadPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
-    documentUploadPage.continueButton().click()
-    uploadNonCustodialCourtDocumentsPage = Page.verifyOnPage(UploadNonCustodialCourtDocumentsPage)
-    uploadNonCustodialCourtDocumentsPage.continueButton().click()
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
-    courtCaseTaskListPage
-      .taskList()
-      .getTaskList()
-      .should('deep.equal', [
-        {
-          name: 'Add appearance information',
-          status: 'Completed',
-        },
-        {
-          name: 'Review offences',
-          status: 'Completed',
-        },
-        {
-          name: 'Upload court documents',
-          status: 'Completed',
-        },
-      ])
-    courtCaseTaskListPage.continueButton().click()
-    cy.task('verifyCreateNonCustodialCourtAppearanceRequest').should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Appearance')
   })
 })

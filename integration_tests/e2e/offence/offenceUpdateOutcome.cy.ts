@@ -1,4 +1,4 @@
-import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
@@ -24,9 +24,9 @@ context('Update Offence Outcome Page', () => {
   context('Repeat Remand', () => {
     beforeEach(() => {
       startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('false').click()
+      receivedCustodialSentencePage.continueButton().click()
 
       cy.visit(
         '/person/A1234AB/edit-court-case/0/add-court-appearance/2/offences/71bb9f7e-971c-4c34-9a33-43478baee74f/update-offence-outcome',
@@ -76,9 +76,9 @@ context('Update Offence Outcome Page', () => {
   context('Remand to Sentencing', () => {
     beforeEach(() => {
       startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('true').click()
+      receivedCustodialSentencePage.continueButton().click()
 
       cy.visit(
         '/person/A1234AB/edit-court-case/0/add-court-appearance/2/offences/71bb9f7e-971c-4c34-9a33-43478baee74f/update-offence-outcome',

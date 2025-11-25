@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import Page from '../../pages/page'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
-import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseSelectCourtNamePage from '../../pages/courtCaseSelectCourtNamePage'
 import StartPage from '../../pages/startPage'
@@ -62,9 +62,9 @@ context('Court Case Warrant Date Page', () => {
 
     it('after confirm and continue check answers this becomes uneditable', () => {
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('true').click()
+      receivedCustodialSentencePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
       courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
@@ -283,9 +283,9 @@ context('Court Case Warrant Date Page', () => {
       const startPage = Page.verifyOnPage(StartPage)
       startPage.actionListLink().click()
 
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('false').click()
+      receivedCustodialSentencePage.continueButton().click()
 
       const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
       courtCaseTaskListPage.appearanceInformationLink().click()

@@ -39,7 +39,7 @@ export default class RemandRoutes extends BaseRoutes {
         appearanceReference,
         username,
       )
-      this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+      this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
       this.courtAppearanceService.setSessionCourtAppearance(
         req.session,
         nomsId,

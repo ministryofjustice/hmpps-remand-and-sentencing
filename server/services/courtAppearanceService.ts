@@ -113,10 +113,6 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getCaseReferenceNumber(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).caseReferenceNumber
-  }
-
   async setWarrantDate(
     session: Partial<SessionData>,
     nomsId: string,
@@ -896,10 +892,6 @@ export default class CourtAppearanceService {
     return overallConvictionDate ? new Date(overallConvictionDate) : undefined
   }
 
-  getOverallConvictionDateAppliedAll(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).overallConvictionDateAppliedAll
-  }
-
   sessionCourtAppearanceExists(session: Partial<SessionData>, nomsId: string, appearanceReference: string): boolean {
     return (
       session.courtAppearances[nomsId] !== undefined &&
@@ -1010,6 +1002,7 @@ export default class CourtAppearanceService {
         this.resetChain(existingOffence.sentence.sentenceUuid, courtAppearance)
       }
     }
+
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

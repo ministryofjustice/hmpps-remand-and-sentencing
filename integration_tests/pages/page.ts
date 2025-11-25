@@ -93,6 +93,8 @@ export default abstract class Page {
 
   bodyText = (): PageElement => cy.get('.govuk-body-l')
 
+  hintText = (): PageElement => cy.get('.govuk-hint')
+
   legendParagraph = (): PageElement => cy.get('[data-qa=legendParagraph]')
 
   backLink = (): PageElement => cy.get('[data-qa=back-link]')

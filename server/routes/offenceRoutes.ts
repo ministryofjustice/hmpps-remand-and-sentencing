@@ -1218,6 +1218,12 @@ export default class OffenceRoutes extends BaseRoutes {
       sentence?.periodLengths ?? [],
       chargeUuid,
     )
+    const currentPeriodLength = sentence.periodLengths?.find(
+      periodLength => periodLength.periodLengthType === periodLengthType,
+    )
+    const periodLengthHeader =
+      periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
+      currentPeriodLength?.legacyData?.sentenceTermDescription
     const errors = this.offenceService.setPeriodLength(
       req.session,
       nomsId,
@@ -1225,6 +1231,7 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
       offenceSentenceLengthForm,
       periodLengthType as string,
+      periodLengthHeader,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)

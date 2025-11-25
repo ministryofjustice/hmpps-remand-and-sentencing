@@ -994,19 +994,6 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
-    // Check if this new offence being added carries a link to an old offence
-    if (offence.replacesOffenceUuid) {
-      const oldOffenceIndex = courtAppearance.offences.findIndex(o => o.chargeUuid === offence.replacesOffenceUuid)
-
-      if (oldOffenceIndex !== -1) {
-        const oldOffence = courtAppearance.offences[oldOffenceIndex]
-
-        oldOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
-        oldOffence.updatedOutcome = true
-
-        courtAppearance.offences[oldOffenceIndex] = oldOffence
-      }
-    }
     if (offenceReference === -1 || offenceReference > courtAppearance.offences.length) {
       courtAppearance.offences.push(offence)
     } else {

@@ -2569,15 +2569,9 @@ export default class OffenceRoutes extends BaseRoutes {
     appearanceReference: string,
   ) {
     const oldOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-
-    oldOffence.outcomeUuid = REPLACEMENT_OUTCOME_UUID
-    oldOffence.updatedOutcome = true
-
-    this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, oldOffence)
-
     const newOffenceUuid = crypto.randomUUID()
     const newOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, newOffenceUuid)
-    newOffence.onFinishGoToEdit = true
+    newOffence.onFinishGoToEdit = oldOffence.onFinishGoToEdit
     newOffence.replacesOffenceUuid = oldOffence.chargeUuid
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, newOffence)
 

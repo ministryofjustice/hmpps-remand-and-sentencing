@@ -9,6 +9,10 @@ export default class JourneyUrls {
   ) => {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/update-offence-outcome`
   }
+
+  static courtCases = (nomsId: string) => {
+    return `/person/${nomsId}`
+  }
 }
 
 export const urlMapByName = {
@@ -28,6 +32,7 @@ export const urlMapByName = {
       courtAppearanceUuid,
       chargeUuid,
     ),
+  courtCases: (nomsId: string) => JourneyUrls.courtCases(nomsId),
 }
 
 export type ReturnKey = keyof typeof urlMapByName

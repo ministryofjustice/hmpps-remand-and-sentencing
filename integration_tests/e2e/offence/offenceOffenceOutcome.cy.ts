@@ -1,4 +1,4 @@
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'

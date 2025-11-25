@@ -13,7 +13,7 @@ import CourtCaseSelectCourtNamePage from '../../pages/courtCaseSelectCourtNamePa
 import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'

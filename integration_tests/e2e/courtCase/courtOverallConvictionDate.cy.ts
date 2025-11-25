@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConvictionDatePage'
 import Page from '../../pages/page'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
@@ -69,7 +69,7 @@ context('Court Case Overall Conviction Date Page', () => {
 
   it('after confirm and continue check answers this becomes uneditable', () => {
     cy.task('stubGetAllAppearanceOutcomes')
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.continueButton().click()
@@ -131,7 +131,9 @@ context('Court Case Overall Conviction Date Page', () => {
     cy.task('stubGetLatestCourtAppearance', {})
     cy.task('stubGetLatestOffenceDate', {})
     cy.task('stubGetAllAppearanceOutcomes', {})
-    cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/warrant-type')
+    cy.visit(
+      '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/received-custodial-sentence',
+    )
     const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
     courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
     courtCaseWarrantTypePage.continueButton().click()

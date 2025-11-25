@@ -12,8 +12,8 @@ import type {
   CourtCaseSelectCourtNameForm,
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
-  CourtCaseWarrantTypeForm,
   DeleteDocumentForm,
+  ReceivedCustodialSentenceForm,
   UploadedDocumentForm,
 } from 'forms'
 import type { CourtCase, UploadedDocument } from 'models'
@@ -21,6 +21,7 @@ import dayjs from 'dayjs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import fs from 'fs'
 import { Readable } from 'stream'
+import { firstNameSpaceLastName } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import trimForm from '../utils/trim'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
@@ -37,7 +38,6 @@ import {
   consecutiveToSentenceDetailsToOffenceDescriptions,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
-import validate from '../validation/validation'
 import { chargeToOffence } from '../utils/mappingUtils'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import logger from '../../logger'
@@ -53,6 +53,7 @@ import RefDataService from '../services/refDataService'
 import RemandTaskListModel from './data/RemandTaskListModel'
 import SentencingTaskListModel from './data/SentencingTaskListModel'
 import NonCustodialTaskListModel from './data/NonCustodialTaskListModel'
+import JourneyUrls from './data/JourneyUrls'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -869,69 +870,53 @@ export default class CourtCaseRoutes extends BaseRoutes {
     )
   }
 
-  public getWarrantType: RequestHandler = async (req, res): Promise<void> => {
+  public getReceivedCustodialSentence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
-    let warrantType: string
-    if (submitToCheckAnswers) {
-      warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+
+    let receivedCustodialSentenceForm = (req.flash('receivedCustodialSentenceForm')[0] ||
+      {}) as ReceivedCustodialSentenceForm
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    if (Object.keys(receivedCustodialSentenceForm).length === 0 && warrantType) {
+      let receivedCustodialSentence = 'false'
+      if (warrantType === 'SENTENCING') {
+        receivedCustodialSentence = 'true'
+      }
+      receivedCustodialSentenceForm = {
+        receivedCustodialSentence,
+      }
     }
-
-    const warrantTypeOptions = [
-      {
-        value: 'REMAND',
-        text: 'Remand',
-      },
-      {
-        value: 'SENTENCING',
-        text: 'Sentencing',
-      },
-    ]
-
-    if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      warrantTypeOptions.push({
-        value: 'NON_CUSTODIAL',
-        text: 'Non-custodial event',
-      })
-    }
-
-    return res.render('pages/courtAppearance/warrant-type', {
+    const { prisoner } = res.locals
+    const prisonerName = firstNameSpaceLastName({ firstName: prisoner.firstName, lastName: prisoner.lastName })
+    return res.render('pages/courtAppearance/received-custodial-sentence', {
       nomsId,
-      submitToCheckAnswers,
-      warrantType,
+      receivedCustodialSentenceForm,
       courtCaseReference,
       appearanceReference,
       errors: req.flash('errors') || [],
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      warrantTypeOptions,
-      backLink: submitToCheckAnswers
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-        : `/person/${nomsId}`,
+      prisonerName,
+      backLink: JourneyUrls.courtCases(nomsId),
     })
   }
 
-  public submitWarrantType: RequestHandler = async (req, res): Promise<void> => {
+  public submitReceivedCustodialSentence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const warrantTypeForm = trimForm<CourtCaseWarrantTypeForm>(req.body)
-    const errors = validate(
-      warrantTypeForm,
-      { warrantType: 'required' },
-      { 'required.warrantType': 'You must select the type of warrant' },
+    const { prisoner } = res.locals
+    const receivedCustodialSentenceForm = trimForm<ReceivedCustodialSentenceForm>(req.body)
+    const prisonerName = firstNameSpaceLastName({ firstName: prisoner.firstName, lastName: prisoner.lastName })
+    const errors = this.courtAppearanceService.setReceivedCustodialSentence(
+      req.session,
+      nomsId,
+      appearanceReference,
+      receivedCustodialSentenceForm,
+      prisonerName,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
+      req.flash('receivedCustodialSentenceForm', { ...receivedCustodialSentenceForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-type?hasErrors=true`,
-      )
-    }
-
-    const { warrantType } = warrantTypeForm
-    this.courtAppearanceService.setWarrantType(req.session, nomsId, warrantType, appearanceReference)
-    const { submitToCheckAnswers } = req.query
-    if (submitToCheckAnswers) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/received-custodial-sentence?hasErrors=true`,
       )
     }
     return res.redirect(

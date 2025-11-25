@@ -1,7 +1,7 @@
 import Page from '../../pages/page'
 import OffenceSentenceLengthMismatchPage from '../../pages/offenceSentenceLengthMismatchPage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
 
 context('Offence sentence length mismatch', () => {
   let offenceSentenceLengthMismatchPage: OffenceSentenceLengthMismatchPage

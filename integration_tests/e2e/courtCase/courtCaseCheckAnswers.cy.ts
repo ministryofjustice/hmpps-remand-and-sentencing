@@ -4,7 +4,7 @@ import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
 import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 
@@ -19,7 +19,7 @@ context('Court Case Check Answers Page', () => {
 
   context('Remand', () => {
     beforeEach(() => {
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
       courtCaseWarrantTypePage.continueButton().click()
@@ -123,7 +123,7 @@ context('Court Case Check Answers Page', () => {
 
   context('Sentencing', () => {
     beforeEach(() => {
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.continueButton().click()

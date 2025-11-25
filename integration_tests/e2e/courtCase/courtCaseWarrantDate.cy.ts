@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import Page from '../../pages/page'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseSelectCourtNamePage from '../../pages/courtCaseSelectCourtNamePage'
 import StartPage from '../../pages/startPage'
@@ -61,7 +61,7 @@ context('Court Case Warrant Date Page', () => {
     })
 
     it('after confirm and continue check answers this becomes uneditable', () => {
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
       courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
       courtCaseWarrantTypePage.continueButton().click()

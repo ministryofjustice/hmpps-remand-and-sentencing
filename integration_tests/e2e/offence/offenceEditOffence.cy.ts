@@ -1,6 +1,6 @@
 import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetailsPage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'

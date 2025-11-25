@@ -1,5 +1,5 @@
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import CourtCaseWarrantTypePage from '../../pages/receivedCustodialSentencePage'
 import Page from '../../pages/page'
 
 context('Sentencing Warrant Overall Case Outcome Page', () => {

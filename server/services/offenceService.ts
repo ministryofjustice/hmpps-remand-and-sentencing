@@ -534,6 +534,7 @@ export default class OffenceService {
     chargeUuid: string,
     offenceSentenceLengthForm: SentenceLengthForm,
     periodLengthType: string,
+    periodLengthHeader: string,
   ) {
     const errors = validate(
       offenceSentenceLengthForm,
@@ -544,12 +545,12 @@ export default class OffenceService {
         'sentenceLength-days': 'minWholeNumber:0',
       },
       {
-        'requireSentenceLength.sentenceLength-years': 'You must enter the sentence length',
+        'requireSentenceLength.sentenceLength-years': `You must enter the ${periodLengthHeader}`,
         'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
-        'requireOneNonZeroSentenceLength.sentenceLength-years': 'The sentence length cannot be 0',
+        'requireOneNonZeroSentenceLength.sentenceLength-years': `The ${periodLengthHeader} cannot be 0`,
       },
     )
     if (errors.length === 0) {

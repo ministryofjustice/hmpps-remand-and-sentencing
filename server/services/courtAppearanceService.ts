@@ -30,7 +30,6 @@ import { toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
-import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default class CourtAppearanceService {
   constructor(

@@ -1,6 +1,6 @@
 import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetailsPage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
@@ -44,10 +44,10 @@ context('Add Offence Edit offence Page', () => {
         },
       ])
       cy.task('stubGetChargeOutcomeById', {})
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('false').click()
+      receivedCustodialSentencePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
@@ -148,10 +148,10 @@ context('Add Offence Edit offence Page', () => {
         },
       ])
       cy.task('stubHasLoopInChain')
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('true').click()
+      receivedCustodialSentencePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
@@ -570,9 +570,9 @@ context('Add Offence Edit offence Page', () => {
       const startPage = Page.verifyOnPage(StartPage)
       startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
 
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('true').click()
+      receivedCustodialSentencePage.continueButton().click()
       cy.visit(
         '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/warrant-date',
       )

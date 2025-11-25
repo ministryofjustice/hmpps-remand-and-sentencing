@@ -1,0 +1,48 @@
+{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - received sentence page" %}
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-received-custodial-sentence" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">
+                    Add a hearing
+                </span>
+                {{ govukRadios({
+                    name: "receivedCustodialSentence",
+                    errorMessage: errors | findError('receivedCustodialSentence'),
+                    fieldset: {
+                        legend: {
+                        text: "Has " + prisonerName + " received a custodial sentence?",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes, " + prisonerName + " has received a custodial sentence",
+                            checked: receivedCustodialSentenceForm.receivedCustodialSentence === 'true'
+                        },
+                        {
+                            value: "false",
+                            text: "No",
+                            checked: receivedCustodialSentenceForm.receivedCustodialSentence === 'false'
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

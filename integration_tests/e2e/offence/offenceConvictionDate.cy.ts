@@ -7,7 +7,7 @@ import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 import StartPage from '../../pages/startPage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
@@ -180,9 +180,9 @@ context('Add Offence Conviction Date Page tests with a full create court appeara
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage.appearanceInformationLink().click()
 

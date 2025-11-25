@@ -99,8 +99,8 @@ declare module 'forms' {
     finishedReviewOffenceOutcomes?: string
   }
 
-  export interface CourtCaseWarrantTypeForm {
-    warrantType?: string
+  export interface ReceivedCustodialSentenceForm {
+    receivedCustodialSentence?: string
   }
 
   export interface OffenceCountNumberForm {

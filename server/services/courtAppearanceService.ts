@@ -16,6 +16,7 @@ import type {
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
   OffenceFinishedAddingForm,
+  ReceivedCustodialSentenceForm,
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
@@ -107,6 +108,35 @@ export default class CourtAppearanceService {
         delete courtAppearance.caseReferenceNumber
       }
       courtAppearance.referenceNumberSelect = referenceForm.referenceNumberSelect
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  setReceivedCustodialSentence(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    receivedCustodialSentenceForm: ReceivedCustodialSentenceForm,
+    prisonerName: string,
+  ) {
+    const errors = validate(
+      receivedCustodialSentenceForm,
+      { receivedCustodialSentence: 'required' },
+      { 'required.receivedCustodialSentence': `You must select whether ${prisonerName} received a custodial sentence` },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      let warrantType = 'REMAND'
+      if (receivedCustodialSentenceForm.receivedCustodialSentence === 'true') {
+        warrantType = 'SENTENCING'
+      }
+      courtAppearance.warrantType = warrantType
+      if (warrantType === 'SENTENCING') {
+        // eslint-disable-next-line no-param-reassign
+        courtAppearance.offences.forEach(offence => delete offence.outcomeUuid)
+      }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -337,17 +367,6 @@ export default class CourtAppearanceService {
 
   getCourtCode(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
     return this.getCourtAppearance(session, nomsId, appearanceUuid).courtCode
-  }
-
-  setWarrantType(session: Partial<SessionData>, nomsId: string, warrantType: string, appearanceUuid: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    courtAppearance.warrantType = warrantType
-    if (warrantType === 'SENTENCING') {
-      // eslint-disable-next-line no-param-reassign
-      courtAppearance.offences.forEach(offence => delete offence.outcomeUuid)
-    }
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
   }
 
   getWarrantType(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {

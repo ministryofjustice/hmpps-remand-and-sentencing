@@ -174,13 +174,13 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/warrant-type',
-    courtCaseRoutes.getWarrantType,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/received-custodial-sentence',
+    courtCaseRoutes.getReceivedCustodialSentence,
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-warrant-type',
-    courtCaseRoutes.submitWarrantType,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-received-custodial-sentence',
+    courtCaseRoutes.submitReceivedCustodialSentence,
   )
 
   router.get(

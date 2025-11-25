@@ -1,4 +1,4 @@
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import Page from '../../pages/page'
 import RemoveDocumentConfirmationPage from '../../pages/removeDocumentConfirmationPage'
 import UploadRemandCourtDocumentsPage from '../../pages/uploadRemandCourtDocumentsPage'
@@ -12,10 +12,10 @@ context('Remove document confirmation page', () => {
     cy.task('stubUploadDocument')
 
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('false').click()
+    receivedCustodialSentencePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/upload-court-documents')
     Page.verifyOnPage(UploadRemandCourtDocumentsPage)
     cy.contains('Upload remand warrant').click()

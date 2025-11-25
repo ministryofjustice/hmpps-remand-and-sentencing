@@ -15,6 +15,6 @@ context('Received custodial sentence page', () => {
     receivedCustodialSentencePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem You must select whether ')
+      .should('equal', 'There is a problem You must select whether Cormac Meza received a custodial sentence')
   })
 })

@@ -866,7 +866,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/warrant-type`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/received-custodial-sentence`,
     )
   }
 

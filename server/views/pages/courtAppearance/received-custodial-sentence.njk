@@ -10,7 +10,11 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-received-custodial-sentence" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">
-                    Add a hearing
+                    {% if isAddCourtCase %}
+                        Add new court case
+                    {% else %}
+                        Add a hearing
+                    {% endif %}
                 </span>
                 {{ govukRadios({
                     name: "receivedCustodialSentence",

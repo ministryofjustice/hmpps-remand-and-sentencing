@@ -14,6 +14,7 @@ import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import CannotChangeSentenceOutcomePage from '../../pages/cannotChangeSentenceOutcomePage'
+import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -504,6 +505,24 @@ context('Sentencing appearance details Page', () => {
             'Consecutive or concurrent': 'Concurrent',
           },
         ])
+    })
+
+    it('should come back to appearance page when clicked back on overall case outcome page', () => {
+      courtCaseAppearanceDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'overall-case-outcome',
+          true,
+        )
+        .click()
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Edit the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.backLink().click()
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
   })
 

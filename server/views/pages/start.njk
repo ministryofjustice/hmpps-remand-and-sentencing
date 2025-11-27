@@ -137,14 +137,14 @@
                             <hr class="govuk-section-break govuk-section-break--visible">
                             <div class="govuk-grid-row">
                                     <div class="govuk-grid-column-one-half">
-                                        <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Latest appearance</h2>
+                                        <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-2">Latest hearing</h2>
                                     </div>
                                 </div>
                                 <div class="govuk-grid-row govuk-!-padding-bottom-2 govuk-!-margin-top-2">
                                     <div class="govuk-grid-column-one-third">
                                         <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Case reference</h3>
                                         <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceCourtCaseReference-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.caseReference if courtCaseDetails.latestAppearance.caseReference else 'Not entered'}}</p>
-                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant date</h3>
+                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Hearing date</h3>
                                         <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.warrantDate | formatDate }}</p>
                                         <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
                                         <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceOutcome-{{courtCaseDetails.courtCaseUuid}}"> {{ courtCaseDetails.latestAppearance.outcome if courtCaseDetails.latestAppearance.outcome else 'Not entered' }}</p>
@@ -152,8 +152,6 @@
                                     <div class="govuk-grid-column-two-thirds">
                                         <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
                                         <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceLocation-{{courtCaseDetails.courtCaseUuid}}">{{ courtMap[courtCaseDetails.latestAppearance.courtCode] }}</p>
-                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant type</h3>
-                                        <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantType-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.warrantType | capitalize }}</p>
                                         {% if courtCaseDetails.latestAppearance.warrantType === 'SENTENCING' %}
                                             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
                                             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceConvictionDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.convictionDate | formatDate if courtCaseDetails.latestAppearance.convictionDate else 'Not entered' }}</p>
@@ -203,9 +201,9 @@
                             <p class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-2">
                                 <a class="govuk-link--no-visited-state govuk-!-font-weight-bold" href="/person/{{nomsId}}/view-court-case/{{courtCaseDetails.courtCaseUuid}}/details">
                                     {% if courtCaseDetails.allAppearancesHaveRecall %}
-                                        View all appearances for this court case ({{ courtCaseDetails.appearanceTotal }})
+                                        View all hearings for this court case ({{ courtCaseDetails.appearanceTotal }})
                                     {% else %}
-                                        View and edit all appearances for this court case ({{ courtCaseDetails.appearanceTotal }})
+                                        View and edit all hearings for this court case ({{ courtCaseDetails.appearanceTotal }})
                                     {% endif %}
 
                                 </a>
@@ -229,8 +227,8 @@
                         {% elif courtCaseDetails.warrantType !== 'SENTENCING' and not viewOnlyEnabled %}
                           {% set _ = actions.push({
                             href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/new-journey",
-                            text: "Add appearance",
-                            visuallyHiddenText: "Add appearance",
+                            text: "Add hearing",
+                            visuallyHiddenText: "Add hearing",
                             attributes: {
                               'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
                             }

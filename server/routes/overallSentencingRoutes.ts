@@ -272,7 +272,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
 
     if (backTo) {
       backLink = buildReturnUrlFromKey(
-        'sentencingCourtAppearance',
+        backLink,
         nomsId,
         addOrEditCourtCase,
         courtCaseReference,

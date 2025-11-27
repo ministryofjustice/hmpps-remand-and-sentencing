@@ -10,6 +10,16 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/update-offence-outcome`
   }
 
+  static sentencingCourtAppearance = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/sentencing/appearance-details`
+  }
+
   static courtCases = (nomsId: string) => {
     return `/person/${nomsId}`
   }
@@ -31,6 +41,20 @@ export const urlMapByName = {
       addOrEditCourtAppearance,
       courtAppearanceUuid,
       chargeUuid,
+    ),
+  sentencingCourtAppearance: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.sentencingCourtAppearance(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
     ),
   courtCases: (nomsId: string) => JourneyUrls.courtCases(nomsId),
 }

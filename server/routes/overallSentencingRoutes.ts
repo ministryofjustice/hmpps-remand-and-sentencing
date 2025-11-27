@@ -18,6 +18,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import { outcomeValueOrLegacy } from '../utils/utils'
 import RefDataService from '../services/refDataService'
 import ManageOffencesService from '../services/manageOffencesService'
+import { buildReturnUrlFromKey } from './data/JourneyUrls'
 
 export default class OverallSentencingRoutes extends BaseRoutes {
   constructor(
@@ -265,12 +266,20 @@ export default class OverallSentencingRoutes extends BaseRoutes {
 
   public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
+    const { submitToCheckAnswers, backTo } = req.query
 
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/overall-conviction-date?backNav=true`
 
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+    if (backTo) {
+      backLink = buildReturnUrlFromKey(
+        'sentencingCourtAppearance',
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        '',
+      )
     } else if (submitToCheckAnswers) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/check-overall-answers`
     }

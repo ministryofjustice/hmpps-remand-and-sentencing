@@ -513,7 +513,7 @@ context('Sentencing appearance details Page', () => {
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          'overall-case-outcome',
+          'overall-case-outcome?backTo=sentencingCourtAppearance',
           true,
         )
         .click()

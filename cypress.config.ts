@@ -47,6 +47,7 @@ export default defineConfig({
               age: '58',
             }),
             remandAndSentencingApi.stubGetAllAppearanceTypes(),
+            remandAndSentencingApi.stubGetAllAppearanceOutcomes(),
             remandAndSentencingApi.stubGetChargeOutcomesByIds([
               {
                 outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
@@ -57,6 +58,7 @@ export default defineConfig({
             courtCasesReleaseDatesApi.stubGetServiceDefinitions(),
             remandAndSentencingApi.stubGetHasSentenceToChainTo({
               beforeOrOnAppearanceDate: '2023-05-13',
+              bookingId: '1234',
             }),
             remandAndSentencingApi.stubGetSentenceTypeById({
               sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',

@@ -29,6 +29,7 @@ describe('GET Select court name ', () => {
         nomisCode: '10',
         outcomeType: 'REMAND',
         relatedChargeOutcomeUuid: '1',
+        dispositionCode: 'INTERIM',
       },
       charges: [
         {

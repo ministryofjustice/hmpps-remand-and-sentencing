@@ -28,6 +28,7 @@ describe('Court Case Overall Case Outcome', () => {
         nomisCode: '10',
         outcomeName: 'Appearance sentencing outcome',
         relatedChargeOutcomeUuid: '3',
+        dispositionCode: 'FINAL',
       },
     ])
     return request(app)

@@ -23,7 +23,7 @@
         items: []
     } %}
 
-{% for caseOutcome in warrantTypeOutcomes %}
+{% for caseOutcome in outcomes %}
     {%- set caseOutcomeRow = {
         value: caseOutcome.outcomeUuid,
         text: caseOutcome.outcomeName,
@@ -32,21 +32,8 @@
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
 
-{% if nonCustodialOutcomes.length %}
-    {{ radiosData.items.push({ divider: "or"}) }}
-
-    {% for caseOutcome in nonCustodialOutcomes %}
-    {%- set caseOutcomeRow = {
-            value: caseOutcome.outcomeUuid,
-            text: caseOutcome.outcomeName,
-            checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
-        } -%}
-        {{ radiosData.items.push(caseOutcomeRow) }}
-    {% endfor %}
-{% endif %}
-
 {% block pageContent %}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-update-offence-outcome{{'?submitToEditOffence=true' if submitToEditOffence else ''}}" autocomplete="off">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-update-offence-outcome?backTo={{ backTo }}{{'&submitToEditOffence=true' if submitToEditOffence else ''}}" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         {{ govukRadios(radiosData) }}

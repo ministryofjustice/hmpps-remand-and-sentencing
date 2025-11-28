@@ -50,6 +50,7 @@ describe('GET Court case documents', () => {
               outcomeName: 'Remanded in custody',
               outcomeType: 'REMAND',
               relatedChargeOutcomeUuid: '2',
+              dispositionCode: 'INTERIM',
             },
             charges: [],
             documents: [

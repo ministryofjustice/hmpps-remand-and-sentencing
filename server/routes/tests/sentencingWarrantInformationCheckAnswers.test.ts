@@ -40,6 +40,7 @@ describe('GET Warrant Information Check Answers', () => {
       nomisCode: '10',
       outcomeName: 'Appearance sentencing outcome',
       relatedChargeOutcomeUuid: '3',
+      dispositionCode: 'FINAL',
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/check-overall-answers')

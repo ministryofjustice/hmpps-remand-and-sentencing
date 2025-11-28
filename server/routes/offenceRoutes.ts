@@ -221,7 +221,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence, backTo } = req.query as { submitToEditOffence: string; backTo: string }
 
     let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     if (
@@ -244,27 +244,34 @@ export default class OffenceRoutes extends BaseRoutes {
         offenceOutcome: offence.outcomeUuid,
       }
     }
-    const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-    const caseOutcomes = await this.refDataService.getAllChargeOutcomes(req.user.username)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
 
-    const [warrantTypeOutcomes, nonCustodialOutcomes] = caseOutcomes
-      .filter(caseOutcome => caseOutcome.outcomeType === warrantType || caseOutcome.outcomeType === 'NON_CUSTODIAL')
-      .sort((a, b) => a.displayOrder - b.displayOrder)
-      .reduce(
-        ([warrantList, nonCustodialList], caseOutcome) => {
-          return caseOutcome.outcomeType === warrantType
-            ? [[...warrantList, caseOutcome], nonCustodialList]
-            : [warrantList, [...nonCustodialList, caseOutcome]]
-        },
-        [[], []],
+    const [caseOutcomes, courtAppearanceOutcome] = await Promise.all([
+      this.refDataService.getAllChargeOutcomes(req.user.username),
+      this.refDataService.getAppearanceOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username),
+    ])
+
+    const outcomes = caseOutcomes
+      .filter(
+        caseOutcome =>
+          caseOutcome.outcomeType === courtAppearanceOutcome.outcomeType || caseOutcome.outcomeType === 'NON_CUSTODIAL',
       )
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+
     const offenceHint = await this.getOffenceHint(offence, req.user.username)
-    let backLink
-    if (warrantType === 'SENTENCING') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
-    } else {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
-    }
+    const backLink = buildReturnUrlFromKey(
+      backTo,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      chargeUuid,
+    )
 
     return res.render('pages/offence/update-outcome', {
       nomsId,
@@ -275,12 +282,12 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
-      warrantTypeOutcomes,
-      nonCustodialOutcomes,
+      outcomes,
       offenceHint,
       offence,
       submitToEditOffence,
-      offenceOutcomeForm, // Pass the form data for pre-selection
+      backTo,
+      offenceOutcomeForm,
     })
   }
 
@@ -293,7 +300,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence, backTo } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
 
     const errors = this.offenceService.updateOffenceOutcome(
@@ -308,7 +315,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true&backTo=${backTo}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
       )
     }
 

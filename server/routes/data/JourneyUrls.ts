@@ -20,6 +20,37 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/sentencing/appearance-details`
   }
 
+  static updateOffenceOutcomes = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/update-offence-outcomes`
+  }
+
+  static reviewOffences = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/review-offences`
+  }
+
+  static editOffence = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    chargeUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/edit-offence`
+  }
+
   static courtCases = (nomsId: string) => {
     return `/person/${nomsId}`
   }
@@ -55,6 +86,50 @@ export const urlMapByName = {
       courtCaseUuid,
       addOrEditCourtAppearance,
       courtAppearanceUuid,
+    ),
+  updateOffenceOutcomes: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.updateOffenceOutcomes(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+    ),
+  reviewOffences: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.reviewOffences(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+    ),
+  editOffence: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    chargeUuid: string,
+  ) =>
+    JourneyUrls.editOffence(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+      chargeUuid,
     ),
   courtCases: (nomsId: string) => JourneyUrls.courtCases(nomsId),
 }

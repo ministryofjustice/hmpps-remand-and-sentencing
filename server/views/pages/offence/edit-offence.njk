@@ -58,7 +58,7 @@ offenceDateRow,
     text: "Outcome"
   },
   value: {
-    html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/update-offence-outcome?submitToEditOffence=true" class="govuk-link govuk-link--no-visited-state" data-qa="update-outcome-cta">Update outcome</a>'
+    html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/update-offence-outcome?submitToEditOffence=true&backTo=editOffence" class="govuk-link govuk-link--no-visited-state" data-qa="update-outcome-cta">Update outcome</a>'
   } if showOutcomeCta else {
     text: outcome | outcomeValueOrLegacy(offence.legacyData)
   },

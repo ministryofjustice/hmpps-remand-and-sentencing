@@ -3,6 +3,7 @@ import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
+import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 
 context('Update Offence Outcome Page', () => {
   let offenceUpdateOutcomePage: OffenceUpdateOutcomePage
@@ -27,7 +28,13 @@ context('Update Offence Outcome Page', () => {
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('false').click()
       receivedCustodialSentencePage.continueButton().click()
-
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
       cy.visit(
         '/person/A1234AB/edit-court-case/0/add-court-appearance/2/offences/71bb9f7e-971c-4c34-9a33-43478baee74f/update-offence-outcome',
       )
@@ -50,10 +57,6 @@ context('Update Offence Outcome Page', () => {
           {
             label: 'Remanded in custody',
             checked: false,
-          },
-          {
-            isDivider: true,
-            label: 'or',
           },
           {
             label: 'Lie on file',
@@ -79,7 +82,13 @@ context('Update Offence Outcome Page', () => {
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('true').click()
       receivedCustodialSentencePage.continueButton().click()
-
+      cy.visit('/person/A1234AB/edit-court-case/0/add-court-appearance/2/sentencing/overall-case-outcome')
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
       cy.visit(
         '/person/A1234AB/edit-court-case/0/add-court-appearance/2/offences/71bb9f7e-971c-4c34-9a33-43478baee74f/update-offence-outcome',
       )

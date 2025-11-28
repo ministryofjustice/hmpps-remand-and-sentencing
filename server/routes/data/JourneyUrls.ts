@@ -51,6 +51,56 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/edit-offence`
   }
 
+  static nonSentencingCourtAppearance = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appearance-details`
+  }
+
+  static receivedCustodialSentence = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/received-custodial-sentence`
+  }
+
+  static selectCourtName = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/select-court-name`
+  }
+
+  static courtName = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/court-name`
+  }
+
+  static checkAppearanceAnswers = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/check-answers`
+  }
+
   static courtCases = (nomsId: string) => {
     return `/person/${nomsId}`
   }
@@ -130,6 +180,72 @@ export const urlMapByName = {
       addOrEditCourtAppearance,
       courtAppearanceUuid,
       chargeUuid,
+    ),
+  nonSentencingCourtAppearance: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.nonSentencingCourtAppearance(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+    ),
+
+  receivedCustodialSentence: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.receivedCustodialSentence(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+    ),
+  selectCourtName: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.selectCourtName(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+    ),
+
+  courtName: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => JourneyUrls.courtName(nomsId, addOrEditCourtCase, courtCaseUuid, addOrEditCourtAppearance, courtAppearanceUuid),
+
+  checkAppearanceAnswers: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.checkAppearanceAnswers(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
     ),
   courtCases: (nomsId: string) => JourneyUrls.courtCases(nomsId),
 }

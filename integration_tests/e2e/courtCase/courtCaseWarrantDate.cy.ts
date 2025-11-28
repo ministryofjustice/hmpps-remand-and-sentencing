@@ -287,6 +287,13 @@ context('Court Case Warrant Date Page', () => {
       receivedCustodialSentencePage.radioLabelSelector('false').click()
       receivedCustodialSentencePage.continueButton().click()
 
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
+
       const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
       courtCaseTaskListPage.appearanceInformationLink().click()
 
@@ -303,13 +310,6 @@ context('Court Case Warrant Date Page', () => {
       courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
       courtCaseCourtNamePage.firstAutoCompleteOption().click()
       courtCaseCourtNamePage.continueButton().click()
-
-      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-        CourtCaseOverallCaseOutcomePage,
-        'Select the overall case outcome',
-      )
-      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-      courtCaseOverallCaseOutcomePage.continueButton().click()
 
       const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
       courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Remanded in custody')

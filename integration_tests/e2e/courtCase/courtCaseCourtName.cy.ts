@@ -1,6 +1,8 @@
+import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import Page from '../../pages/page'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 
 context('Court Case Court Name Page', () => {
   let courtCaseCourtNamePage: CourtCaseCourtNamePage
@@ -8,7 +10,18 @@ context('Court Case Court Name Page', () => {
     cy.task('happyPathStubs')
     cy.task('stubSearchCourt')
     cy.signIn()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('false').click()
+    receivedCustodialSentencePage.continueButton().click()
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
+
     courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
   })
 
@@ -27,11 +40,8 @@ context('Court Case Court Name Page', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.continueButton().click()
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-      CourtCaseOverallCaseOutcomePage,
-      'Select the overall case outcome',
-    )
-    courtCaseOverallCaseOutcomePage.backLink().click()
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
+    courtCaseCaseOutcomeAppliedAllPage.backLink().click()
     courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
     courtCaseCourtNamePage.autoCompleteInput().focus()
     courtCaseCourtNamePage.firstAutoCompleteOption().contains('Clear the selection')

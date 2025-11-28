@@ -53,7 +53,7 @@ import RefDataService from '../services/refDataService'
 import RemandTaskListModel from './data/RemandTaskListModel'
 import SentencingTaskListModel from './data/SentencingTaskListModel'
 import NonCustodialTaskListModel from './data/NonCustodialTaskListModel'
-import JourneyUrls from './data/JourneyUrls'
+import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -744,7 +744,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
 
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?backTo=SELECT`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all?backTo=selectCourtName`,
       )
     }
     const { submitToCheckAnswers } = req.query
@@ -836,7 +836,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?backTo=NAME`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all?backTo=courtName`,
     )
   }
 
@@ -917,6 +917,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
       req.flash('receivedCustodialSentenceForm', { ...receivedCustodialSentenceForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/received-custodial-sentence?hasErrors=true`,
+      )
+    }
+    if (receivedCustodialSentenceForm.receivedCustodialSentence === 'false') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?backTo=receivedCustodialSentence`,
       )
     }
     return res.redirect(
@@ -1023,16 +1028,16 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers, backTo } = req.query
-
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/court-name`
-    if (addOrEditCourtAppearance === 'edit-court-appearance') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
-    } else if (submitToCheckAnswers) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-    } else if (backTo === 'SELECT') {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/select-court-name`
-    }
+    const { backTo, submitToCheckAnswers } = req.query as { backTo: string; submitToCheckAnswers: string }
+    const backLink = buildReturnUrlFromKey(
+      backTo,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      '',
+    )
 
     let overallCaseOutcomeForm = (req.flash('overallCaseOutcomeForm')[0] || {}) as CourtCaseOverallCaseOutcomeForm
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
@@ -1045,10 +1050,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
         overallCaseOutcome: `${courtAppearance.appearanceOutcomeUuid}|${courtAppearance.relatedOffenceOutcomeUuid}`,
       }
     }
-    const { warrantType, appearanceOutcomeUuid } = courtAppearance
+    const { appearanceOutcomeUuid } = courtAppearance
     const caseOutcomes = await this.refDataService.getAllAppearanceOutcomes(req.user.username)
     const [subListOutcomes, mainOutcomes] = caseOutcomes
-      .filter(caseOutcome => caseOutcome.outcomeType === warrantType)
+      .filter(caseOutcome =>
+        ['REMAND', 'NON_CUSTODIAL'].some(expectedOutcomeType => expectedOutcomeType === caseOutcome.outcomeType),
+      )
       .sort((a, b) => a.displayOrder - b.displayOrder)
       .reduce(
         ([subList, mainList], caseOutcome) => {
@@ -1072,7 +1079,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
     return res.render('pages/courtAppearance/overall-case-outcome', {
       nomsId,
-      submitToCheckAnswers,
       overallCaseOutcomeForm,
       courtCaseReference,
       appearanceReference,
@@ -1083,13 +1089,15 @@ export default class CourtCaseRoutes extends BaseRoutes {
       mainOutcomes,
       subListOutcomes,
       legacyCaseOutcome,
+      backTo,
+      submitToCheckAnswers,
       showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
   public submitOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
+    const { backTo, submitToCheckAnswers } = req.query
     const overallCaseOutcomeForm = trimForm<CourtCaseOverallCaseOutcomeForm>(req.body)
     const errors = this.courtAppearanceService.setAppearanceOutcomeUuid(
       req.session,
@@ -1101,7 +1109,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('overallCaseOutcomeForm', { ...overallCaseOutcomeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome?hasErrors=true&backTo=${backTo}`,
       )
     }
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
@@ -1109,20 +1117,19 @@ export default class CourtCaseRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
-
     if (submitToCheckAnswers) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
   }
 
   public getCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
+    const { submitToCheckAnswers, backTo } = req.query as { submitToCheckAnswers: string; backTo: string }
     const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(
       req.session,
       nomsId,
@@ -1143,12 +1150,15 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
       }
     }
-
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/overall-case-outcome`
-
-    if (submitToCheckAnswers) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
-    }
+    const backLink = buildReturnUrlFromKey(
+      backTo,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      '',
+    )
 
     return res.render('pages/courtAppearance/case-outcome-applied-all', {
       nomsId,
@@ -1161,13 +1171,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
+      backTo,
     })
   }
 
   public submitCaseOutcomeAppliedAll: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const caseOutcomeAppliedAllForm = trimForm<CourtCaseCaseOutcomeAppliedAllForm>(req.body)
-    const { submitToCheckAnswers } = req.query
+    const { submitToCheckAnswers, backTo } = req.query
     const errors = this.courtAppearanceService.setCaseOutcomeAppliedAll(
       req.session,
       nomsId,
@@ -1178,7 +1189,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('caseOutcomeAppliedAllForm', { ...caseOutcomeAppliedAllForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/case-outcome-applied-all?hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance/${appearanceReference}/case-outcome-applied-all?hasErrors=true&backTo=${backTo}${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
       )
     }
     return res.redirect(

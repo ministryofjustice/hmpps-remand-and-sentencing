@@ -673,5 +673,41 @@ context('Sentencing appearance details Page', () => {
         'Consecutive or concurrent': 'Concurrent',
       })
     })
+
+    it('should show error if sentence type is tried to add while offence date is not available', () => {
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3f20856f-fa17-493b-89c7-205970c749b8',
+          'b2565181-6066-4b55-b4a7-32c2ddf8c36e',
+        )
+        .click()
+
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('b2565181-6066-4b55-b4a7-32c2ddf8c36e', 'sentence-type').click()
+      offenceEditOffencePage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem You must enter the offence date before editing a sentence type')
+    })
+
+    it('should show error if sentence type is tried to add while conviction date is not available', () => {
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3f20856f-fa17-493b-89c7-205970c749b8',
+          'b2565181-6066-4b55-b4a7-32c2ddf8c36d',
+        )
+        .click()
+
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('b2565181-6066-4b55-b4a7-32c2ddf8c36d', 'sentence-type').click()
+      offenceEditOffencePage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem You must enter the conviction date before editing a sentence type')
+    })
   })
 })

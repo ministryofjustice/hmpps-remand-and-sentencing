@@ -2,7 +2,12 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% set offenceDateMissing = not offence.offenceStartDate %}
+{% set convictionDateMissing = not (offence.sentence and offence.sentence.convictionDate) %}
+{% set shouldBlockSentenceTypeAccess = offenceDateMissing or convictionDateMissing %}
+
 {% set offenceDateHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-date?submitToEditOffence=true" %}
+
 {% if offence.offenceStartDate %}
   {% set offenceDateRow = {
   key: {
@@ -104,7 +109,9 @@ offenceDateRow,
         }
     } %}
   {% endif %}
+
   {% set convictionDateHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/conviction-date?submitToEditOffence=true" %}
+
   {% if offence.sentence.convictionDate %}
     {% set convictionDateRow = {
       key: { text: "Conviction date" },
@@ -127,14 +134,16 @@ offenceDateRow,
     {% set convictionDateRow = {
       key: { text: "Conviction date" },
       value: {
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + convictionDateHref + '">Enter conviction date</a>',
-        attributes: {
-          'data-qa': 'edit-conviction-date-' + chargeUuid
-        }
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + convictionDateHref + '" data-qa="edit-conviction-date-' + chargeUuid + '">Enter conviction date</a>'
       }
     }%}
   {% endif %}
-  {% set sentenceTypeHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-type?submitToEditOffence=true"%}
+
+  {% set actualSentenceTypeHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-type?submitToEditOffence=true"%}
+  {% set sentenceTypeValidatorHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/validate-sentence-type-access"%}
+
+  {% set sentenceTypeLink = sentenceTypeValidatorHref if shouldBlockSentenceTypeAccess else actualSentenceTypeHref %}
+
   {% if sentenceType %}
     {% set sentenceTypeRow = {
       key: { text: "Sentence type" },
@@ -143,7 +152,7 @@ offenceDateRow,
       },
       actions: {
         items: [{
-          href: sentenceTypeHref,
+          href: sentenceTypeLink,
           text: "Edit",
           visuallyHiddenText: "sentence type",
           classes: "govuk-link--no-visited-state",
@@ -157,7 +166,7 @@ offenceDateRow,
     {% set sentenceTypeRow = {
       key: { text: "Sentence type" },
       value: {
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceTypeHref + '" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceTypeLink + '" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
       }
     }%}
   {% endif %}

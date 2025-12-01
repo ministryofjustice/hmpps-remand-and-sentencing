@@ -71,6 +71,44 @@ export default class OffenceRoutes extends BaseRoutes {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
 
+  public validateSentenceTypeAccess: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    } = req.params
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+
+    const offenceDateMissing = !offence.offenceStartDate
+    const convictionDateMissing = !offence.sentence?.convictionDate
+
+    let errorMessage = ''
+
+    if (offenceDateMissing) {
+      const action = offence.sentence?.sentenceTypeId ? 'editing' : 'adding'
+      errorMessage = `You must enter the offence date before ${action} a sentence type`
+    } else if (convictionDateMissing) {
+      const action = offence.sentence?.sentenceTypeId ? 'editing' : 'adding'
+      errorMessage = `You must enter the conviction date before ${action} a sentence type`
+    }
+
+    if (errorMessage) {
+      const errors = [
+        {
+          text: errorMessage,
+        },
+      ]
+      req.flash('errors', errors)
+      const editOffencePageUrl = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      return res.redirect(editOffencePageUrl)
+    }
+    const sentenceTypePage = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type?submitToEditOffence=true`
+    return res.redirect(sentenceTypePage)
+  }
+
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,

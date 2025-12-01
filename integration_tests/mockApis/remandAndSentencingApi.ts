@@ -1315,6 +1315,52 @@ export default {
               },
             },
             {
+              chargeUuid: 'b2565181-6066-4b55-b4a7-32c2ddf8c36e',
+              offenceCode: 'PS90037',
+              offenceStartDate: null,
+              legacyData: {
+                offenderChargeId: '1',
+                bookingId: '1',
+                postedDate: '10-10-2015',
+                nomisOutcomeCode: 'NOMISCODE',
+                outcomeDescription: 'A Nomis description',
+                outcomeDispositionCode: 'F',
+                outcomeConvictionFlag: true,
+              },
+              sentence: {
+                sentenceUuid: '4fec0281-ec54-4a15-b588-dee8fab6c250',
+                sentenceLifetimeUuid: '11060e5b-da7e-4475-94f6-a27d27e28672',
+                chargeNumber: '1',
+                periodLengths: [
+                  {
+                    years: 2,
+                    periodOrder: 'years',
+                    periodLengthType: 'UNSUPPORTED',
+                    legacyData: {
+                      lifeSentence: false,
+                      sentenceTermCode: 'SEC_86',
+                      sentenceTermDescription: 'Section 86 of 2000 Act',
+                    },
+                  },
+                ],
+                sentenceServeType: 'CONCURRENT',
+                consecutiveToChargeNumber: null,
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
+                convictionDate: null,
+                fineAmount: null,
+                legacyData: {
+                  sentenceCalcType: '1',
+                  sentenceCategory: '1',
+                  sentenceTypeDesc: 'A Nomis sentence type description',
+                  postedDate: '10-10-2015',
+                },
+              },
+            },
+            {
               chargeUuid: '9ac07cd8-dbb8-4136-87a2-002b7496fc5f',
               offenceCode: 'PS90037',
               offenceStartDate: '2023-12-15',

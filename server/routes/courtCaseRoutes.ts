@@ -50,10 +50,9 @@ import CourtRegisterService from '../services/courtRegisterService'
 import { MergedFromCase, SearchDocuments } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
-import RemandTaskListModel from './data/RemandTaskListModel'
 import SentencingTaskListModel from './data/SentencingTaskListModel'
-import NonCustodialTaskListModel from './data/NonCustodialTaskListModel'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
+import NonSentencingTaskListModel from './data/NonSentencingTaskListModel'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -945,19 +944,15 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
       caseReferenceSet = !!latestCourtAppearance.courtCaseReference
     }
+    let appearanceOutcome
+    if (warrantType !== 'SENTENCING' && courtAppearance.appearanceOutcomeUuid) {
+      appearanceOutcome = await this.refDataService.getAppearanceOutcomeByUuid(
+        courtAppearance.appearanceOutcomeUuid,
+        req.user.username,
+      )
+    }
     let model
     switch (courtAppearance.warrantType) {
-      case 'REMAND':
-        model = new RemandTaskListModel(
-          nomsId,
-          addOrEditCourtCase,
-          addOrEditCourtAppearance,
-          courtCaseReference,
-          appearanceReference,
-          courtAppearance,
-          caseReferenceSet,
-        )
-        break
       case 'SENTENCING':
         model = new SentencingTaskListModel(
           nomsId,
@@ -969,8 +964,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
           caseReferenceSet,
         )
         break
-      case 'NON_CUSTODIAL':
-        model = new NonCustodialTaskListModel(
+      default:
+        model = new NonSentencingTaskListModel(
           nomsId,
           addOrEditCourtCase,
           addOrEditCourtAppearance,
@@ -978,10 +973,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
           appearanceReference,
           courtAppearance,
           caseReferenceSet,
+          appearanceOutcome,
         )
-        break
-      default:
-        logger.info(`no task list model for warrant type ${courtAppearance.warrantType}`)
     }
     return res.render('pages/courtAppearance/task-list', {
       nomsId,

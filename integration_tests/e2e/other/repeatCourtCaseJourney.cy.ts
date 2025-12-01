@@ -73,6 +73,13 @@ context('Repeat Court Case journey', () => {
     receivedCustodialSentencePage.radioLabelSelector('false').click()
     receivedCustodialSentencePage.continueButton().click()
 
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
+
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
     courtCaseTaskListPage
       .taskList()
@@ -113,13 +120,6 @@ context('Repeat Court Case journey', () => {
     )
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
     courtCaseSelectCourtNamePage.continueButton().click()
-
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-      CourtCaseOverallCaseOutcomePage,
-      'Select the overall case outcome',
-    )
-    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-    courtCaseOverallCaseOutcomePage.continueButton().click()
 
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()

@@ -106,6 +106,17 @@ export default abstract class Page {
       `a[href="/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/${page}?submitToCheckAnswers=true"]:first`,
     )
 
+  chargeLinkBackTo = (
+    personId: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+    page: string,
+    backTo: string,
+  ): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/${page}?backTo=${backTo}&submitToCheckAnswers=true"]:first`,
+    )
+
   offenceParagraph = (): PageElement => cy.get('[data-qa=offenceParagraph]')
 
   addAnotherButton = (): PageElement => cy.get('[data-qa="addAnotherOffence"]')

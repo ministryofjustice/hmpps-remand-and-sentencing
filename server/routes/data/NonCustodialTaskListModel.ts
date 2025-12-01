@@ -23,7 +23,6 @@ export default class NonCustodialTaskListModel extends TaskListModel {
     return (
       courtAppearance.warrantDate &&
       courtAppearance.courtCode &&
-      courtAppearance.appearanceOutcomeUuid &&
       courtAppearance.caseOutcomeAppliedAll !== undefined &&
       courtAppearance.appearanceInformationAccepted
     )
@@ -34,7 +33,6 @@ export default class NonCustodialTaskListModel extends TaskListModel {
       courtAppearance.caseReferenceNumber !== undefined ||
       courtAppearance.warrantDate !== undefined ||
       courtAppearance.courtCode !== undefined ||
-      courtAppearance.appearanceOutcomeUuid !== undefined ||
       courtAppearance.caseOutcomeAppliedAll !== undefined ||
       courtAppearance.appearanceInformationAccepted
     )

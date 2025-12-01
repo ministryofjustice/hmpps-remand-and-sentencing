@@ -80,7 +80,7 @@
             actions: {
                 items: [
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-case-outcome?submitToCheckAnswers=true",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-case-outcome?backTo=checkAppearanceAnswers&submitToCheckAnswers=true",
                         text: "Edit",
                         visuallyHiddenText: "overall case outcome"
                     }
@@ -97,7 +97,7 @@
             actions: {
                 items: [
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?backTo=checkAppearanceAnswers&submitToCheckAnswers=true",
                         text: "Edit"
                     }
                 ] if courtAppearance.appearanceInformationAccepted !== true

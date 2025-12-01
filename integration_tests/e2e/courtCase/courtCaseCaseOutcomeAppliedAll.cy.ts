@@ -14,13 +14,13 @@ context('Court Case Case Outcome applied all Page', () => {
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
     receivedCustodialSentencePage.radioLabelSelector('false').click()
     receivedCustodialSentencePage.continueButton().click()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/case-outcome-applied-all')
     courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
   })
 

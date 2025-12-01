@@ -20,6 +20,26 @@ export default class SentencingTaskListModel extends TaskListModel {
     ]
   }
 
+  setPageHeading() {
+    if (this.isAddCourtCase()) {
+      this.pageHeading = 'Add a court case'
+    } else {
+      this.pageHeading = 'Add a court appearance to a court case'
+    }
+  }
+
+  setFinishHeading() {
+    if (this.isAddCourtCase()) {
+      this.pageHeading = 'Finish adding a court case'
+    } else {
+      this.pageHeading = 'Finish adding a court appearance'
+    }
+  }
+
+  getAppearanceInformationTitleText(): string {
+    return 'Add appearance information'
+  }
+
   private getWarrantInformationItem(courtAppearance: CourtAppearance): TaskListItem {
     return {
       title: {

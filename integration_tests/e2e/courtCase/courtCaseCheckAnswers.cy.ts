@@ -118,7 +118,7 @@ context('Court Case Check Answers Page', () => {
     it('after confirm and continue overall case outcome and is the outcome the same are no longer editable', () => {
       courtCaseCheckAnswersPage.continueButton().click()
       const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
-      courtCaseTaskListPage.appearanceInformationLink().click()
+      courtCaseTaskListPage.hearingInformationLink().click()
       courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'overall-case-outcome').should('not.exist')
       courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'case-outcome-applied-all').should('not.exist')
     })

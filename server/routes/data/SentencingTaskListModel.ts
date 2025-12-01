@@ -30,9 +30,9 @@ export default class SentencingTaskListModel extends TaskListModel {
 
   setFinishHeading() {
     if (this.isAddCourtCase()) {
-      this.pageHeading = 'Finish adding a court case'
+      this.finishHeading = 'Finish adding a court case'
     } else {
-      this.pageHeading = 'Finish adding a court appearance'
+      this.finishHeading = 'Finish adding a court appearance'
     }
   }
 

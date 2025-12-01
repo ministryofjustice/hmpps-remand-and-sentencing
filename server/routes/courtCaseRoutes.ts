@@ -1084,9 +1084,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       legacyCaseOutcome,
       backTo,
       submitToCheckAnswers,
-      showAppearanceDetails:
-        this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance) ||
-        this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 

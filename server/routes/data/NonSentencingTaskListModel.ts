@@ -34,9 +34,9 @@ export default class RemandTaskListModel extends TaskListModel {
 
   setFinishHeading() {
     if (this.isAddCourtCase()) {
-      this.pageHeading = 'Finish adding a court case'
+      this.finishHeading = 'Finish adding a court case'
     } else {
-      this.pageHeading = 'Finish adding a hearing'
+      this.finishHeading = 'Finish adding a hearing'
     }
   }
 

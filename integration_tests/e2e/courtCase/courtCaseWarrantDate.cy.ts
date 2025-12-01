@@ -295,7 +295,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseOverallCaseOutcomePage.continueButton().click()
 
       const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
-      courtCaseTaskListPage.appearanceInformationLink().click()
+      courtCaseTaskListPage.hearingInformationLink().click()
 
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
       courtCaseReferencePage.input().type('T12345678')

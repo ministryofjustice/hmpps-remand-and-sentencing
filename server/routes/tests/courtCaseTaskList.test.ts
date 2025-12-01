@@ -20,6 +20,17 @@ describe('GET task list', () => {
       appearanceUuid: '1',
       warrantType: 'REMAND',
       caseReferenceNumber: 'A123',
+      appearanceOutcomeUuid: '546',
+    })
+    defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue({
+      outcomeUuid: '546',
+      displayOrder: 1,
+      dispositionCode: 'INTERIM',
+      isSubList: false,
+      nomisCode: '9654',
+      outcomeName: 'Remand in custody',
+      outcomeType: 'REMAND',
+      relatedChargeOutcomeUuid: '789',
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/task-list')

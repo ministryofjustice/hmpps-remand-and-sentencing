@@ -13,6 +13,10 @@ export default abstract class TaskListModel {
 
   appearanceReference: string
 
+  pageHeading: string
+
+  finishHeading: string
+
   constructor(
     nomsId: string,
     addOrEditCourtCase: string,
@@ -25,7 +29,13 @@ export default abstract class TaskListModel {
     this.addOrEditCourtAppearance = addOrEditCourtAppearance
     this.courtCaseReference = courtCaseReference
     this.appearanceReference = appearanceReference
+    this.setPageHeading()
+    this.setFinishHeading()
   }
+
+  abstract setPageHeading()
+
+  abstract setFinishHeading()
 
   isAllMandatoryItemsComplete(): boolean {
     return this.items
@@ -38,10 +48,12 @@ export default abstract class TaskListModel {
     return this.addOrEditCourtCase === 'add-court-case'
   }
 
+  abstract getAppearanceInformationTitleText(): string
+
   getAppearanceInformationItem(courtAppearance: CourtAppearance, caseReferenceSet: boolean): TaskListItem {
     return {
       title: {
-        text: 'Add appearance information',
+        text: this.getAppearanceInformationTitleText(),
         classes: 'govuk-link--no-visited-state',
       },
       href: this.getAppearanceInformationHref(courtAppearance, caseReferenceSet),

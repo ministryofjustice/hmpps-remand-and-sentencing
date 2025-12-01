@@ -86,12 +86,11 @@ export default class OffenceRoutes extends BaseRoutes {
     const convictionDateMissing = !offence.sentence?.convictionDate
 
     let errorMessage = ''
+    const action = offence.sentence?.sentenceTypeId ? 'editing' : 'adding'
 
     if (offenceDateMissing) {
-      const action = offence.sentence?.sentenceTypeId ? 'editing' : 'adding'
       errorMessage = `You must enter the offence date before ${action} a sentence type`
     } else if (convictionDateMissing) {
-      const action = offence.sentence?.sentenceTypeId ? 'editing' : 'adding'
       errorMessage = `You must enter the conviction date before ${action} a sentence type`
     }
 

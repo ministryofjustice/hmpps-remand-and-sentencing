@@ -82,7 +82,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
-    const offenceDateMissing = !offence.offenceStartDate
+    const offenceDateMissing = !(offence?.offenceEndDate ?? offence?.offenceStartDate)
     const convictionDateMissing = !offence.sentence?.convictionDate
 
     let errorMessage = ''

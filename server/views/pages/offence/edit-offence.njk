@@ -139,10 +139,7 @@ offenceDateRow,
     }%}
   {% endif %}
 
-  {% set actualSentenceTypeHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/sentence-type?submitToEditOffence=true"%}
   {% set sentenceTypeValidatorHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/validate-sentence-type-access"%}
-
-  {% set sentenceTypeLink = sentenceTypeValidatorHref if shouldBlockSentenceTypeAccess else actualSentenceTypeHref %}
 
   {% if sentenceType %}
     {% set sentenceTypeRow = {
@@ -152,7 +149,7 @@ offenceDateRow,
       },
       actions: {
         items: [{
-          href: sentenceTypeLink,
+          href: sentenceTypeValidatorHref,
           text: "Edit",
           visuallyHiddenText: "sentence type",
           classes: "govuk-link--no-visited-state",
@@ -166,7 +163,7 @@ offenceDateRow,
     {% set sentenceTypeRow = {
       key: { text: "Sentence type" },
       value: {
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceTypeLink + '" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceTypeValidatorHref + '" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
       }
     }%}
   {% endif %}

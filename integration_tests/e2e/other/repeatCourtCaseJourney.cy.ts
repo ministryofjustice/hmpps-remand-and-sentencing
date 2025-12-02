@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
@@ -121,10 +120,6 @@ context('Repeat Court Case journey', () => {
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
     courtCaseSelectCourtNamePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
@@ -132,7 +127,6 @@ context('Repeat Court Case journey', () => {
       'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Does this outcome apply to all offences on the warrant?': 'Yes',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 

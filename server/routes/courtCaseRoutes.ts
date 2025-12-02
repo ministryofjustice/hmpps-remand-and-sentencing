@@ -1728,7 +1728,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
-    const expectedDocumentTypes = documentTypes[courtAppearance.warrantType] ?? documentTypes.REMAND
+    const expectedDocumentTypes = documentTypes.NON_SENTENCING
     const documentRows = expectedDocumentTypes.map(expectedType => {
       const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
       return { ...expectedType, ...uploadedDocument }
@@ -1743,8 +1743,20 @@ export default class CourtCaseRoutes extends BaseRoutes {
       documentRows,
       isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
-        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+        ? JourneyUrls.nonSentencingCourtAppearance(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          )
+        : JourneyUrls.taskList(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          ),
     })
   }
 
@@ -2050,6 +2062,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
         return 'indictment document'
       case 'prison-court-register':
         return 'prison court register'
+      case 'bail-order':
+        return 'bail order'
+      case 'suspended-imprisonment-order':
+        return 'suspended imprisonment order'
+      case 'notice-of-discontinuance':
+        return 'notice of discontinuance'
+      case 'community-order':
+        return 'community order'
       default:
         return 'court document'
     }
@@ -2065,6 +2085,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
         return 'INDICTMENT'
       case 'prison-court-register':
         return 'PRISON_COURT_REGISTER'
+      case 'bail-order':
+        return 'BAIL_ORDER'
+      case 'suspended-imprisonment-order':
+        return 'SUSPENDED_IMPRISONMENT_ORDER'
+      case 'notice-of-discontinuance':
+        return 'NOTICE_OF_DISCONTINUANCE'
+      case 'community-order':
+        return 'COMMUNITY_ORDER'
       default:
         return 'HMCTS_WARRANT'
     }

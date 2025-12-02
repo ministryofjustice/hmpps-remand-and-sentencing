@@ -12,7 +12,6 @@ import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirm
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextHearingSetPage'
@@ -116,12 +115,6 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Remanded in custody')
-
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
@@ -129,7 +122,6 @@ context('New Court Case journey', () => {
       'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Does this outcome apply to all offences on the warrant?': 'No',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 

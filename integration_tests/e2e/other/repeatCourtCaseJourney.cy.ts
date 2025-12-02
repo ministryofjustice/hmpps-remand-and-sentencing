@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
@@ -28,6 +27,7 @@ import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import OffenceUpdateOffenceOutcomesPage from '../../pages/offenceUpdateOffenceOutcomesPage'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
+import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 
 context('Repeat Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -121,10 +121,6 @@ context('Repeat Court Case journey', () => {
     courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
     courtCaseSelectCourtNamePage.continueButton().click()
 
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
@@ -132,7 +128,6 @@ context('Repeat Court Case journey', () => {
       'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Does this outcome apply to all offences on the warrant?': 'Yes',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 
@@ -147,7 +142,7 @@ context('Repeat Court Case journey', () => {
         },
         {
           name: 'Review offences',
-          status: 'Optional',
+          status: 'Incomplete',
         },
         {
           name: 'Next court appearance',
@@ -161,6 +156,11 @@ context('Repeat Court Case journey', () => {
 
     courtCaseTaskListPage.reviewOffencesLink().click()
     let offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
+    const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+    offenceUpdateOutcomePage.radioLabelContains('Remanded in custody').click()
+    offenceUpdateOutcomePage.continueButton().click()
+    offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.addAnotherButton().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
@@ -175,6 +175,10 @@ context('Repeat Court Case journey', () => {
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
+
+    const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Select the outcome for this offence')
+    offenceOutcomePage.radioLabelContains('Remanded in custody').click()
+    offenceOutcomePage.continueButton().click()
 
     offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.radioLabelSelector('true').click()

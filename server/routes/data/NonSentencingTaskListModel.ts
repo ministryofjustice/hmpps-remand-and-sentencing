@@ -45,12 +45,7 @@ export default class RemandTaskListModel extends TaskListModel {
   }
 
   allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
-    return (
-      courtAppearance.warrantDate &&
-      courtAppearance.courtCode &&
-      courtAppearance.caseOutcomeAppliedAll !== undefined &&
-      courtAppearance.appearanceInformationAccepted
-    )
+    return courtAppearance.warrantDate && courtAppearance.courtCode && courtAppearance.appearanceInformationAccepted
   }
 
   anyAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
@@ -58,7 +53,6 @@ export default class RemandTaskListModel extends TaskListModel {
       courtAppearance.caseReferenceNumber !== undefined ||
       courtAppearance.warrantDate !== undefined ||
       courtAppearance.courtCode !== undefined ||
-      courtAppearance.caseOutcomeAppliedAll !== undefined ||
       courtAppearance.appearanceInformationAccepted
     )
   }

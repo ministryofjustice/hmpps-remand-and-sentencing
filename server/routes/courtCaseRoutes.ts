@@ -735,15 +735,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
     if (selectCourtNameForm.courtNameSelect === 'true') {
-      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-      if (warrantType === 'SENTENCING') {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
-        )
-      }
-
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all?backTo=selectCourtName`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
       )
     }
     const { submitToCheckAnswers } = req.query
@@ -828,14 +821,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
       )
     }
-    const { submitToCheckAnswers } = req.query
-    if (submitToCheckAnswers || warrantType === 'SENTENCING') {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
-      )
-    }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/case-outcome-applied-all?backTo=courtName`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`,
     )
   }
 

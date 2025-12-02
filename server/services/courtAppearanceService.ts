@@ -492,14 +492,12 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const errors = validate(
-      { ...caseOutcomeAppliedAllForm, appearanceInformationAccepted: courtAppearance.appearanceInformationAccepted },
+      caseOutcomeAppliedAllForm,
       {
         caseOutcomeAppliedAll: 'required',
-        ...(courtAppearance.warrantType === 'REMAND' && { appearanceInformationAccepted: 'isNotTrue' }),
       },
       {
         'required.caseOutcomeAppliedAll': 'Select ‘Yes’ if this outcome applies to all offences on the warrant.',
-        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
       },
     )
     if (errors.length === 0) {

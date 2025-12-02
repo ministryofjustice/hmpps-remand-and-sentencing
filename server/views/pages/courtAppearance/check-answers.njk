@@ -86,22 +86,6 @@
                     }
                 ] if courtAppearance.appearanceInformationAccepted !== true
             }
-        },
-        {
-            key: {
-                text: "Does this outcome apply to all offences on the "+ warrantOrAppearance | lower + "?"
-            },
-            value: {
-                text: "Yes" if courtAppearance.caseOutcomeAppliedAll == 'true' else "No"
-            },
-            actions: {
-                items: [
-                    {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?backTo=checkAppearanceAnswers&submitToCheckAnswers=true",
-                        text: "Edit"
-                    }
-                ] if courtAppearance.appearanceInformationAccepted !== true
-            }
         }
     ]) %}
 {% endif %}

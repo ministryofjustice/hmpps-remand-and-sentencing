@@ -2,10 +2,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set offenceDateMissing = not offence.offenceStartDate %}
-{% set convictionDateMissing = not (offence.sentence and offence.sentence.convictionDate) %}
-{% set shouldBlockSentenceTypeAccess = offenceDateMissing or convictionDateMissing %}
-
 {% set offenceDateHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-date?submitToEditOffence=true" %}
 
 {% if offence.offenceStartDate %}

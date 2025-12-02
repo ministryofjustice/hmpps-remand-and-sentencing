@@ -56,7 +56,7 @@ import {
 import config from '../config'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
-import { buildReturnUrlFromKey } from './data/JourneyUrls'
+import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -101,10 +101,25 @@ export default class OffenceRoutes extends BaseRoutes {
         },
       ]
       req.flash('errors', errors)
-      const editOffencePageUrl = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
+      const editOffencePageUrl = JourneyUrls.editOffence(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+      )
       return res.redirect(editOffencePageUrl)
     }
-    const sentenceTypePage = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type?submitToEditOffence=true`
+
+    const sentenceTypePage = JourneyUrls.sentenceType(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      chargeUuid,
+    )
     return res.redirect(sentenceTypePage)
   }
 

@@ -111,7 +111,6 @@ export default class OffenceRoutes extends BaseRoutes {
       )
       return res.redirect(editOffencePageUrl)
     }
-
     const sentenceTypePage = JourneyUrls.sentenceType(
       nomsId,
       addOrEditCourtCase,
@@ -119,6 +118,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       appearanceReference,
       chargeUuid,
+      true,
     )
     return res.redirect(sentenceTypePage)
   }

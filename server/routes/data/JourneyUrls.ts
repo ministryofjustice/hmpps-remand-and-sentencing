@@ -122,8 +122,9 @@ export default class JourneyUrls {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
     chargeUuid: string,
+    submitToEditOffence?: boolean,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/sentence-type`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/sentence-type?submitToEditOffence=${submitToEditOffence}`
   }
 }
 
@@ -280,6 +281,7 @@ export const urlMapByName = {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
     chargeUuid: string,
+    submitToEditOffence?: boolean,
   ) =>
     JourneyUrls.sentenceType(
       nomsId,
@@ -288,6 +290,7 @@ export const urlMapByName = {
       addOrEditCourtAppearance,
       courtAppearanceUuid,
       chargeUuid,
+      submitToEditOffence,
     ),
 }
 

@@ -101,6 +101,16 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/check-answers`
   }
 
+  static taskList = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/task-list`
+  }
+
   static courtCases = (nomsId: string) => {
     return `/person/${nomsId}`
   }
@@ -247,6 +257,14 @@ export const urlMapByName = {
       addOrEditCourtAppearance,
       courtAppearanceUuid,
     ),
+
+  taskList: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => JourneyUrls.taskList(nomsId, addOrEditCourtCase, courtCaseUuid, addOrEditCourtAppearance, courtAppearanceUuid),
   courtCases: (nomsId: string) => JourneyUrls.courtCases(nomsId),
 }
 

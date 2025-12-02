@@ -5,7 +5,6 @@ import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 
 context('Court Case Check Answers Page', () => {
@@ -45,10 +44,6 @@ context('Court Case Check Answers Page', () => {
       courtCaseCourtNamePage.firstAutoCompleteOption().click()
       courtCaseCourtNamePage.continueButton().click()
 
-      const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-      courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
-      courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
       courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     })
 
@@ -57,7 +52,6 @@ context('Court Case Check Answers Page', () => {
         'Warrant type': 'Remand',
         'Case reference': 'T12345678',
         'Court name': 'Accrington Youth Court',
-        'Does this outcome apply to all offences on the warrant?': 'No',
         'Overall case outcome': 'Remanded in custody',
         'Warrant date': '12/05/2023',
       })
@@ -102,16 +96,6 @@ context('Court Case Check Answers Page', () => {
       )
       courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
       courtCaseOverallCaseOutcomePage.continueButton().click()
-      Page.verifyOnPage(CourtCaseCheckAnswersPage)
-    })
-
-    it('clicking outcome applies to all and submitting goes back to check answers page', () => {
-      courtCaseCheckAnswersPage
-        .chargeLinkBackTo('A1234AB', '0', '0', 'case-outcome-applied-all', 'checkAppearanceAnswers')
-        .click()
-      const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-      courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
-      courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
       Page.verifyOnPage(CourtCaseCheckAnswersPage)
     })
 

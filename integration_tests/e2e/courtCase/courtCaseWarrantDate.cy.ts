@@ -11,7 +11,6 @@ import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetai
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 
 context('Court Case Warrant Date Page', () => {
   context('Add court case and add appearance journey', () => {
@@ -310,12 +309,6 @@ context('Court Case Warrant Date Page', () => {
       courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
       courtCaseCourtNamePage.firstAutoCompleteOption().click()
       courtCaseCourtNamePage.continueButton().click()
-
-      const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-      courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Remanded in custody')
-
-      courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
-      courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
       const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
 

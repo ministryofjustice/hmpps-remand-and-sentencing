@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set isRemandWarrant = courtAppearance.warrantType == 'REMAND'%}
-{% set warrantOrAppearance = 'Appearance' if courtAppearance.warrantType === 'NON_CUSTODIAL' else 'Warrant' %}
+{% set warrantOrAppearance = 'Appearance' if courtAppearance.warrantType === 'NON_CUSTODIAL' else 'Hearing' %}
 {% set checkAnswersRows = [
     {
         key: {
@@ -95,7 +95,7 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            {% include "../../partials/appearanceCaption.njk" %}
+            {% include "../../partials/hearingCaption.njk" %}
             <h1 class="govuk-heading-l">Check your answers</h1>
 
             {{ govukSummaryList({

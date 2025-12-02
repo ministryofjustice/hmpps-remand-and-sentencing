@@ -11,7 +11,7 @@
     <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <input type="hidden" name="courtCode" id="court-code" value="{{courtNameForm.courtCode}}">
-        {% include "../../partials/appearanceCaption.njk" %}
+        {% include "../../partials/hearingCaption.njk" %}
         {{ govukSelect({
             label: {
                 text: "What is the court name?" if isAddCourtAppearance else "Edit the court name",

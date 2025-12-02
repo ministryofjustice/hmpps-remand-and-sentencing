@@ -584,7 +584,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
     }
 
-    let warrantOrAppearance = 'warrant'
+    let warrantOrAppearance = 'hearing'
     if (warrantType === 'NON_CUSTODIAL') {
       warrantOrAppearance = 'appearance'
     }

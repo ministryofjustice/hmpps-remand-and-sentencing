@@ -56,7 +56,7 @@ import {
 import config from '../config'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
-import { buildReturnUrlFromKey } from './data/JourneyUrls'
+import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -69,6 +69,58 @@ export default class OffenceRoutes extends BaseRoutes {
     private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
+  }
+
+  public validateSentenceTypeAccess: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    } = req.params
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+
+    const offenceDateMissing = !(offence?.offenceEndDate ?? offence?.offenceStartDate)
+    const convictionDateMissing = !offence.sentence?.convictionDate
+
+    let errorMessage = ''
+    const action = offence.sentence?.sentenceTypeId ? 'editing' : 'adding'
+
+    if (offenceDateMissing) {
+      errorMessage = `You must enter the offence date before ${action} a sentence type`
+    } else if (convictionDateMissing) {
+      errorMessage = `You must enter the conviction date before ${action} a sentence type`
+    }
+
+    if (errorMessage) {
+      const errors = [
+        {
+          text: errorMessage,
+        },
+      ]
+      req.flash('errors', errors)
+      const editOffencePageUrl = JourneyUrls.editOffence(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+      )
+      return res.redirect(editOffencePageUrl)
+    }
+    const sentenceTypePage = JourneyUrls.sentenceType(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      chargeUuid,
+      true,
+    )
+    return res.redirect(sentenceTypePage)
   }
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {

@@ -114,6 +114,18 @@ export default class JourneyUrls {
   static courtCases = (nomsId: string) => {
     return `/person/${nomsId}`
   }
+
+  static sentenceType = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    chargeUuid: string,
+    submitToEditOffence?: boolean,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/sentence-type?submitToEditOffence=${submitToEditOffence}`
+  }
 }
 
 export const urlMapByName = {
@@ -205,7 +217,6 @@ export const urlMapByName = {
       addOrEditCourtAppearance,
       courtAppearanceUuid,
     ),
-
   receivedCustodialSentence: (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -234,7 +245,6 @@ export const urlMapByName = {
       addOrEditCourtAppearance,
       courtAppearanceUuid,
     ),
-
   courtName: (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -242,7 +252,6 @@ export const urlMapByName = {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
   ) => JourneyUrls.courtName(nomsId, addOrEditCourtCase, courtCaseUuid, addOrEditCourtAppearance, courtAppearanceUuid),
-
   checkAppearanceAnswers: (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -257,7 +266,6 @@ export const urlMapByName = {
       addOrEditCourtAppearance,
       courtAppearanceUuid,
     ),
-
   taskList: (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -266,6 +274,24 @@ export const urlMapByName = {
     courtAppearanceUuid: string,
   ) => JourneyUrls.taskList(nomsId, addOrEditCourtCase, courtCaseUuid, addOrEditCourtAppearance, courtAppearanceUuid),
   courtCases: (nomsId: string) => JourneyUrls.courtCases(nomsId),
+  sentenceType: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    chargeUuid: string,
+    submitToEditOffence?: boolean,
+  ) =>
+    JourneyUrls.sentenceType(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+      chargeUuid,
+      submitToEditOffence,
+    ),
 }
 
 export type ReturnKey = keyof typeof urlMapByName

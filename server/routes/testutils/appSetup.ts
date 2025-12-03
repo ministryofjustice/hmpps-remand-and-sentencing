@@ -57,7 +57,7 @@ export const defaultServices = {
   manageOffencesService: new ManageOffencesService(null) as jest.Mocked<ManageOffencesService>,
   feComponentsService: new FeComponentsService(null) as jest.Mocked<FeComponentsService>,
   remandAndSentencingService: new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>,
-  courtAppearanceService: new CourtAppearanceService(null, null) as jest.Mocked<CourtAppearanceService>,
+  courtAppearanceService: new CourtAppearanceService(null, null, null) as jest.Mocked<CourtAppearanceService>,
   documentManagementService: new DocumentManagementService(null) as jest.Mocked<DocumentManagementService>,
   prisonerSearchService: new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>,
   auditService: new AuditService(null) as jest.Mocked<AuditService>,

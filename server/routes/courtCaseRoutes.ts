@@ -1079,11 +1079,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { backTo, submitToCheckAnswers } = req.query
     const overallCaseOutcomeForm = trimForm<CourtCaseOverallCaseOutcomeForm>(req.body)
-    const errors = this.courtAppearanceService.setAppearanceOutcomeUuid(
+    const errors = await this.courtAppearanceService.setAppearanceOutcomeUuid(
       req.session,
       nomsId,
       overallCaseOutcomeForm,
       appearanceReference,
+      req.user.username,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)

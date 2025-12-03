@@ -261,6 +261,34 @@ context('Court Case Appearance details Page', () => {
           'This appearance includes offences from C894623 that were merged with this case on 15/12/2023',
         )
     })
+
+    it('editing appearance outcome from remand to non-custodial with remand outcome offences results in error', () => {
+      courtCaseAppearanceDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'overall-case-outcome?backTo=nonSentencingCourtAppearance',
+        )
+        .click()
+      let courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Edit the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Lie on file').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
+      courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Edit the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage
+        .errorSummary()
+        .trimTextContent()
+        .should(
+          'equal',
+          'There is a problem You cannot select a non-custodial overall case outcome as an offence with a remand outcome exists',
+        )
+    })
   })
 
   context('legacy remand appearance', () => {

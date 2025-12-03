@@ -65,7 +65,7 @@ context('Court Case Warrant Date Page', () => {
       receivedCustodialSentencePage.radioLabelSelector('true').click()
       receivedCustodialSentencePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-      courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
@@ -75,7 +75,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseCheckAnswersPage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
       courtCaseWarrantDatePage.continueButton().click()
-      courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()

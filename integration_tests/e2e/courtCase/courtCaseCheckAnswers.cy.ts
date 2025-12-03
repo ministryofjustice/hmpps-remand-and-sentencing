@@ -53,7 +53,7 @@ context('Court Case Check Answers Page', () => {
         'Case reference': 'T12345678',
         'Court name': 'Accrington Youth Court',
         'Overall case outcome': 'Remanded in custody',
-        'Hearing date': '12/05/2023',
+        'Warrant date': '12/05/2023',
       })
     })
 

@@ -44,7 +44,7 @@ context('Court Case Reference Page', () => {
       .captionText()
       .invoke('text')
       .then(text => text.trim())
-      .should('equal', 'Add appearance information')
+      .should('equal', 'Add hearing information')
   })
   it('submtting greater than 13 characters results in an error', () => {
     courtCaseReferencePage.input().type('ABCDEFGHIJKLM1')

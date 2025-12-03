@@ -119,7 +119,7 @@ context('New Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Remand',
       'Case reference': 'T12345678',
-      'Warrant date': '13/05/2023',
+      'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
     })
@@ -332,7 +332,7 @@ context('New Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
       'Case reference': caseRef,
-      'Warrant date': '12/05/2023',
+      'Hearing date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
     })
     courtCaseCheckAnswersPage.continueButton().click()

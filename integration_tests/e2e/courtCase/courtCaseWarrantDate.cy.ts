@@ -105,7 +105,7 @@ context('Court Case Warrant Date Page', () => {
         .captionText()
         .invoke('text')
         .then(text => text.trim())
-        .should('equal', 'Add appearance information')
+        .should('equal', 'Add hearing information')
     })
   })
 
@@ -161,7 +161,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('01')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2000')
       courtCaseWarrantDatePage.continueButton().click()
-      Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the appearance at Accrington Youth Court?')
+      Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the hearing at Accrington Youth Court?')
     })
   })
 

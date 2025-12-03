@@ -37,8 +37,12 @@ ARG GIT_REF
 ARG GIT_BRANCH
 
 COPY package*.json ./
+COPY .allowed-scripts.mjs ./
 
 RUN npm run setup
+
+RUN npx cypress install
+
 ENV NODE_ENV='production'
 
 COPY . .

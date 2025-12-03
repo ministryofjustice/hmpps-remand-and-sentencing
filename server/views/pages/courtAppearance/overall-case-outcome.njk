@@ -54,7 +54,7 @@
     {{ super() }}
     <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-overall-case-outcome?backTo={{backTo}}{{ "&submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        {% include "../../partials/appearanceCaption.njk" %}
+        {% include "../../partials/hearingCaption.njk" %}
 
         {{ govukRadios(radiosData) }}
 

@@ -65,7 +65,7 @@ context('Court Case Warrant Date Page', () => {
       receivedCustodialSentencePage.radioLabelSelector('true').click()
       receivedCustodialSentencePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-      courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
@@ -75,7 +75,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseCheckAnswersPage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
       courtCaseWarrantDatePage.continueButton().click()
-      courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
@@ -105,7 +105,7 @@ context('Court Case Warrant Date Page', () => {
         .captionText()
         .invoke('text')
         .then(text => text.trim())
-        .should('equal', 'Add appearance information')
+        .should('equal', 'Add hearing information')
     })
   })
 
@@ -161,7 +161,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('01')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2000')
       courtCaseWarrantDatePage.continueButton().click()
-      Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the appearance at Accrington Youth Court?')
+      Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the hearing at Accrington Youth Court?')
     })
   })
 

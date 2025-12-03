@@ -37,7 +37,7 @@ ARG GIT_REF
 ARG GIT_BRANCH
 
 COPY package*.json ./
-COPY .allowed-scripts.mjs ./
+COPY allowed-scripts.mjs ./
 
 RUN npm run setup
 

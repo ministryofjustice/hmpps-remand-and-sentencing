@@ -323,7 +323,7 @@ context('Repeat Court Case journey', () => {
     courtCaseSelectReferencePage.radioLabelSelector('true').click()
     courtCaseSelectReferencePage.continueButton().click()
 
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')

@@ -189,7 +189,7 @@ context('Add Offence Conviction Date Page tests with a full create court appeara
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type(caseRef)
     courtCaseReferencePage.continueButton().click()
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')

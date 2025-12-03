@@ -3,7 +3,7 @@
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 
 
-{% set pageTitle = applicationName + " - Add a court case " + warrantOrAppearance + " Date" %}
+{% set pageTitle = applicationName + " - Add a court case hearing Date" %}
 
 {% block pageContent %}
     {{ super() }}
@@ -16,7 +16,7 @@
             errorMessage: errors | findErrorsBeginningWith('warrantDate'),
             fieldset: {
                 legend: {
-                    text: "Enter the " + warrantOrAppearance + " date",
+                    text: "Enter the hearing date",
                     isPageHeading: true,
                     classes: "govuk-fieldset__legend--l"
                 }

@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set isRemandWarrant = courtAppearance.warrantType == 'REMAND'%}
-{% set warrantOrAppearance = 'Appearance' if courtAppearance.warrantType === 'NON_CUSTODIAL' else 'Hearing' %}
+{% set warrantOrAppearance = 'Warrant' if courtAppearance.warrantType === 'SENTENCING' else 'Hearing' %}
 {% set checkAnswersRows = [
     {
         key: {

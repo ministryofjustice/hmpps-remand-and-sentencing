@@ -332,7 +332,7 @@ context('New Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
       'Case reference': caseRef,
-      'Hearing date': '12/05/2023',
+      'Warrant date': '12/05/2023',
       'Court name': 'Accrington Youth Court',
     })
     courtCaseCheckAnswersPage.continueButton().click()

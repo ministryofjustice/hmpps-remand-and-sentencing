@@ -340,7 +340,7 @@ context('Repeat Court Case journey', () => {
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Warrant type': 'Sentencing',
       'Case reference': 'C894623',
-      'Hearing date': '13/05/2023',
+      'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
     })
     courtCaseCheckAnswersPage.continueButton().click()

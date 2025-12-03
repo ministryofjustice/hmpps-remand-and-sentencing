@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set isRemandWarrant = courtAppearance.warrantType == 'REMAND'%}
-{% set warrantOrAppearance = 'Warrant' if courtAppearance.warrantType === 'SENTENCING' else 'Hearing' %}
+{% set warrantOrHearing = 'Warrant' if courtAppearance.warrantType === 'SENTENCING' else 'Hearing' %}
 {% set checkAnswersRows = [
     {
         key: {
@@ -31,7 +31,7 @@
     },
     {
         key: {
-            text: warrantOrAppearance + " date"
+            text: warrantOrHearing + " date"
         },
         value: {
             text: courtAppearance.warrantDate | formatDate
@@ -41,7 +41,7 @@
                 {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
                     text: "Edit",
-                    visuallyHiddenText: warrantOrAppearance + " date",
+                    visuallyHiddenText: warrantOrHearing + " date",
                     attributes: {
                         "data-qa": "edit-warrant-date-link"
                     }

@@ -50,6 +50,6 @@ context('Court Case Overall Case Outcome Page', () => {
       .captionText()
       .invoke('text')
       .then(text => text.trim())
-      .should('equal', 'Add appearance information')
+      .should('equal', 'Add hearing information')
   })
 })

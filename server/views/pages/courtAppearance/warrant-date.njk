@@ -3,20 +3,20 @@
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 
 
-{% set pageTitle = applicationName + " - Add a court case " + warrantOrAppearance + " Date" %}
+{% set pageTitle = applicationName + " - Add a court case " + warrantOrHearing + " Date" %}
 
 {% block pageContent %}
     {{ super() }}
     <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-warrant-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          {% include "../../partials/appearanceCaption.njk" %}
+          {% include "../../partials/hearingCaption.njk" %}
         {{ govukDateInput({
             id: "warrant-date",
             namePrefix: "warrantDate",
             errorMessage: errors | findErrorsBeginningWith('warrantDate'),
             fieldset: {
                 legend: {
-                    text: "Enter the " + warrantOrAppearance + " date",
+                    text: "Enter the " + warrantOrHearing + " date",
                     isPageHeading: true,
                     classes: "govuk-fieldset__legend--l"
                 }

@@ -584,9 +584,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
     }
 
-    let warrantOrAppearance = 'warrant'
-    if (warrantType === 'NON_CUSTODIAL') {
-      warrantOrAppearance = 'appearance'
+    let warrantOrHearing = 'hearing'
+    if (warrantType === 'SENTENCING') {
+      warrantOrHearing = 'warrant'
     }
 
     return res.render('pages/courtAppearance/warrant-date', {
@@ -602,7 +602,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       backLink,
       showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      warrantOrAppearance,
+      warrantOrHearing,
     })
   }
 

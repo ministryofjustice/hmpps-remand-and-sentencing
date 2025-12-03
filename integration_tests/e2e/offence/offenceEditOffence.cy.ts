@@ -168,7 +168,7 @@ context('Add Offence Edit offence Page', () => {
       courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
       courtCaseOverallCaseOutcomePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
@@ -598,7 +598,7 @@ context('Add Offence Edit offence Page', () => {
       cy.visit(
         '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/warrant-date',
       )
-      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')

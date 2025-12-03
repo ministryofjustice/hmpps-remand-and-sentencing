@@ -9,20 +9,20 @@
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-select-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/appearanceCaption.njk" %}
+                {% include "../../partials/hearingCaption.njk" %}
                 {{ govukRadios({
                     name: "courtNameSelect",
                     id: "courtNameSelect",
                     errorMessage: errors | findError('courtNameSelect'),
                     fieldset: {
                         legend: {
-                        text: "Was the appearance at " + lastCourtName + "?",
+                        text: "Was the hearing at " + lastCourtName + "?",
                         isPageHeading: true,
                         classes: "govuk-fieldset__legend--l"
                         }
                     },
                     hint: {
-                        text: "This was the court name for the scheduled appearance" if nextCourtAppearanceUsed else "This was the court name for the previous appearance."
+                        text: "This was the court name for the scheduled appearance" if nextCourtAppearanceUsed else "This was the court name for the previous hearing."
                     },
                     items: [
                         {

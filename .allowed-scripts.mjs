@@ -12,6 +12,6 @@ export default configureAllowedScripts({
     "node_modules/cypress@15.7.1": "ALLOW",
 
     // UPDATED: esbuild@0.25.12 (Replaced 0.25.8). This script is required to install the binary.
-    "node_modules/esbuild@0.25.12": "ALLOW",
+    "node_modules/esbuild@0.25.12": "ALLOW"
   },
 })

@@ -35,7 +35,11 @@ export const services = () => {
   const auditService = new AuditService(data.hmppsAuditClient)
   const courtRegisterService = new CourtRegisterService(data.courtRegisterApiClient)
   const refDataService = new RefDataService(data.remandAndSentencingApiClient)
-  const courtAppearanceService = new CourtAppearanceService(remandAndSentencingService, documentManagementService)
+  const courtAppearanceService = new CourtAppearanceService(
+    remandAndSentencingService,
+    documentManagementService,
+    refDataService,
+  )
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(data.courtCasesReleaseDatesApiClient)
   const offenceService = new OffenceService(manageOffencesService, remandAndSentencingService, refDataService)
 

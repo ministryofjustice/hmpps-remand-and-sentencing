@@ -31,11 +31,13 @@ import { toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
+import RefDataService from './refDataService'
 
 export default class CourtAppearanceService {
   constructor(
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly documentManagementService: DocumentManagementService,
+    private readonly refDataService: RefDataService,
   ) {}
 
   setCaseReferenceNumber(
@@ -425,11 +427,12 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setAppearanceOutcomeUuid(
+  async setAppearanceOutcomeUuid(
     session: Partial<SessionData>,
     nomsId: string,
     overallCaseOutcomeForm: CourtCaseOverallCaseOutcomeForm,
     appearanceUuid: string,
+    username: string,
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const errors = validate(
@@ -442,6 +445,27 @@ export default class CourtAppearanceService {
     )
     if (errors.length === 0) {
       const [appearanceOutcomeUuid, relatedOffenceOutcomeUuid] = overallCaseOutcomeForm.overallCaseOutcome.split('|')
+
+      const appearanceOutcome = await this.refDataService.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
+
+      if (appearanceOutcome.outcomeType === 'NON_CUSTODIAL') {
+        const chargeOutcomeUuids = courtAppearance.offences
+          .filter(offence => offence.outcomeUuid)
+          .map(offence => offence.outcomeUuid)
+        const anyRemandChargeOutcomes = Object.values(
+          await this.refDataService.getChargeOutcomeMap(chargeOutcomeUuids, username),
+        )
+          .map(chargeOutcome => chargeOutcome.outcomeType)
+          .includes('REMAND')
+        if (anyRemandChargeOutcomes) {
+          return [
+            {
+              text: 'You cannot select a non-custodial overall case outcome as an offence with a remand outcome exists',
+              href: '#overallCaseOutcome',
+            },
+          ]
+        }
+      }
 
       courtAppearance.appearanceOutcomeUuid = appearanceOutcomeUuid
       courtAppearance.relatedOffenceOutcomeUuid = relatedOffenceOutcomeUuid

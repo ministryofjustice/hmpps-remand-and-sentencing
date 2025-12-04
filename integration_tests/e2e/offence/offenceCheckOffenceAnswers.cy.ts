@@ -35,7 +35,7 @@ context('Check Offence Answers Page', () => {
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
   })
 
-  context('remand', () => {
+  context('non-sentencing', () => {
     beforeEach(() => {
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)

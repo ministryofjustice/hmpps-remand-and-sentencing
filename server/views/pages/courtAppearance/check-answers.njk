@@ -3,15 +3,24 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set isNonSentencingWarrant = courtAppearance.warrantType == 'NON_SENTENCING'%}
 {% set warrantOrHearing = 'Warrant' if courtAppearance.warrantType === 'SENTENCING' else 'Hearing' %}
-{% set checkAnswersRows = [
-    {
-        key: {
-            text: "Warrant type"
-        },
-        value: {
-            text: courtAppearance.warrantType | capitalize
+
+{% set checkAnswersRows = [] %}
+
+{% if courtAppearance.warrantType === 'SENTENCING' %}
+    {% set checkAnswersRows = checkAnswersRows.concat([
+        {
+            key: {
+                text: "Warrant type"
+            },
+            value: {
+                text: courtAppearance.warrantType | capitalize
+            }
         }
-    },
+    ]) %}
+{% endif %}
+
+
+{% set checkAnswersRows = checkAnswersRows.concat([
     {
         key: {
             text: "Case reference"
@@ -66,7 +75,7 @@
             ]
         }
     }
-] %}
+]) %}
 
 {% if courtAppearance.warrantType !== 'SENTENCING' %}
     {% set checkAnswersRows = checkAnswersRows.concat([

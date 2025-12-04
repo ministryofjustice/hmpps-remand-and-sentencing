@@ -24,7 +24,7 @@
                     items: []
     } %}
 
-{% for caseOutcome in warrantTypeOutcomes %}
+{% for caseOutcome in chargeOutcomes %}
     {%- set caseOutcomeRow = {
         value: caseOutcome.outcomeUuid,
         text: caseOutcome.outcomeName,
@@ -32,19 +32,6 @@
     } -%}
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
-
-{% if nonCustodialOutcomes.length %}
-    {{ radiosData.items.push({ divider: "or"}) }}
-
-    {% for caseOutcome in nonCustodialOutcomes %}
-    {%- set caseOutcomeRow = {
-            value: caseOutcome.outcomeUuid,
-            text: caseOutcome.outcomeName,
-            checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
-        } -%}
-        {{ radiosData.items.push(caseOutcomeRow) }}
-    {% endfor %}
-{% endif %}
 
 {% block pageContent %}
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-offence-outcome{{ "?submitToEditOffence=true" if submitToEditOffence }}" autocomplete="off">

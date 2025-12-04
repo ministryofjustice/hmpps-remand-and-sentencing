@@ -456,7 +456,7 @@ export default class CourtAppearanceService {
           await this.refDataService.getChargeOutcomeMap(chargeOutcomeUuids, username),
         )
           .map(chargeOutcome => chargeOutcome.outcomeType)
-          .includes('NON_SENTENCING')
+          .includes('REMAND')
         if (anyRemandChargeOutcomes) {
           return [
             {

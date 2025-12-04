@@ -14,5 +14,4 @@ export default configureAllowedScripts({
     // UPDATED: esbuild@0.25.12 (Replaced 0.25.8). This script is required to install the binary.
     'node_modules/esbuild@0.25.12': 'ALLOW',
   },
-  dependencyScriptsToRun: ['postinstall'],
 })

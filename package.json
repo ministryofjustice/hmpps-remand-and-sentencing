@@ -25,6 +25,7 @@
     "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml",
     "precommit:lint": "node_modules/.bin/lint-staged",
     "precommit:verify": "npm run typecheck && npm test",
+    "setup": "npm ci && hmpps-npm-script-run-allowlist",
     "generate-prison-api-types": "openapi-typescript https://api-dev.prison.service.justice.gov.uk/v3/api-docs > ./server/@types/prisonApi/index.d.ts",
     "generate-court-register-types": "openapi-typescript https://court-register-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/courtRegisterApi/index.d.ts",
     "generate-manage-offences-types": "openapi-typescript https://manage-offences-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/manageOffencesApi/index.d.ts",
@@ -86,7 +87,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.936.0",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.10",
     "@microsoft/applicationinsights-web": "^3.3.10",
     "@ministryofjustice/frontend": "^7.1.0",

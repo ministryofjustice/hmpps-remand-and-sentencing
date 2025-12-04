@@ -95,7 +95,16 @@ describe('courtAppearanceService', () => {
         'warrantDate-month': '10',
         'warrantDate-year': '2024',
       } as CourtCaseWarrantDateForm
-      const errors = await service.setWarrantDate(session, nomsId, warrantDateForm, '1', '1', 'edit-court-case', 'user')
+      const errors = await service.setWarrantDate(
+        session,
+        nomsId,
+        warrantDateForm,
+        '1',
+        '1',
+        'edit-court-case',
+        'user',
+        'warrant',
+      )
       expect(errors.length).toBe(1)
       const error = errors[0]
       expect(error).toStrictEqual({
@@ -131,7 +140,16 @@ describe('courtAppearanceService', () => {
         'warrantDate-year': '2025',
       } as CourtCaseWarrantDateForm
 
-      const errors = await service.setWarrantDate(session, nomsId, warrantDateForm, '1', '1', 'edit-court-case', 'user')
+      const errors = await service.setWarrantDate(
+        session,
+        nomsId,
+        warrantDateForm,
+        '1',
+        '1',
+        'edit-court-case',
+        'user',
+        'warrant',
+      )
 
       expect(errors.length).toBe(1)
       expect(errors[0]).toStrictEqual({

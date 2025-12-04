@@ -30,7 +30,7 @@ context('Court Case Warrant Date Page', () => {
         .trimTextContent()
         .should(
           'equal',
-          'There is a problem Warrant date must include day Warrant date must include month Warrant date must include year',
+          'There is a problem Hearing date must include day Hearing date must include month Hearing date must include year',
         )
     })
 
@@ -56,7 +56,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
-        .should('equal', 'There is a problem The warrant date cannot be a date in the future')
+        .should('equal', 'There is a problem The hearing date cannot be a date in the future')
     })
 
     it('after confirm and continue check answers this becomes uneditable', () => {
@@ -133,7 +133,7 @@ context('Court Case Warrant Date Page', () => {
         .trimTextContent()
         .should(
           'equal',
-          'There is a problem The warrant date must be after any existing offence dates in the court case',
+          'There is a problem The hearing date must be after any existing offence dates in the court case',
         )
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
@@ -145,7 +145,7 @@ context('Court Case Warrant Date Page', () => {
         .trimTextContent()
         .should(
           'equal',
-          'There is a problem The warrant date must be after any existing offence dates in the court case',
+          'There is a problem The hearing date must be after any existing offence dates in the court case',
         )
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
@@ -339,14 +339,14 @@ function expectWarrantDateError(page) {
   page
     .errorSummary()
     .trimTextContent()
-    .should('equal', 'There is a problem The warrant date must be after any existing offence dates in the court case')
+    .should('equal', 'There is a problem The hearing date must be after any existing offence dates in the court case')
 }
 
 function expectHearingDateError(page) {
   page
     .errorSummary()
     .trimTextContent()
-    .should('equal', 'There is a problem The warrant date must be before the next court appearance date')
+    .should('equal', 'There is a problem The hearing date must be before the next court appearance date')
 }
 
 function editWarrantDate(page) {

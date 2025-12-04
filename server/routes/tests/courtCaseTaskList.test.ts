@@ -15,10 +15,10 @@ afterEach(() => {
 
 describe('GET task list', () => {
   it('should render page on new journey', () => {
-    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('REMAND')
+    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('NON_SENTENCING')
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
-      warrantType: 'REMAND',
+      warrantType: 'NON_SENTENCING',
       caseReferenceNumber: 'A123',
       appearanceOutcomeUuid: '546',
     })
@@ -29,7 +29,7 @@ describe('GET task list', () => {
       isSubList: false,
       nomisCode: '9654',
       outcomeName: 'Remand in custody',
-      outcomeType: 'REMAND',
+      outcomeType: 'NON_SENTENCING',
       relatedChargeOutcomeUuid: '789',
     })
     return request(app)

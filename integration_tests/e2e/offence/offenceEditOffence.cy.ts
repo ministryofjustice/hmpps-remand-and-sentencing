@@ -35,7 +35,7 @@ context('Add Offence Edit offence Page', () => {
     cy.signIn()
   })
 
-  context('remand', () => {
+  context('non-sentencing', () => {
     beforeEach(() => {
       cy.task('stubGetChargeOutcomesByIds', [
         {

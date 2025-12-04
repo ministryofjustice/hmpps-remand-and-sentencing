@@ -20,7 +20,7 @@ const createCourtCase = (source: string | undefined): PageCourtCaseContent => {
     appearanceUuid: '1',
     appearanceDate: '2025-07-25',
     courtCode: 'ACCRYC',
-    warrantType: 'REMAND',
+    warrantType: 'NON_SENTENCING',
     courtCaseReference: 'A123',
     outcome: { outcomeUuid: '1', outcomeName: 'Appearance outcome' },
     charges: [
@@ -93,7 +93,7 @@ describe('Consecutive to label display', () => {
       appearanceUuid: '1',
       appearanceDate: '2025-07-25',
       courtCode: 'ACCRYC',
-      warrantType: 'REMAND',
+      warrantType: 'NON_SENTENCING',
       courtCaseReference: 'A123',
       outcome: {
         outcomeUuid: '1',
@@ -293,7 +293,7 @@ describe('GET tests for inset text', () => {
     appearanceUuid: '1',
     appearanceDate: '2025-07-25',
     courtCode: 'ACCRYC',
-    warrantType: 'REMAND',
+    warrantType: 'NON_SENTENCING',
     courtCaseReference: 'A123',
     outcome: { outcomeUuid: '1', outcomeName: 'Appearance outcome' },
     charges: [

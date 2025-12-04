@@ -117,7 +117,6 @@ context('New Court Case journey', () => {
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Warrant type': 'Remand',
       'Case reference': 'T12345678',
       'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',

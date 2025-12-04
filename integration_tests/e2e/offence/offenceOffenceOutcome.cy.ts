@@ -33,10 +33,6 @@ context('Add Offence Outcome Page', () => {
           checked: true,
         },
         {
-          isDivider: true,
-          label: 'or',
-        },
-        {
           label: 'Lie on file',
           checked: false,
         },
@@ -80,10 +76,6 @@ context('Add Offence Outcome Page', () => {
           {
             label: 'Remanded in custody',
             checked: false,
-          },
-          {
-            isDivider: true,
-            label: 'or',
           },
           {
             label: 'Lie on file',
@@ -132,10 +124,6 @@ context('Add Offence Outcome Page', () => {
             checked: true,
           },
           {
-            isDivider: true,
-            label: 'or',
-          },
-          {
             label: 'Lie on file',
             checked: false,
           },
@@ -172,10 +160,6 @@ context('Add Offence Outcome Page', () => {
           {
             label: 'Imprisonment',
             checked: false,
-          },
-          {
-            isDivider: true,
-            label: 'or',
           },
           {
             label: 'Lie on file',

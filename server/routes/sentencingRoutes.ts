@@ -734,7 +734,7 @@ export default class SentencingRoutes extends BaseRoutes {
       if (warrantType === 'SENTENCING') {
         goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`
       }
     }
     return res.render('pages/sentencing/delete-sentence-in-chain', {
@@ -771,7 +771,7 @@ export default class SentencingRoutes extends BaseRoutes {
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`,
       )
     }
     return res.redirect(

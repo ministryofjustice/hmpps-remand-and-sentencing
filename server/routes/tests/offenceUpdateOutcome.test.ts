@@ -16,7 +16,7 @@ afterEach(() => {
 
 describe('GET Update Offence outcome', () => {
   it('should render page on repeat journey', () => {
-    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('REMAND')
+    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('NON_SENTENCING')
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
       offenceCode: 'CC12345',
@@ -35,7 +35,7 @@ describe('GET Update Offence outcome', () => {
     defaultServices.refDataService.getAllChargeOutcomes.mockResolvedValue([
       {
         outcomeUuid: '1',
-        outcomeType: 'REMAND',
+        outcomeType: 'NON_SENTENCING',
         displayOrder: 10,
         nomisCode: '10',
         outcomeName: 'Offence outcome',

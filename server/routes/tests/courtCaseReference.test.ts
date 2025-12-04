@@ -15,10 +15,10 @@ afterEach(() => {
 
 describe('GET Court case reference', () => {
   it('should render page on new journey', () => {
-    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('REMAND')
+    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('NON_SENTENCING')
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
-      warrantType: 'REMAND',
+      warrantType: 'NON_SENTENCING',
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/reference')

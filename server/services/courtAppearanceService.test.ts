@@ -114,7 +114,7 @@ describe('courtAppearanceService', () => {
 
       const courtAppearance = {
         appearanceUuid: '1234567',
-        warrantType: 'REMAND',
+        warrantType: 'NON_SENTENCING',
         offences: [],
       } as CourtAppearance
 

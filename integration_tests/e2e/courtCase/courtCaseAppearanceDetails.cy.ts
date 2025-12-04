@@ -45,7 +45,7 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetAllAppearanceOutcomes')
       cy.signIn()
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/remand/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/appearance-details',
       )
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
@@ -243,7 +243,7 @@ context('Court Case Appearance details Page', () => {
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          'remand',
+          'non-sentencing',
           '71bb9f7e-971c-4c34-9a33-43478baee74f',
         )
         .click()
@@ -310,7 +310,7 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetAppearanceTypeByUuid')
       cy.signIn()
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/remand/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/appearance-details',
       )
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })

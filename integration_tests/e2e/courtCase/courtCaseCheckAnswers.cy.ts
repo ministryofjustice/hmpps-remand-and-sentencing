@@ -49,7 +49,6 @@ context('Court Case Check Answers Page', () => {
 
     it('displays court appearance details', () => {
       courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-        'Warrant type': 'Remand',
         'Case reference': 'T12345678',
         'Court name': 'Accrington Youth Court',
         'Overall case outcome': 'Remanded in custody',

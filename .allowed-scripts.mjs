@@ -2,17 +2,16 @@ import { configureAllowedScripts } from '@ministryofjustice/hmpps-npm-script-all
 
 export default configureAllowedScripts({
   allowlist: {
-    // A native Node.js module used for subscribing to and querying filesystem events, often used by build tools.
+    // Retained the configuration for packages that did not change versions:
     'node_modules/@parcel/watcher@2.5.1': 'ALLOW',
-    // Used for dynamic tracing and performance analysis on DTrace-supported operating systems.
     'node_modules/dtrace-provider@0.8.8': 'ALLOW',
-    // A macOS-specific module providing notifications about changes to the file system (File System Events).
-    'node_modules/fsevents@2.3.3': 'ALLOW',
-    // A Rust-based module resolver that implements the ESM and CommonJS module resolution algorithm.
+    'node_modules/fsevents@2.3.3': 'FORBID',
     'node_modules/unrs-resolver@1.11.1': 'ALLOW',
-    // A modern, all-in-one end-to-end (E2E) testing framework for web applications.
+
+    // UPDATED: cypress@15.7.1 (Replaced 15.7.0)
     'node_modules/cypress@15.7.1': 'ALLOW',
-    // An extremely fast module bundler, minifier, and compiler for JavaScript and CSS.
+
+    // UPDATED: esbuild@0.25.12 (Replaced 0.25.8). This script is required to install the binary.
     'node_modules/esbuild@0.25.12': 'ALLOW',
   },
 })

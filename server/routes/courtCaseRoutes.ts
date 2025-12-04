@@ -584,11 +584,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-answers`
     }
 
-    let warrantOrHearing = 'hearing'
-    if (warrantType === 'SENTENCING') {
-      warrantOrHearing = 'warrant'
-    }
-
     return res.render('pages/courtAppearance/warrant-date', {
       nomsId,
       submitToCheckAnswers,
@@ -602,7 +597,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       backLink,
       showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      warrantOrHearing,
     })
   }
 
@@ -611,6 +605,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const warrantDateForm = trimForm<CourtCaseWarrantDateForm>(req.body)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const { username } = res.locals.user
+    const { warrantOrHearing } = res.locals
     const { submitToCheckAnswers } = req.query
     const submitToCheckAnswersQuery = submitToCheckAnswers ? `&submitToCheckAnswers=${submitToCheckAnswers}` : ''
     const errors = await this.courtAppearanceService.setWarrantDate(
@@ -621,6 +616,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       username,
+      warrantOrHearing,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)

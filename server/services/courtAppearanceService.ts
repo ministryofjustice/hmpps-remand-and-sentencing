@@ -27,7 +27,7 @@ import {
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import RemandAndSentencingService from './remandAndSentencingService'
-import { toDateString } from '../utils/utils'
+import { convertToTitleCase, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
@@ -153,6 +153,7 @@ export default class CourtAppearanceService {
     appearanceUuid: string,
     addOrEditCourtCase: string,
     username: string,
+    warrantOrHearing: string,
   ): Promise<
     {
       text?: string
@@ -184,11 +185,11 @@ export default class CourtAppearanceService {
         ...(courtAppearance.warrantType === 'SENTENCING' && { appearanceInformationAccepted: 'isNotTrue' }),
       },
       {
-        'required.warrantDate-year': 'Warrant date must include year',
-        'required.warrantDate-month': 'Warrant date must include month',
-        'required.warrantDate-day': 'Warrant date must include day',
+        'required.warrantDate-year': `${convertToTitleCase(warrantOrHearing)} date must include year`,
+        'required.warrantDate-month': `${convertToTitleCase(warrantOrHearing)} date must include month`,
+        'required.warrantDate-day': `${convertToTitleCase(warrantOrHearing)} date must include day`,
         'isValidDate.warrantDate-day': 'This date does not exist.',
-        'isPastOrCurrentDate.warrantDate-day': 'The warrant date cannot be a date in the future',
+        'isPastOrCurrentDate.warrantDate-day': `The ${warrantOrHearing} date cannot be a date in the future`,
         'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
         'isWithinLast100Years.warrantDate-day': 'All dates must be within the last 100 years from today’s date',
       },
@@ -209,6 +210,7 @@ export default class CourtAppearanceService {
         session,
         nomsId,
         addOrEditCourtCase,
+        warrantOrHearing,
       )
 
       if (courtCaseDatesErrors.length) return courtCaseDatesErrors
@@ -218,7 +220,7 @@ export default class CourtAppearanceService {
         if (!warrantDate.isBefore(nextHearingDate)) {
           return [
             {
-              text: 'The warrant date must be before the next court appearance date',
+              text: `The ${warrantOrHearing} date must be before the next court appearance date`,
               href: '#warrantDate',
             },
           ]
@@ -241,6 +243,7 @@ export default class CourtAppearanceService {
     session: Partial<SessionData>,
     nomsId: string,
     addOrEditCourtCase: string,
+    warrantOrHearing: string,
   ): Promise<{ text: string; href: string }[] | null> {
     let latestOffenceDate = null
     let latestRemandAppearanceDate = null
@@ -269,7 +272,7 @@ export default class CourtAppearanceService {
       (sessionOffenceDate && !warrantDate.isAfter(sessionOffenceDate))
     ) {
       errors.push({
-        text: 'The warrant date must be after any existing offence dates in the court case',
+        text: `The ${warrantOrHearing} date must be after any existing offence dates in the court case`,
         href: '#warrantDate',
       })
     }

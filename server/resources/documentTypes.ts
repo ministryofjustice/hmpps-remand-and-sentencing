@@ -1,16 +1,4 @@
 const expectedTypes = {
-  REMAND: [
-    {
-      type: 'HMCTS_WARRANT',
-      name: 'Remand warrant',
-      uploadLinkSegment: 'warrant',
-    },
-    {
-      type: 'PRISON_COURT_REGISTER',
-      name: 'Prison court register',
-      uploadLinkSegment: 'prison-court-register',
-    },
-  ],
   SENTENCING: [
     {
       type: 'HMCTS_WARRANT',
@@ -27,13 +15,6 @@ const expectedTypes = {
       name: 'Indictment',
       uploadLinkSegment: 'indictment',
     },
-    {
-      type: 'PRISON_COURT_REGISTER',
-      name: 'Prison court register',
-      uploadLinkSegment: 'prison-court-register',
-    },
-  ],
-  NON_CUSTODIAL: [
     {
       type: 'PRISON_COURT_REGISTER',
       name: 'Prison court register',

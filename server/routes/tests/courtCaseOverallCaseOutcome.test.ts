@@ -17,12 +17,12 @@ describe('Court Case Overall Case Outcome', () => {
   it('should render page on new journey without appearance details', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
-      warrantType: 'REMAND',
+      warrantType: 'NON_SENTENCING',
     })
     defaultServices.refDataService.getAllAppearanceOutcomes.mockResolvedValue([
       {
         outcomeUuid: '1',
-        outcomeType: 'REMAND',
+        outcomeType: 'NON_SENTENCING',
         displayOrder: 10,
         isSubList: false,
         nomisCode: '10',
@@ -51,12 +51,12 @@ describe('Court Case Overall Case Outcome', () => {
   it('should render page on repeat journey without appearance details', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
-      warrantType: 'REMAND',
+      warrantType: 'NON_SENTENCING',
     })
     defaultServices.refDataService.getAllAppearanceOutcomes.mockResolvedValue([
       {
         outcomeUuid: '1',
-        outcomeType: 'REMAND',
+        outcomeType: 'NON_SENTENCING',
         displayOrder: 10,
         isSubList: false,
         nomisCode: '10',
@@ -78,12 +78,12 @@ describe('Court Case Overall Case Outcome', () => {
   it('should render page on edit journey with appearance details', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
-      warrantType: 'REMAND',
+      warrantType: 'NON_SENTENCING',
     })
     defaultServices.refDataService.getAllAppearanceOutcomes.mockResolvedValue([
       {
         outcomeUuid: '1',
-        outcomeType: 'REMAND',
+        outcomeType: 'NON_SENTENCING',
         displayOrder: 10,
         isSubList: false,
         nomisCode: '10',

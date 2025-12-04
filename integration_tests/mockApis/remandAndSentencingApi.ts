@@ -11,7 +11,7 @@ export default {
           '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
         bodyPatterns: [
           {
-            equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"courtCaseUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-13", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}, "charges": [{"chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI"}], "warrantType": "REMAND"}]}`,
+            equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"courtCaseUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-13", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}, "charges": [{"chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI"}], "warrantType": "NON_SENTENCING"}]}`,
           },
         ],
       },
@@ -78,12 +78,12 @@ export default {
               appearanceCount: 2,
               caseReferences: ['C894623', 'F23325', 'J39596'],
               firstDayInCustody: '2022-10-15',
-              firstDayInCustodyWarrantType: 'REMAND',
+              firstDayInCustodyWarrantType: 'NON_SENTENCING',
               latestCourtAppearance: {
                 caseReference: 'C894623',
                 courtCode: 'ACCRYC',
                 warrantDate: '2023-12-15',
-                warrantType: 'REMAND',
+                warrantType: 'NON_SENTENCING',
                 outcome: 'Remanded in custody',
                 nextCourtAppearance: {
                   appearanceDate: '2024-12-15',
@@ -137,12 +137,12 @@ export default {
               appearanceCount: 1,
               caseReferences: ['C894623'],
               firstDayInCustody: '2023-12-15',
-              firstDayInCustodyWarrantType: 'REMAND',
+              firstDayInCustodyWarrantType: 'NON_SENTENCING',
               latestCourtAppearance: {
                 caseReference: 'C894623',
                 courtCode: 'ACCRYC',
                 warrantDate: '2023-12-15',
-                warrantType: 'REMAND',
+                warrantType: 'NON_SENTENCING',
                 outcome: 'A Nomis outcome',
                 legacyData: {
                   postedDate: '10-10-2015',
@@ -430,13 +430,13 @@ export default {
               appearanceCount: 1,
               caseReferences: ['NOMIS123'],
               firstDayInCustody: '2025-06-05',
-              firstDayInCustodyWarrantType: 'REMAND',
+              firstDayInCustodyWarrantType: 'NON_SENTENCING',
               overallSentenceLength: null,
               latestCourtAppearance: {
                 caseReference: 'NOMIS123',
                 courtCode: 'ACCRYC',
                 warrantDate: '2025-06-05',
-                warrantType: 'REMAND',
+                warrantType: 'NON_SENTENCING',
                 outcome: 'Outcome Description',
                 convictionDate: null,
                 legacyData: {
@@ -579,7 +579,7 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
-          warrantType: 'REMAND',
+          warrantType: 'NON_SENTENCING',
           outcome: {
             outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
             outcomeName: 'Remanded in custody',
@@ -767,7 +767,7 @@ export default {
             courtCode: 'ACCRYC',
             courtCaseReference: 'T12345678',
             appearanceDate: '2023-05-13',
-            warrantType: 'REMAND',
+            warrantType: 'NON_SENTENCING',
             prisonId: 'MDI',
             nextCourtAppearance: {
               appearanceDate: nextHearingDate,
@@ -868,7 +868,7 @@ export default {
         urlPattern: '/remand-and-sentencing-api/court-appearance/5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
         bodyPatterns: [
           {
-            equalToJson: `{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-13", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI" }], "warrantType": "REMAND", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}}`,
+            equalToJson: `{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-13", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI" }], "warrantType": "NON_SENTENCING", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}}`,
           },
         ],
       },
@@ -911,7 +911,7 @@ export default {
             prisonId: 'MDI',
           },
         ],
-        warrantType: 'REMAND',
+        warrantType: 'NON_SENTENCING',
         nextCourtAppearance: {
           appearanceDate: nextHearingDate,
           courtCode: 'ACCRYC',
@@ -1020,7 +1020,7 @@ export default {
             displayOrder: 10,
             relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
           },
-          warrantType: 'REMAND',
+          warrantType: 'NON_SENTENCING',
           courtCode: 'STHHPM',
           courtCaseReference: 'C894623',
           appearanceDate: '2023-12-15',
@@ -1078,7 +1078,7 @@ export default {
             displayOrder: 10,
             relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
           },
-          warrantType: 'REMAND',
+          warrantType: 'NON_SENTENCING',
           courtCode: 'STHHPM',
           courtCaseReference: 'C894623',
           appearanceDate: '2023-12-15',
@@ -1196,7 +1196,7 @@ export default {
             nomisOutcomeCode: 'NOMISCODE',
             outcomeDescription: 'A Nomis description',
           },
-          warrantType: 'REMAND',
+          warrantType: 'NON_SENTENCING',
           courtCode: 'STHHPM',
           courtCaseReference: 'C894623',
           appearanceDate: '2023-12-15',
@@ -1733,7 +1733,7 @@ export default {
         bodyPatterns: [
           {
             equalToJson:
-              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "warrantType": "REMAND", "courtCode": "STHHPM", "courtCaseReference": "T12345678", "appearanceDate": "2023-12-15", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "2024-12-15", "courtCode": "STHHPM", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}, "charges": [{"chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI"}]}',
+              '{"courtCaseUuid": "83517113-5c14-4628-9133-1e3cb12e31fa", "appearanceUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "warrantType": "NON_SENTENCING", "courtCode": "STHHPM", "courtCaseReference": "T12345678", "appearanceDate": "2023-12-15", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "2024-12-15", "courtCode": "STHHPM", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}, "charges": [{"chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "offenceCode": "PS90037", "offenceStartDate": "2023-12-15", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI"}]}',
           },
         ],
       },
@@ -1755,7 +1755,7 @@ export default {
         courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa',
         appearanceUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
         outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
-        warrantType: 'REMAND',
+        warrantType: 'NON_SENTENCING',
         courtCode: 'STHHPM',
         courtCaseReference: 'T12345678',
         appearanceDate: '2023-12-15',
@@ -1959,7 +1959,7 @@ export default {
             courtCode: 'ACCRYC',
             courtCaseReference: 'C894623',
             appearanceDate: '2023-12-15',
-            warrantType: 'REMAND',
+            warrantType: 'NON_SENTENCING',
             nextCourtAppearance: {
               appearanceDate: '2024-12-15',
               courtCode: 'ACCRYC',
@@ -2010,7 +2010,7 @@ export default {
               courtCode: 'BCC',
               courtCaseReference: 'F23325',
               appearanceDate: '2022-10-15',
-              warrantType: 'REMAND',
+              warrantType: 'NON_SENTENCING',
               nextCourtAppearance: {
                 appearanceDate: '2023-12-15',
                 courtCode: 'BCC',
@@ -2054,7 +2054,7 @@ export default {
               courtCode: 'ACCRYC',
               courtCaseReference: 'C894623',
               appearanceDate: '2023-12-15',
-              warrantType: 'REMAND',
+              warrantType: 'NON_SENTENCING',
               nextCourtAppearance: {
                 appearanceDate: '2024-12-15',
                 courtCode: 'ACCRYC',
@@ -2776,7 +2776,7 @@ export default {
           courtCaseReference: 'C894623',
           appearanceDate: '2023-12-15',
           warrantId: 'W12345',
-          warrantType: 'REMAND',
+          warrantType: 'NON_SENTENCING',
           nextCourtAppearance: {
             appearanceDate: '2024-12-15',
             courtCode: 'ACCRYC',

@@ -1,7 +1,7 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% set isRemandWarrant = courtAppearance.warrantType == 'REMAND'%}
+{% set isNonSentencingWarrant = courtAppearance.warrantType == 'NON_SENTENCING'%}
 {% set warrantOrHearing = 'Warrant' if courtAppearance.warrantType === 'SENTENCING' else 'Hearing' %}
 {% set checkAnswersRows = [
     {
@@ -45,7 +45,7 @@
                     attributes: {
                         "data-qa": "edit-warrant-date-link"
                     }
-                } if courtAppearance.appearanceInformationAccepted !== true or isRemandWarrant
+                } if courtAppearance.appearanceInformationAccepted !== true or isNonSentencingWarrant
             ]
         }
     },

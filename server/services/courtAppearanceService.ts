@@ -130,7 +130,7 @@ export default class CourtAppearanceService {
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      let warrantType = 'REMAND'
+      let warrantType = 'NON_SENTENCING'
       if (receivedCustodialSentenceForm.receivedCustodialSentence === 'true') {
         warrantType = 'SENTENCING'
       }
@@ -287,7 +287,7 @@ export default class CourtAppearanceService {
 
     if (
       latestSentencingAppearanceDate &&
-      warrantType === 'REMAND' &&
+      warrantType === 'NON_SENTENCING' &&
       warrantDate.isAfter(latestSentencingAppearanceDate)
     ) {
       errors.push({
@@ -456,7 +456,7 @@ export default class CourtAppearanceService {
           await this.refDataService.getChargeOutcomeMap(chargeOutcomeUuids, username),
         )
           .map(chargeOutcome => chargeOutcome.outcomeType)
-          .includes('REMAND')
+          .includes('NON_SENTENCING')
         if (anyRemandChargeOutcomes) {
           return [
             {
@@ -908,7 +908,7 @@ export default class CourtAppearanceService {
             courtCaseReference,
           )
 
-          if (latestCourtAppearance.warrantType === 'REMAND') {
+          if (latestCourtAppearance.warrantType === 'NON_SENTENCING') {
             const offenceDateErrors = await this.validateOverallConvictionDateAgainstOffences(
               overallConvictionDate,
               courtCaseReference,

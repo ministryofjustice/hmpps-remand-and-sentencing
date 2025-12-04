@@ -20,7 +20,7 @@ describe('GET Edit offence', () => {
     })
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
-      warrantType: 'REMAND',
+      warrantType: 'NON_SENTENCING',
       offences: [],
     })
     return request(app)

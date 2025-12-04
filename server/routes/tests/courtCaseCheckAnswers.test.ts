@@ -25,7 +25,7 @@ describe('GET Court Case Check Answers', () => {
       outcomeName: 'Appearance outcome',
     } as AppearanceOutcome
     const courtAppearance = {
-      warrantType: 'REMAND',
+      warrantType: 'NON_SENTENCING',
       caseReferenceNumber: 'T12345678',
       warrantDate: new Date(),
       courtCode: 'ACCRYC',

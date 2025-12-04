@@ -30,7 +30,7 @@ const setupCourtCase = () => {
           caseReference: 'C123',
           courtCode: 'ACCRYC',
           warrantDate: '2023-12-15',
-          warrantType: 'REMAND',
+          warrantType: 'NON_SENTENCING',
           outcome: 'Remanded in custody',
           nextCourtAppearance: {
             appearanceDate: '2024-12-15',
@@ -62,7 +62,7 @@ const setupCourtCase = () => {
         firstDayInCustody: '',
         mergedFromCases: [],
         allAppearancesHaveRecall: false,
-        firstDayInCustodyWarrantType: 'REMAND',
+        firstDayInCustodyWarrantType: 'NON_SENTENCING',
       },
     ],
     number: 0,

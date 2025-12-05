@@ -294,7 +294,7 @@ export default class CourtAppearanceService {
       warrantDate.isAfter(latestSentencingAppearanceDate)
     ) {
       errors.push({
-        text: 'The date of a remand warrant cannot be after the date of a sentencing warrant on the same court case',
+        text: 'The date of a hearing cannot be after the date of a sentencing warrant on the same court case',
         href: '#warrantDate',
       })
     }

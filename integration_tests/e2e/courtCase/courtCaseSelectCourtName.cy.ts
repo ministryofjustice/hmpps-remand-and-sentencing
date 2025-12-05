@@ -25,7 +25,7 @@ context('Select court name page', () => {
     courtCaseSelectCourtNamePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', "There is a problem Select 'Yes' if the appearance was at this court.")
+      .should('equal', "There is a problem Select 'Yes' if the hearing was at this court.")
   })
 
   it('gets next hearing court if warrante date is the same as next hearing date of latest court appearance', () => {

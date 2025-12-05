@@ -294,7 +294,7 @@ export default class CourtAppearanceService {
       warrantDate.isAfter(latestSentencingAppearanceDate)
     ) {
       errors.push({
-        text: 'The date of a remand warrant cannot be after the date of a sentencing warrant on the same court case',
+        text: 'The date of a hearing cannot be after the date of a sentencing warrant on the same court case',
         href: '#warrantDate',
       })
     }
@@ -359,7 +359,7 @@ export default class CourtAppearanceService {
     const errors = validate(
       selectCourtNameForm,
       { courtNameSelect: 'required' },
-      { 'required.courtNameSelect': "Select 'Yes' if the appearance was at this court." },
+      { 'required.courtNameSelect': "Select 'Yes' if the hearing was at this court." },
     )
     if (errors.length === 0 && selectCourtNameForm.courtNameSelect === 'true') {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
@@ -443,7 +443,7 @@ export default class CourtAppearanceService {
       { overallCaseOutcome: 'required', appearanceInformationAccepted: 'isNotTrue' },
       {
         'required.overallCaseOutcome': 'You must select the overall case outcome',
-        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
+        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming hearing information',
       },
     )
     if (errors.length === 0) {

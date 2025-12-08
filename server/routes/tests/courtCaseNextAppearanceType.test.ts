@@ -1,9 +1,7 @@
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
-import type { CourtAppearance } from 'models'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
-import { CourtDto } from '../../@types/courtRegisterApi/types'
 
 let app: Express
 
@@ -15,22 +13,17 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET Next hearing been set', () => {
+describe('GET Next appearance type', () => {
   it('should render page on new journey', () => {
-    const courtCode = 'ACCRYC'
-    const courtAppearance = {
-      appearanceUuid: '1',
-      courtCode,
-    } as CourtAppearance
-    const court = {
-      courtId: courtCode,
-      courtName: 'A court',
-    } as CourtDto
-    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue(courtAppearance)
-    defaultServices.courtRegisterService.findCourtById.mockResolvedValue(court)
-
+    defaultServices.refDataService.getAllAppearanceTypes.mockResolvedValue([
+      {
+        appearanceTypeUuid: '1',
+        description: 'Appearance Type',
+        displayOrder: 10,
+      },
+    ])
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-court-select')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-type')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

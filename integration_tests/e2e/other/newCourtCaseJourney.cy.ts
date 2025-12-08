@@ -161,7 +161,7 @@ context('New Court Case journey', () => {
     offenceOffenceCodePage.hearingDetailsSummaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
       'Court name': 'Accrington Youth Court',
-      'Warrant date': '13/05/2023',
+      'Hearing date': '13/05/2023',
       'Overall case outcome': 'Remanded in custody',
     })
     offenceOffenceCodePage.input().type('PS90037')

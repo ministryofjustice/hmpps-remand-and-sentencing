@@ -118,7 +118,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseReferencePage.hearingDetailsSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Court name': 'Southampton Magistrate Court',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         'Overall case outcome': 'Remanded in custody',
       })
       courtCaseReferencePage.continueButton().click()
@@ -156,7 +156,7 @@ context('Court Case Appearance details Page', () => {
       courtCaseCourtNamePage.hearingDetailsSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Court name': 'Southampton Magistrate Court',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         'Overall case outcome': 'Remanded in custody',
       })
       courtCaseCourtNamePage.autoCompleteInput().clear()

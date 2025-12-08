@@ -9,11 +9,11 @@
 {% endset %}
 {% block pageContent%}
     {{ super() }}
-            <form method="post" autocomplete="off">
+            <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-appearance-court-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/nextAppearanceCaption.njk" %}
                 {{ govukRadios({
-                    name: "nextHearingCourtSelect",
+                    name: "nextAppearanceCourtSelect",
                     fieldset: {
                         legend: {
                             html: fieldSetHtml,
@@ -24,25 +24,20 @@
                         {
                             value: "true",
                             text: "Yes",
-                            checked: nextHearingCourtSelectForm.nextHearingCourtSelect === true
+                            checked: nextAppearanceCourtSelectForm.nextAppearanceCourtSelect === true
                         },
                         {
                             value: "false",
                             text: "No",
-                            checked: nextHearingCourtSelectForm.nextHearingCourtSelect === false
+                            checked: nextAppearanceCourtSelectForm.nextAppearanceCourtSelect === false
                         }
                     ]
                 }) }}
 
-                <div class="govuk-button-group">
-                    <button type="submit"
-                            class="govuk-button"
-                            data-module="govuk-button"
-                            data-qa="continue-button"
-                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-court-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
-                        Continue
-                    </button>
-                </div>
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
             </form>
 
 {% endblock %}

@@ -30,7 +30,7 @@ describe('GET Next hearing been set', () => {
     defaultServices.courtRegisterService.findCourtById.mockResolvedValue(court)
 
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-court-select')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-court-select')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

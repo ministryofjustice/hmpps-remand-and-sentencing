@@ -89,10 +89,10 @@
   {% set nextHearingSummaryRows = nextHearingSummaryRows.concat([
     {
       key: { text: "Location" },
-      value: { text: courtMap[appearance.nextHearingCourtCode] },
+      value: { text: courtMap[appearance.nextAppearanceCourtCode] },
       actions: {
         items: [{
-          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-court-name",
+          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-court-name",
           text: "Edit",
           visuallyHiddenText: "Next hearing court name",
           classes: "govuk-link--no-visited-state"

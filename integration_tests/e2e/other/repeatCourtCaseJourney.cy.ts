@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
-import CourtCaseNextHearingCourtSetPage from '../../pages/courtCaseNextHearingCourtSetPage'
+import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
@@ -222,9 +222,9 @@ context('Repeat Court Case journey', () => {
     courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type(futureDate.year().toString())
     courtCaseNextHearingDatePage.continueButton().click()
 
-    const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingCourtSetPage.continueButton().click()
+    const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
+    courtCaseNextAppearanceCourtSetPage.radioLabelSelector('true').click()
+    courtCaseNextAppearanceCourtSetPage.continueButton().click()
 
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage.continueButton().click()

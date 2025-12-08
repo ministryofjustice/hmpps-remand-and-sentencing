@@ -2,8 +2,8 @@ import { RequestHandler } from 'express'
 import type {
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
-  CourtCaseNextHearingCourtNameForm,
-  CourtCaseNextHearingCourtSelectForm,
+  CourtCaseNextAppearanceCourtNameForm,
+  CourtCaseNextAppearanceCourtSelectForm,
   CourtCaseNextHearingDateForm,
   CourtCaseNextAppearanceSelectForm,
   CourtCaseNextAppearanceTypeForm,
@@ -1482,19 +1482,19 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-court-select`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-court-select`,
     )
   }
 
-  public getNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
+  public getNextAppearanceCourtSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const { submitToCheckAnswers } = req.query
-    let nextHearingCourtSelectForm = (req.flash('nextHearingCourtSelectForm')[0] ||
-      {}) as CourtCaseNextHearingCourtSelectForm
-    if (Object.keys(nextHearingCourtSelectForm).length === 0) {
-      nextHearingCourtSelectForm = {
-        nextHearingCourtSelect: this.courtAppearanceService.getNextHearingCourtSelect(
+    let nextAppearanceCourtSelectForm = (req.flash('nextAppearanceCourtSelectForm')[0] ||
+      {}) as CourtCaseNextAppearanceCourtSelectForm
+    if (Object.keys(nextAppearanceCourtSelectForm).length === 0) {
+      nextAppearanceCourtSelectForm = {
+        nextAppearanceCourtSelect: this.courtAppearanceService.getNextAppearanceCourtSelect(
           req.session,
           nomsId,
           appearanceReference,
@@ -1515,9 +1515,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`
       }
     }
-    return res.render('pages/courtAppearance/next-hearing-court-select', {
+    return res.render('pages/courtAppearance/next-appearance-court-select', {
       nomsId,
-      nextHearingCourtSelectForm,
+      nextAppearanceCourtSelectForm,
       courtName: court.courtName,
       courtCaseReference,
       appearanceReference,
@@ -1528,28 +1528,28 @@ export default class CourtCaseRoutes extends BaseRoutes {
     })
   }
 
-  public submitNextHearingCourtSelect: RequestHandler = async (req, res): Promise<void> => {
+  public submitNextAppearanceCourtSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { warrantType } = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
       appearanceReference,
     )
-    const nextHearingCourtSelectForm = trimForm<CourtCaseNextHearingCourtSelectForm>(req.body)
-    const errors = this.courtAppearanceService.setNextHearingCourtSelect(
+    const nextAppearanceCourtSelectForm = trimForm<CourtCaseNextAppearanceCourtSelectForm>(req.body)
+    const errors = this.courtAppearanceService.setNextAppearanceCourtSelect(
       req.session,
       nomsId,
-      nextHearingCourtSelectForm,
+      nextAppearanceCourtSelectForm,
       appearanceReference,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
-      req.flash('nextHearingCourtSelectForm', { ...nextHearingCourtSelectForm })
+      req.flash('nextAppearanceCourtSelectForm', { ...nextAppearanceCourtSelectForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-court-select?hasErrors=true`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-court-select?hasErrors=true`,
       )
     }
-    if (nextHearingCourtSelectForm.nextHearingCourtSelect === 'true') {
+    if (nextAppearanceCourtSelectForm.nextAppearanceCourtSelect === 'true') {
       if (
         addOrEditCourtAppearance === 'edit-court-appearance' &&
         this.courtAppearanceService.isNextCourtAppearanceAccepted(req.session, nomsId, appearanceReference)
@@ -1568,33 +1568,34 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-court-name`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-court-name`,
     )
   }
 
-  public getNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
+  public getNextAppearanceCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const { submitToCheckAnswers } = req.query
-    let nextHearingCourtNameForm = (req.flash('nextHearingCourtNameForm')[0] || {}) as CourtCaseNextHearingCourtNameForm
-    if (Object.keys(nextHearingCourtNameForm).length === 0) {
-      nextHearingCourtNameForm = {
-        courtCode: this.courtAppearanceService.getNextHearingCourtCode(req.session, nomsId, appearanceReference),
+    let nextAppearanceCourtNameForm = (req.flash('nextAppearanceCourtNameForm')[0] ||
+      {}) as CourtCaseNextAppearanceCourtNameForm
+    if (Object.keys(nextAppearanceCourtNameForm).length === 0) {
+      nextAppearanceCourtNameForm = {
+        courtCode: this.courtAppearanceService.getNextAppearanceCourtCode(req.session, nomsId, appearanceReference),
       }
     }
-    if (nextHearingCourtNameForm.courtCode && nextHearingCourtNameForm.nextHearingCourtName === undefined) {
+    if (nextAppearanceCourtNameForm.courtCode && nextAppearanceCourtNameForm.nextAppearanceCourtName === undefined) {
       try {
         const court = await this.courtRegisterService.findCourtById(
-          nextHearingCourtNameForm.courtCode,
+          nextAppearanceCourtNameForm.courtCode,
           req.user.username,
         )
-        nextHearingCourtNameForm.nextHearingCourtName = court.courtName
+        nextAppearanceCourtNameForm.nextAppearanceCourtName = court.courtName
       } catch (e) {
         logger.error(e)
       }
     }
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-court-select`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-court-select`
 
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
@@ -1606,10 +1607,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
     }
 
-    return res.render('pages/courtAppearance/next-hearing-court-name', {
+    return res.render('pages/courtAppearance/next-appearance-court-name', {
       nomsId,
       submitToCheckAnswers,
-      nextHearingCourtNameForm,
+      nextAppearanceCourtNameForm,
       courtCaseReference,
       appearanceReference,
       errors: req.flash('errors') || [],
@@ -1619,21 +1620,21 @@ export default class CourtCaseRoutes extends BaseRoutes {
     })
   }
 
-  public submitNextHearingCourtName: RequestHandler = async (req, res): Promise<void> => {
+  public submitNextAppearanceCourtName: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-    const nextHearingCourtNameForm = trimForm<CourtCaseNextHearingCourtNameForm>(req.body)
-    const errors = this.courtAppearanceService.setNextHearingCourtName(
+    const nextAppearanceCourtNameForm = trimForm<CourtCaseNextAppearanceCourtNameForm>(req.body)
+    const errors = this.courtAppearanceService.setNextAppearanceCourtName(
       req.session,
       nomsId,
-      nextHearingCourtNameForm,
+      nextAppearanceCourtNameForm,
       appearanceReference,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
-      req.flash('nextHearingCourtNameForm', { ...nextHearingCourtNameForm })
+      req.flash('nextAppearanceCourtNameForm', { ...nextAppearanceCourtNameForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-court-name?hasErrors=true`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-court-name?hasErrors=true`,
       )
     }
     if (
@@ -1661,20 +1662,20 @@ export default class CourtCaseRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    let nextHearingCourtName
+    let nextAppearanceCourtName
     let nextHearingAppearanceType
     if (courtAppearance.nextAppearanceSelect) {
       const [court, appearanceType] = await Promise.all([
-        this.courtRegisterService.findCourtById(courtAppearance.nextHearingCourtCode, req.user.username),
+        this.courtRegisterService.findCourtById(courtAppearance.nextAppearanceCourtCode, req.user.username),
         this.refDataService.getAppearanceTypeByUuid(courtAppearance.nextAppearanceTypeUuid, req.user.username),
       ])
-      nextHearingCourtName = court.courtName
+      nextAppearanceCourtName = court.courtName
       nextHearingAppearanceType = appearanceType.description
     }
     return res.render('pages/courtAppearance/check-next-hearing-answers', {
       nomsId,
       courtAppearance,
-      nextHearingCourtName,
+      nextAppearanceCourtName,
       nextHearingAppearanceType,
       courtCaseReference,
       appearanceReference,

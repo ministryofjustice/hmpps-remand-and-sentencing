@@ -69,7 +69,7 @@ const courtAppearanceToCreateNextCourtAppearance = (
     const appearanceDate = dayjs(courtAppearance.nextHearingDate)
     nextCourtAppearance = {
       appearanceDate: appearanceDate.format('YYYY-MM-DD'),
-      courtCode: courtAppearance.nextHearingCourtCode,
+      courtCode: courtAppearance.nextAppearanceCourtCode,
       appearanceTypeUuid: courtAppearance.nextAppearanceTypeUuid,
       prisonId,
       ...(courtAppearance.nextHearingTimeSet ? { appearanceTime: appearanceDate.format('HH:mm:[00].[000000]') } : {}),
@@ -427,7 +427,7 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
   }
   return {
     nextAppearanceSelect: !!nextCourtAppearance,
-    nextHearingCourtCode: nextCourtAppearance?.courtCode,
+    nextAppearanceCourtCode: nextCourtAppearance?.courtCode,
     nextAppearanceTypeUuid: nextCourtAppearance?.appearanceType.appearanceTypeUuid,
     nextHearingTimeSet: typeof nextCourtAppearance?.appearanceTime === 'string',
     nextHearingDate,

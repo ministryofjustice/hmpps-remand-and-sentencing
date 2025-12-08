@@ -584,23 +584,23 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-hearing-court-select',
-    courtCaseRoutes.getNextHearingCourtSelect,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-appearance-court-select',
+    courtCaseRoutes.getNextAppearanceCourtSelect,
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-hearing-court-select',
-    courtCaseRoutes.submitNextHearingCourtSelect,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-appearance-court-select',
+    courtCaseRoutes.submitNextAppearanceCourtSelect,
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-hearing-court-name',
-    courtCaseRoutes.getNextHearingCourtName,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-appearance-court-name',
+    courtCaseRoutes.getNextAppearanceCourtName,
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-hearing-court-name',
-    courtCaseRoutes.submitNextHearingCourtName,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-appearance-court-name',
+    courtCaseRoutes.submitNextAppearanceCourtName,
   )
 
   router.get(

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
-import CourtCaseNextHearingCourtNamePage from '../../pages/courtCaseNextHearingCourtNamePage'
-import CourtCaseNextHearingCourtSetPage from '../../pages/courtCaseNextHearingCourtSetPage'
+import CourtCaseNextAppearanceCourtNamePage from '../../pages/courtCaseNextAppearanceCourtNamePage'
+import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
 import Page from '../../pages/page'
@@ -38,9 +38,9 @@ context('Check Next Hearing Answers page', () => {
     courtCaseNextHearingDatePage.nextHearingTimeInput().type('9:30')
     courtCaseNextHearingDatePage.continueButton().click()
 
-    const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingCourtSetPage.continueButton().click()
+    const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
+    courtCaseNextAppearanceCourtSetPage.radioLabelSelector('true').click()
+    courtCaseNextAppearanceCourtSetPage.continueButton().click()
     courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
 
@@ -57,14 +57,14 @@ context('Check Next Hearing Answers page', () => {
       courtId: 'STHHPM',
       courtName: 'Southampton Magistrate Court',
     })
-    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-court-select').click()
-    const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    courtCaseNextHearingCourtSetPage.radioLabelSelector('false').click()
-    courtCaseNextHearingCourtSetPage.continueButton().click()
-    const courtCaseNextHearingCourtNamePage = Page.verifyOnPage(CourtCaseNextHearingCourtNamePage)
-    courtCaseNextHearingCourtNamePage.autoCompleteInput().type('cou')
-    courtCaseNextHearingCourtNamePage.secondAutoCompleteOption().contains('Southampton Magistrate Court').click()
-    courtCaseNextHearingCourtNamePage.continueButton().click()
+    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-court-select').click()
+    const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
+    courtCaseNextAppearanceCourtSetPage.radioLabelSelector('false').click()
+    courtCaseNextAppearanceCourtSetPage.continueButton().click()
+    const courtCaseNextAppearanceCourtNamePage = Page.verifyOnPage(CourtCaseNextAppearanceCourtNamePage)
+    courtCaseNextAppearanceCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseNextAppearanceCourtNamePage.secondAutoCompleteOption().contains('Southampton Magistrate Court').click()
+    courtCaseNextAppearanceCourtNamePage.continueButton().click()
     courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage
       .summaryList()

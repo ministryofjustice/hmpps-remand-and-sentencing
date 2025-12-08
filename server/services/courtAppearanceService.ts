@@ -3,8 +3,8 @@ import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
-  CourtCaseNextHearingCourtNameForm,
-  CourtCaseNextHearingCourtSelectForm,
+  CourtCaseNextAppearanceCourtNameForm,
+  CourtCaseNextAppearanceCourtSelectForm,
   CourtCaseNextHearingDateForm,
   CourtCaseNextAppearanceSelectForm,
   CourtCaseNextAppearanceTypeForm,
@@ -376,26 +376,26 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, appearanceUuid).warrantType
   }
 
-  getNextHearingCourtSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingCourtSelect
+  getNextAppearanceCourtSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextAppearanceCourtSelect
   }
 
-  setNextHearingCourtSelect(
+  setNextAppearanceCourtSelect(
     session: Partial<SessionData>,
     nomsId: string,
-    nextHearingCourtSelectForm: CourtCaseNextHearingCourtSelectForm,
+    nextAppearanceCourtSelectForm: CourtCaseNextAppearanceCourtSelectForm,
     appearanceUuid: string,
   ) {
     const errors = validate(
-      nextHearingCourtSelectForm,
-      { nextHearingCourtSelect: 'required' },
-      { 'required.nextHearingCourtSelect': "Select 'Yes' if the next hearing will be at this same court." },
+      nextAppearanceCourtSelectForm,
+      { nextAppearanceCourtSelect: 'required' },
+      { 'required.nextAppearanceCourtSelect': "Select 'Yes' if the next appearance will be at this same court." },
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      courtAppearance.nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect
-      if (nextHearingCourtSelectForm.nextHearingCourtSelect === 'true') {
-        courtAppearance.nextHearingCourtCode = courtAppearance.courtCode
+      courtAppearance.nextAppearanceCourtSelect = nextAppearanceCourtSelectForm.nextAppearanceCourtSelect
+      if (nextAppearanceCourtSelectForm.nextAppearanceCourtSelect === 'true') {
+        courtAppearance.nextAppearanceCourtCode = courtAppearance.courtCode
       }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
@@ -403,24 +403,24 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingCourtCode(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingCourtCode
+  getNextAppearanceCourtCode(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextAppearanceCourtCode
   }
 
-  setNextHearingCourtName(
+  setNextAppearanceCourtName(
     session: Partial<SessionData>,
     nomsId: string,
-    nextHearingCourtNameForm: CourtCaseNextHearingCourtNameForm,
+    nextAppearanceCourtNameForm: CourtCaseNextAppearanceCourtNameForm,
     appearanceUuid: string,
   ) {
     const errors = validate(
-      nextHearingCourtNameForm,
+      nextAppearanceCourtNameForm,
       { courtCode: 'required' },
       { 'required.courtCode': 'You must enter the court name' },
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      courtAppearance.nextHearingCourtCode = nextHearingCourtNameForm.courtCode
+      courtAppearance.nextAppearanceCourtCode = nextAppearanceCourtNameForm.courtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -720,7 +720,7 @@ export default class CourtAppearanceService {
       const previousNextHearingSelect = courtAppearance.nextAppearanceSelect
       courtAppearance.nextAppearanceSelect = nextAppearanceSelectForm.nextAppearanceSelect === 'true'
       if (!courtAppearance.nextAppearanceSelect) {
-        delete courtAppearance.nextHearingCourtCode
+        delete courtAppearance.nextAppearanceCourtCode
         delete courtAppearance.nextHearingDate
         delete courtAppearance.nextHearingTimeSet
         delete courtAppearance.nextAppearanceTypeUuid

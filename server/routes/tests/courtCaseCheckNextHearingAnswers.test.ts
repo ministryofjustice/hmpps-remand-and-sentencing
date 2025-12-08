@@ -22,7 +22,7 @@ describe('GET Check Next Hearing Answers', () => {
     const nextAppearanceTypeUuid = '1'
     const courtAppearance = {
       nextAppearanceSelect: true,
-      nextHearingCourtCode: 'ACCRYC',
+      nextAppearanceCourtCode: 'ACCRYC',
       nextAppearanceTypeUuid,
     } as CourtAppearance
     const court = {

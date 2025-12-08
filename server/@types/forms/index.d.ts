@@ -47,12 +47,12 @@ declare module 'forms' {
     nextHearingTime?: string
   }
 
-  export interface CourtCaseNextHearingCourtSelectForm {
-    nextHearingCourtSelect?: string
+  export interface CourtCaseNextAppearanceCourtSelectForm {
+    nextAppearanceCourtSelect?: string
   }
 
-  export interface CourtCaseNextHearingCourtNameForm {
-    nextHearingCourtName?: string
+  export interface CourtCaseNextAppearanceCourtNameForm {
+    nextAppearanceCourtName?: string
     courtCode?: string
   }
 

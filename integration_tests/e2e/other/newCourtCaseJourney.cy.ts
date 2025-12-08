@@ -16,7 +16,7 @@ import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSent
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
-import CourtCaseNextHearingCourtSetPage from '../../pages/courtCaseNextHearingCourtSetPage'
+import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
@@ -217,9 +217,9 @@ context('New Court Case journey', () => {
     courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type(futureDate.year().toString())
     courtCaseNextHearingDatePage.continueButton().click()
 
-    const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingCourtSetPage.continueButton().click()
+    const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
+    courtCaseNextAppearanceCourtSetPage.radioLabelSelector('true').click()
+    courtCaseNextAppearanceCourtSetPage.continueButton().click()
 
     const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage

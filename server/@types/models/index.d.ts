@@ -12,8 +12,8 @@ declare module 'models' {
     noCaseReference?: string
     warrantDate?: Date
     courtCode?: string
-    nextHearingCourtSelect?: string
-    nextHearingCourtCode?: string
+    nextAppearanceCourtSelect?: string
+    nextAppearanceCourtCode?: string
     appearanceOutcomeUuid?: string
     relatedOffenceOutcomeUuid?: string
     caseOutcomeAppliedAll?: string

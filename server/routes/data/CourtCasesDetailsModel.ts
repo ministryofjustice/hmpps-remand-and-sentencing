@@ -32,7 +32,7 @@ export default class CourtCasesDetailsModel {
 
   overallCaseStatus: string
 
-  nextHearing: string[]
+  nextAppearance: string[]
 
   appearanceTotal: number
 
@@ -85,13 +85,13 @@ export default class CourtCasesDetailsModel {
       if (pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceTime) {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)
       }
-      this.nextHearing = [
+      this.nextAppearance = [
         courtMap[pagedCourtCase.latestCourtAppearance.nextCourtAppearance.courtCode],
         pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceTypeDescription,
         appearanceDateFormatted,
       ]
     } else {
-      this.nextHearing = ['No future appearance scheduled']
+      this.nextAppearance = ['No future appearance scheduled']
     }
     this.appearanceTotal = pagedCourtCase.appearanceCount
     this.latestAppearance = pagedCourtCase.latestCourtAppearance

@@ -50,11 +50,11 @@
                 {% for courtCaseDetails in courtCaseDetailModels %}
                         {% set courtCaseSummary %}
 
-                            {% set nextHearingHtml %}
+                            {% set nextAppearanceHtml %}
                             <ul class="govuk-list">
-                                {% for nextHearingValue in courtCaseDetails.nextHearing %}
+                                {% for nextAppearanceValue in courtCaseDetails.nextAppearance %}
                                     <li>
-                                        {{ nextHearingValue }}
+                                        {{ nextAppearanceValue }}
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -85,7 +85,7 @@
                               {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat(
                                       {
                                           key: { text: "Next hearing"},
-                                          value: { html: nextHearingHtml }
+                                          value: { html: nextAppearanceHtml }
                                       }
                               ))%}
                             {% endif %}

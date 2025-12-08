@@ -814,9 +814,9 @@ export default class CourtAppearanceService {
         day: nextAppearanceDateForm['nextAppearanceDate-day'],
       })
       if (nextAppearanceDateForm.nextAppearanceTime) {
-        const [nextHearingHour, nextHearingMinute] = nextAppearanceDateForm.nextAppearanceTime.split(':')
-        nextAppearanceDate = nextAppearanceDate.set('hour', parseInt(nextHearingHour, 10))
-        nextAppearanceDate = nextAppearanceDate.set('minute', parseInt(nextHearingMinute, 10))
+        const [nextAppearanceHour, nextAppearanceMinute] = nextAppearanceDateForm.nextAppearanceTime.split(':')
+        nextAppearanceDate = nextAppearanceDate.set('hour', parseInt(nextAppearanceHour, 10))
+        nextAppearanceDate = nextAppearanceDate.set('minute', parseInt(nextAppearanceMinute, 10))
       }
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.nextAppearanceDate = nextAppearanceDate.toDate()

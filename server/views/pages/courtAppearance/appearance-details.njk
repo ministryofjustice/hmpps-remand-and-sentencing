@@ -72,7 +72,7 @@
   }
 }) %}
 
-{% set nextHearingSummaryRows = [{
+{% set nextAppearanceSummaryRows = [{
   key: { text: "Next appearance set" },
   value: { text: "Yes" if appearance.nextAppearanceSelect else "No future appearance scheduled" },
   actions: {
@@ -86,7 +86,7 @@
 }] %}
 
 {% if appearance.nextAppearanceSelect %}
-  {% set nextHearingSummaryRows = nextHearingSummaryRows.concat([
+  {% set nextAppearanceSummaryRows = nextAppearanceSummaryRows.concat([
     {
       key: { text: "Location" },
       value: { text: courtMap[appearance.nextAppearanceCourtCode] },
@@ -179,8 +179,8 @@
 
       {{ govukSummaryList({
         card: { title: { text: "Next court appearance" } },
-        rows: nextHearingSummaryRows,
-        attributes: { "data-qa": "nextHearingSummaryList" }
+        rows: nextAppearanceSummaryRows,
+        attributes: { "data-qa": "nextAppearanceSummaryList" }
       }) }}
 
       {{ govukSummaryList({

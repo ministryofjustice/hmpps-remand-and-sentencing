@@ -66,7 +66,6 @@ context('Add Offence Outcome Page', () => {
         const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
         offenceOffenceCodePage.input().type('PS90037')
         offenceOffenceCodePage.continueButton().click()
-        cy.task('stubGetAppearanceOutcomeById', {})
         cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
         offenceOffenceOutcomePage = Page.verifyOnPageTitle(
           OffenceOffenceOutcomePage,
@@ -153,11 +152,6 @@ context('Add Offence Outcome Page', () => {
         const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
         offenceOffenceCodePage.input().type('PS90037')
         offenceOffenceCodePage.continueButton().click()
-        cy.task('stubGetAppearanceOutcomeById', {
-          appearanceOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af252',
-          appearanceOutcomeName: 'Lie on file',
-          appearanceOutcomeType: 'NON_CUSTODIAL',
-        })
         cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
         offenceOffenceOutcomePage = Page.verifyOnPageTitle(
           OffenceOffenceOutcomePage,
@@ -198,11 +192,6 @@ context('Add Offence Outcome Page', () => {
       const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
       offenceOffenceCodePage.input().type('PS90037')
       offenceOffenceCodePage.continueButton().click()
-      cy.task('stubGetAppearanceOutcomeById', {
-        appearanceOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af252',
-        appearanceOutcomeName: 'Imprisonment',
-        appearanceOutcomeType: 'SENTENCING',
-      })
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
       offenceOffenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,

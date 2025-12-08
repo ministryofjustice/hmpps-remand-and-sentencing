@@ -5,6 +5,8 @@ import OffenceDeleteOffencePage from '../../pages/offenceDeleteOffencePage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import Page from '../../pages/page'
+import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 
 context('Check Offence Answers Page', () => {
   let offenceCheckOffenceAnswersPage: OffenceCheckOffenceAnswersPage
@@ -47,6 +49,12 @@ context('Check Offence Answers Page', () => {
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('false').click()
       receivedCustodialSentencePage.continueButton().click()
+      const overallOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      overallOutcomePage.radioLabelContains('Remanded in custody').click()
+      overallOutcomePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
     })
@@ -138,6 +146,17 @@ context('Check Offence Answers Page', () => {
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
       courtCaseWarrantDatePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-case-outcome')
+      const overAllOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      overAllOutcomePage.radioLabelContains('Imprisonment').click()
+      overAllOutcomePage.continueButton().click()
+      const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
+      courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
+      courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
+      courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
       cy.createSentencedOffence('A1234AB', '0', '0', '0')

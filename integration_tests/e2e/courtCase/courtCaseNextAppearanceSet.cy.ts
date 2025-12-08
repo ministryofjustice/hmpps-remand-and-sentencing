@@ -1,7 +1,7 @@
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import Page from '../../pages/page'
 
-context('Next Appearance been set page', () => {
+context('Next appearance been set page', () => {
   let courtCaseNextAppearanceSetPage: CourtCaseNextAppearanceSetPage
   beforeEach(() => {
     cy.task('happyPathStubs')

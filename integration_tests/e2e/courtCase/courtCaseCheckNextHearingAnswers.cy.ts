@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseNextHearingCourtNamePage from '../../pages/courtCaseNextHearingCourtNamePage'
 import CourtCaseNextHearingCourtSetPage from '../../pages/courtCaseNextHearingCourtSetPage'
-import CourtCaseNextHearingTypePage from '../../pages/courtCaseNextHearingTypePage'
+import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
 import Page from '../../pages/page'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
@@ -26,9 +26,9 @@ context('Check Next Hearing Answers page', () => {
     const courtCaseNextAppearanceSetPage = Page.verifyOnPage(CourtCaseNextAppearanceSetPage)
     courtCaseNextAppearanceSetPage.radioLabelSelector('true').click()
     courtCaseNextAppearanceSetPage.continueButton().click()
-    const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
-    courtCaseNextHearingTypePage.continueButton().click()
+    const courtCaseNextAppearanceTypePage = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
+    courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
+    courtCaseNextAppearanceTypePage.continueButton().click()
 
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
 
@@ -45,10 +45,10 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('clicking next hearing type and submitting goes back to check answers page', () => {
-    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-type').click()
-    const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
-    courtCaseNextHearingTypePage.continueButton().click()
+    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-type').click()
+    const courtCaseNextAppearanceTypePage = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
+    courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
+    courtCaseNextAppearanceTypePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
 

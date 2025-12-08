@@ -23,7 +23,7 @@ describe('GET Next hearing type', () => {
       },
     ])
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-type')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-type')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

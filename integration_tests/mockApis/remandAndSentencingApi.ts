@@ -3,7 +3,7 @@ import { stubFor, verifyRequest } from './wiremock'
 import REPLACEMENT_OUTCOME_UUID from '../../server/utils/constants'
 
 export default {
-  stubCreateCourtCase: ({ nextHearingDate = '' }: { nextHearingDate: string }): SuperAgentRequest => {
+  stubCreateCourtCase: ({ nextAppearanceDate = '' }: { nextAppearanceDate: string }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'PUT',
@@ -11,7 +11,7 @@ export default {
           '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
         bodyPatterns: [
           {
-            equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"courtCaseUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-13", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}, "charges": [{"chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI"}], "warrantType": "NON_SENTENCING"}]}`,
+            equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"courtCaseUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-13", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextAppearanceDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}, "charges": [{"chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI"}], "warrantType": "NON_SENTENCING"}]}`,
           },
         ],
       },
@@ -694,7 +694,7 @@ export default {
     })
   },
 
-  stubGetLatestCourtAppearanceSameNextHearingDate: ({
+  stubGetLatestCourtAppearanceSameNextAppearanceDate: ({
     warrantDate = '',
   }: {
     warrantDate: string
@@ -749,7 +749,7 @@ export default {
     })
   },
 
-  verifyCreateCourtCaseRequest: ({ nextHearingDate = '' }: { nextHearingDate: string }): Promise<number> => {
+  verifyCreateCourtCaseRequest: ({ nextAppearanceDate = '' }: { nextAppearanceDate: string }): Promise<number> => {
     return verifyRequest({
       requestUrlPattern:
         '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
@@ -770,7 +770,7 @@ export default {
             warrantType: 'NON_SENTENCING',
             prisonId: 'MDI',
             nextCourtAppearance: {
-              appearanceDate: nextHearingDate,
+              appearanceDate: nextAppearanceDate,
               courtCode: 'ACCRYC',
               appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
               prisonId: 'MDI',
@@ -861,14 +861,14 @@ export default {
     })
   },
 
-  stubCreateCourtAppearance: ({ nextHearingDate = '' }: { nextHearingDate: string }): SuperAgentRequest => {
+  stubCreateCourtAppearance: ({ nextAppearanceDate = '' }: { nextAppearanceDate: string }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'PUT',
         urlPattern: '/remand-and-sentencing-api/court-appearance/5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
         bodyPatterns: [
           {
-            equalToJson: `{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-13", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI" }], "warrantType": "NON_SENTENCING", "nextCourtAppearance": {"appearanceDate": "${nextHearingDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}}`,
+            equalToJson: `{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-13", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f" }, { "chargeUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI" }], "warrantType": "NON_SENTENCING", "nextCourtAppearance": {"appearanceDate": "${nextAppearanceDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI"}}`,
           },
         ],
       },
@@ -882,7 +882,11 @@ export default {
     })
   },
 
-  verifyCreateCourtAppearanceRequest: ({ nextHearingDate = '' }: { nextHearingDate: string }): Promise<number> => {
+  verifyCreateCourtAppearanceRequest: ({
+    nextAppearanceDate = '',
+  }: {
+    nextAppearanceDate: string
+  }): Promise<number> => {
     return verifyRequest({
       requestUrlPattern: '/remand-and-sentencing-api/court-appearance/5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
       method: 'PUT',
@@ -913,7 +917,7 @@ export default {
         ],
         warrantType: 'NON_SENTENCING',
         nextCourtAppearance: {
-          appearanceDate: nextHearingDate,
+          appearanceDate: nextAppearanceDate,
           courtCode: 'ACCRYC',
           appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
           prisonId: 'MDI',

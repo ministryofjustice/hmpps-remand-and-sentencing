@@ -8,7 +8,7 @@
 
 {% block pageContent %}
     {{ super() }}
-    <form method="post" autocomplete="off">
+    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-appearance-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/nextAppearanceCaption.njk" %}
 
@@ -21,9 +21,9 @@
         }) %}
 
             {{ govukDateInput({
-                id: "next-hearing-date",
-                namePrefix: "nextHearingDate",
-                errorMessage: errors | findErrorsBeginningWith('nextHearingDate'),
+                id: "next-appearance-date",
+                namePrefix: "nextAppearanceDate",
+                errorMessage: errors | findErrorsBeginningWith('nextAppearanceDate'),
                 fieldset: {
                     legend: {
                         text: "Next court date",
@@ -33,22 +33,22 @@
                 },
                 items: [
                     {
-                        id: 'nextHearingDate-day',
-                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextHearingDate-day') else ''),
+                        id: 'nextAppearanceDate-day',
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextAppearanceDate-day') else ''),
                         name:"day",
-                        value: nextHearingDateDay
+                        value: nextAppearanceDateDay
                     },
                     {
-                        id: 'nextHearingDate-month',
-                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextHearingDate-month') else ''),
+                        id: 'nextAppearanceDate-month',
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('nextAppearanceDate-month') else ''),
                         name:"month",
-                        value: nextHearingDateMonth
+                        value: nextAppearanceDateMonth
                     },
                     {
-                        id: 'nextHearingDate-year',
-                        classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('nextHearingDate-year') else ''),
+                        id: 'nextAppearanceDate-year',
+                        classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('nextAppearanceDate-year') else ''),
                         name:"year",
-                        value: nextHearingDateYear
+                        value: nextAppearanceDateYear
                     }
                 ]
             }) }}
@@ -62,23 +62,18 @@
                     text: "For example, 13:00"
                 },
                 classes: "govuk-input--width-4",
-                id: "nextHearingTime",
-                name: "nextHearingTime",
-                errorMessage: errors | findError('nextHearingTime'),
-                value: nextHearingTime
+                id: "nextAppearanceTime",
+                name: "nextAppearanceTime",
+                errorMessage: errors | findError('nextAppearanceTime'),
+                value: nextAppearanceTime
             }) }}
 
         {% endcall %}
 
-        <div class="govuk-button-group">
-            <button type="submit"
-                    class="govuk-button"
-                    data-module="govuk-button"
-                    data-qa="continue-button"
-                    formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
-                Continue
-            </button>
-        </div>
+        {{ govukButton({
+            text: "Continue",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
     </form>
 
 {% endblock %}

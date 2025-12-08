@@ -13,10 +13,10 @@ import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
-import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
+import CourtCaseCheckNextAppearanceAnswersPage from '../../pages/courtCaseCheckNextAppearanceAnswersPage'
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
-import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
-import CourtCaseNextHearingCourtSetPage from '../../pages/courtCaseNextHearingCourtSetPage'
+import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearanceDatePage'
+import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
@@ -33,7 +33,7 @@ context('New Court Case journey', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})
-    cy.task('stubCreateCourtCase', { nextHearingDate: futureDate.format('YYYY-MM-DD') })
+    cy.task('stubCreateCourtCase', { nextAppearanceDate: futureDate.format('YYYY-MM-DD') })
     cy.task('stubCreateSentenceCourtCase')
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
@@ -210,27 +210,27 @@ context('New Court Case journey', () => {
     courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
     courtCaseNextAppearanceTypePage.continueButton().click()
 
-    const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
+    const courtCaseNextAppearanceDatePage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
 
-    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type(futureDate.date().toString())
-    courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type((futureDate.month() + 1).toString())
-    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type(futureDate.year().toString())
-    courtCaseNextHearingDatePage.continueButton().click()
+    courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type(futureDate.date().toString())
+    courtCaseNextAppearanceDatePage.monthDateInput('nextAppearanceDate').type((futureDate.month() + 1).toString())
+    courtCaseNextAppearanceDatePage.yearDateInput('nextAppearanceDate').type(futureDate.year().toString())
+    courtCaseNextAppearanceDatePage.continueButton().click()
 
-    const courtCaseNextHearingCourtSetPage = Page.verifyOnPage(CourtCaseNextHearingCourtSetPage)
-    courtCaseNextHearingCourtSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingCourtSetPage.continueButton().click()
+    const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
+    courtCaseNextAppearanceCourtSetPage.radioLabelSelector('true').click()
+    courtCaseNextAppearanceCourtSetPage.continueButton().click()
 
-    const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
-    courtCaseNextHearingAnswersPage
+    const courtCaseNextAppearanceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
+    courtCaseNextAppearanceAnswersPage
       .summaryList()
       .getSummaryList()
       .should('deep.equal', {
-        'Next hearing date': futureDate.format('DD/MM/YYYY'),
-        'Next hearing location': 'Accrington Youth Court',
-        'Next hearing type': 'Court appearance',
+        'Next appearance date': futureDate.format('DD/MM/YYYY'),
+        'Next appearance location': 'Accrington Youth Court',
+        'Next appearance type': 'Court appearance',
       })
-    courtCaseNextHearingAnswersPage.continueButton().click()
+    courtCaseNextAppearanceAnswersPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -256,7 +256,7 @@ context('New Court Case journey', () => {
       ])
     courtCaseTaskListPage.continueButton().click()
 
-    cy.task('verifyCreateCourtCaseRequest', { nextHearingDate: futureDate.format('YYYY-MM-DD') }).should('equal', 1)
+    cy.task('verifyCreateCourtCaseRequest', { nextAppearanceDate: futureDate.format('YYYY-MM-DD') }).should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 

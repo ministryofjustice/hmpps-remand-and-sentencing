@@ -40,19 +40,19 @@ declare module 'forms' {
     nextAppearanceType?: string
   }
 
-  export interface CourtCaseNextHearingDateForm {
-    'nextHearingDate-year'?: string
-    'nextHearingDate-month'?: string
-    'nextHearingDate-day'?: string
-    nextHearingTime?: string
+  export interface CourtCaseNextAppearanceDateForm {
+    'nextAppearanceDate-year'?: string
+    'nextAppearanceDate-month'?: string
+    'nextAppearanceDate-day'?: string
+    nextAppearanceTime?: string
   }
 
-  export interface CourtCaseNextHearingCourtSelectForm {
-    nextHearingCourtSelect?: string
+  export interface CourtCaseNextAppearanceCourtSelectForm {
+    nextAppearanceCourtSelect?: string
   }
 
-  export interface CourtCaseNextHearingCourtNameForm {
-    nextHearingCourtName?: string
+  export interface CourtCaseNextAppearanceCourtNameForm {
+    nextAppearanceCourtName?: string
     courtCode?: string
   }
 

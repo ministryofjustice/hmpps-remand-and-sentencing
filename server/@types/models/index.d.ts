@@ -12,15 +12,15 @@ declare module 'models' {
     noCaseReference?: string
     warrantDate?: Date
     courtCode?: string
-    nextHearingCourtSelect?: string
-    nextHearingCourtCode?: string
+    nextAppearanceCourtSelect?: string
+    nextAppearanceCourtCode?: string
     appearanceOutcomeUuid?: string
     relatedOffenceOutcomeUuid?: string
     caseOutcomeAppliedAll?: string
     nextAppearanceSelect?: boolean
     nextAppearanceTypeUuid?: string
-    nextHearingDate?: Date
-    nextHearingTimeSet?: boolean
+    nextAppearanceDate?: Date
+    nextAppearanceTimeSet?: boolean
     offences?: Offence[]
     warrantType?: string
     overallSentenceLength?: SentenceLength

@@ -13,10 +13,10 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET Next hearing date', () => {
+describe('GET Next appearance date', () => {
   it('should render page on new journey', () => {
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-date')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-date')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

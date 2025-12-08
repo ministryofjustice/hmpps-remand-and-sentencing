@@ -3,9 +3,9 @@ import type {
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
-  CourtCaseNextHearingCourtNameForm,
-  CourtCaseNextHearingCourtSelectForm,
-  CourtCaseNextHearingDateForm,
+  CourtCaseNextAppearanceCourtNameForm,
+  CourtCaseNextAppearanceCourtSelectForm,
+  CourtCaseNextAppearanceDateForm,
   CourtCaseNextAppearanceSelectForm,
   CourtCaseNextAppearanceTypeForm,
   CourtCaseOverallCaseOutcomeForm,
@@ -213,9 +213,9 @@ export default class CourtAppearanceService {
 
       if (courtCaseDatesErrors.length) return courtCaseDatesErrors
 
-      if (courtAppearance.nextHearingDate) {
-        const nextHearingDate = dayjs(courtAppearance.nextHearingDate)
-        if (!warrantDate.isBefore(nextHearingDate)) {
+      if (courtAppearance.nextAppearanceDate) {
+        const nextAppearanceDate = dayjs(courtAppearance.nextAppearanceDate)
+        if (!warrantDate.isBefore(nextAppearanceDate)) {
           return [
             {
               text: `The ${warrantOrHearing} date must be before the next court appearance date`,
@@ -376,26 +376,26 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, appearanceUuid).warrantType
   }
 
-  getNextHearingCourtSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingCourtSelect
+  getNextAppearanceCourtSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextAppearanceCourtSelect
   }
 
-  setNextHearingCourtSelect(
+  setNextAppearanceCourtSelect(
     session: Partial<SessionData>,
     nomsId: string,
-    nextHearingCourtSelectForm: CourtCaseNextHearingCourtSelectForm,
+    nextAppearanceCourtSelectForm: CourtCaseNextAppearanceCourtSelectForm,
     appearanceUuid: string,
   ) {
     const errors = validate(
-      nextHearingCourtSelectForm,
-      { nextHearingCourtSelect: 'required' },
-      { 'required.nextHearingCourtSelect': "Select 'Yes' if the next hearing will be at this same court." },
+      nextAppearanceCourtSelectForm,
+      { nextAppearanceCourtSelect: 'required' },
+      { 'required.nextAppearanceCourtSelect': "Select 'Yes' if the next appearance will be at this same court." },
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      courtAppearance.nextHearingCourtSelect = nextHearingCourtSelectForm.nextHearingCourtSelect
-      if (nextHearingCourtSelectForm.nextHearingCourtSelect === 'true') {
-        courtAppearance.nextHearingCourtCode = courtAppearance.courtCode
+      courtAppearance.nextAppearanceCourtSelect = nextAppearanceCourtSelectForm.nextAppearanceCourtSelect
+      if (nextAppearanceCourtSelectForm.nextAppearanceCourtSelect === 'true') {
+        courtAppearance.nextAppearanceCourtCode = courtAppearance.courtCode
       }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
@@ -403,24 +403,24 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingCourtCode(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingCourtCode
+  getNextAppearanceCourtCode(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextAppearanceCourtCode
   }
 
-  setNextHearingCourtName(
+  setNextAppearanceCourtName(
     session: Partial<SessionData>,
     nomsId: string,
-    nextHearingCourtNameForm: CourtCaseNextHearingCourtNameForm,
+    nextAppearanceCourtNameForm: CourtCaseNextAppearanceCourtNameForm,
     appearanceUuid: string,
   ) {
     const errors = validate(
-      nextHearingCourtNameForm,
+      nextAppearanceCourtNameForm,
       { courtCode: 'required' },
       { 'required.courtCode': 'You must enter the court name' },
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      courtAppearance.nextHearingCourtCode = nextHearingCourtNameForm.courtCode
+      courtAppearance.nextAppearanceCourtCode = nextAppearanceCourtNameForm.courtCode
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -720,9 +720,9 @@ export default class CourtAppearanceService {
       const previousNextHearingSelect = courtAppearance.nextAppearanceSelect
       courtAppearance.nextAppearanceSelect = nextAppearanceSelectForm.nextAppearanceSelect === 'true'
       if (!courtAppearance.nextAppearanceSelect) {
-        delete courtAppearance.nextHearingCourtCode
-        delete courtAppearance.nextHearingDate
-        delete courtAppearance.nextHearingTimeSet
+        delete courtAppearance.nextAppearanceCourtCode
+        delete courtAppearance.nextAppearanceDate
+        delete courtAppearance.nextAppearanceTimeSet
         delete courtAppearance.nextAppearanceTypeUuid
       }
       if (previousNextHearingSelect !== courtAppearance.nextAppearanceSelect) {
@@ -762,65 +762,65 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingDate(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): Date {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingDate
+  getNextAppearanceDate(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): Date {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextAppearanceDate
   }
 
   hasNextHearingTimeSet(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingTimeSet
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextAppearanceTimeSet
   }
 
-  setNextHearingDate(
+  setNextAppearanceDate(
     session: Partial<SessionData>,
     nomsId: string,
-    nextHearingDateForm: CourtCaseNextHearingDateForm,
+    nextAppearanceDateForm: CourtCaseNextAppearanceDateForm,
     appearanceUuid: string,
   ) {
     let isValidDateRule = ''
     if (
-      nextHearingDateForm['nextHearingDate-day'] !== undefined &&
-      nextHearingDateForm['nextHearingDate-month'] !== undefined &&
-      nextHearingDateForm['nextHearingDate-year'] !== undefined
+      nextAppearanceDateForm['nextAppearanceDate-day'] !== undefined &&
+      nextAppearanceDateForm['nextAppearanceDate-month'] !== undefined &&
+      nextAppearanceDateForm['nextAppearanceDate-year'] !== undefined
     ) {
-      const nextHearingDateString = toDateString(
-        nextHearingDateForm['nextHearingDate-year'],
-        nextHearingDateForm['nextHearingDate-month'],
-        nextHearingDateForm['nextHearingDate-day'],
+      const nextAppearanceDateString = toDateString(
+        nextAppearanceDateForm['nextAppearanceDate-year'],
+        nextAppearanceDateForm['nextAppearanceDate-month'],
+        nextAppearanceDateForm['nextAppearanceDate-day'],
       )
-      isValidDateRule = `|isValidDate:${nextHearingDateString}|isFutureOrCurrentDate:${nextHearingDateString}|isWithinNextOneYear:${nextHearingDateString}`
+      isValidDateRule = `|isValidDate:${nextAppearanceDateString}|isFutureOrCurrentDate:${nextAppearanceDateString}|isWithinNextOneYear:${nextAppearanceDateString}`
     }
     const errors = validate(
-      nextHearingDateForm,
+      nextAppearanceDateForm,
       {
-        'nextHearingDate-day': `required${isValidDateRule}`,
-        'nextHearingDate-month': `required`,
-        'nextHearingDate-year': `required`,
-        nextHearingTime: ['regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
+        'nextAppearanceDate-day': `required${isValidDateRule}`,
+        'nextAppearanceDate-month': `required`,
+        'nextAppearanceDate-year': `required`,
+        nextAppearanceTime: ['regex:/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
       },
       {
-        'required.nextHearingDate-year': 'Next court date must include year',
-        'required.nextHearingDate-month': 'Next court date must include month',
-        'required.nextHearingDate-day': 'Next court date must include day',
-        'isValidDate.nextHearingDate-day': 'This date does not exist.',
-        'regex.nextHearingTime': 'Time must be in 1:00 or 13:00 format',
-        'isFutureOrCurrentDate.nextHearingDate-day': 'The next court date must be in the future',
-        'isWithinNextOneYear.nextHearingDate-day': 'The next court appearance must be within 1 year of today’s date',
+        'required.nextAppearanceDate-year': 'Next court date must include year',
+        'required.nextAppearanceDate-month': 'Next court date must include month',
+        'required.nextAppearanceDate-day': 'Next court date must include day',
+        'isValidDate.nextAppearanceDate-day': 'This date does not exist.',
+        'regex.nextAppearanceTime': 'Time must be in 1:00 or 13:00 format',
+        'isFutureOrCurrentDate.nextAppearanceDate-day': 'The next court date must be in the future',
+        'isWithinNextOneYear.nextAppearanceDate-day': 'The next court appearance must be within 1 year of today’s date',
       },
     )
     if (errors.length === 0) {
-      let nextHearingDate = dayjs({
-        year: nextHearingDateForm['nextHearingDate-year'],
-        month: parseInt(nextHearingDateForm['nextHearingDate-month'], 10) - 1,
-        day: nextHearingDateForm['nextHearingDate-day'],
+      let nextAppearanceDate = dayjs({
+        year: nextAppearanceDateForm['nextAppearanceDate-year'],
+        month: parseInt(nextAppearanceDateForm['nextAppearanceDate-month'], 10) - 1,
+        day: nextAppearanceDateForm['nextAppearanceDate-day'],
       })
-      if (nextHearingDateForm.nextHearingTime) {
-        const [nextHearingHour, nextHearingMinute] = nextHearingDateForm.nextHearingTime.split(':')
-        nextHearingDate = nextHearingDate.set('hour', parseInt(nextHearingHour, 10))
-        nextHearingDate = nextHearingDate.set('minute', parseInt(nextHearingMinute, 10))
+      if (nextAppearanceDateForm.nextAppearanceTime) {
+        const [nextAppearanceHour, nextAppearanceMinute] = nextAppearanceDateForm.nextAppearanceTime.split(':')
+        nextAppearanceDate = nextAppearanceDate.set('hour', parseInt(nextAppearanceHour, 10))
+        nextAppearanceDate = nextAppearanceDate.set('minute', parseInt(nextAppearanceMinute, 10))
       }
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      courtAppearance.nextHearingDate = nextHearingDate.toDate()
-      courtAppearance.nextHearingTimeSet = Boolean(nextHearingDateForm.nextHearingTime)
+      courtAppearance.nextAppearanceDate = nextAppearanceDate.toDate()
+      courtAppearance.nextAppearanceTimeSet = Boolean(nextAppearanceDateForm.nextAppearanceTime)
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

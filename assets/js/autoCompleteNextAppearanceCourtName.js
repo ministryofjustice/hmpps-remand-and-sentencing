@@ -14,11 +14,11 @@ const request = new XMLHttpRequest()
 
 window.addEventListener('load', function () {
   accessibleAutocomplete.enhanceSelectElement({
-    defaultValue: document.getElementById('autocomplete-script').dataset.nextHearingCourtName,
-    selectElement: document.querySelector('#next-hearing-court-name'),
+    defaultValue: document.getElementById('autocomplete-script').dataset.nextAppearanceCourtName,
+    selectElement: document.querySelector('#next-appearance-court-name'),
     menuClasses: 'govuk-body',
     confirmOnBlur: false,
-    name: 'nextHearingCourtName',
+    name: 'nextAppearanceCourtName',
     onConfirm: function (confirmed) {
       if (confirmed && confirmed.courtId) {
         document.getElementById('court-code').value = confirmed.courtId

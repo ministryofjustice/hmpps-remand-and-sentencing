@@ -1,0 +1,49 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set fieldSetHtml %}
+    <h1 class="govuk-fieldset__heading{% if currentlySetTypeDescription %} govuk-!-static-margin-bottom-3{% endif %}">{% if isAddCourtAppearance%}How will they attend the appearance?{%else%}Edit the next appearance type{%endif%}</h1>
+    {% if currentlySetTypeDescription%}
+    <p class="govuk-body-l govuk-!-static-margin-bottom-3" data-qa="legendParagraph">{{ currentlySetTypeDescription }}</p>
+    {% endif %}
+{% endset %}
+
+{% set radiosData = {
+                    id: "nextAppearanceType",
+                    errorMessage: errors | findError('nextAppearanceType'),
+                    name: "nextAppearanceType",
+                    fieldset: {
+                        legend: {
+                            html: fieldSetHtml,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: []
+    } %}
+
+{% for appearanceType in appearanceTypes %}
+    {%- set appearanceTypeRow = {
+        value: appearanceType.appearanceTypeUuid,
+        text: appearanceType.description,
+        checked: appearanceType.appearanceTypeUuid === nextAppearanceTypeForm.nextAppearanceType
+    } -%}
+    {{ radiosData.items.push(appearanceTypeRow) }}
+{% endfor %}
+
+
+{% set pageTitle = applicationName + " - Next appearance type" %}
+{% block pageContent %}
+    {{ super() }}
+    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-appearance-type{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/nextAppearanceCaption.njk" %}
+        {{ govukRadios(radiosData) }}
+
+        {{ govukButton({
+            text: "Continue",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
+    </form>
+
+{% endblock %}

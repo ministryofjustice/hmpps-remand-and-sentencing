@@ -34,7 +34,7 @@ describe('mapping API to session util tests', () => {
       overallConvictionDate: null,
     } as PageCourtCaseAppearance
     const result = pageCourtCaseAppearanceToCourtAppearance(appearance)
-    expect(result.nextHearingSelect).toEqual(false)
+    expect(result.nextAppearanceSelect).toEqual(false)
   })
 
   it('correctly map fine amount', () => {

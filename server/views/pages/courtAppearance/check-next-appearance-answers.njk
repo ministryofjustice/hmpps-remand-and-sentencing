@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set pageTitle = applicationName + " - Check next hearing answers" %}
+{% set pageTitle = applicationName + " - Check next appearance answers" %}
 
 {% block content %}
     {{ super() }}
@@ -11,56 +11,56 @@
             {% include "../../partials/nextAppearanceCaption.njk" %}
             <h1 class="govuk-heading-l">Check your answers</h1>
 
-            {% if courtAppearance.nextHearingSelect %}
+            {% if courtAppearance.nextAppearanceSelect %}
                 {{ govukSummaryList({
                     rows: [
                         {
                             key: {
-                            text: "Next hearing type"
+                            text: "Next appearance type"
                         },
                             value: {
-                            text: nextHearingAppearanceType
+                            text: nextAppearanceType
                         },
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-type?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-type?submitToCheckAnswers=true",
                                     text: "Edit",
-                                    visuallyHiddenText: "next hearing type"
+                                    visuallyHiddenText: "next appearance type"
                                 }
                             ]
                         }
                         },
                         {
                             key: {
-                            text: "Next hearing date"
+                            text: "Next appearance date"
                         },
                             value: {
-                            text: courtAppearance.nextHearingDate | formatDateTime(courtAppearance.nextHearingTimeSet)
+                            text: courtAppearance.nextAppearanceDate | formatDateTime(courtAppearance.nextAppearanceTimeSet)
                         },
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-date?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-date?submitToCheckAnswers=true",
                                     text: "Edit",
-                                    visuallyHiddenText: "next hearing date"
+                                    visuallyHiddenText: "next appearance date"
                                 }
                             ]
                         }
                         },
                         {
                             key: {
-                            text: "Next hearing location"
+                            text: "Next appearance location"
                         },
                             value: {
-                            text: nextHearingCourtName
+                            text: nextAppearanceCourtName
                         },
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-court-select?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-court-select?submitToCheckAnswers=true",
                                     text: "Edit",
-                                    visuallyHiddenText: "next hearing location"
+                                    visuallyHiddenText: "next appearance location"
                                 }
                             ]
                         }
@@ -80,7 +80,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-select?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-select?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "next court date set"
                                 }
@@ -98,7 +98,7 @@
                             class="govuk-button"
                             data-module="govuk-button"
                             data-qa="continue-button"
-                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-next-hearing-answers">
+                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-next-appearance-answers">
                         Confirm and continue
                     </button>
                 </div>

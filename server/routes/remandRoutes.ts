@@ -52,7 +52,7 @@ export default class RemandRoutes extends BaseRoutes {
     const chargeCodes = appearance.offences
       .map(offences => offences.offenceCode)
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode))
-    const courtIds = [appearance.courtCode, appearance.nextHearingCourtCode]
+    const courtIds = [appearance.courtCode, appearance.nextAppearanceCourtCode]
       .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
       .concat(appearance.offences.map(offence => offence.mergedFromCase?.courtCode))
       .filter(courtId => courtId !== undefined && courtId !== null)
@@ -65,9 +65,9 @@ export default class RemandRoutes extends BaseRoutes {
           .getAppearanceOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
           .then(outcome => outcome.outcomeName)
       : Promise.resolve(appearance.legacyData?.outcomeDescription ?? 'Not entered')
-    const appearanceTypePromise = appearance.nextHearingTypeUuid
+    const appearanceTypePromise = appearance.nextAppearanceTypeUuid
       ? this.refDataService
-          .getAppearanceTypeByUuid(appearance.nextHearingTypeUuid, req.user.username)
+          .getAppearanceTypeByUuid(appearance.nextAppearanceTypeUuid, req.user.username)
           .then(appearanceType => appearanceType.description)
       : Promise.resolve('Not entered')
     const sentenceUuids = appearance.offences

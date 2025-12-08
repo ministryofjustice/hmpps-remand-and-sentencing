@@ -1,0 +1,39 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Next appearance been set" %}
+{% block pageContent %}
+    {{ super() }}
+    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-appearance-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/nextAppearanceCaption.njk" %}
+        {{ govukRadios({
+            name: "nextAppearanceSelect",
+            fieldset: {
+                legend: {
+                text: "Has the next appearance been set?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+                }
+            },
+            items: [
+                {
+                    value: "true",
+                    text: "Yes, it has been set",
+                    checked: nextAppearanceSelectForm.nextAppearanceSelect === 'true'
+                },
+                {
+                    value: "false",
+                    text: "No, date to be fixed",
+                    checked: nextAppearanceSelectForm.nextAppearanceSelect === 'false'
+                }
+            ]
+        }) }}
+
+        {{ govukButton({
+            text: "Continue",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
+    </form>
+{% endblock %}

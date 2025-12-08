@@ -445,7 +445,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       backLink,
-      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -596,7 +596,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
-      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -790,7 +790,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       backLink,
-      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 
@@ -1067,7 +1067,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       legacyCaseOutcome,
       backTo,
       submitToCheckAnswers,
-      showAppearanceDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
 

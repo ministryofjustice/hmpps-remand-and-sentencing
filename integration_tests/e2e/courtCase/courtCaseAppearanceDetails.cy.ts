@@ -72,9 +72,9 @@ context('Court Case Appearance details Page', () => {
       })
     })
 
-    it('next hearing summary shows correct data', () => {
-      courtCaseAppearanceDetailsPage.nextHearingSummaryList().getSummaryList().should('deep.equal', {
-        'Next hearing set': 'Yes',
+    it('next appearance summary shows correct data', () => {
+      courtCaseAppearanceDetailsPage.nextAppearanceSummaryList().getSummaryList().should('deep.equal', {
+        'Next appearance set': 'Yes',
         Location: 'Southampton Magistrate Court',
         'Hearing type': 'Court appearance',
         Date: '15/12/2024',
@@ -115,10 +115,10 @@ context('Court Case Appearance details Page', () => {
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
       courtCaseReferencePage.noCaseReferenceCheckbox().should('not.be.checked')
       courtCaseReferencePage.input().clear().type('T12345678')
-      courtCaseReferencePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseReferencePage.hearingDetailsSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Court name': 'Southampton Magistrate Court',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         'Overall case outcome': 'Remanded in custody',
       })
       courtCaseReferencePage.continueButton().click()
@@ -153,10 +153,10 @@ context('Court Case Appearance details Page', () => {
         .click()
 
       const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'Edit the court name')
-      courtCaseCourtNamePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseCourtNamePage.hearingDetailsSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Court name': 'Southampton Magistrate Court',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         'Overall case outcome': 'Remanded in custody',
       })
       courtCaseCourtNamePage.autoCompleteInput().clear()

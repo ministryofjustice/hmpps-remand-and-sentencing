@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
-import { appWithAllRoutes } from '../testutils/appSetup'
+import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 
 let app: Express
 
@@ -13,10 +13,17 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET Next hearing court name ', () => {
+describe('GET Next appearance type', () => {
   it('should render page on new journey', () => {
+    defaultServices.refDataService.getAllAppearanceTypes.mockResolvedValue([
+      {
+        appearanceTypeUuid: '1',
+        description: 'Appearance Type',
+        displayOrder: 10,
+      },
+    ])
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-court-name')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-type')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

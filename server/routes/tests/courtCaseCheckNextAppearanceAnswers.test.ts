@@ -16,21 +16,21 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET Check Next Hearing Answers', () => {
+describe('GET Check Next appearance Answers', () => {
   it('should render page on new journey', () => {
     const courtCode = 'ACCRYC'
-    const nextHearingTypeUuid = '1'
+    const nextAppearanceTypeUuid = '1'
     const courtAppearance = {
-      nextHearingSelect: true,
-      nextHearingCourtCode: 'ACCRYC',
-      nextHearingTypeUuid,
+      nextAppearanceSelect: true,
+      nextAppearanceCourtCode: 'ACCRYC',
+      nextAppearanceTypeUuid,
     } as CourtAppearance
     const court = {
       courtId: courtCode,
       courtName: 'A court',
     } as CourtDto
     const appearanceType = {
-      appearanceTypeUuid: nextHearingTypeUuid,
+      appearanceTypeUuid: nextAppearanceTypeUuid,
       description: 'Appearance type',
     } as AppearanceType
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue(courtAppearance)
@@ -38,7 +38,7 @@ describe('GET Check Next Hearing Answers', () => {
     defaultServices.refDataService.getAppearanceTypeByUuid.mockResolvedValue(appearanceType)
 
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-hearing-answers')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-appearance-answers')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

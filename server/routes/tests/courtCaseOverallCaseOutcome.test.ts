@@ -43,8 +43,8 @@ describe('Court Case Overall Case Outcome', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
-        const appearanceDetails = $('[data-qa=appearanceDetails]')
-        expect(appearanceDetails.length).toBe(0)
+        const hearingDetails = $('[data-qa=hearingDetails]')
+        expect(hearingDetails.length).toBe(0)
       })
   })
 
@@ -70,8 +70,8 @@ describe('Court Case Overall Case Outcome', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        const appearanceDetails = $('[data-qa=appearanceDetails]')
-        expect(appearanceDetails.length).toBe(0)
+        const hearingDetails = $('[data-qa=hearingDetails]')
+        expect(hearingDetails.length).toBe(0)
       })
   })
 
@@ -97,8 +97,8 @@ describe('Court Case Overall Case Outcome', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        const appearanceDetails = $('[data-qa=appearanceDetails]')
-        expect(appearanceDetails.length).toBe(1)
+        const hearingDetails = $('[data-qa=hearingDetails]')
+        expect(hearingDetails.length).toBe(1)
       })
   })
 })

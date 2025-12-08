@@ -19,9 +19,9 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-            folder: [courtCase, documents, offence, other, sentence]
+            folder: [courtCase, documents, editOffence, offence, other, sentence]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Use Node.js ${{ inputs.node_version_file }}
         uses: actions/setup-node@v6
         with:

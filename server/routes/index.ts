@@ -555,12 +555,12 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-appearance-select',
-    courtCaseRoutes.getNextHearingSelect,
+    courtCaseRoutes.getNextAppearanceSelect,
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-hearing-select',
-    courtCaseRoutes.submitNextHearingSelect,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-next-appearance-select',
+    courtCaseRoutes.submitNextAppearanceSelect,
   )
 
   router.get(

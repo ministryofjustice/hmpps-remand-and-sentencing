@@ -5,7 +5,7 @@
 {% set pageTitle = applicationName + " - Next appearance been set" %}
 {% block pageContent %}
     {{ super() }}
-    <form method="post" autocomplete="off">
+    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-appearance-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/nextAppearanceCaption.njk" %}
         {{ govukRadios({
@@ -31,14 +31,9 @@
             ]
         }) }}
 
-        <div class="govuk-button-group">
-            <button type="submit"
-                    class="govuk-button"
-                    data-module="govuk-button"
-                    data-qa="continue-button"
-                    formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-hearing-select{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
-                Continue
-            </button>
-        </div>
+        {{ govukButton({
+            text: "Continue",
+            attributes: {  'data-qa': 'continue-button' }
+        }) }}
     </form>
 {% endblock %}

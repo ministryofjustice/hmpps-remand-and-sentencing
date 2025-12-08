@@ -15,7 +15,7 @@ context('Next Appearance been set page', () => {
     courtCaseNextAppearanceSetPage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem You must select the Appearance has been set')
+      .should('equal', 'There is a problem You must select the appearance has been set')
   })
 
   it('caption should only be shown for add next court appearance journey', () => {

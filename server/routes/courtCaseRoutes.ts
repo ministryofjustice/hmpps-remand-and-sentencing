@@ -1220,7 +1220,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     )
   }
 
-  public getNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {
+  public getNextAppearanceSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
@@ -1255,7 +1255,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     })
   }
 
-  public submitNextHearingSelect: RequestHandler = async (req, res): Promise<void> => {
+  public submitNextAppearanceSelect: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)

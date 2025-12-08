@@ -6,7 +6,7 @@ import CourtCaseNextHearingTypePage from '../../pages/courtCaseNextHearingTypePa
 import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
 import Page from '../../pages/page'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
-import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextHearingSetPage'
+import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 
 context('Check Next Hearing Answers page', () => {
   let courtCaseNextHearingAnswersPage: CourtCaseCheckNextHearingAnswersPage

@@ -14,7 +14,7 @@ import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswe
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
-import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextHearingSetPage'
+import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
 import CourtCaseNextHearingCourtSetPage from '../../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseNextHearingTypePage from '../../pages/courtCaseNextHearingTypePage'

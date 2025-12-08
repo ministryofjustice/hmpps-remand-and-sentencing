@@ -4,7 +4,7 @@ import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNext
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import CourtCaseNextHearingCourtSetPage from '../../pages/courtCaseNextHearingCourtSetPage'
 import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
-import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextHearingSetPage'
+import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import CourtCaseNextHearingTypePage from '../../pages/courtCaseNextHearingTypePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'

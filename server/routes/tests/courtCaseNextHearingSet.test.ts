@@ -16,7 +16,7 @@ afterEach(() => {
 describe('GET Next hearing been set', () => {
   it('should render page on new journey', () => {
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-select')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-select')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

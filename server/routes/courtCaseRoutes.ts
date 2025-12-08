@@ -1243,7 +1243,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
     }
 
-    return res.render('pages/courtAppearance/next-hearing-select', {
+    return res.render('pages/courtAppearance/next-appearance-select', {
       nomsId,
       nextHearingSelectForm,
       courtCaseReference,
@@ -1270,7 +1270,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('nextHearingSelectForm', { ...nextHearingSelectForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-select?hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-select?hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
       )
     }
     if (this.courtAppearanceService.isNextCourtAppearanceAccepted(req.session, nomsId, appearanceReference)) {
@@ -1308,7 +1308,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         nextHearingType: nextHearingTypeUuid,
       }
     }
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-hearing-select`
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-select`
     if (addOrEditCourtAppearance === 'edit-court-appearance') {
       if (warrantType === 'SENTENCING') {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`

@@ -1,4 +1,4 @@
-import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextHearingSetPage'
+import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import Page from '../../pages/page'
 
 context('Next hearing been set page', () => {

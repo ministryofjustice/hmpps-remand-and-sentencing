@@ -6,44 +6,73 @@
 {% set pageTitle = applicationName + " - Add a offence outcome" %}
 
 {% set fieldSetHtml %}
-    <h1 class="govuk-fieldset__heading{% if legacyCaseOutcome %} govuk-!-static-margin-bottom-3{% endif %}">Select the outcome for this offence</h1>
+    <h1 class="govuk-fieldset__heading{% if legacyCaseOutcome %} govuk-!-static-margin-bottom-3{% endif %}">
+        Select the outcome for this offence
+    </h1>
     {% if legacyCaseOutcome %}
-    <p class="govuk-body-l govuk-!-static-margin-bottom-3" data-qa="legendParagraph">{{ legacyCaseOutcome }}</p>
+        <p class="govuk-body-l govuk-!-static-margin-bottom-3" data-qa="legendParagraph">
+            {{ legacyCaseOutcome }}
+        </p>
     {% endif %}
 {% endset %}
 
 {% set radiosData = {
-                    name: "offenceOutcome",
-                    fieldset: {
-                        legend: {
-                        html: fieldSetHtml,
-                        classes: "govuk-fieldset__legend--l"
-                        }
-                    },
-                    hint: offenceHint,
-                    items: []
-    } %}
+    name: "offenceOutcome",
+    fieldset: {
+        legend: {
+            html: fieldSetHtml,
+            classes: "govuk-fieldset__legend--l"
+        }
+    },
+    hint: offenceHint,
+    items: []
+} %}
 
+{% set primaryOutcomes = [] %}
+{% set nonCustodialOutcomes = [] %}
 {% for caseOutcome in chargeOutcomes %}
-    {%- set caseOutcomeRow = {
+    {% if caseOutcome.outcomeType == 'NON_CUSTODIAL' %}
+        {{ nonCustodialOutcomes.push(caseOutcome) }}
+    {% else %}
+        {{ primaryOutcomes.push(caseOutcome) }}
+    {% endif %}
+{% endfor %}
+
+{% for caseOutcome in primaryOutcomes %}
+    {% set caseOutcomeRow = {
         value: caseOutcome.outcomeUuid,
         text: caseOutcome.outcomeName,
         checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
-    } -%}
+    } %}
+    {{ radiosData.items.push(caseOutcomeRow) }}
+{% endfor %}
+
+{% if primaryOutcomes.length and nonCustodialOutcomes.length %}
+    {{ radiosData.items.push({ divider: "or" }) }}
+{% endif %}
+
+{% for caseOutcome in nonCustodialOutcomes %}
+    {% set caseOutcomeRow = {
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
+    } %}
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-offence-outcome{{ "?submitToEditOffence=true" if submitToEditOffence }}" autocomplete="off">
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/offenceCaption.njk" %}
+    <form method="post"
+          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-offence-outcome{{ '?submitToEditOffence=true' if submitToEditOffence }}"
+          autocomplete="off">
 
-                {{ govukRadios(radiosData) }}
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/offenceCaption.njk" %}
 
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
-            </form>
+        {{ govukRadios(radiosData) }}
 
+        {{ govukButton({
+            text: "Continue",
+            attributes: { 'data-qa': 'continue-button' }
+        }) }}
+    </form>
 {% endblock %}

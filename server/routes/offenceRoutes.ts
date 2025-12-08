@@ -444,13 +444,20 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    const appearanceOutcome = await this.courtAppearanceService.getCaseOutcome(
+      req.session,
+      nomsId,
+      appearanceReference,
+      req.user.username,
+    )
     const [caseOutcomes, offenceHint] = await Promise.all([
       this.refDataService.getAllChargeOutcomes(req.user.username),
       this.getOffenceHint(offence, req.user.username),
     ])
-
     let outcomeTypes = ['REMAND', 'NON_CUSTODIAL']
-    if (warrantType === 'SENTENCING') {
+    if (appearanceOutcome.outcomeType === 'NON_CUSTODIAL') {
+      outcomeTypes = ['NON_CUSTODIAL']
+    } else if (appearanceOutcome.outcomeType === 'SENTENCING') {
       outcomeTypes = ['SENTENCING', 'NON_CUSTODIAL']
     }
 

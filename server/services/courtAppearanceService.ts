@@ -507,6 +507,13 @@ export default class CourtAppearanceService {
     return this.getCourtAppearance(session, nomsId, appearanceUuid).appearanceOutcomeUuid
   }
 
+  getCaseOutcome(session: Partial<SessionData>, nomsId: string, appearanceUuid: string, username: string) {
+    return this.refDataService.getAppearanceOutcomeByUuid(
+      this.getAppearanceOutcomeUuid(session, nomsId, appearanceUuid),
+      username,
+    )
+  }
+
   getRelatedOffenceOutcomeUuid(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
     return this.getCourtAppearance(session, nomsId, appearanceUuid).relatedOffenceOutcomeUuid
   }

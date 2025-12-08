@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
-import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
+import CourtCaseCheckNextAppearanceAnswersPage from '../../pages/courtCaseCheckNextAppearanceAnswersPage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearanceDatePage'
@@ -226,8 +226,8 @@ context('Repeat Court Case journey', () => {
     courtCaseNextAppearanceCourtSetPage.radioLabelSelector('true').click()
     courtCaseNextAppearanceCourtSetPage.continueButton().click()
 
-    const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
-    courtCaseNextHearingAnswersPage.continueButton().click()
+    const courtCaseNextAppearanceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
+    courtCaseNextAppearanceAnswersPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a hearing')
     courtCaseTaskListPage

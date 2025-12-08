@@ -604,13 +604,13 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/check-next-hearing-answers',
-    courtCaseRoutes.getCheckNextHearingAnswers,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/check-next-appearance-answers',
+    courtCaseRoutes.getChecknextAppearanceAnswers,
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-next-hearing-answers',
-    courtCaseRoutes.submitCheckNextHearingAnswers,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/submit-check-next-appearance-answers',
+    courtCaseRoutes.submitChecknextAppearanceAnswers,
   )
 
   router.get(

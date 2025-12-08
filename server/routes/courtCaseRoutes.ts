@@ -1240,7 +1240,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`
       }
     } else if (submitToCheckAnswers) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`
     }
 
     return res.render('pages/courtAppearance/next-appearance-select', {
@@ -1285,7 +1285,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`,
       )
     }
     return res.redirect(
@@ -1316,7 +1316,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`
       }
     } else if (submitToCheckAnswers) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`
     }
     const appearanceTypes = (await this.refDataService.getAllAppearanceTypes(req.user.username)).sort(
       (first, second) => first.displayOrder - second.displayOrder,
@@ -1381,7 +1381,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
     if (submitToCheckAnswers) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`,
       )
     }
     return res.redirect(
@@ -1421,7 +1421,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`
       }
     } else if (submitToCheckAnswers) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`
     }
 
     return res.render('pages/courtAppearance/next-appearance-date', {
@@ -1478,7 +1478,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`,
       )
     }
     return res.redirect(
@@ -1505,7 +1505,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const court = await this.courtRegisterService.findCourtById(courtCode, res.locals.user.username)
     let backLink
     if (submitToCheckAnswers) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`
     } else if (res.locals.isAddCourtAppearance) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-date`
     } else if (addOrEditCourtAppearance === 'edit-court-appearance') {
@@ -1564,7 +1564,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`,
       )
     }
     return res.redirect(
@@ -1604,7 +1604,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`
       }
     } else if (submitToCheckAnswers) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`
     }
 
     return res.render('pages/courtAppearance/next-appearance-court-name', {
@@ -1651,11 +1651,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-hearing-answers`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/check-next-appearance-answers`,
     )
   }
 
-  public getCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
+  public getChecknextAppearanceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
@@ -1663,20 +1663,20 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     let nextAppearanceCourtName
-    let nextHearingAppearanceType
+    let nextAppearanceType
     if (courtAppearance.nextAppearanceSelect) {
       const [court, appearanceType] = await Promise.all([
         this.courtRegisterService.findCourtById(courtAppearance.nextAppearanceCourtCode, req.user.username),
         this.refDataService.getAppearanceTypeByUuid(courtAppearance.nextAppearanceTypeUuid, req.user.username),
       ])
       nextAppearanceCourtName = court.courtName
-      nextHearingAppearanceType = appearanceType.description
+      nextAppearanceType = appearanceType.description
     }
-    return res.render('pages/courtAppearance/check-next-hearing-answers', {
+    return res.render('pages/courtAppearance/check-next-appearance-answers', {
       nomsId,
       courtAppearance,
       nextAppearanceCourtName,
-      nextHearingAppearanceType,
+      nextAppearanceType,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
@@ -1684,7 +1684,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     })
   }
 
-  public submitCheckNextHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
+  public submitChecknextAppearanceAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     this.courtAppearanceService.setNextCourtAppearanceAcceptedTrue(req.session, nomsId, appearanceReference)

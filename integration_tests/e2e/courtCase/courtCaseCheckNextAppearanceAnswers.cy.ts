@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
+import CourtCaseCheckNextAppearanceAnswersPage from '../../pages/courtCaseCheckNextAppearanceAnswersPage'
 import CourtCaseNextAppearanceCourtNamePage from '../../pages/courtCaseNextAppearanceCourtNamePage'
 import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
@@ -8,8 +8,8 @@ import Page from '../../pages/page'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 
-context('Check Next Hearing Answers page', () => {
-  let courtCaseNextHearingAnswersPage: CourtCaseCheckNextHearingAnswersPage
+context('Check Next Appearance Answers page', () => {
+  let courtCaseNextAppearanceAnswersPage: CourtCaseCheckNextAppearanceAnswersPage
   const futureDate = dayjs().add(10, 'day')
   beforeEach(() => {
     cy.task('happyPathStubs')
@@ -41,23 +41,23 @@ context('Check Next Hearing Answers page', () => {
     const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
     courtCaseNextAppearanceCourtSetPage.radioLabelSelector('true').click()
     courtCaseNextAppearanceCourtSetPage.continueButton().click()
-    courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
+    courtCaseNextAppearanceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
   })
 
-  it('clicking next hearing type and submitting goes back to check answers page', () => {
-    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-type').click()
+  it('clicking next appearance type and submitting goes back to check answers page', () => {
+    courtCaseNextAppearanceAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-type').click()
     const courtCaseNextAppearanceTypePage = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
     courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
     courtCaseNextAppearanceTypePage.continueButton().click()
-    Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
+    Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
   })
 
-  it('clicking next hearing location and submitting goes back to check answers page', () => {
+  it('clicking next appearance location and submitting goes back to check answers page', () => {
     cy.task('stubGetCourtById', {
       courtId: 'STHHPM',
       courtName: 'Southampton Magistrate Court',
     })
-    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-court-select').click()
+    courtCaseNextAppearanceAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-court-select').click()
     const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
     courtCaseNextAppearanceCourtSetPage.radioLabelSelector('false').click()
     courtCaseNextAppearanceCourtSetPage.continueButton().click()
@@ -65,19 +65,19 @@ context('Check Next Hearing Answers page', () => {
     courtCaseNextAppearanceCourtNamePage.autoCompleteInput().type('cou')
     courtCaseNextAppearanceCourtNamePage.secondAutoCompleteOption().contains('Southampton Magistrate Court').click()
     courtCaseNextAppearanceCourtNamePage.continueButton().click()
-    courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
-    courtCaseNextHearingAnswersPage
+    courtCaseNextAppearanceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
+    courtCaseNextAppearanceAnswersPage
       .summaryList()
       .getSummaryList()
       .should('deep.equal', {
-        'Next hearing date': `${futureDate.format('DD/MM/YYYY')} 09:30`,
-        'Next hearing location': 'Southampton Magistrate Court',
-        'Next hearing type': 'Court appearance',
+        'Next appearance date': `${futureDate.format('DD/MM/YYYY')} 09:30`,
+        'Next appearance location': 'Southampton Magistrate Court',
+        'Next appearance type': 'Court appearance',
       })
   })
 
-  it('clicking next hearing date and submitting goes back to check answers page', () => {
-    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-date').click()
+  it('clicking next appearance date and submitting goes back to check answers page', () => {
+    courtCaseNextAppearanceAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-date').click()
     const courtCaseNextAppearanceDatePage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
     courtCaseNextAppearanceDatePage.nextHearingTimeInput().should('have.value', '09:30')
     const differentFutureDate = futureDate.add(10, 'days')
@@ -94,16 +94,16 @@ context('Check Next Hearing Answers page', () => {
       .clear()
       .type(differentFutureDate.year().toString())
     courtCaseNextAppearanceDatePage.continueButton().click()
-    Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
+    Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
   })
 
-  it('setting next-hearing-select to No and submitting goes back to check answers page', () => {
+  it('setting next-appearance-select to No and submitting goes back to check answers page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-select')
     const courtCaseNextAppearanceSetPage = Page.verifyOnPage(CourtCaseNextAppearanceSetPage)
     courtCaseNextAppearanceSetPage.radioLabelSelector('false').click()
     courtCaseNextAppearanceSetPage.continueButton().click()
-    courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
-    courtCaseNextHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+    courtCaseNextAppearanceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
+    courtCaseNextAppearanceAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Next court date set': 'Date to be fixed',
     })
   })

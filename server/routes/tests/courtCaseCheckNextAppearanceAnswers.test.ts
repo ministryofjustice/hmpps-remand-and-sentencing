@@ -16,7 +16,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET Check Next Hearing Answers', () => {
+describe('GET Check Next appearance Answers', () => {
   it('should render page on new journey', () => {
     const courtCode = 'ACCRYC'
     const nextAppearanceTypeUuid = '1'
@@ -38,7 +38,7 @@ describe('GET Check Next Hearing Answers', () => {
     defaultServices.refDataService.getAppearanceTypeByUuid.mockResolvedValue(appearanceType)
 
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-hearing-answers')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-next-appearance-answers')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

@@ -13,7 +13,7 @@ import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
-import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
+import CourtCaseCheckNextAppearanceAnswersPage from '../../pages/courtCaseCheckNextAppearanceAnswersPage'
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearanceDatePage'
 import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
@@ -221,8 +221,8 @@ context('New Court Case journey', () => {
     courtCaseNextAppearanceCourtSetPage.radioLabelSelector('true').click()
     courtCaseNextAppearanceCourtSetPage.continueButton().click()
 
-    const courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
-    courtCaseNextHearingAnswersPage
+    const courtCaseNextAppearanceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
+    courtCaseNextAppearanceAnswersPage
       .summaryList()
       .getSummaryList()
       .should('deep.equal', {
@@ -230,7 +230,7 @@ context('New Court Case journey', () => {
         'Next hearing location': 'Accrington Youth Court',
         'Next hearing type': 'Court appearance',
       })
-    courtCaseNextHearingAnswersPage.continueButton().click()
+    courtCaseNextAppearanceAnswersPage.continueButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage

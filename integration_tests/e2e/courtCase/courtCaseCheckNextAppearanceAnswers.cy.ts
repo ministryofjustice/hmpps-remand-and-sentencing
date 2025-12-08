@@ -35,7 +35,7 @@ context('Check Next Appearance Answers page', () => {
     courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type(futureDate.date().toString())
     courtCaseNextAppearanceDatePage.monthDateInput('nextAppearanceDate').type((futureDate.month() + 1).toString())
     courtCaseNextAppearanceDatePage.yearDateInput('nextAppearanceDate').type(futureDate.year().toString())
-    courtCaseNextAppearanceDatePage.nextHearingTimeInput().type('9:30')
+    courtCaseNextAppearanceDatePage.nextAppearanceTimeInput().type('9:30')
     courtCaseNextAppearanceDatePage.continueButton().click()
 
     const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
@@ -79,7 +79,7 @@ context('Check Next Appearance Answers page', () => {
   it('clicking next appearance date and submitting goes back to check answers page', () => {
     courtCaseNextAppearanceAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-date').click()
     const courtCaseNextAppearanceDatePage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
-    courtCaseNextAppearanceDatePage.nextHearingTimeInput().should('have.value', '09:30')
+    courtCaseNextAppearanceDatePage.nextAppearanceTimeInput().should('have.value', '09:30')
     const differentFutureDate = futureDate.add(10, 'days')
     courtCaseNextAppearanceDatePage
       .dayDateInput('nextAppearanceDate')

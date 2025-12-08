@@ -5,5 +5,5 @@ export default class CourtCaseNextAppearanceDatePage extends Page {
     super('Enter the date of the next court appearance')
   }
 
-  nextHearingTimeInput = (): PageElement => cy.get('#nextHearingTime')
+  nextAppearanceTimeInput = (): PageElement => cy.get('#nextAppearanceTime')
 }

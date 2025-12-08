@@ -26,7 +26,7 @@ context('Next appearance date page', () => {
     courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type('15')
     courtCaseNextAppearanceDatePage.monthDateInput('nextAppearanceDate').type('7')
     courtCaseNextAppearanceDatePage.yearDateInput('nextAppearanceDate').type('2026')
-    courtCaseNextAppearanceDatePage.nextHearingTimeInput().type('123:456')
+    courtCaseNextAppearanceDatePage.nextAppearanceTimeInput().type('123:456')
     courtCaseNextAppearanceDatePage.continueButton().click()
     courtCaseNextAppearanceDatePage
       .errorSummary()

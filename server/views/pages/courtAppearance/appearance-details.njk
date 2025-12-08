@@ -74,7 +74,7 @@
 
 {% set nextHearingSummaryRows = [{
   key: { text: "Next appearance set" },
-  value: { text: "Yes" if appearance.nextHearingSelect else "No future appearance scheduled" },
+  value: { text: "Yes" if appearance.nextAppearanceSelect else "No future appearance scheduled" },
   actions: {
     items: [{
       href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-select",
@@ -85,7 +85,7 @@
   }
 }] %}
 
-{% if appearance.nextHearingSelect %}
+{% if appearance.nextAppearanceSelect %}
   {% set nextHearingSummaryRows = nextHearingSummaryRows.concat([
     {
       key: { text: "Location" },

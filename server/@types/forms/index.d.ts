@@ -32,8 +32,8 @@ declare module 'forms' {
     caseOutcomeAppliedAll?: string
   }
 
-  export interface CourtCaseNextHearingSelectForm {
-    nextHearingSelect?: string
+  export interface CourtCaseNextAppearanceSelectForm {
+    nextAppearanceSelect?: string
   }
 
   export interface CourtCaseNextHearingTypeForm {

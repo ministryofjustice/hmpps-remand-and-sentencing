@@ -2,14 +2,14 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Next hearing been set" %}
+{% set pageTitle = applicationName + " - Next appearance been set" %}
 {% block pageContent %}
     {{ super() }}
     <form method="post" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% include "../../partials/nextAppearanceCaption.njk" %}
         {{ govukRadios({
-            name: "nextHearingSelect",
+            name: "nextAppearanceSelect",
             fieldset: {
                 legend: {
                 text: "Has the next appearance been set?",
@@ -21,12 +21,12 @@
                 {
                     value: "true",
                     text: "Yes, it has been set",
-                    checked: nextHearingSelectForm.nextHearingSelect === 'true'
+                    checked: nextAppearanceSelectForm.nextAppearanceSelect === 'true'
                 },
                 {
                     value: "false",
                     text: "No, date to be fixed",
-                    checked: nextHearingSelectForm.nextHearingSelect === 'false'
+                    checked: nextAppearanceSelectForm.nextAppearanceSelect === 'false'
                 }
             ]
         }) }}

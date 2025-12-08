@@ -21,7 +21,7 @@ describe('GET Check Next Hearing Answers', () => {
     const courtCode = 'ACCRYC'
     const nextHearingTypeUuid = '1'
     const courtAppearance = {
-      nextHearingSelect: true,
+      nextAppearanceSelect: true,
       nextHearingCourtCode: 'ACCRYC',
       nextHearingTypeUuid,
     } as CourtAppearance

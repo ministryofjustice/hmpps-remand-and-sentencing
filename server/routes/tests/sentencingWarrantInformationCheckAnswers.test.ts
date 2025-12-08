@@ -15,7 +15,7 @@ afterEach(() => {
 
 describe('GET Warrant Information Check Answers', () => {
   it('should render page on new journey', () => {
-    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('REMAND')
+    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('NON_SENTENCING')
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
       warrantType: 'SENTENCING',
@@ -40,6 +40,7 @@ describe('GET Warrant Information Check Answers', () => {
       nomisCode: '10',
       outcomeName: 'Appearance sentencing outcome',
       relatedChargeOutcomeUuid: '3',
+      dispositionCode: 'FINAL',
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/check-overall-answers')

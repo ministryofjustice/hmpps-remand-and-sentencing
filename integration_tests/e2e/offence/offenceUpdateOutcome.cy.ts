@@ -1,7 +1,9 @@
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
+import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
+import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 
 context('Update Offence Outcome Page', () => {
   let offenceUpdateOutcomePage: OffenceUpdateOutcomePage
@@ -23,10 +25,16 @@ context('Update Offence Outcome Page', () => {
   context('Repeat Remand', () => {
     beforeEach(() => {
       startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-      courtCaseWarrantTypePage.continueButton().click()
-
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('false').click()
+      receivedCustodialSentencePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
       cy.visit(
         '/person/A1234AB/edit-court-case/0/add-court-appearance/2/offences/71bb9f7e-971c-4c34-9a33-43478baee74f/update-offence-outcome',
       )
@@ -51,14 +59,46 @@ context('Update Offence Outcome Page', () => {
             checked: false,
           },
           {
-            isDivider: true,
-            label: 'or',
-          },
-          {
             label: 'Lie on file',
             checked: false,
           },
+          {
+            label: 'Replaced with Another Offence',
+            checked: false,
+          },
         ])
+    })
+
+    it('should redirect to enter offence date if replaced by another offence is chosen', () => {
+      offenceUpdateOutcomePage.radioLabelContains('Replaced with Another Offence').click()
+      offenceUpdateOutcomePage.continueButton().click()
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+      offenceOffenceDatePage.hintText().should('contain', 'This offence will replace PS90037 - An offence description')
+    })
+  })
+  context('Remand to Sentencing', () => {
+    beforeEach(() => {
+      startPage.addAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('true').click()
+      receivedCustodialSentencePage.continueButton().click()
+      cy.visit('/person/A1234AB/edit-court-case/0/add-court-appearance/2/sentencing/overall-case-outcome')
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
+      cy.visit(
+        '/person/A1234AB/edit-court-case/0/add-court-appearance/2/offences/71bb9f7e-971c-4c34-9a33-43478baee74f/update-offence-outcome',
+      )
+      offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+    })
+    it('should redirect to enter offence date if replaced by another offence is chosen', () => {
+      offenceUpdateOutcomePage.radioLabelContains('Replaced with Another Offence').click()
+      offenceUpdateOutcomePage.continueButton().click()
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+      offenceOffenceDatePage.hintText().should('contain', 'This offence will replace PS90037 - An offence description')
     })
   })
 })

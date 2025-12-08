@@ -1,4 +1,4 @@
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import Page from '../../pages/page'
 import DocumentUploadPage from '../../pages/documentUpload'
 import UploadSentencingCourtDocumentsPage from '../../pages/uploadSentencingCourtDocumentsPage'
@@ -11,10 +11,10 @@ context('document upload page', () => {
     cy.task('stubUploadDocument')
 
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant/upload-documents')
     documentUploadPage = Page.verifyOnPageTitle(DocumentUploadPage, 'sentencing warrant')
   })

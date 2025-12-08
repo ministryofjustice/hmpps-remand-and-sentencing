@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import Page from '../../pages/page'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseSelectCourtNamePage from '../../pages/courtCaseSelectCourtNamePage'
 import StartPage from '../../pages/startPage'
@@ -11,7 +11,6 @@ import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetai
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 
 context('Court Case Warrant Date Page', () => {
   context('Add court case and add appearance journey', () => {
@@ -31,7 +30,7 @@ context('Court Case Warrant Date Page', () => {
         .trimTextContent()
         .should(
           'equal',
-          'There is a problem Warrant date must include day Warrant date must include month Warrant date must include year',
+          'There is a problem Hearing date must include day Hearing date must include month Hearing date must include year',
         )
     })
 
@@ -57,16 +56,16 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
-        .should('equal', 'There is a problem The warrant date cannot be a date in the future')
+        .should('equal', 'There is a problem The hearing date cannot be a date in the future')
     })
 
     it('after confirm and continue check answers this becomes uneditable', () => {
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('true').click()
+      receivedCustodialSentencePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-      courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
@@ -76,7 +75,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseCheckAnswersPage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
       courtCaseWarrantDatePage.continueButton().click()
-      courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage
         .errorSummary()
         .trimTextContent()
@@ -106,7 +105,7 @@ context('Court Case Warrant Date Page', () => {
         .captionText()
         .invoke('text')
         .then(text => text.trim())
-        .should('equal', 'Add appearance information')
+        .should('equal', 'Add hearing information')
     })
   })
 
@@ -134,7 +133,7 @@ context('Court Case Warrant Date Page', () => {
         .trimTextContent()
         .should(
           'equal',
-          'There is a problem The warrant date must be after any existing offence dates in the court case',
+          'There is a problem The hearing date must be after any existing offence dates in the court case',
         )
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
@@ -146,7 +145,7 @@ context('Court Case Warrant Date Page', () => {
         .trimTextContent()
         .should(
           'equal',
-          'There is a problem The warrant date must be after any existing offence dates in the court case',
+          'There is a problem The hearing date must be after any existing offence dates in the court case',
         )
 
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('01')
@@ -162,7 +161,7 @@ context('Court Case Warrant Date Page', () => {
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('01')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2000')
       courtCaseWarrantDatePage.continueButton().click()
-      Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the appearance at Accrington Youth Court?')
+      Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the hearing at Accrington Youth Court?')
     })
   })
 
@@ -283,12 +282,19 @@ context('Court Case Warrant Date Page', () => {
       const startPage = Page.verifyOnPage(StartPage)
       startPage.actionListLink().click()
 
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('false').click()
+      receivedCustodialSentencePage.continueButton().click()
+
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
 
       const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
-      courtCaseTaskListPage.appearanceInformationLink().click()
+      courtCaseTaskListPage.hearingInformationLink().click()
 
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
       courtCaseReferencePage.input().type('T12345678')
@@ -303,19 +309,6 @@ context('Court Case Warrant Date Page', () => {
       courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
       courtCaseCourtNamePage.firstAutoCompleteOption().click()
       courtCaseCourtNamePage.continueButton().click()
-
-      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-        CourtCaseOverallCaseOutcomePage,
-        'Select the overall case outcome',
-      )
-      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-      courtCaseOverallCaseOutcomePage.continueButton().click()
-
-      const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-      courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Remanded in custody')
-
-      courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
-      courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
 
       const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
 
@@ -346,14 +339,14 @@ function expectWarrantDateError(page) {
   page
     .errorSummary()
     .trimTextContent()
-    .should('equal', 'There is a problem The warrant date must be after any existing offence dates in the court case')
+    .should('equal', 'There is a problem The hearing date must be after any existing offence dates in the court case')
 }
 
 function expectHearingDateError(page) {
   page
     .errorSummary()
     .trimTextContent()
-    .should('equal', 'There is a problem The warrant date must be before the next court appearance date')
+    .should('equal', 'There is a problem The hearing date must be before the next court appearance date')
 }
 
 function editWarrantDate(page) {

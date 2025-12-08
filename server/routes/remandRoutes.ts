@@ -27,7 +27,7 @@ export default class RemandRoutes extends BaseRoutes {
     const { username } = res.locals.user
     await this.setAppearanceDetailsToSession(appearanceReference, username, req, nomsId, courtCaseReference)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`,
     )
   }
 
@@ -39,7 +39,7 @@ export default class RemandRoutes extends BaseRoutes {
         appearanceReference,
         username,
       )
-      this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+      this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
       this.courtAppearanceService.setSessionCourtAppearance(
         req.session,
         nomsId,
@@ -151,7 +151,7 @@ export default class RemandRoutes extends BaseRoutes {
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details?hasErrors=true`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details?hasErrors=true`,
       )
     }
     return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference)
@@ -179,7 +179,7 @@ export default class RemandRoutes extends BaseRoutes {
       )
       if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/offences/${chargeUuid}/cannot-delete-offence`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/offences/${chargeUuid}/cannot-delete-offence`,
         )
       }
     }
@@ -223,7 +223,7 @@ export default class RemandRoutes extends BaseRoutes {
         offence.legacyData?.offenceDescription,
       ),
     ])
-    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`
     return res.render('pages/courtAppearance/cannot-delete-offence', {
       nomsId,
       courtCaseReference,

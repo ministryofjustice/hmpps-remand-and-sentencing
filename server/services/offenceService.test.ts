@@ -6,8 +6,8 @@ import type {
 } from 'forms'
 import { SessionData } from 'express-session'
 import dayjs from 'dayjs'
-import ManageOffencesService from './manageOffencesService'
 import OffenceService from './offenceService'
+import ManageOffencesService from './manageOffencesService'
 import RemandAndSentencingService from './remandAndSentencingService'
 import RefDataService from './refDataService'
 
@@ -31,14 +31,15 @@ describe('offenceService', () => {
   it('must clear offence end date', () => {
     const nomsId = 'P123'
     const courtCaseReference = '1'
+    const chargeUuid = '1' // Define chargeUuid
     const offence = {
-      chargeUuid: '1',
+      chargeUuid,
       offenceStartDate: new Date(),
       offenceEndDate: new Date(),
     } as Offence
     const session = {
       offences: {
-        [`${nomsId}-${courtCaseReference}`]: offence,
+        [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
       },
     } as unknown as Partial<SessionData>
     const offenceOffenceDateForm = {
@@ -46,6 +47,7 @@ describe('offenceService', () => {
       'offenceStartDate-month': '5',
       'offenceStartDate-year': '2025',
     } as OffenceOffenceDateForm
+
     const errors = service.setOffenceDates(
       session,
       nomsId,
@@ -53,6 +55,7 @@ describe('offenceService', () => {
       offenceOffenceDateForm,
       dayjs().add(10, 'days').toDate(),
       dayjs().add(10, 'days').toDate(),
+      chargeUuid,
     )
     expect(errors.length).toBe(0)
     expect(offence.offenceEndDate).toBeUndefined()
@@ -207,8 +210,9 @@ describe('offenceService', () => {
     it('clear all other period length types and keep uuid', () => {
       const nomsId = 'P123'
       const courtCaseReference = '1'
+      const chargeUuid = '1'
       const offence = {
-        chargeUuid: '1',
+        chargeUuid,
         sentence: {
           sentenceUuid: '2',
           periodLengths: [
@@ -232,7 +236,7 @@ describe('offenceService', () => {
       } as Offence
       const session = {
         offences: {
-          [`${nomsId}-${courtCaseReference}`]: offence,
+          [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
         },
       } as unknown as Partial<SessionData>
       const correctManyPeriodLengthsForm = {
@@ -246,6 +250,7 @@ describe('offenceService', () => {
         correctManyPeriodLengthsForm,
         'SENTENCE_LENGTH',
         undefined,
+        chargeUuid, // Pass chargeUuid
       )
       expect(errors.length).toBe(0)
       expect(offence.sentence.periodLengths.length).toBe(1)
@@ -256,8 +261,9 @@ describe('offenceService', () => {
     it('clear only legacy code period length types keeping other legacy code', () => {
       const nomsId = 'P123'
       const courtCaseReference = '1'
+      const chargeUuid = '1'
       const offence = {
-        chargeUuid: '1',
+        chargeUuid,
         sentence: {
           sentenceUuid: '2',
           periodLengths: [
@@ -290,7 +296,7 @@ describe('offenceService', () => {
       } as Offence
       const session = {
         offences: {
-          [`${nomsId}-${courtCaseReference}`]: offence,
+          [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
         },
       } as unknown as Partial<SessionData>
       const correctManyPeriodLengthsForm = {
@@ -303,6 +309,7 @@ describe('offenceService', () => {
         correctManyPeriodLengthsForm,
         'UNSUPPORTED',
         'UNSUPPORTED123',
+        chargeUuid, // Pass chargeUuid
       )
       expect(errors.length).toBe(0)
       expect(offence.sentence.periodLengths.length).toBe(2)
@@ -312,8 +319,9 @@ describe('offenceService', () => {
     it('clear all types and replace with new period length', () => {
       const nomsId = 'P123'
       const courtCaseReference = '1'
+      const chargeUuid = '1'
       const offence = {
-        chargeUuid: '1',
+        chargeUuid,
         sentence: {
           sentenceUuid: '2',
           periodLengths: [
@@ -340,7 +348,7 @@ describe('offenceService', () => {
       } as Offence
       const session = {
         offences: {
-          [`${nomsId}-${courtCaseReference}`]: offence,
+          [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
         },
       } as unknown as Partial<SessionData>
       const correctManyPeriodLengthsForm = {
@@ -354,6 +362,7 @@ describe('offenceService', () => {
         correctManyPeriodLengthsForm,
         'SENTENCE_LENGTH',
         undefined,
+        chargeUuid, // Pass chargeUuid
       )
       expect(errors.length).toBe(0)
       expect(offence.sentence.periodLengths.length).toBe(1)
@@ -365,8 +374,9 @@ describe('offenceService', () => {
   it('clear all types and replace with new alternative period length', () => {
     const nomsId = 'P123'
     const courtCaseReference = '1'
+    const chargeUuid = '1'
     const offence = {
-      chargeUuid: '1',
+      chargeUuid,
       sentence: {
         sentenceUuid: '2',
         periodLengths: [
@@ -393,7 +403,7 @@ describe('offenceService', () => {
     } as Offence
     const session = {
       offences: {
-        [`${nomsId}-${courtCaseReference}`]: offence,
+        [`${nomsId}-${courtCaseReference}-${chargeUuid}`]: offence,
       },
     } as unknown as Partial<SessionData>
     const correctManyAlterantivePeriodLengthsForm = {
@@ -410,6 +420,7 @@ describe('offenceService', () => {
       correctManyAlterantivePeriodLengthsForm,
       'SENTENCE_LENGTH',
       undefined,
+      chargeUuid, // Pass chargeUuid
     )
     expect(errors.length).toBe(0)
     expect(offence.sentence.periodLengths.length).toBe(1)

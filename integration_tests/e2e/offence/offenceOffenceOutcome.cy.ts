@@ -1,4 +1,4 @@
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
@@ -33,11 +33,11 @@ context('Add Offence Outcome Page', () => {
           checked: true,
         },
         {
-          isDivider: true,
-          label: 'or',
+          label: 'Lie on file',
+          checked: false,
         },
         {
-          label: 'Lie on file',
+          label: 'Replaced with Another Offence',
           checked: false,
         },
       ])
@@ -45,10 +45,10 @@ context('Add Offence Outcome Page', () => {
 
   context('Submitting Remand', () => {
     beforeEach(() => {
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('false').click()
+      receivedCustodialSentencePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
       const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
       offenceOffenceCodePage.input().type('PS90037')
@@ -78,11 +78,11 @@ context('Add Offence Outcome Page', () => {
             checked: false,
           },
           {
-            isDivider: true,
-            label: 'or',
+            label: 'Lie on file',
+            checked: false,
           },
           {
-            label: 'Lie on file',
+            label: 'Replaced with Another Offence',
             checked: false,
           },
         ])
@@ -124,11 +124,11 @@ context('Add Offence Outcome Page', () => {
             checked: true,
           },
           {
-            isDivider: true,
-            label: 'or',
+            label: 'Lie on file',
+            checked: false,
           },
           {
-            label: 'Lie on file',
+            label: 'Replaced with Another Offence',
             checked: false,
           },
         ])
@@ -137,10 +137,10 @@ context('Add Offence Outcome Page', () => {
 
   context('Submitting Sentencing', () => {
     beforeEach(() => {
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-      const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-      courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-      courtCaseWarrantTypePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('true').click()
+      receivedCustodialSentencePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
       const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
       offenceOffenceCodePage.input().type('PS90037')
@@ -162,11 +162,11 @@ context('Add Offence Outcome Page', () => {
             checked: false,
           },
           {
-            isDivider: true,
-            label: 'or',
+            label: 'Lie on file',
+            checked: false,
           },
           {
-            label: 'Lie on file',
+            label: 'Replaced with Another Offence',
             checked: false,
           },
         ]))

@@ -45,7 +45,7 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetAllAppearanceOutcomes')
       cy.signIn()
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/remand/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/appearance-details',
       )
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
@@ -243,7 +243,7 @@ context('Court Case Appearance details Page', () => {
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          'remand',
+          'non-sentencing',
           '71bb9f7e-971c-4c34-9a33-43478baee74f',
         )
         .click()
@@ -259,6 +259,34 @@ context('Court Case Appearance details Page', () => {
         .should(
           'contain.text',
           'This appearance includes offences from C894623 that were merged with this case on 15/12/2023',
+        )
+    })
+
+    it('editing appearance outcome from remand to non-custodial with remand outcome offences results in error', () => {
+      courtCaseAppearanceDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'overall-case-outcome?backTo=nonSentencingCourtAppearance',
+        )
+        .click()
+      let courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Edit the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Lie on file').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
+      courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Edit the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage
+        .errorSummary()
+        .trimTextContent()
+        .should(
+          'equal',
+          'There is a problem You cannot select a non-custodial overall case outcome as an offence with a remand outcome exists',
         )
     })
   })
@@ -282,7 +310,7 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetAppearanceTypeByUuid')
       cy.signIn()
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/remand/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/appearance-details',
       )
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
     })
@@ -301,7 +329,7 @@ context('Court Case Appearance details Page', () => {
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          'overall-case-outcome',
+          'overall-case-outcome?backTo=nonSentencingCourtAppearance',
         )
         .click()
       const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(

@@ -93,6 +93,8 @@ export default abstract class Page {
 
   bodyText = (): PageElement => cy.get('.govuk-body-l')
 
+  hintText = (): PageElement => cy.get('.govuk-hint')
+
   legendParagraph = (): PageElement => cy.get('[data-qa=legendParagraph]')
 
   backLink = (): PageElement => cy.get('[data-qa=back-link]')
@@ -102,6 +104,17 @@ export default abstract class Page {
   changeLink = (personId: string, courtCaseReference: string, appearanceReference: string, page: string): PageElement =>
     cy.get(
       `a[href="/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/${page}?submitToCheckAnswers=true"]:first`,
+    )
+
+  chargeLinkBackTo = (
+    personId: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+    page: string,
+    backTo: string,
+  ): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/${page}?backTo=${backTo}&submitToCheckAnswers=true"]:first`,
     )
 
   offenceParagraph = (): PageElement => cy.get('[data-qa=offenceParagraph]')

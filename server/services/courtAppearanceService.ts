@@ -16,6 +16,7 @@ import type {
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
   OffenceFinishedAddingForm,
+  ReceivedCustodialSentenceForm,
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
@@ -26,15 +27,17 @@ import {
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import RemandAndSentencingService from './remandAndSentencingService'
-import { toDateString } from '../utils/utils'
+import { convertToTitleCase, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
+import RefDataService from './refDataService'
 
 export default class CourtAppearanceService {
   constructor(
     private readonly remandAndSentencingService: RemandAndSentencingService,
     private readonly documentManagementService: DocumentManagementService,
+    private readonly refDataService: RefDataService,
   ) {}
 
   setCaseReferenceNumber(
@@ -113,8 +116,33 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getCaseReferenceNumber(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).caseReferenceNumber
+  setReceivedCustodialSentence(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    receivedCustodialSentenceForm: ReceivedCustodialSentenceForm,
+    prisonerName: string,
+  ) {
+    const errors = validate(
+      receivedCustodialSentenceForm,
+      { receivedCustodialSentence: 'required' },
+      { 'required.receivedCustodialSentence': `You must select whether ${prisonerName} received a custodial sentence` },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      let warrantType = 'NON_SENTENCING'
+      if (receivedCustodialSentenceForm.receivedCustodialSentence === 'true') {
+        warrantType = 'SENTENCING'
+      }
+      courtAppearance.warrantType = warrantType
+      if (warrantType === 'SENTENCING') {
+        // eslint-disable-next-line no-param-reassign
+        courtAppearance.offences.forEach(offence => delete offence.outcomeUuid)
+      }
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 
   async setWarrantDate(
@@ -125,6 +153,7 @@ export default class CourtAppearanceService {
     appearanceUuid: string,
     addOrEditCourtCase: string,
     username: string,
+    warrantOrHearing: string,
   ): Promise<
     {
       text?: string
@@ -156,11 +185,11 @@ export default class CourtAppearanceService {
         ...(courtAppearance.warrantType === 'SENTENCING' && { appearanceInformationAccepted: 'isNotTrue' }),
       },
       {
-        'required.warrantDate-year': 'Warrant date must include year',
-        'required.warrantDate-month': 'Warrant date must include month',
-        'required.warrantDate-day': 'Warrant date must include day',
+        'required.warrantDate-year': `${convertToTitleCase(warrantOrHearing)} date must include year`,
+        'required.warrantDate-month': `${convertToTitleCase(warrantOrHearing)} date must include month`,
+        'required.warrantDate-day': `${convertToTitleCase(warrantOrHearing)} date must include day`,
         'isValidDate.warrantDate-day': 'This date does not exist.',
-        'isPastOrCurrentDate.warrantDate-day': 'The warrant date cannot be a date in the future',
+        'isPastOrCurrentDate.warrantDate-day': `The ${warrantOrHearing} date cannot be a date in the future`,
         'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
         'isWithinLast100Years.warrantDate-day': 'All dates must be within the last 100 years from today’s date',
       },
@@ -181,6 +210,7 @@ export default class CourtAppearanceService {
         session,
         nomsId,
         addOrEditCourtCase,
+        warrantOrHearing,
       )
 
       if (courtCaseDatesErrors.length) return courtCaseDatesErrors
@@ -190,7 +220,7 @@ export default class CourtAppearanceService {
         if (!warrantDate.isBefore(nextHearingDate)) {
           return [
             {
-              text: 'The warrant date must be before the next court appearance date',
+              text: `The ${warrantOrHearing} date must be before the next court appearance date`,
               href: '#warrantDate',
             },
           ]
@@ -213,6 +243,7 @@ export default class CourtAppearanceService {
     session: Partial<SessionData>,
     nomsId: string,
     addOrEditCourtCase: string,
+    warrantOrHearing: string,
   ): Promise<{ text: string; href: string }[] | null> {
     let latestOffenceDate = null
     let latestRemandAppearanceDate = null
@@ -241,7 +272,7 @@ export default class CourtAppearanceService {
       (sessionOffenceDate && !warrantDate.isAfter(sessionOffenceDate))
     ) {
       errors.push({
-        text: 'The warrant date must be after any existing offence dates in the court case',
+        text: `The ${warrantOrHearing} date must be after any existing offence dates in the court case`,
         href: '#warrantDate',
       })
     }
@@ -259,11 +290,11 @@ export default class CourtAppearanceService {
 
     if (
       latestSentencingAppearanceDate &&
-      warrantType === 'REMAND' &&
+      warrantType === 'NON_SENTENCING' &&
       warrantDate.isAfter(latestSentencingAppearanceDate)
     ) {
       errors.push({
-        text: 'The date of a remand warrant cannot be after the date of a sentencing warrant on the same court case',
+        text: 'The date of a hearing cannot be after the date of a sentencing warrant on the same court case',
         href: '#warrantDate',
       })
     }
@@ -328,7 +359,7 @@ export default class CourtAppearanceService {
     const errors = validate(
       selectCourtNameForm,
       { courtNameSelect: 'required' },
-      { 'required.courtNameSelect': "Select 'Yes' if the appearance was at this court." },
+      { 'required.courtNameSelect': "Select 'Yes' if the hearing was at this court." },
     )
     if (errors.length === 0 && selectCourtNameForm.courtNameSelect === 'true') {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
@@ -341,17 +372,6 @@ export default class CourtAppearanceService {
 
   getCourtCode(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
     return this.getCourtAppearance(session, nomsId, appearanceUuid).courtCode
-  }
-
-  setWarrantType(session: Partial<SessionData>, nomsId: string, warrantType: string, appearanceUuid: string) {
-    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    courtAppearance.warrantType = warrantType
-    if (warrantType === 'SENTENCING') {
-      // eslint-disable-next-line no-param-reassign
-      courtAppearance.offences.forEach(offence => delete offence.outcomeUuid)
-    }
-    // eslint-disable-next-line no-param-reassign
-    session.courtAppearances[nomsId] = courtAppearance
   }
 
   getWarrantType(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
@@ -410,11 +430,12 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  setAppearanceOutcomeUuid(
+  async setAppearanceOutcomeUuid(
     session: Partial<SessionData>,
     nomsId: string,
     overallCaseOutcomeForm: CourtCaseOverallCaseOutcomeForm,
     appearanceUuid: string,
+    username: string,
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const errors = validate(
@@ -422,11 +443,32 @@ export default class CourtAppearanceService {
       { overallCaseOutcome: 'required', appearanceInformationAccepted: 'isNotTrue' },
       {
         'required.overallCaseOutcome': 'You must select the overall case outcome',
-        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
+        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming hearing information',
       },
     )
     if (errors.length === 0) {
       const [appearanceOutcomeUuid, relatedOffenceOutcomeUuid] = overallCaseOutcomeForm.overallCaseOutcome.split('|')
+
+      const appearanceOutcome = await this.refDataService.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
+
+      if (appearanceOutcome.outcomeType === 'NON_CUSTODIAL') {
+        const chargeOutcomeUuids = courtAppearance.offences
+          .filter(offence => offence.outcomeUuid)
+          .map(offence => offence.outcomeUuid)
+        const anyRemandChargeOutcomes = Object.values(
+          await this.refDataService.getChargeOutcomeMap(chargeOutcomeUuids, username),
+        )
+          .map(chargeOutcome => chargeOutcome.outcomeType)
+          .includes('REMAND')
+        if (anyRemandChargeOutcomes) {
+          return [
+            {
+              text: 'You cannot select a non-custodial overall case outcome as an offence with a remand outcome exists',
+              href: '#overallCaseOutcome',
+            },
+          ]
+        }
+      }
 
       courtAppearance.appearanceOutcomeUuid = appearanceOutcomeUuid
       courtAppearance.relatedOffenceOutcomeUuid = relatedOffenceOutcomeUuid
@@ -477,14 +519,12 @@ export default class CourtAppearanceService {
   ) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const errors = validate(
-      { ...caseOutcomeAppliedAllForm, appearanceInformationAccepted: courtAppearance.appearanceInformationAccepted },
+      caseOutcomeAppliedAllForm,
       {
         caseOutcomeAppliedAll: 'required',
-        ...(courtAppearance.warrantType === 'REMAND' && { appearanceInformationAccepted: 'isNotTrue' }),
       },
       {
         'required.caseOutcomeAppliedAll': 'Select ‘Yes’ if this outcome applies to all offences on the warrant.',
-        'isNotTrue.appearanceInformationAccepted': 'You cannot submit after confirming appearance information',
       },
     )
     if (errors.length === 0) {
@@ -871,7 +911,7 @@ export default class CourtAppearanceService {
             courtCaseReference,
           )
 
-          if (latestCourtAppearance.warrantType === 'REMAND') {
+          if (latestCourtAppearance.warrantType === 'NON_SENTENCING') {
             const offenceDateErrors = await this.validateOverallConvictionDateAgainstOffences(
               overallConvictionDate,
               courtCaseReference,
@@ -894,10 +934,6 @@ export default class CourtAppearanceService {
   getOverallConvictionDate(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): Date {
     const { overallConvictionDate } = this.getCourtAppearance(session, nomsId, appearanceUuid)
     return overallConvictionDate ? new Date(overallConvictionDate) : undefined
-  }
-
-  getOverallConvictionDateAppliedAll(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).overallConvictionDateAppliedAll
   }
 
   sessionCourtAppearanceExists(session: Partial<SessionData>, nomsId: string, appearanceReference: string): boolean {
@@ -1010,6 +1046,7 @@ export default class CourtAppearanceService {
         this.resetChain(existingOffence.sentence.sentenceUuid, courtAppearance)
       }
     }
+
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

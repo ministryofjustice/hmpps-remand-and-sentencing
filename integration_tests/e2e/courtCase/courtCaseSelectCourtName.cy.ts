@@ -16,7 +16,7 @@ context('Select court name page', () => {
     )
     courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
       CourtCaseSelectCourtNamePage,
-      'Was the appearance at Accrington Youth Court?',
+      'Was the hearing at Accrington Youth Court?',
     )
   })
 
@@ -25,7 +25,7 @@ context('Select court name page', () => {
     courtCaseSelectCourtNamePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', "There is a problem Select 'Yes' if the appearance was at this court.")
+      .should('equal', "There is a problem Select 'Yes' if the hearing was at this court.")
   })
 
   it('gets next hearing court if warrante date is the same as next hearing date of latest court appearance', () => {
@@ -41,6 +41,6 @@ context('Select court name page', () => {
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type((warrantDate.month() + 1).toString())
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type(warrantDate.year().toString())
     courtCaseWarrantDatePage.continueButton().click()
-    Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the appearance at Worthing County Court?')
+    Page.verifyOnPageTitle(CourtCaseSelectCourtNamePage, 'Was the hearing at Worthing County Court?')
   })
 })

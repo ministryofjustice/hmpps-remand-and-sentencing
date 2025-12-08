@@ -5,10 +5,10 @@ import { appWithAllRoutes } from '../testutils/appSetup'
 
 const app: Express = appWithAllRoutes({})
 
-describe('GET warrant type', () => {
-  it('should render page on new journey', () => {
+describe('GET received custodial sentence', () => {
+  it('should render page', () => {
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
@@ -20,7 +20,7 @@ describe('GET warrant type', () => {
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
         const captionText = $('.govuk-caption-l').text()
-        expect(captionText).toContain('Add a court case')
+        expect(captionText).toContain('Add a hearing')
         const radioOptions = $('.govuk-radios__label')
           .toArray()
           .map(radioLabelElement =>
@@ -29,27 +29,9 @@ describe('GET warrant type', () => {
               .trim()
               .replace(/(\r\n|\n|\r)/gm, ''),
           )
-        expect(radioOptions).toEqual(expect.arrayContaining(['Remand', 'Sentencing']))
-      })
-  })
-
-  it('should render page on repeat journey', () => {
-    return request(app)
-      .get('/person/A1234AB/edit-court-case/0/add-court-appearance/0/warrant-type')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const captionText = $('.govuk-caption-l').text()
-        expect(captionText).toContain('Add an appearance')
-        const radioOptions = $('.govuk-radios__label')
-          .toArray()
-          .map(radioLabelElement =>
-            $(radioLabelElement)
-              .text()
-              .trim()
-              .replace(/(\r\n|\n|\r)/gm, ''),
-          )
-        expect(radioOptions).toEqual(expect.arrayContaining(['Remand', 'Sentencing', 'Non-custodial event']))
+        expect(radioOptions).toEqual(
+          expect.arrayContaining(['Yes, Cormac Meza has received a custodial sentence', 'No']),
+        )
       })
   })
 })

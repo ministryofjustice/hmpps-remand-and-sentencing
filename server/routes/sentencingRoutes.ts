@@ -65,7 +65,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { submitToEditOffence } = req.query
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     const offenceDetails = await this.manageOffencesService.getOffenceByCode(
       offence.offenceCode,
       req.user.username,
@@ -191,7 +191,7 @@ export default class SentencingRoutes extends BaseRoutes {
       username,
     )
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+    this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     this.courtAppearanceService.setSessionCourtAppearance(
       req.session,
       nomsId,
@@ -210,7 +210,7 @@ export default class SentencingRoutes extends BaseRoutes {
         appearanceReference,
         username,
       )
-      this.offenceService.clearOffence(req.session, nomsId, courtCaseReference)
+      this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
       this.courtAppearanceService.setSessionCourtAppearance(
         req.session,
         nomsId,
@@ -373,7 +373,7 @@ export default class SentencingRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     const { sentence } = offence
     const [offenceHint, sentencesToChainTo] = await Promise.all([
       this.getOffenceHint(offence, req.user.username),
@@ -513,7 +513,7 @@ export default class SentencingRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     const { sentence } = offence
     const [offenceHint, sentencesToChainTo] = await Promise.all([
       this.getOffenceHint(offence, req.user.username),
@@ -734,7 +734,7 @@ export default class SentencingRoutes extends BaseRoutes {
       if (warrantType === 'SENTENCING') {
         goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
       } else {
-        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`
+        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`
       }
     }
     return res.render('pages/sentencing/delete-sentence-in-chain', {
@@ -771,7 +771,7 @@ export default class SentencingRoutes extends BaseRoutes {
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/remand/appearance-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`,
       )
     }
     return res.redirect(
@@ -871,7 +871,7 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
       chargeUuid,
     )
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
       sentenceUuidsInChain,
       username,
@@ -917,7 +917,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     const offenceDetails = await this.manageOffencesService.getOffenceByCode(
       offence.offenceCode,
       req.user.username,
@@ -949,7 +949,7 @@ export default class SentencingRoutes extends BaseRoutes {
     } = req.params
     const { periodLengthType, legacyCode } = req.query
     const submitQuery = this.correctManyPeriodLengthSubmitQuery(periodLengthType, legacyCode)
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     const currentPeriodLengths = offence.sentence.periodLengths?.filter(
       periodLength =>
         periodLength.periodLengthType === periodLengthType ||
@@ -1000,6 +1000,7 @@ export default class SentencingRoutes extends BaseRoutes {
       correctManyPeriodLengthsForm,
       periodLengthType as string,
       legacyCode as string,
+      chargeUuid,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -1025,7 +1026,7 @@ export default class SentencingRoutes extends BaseRoutes {
     } = req.params
     const { periodLengthType, legacyCode } = req.query
     const submitQuery = this.correctManyPeriodLengthSubmitQuery(periodLengthType, legacyCode)
-    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
     const correctAlternativeManyPeriodLengthsForm = (req.flash('correctAlternativeManyPeriodLengthsForm')[0] ||
       {}) as CorrectAlternativeManyPeriodLengthsForm
@@ -1073,6 +1074,7 @@ export default class SentencingRoutes extends BaseRoutes {
       correctAlternativeManyPeriodLengthsForm,
       periodLengthType as string,
       legacyCode as string,
+      chargeUuid,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)

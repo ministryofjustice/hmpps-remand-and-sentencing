@@ -8,30 +8,15 @@
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">
-                {% if isAddCourtCase %}
-                    Add a court case
-                {% else %}
-                    Add a court appearance
-                {% endif %}
+                {{ model.pageHeading }}
             </h1>
-            <h2 class="govuk-heading-m">
-                {% if warrantType === 'SENTENCING' %}
-                    Enter information from a sentencing warrant
-                {% else %}
-                    Enter information from a remand warrant
-                {% endif %}
-            </h2>
-            <p class="govuk-body">You must enter information exactly as it is written on the warrant.</p>
+            <p class="govuk-body">You must enter the information exactly as it appears on the documentation.</p>
             {{ govukTaskList({
                 classes: "govuk-!-margin-top-7",
                 items: model.items
             }) }}
             <h2 class="govuk-heading-m">
-                {% if isAddCourtCase %}
-                    Finish adding court case
-                {% else %}
-                    Finish adding an appearance
-                {% endif %}
+                {{ model.finishHeading }}
             </h2>
             <p class="govuk-body">Once you have finished adding all the information, select ‘Finish and save’. You will
                 not be able to return to this page, but can edit the details in the Court cases tab.</p>

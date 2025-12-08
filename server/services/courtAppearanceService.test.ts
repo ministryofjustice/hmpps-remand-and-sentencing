@@ -10,6 +10,7 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import RemandAndSentencingService from './remandAndSentencingService'
 import DocumentManagementService from './documentManagementService'
 import CourtAppearanceService from './courtAppearanceService'
+import RefDataService from './refDataService'
 
 dayjs.extend(isSameOrBefore)
 dayjs.extend(customParseFormat)
@@ -20,16 +21,19 @@ dayjs.tz.setDefault('Europe/London')
 
 jest.mock('./documentManagementService')
 jest.mock('./remandAndSentencingService')
+jest.mock('./refDataService')
 
 describe('courtAppearanceService', () => {
   let remandAndSentencingService: jest.Mocked<RemandAndSentencingService>
   let documentManagementService: jest.Mocked<DocumentManagementService>
+  let refDataService: jest.Mocked<RefDataService>
   let service: CourtAppearanceService
 
   beforeEach(() => {
     remandAndSentencingService = new RemandAndSentencingService(null) as jest.Mocked<RemandAndSentencingService>
     documentManagementService = new DocumentManagementService(null) as jest.Mocked<DocumentManagementService>
-    service = new CourtAppearanceService(remandAndSentencingService, documentManagementService)
+    refDataService = new RefDataService(null) as jest.Mocked<RefDataService>
+    service = new CourtAppearanceService(remandAndSentencingService, documentManagementService, refDataService)
   })
 
   it('must reset chain when multiple sentences are consecutive to same sentence', () => {
@@ -91,7 +95,16 @@ describe('courtAppearanceService', () => {
         'warrantDate-month': '10',
         'warrantDate-year': '2024',
       } as CourtCaseWarrantDateForm
-      const errors = await service.setWarrantDate(session, nomsId, warrantDateForm, '1', '1', 'edit-court-case', 'user')
+      const errors = await service.setWarrantDate(
+        session,
+        nomsId,
+        warrantDateForm,
+        '1',
+        '1',
+        'edit-court-case',
+        'user',
+        'warrant',
+      )
       expect(errors.length).toBe(1)
       const error = errors[0]
       expect(error).toStrictEqual({
@@ -110,7 +123,7 @@ describe('courtAppearanceService', () => {
 
       const courtAppearance = {
         appearanceUuid: '1234567',
-        warrantType: 'REMAND',
+        warrantType: 'NON_SENTENCING',
         offences: [],
       } as CourtAppearance
 
@@ -127,11 +140,20 @@ describe('courtAppearanceService', () => {
         'warrantDate-year': '2025',
       } as CourtCaseWarrantDateForm
 
-      const errors = await service.setWarrantDate(session, nomsId, warrantDateForm, '1', '1', 'edit-court-case', 'user')
+      const errors = await service.setWarrantDate(
+        session,
+        nomsId,
+        warrantDateForm,
+        '1',
+        '1',
+        'edit-court-case',
+        'user',
+        'warrant',
+      )
 
       expect(errors.length).toBe(1)
       expect(errors[0]).toStrictEqual({
-        text: 'The date of a remand warrant cannot be after the date of a sentencing warrant on the same court case',
+        text: 'The date of a hearing cannot be after the date of a sentencing warrant on the same court case',
         href: '#warrantDate',
       })
     })

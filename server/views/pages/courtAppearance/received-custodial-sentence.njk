@@ -2,37 +2,40 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Same case reference page" %}
+{% set pageTitle = applicationName + " - received sentence page" %}
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-select-reference{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-received-custodial-sentence" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {% include "../../partials/hearingCaption.njk" %}
+                <span class="govuk-caption-l">
+                    {% if isAddCourtCase %}
+                        Add new court case
+                    {% else %}
+                        Add a hearing
+                    {% endif %}
+                </span>
                 {{ govukRadios({
-                    name: "referenceNumberSelect",
-                    errorMessage: errors | findError('referenceNumberSelect'),
+                    name: "receivedCustodialSentence",
+                    errorMessage: errors | findError('receivedCustodialSentence'),
                     fieldset: {
                         legend: {
-                        text: "Is the case reference " + lastCaseReferenceNumber + "?",
+                        text: "Has " + prisonerName + " received a custodial sentence?",
                         isPageHeading: true,
                         classes: "govuk-fieldset__legend--l"
                         }
                     },
-                    hint: {
-                        text: "This is the case reference used in the previous appearance."
-                    },
                     items: [
                         {
                             value: "true",
-                            text: "Yes",
-                            checked: referenceForm.referenceNumberSelect === 'true'
+                            text: "Yes, " + prisonerName + " has received a custodial sentence",
+                            checked: receivedCustodialSentenceForm.receivedCustodialSentence === 'true'
                         },
                         {
                             value: "false",
                             text: "No",
-                            checked: referenceForm.referenceNumberSelect === 'false'
+                            checked: receivedCustodialSentenceForm.receivedCustodialSentence === 'false'
                         }
                     ]
                 }) }}

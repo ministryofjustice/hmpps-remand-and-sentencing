@@ -1,17 +1,26 @@
 {% extends "../../partials/prisonerBannerBackLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% set isRemandWarrant = courtAppearance.warrantType == 'REMAND'%}
-{% set warrantOrAppearance = 'Appearance' if courtAppearance.warrantType === 'NON_CUSTODIAL' else 'Warrant' %}
-{% set checkAnswersRows = [
-    {
-        key: {
-            text: "Warrant type"
-        },
-        value: {
-            text: courtAppearance.warrantType | capitalize
+{% set isNonSentencingWarrant = courtAppearance.warrantType == 'NON_SENTENCING'%}
+{% set warrantOrHearing = 'Warrant' if courtAppearance.warrantType === 'SENTENCING' else 'Hearing' %}
+
+{% set checkAnswersRows = [] %}
+
+{% if courtAppearance.warrantType === 'SENTENCING' %}
+    {% set checkAnswersRows = checkAnswersRows.concat([
+        {
+            key: {
+                text: "Warrant type"
+            },
+            value: {
+                text: courtAppearance.warrantType | capitalize
+            }
         }
-    },
+    ]) %}
+{% endif %}
+
+
+{% set checkAnswersRows = checkAnswersRows.concat([
     {
         key: {
             text: "Case reference"
@@ -31,7 +40,7 @@
     },
     {
         key: {
-            text: warrantOrAppearance + " date"
+            text: warrantOrHearing + " date"
         },
         value: {
             text: courtAppearance.warrantDate | formatDate
@@ -41,11 +50,11 @@
                 {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/warrant-date?submitToCheckAnswers=true",
                     text: "Edit",
-                    visuallyHiddenText: warrantOrAppearance + " date",
+                    visuallyHiddenText: warrantOrHearing + " date",
                     attributes: {
                         "data-qa": "edit-warrant-date-link"
                     }
-                } if courtAppearance.appearanceInformationAccepted !== true or isRemandWarrant
+                } if courtAppearance.appearanceInformationAccepted !== true or isNonSentencingWarrant
             ]
         }
     },
@@ -66,7 +75,7 @@
             ]
         }
     }
-] %}
+]) %}
 
 {% if courtAppearance.warrantType !== 'SENTENCING' %}
     {% set checkAnswersRows = checkAnswersRows.concat([
@@ -80,25 +89,9 @@
             actions: {
                 items: [
                     {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-case-outcome?submitToCheckAnswers=true",
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/overall-case-outcome?backTo=checkAppearanceAnswers&submitToCheckAnswers=true",
                         text: "Edit",
                         visuallyHiddenText: "overall case outcome"
-                    }
-                ] if courtAppearance.appearanceInformationAccepted !== true
-            }
-        },
-        {
-            key: {
-                text: "Does this outcome apply to all offences on the "+ warrantOrAppearance | lower + "?"
-            },
-            value: {
-                text: "Yes" if courtAppearance.caseOutcomeAppliedAll == 'true' else "No"
-            },
-            actions: {
-                items: [
-                    {
-                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/case-outcome-applied-all?submitToCheckAnswers=true",
-                        text: "Edit"
                     }
                 ] if courtAppearance.appearanceInformationAccepted !== true
             }
@@ -111,7 +104,7 @@
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            {% include "../../partials/appearanceCaption.njk" %}
+            {% include "../../partials/hearingCaption.njk" %}
             <h1 class="govuk-heading-l">Check your answers</h1>
 
             {{ govukSummaryList({

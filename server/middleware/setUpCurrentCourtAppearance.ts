@@ -19,10 +19,12 @@ export default function setupCurrentCourtAppearance(
     res.locals.courtAppearance = courtAppearance
     res.locals.offences = courtAppearance.offences
     res.locals.isAddCourtAppearance = addOrEditCourtAppearance === 'add-court-appearance'
-    res.locals.isRemandToSentencingJourney =
+    res.locals.isNonSentencingToSentencingJourney =
       addOrEditCourtCase === 'edit-court-case' &&
       addOrEditCourtAppearance === 'add-court-appearance' &&
       courtAppearance.warrantType === 'SENTENCING'
+
+    res.locals.warrantOrHearing = courtAppearance.warrantType === 'SENTENCING' ? 'warrant' : 'hearing'
     const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
     res.locals.offenceNameMap = await manageOffenceService.getOffenceMap(
       offenceCodes,

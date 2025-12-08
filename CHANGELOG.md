@@ -1,4 +1,14 @@
 # Change log
+**December 4th 2025** - Adding @ministryofjustice/hmpps-npm-allow-scripts.
+
+Adding script allowlist library to provide some level of protection against supply chain attacks.
+
+Developers and build agents will need to run `npm run setup` rather than `npm install` or `npm ci` as otherwise, necessary `postinstall` scripts may not be run.
+
+See [here](https://github.com/ministryofjustice/hmpps-typescript-lib/blob/main/packages/npm-script-allowlist/README.md) for more information.
+
+See PR [#1205](https://github.com/ministryofjustice/hmpps-remand-and-sentencing/pull/1205)
+
 
 **June 23rd 2025** - Moving to version 0.0.1 of shared libraries
 
@@ -6,7 +16,7 @@ See PR [#559](https://github.com/ministryofjustice/hmpps-template-typescript/pul
 
 **June 17th 2025** - Add precommit hook
 
-Adding the [precommit library](https://github.com/ministryofjustice/hmpps-typescript-lib/tree/main/packages/precommit-hooks). 
+Adding the [precommit library](https://github.com/ministryofjustice/hmpps-typescript-lib/tree/main/packages/precommit-hooks).
 
 See PR [#556](https://github.com/ministryofjustice/hmpps-template-typescript/pull/556)
 

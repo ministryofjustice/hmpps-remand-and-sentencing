@@ -14,6 +14,7 @@ import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import CannotChangeSentenceOutcomePage from '../../pages/cannotChangeSentenceOutcomePage'
+import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
@@ -505,6 +506,24 @@ context('Sentencing appearance details Page', () => {
           },
         ])
     })
+
+    it('should come back to appearance page when clicked back on overall case outcome page', () => {
+      courtCaseAppearanceDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'overall-case-outcome?backTo=sentencingCourtAppearance',
+          true,
+        )
+        .click()
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Edit the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.backLink().click()
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+    })
   })
 
   context('legacy sentence appearance', () => {
@@ -653,6 +672,42 @@ context('Sentencing appearance details Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
       })
+    })
+
+    it('should show error if sentence type is tried to add while offence date is not available', () => {
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3f20856f-fa17-493b-89c7-205970c749b8',
+          'b2565181-6066-4b55-b4a7-32c2ddf8c36e',
+        )
+        .click()
+
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('b2565181-6066-4b55-b4a7-32c2ddf8c36e', 'sentence-type').click()
+      offenceEditOffencePage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem You must enter the offence date before editing a sentence type')
+    })
+
+    it('should show error if sentence type is tried to add while conviction date is not available', () => {
+      courtCaseAppearanceDetailsPage
+        .editOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3f20856f-fa17-493b-89c7-205970c749b8',
+          'b2565181-6066-4b55-b4a7-32c2ddf8c36d',
+        )
+        .click()
+
+      const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.editFieldLink('b2565181-6066-4b55-b4a7-32c2ddf8c36d', 'sentence-type').click()
+      offenceEditOffencePage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem You must enter the conviction date before editing a sentence type')
     })
   })
 })

@@ -1,6 +1,7 @@
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import Page from '../../pages/page'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 
 context('Court Case Court Name Page', () => {
   let courtCaseCourtNamePage: CourtCaseCourtNamePage
@@ -8,34 +9,22 @@ context('Court Case Court Name Page', () => {
     cy.task('happyPathStubs')
     cy.task('stubSearchCourt')
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
-    courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
-  })
-
-  it('submitting without entering anything in the input results in an error', () => {
-    courtCaseCourtNamePage.continueButton().click()
-    courtCaseCourtNamePage
-      .errorSummary()
-      .trimTextContent()
-      .should('equal', 'There is a problem You must enter the court name')
-  })
-
-  it('submitting a value, going back, clearing and submitting results in an error', () => {
-    cy.task('stubGetAllAppearanceOutcomes')
-    cy.task('stubGetCourtById', {})
-    courtCaseCourtNamePage.autoCompleteInput().type('cou')
-    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
-    courtCaseCourtNamePage.firstAutoCompleteOption().click()
-    courtCaseCourtNamePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('false').click()
+    receivedCustodialSentencePage.continueButton().click()
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
     )
-    courtCaseOverallCaseOutcomePage.backLink().click()
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
+
     courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
-    courtCaseCourtNamePage.autoCompleteInput().focus()
-    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Clear the selection')
-    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+  })
+
+  it('submitting without entering anything in the input results in an error', () => {
     courtCaseCourtNamePage.continueButton().click()
     courtCaseCourtNamePage
       .errorSummary()
@@ -48,6 +37,6 @@ context('Court Case Court Name Page', () => {
       .captionText()
       .invoke('text')
       .then(text => text.trim())
-      .should('equal', 'Add appearance information')
+      .should('equal', 'Add hearing information')
   })
 })

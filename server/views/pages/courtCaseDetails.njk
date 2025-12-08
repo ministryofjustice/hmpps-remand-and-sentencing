@@ -71,8 +71,8 @@
                 {% if not appearance.hasAnyRecalls and not viewOnlyEnabled %}
                     <li class="offence-card-action-link">
                         <a class="govuk-link--no-visited-state"
-                           href="{% if appearance.warrantType == 'REMAND' %}
-                                      /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/remand/load-appearance-details
+                           href="{% if appearance.warrantType == 'NON_SENTENCING' %}
+                                      /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/non-sentencing/load-appearance-details
                                   {% else %}
                                       /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing/load-appearance-details
                                   {% endif %}">
@@ -149,7 +149,7 @@
         </div>
 
         <div class="govuk-grid-one-third">
-            {% if appearance.warrantType == 'REMAND' %}
+            {% if appearance.warrantType == 'NON_SENTENCING' %}
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next hearing</h3>
                 <p class="govuk-body govuk-!-margin-bottom-2" data-qa="next-hearing">
                   {{ appearance.nextCourtAppearance | formatNextHearing(courtMap) }}

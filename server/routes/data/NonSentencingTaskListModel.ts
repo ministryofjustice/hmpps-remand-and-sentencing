@@ -1,5 +1,6 @@
 import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
+import { AppearanceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class RemandTaskListModel extends TaskListModel {
   constructor(
@@ -10,24 +11,41 @@ export default class RemandTaskListModel extends TaskListModel {
     appearanceReference: string,
     courtAppearance: CourtAppearance,
     caseReferenceSet: boolean,
+    appearanceOutcome: AppearanceOutcome,
   ) {
     super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)
     this.items = [
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getOffenceSentencesItem(courtAppearance),
-      this.getNextCourtAppearanceItem(courtAppearance),
-      this.getCourtDocumentsItem(courtAppearance),
     ]
+    if (appearanceOutcome.dispositionCode === 'INTERIM') {
+      this.items.push(this.getNextCourtAppearanceItem(courtAppearance))
+    }
+    this.items.push(this.getCourtDocumentsItem(courtAppearance))
+  }
+
+  setPageHeading() {
+    if (this.isAddCourtCase()) {
+      this.pageHeading = 'Add a court case'
+    } else {
+      this.pageHeading = 'Add a hearing to a court case'
+    }
+  }
+
+  setFinishHeading() {
+    if (this.isAddCourtCase()) {
+      this.finishHeading = 'Finish adding a court case'
+    } else {
+      this.finishHeading = 'Finish adding a hearing'
+    }
+  }
+
+  getAppearanceInformationTitleText(): string {
+    return 'Add hearing information'
   }
 
   allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
-    return (
-      courtAppearance.warrantDate &&
-      courtAppearance.courtCode &&
-      courtAppearance.appearanceOutcomeUuid &&
-      courtAppearance.caseOutcomeAppliedAll !== undefined &&
-      courtAppearance.appearanceInformationAccepted
-    )
+    return courtAppearance.warrantDate && courtAppearance.courtCode && courtAppearance.appearanceInformationAccepted
   }
 
   anyAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
@@ -35,8 +53,6 @@ export default class RemandTaskListModel extends TaskListModel {
       courtAppearance.caseReferenceNumber !== undefined ||
       courtAppearance.warrantDate !== undefined ||
       courtAppearance.courtCode !== undefined ||
-      courtAppearance.appearanceOutcomeUuid !== undefined ||
-      courtAppearance.caseOutcomeAppliedAll !== undefined ||
       courtAppearance.appearanceInformationAccepted
     )
   }

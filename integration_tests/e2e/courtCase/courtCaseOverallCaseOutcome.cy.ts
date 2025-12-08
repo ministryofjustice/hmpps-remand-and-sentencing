@@ -1,7 +1,6 @@
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseCheckAnswersPage from '../../pages/courtCaseCheckAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import Page from '../../pages/page'
 
 context('Court Case Overall Case Outcome Page', () => {
@@ -10,11 +9,10 @@ context('Court Case Overall Case Outcome Page', () => {
     cy.task('happyPathStubs')
     cy.task('stubGetAllAppearanceOutcomes')
     cy.signIn()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-type')
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.continueButton().click()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('false').click()
+    receivedCustodialSentencePage.continueButton().click()
     courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
@@ -32,11 +30,7 @@ context('Court Case Overall Case Outcome Page', () => {
   it('after confirm and continue check answers this becomes uneditable', () => {
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
-
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/check-answers')
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/overall-case-outcome')
@@ -48,7 +42,7 @@ context('Court Case Overall Case Outcome Page', () => {
     courtCaseOverallCaseOutcomePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem You cannot submit after confirming appearance information')
+      .should('equal', 'There is a problem You cannot submit after confirming hearing information')
   })
 
   it('caption should only be shown for add court case journey', () => {
@@ -56,6 +50,6 @@ context('Court Case Overall Case Outcome Page', () => {
       .captionText()
       .invoke('text')
       .then(text => text.trim())
-      .should('equal', 'Add appearance information')
+      .should('equal', 'Add hearing information')
   })
 })

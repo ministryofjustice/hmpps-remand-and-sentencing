@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
-import CourtCaseWarrantTypePage from '../../pages/courtCaseWarrantTypePage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
@@ -12,7 +12,6 @@ import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirm
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import CourtCaseCaseOutcomeAppliedAllPage from '../../pages/courtCaseCaseOutcomeAppliedAllPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextHearingSetPage'
@@ -67,9 +66,16 @@ context('New Court Case journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('REMAND').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('false').click()
+    receivedCustodialSentencePage.continueButton().click()
+
+    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+    courtCaseOverallCaseOutcomePage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -77,7 +83,7 @@ context('New Court Case journey', () => {
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Incomplete',
         },
         {
@@ -93,7 +99,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
       ])
-    courtCaseTaskListPage.appearanceInformationLink().click()
+    courtCaseTaskListPage.hearingInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type('T12345678')
@@ -109,27 +115,12 @@ context('New Court Case journey', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.continueButton().click()
 
-    const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-      CourtCaseOverallCaseOutcomePage,
-      'Select the overall case outcome',
-    )
-    courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-    courtCaseOverallCaseOutcomePage.continueButton().click()
-
-    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPage)
-    courtCaseCaseOutcomeAppliedAllPage.bodyText().should('contain.text', 'Remanded in custody')
-
-    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
-    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
-
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Warrant type': 'Remand',
       'Case reference': 'T12345678',
-      'Warrant date': '13/05/2023',
+      'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
-      'Does this outcome apply to all offences on the warrant?': 'No',
     })
     courtCaseCheckAnswersPage.continueButton().click()
 
@@ -139,7 +130,7 @@ context('New Court Case journey', () => {
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Completed',
         },
         {
@@ -193,7 +184,7 @@ context('New Court Case journey', () => {
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Completed',
         },
         {
@@ -247,7 +238,7 @@ context('New Court Case journey', () => {
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Completed',
         },
         {
@@ -294,9 +285,9 @@ context('New Court Case journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.actionListLink().click()
 
-    const courtCaseWarrantTypePage = Page.verifyOnPage(CourtCaseWarrantTypePage)
-    courtCaseWarrantTypePage.radioLabelSelector('SENTENCING').click()
-    courtCaseWarrantTypePage.continueButton().click()
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
 
     courtCaseTaskListPage
@@ -325,7 +316,7 @@ context('New Court Case journey', () => {
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type(caseRef)
     courtCaseReferencePage.continueButton().click()
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('12')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')

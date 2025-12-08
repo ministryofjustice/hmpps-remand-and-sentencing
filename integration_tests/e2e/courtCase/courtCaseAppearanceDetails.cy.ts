@@ -115,7 +115,7 @@ context('Court Case Appearance details Page', () => {
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
       courtCaseReferencePage.noCaseReferenceCheckbox().should('not.be.checked')
       courtCaseReferencePage.input().clear().type('T12345678')
-      courtCaseReferencePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseReferencePage.hearingDetailsSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Court name': 'Southampton Magistrate Court',
         'Warrant date': '15/12/2023',
@@ -153,7 +153,7 @@ context('Court Case Appearance details Page', () => {
         .click()
 
       const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'Edit the court name')
-      courtCaseCourtNamePage.appearanceDetailsSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseCourtNamePage.hearingDetailsSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
         'Court name': 'Southampton Magistrate Court',
         'Warrant date': '15/12/2023',

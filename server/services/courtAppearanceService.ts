@@ -135,10 +135,8 @@ export default class CourtAppearanceService {
         warrantType = 'SENTENCING'
       }
       courtAppearance.warrantType = warrantType
-      if (warrantType === 'SENTENCING') {
-        // eslint-disable-next-line no-param-reassign
-        courtAppearance.offences.forEach(offence => delete offence.outcomeUuid)
-      }
+      // eslint-disable-next-line no-param-reassign
+      courtAppearance.offences.forEach(offence => delete offence.outcomeUuid)
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

@@ -45,7 +45,7 @@ export default function setupCurrentCourtAppearance(
       ? (await refDataService.getAppearanceOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username))
           .outcomeName
       : 'Not entered'
-    res.locals.showAppearanceDetails = true
+    res.locals.showHearingDetails = true
     next()
   }
 }

@@ -76,7 +76,7 @@ export default abstract class Page {
 
   summaryList = (): PageElement => cy.get('.govuk-summary-list')
 
-  appearanceDetailsSummaryList = (): PageElement => cy.get('[data-qa=appearanceDetails]')
+  hearingDetailsSummaryList = (): PageElement => cy.get('[data-qa=hearingDetails]')
 
   radioLabelSelector = (value: string): PageElement =>
     this.radioSelector(value)

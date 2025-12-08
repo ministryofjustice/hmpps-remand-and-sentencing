@@ -173,7 +173,7 @@ context('Court Case Warrant Date Page', () => {
       cy.task('stubSearchCourtCases', {})
       cy.task('stubGetOffencesByCodes', {})
       cy.task('stubGetLatestCourtAppearance', {})
-      cy.task('stubCreateCourtAppearance', { nextHearingDate: futureDate.format('YYYY-MM-DD') })
+      cy.task('stubCreateCourtAppearance', { nextAppearanceDate: futureDate.format('YYYY-MM-DD') })
       cy.task('stubCreateSentenceCourtAppearance')
       cy.task('stubGetCourtById', {})
       cy.task('stubGetCourtsByIds')

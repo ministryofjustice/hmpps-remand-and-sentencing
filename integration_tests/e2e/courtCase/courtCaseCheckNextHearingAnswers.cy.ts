@@ -3,7 +3,7 @@ import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNext
 import CourtCaseNextAppearanceCourtNamePage from '../../pages/courtCaseNextAppearanceCourtNamePage'
 import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
-import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
+import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearanceDatePage'
 import Page from '../../pages/page'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
@@ -30,13 +30,13 @@ context('Check Next Hearing Answers page', () => {
     courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
     courtCaseNextAppearanceTypePage.continueButton().click()
 
-    const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
+    const courtCaseNextAppearanceDatePage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
 
-    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').type(futureDate.date().toString())
-    courtCaseNextHearingDatePage.monthDateInput('nextHearingDate').type((futureDate.month() + 1).toString())
-    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').type(futureDate.year().toString())
-    courtCaseNextHearingDatePage.nextHearingTimeInput().type('9:30')
-    courtCaseNextHearingDatePage.continueButton().click()
+    courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type(futureDate.date().toString())
+    courtCaseNextAppearanceDatePage.monthDateInput('nextAppearanceDate').type((futureDate.month() + 1).toString())
+    courtCaseNextAppearanceDatePage.yearDateInput('nextAppearanceDate').type(futureDate.year().toString())
+    courtCaseNextAppearanceDatePage.nextHearingTimeInput().type('9:30')
+    courtCaseNextAppearanceDatePage.continueButton().click()
 
     const courtCaseNextAppearanceCourtSetPage = Page.verifyOnPage(CourtCaseNextAppearanceCourtSetPage)
     courtCaseNextAppearanceCourtSetPage.radioLabelSelector('true').click()
@@ -77,17 +77,23 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('clicking next hearing date and submitting goes back to check answers page', () => {
-    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-date').click()
-    const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
-    courtCaseNextHearingDatePage.nextHearingTimeInput().should('have.value', '09:30')
+    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-date').click()
+    const courtCaseNextAppearanceDatePage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
+    courtCaseNextAppearanceDatePage.nextHearingTimeInput().should('have.value', '09:30')
     const differentFutureDate = futureDate.add(10, 'days')
-    courtCaseNextHearingDatePage.dayDateInput('nextHearingDate').clear().type(differentFutureDate.date().toString())
-    courtCaseNextHearingDatePage
-      .monthDateInput('nextHearingDate')
+    courtCaseNextAppearanceDatePage
+      .dayDateInput('nextAppearanceDate')
+      .clear()
+      .type(differentFutureDate.date().toString())
+    courtCaseNextAppearanceDatePage
+      .monthDateInput('nextAppearanceDate')
       .clear()
       .type((differentFutureDate.month() + 1).toString())
-    courtCaseNextHearingDatePage.yearDateInput('nextHearingDate').clear().type(differentFutureDate.year().toString())
-    courtCaseNextHearingDatePage.continueButton().click()
+    courtCaseNextAppearanceDatePage
+      .yearDateInput('nextAppearanceDate')
+      .clear()
+      .type(differentFutureDate.year().toString())
+    courtCaseNextAppearanceDatePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
 

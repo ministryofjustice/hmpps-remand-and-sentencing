@@ -113,10 +113,10 @@
     },
     {
       key: { text: "Date" },
-      value: { text: appearance.nextHearingDate | formatDateTime(appearance.nextHearingTimeSet) },
+      value: { text: appearance.nextAppearanceDate | formatDateTime(appearance.nextAppearanceTimeSet) },
       actions: {
         items: [{
-          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-date",
+          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-date",
           text: "Edit",
           visuallyHiddenText: "next hearing date",
           classes: "govuk-link--no-visited-state"

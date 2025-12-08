@@ -66,13 +66,15 @@ const courtAppearanceToCreateNextCourtAppearance = (
 ): CreateNextCourtAppearance | undefined => {
   let nextCourtAppearance
   if (courtAppearance.nextAppearanceSelect) {
-    const appearanceDate = dayjs(courtAppearance.nextHearingDate)
+    const appearanceDate = dayjs(courtAppearance.nextAppearanceDate)
     nextCourtAppearance = {
       appearanceDate: appearanceDate.format('YYYY-MM-DD'),
       courtCode: courtAppearance.nextAppearanceCourtCode,
       appearanceTypeUuid: courtAppearance.nextAppearanceTypeUuid,
       prisonId,
-      ...(courtAppearance.nextHearingTimeSet ? { appearanceTime: appearanceDate.format('HH:mm:[00].[000000]') } : {}),
+      ...(courtAppearance.nextAppearanceTimeSet
+        ? { appearanceTime: appearanceDate.format('HH:mm:[00].[000000]') }
+        : {}),
     } as CreateNextCourtAppearance
   }
   return nextCourtAppearance
@@ -419,9 +421,9 @@ export function pageCourtCaseAppearanceToCourtAppearance(
 }
 
 function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppearance): CourtAppearance {
-  let nextHearingDate
+  let nextAppearanceDate
   if (nextCourtAppearance?.appearanceDate !== undefined) {
-    nextHearingDate = dayjs(
+    nextAppearanceDate = dayjs(
       `${nextCourtAppearance.appearanceDate}${nextCourtAppearance.appearanceTime ? `T${nextCourtAppearance.appearanceTime}` : ''}`,
     )
   }
@@ -429,8 +431,8 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextAppearanceSelect: !!nextCourtAppearance,
     nextAppearanceCourtCode: nextCourtAppearance?.courtCode,
     nextAppearanceTypeUuid: nextCourtAppearance?.appearanceType.appearanceTypeUuid,
-    nextHearingTimeSet: typeof nextCourtAppearance?.appearanceTime === 'string',
-    nextHearingDate,
+    nextAppearanceTimeSet: typeof nextCourtAppearance?.appearanceTime === 'string',
+    nextAppearanceDate,
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
   } as CourtAppearance
 }

@@ -20,7 +20,7 @@ export default class CourtCaseDetailsModel {
 
   overallCaseOutcome: string
 
-  nextHearingDate: string
+  nextAppearanceDate: string
 
   overallSentenceLength: string
 
@@ -57,7 +57,7 @@ export default class CourtCaseDetailsModel {
       if (pageCourtCaseContent.latestAppearance?.nextCourtAppearance.appearanceTime) {
         appearanceDateFormatted = appearanceDate.format(config.dateTimeFormat)
       }
-      this.nextHearingDate = appearanceDateFormatted
+      this.nextAppearanceDate = appearanceDateFormatted
     }
 
     if (pageCourtCaseContent.latestAppearance?.overallSentenceLength) {

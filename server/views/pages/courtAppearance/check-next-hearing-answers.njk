@@ -36,12 +36,12 @@
                             text: "Next hearing date"
                         },
                             value: {
-                            text: courtAppearance.nextHearingDate | formatDateTime(courtAppearance.nextHearingTimeSet)
+                            text: courtAppearance.nextAppearanceDate | formatDateTime(courtAppearance.nextAppearanceTimeSet)
                         },
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-date?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-date?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "next hearing date"
                                 }

@@ -30,7 +30,7 @@ context('Select court name page', () => {
 
   it('gets next hearing court if warrante date is the same as next hearing date of latest court appearance', () => {
     const warrantDate = dayjs().subtract(10, 'day')
-    cy.task('stubGetLatestCourtAppearanceSameNextHearingDate', { warrantDate: warrantDate.format('YYYY-MM-DD') })
+    cy.task('stubGetLatestCourtAppearanceSameNextAppearanceDate', { warrantDate: warrantDate.format('YYYY-MM-DD') })
     cy.task('stubGetCourtById', {
       courtId: 'WRTH',
       courtName: 'Worthing County Court',

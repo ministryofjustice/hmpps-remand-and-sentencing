@@ -226,9 +226,9 @@ context('New Court Case journey', () => {
       .summaryList()
       .getSummaryList()
       .should('deep.equal', {
-        'Next hearing date': futureDate.format('DD/MM/YYYY'),
-        'Next hearing location': 'Accrington Youth Court',
-        'Next hearing type': 'Court appearance',
+        'Next appearance date': futureDate.format('DD/MM/YYYY'),
+        'Next appearance location': 'Accrington Youth Court',
+        'Next appearance type': 'Court appearance',
       })
     courtCaseNextAppearanceAnswersPage.continueButton().click()
 

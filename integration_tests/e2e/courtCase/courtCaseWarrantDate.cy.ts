@@ -222,7 +222,7 @@ context('Court Case Warrant Date Page', () => {
       expectWarrantDateError(courtCaseWarrantDatePage)
     })
 
-    it('Run validation against next hearing date', () => {
+    it('Run validation against next appearance date', () => {
       // Latest offence date has been mocked to return 15-12-2024
       const startPage = Page.verifyOnPage(StartPage)
       startPage.editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()

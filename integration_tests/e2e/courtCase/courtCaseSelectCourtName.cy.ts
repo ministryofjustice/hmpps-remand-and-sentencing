@@ -28,7 +28,7 @@ context('Select court name page', () => {
       .should('equal', "There is a problem Select 'Yes' if the hearing was at this court.")
   })
 
-  it('gets next hearing court if warrante date is the same as next hearing date of latest court appearance', () => {
+  it('gets next appearance court if warrante date is the same as next appearance date of latest court appearance', () => {
     const warrantDate = dayjs().subtract(10, 'day')
     cy.task('stubGetLatestCourtAppearanceSameNextAppearanceDate', { warrantDate: warrantDate.format('YYYY-MM-DD') })
     cy.task('stubGetCourtById', {

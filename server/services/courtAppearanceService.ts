@@ -6,8 +6,8 @@ import type {
   CourtCaseNextHearingCourtNameForm,
   CourtCaseNextHearingCourtSelectForm,
   CourtCaseNextHearingDateForm,
-  CourtCaseNextHearingSelectForm,
-  CourtCaseNextHearingTypeForm,
+  CourtCaseNextAppearanceSelectForm,
+  CourtCaseNextAppearanceTypeForm,
   CourtCaseOverallCaseOutcomeForm,
   CourtCaseOverallConvictionDateForm,
   CourtCaseReferenceForm,
@@ -696,37 +696,37 @@ export default class CourtAppearanceService {
     return courtAppearance.nextCourtAppearanceAccepted
   }
 
-  getNextHearingSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingSelect
+  getNextAppearanceSelect(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): boolean {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextAppearanceSelect
   }
 
-  setNextHearingSelect(
+  setNextAppearanceSelect(
     session: Partial<SessionData>,
     nomsId: string,
-    nextHearingSelectForm: CourtCaseNextHearingSelectForm,
+    nextAppearanceSelectForm: CourtCaseNextAppearanceSelectForm,
     appearanceUuid: string,
   ) {
     const errors = validate(
-      nextHearingSelectForm,
+      nextAppearanceSelectForm,
       {
-        nextHearingSelect: 'required',
+        nextAppearanceSelect: 'required',
       },
       {
-        'required.nextHearingSelect': 'You must select the hearing has been set',
+        'required.nextAppearanceSelect': 'You must select the appearance has been set',
       },
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      const previousNextHearingSelect = courtAppearance.nextHearingSelect
-      courtAppearance.nextHearingSelect = nextHearingSelectForm.nextHearingSelect === 'true'
-      if (!courtAppearance.nextHearingSelect) {
+      const previousNextHearingSelect = courtAppearance.nextAppearanceSelect
+      courtAppearance.nextAppearanceSelect = nextAppearanceSelectForm.nextAppearanceSelect === 'true'
+      if (!courtAppearance.nextAppearanceSelect) {
         delete courtAppearance.nextHearingCourtCode
         delete courtAppearance.nextHearingDate
         delete courtAppearance.nextHearingTimeSet
-        delete courtAppearance.nextHearingTypeUuid
+        delete courtAppearance.nextAppearanceTypeUuid
       }
-      if (previousNextHearingSelect !== courtAppearance.nextHearingSelect) {
-        courtAppearance.nextCourtAppearanceAccepted = !courtAppearance.nextHearingSelect
+      if (previousNextHearingSelect !== courtAppearance.nextAppearanceSelect) {
+        courtAppearance.nextCourtAppearanceAccepted = !courtAppearance.nextAppearanceSelect
       }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
@@ -734,28 +734,28 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  getNextHearingTypeUuid(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextHearingTypeUuid
+  getNextAppearanceTypeUuid(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
+    return this.getCourtAppearance(session, nomsId, appearanceUuid).nextAppearanceTypeUuid
   }
 
-  setNextHearingType(
+  setNextAppearanceType(
     session: Partial<SessionData>,
     nomsId: string,
-    nextHearingTypeForm: CourtCaseNextHearingTypeForm,
+    nextAppearanceTypeForm: CourtCaseNextAppearanceTypeForm,
     appearanceUuid: string,
   ) {
     const errors = validate(
-      nextHearingTypeForm,
+      nextAppearanceTypeForm,
       {
-        nextHearingType: 'required',
+        nextAppearanceType: 'required',
       },
       {
-        'required.nextHearingType': 'You must select the next hearing type',
+        'required.nextAppearanceType': 'You must select the next appearance type',
       },
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      courtAppearance.nextHearingTypeUuid = nextHearingTypeForm.nextHearingType
+      courtAppearance.nextAppearanceTypeUuid = nextAppearanceTypeForm.nextAppearanceType
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

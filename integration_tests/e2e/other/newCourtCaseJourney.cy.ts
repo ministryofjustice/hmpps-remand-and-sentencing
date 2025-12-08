@@ -14,10 +14,10 @@ import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswe
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
-import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextHearingSetPage'
+import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
 import CourtCaseNextHearingCourtSetPage from '../../pages/courtCaseNextHearingCourtSetPage'
-import CourtCaseNextHearingTypePage from '../../pages/courtCaseNextHearingTypePage'
+import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConvictionDatePage'
@@ -202,13 +202,13 @@ context('New Court Case journey', () => {
       ])
     courtCaseTaskListPage.nextCourtAppearanceLink().click()
 
-    const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
-    courtCaseNextHearingSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingSetPage.continueButton().click()
+    const courtCaseNextAppearanceSetPage = Page.verifyOnPage(CourtCaseNextAppearanceSetPage)
+    courtCaseNextAppearanceSetPage.radioLabelSelector('true').click()
+    courtCaseNextAppearanceSetPage.continueButton().click()
 
-    const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
-    courtCaseNextHearingTypePage.continueButton().click()
+    const courtCaseNextAppearanceTypePage = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
+    courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
+    courtCaseNextAppearanceTypePage.continueButton().click()
 
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
 

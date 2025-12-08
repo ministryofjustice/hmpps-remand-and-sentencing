@@ -19,18 +19,18 @@ afterEach(() => {
 describe('GET Check Next Hearing Answers', () => {
   it('should render page on new journey', () => {
     const courtCode = 'ACCRYC'
-    const nextHearingTypeUuid = '1'
+    const nextAppearanceTypeUuid = '1'
     const courtAppearance = {
-      nextHearingSelect: true,
+      nextAppearanceSelect: true,
       nextHearingCourtCode: 'ACCRYC',
-      nextHearingTypeUuid,
+      nextAppearanceTypeUuid,
     } as CourtAppearance
     const court = {
       courtId: courtCode,
       courtName: 'A court',
     } as CourtDto
     const appearanceType = {
-      appearanceTypeUuid: nextHearingTypeUuid,
+      appearanceTypeUuid: nextAppearanceTypeUuid,
       description: 'Appearance type',
     } as AppearanceType
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue(courtAppearance)

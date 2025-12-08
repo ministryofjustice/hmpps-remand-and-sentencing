@@ -2,11 +2,11 @@ import dayjs from 'dayjs'
 import CourtCaseCheckNextHearingAnswersPage from '../../pages/courtCaseCheckNextHearingAnswersPage'
 import CourtCaseNextHearingCourtNamePage from '../../pages/courtCaseNextHearingCourtNamePage'
 import CourtCaseNextHearingCourtSetPage from '../../pages/courtCaseNextHearingCourtSetPage'
-import CourtCaseNextHearingTypePage from '../../pages/courtCaseNextHearingTypePage'
+import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseNextHearingDatePage from '../../pages/courtCaseNextHearingDatePage'
 import Page from '../../pages/page'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
-import CourtCaseNextHearingSetPage from '../../pages/courtCaseNextHearingSetPage'
+import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
 
 context('Check Next Hearing Answers page', () => {
   let courtCaseNextHearingAnswersPage: CourtCaseCheckNextHearingAnswersPage
@@ -22,13 +22,13 @@ context('Check Next Hearing Answers page', () => {
     courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.continueButton().click()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-select')
-    const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
-    courtCaseNextHearingSetPage.radioLabelSelector('true').click()
-    courtCaseNextHearingSetPage.continueButton().click()
-    const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
-    courtCaseNextHearingTypePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-select')
+    const courtCaseNextAppearanceSetPage = Page.verifyOnPage(CourtCaseNextAppearanceSetPage)
+    courtCaseNextAppearanceSetPage.radioLabelSelector('true').click()
+    courtCaseNextAppearanceSetPage.continueButton().click()
+    const courtCaseNextAppearanceTypePage = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
+    courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
+    courtCaseNextAppearanceTypePage.continueButton().click()
 
     const courtCaseNextHearingDatePage = Page.verifyOnPage(CourtCaseNextHearingDatePage)
 
@@ -45,10 +45,10 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('clicking next hearing type and submitting goes back to check answers page', () => {
-    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-hearing-type').click()
-    const courtCaseNextHearingTypePage = Page.verifyOnPage(CourtCaseNextHearingTypePage)
-    courtCaseNextHearingTypePage.radioLabelContains('Court appearance').click()
-    courtCaseNextHearingTypePage.continueButton().click()
+    courtCaseNextHearingAnswersPage.changeLink('A1234AB', '0', '0', 'next-appearance-type').click()
+    const courtCaseNextAppearanceTypePage = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
+    courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
+    courtCaseNextAppearanceTypePage.continueButton().click()
     Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
   })
 
@@ -92,10 +92,10 @@ context('Check Next Hearing Answers page', () => {
   })
 
   it('setting next-hearing-select to No and submitting goes back to check answers page', () => {
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-hearing-select')
-    const courtCaseNextHearingSetPage = Page.verifyOnPage(CourtCaseNextHearingSetPage)
-    courtCaseNextHearingSetPage.radioLabelSelector('false').click()
-    courtCaseNextHearingSetPage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-select')
+    const courtCaseNextAppearanceSetPage = Page.verifyOnPage(CourtCaseNextAppearanceSetPage)
+    courtCaseNextAppearanceSetPage.radioLabelSelector('false').click()
+    courtCaseNextAppearanceSetPage.continueButton().click()
     courtCaseNextHearingAnswersPage = Page.verifyOnPage(CourtCaseCheckNextHearingAnswersPage)
     courtCaseNextHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Next court date set': 'Date to be fixed',

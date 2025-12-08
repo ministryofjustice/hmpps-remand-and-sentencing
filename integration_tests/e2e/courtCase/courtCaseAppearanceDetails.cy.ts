@@ -72,9 +72,9 @@ context('Court Case Appearance details Page', () => {
       })
     })
 
-    it('next hearing summary shows correct data', () => {
+    it('next appearance summary shows correct data', () => {
       courtCaseAppearanceDetailsPage.nextHearingSummaryList().getSummaryList().should('deep.equal', {
-        'Next hearing set': 'Yes',
+        'Next appearance set': 'Yes',
         Location: 'Southampton Magistrate Court',
         'Hearing type': 'Court appearance',
         Date: '15/12/2024',

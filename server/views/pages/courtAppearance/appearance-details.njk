@@ -73,19 +73,19 @@
 }) %}
 
 {% set nextHearingSummaryRows = [{
-  key: { text: "Next hearing set" },
-  value: { text: "Yes" if appearance.nextHearingSelect else "No future appearance scheduled" },
+  key: { text: "Next appearance set" },
+  value: { text: "Yes" if appearance.nextAppearanceSelect else "No future appearance scheduled" },
   actions: {
     items: [{
-      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-select",
+      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-select",
       text: "Edit",
-      visuallyHiddenText: "Next hearing set",
+      visuallyHiddenText: "Next appearance set",
       classes: "govuk-link--no-visited-state"
     }]
   }
 }] %}
 
-{% if appearance.nextHearingSelect %}
+{% if appearance.nextAppearanceSelect %}
   {% set nextHearingSummaryRows = nextHearingSummaryRows.concat([
     {
       key: { text: "Location" },
@@ -104,7 +104,7 @@
       value: { text: appearanceTypeDescription },
       actions: {
         items: [{
-          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-type",
+          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-type",
           text: "Edit",
           visuallyHiddenText: "Next hearing type",
           classes: "govuk-link--no-visited-state"

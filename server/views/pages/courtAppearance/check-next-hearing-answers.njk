@@ -11,7 +11,7 @@
             {% include "../../partials/nextAppearanceCaption.njk" %}
             <h1 class="govuk-heading-l">Check your answers</h1>
 
-            {% if courtAppearance.nextHearingSelect %}
+            {% if courtAppearance.nextAppearanceSelect %}
                 {{ govukSummaryList({
                     rows: [
                         {
@@ -24,7 +24,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-type?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-type?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "next hearing type"
                                 }
@@ -80,7 +80,7 @@
                             actions: {
                             items: [
                                 {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-hearing-select?submitToCheckAnswers=true",
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-select?submitToCheckAnswers=true",
                                     text: "Edit",
                                     visuallyHiddenText: "next court date set"
                                 }

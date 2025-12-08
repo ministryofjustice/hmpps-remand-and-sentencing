@@ -17,8 +17,8 @@ declare module 'models' {
     appearanceOutcomeUuid?: string
     relatedOffenceOutcomeUuid?: string
     caseOutcomeAppliedAll?: string
-    nextHearingSelect?: boolean
-    nextHearingTypeUuid?: string
+    nextAppearanceSelect?: boolean
+    nextAppearanceTypeUuid?: string
     nextHearingDate?: Date
     nextHearingTimeSet?: boolean
     offences?: Offence[]

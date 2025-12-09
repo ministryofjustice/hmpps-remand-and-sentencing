@@ -44,6 +44,16 @@ describe('GET Offence outcome', () => {
         dispositionCode: 'F',
       },
     ])
+    defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue({
+      outcomeUuid: '123',
+      outcomeType: 'NON_SENTENCING',
+      displayOrder: 10,
+      isSubList: false,
+      nomisCode: '10',
+      outcomeName: 'Appearance sentencing outcome',
+      relatedChargeOutcomeUuid: '3',
+      dispositionCode: 'FINAL',
+    })
     defaultServices.courtAppearanceService.getCaseOutcome.mockResolvedValue({
       outcomeUuid: '123',
       outcomeType: 'NON_SENTENCING',

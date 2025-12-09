@@ -444,12 +444,8 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-    const appearanceOutcome = await this.courtAppearanceService.getCaseOutcome(
-      req.session,
-      nomsId,
-      appearanceReference,
-      req.user.username,
-    )
+    const outcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId, appearanceReference)
+    const appearanceOutcome = await this.refDataService.getAppearanceOutcomeByUuid(outcomeUuid, req.user.username)
     const [caseOutcomes, offenceHint] = await Promise.all([
       this.refDataService.getAllChargeOutcomes(req.user.username),
       this.getOffenceHint(offence, req.user.username),
@@ -464,6 +460,9 @@ export default class OffenceRoutes extends BaseRoutes {
     const chargeOutcomes = caseOutcomes
       .filter(caseOutcome => outcomeTypes.includes(caseOutcome.outcomeType))
       .sort((a, b) => a.displayOrder - b.displayOrder)
+
+    const primaryOutcomes = chargeOutcomes.filter(o => o.outcomeType !== 'NON_CUSTODIAL')
+    const nonCustodialOutcomes = chargeOutcomes.filter(o => o.outcomeType === 'NON_CUSTODIAL')
 
     let legacyCaseOutcome
     if (offence.outcomeUuid && !chargeOutcomes.map(outcome => outcome.outcomeUuid).includes(offence.outcomeUuid)) {
@@ -495,7 +494,8 @@ export default class OffenceRoutes extends BaseRoutes {
       submitToEditOffence,
       errors: req.flash('errors') || [],
       backLink,
-      chargeOutcomes,
+      primaryOutcomes,
+      nonCustodialOutcomes,
       legacyCaseOutcome,
       offenceHint,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),

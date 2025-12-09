@@ -56,12 +56,12 @@ context('Add Offence Outcome Page', () => {
 
     context('With REMAND appearance outcome', () => {
       beforeEach(() => {
-        const overAllOutcomePage = Page.verifyOnPageTitle(
+        const overallOutcomePage = Page.verifyOnPageTitle(
           CourtCaseOverallCaseOutcomePage,
           'Select the overall case outcome',
         )
-        overAllOutcomePage.radioLabelContains('Remanded in custody').click()
-        overAllOutcomePage.continueButton().click()
+        overallOutcomePage.radioLabelContains('Remanded in custody').click()
+        overallOutcomePage.continueButton().click()
         cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
         const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
         offenceOffenceCodePage.input().type('PS90037')
@@ -142,12 +142,12 @@ context('Add Offence Outcome Page', () => {
     })
     context('With NON_CUSTODIAL appearance outcome', () => {
       beforeEach(() => {
-        const overAllOutcomePage = Page.verifyOnPageTitle(
+        const overallOutcomePage = Page.verifyOnPageTitle(
           CourtCaseOverallCaseOutcomePage,
           'Select the overall case outcome',
         )
-        overAllOutcomePage.radioLabelContains('Lie on file').click()
-        overAllOutcomePage.continueButton().click()
+        overallOutcomePage.radioLabelContains('Lie on file').click()
+        overallOutcomePage.continueButton().click()
         cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
         const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
         offenceOffenceCodePage.input().type('PS90037')
@@ -178,12 +178,12 @@ context('Add Offence Outcome Page', () => {
       receivedCustodialSentencePage.radioLabelSelector('true').click()
       receivedCustodialSentencePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-case-outcome')
-      const overAllOutcomePage = Page.verifyOnPageTitle(
+      const overallOutcomePage = Page.verifyOnPageTitle(
         CourtCaseOverallCaseOutcomePage,
         'Select the overall case outcome',
       )
-      overAllOutcomePage.radioLabelContains('Imprisonment').click()
-      overAllOutcomePage.continueButton().click()
+      overallOutcomePage.radioLabelContains('Imprisonment').click()
+      overallOutcomePage.continueButton().click()
       const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
       courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
       courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()

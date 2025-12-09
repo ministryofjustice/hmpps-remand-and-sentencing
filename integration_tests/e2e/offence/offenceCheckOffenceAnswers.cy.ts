@@ -147,12 +147,12 @@ context('Check Offence Answers Page', () => {
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
       courtCaseWarrantDatePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-case-outcome')
-      const overAllOutcomePage = Page.verifyOnPageTitle(
+      const overallOutcomePage = Page.verifyOnPageTitle(
         CourtCaseOverallCaseOutcomePage,
         'Select the overall case outcome',
       )
-      overAllOutcomePage.radioLabelContains('Imprisonment').click()
-      overAllOutcomePage.continueButton().click()
+      overallOutcomePage.radioLabelContains('Imprisonment').click()
+      overallOutcomePage.continueButton().click()
       const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
       courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
       courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()

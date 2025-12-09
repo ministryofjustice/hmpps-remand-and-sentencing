@@ -28,16 +28,6 @@
     items: []
 } %}
 
-{% set primaryOutcomes = [] %}
-{% set nonCustodialOutcomes = [] %}
-{% for caseOutcome in chargeOutcomes %}
-    {% if caseOutcome.outcomeType == 'NON_CUSTODIAL' %}
-        {{ nonCustodialOutcomes.push(caseOutcome) }}
-    {% else %}
-        {{ primaryOutcomes.push(caseOutcome) }}
-    {% endif %}
-{% endfor %}
-
 {% for caseOutcome in primaryOutcomes %}
     {% set caseOutcomeRow = {
         value: caseOutcome.outcomeUuid,

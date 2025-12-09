@@ -3,6 +3,7 @@ import OffenceSentenceServeTypePage from '../../pages/offenceSentenceServeTypePa
 import Page from '../../pages/page'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 
 context('Add Offence Sentence Serve Type Page', () => {
   let offenceSentenceServeTypePage: OffenceSentenceServeTypePage
@@ -30,23 +31,27 @@ context('Add Offence Sentence Serve Type Page', () => {
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
-    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
-    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
-    courtCaseWarrantDatePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-case-outcome')
-    const overallOutcomePage = Page.verifyOnPageTitle(
+    const overAllOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,
       'Select the overall case outcome',
     )
-    overallOutcomePage.radioLabelContains('Imprisonment').click()
-    overallOutcomePage.continueButton().click()
+    overAllOutcomePage.radioLabelContains('Imprisonment').click()
+    overAllOutcomePage.continueButton().click()
     const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
     courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.continueButton().click()
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/1/sentence-serve-type')
     offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)

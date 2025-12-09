@@ -2,6 +2,9 @@ import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import Page from '../../pages/page'
 import SentenceSentenceConsecutiveToPage from '../../pages/sentenceSentenceConsecutiveToPage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
+import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 
 context('Sentence consecutive to Page', () => {
   let sentenceSentenceConsecutiveToPage: SentenceSentenceConsecutiveToPage
@@ -25,10 +28,24 @@ context('Sentence consecutive to Page', () => {
     cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetOffencesByCodes', {})
-
     cy.signIn()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-case-outcome')
+    const overAllOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    overAllOutcomePage.radioLabelContains('Imprisonment').click()
+    overAllOutcomePage.continueButton().click()
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
+    courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')

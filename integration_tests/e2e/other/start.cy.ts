@@ -29,7 +29,7 @@ context('Start Page', () => {
       'Case references': 'C894623, F23325, J39596',
       'First day in custody': '15/10/2022',
       'Overall case outcome': 'Remanded in custody',
-      'Next hearing': 'Birmingham Crown Court Court appearance 15/12/2024 10:30',
+      'Next appearance': 'Birmingham Crown Court Court appearance 15/12/2024 10:30',
     })
   })
 

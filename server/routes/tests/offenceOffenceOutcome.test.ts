@@ -54,16 +54,6 @@ describe('GET Offence outcome', () => {
       relatedChargeOutcomeUuid: '3',
       dispositionCode: 'FINAL',
     })
-    defaultServices.courtAppearanceService.getCaseOutcome.mockResolvedValue({
-      outcomeUuid: '123',
-      outcomeType: 'NON_SENTENCING',
-      displayOrder: 10,
-      isSubList: false,
-      nomisCode: '10',
-      outcomeName: 'Appearance sentencing outcome',
-      relatedChargeOutcomeUuid: '3',
-      dispositionCode: 'FINAL',
-    })
     const courtAppearance = {
       warrantType: 'NON_SENTENCING',
       caseReferenceNumber: 'T12345678',

@@ -621,6 +621,23 @@ context('Sentencing appearance details Page', () => {
         offenceDate: '2023-12-15',
       })
       courtCaseAppearanceDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3f20856f-fa17-493b-89c7-205970c749b8',
+          'overall-case-outcome?backTo=sentencingCourtAppearance',
+          true,
+        )
+        .click()
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Edit the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.legendParagraph().should('contain', 'A Nomis description')
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
+      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseAppearanceDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',

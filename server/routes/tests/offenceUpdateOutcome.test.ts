@@ -2,6 +2,7 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import dayjs from 'dayjs'
+import type { CourtAppearance } from 'models'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 
 let app: Express
@@ -16,8 +17,13 @@ afterEach(() => {
 
 describe('GET Update Offence outcome', () => {
   it('should render page on repeat journey', () => {
+    const outcomeUuid = '123'
     defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('NON_SENTENCING')
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      offenceCode: 'CC12345',
+    })
+    defaultServices.courtAppearanceService.getOffence.mockReturnValue({
       chargeUuid: '1',
       offenceCode: 'CC12345',
     })
@@ -42,8 +48,27 @@ describe('GET Update Offence outcome', () => {
         dispositionCode: 'F',
       },
     ])
+    defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue({
+      outcomeUuid: '123',
+      outcomeType: 'NON_SENTENCING',
+      displayOrder: 10,
+      isSubList: false,
+      nomisCode: '10',
+      outcomeName: 'Appearance sentencing outcome',
+      relatedChargeOutcomeUuid: '3',
+      dispositionCode: 'FINAL',
+    })
+    const courtAppearance = {
+      warrantType: 'NON_SENTENCING',
+      caseReferenceNumber: 'T12345678',
+      warrantDate: new Date(),
+      courtCode: 'ACCRYC',
+      appearanceOutcomeUuid: outcomeUuid,
+      caseOutcomeAppliedAll: 'false',
+    } as CourtAppearance
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue(courtAppearance)
     return request(app)
-      .get('/person/A1234AB/edit-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
+      .get('/person/A1234AB/edit-court-case/0/add-court-appearance/0/offences/0/update-offence-outcome')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

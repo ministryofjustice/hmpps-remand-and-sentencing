@@ -4,6 +4,8 @@ import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import Page from '../../pages/page'
+import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 
 context('Add Offence Outcome Page', () => {
   let offenceOffenceOutcomePage: OffenceOffenceOutcomePage
@@ -32,6 +34,7 @@ context('Add Offence Outcome Page', () => {
           label,
           checked: true,
         },
+        { isDivider: true, label: 'or' },
         {
           label: 'Lie on file',
           checked: false,
@@ -43,95 +46,128 @@ context('Add Offence Outcome Page', () => {
       ])
   }
 
-  context('Submitting Remand', () => {
+  context('Submitting Non-Sentencing', () => {
     beforeEach(() => {
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('false').click()
       receivedCustodialSentencePage.continueButton().click()
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
-      const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-      offenceOffenceCodePage.input().type('PS90037')
-      offenceOffenceCodePage.continueButton().click()
-      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
-      offenceOffenceOutcomePage = Page.verifyOnPageTitle(
-        OffenceOffenceOutcomePage,
-        'Select the outcome for this offence',
-      )
     })
 
-    it('submitting without selecting anything results in an error', () => {
-      offenceOffenceOutcomePage.continueButton().click()
-      offenceOffenceOutcomePage
-        .errorSummary()
-        .trimTextContent()
-        .should('equal', 'There is a problem You must select the offence outcome')
-    })
+    context('With REMAND appearance outcome', () => {
+      beforeEach(() => {
+        const overallOutcomePage = Page.verifyOnPageTitle(
+          CourtCaseOverallCaseOutcomePage,
+          'Select the overall case outcome',
+        )
+        overallOutcomePage.radioLabelContains('Remanded in custody').click()
+        overallOutcomePage.continueButton().click()
+        cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
+        const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+        offenceOffenceCodePage.input().type('PS90037')
+        offenceOffenceCodePage.continueButton().click()
+        cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
+        offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+          OffenceOffenceOutcomePage,
+          'Select the outcome for this offence',
+        )
+      })
 
-    it('displays remand and non custodial outcomes', () => {
-      offenceOffenceOutcomePage
-        .radios()
-        .getRadioOptions()
-        .should('deep.equal', [
+      it('submitting without selecting anything results in an error', () => {
+        offenceOffenceOutcomePage.continueButton().click()
+        offenceOffenceOutcomePage
+          .errorSummary()
+          .trimTextContent()
+          .should('equal', 'There is a problem You must select the offence outcome')
+      })
+
+      it('displays remand and non custodial outcomes', () => {
+        offenceOffenceOutcomePage
+          .radios()
+          .getRadioOptions()
+          .should('deep.equal', [
+            { label: 'Remanded in custody', checked: false }, // Radio 1
+            { isDivider: true, label: 'or' }, // Divider (from custom logic)
+            { label: 'Lie on file', checked: false }, // Radio 2
+            { label: 'Replaced with Another Offence', checked: false }, // Radio 3
+          ])
+      })
+
+      it('selects the correct radio button if in review mode', () => {
+        cy.task('stubGetChargeOutcomeById', {})
+        cy.task('stubGetOffencesByCodes', {})
+        cy.task('stubGetChargeOutcomesByIds', [
           {
-            label: 'Remanded in custody',
-            checked: false,
-          },
-          {
-            label: 'Lie on file',
-            checked: false,
-          },
-          {
-            label: 'Replaced with Another Offence',
-            checked: false,
+            outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+            outcomeName: 'Remanded in custody',
+            outcomeType: 'REMAND',
           },
         ])
+        offenceOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
+        offenceOffenceOutcomePage.continueButton().click()
+        const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+
+        cy.get('[data-qa^="edit-offence-link-"]')
+          .first()
+          .then($el => {
+            const href = $el.attr('href')
+            const match = href.match(/offences\/([a-f0-9-]+)\//)
+            if (match) {
+              const chargeUuid = match[1]
+              offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
+              const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+              offenceEditOffencePage.editFieldLink(chargeUuid, 'offence-outcome').click()
+            }
+          })
+
+        offenceOffenceOutcomePage
+          .radios()
+          .getRadioOptions()
+          .should('deep.equal', [
+            {
+              label: 'Remanded in custody',
+              checked: true,
+            },
+            { isDivider: true, label: 'or' },
+            {
+              label: 'Lie on file',
+              checked: false,
+            },
+            {
+              label: 'Replaced with Another Offence',
+              checked: false,
+            },
+          ])
+      })
     })
-
-    it('selects the correct radio button if in review mode', () => {
-      cy.task('stubGetChargeOutcomeById', {})
-      cy.task('stubGetOffencesByCodes', {})
-      cy.task('stubGetChargeOutcomesByIds', [
-        {
-          outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-          outcomeName: 'Remanded in custody',
-          outcomeType: 'REMAND',
-        },
-      ])
-      offenceOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
-      offenceOffenceOutcomePage.continueButton().click()
-      const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
-
-      cy.get('[data-qa^="edit-offence-link-"]')
-        .first()
-        .then($el => {
-          const href = $el.attr('href')
-          const match = href.match(/offences\/([a-f0-9-]+)\//)
-          if (match) {
-            const chargeUuid = match[1]
-            offenceCheckOffenceAnswersPage.editOffenceLink(chargeUuid).click()
-            const offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-            offenceEditOffencePage.editFieldLink(chargeUuid, 'offence-outcome').click()
-          }
-        })
-
-      offenceOffenceOutcomePage
-        .radios()
-        .getRadioOptions()
-        .should('deep.equal', [
-          {
-            label: 'Remanded in custody',
-            checked: true,
-          },
-          {
-            label: 'Lie on file',
-            checked: false,
-          },
-          {
-            label: 'Replaced with Another Offence',
-            checked: false,
-          },
-        ])
+    context('With NON_CUSTODIAL appearance outcome', () => {
+      beforeEach(() => {
+        const overallOutcomePage = Page.verifyOnPageTitle(
+          CourtCaseOverallCaseOutcomePage,
+          'Select the overall case outcome',
+        )
+        overallOutcomePage.radioLabelContains('Lie on file').click()
+        overallOutcomePage.continueButton().click()
+        cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
+        const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+        offenceOffenceCodePage.input().type('PS90037')
+        offenceOffenceCodePage.continueButton().click()
+        cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-outcome')
+        offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+          OffenceOffenceOutcomePage,
+          'Select the outcome for this offence',
+        )
+      })
+      it('displays only custodial outcomes', () => {
+        offenceOffenceOutcomePage
+          .radios()
+          .getRadioOptions()
+          .should('deep.equal', [
+            // Divider (from custom logic)
+            { label: 'Lie on file', checked: false },
+            { label: 'Replaced with Another Offence', checked: false }, // Radio 2// Radio 3
+          ])
+      })
     })
   })
 
@@ -141,6 +177,17 @@ context('Add Offence Outcome Page', () => {
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('true').click()
       receivedCustodialSentencePage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-case-outcome')
+      const overallOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      overallOutcomePage.radioLabelContains('Imprisonment').click()
+      overallOutcomePage.continueButton().click()
+      const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
+      courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
+      courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
+      courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-code')
       const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
       offenceOffenceCodePage.input().type('PS90037')
@@ -161,6 +208,7 @@ context('Add Offence Outcome Page', () => {
             label: 'Imprisonment',
             checked: false,
           },
+          { isDivider: true, label: 'or' },
           {
             label: 'Lie on file',
             checked: false,

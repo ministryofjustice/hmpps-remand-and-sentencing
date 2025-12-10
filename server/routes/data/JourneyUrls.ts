@@ -58,7 +58,7 @@ export default class JourneyUrls {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appearance-details`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/non-sentencing/appearance-details`
   }
 
   static receivedCustodialSentence = (

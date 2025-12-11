@@ -297,7 +297,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-conviction-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/conviction-date',
     offenceRoutes.submitConvictionDate,
   )
 
@@ -749,6 +749,16 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/offence-date',
     unknownRecallSentenceRoutes.submitOffenceDate,
+  )
+
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/conviction-date',
+    unknownRecallSentenceRoutes.getConvictionDate,
+  )
+
+  router.post(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/conviction-date',
+    unknownRecallSentenceRoutes.submitConvictionDate,
   )
 
   return router

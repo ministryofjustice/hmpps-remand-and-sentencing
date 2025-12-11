@@ -1063,6 +1063,73 @@ export default {
       },
     })
   },
+  stubGetUnknownRecallSentenceAppearanceDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/474fd702-b329-4284-b89e-0d37fdd09eff',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '474fd702-b329-4284-b89e-0d37fdd09eff',
+          outcome: {
+            outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
+            outcomeName: 'Imprisonment',
+            nomisCode: '09753',
+            outcomeType: 'SENTENCING',
+            displayOrder: 10,
+            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+          },
+          warrantType: 'SENTENCING',
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C894623',
+          appearanceDate: '2025-07-08',
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              outcome: {
+                outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+                outcomeName: 'Imprisonment',
+                nomisCode: '09753',
+                outcomeType: 'SENTENCING',
+                displayOrder: 10,
+                dispositionCode: 'FINAL',
+              },
+              sentence: {
+                sentenceUuid: 'b2e13910-348b-4bd3-96d9-7c7eeb8ebd9a',
+                periodLengths: [
+                  {
+                    periodLengthUuid: 'e7e15ea9-d419-4424-b321-70db5ee9add4',
+                    years: 4,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                ],
+                sentenceServeType: 'CONCURRENT',
+                legacyData: {
+                  active: true,
+                  bookingId: 87,
+                  postedDate: '2017-04-12T17:24:24.007909',
+                  sentenceCalcType: '14FTR_ORA',
+                  sentenceCategory: '2003',
+                  sentenceTypeDesc: 'ORA 14 Day Fixed Term Recall',
+                  nomisLineReference: '3',
+                },
+                sentenceType: {
+                  sentenceTypeUuid: 'f9a1551e-86b1-425b-96f7-23465a0f05fc',
+                  description: 'Unknown pre-recall sentence',
+                  classification: 'LEGACY_RECALL',
+                },
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
   stubGetRemandNomisAppearanceDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -1123,7 +1190,7 @@ export default {
             nomisCode: '09753',
             outcomeType: 'SENTENCING',
             displayOrder: 10,
-            relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+            relatedChargeOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
           },
           warrantType: 'SENTENCING',
           courtCode: 'STHHPM',

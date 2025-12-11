@@ -1,6 +1,8 @@
 <span class="govuk-caption-l" data-qa="offences-caption">
   {% if isNonSentencingToSentencingJourney %}
     Update offence outcomes
+  {% elif isUnknownRecallSentence %}
+    Update sentence information
   {% elif not submitToEditOffence or submitToEditOffence | length == 0 %}
     Add offences
   {% endif %}

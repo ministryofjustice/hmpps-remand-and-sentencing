@@ -833,7 +833,6 @@ export default class OffenceService {
     courtCaseReference: string,
     chargeUuid: string,
     offenceConvictionDateForm: OffenceConvictionDateForm,
-    addOrEditCourtAppearance: string,
     warrantDate: Date,
   ): {
     text?: string

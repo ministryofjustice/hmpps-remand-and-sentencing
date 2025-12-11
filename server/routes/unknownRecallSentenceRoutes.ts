@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import type { OffenceOffenceDateForm } from 'forms'
+import type { OffenceConvictionDateForm, OffenceOffenceDateForm } from 'forms'
 import type { Offence } from 'models'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -8,6 +8,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import BaseRoutes from './baseRoutes'
 import trimForm from '../utils/trim'
 import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
+import UnknownRecallSentenceJourneyUrls from './data/UnknownRecallSentenceJourneyUrls'
 
 export default class UnknownRecallSentenceRoutes extends BaseRoutes {
   constructor(
@@ -39,6 +40,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers } = req.params
     const offenceDateForm = (req.flash('offenceDateForm')[0] || {}) as OffenceOffenceDateForm
     let offenceStartDateDay: number | string = offenceDateForm['offenceStartDate-day']
     let offenceStartDateMonth: number | string = offenceDateForm['offenceStartDate-month']
@@ -62,7 +64,10 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     }
 
     const offenceName = await this.getOffenceDescription(offence, res.locals.user.username)
-
+    let backLink = UnknownRecallSentenceJourneyUrls.landingPage(nomsId)
+    if (submitToCheckAnswers) {
+      backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
+    }
     return res.render('pages/offence/offence-date', {
       nomsId,
       chargeUuid,
@@ -76,6 +81,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       offenceName,
       hideOffences: true,
       isUnknownRecallSentence: true,
+      backLink,
     })
   }
 
@@ -96,19 +102,76 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceDateForm', { ...offenceDateForm })
       return res.redirect(
-        `/person/${nomsId}/unknown-recall-sentence/court-appearance/${appearanceReference}/charge/${chargeUuid}/offence-date?hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
+        `${UnknownRecallSentenceJourneyUrls.offenceDate(nomsId, appearanceReference, chargeUuid)}?hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
       )
     }
 
     if (submitToCheckAnswers) {
+      return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
+    }
+
+    return res.redirect(UnknownRecallSentenceJourneyUrls.convictionDate(nomsId, appearanceReference, chargeUuid))
+  }
+
+  public getConvictionDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers } = req.params
+    const offenceConvictionDateForm = (req.flash('offenceConvictionDateForm')[0] || {}) as OffenceConvictionDateForm
+    let convictionDateDay: number | string = offenceConvictionDateForm['convictionDate-day']
+    let convictionDateMonth: number | string = offenceConvictionDateForm['convictionDate-month']
+    let convictionDateYear: number | string = offenceConvictionDateForm['convictionDate-year']
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
+    const convictionDateValue = offence.sentence?.convictionDate
+    if (convictionDateValue && Object.keys(offenceConvictionDateForm).length === 0) {
+      const convictionDate = new Date(convictionDateValue)
+      convictionDateDay = convictionDate.getDate()
+      convictionDateMonth = convictionDate.getMonth() + 1
+      convictionDateYear = convictionDate.getFullYear()
+    }
+    const offenceHint = await this.getOffenceDescription(offence, res.locals.user.username)
+    let backLink = UnknownRecallSentenceJourneyUrls.offenceDate(nomsId, appearanceReference, chargeUuid)
+    if (submitToCheckAnswers) {
+      backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
+    }
+    return res.render('pages/offence/offence-conviction-date', {
+      nomsId,
+      convictionDateDay,
+      convictionDateMonth,
+      convictionDateYear,
+      offenceHint,
+      errors: req.flash('errors') || [],
+      backLink,
+      hideOffences: true,
+      isUnknownRecallSentence: true,
+    })
+  }
+
+  public submitConvictionDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers } = req.params
+    const offenceConvictionDateForm = trimForm<OffenceConvictionDateForm>(req.body)
+
+    const errors = this.offenceService.setConvictionDateForm(
+      req.session,
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+      offenceConvictionDateForm,
+      this.courtAppearanceService.getWarrantDate(req.session, nomsId, appearanceReference),
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceConvictionDateForm', { ...offenceConvictionDateForm })
       return res.redirect(
-        `/person/${nomsId}/unknown-recall-sentence/court-appearance/${appearanceReference}/charge/${chargeUuid}/check-answers`,
+        `${UnknownRecallSentenceJourneyUrls.convictionDate(nomsId, appearanceReference, chargeUuid)}?hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
       )
     }
 
-    return res.redirect(
-      `/person/${nomsId}/unknown-recall-sentence/court-appearance/${appearanceReference}/charge/${chargeUuid}/conviction-date`,
-    )
+    if (submitToCheckAnswers) {
+      return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
+    }
+
+    return res.redirect(UnknownRecallSentenceJourneyUrls.sentenceType(nomsId, appearanceReference, chargeUuid))
   }
 
   private async getOffenceDescription(sessionOffence: Offence, username: string): Promise<string> {

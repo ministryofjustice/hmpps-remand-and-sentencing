@@ -5,6 +5,7 @@ import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
+import OffenceIsOffenceAggravatedPage from '../../pages/offenceIsOffenceAggravatedPage'
 
 context('Add Offence Offence Name Page', () => {
   let offenceOffenceNamePage: OffenceOffenceNamePage
@@ -46,33 +47,55 @@ context('Add Offence Offence Name Page', () => {
     offenceOffenceNamePage.autoCompleteInput().should('have.value', '')
   })
 
-  it('Entering an offence via the Offence Name route navigates to the offence-confirmation page', () => {
-    cy.visit(`/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence`)
-    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
-    receivedCustodialSentencePage.radioLabelSelector('false').click()
-    receivedCustodialSentencePage.continueButton().click()
-    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
-    courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('20')
-    courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('5')
-    courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
-    courtCaseWarrantDatePage.continueButton().click()
+  context('Entering an offence via the Offence Name route', () => {
+    beforeEach(() => {
+      // Start
+      cy.visit(`/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence`)
+      const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+      receivedCustodialSentencePage.radioLabelSelector('false').click()
+      receivedCustodialSentencePage.continueButton().click()
 
-    cy.visit(`/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date`)
-    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('16')
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('8')
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
-    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    offenceOffenceDatePage.continueButton().click()
-    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-    offenceOffenceCodePage.unknownCodeCheckbox().check()
-    offenceOffenceCodePage.continueButton().click()
-    offenceOffenceNamePage = Page.verifyOnPage(OffenceOffenceNamePage)
-    offenceOffenceNamePage.autoCompleteInput().type('PS90037 An offence description')
-    offenceOffenceNamePage.continueButton().click()
-    Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+      // Warrant Date
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('20')
+      courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('5')
+      courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')
+      courtCaseWarrantDatePage.continueButton().click()
+
+      // Offence Date
+      cy.visit(`/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date`)
+      const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+      offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('16')
+      offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('8')
+      offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2023')
+      offenceOffenceDatePage.continueButton().click()
+
+      // Unknown Code Step → Name Entry
+      const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+      offenceOffenceCodePage.unknownCodeCheckbox().check()
+      offenceOffenceCodePage.continueButton().click()
+      cy.task('stubGetScheduleById', {})
+
+      // Now we are on OffenceOffenceNamePage for both tests
+    })
+
+    it('navigates to the offence-confirmation page when not schedule part 11', () => {
+      offenceOffenceNamePage = Page.verifyOnPage(OffenceOffenceNamePage)
+      offenceOffenceNamePage.autoCompleteInput().type('PS90037 An offence description')
+      offenceOffenceNamePage.continueButton().click()
+
+      Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    })
+
+    it('navigates to the aggravated page when offence IS schedule part 11', () => {
+      cy.task('stubGetOffenceByCode', { offenceCode: 'OF61003B' })
+
+      offenceOffenceNamePage = Page.verifyOnPage(OffenceOffenceNamePage)
+      offenceOffenceNamePage.autoCompleteInput().type('OF61003B Aid & abet soliciting to murder')
+      offenceOffenceNamePage.continueButton().click()
+
+      Page.verifyOnPage(OffenceIsOffenceAggravatedPage)
+    })
   })
 })

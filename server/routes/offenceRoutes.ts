@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import type {
+  isOffenceAggravatedByTerroristConnectionForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -808,6 +809,75 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
     }
+    const schedulePart = await this.manageOffencesService.getSchedulePartByOffenceCode(
+      offenceCodeForm.offenceCode,
+      req.user.username,
+    )
+    if (schedulePart === 11) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+    if ([9, 10].includes(schedulePart)) {
+      const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+      sessionOffence.terrorRelated = true
+    }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+    )
+  }
+
+  getIsOffenceAggravated: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence } = req.query
+    return res.render('pages/offence/is-offence-aggravated', {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      errors: req.flash('errors') || [],
+      addOrEditCourtAppearance,
+      submitToEditOffence,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code`,
+    })
+  }
+
+  submitIsOffenceAggravated: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence } = req.query
+    const isOffenceAggravatedForm = trimForm<isOffenceAggravatedByTerroristConnectionForm>(req.body)
+    const errors = this.offenceService.setIsOffenceAggravated(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      isOffenceAggravatedForm,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('isOffenceAggravatedByTerroristConnectionForm', { ...isOffenceAggravatedForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated?hasErrors=true${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+      )
+    }
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
     )
@@ -894,6 +964,20 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/inactive-offence?backTo=NAME${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
         )
       }
+    }
+
+    const schedulePart = await this.manageOffencesService.getSchedulePartByOffenceCode(
+      offenceNameForm.offenceName.split(' ').at(0),
+      req.user.username,
+    )
+    if (schedulePart === 11) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+    if ([9, 10].includes(schedulePart)) {
+      const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+      sessionOffence.terrorRelated = true
     }
 
     if (submitToEditOffence) {

@@ -1,0 +1,46 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Is this offence aggravated" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-is-offence-aggravated{{ "?submitToEditOffence=true" if submitToEditOffence }}" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {% include "../../partials/offenceCaption.njk" %}
+
+                {{ govukRadios({
+                    id: "isOffenceAggravatedByTerroristConnection",
+                    name: "isOffenceAggravatedByTerroristConnection",
+                    fieldset: {
+                        legend: {
+                            text: "Is this offence aggravated by a terrorist connection?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    errorMessage:  errors | findError('isOffenceAggravatedByTerroristConnection'),
+                    hint: {
+                        text: "You can find this on the prison court register"
+                    },
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes",
+                            checked: isOffenceAggravatedByTerroristConnectionForm.isOffenceAggravatedByTerroristConnection === 'true'
+                        },
+                        {
+                            value: "false",
+                            text: "No",
+                            checked: isOffenceAggravatedByTerroristConnectionForm.isOffenceAggravatedByTerroristConnection === 'false'
+                        }
+                    ]
+                }) }}
+
+
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+            </form>
+{% endblock %}

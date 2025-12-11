@@ -1,6 +1,7 @@
 import { SuperAgentRequest } from 'superagent'
 import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
+import { Schedule } from '../../server/@types/manageOffencesApi/manageOffencesClientTypes'
 
 export default {
   stubGetOffenceByCode: ({
@@ -153,7 +154,123 @@ export default {
             maxPeriodIsLife: false,
             maxPeriodOfIndictmentYears: null,
           },
+          {
+            id: 60869,
+            code: 'OF61003B',
+            description: 'Aid & abet soliciting to murder',
+            offenceType: 'CI',
+            revisionId: 294717,
+            startDate: '1961-01-01',
+            endDate: '2004-12-25',
+            homeOfficeStatsCode: '003/02',
+            changedDate: '2023-12-03T10:06:35',
+            loadDate: '2024-01-23T15:40:45.820185',
+            schedules: [],
+            isChild: true,
+            parentOffenceId: 60867,
+            childOffences: null,
+            legislation: null,
+            maxPeriodIsLife: true,
+            maxPeriodOfIndictmentYears: null,
+            lineReference: '',
+            legislationText: '',
+            paragraphTitle: '',
+            paragraphNumber: '',
+          },
         ],
+      },
+    })
+  },
+
+  stubGetScheduleById: ({
+    scheduleId = 5,
+  }: {
+    scheduleId?: number
+    offenceCode?: string
+    partNumber?: number
+  }): SuperAgentRequest => {
+    const schedule: Schedule = {
+      id: scheduleId,
+      act: 'Some Act',
+      code: 'SCHEDULE_CODE',
+      url: '/manage-offences-api/schedule/by-id/5',
+      scheduleParts: [
+        {
+          id: 1,
+          partNumber: 9,
+          offences: [
+            {
+              id: 61002,
+              code: 'OF61129',
+              description:
+                'Send / deliver noxious thing with intent to burn / maim / disfigure / disable / do grievous bodily harm',
+              offenceType: 'CI',
+              revisionId: 587881,
+              startDate: '1997-11-24',
+              endDate: null,
+              homeOfficeStatsCode: '005/07',
+              changedDate: '2023-04-25T19:57:02',
+              loadDate: '2024-01-23T15:40:47.106577',
+              schedules: [],
+              isChild: false,
+              parentOffenceId: null,
+              childOffences: null,
+              legislation: null,
+              maxPeriodIsLife: true,
+              maxPeriodOfIndictmentYears: null,
+              lineReference: null,
+              legislationText: null,
+              paragraphTitle: null,
+              paragraphNumber: null,
+            },
+          ],
+        },
+        {
+          id: 10,
+          partNumber: 2,
+          offences: [],
+        },
+        {
+          id: 11,
+          partNumber: 3,
+          offences: [
+            {
+              id: 60869,
+              code: 'OF61003B',
+              description: 'Aid & abet soliciting to murder',
+              offenceType: 'CI',
+              revisionId: 294717,
+              startDate: '1961-01-01',
+              endDate: '2004-12-25',
+              homeOfficeStatsCode: '003/02',
+              changedDate: '2023-12-03T10:06:35',
+              loadDate: '2024-01-23T15:40:45.820185',
+              schedules: [],
+              isChild: true,
+              parentOffenceId: 60867,
+              childOffences: null,
+              legislation: null,
+              maxPeriodIsLife: true,
+              maxPeriodOfIndictmentYears: null,
+              lineReference: '',
+              legislationText: '',
+              paragraphTitle: '',
+              paragraphNumber: '',
+            },
+          ],
+        },
+      ],
+    }
+
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/manage-offences-api/schedule/by-id/${scheduleId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: schedule,
       },
     })
   },

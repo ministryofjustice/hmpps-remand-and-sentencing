@@ -8,6 +8,7 @@ import sentenceTypeRoutes from './sentenceTypesRoutes'
 import OverallSentencingRoutes from './overallSentencingRoutes'
 import SentencingRoutes from './sentencingRoutes'
 import RemandRoutes from './remandRoutes'
+import UnknownRecallSentenceRoutes from './unknownRecallSentenceRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -65,6 +66,13 @@ export default function routes(services: Services): Router {
     services.courtRegisterService,
     services.manageOffencesService,
     services.refDataService,
+  )
+
+  const unknownRecallSentenceRoutes = new UnknownRecallSentenceRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
   )
 
   router.get('/', async (req, res, next) => {
@@ -289,7 +297,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-conviction-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/conviction-date',
     offenceRoutes.submitConvictionDate,
   )
 
@@ -304,7 +312,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-offence-date',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/offence-date',
     offenceRoutes.submitOffenceDate,
   )
 
@@ -736,6 +744,31 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/:documentType/submit-upload-documents',
     courtCaseRoutes.submitUploadDocuments,
+  )
+
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/load-charge',
+    unknownRecallSentenceRoutes.loadCharge,
+  )
+
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/offence-date',
+    unknownRecallSentenceRoutes.getOffenceDate,
+  )
+
+  router.post(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/offence-date',
+    unknownRecallSentenceRoutes.submitOffenceDate,
+  )
+
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/conviction-date',
+    unknownRecallSentenceRoutes.getConvictionDate,
+  )
+
+  router.post(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/conviction-date',
+    unknownRecallSentenceRoutes.submitConvictionDate,
   )
 
   return router

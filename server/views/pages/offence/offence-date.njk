@@ -23,10 +23,10 @@
                     }
                 }) %}
                 {% if offenceName %}
-                                                        <div id="fieldset-hint" class="govuk-hint">
-                                                           {{ offenceName }}
-                                                        </div>
-                                                    {% endif %}
+                    <div id="fieldset-hint" class="govuk-hint">
+                        {{ offenceName }}
+                    </div>
+                {% endif %}
 
                     {{ govukDateInput({
                         id: "offenceStartDate",
@@ -91,15 +91,10 @@
 
                 {% endcall %}
 
-                <div class="govuk-button-group">
-                    <button type="submit"
-                            class="govuk-button"
-                            data-module="govuk-button"
-                            data-qa="continue-button"
-                            formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-offence-date{{ submitQuery }}">
-                        Continue
-                    </button>
-                </div>
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
             </form>
 
 {% endblock %}

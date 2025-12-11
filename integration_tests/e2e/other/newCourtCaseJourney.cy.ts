@@ -45,6 +45,7 @@ context('New Court Case journey', () => {
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-12' })
+    cy.task('stubGetScheduleById', {})
     cy.signIn()
     cy.visit('/person/A1234AB')
   })

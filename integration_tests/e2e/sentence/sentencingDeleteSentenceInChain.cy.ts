@@ -39,6 +39,7 @@ context('Sentencing delete sentence in chain Page', () => {
     cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-13' })
     cy.task('stubGetCourtsByIds')
     cy.task('stubHasLoopInChain')
+    cy.task('stubGetScheduleById', {})
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
     receivedCustodialSentencePage.radioLabelSelector('true').click()

@@ -54,6 +54,7 @@ context('Repeat Court Case journey', () => {
     ])
     cy.task('stubGetLatestOffenceDate', {})
     cy.task('stubGetCourtCaseValidationDates', {})
+    cy.task('stubGetScheduleById', {})
     cy.signIn()
     cy.visit('/person/A1234AB')
   })

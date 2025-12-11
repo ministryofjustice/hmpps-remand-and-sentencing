@@ -197,6 +197,7 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('can add another offence and go back to appearance details', () => {
+      cy.task('stubGetScheduleById', {})
       courtCaseAppearanceDetailsPage.addAnotherButton().click()
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')

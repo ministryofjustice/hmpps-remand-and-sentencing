@@ -15,6 +15,7 @@ context('Check Offence Answers Page', () => {
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtById', {})
+    cy.task('stubGetScheduleById', {})
     cy.task('stubGetSentenceTypesByIds', [
       {
         sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',

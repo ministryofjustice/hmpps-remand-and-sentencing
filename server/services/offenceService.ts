@@ -989,7 +989,7 @@ export default class OffenceService {
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
-      if (isOffenceAggravatedForm.isOffenceAggravatedByTerroristConnection === 'true') offence.terrorRelated = true
+      offence.terrorRelated = isOffenceAggravatedForm.isOffenceAggravatedByTerroristConnection === 'true'
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }

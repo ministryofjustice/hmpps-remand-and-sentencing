@@ -5,6 +5,7 @@ import Page from '../../pages/page'
 context('Unknown recall sentence offence date', () => {
   let offenceOffenceDatePage: OffenceOffenceDatePage
   beforeEach(() => {
+    cy.task('happyPathStubs')
     cy.task('stubGetUnknownRecallSentenceAppearanceDetails')
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetOffenceByCode', {})

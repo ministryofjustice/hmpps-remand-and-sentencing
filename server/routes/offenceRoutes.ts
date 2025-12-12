@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import type {
+  isOffenceAggravatedByTerroristConnectionForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -808,6 +809,70 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
     }
+    if (offence.schedules.some(schedule => schedule.code === '19ZA' && schedule.partNumber === 3)) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+    if (offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))) {
+      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
+    }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+    )
+  }
+
+  getIsOffenceAggravated: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence } = req.query
+    return res.render('pages/offence/is-offence-aggravated', {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      errors: req.flash('errors') || [],
+      addOrEditCourtAppearance,
+      submitToEditOffence,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code`,
+    })
+  }
+
+  submitIsOffenceAggravated: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { submitToEditOffence } = req.query
+    const isOffenceAggravatedForm = trimForm<isOffenceAggravatedByTerroristConnectionForm>(req.body)
+    const errors = this.offenceService.setIsOffenceAggravated(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      isOffenceAggravatedForm,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('isOffenceAggravatedByTerroristConnectionForm', { ...isOffenceAggravatedForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated?hasErrors=true${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+      )
+    }
+
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
     )
@@ -894,6 +959,15 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/inactive-offence?backTo=NAME${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
         )
       }
+    }
+
+    if (offence.schedules.some(schedule => schedule.code === '19ZA' && schedule.partNumber === 3)) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
+      )
+    }
+    if (offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))) {
+      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
     }
 
     if (submitToEditOffence) {

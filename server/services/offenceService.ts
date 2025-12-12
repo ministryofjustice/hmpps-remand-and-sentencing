@@ -1277,7 +1277,10 @@ export default class OffenceService {
     chargeUuid: string,
     isTerrorRelated: boolean,
   ) {
-    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
     offence.terrorRelated = isTerrorRelated
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
   }
 }

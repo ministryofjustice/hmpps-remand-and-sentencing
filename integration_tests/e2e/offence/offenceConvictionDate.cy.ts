@@ -237,7 +237,6 @@ context('Add Offence Conviction Date Page tests with a full create court appeara
     offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
     offenceOffenceDatePage.continueButton().click()
-    cy.task('stubGetScheduleById', {})
 
     const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
 

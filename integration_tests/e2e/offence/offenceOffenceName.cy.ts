@@ -75,7 +75,6 @@ context('Add Offence Offence Name Page', () => {
       const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
       offenceOffenceCodePage.unknownCodeCheckbox().check()
       offenceOffenceCodePage.continueButton().click()
-      cy.task('stubGetScheduleById', {})
 
       // Now we are on OffenceOffenceNamePage for both tests
     })
@@ -89,10 +88,12 @@ context('Add Offence Offence Name Page', () => {
     })
 
     it('navigates to the aggravated page when offence IS schedule part 11', () => {
-      cy.task('stubGetOffenceByCode', { offenceCode: 'OF61003B' })
+      cy.task('stubGetTerrorOffenceByCode', { offenceCode: 'OF61003' })
 
       offenceOffenceNamePage = Page.verifyOnPage(OffenceOffenceNamePage)
-      offenceOffenceNamePage.autoCompleteInput().type('OF61003B Aid & abet soliciting to murder')
+      offenceOffenceNamePage
+        .autoCompleteInput()
+        .type('OF61003 Solicit to commit murder - Offences Against the Person Act 1861')
       offenceOffenceNamePage.continueButton().click()
 
       Page.verifyOnPage(OffenceIsOffenceAggravatedPage)

@@ -74,7 +74,6 @@ context('Add Offence Offence Code Page', () => {
       offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('8')
       offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2023')
       offenceOffenceDatePage.continueButton().click()
-      cy.task('stubGetScheduleById', {})
     })
 
     it('navigates to the offence-confirmation page when not schedule part 11', () => {
@@ -86,10 +85,10 @@ context('Add Offence Offence Code Page', () => {
     })
 
     it('navigates to the aggravated page when offence IS schedule part 11', () => {
-      cy.task('stubGetOffenceByCode', { offenceCode: 'OF61003B' })
+      cy.task('stubGetTerrorOffenceByCode', { offenceCode: 'OF61003' })
 
       offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
-      offenceOffenceCodePage.input().type('OF61003B')
+      offenceOffenceCodePage.input().type('OF61003')
       offenceOffenceCodePage.continueButton().click()
 
       Page.verifyOnPage(OffenceIsOffenceAggravatedPage)

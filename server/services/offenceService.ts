@@ -1269,4 +1269,15 @@ export default class OffenceService {
     }
     return allOffences
   }
+
+  setTerrorRelated(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    chargeUuid: string,
+    isTerrorRelated: boolean,
+  ) {
+    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    offence.terrorRelated = isTerrorRelated
+  }
 }

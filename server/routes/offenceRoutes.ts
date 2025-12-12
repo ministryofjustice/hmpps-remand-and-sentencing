@@ -809,18 +809,13 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
     }
-    const schedulePart = await this.manageOffencesService.getSchedulePartByOffenceCode(
-      offenceCodeForm.offenceCode,
-      req.user.username,
-    )
-    if (schedulePart === 11) {
+    if (offence.schedules.some(schedule => schedule.code === '19ZA' && schedule.partNumber === 3)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
-    if ([9, 10].includes(schedulePart)) {
-      const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-      sessionOffence.terrorRelated = true
+    if (offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))) {
+      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
     }
 
     return res.redirect(
@@ -966,18 +961,13 @@ export default class OffenceRoutes extends BaseRoutes {
       }
     }
 
-    const schedulePart = await this.manageOffencesService.getSchedulePartByOffenceCode(
-      offenceNameForm.offenceName.split(' ').at(0),
-      req.user.username,
-    )
-    if (schedulePart === 11) {
+    if (offence.schedules.some(schedule => schedule.code === '19ZA' && schedule.partNumber === 3)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
-    if ([9, 10].includes(schedulePart)) {
-      const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-      sessionOffence.terrorRelated = true
+    if (offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))) {
+      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
     }
 
     if (submitToEditOffence) {

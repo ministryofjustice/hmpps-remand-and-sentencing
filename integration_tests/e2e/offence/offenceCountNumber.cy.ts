@@ -68,7 +68,6 @@ context('Add Offence Count number Page', () => {
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetAllChargeOutcomes')
-    cy.task('stubGetScheduleById', {})
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
     const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')

@@ -32,7 +32,6 @@ context('Add Offence Edit offence Page', () => {
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetAllChargeOutcomes')
     cy.task('stubGetAllAppearanceOutcomes')
-    cy.task('stubGetScheduleById', {})
     cy.signIn()
   })
 

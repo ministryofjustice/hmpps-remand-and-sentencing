@@ -31,7 +31,6 @@ context('Add Offence Sentence Serve Type Page', () => {
       outcomeName: 'Imprisonment',
       outcomeType: 'SENTENCING',
     })
-    cy.task('stubGetScheduleById', {})
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
     receivedCustodialSentencePage.radioLabelSelector('true').click()

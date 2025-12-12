@@ -42,12 +42,4 @@ export default class ManageOffencesService {
     }
     return offenceMap
   }
-
-  async getSchedulePartByOffenceCode(offenceCode: string, username: string): Promise<number> {
-    const schedule = await this.manageOffencesApiClient.getScheduleById(5, username)
-    const foundPart = schedule.scheduleParts.find(
-      part => [9, 10, 11].includes(part.id) && part.offences?.some(offence => offence.code === offenceCode),
-    )
-    return foundPart ? foundPart.id : -1
-  }
 }

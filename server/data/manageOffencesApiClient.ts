@@ -2,7 +2,7 @@ import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
-import type { Offence, Schedule } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import type { Offence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 
 export default class ManageOffencesApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -34,14 +34,5 @@ export default class ManageOffencesApiClient extends RestClient {
       },
       asSystem(username),
     )) as unknown as Promise<Offence[]>
-  }
-
-  async getScheduleById(scheduleId: number, username: string): Promise<Schedule> {
-    return (await this.get(
-      {
-        path: `/schedule/by-id/${scheduleId}`,
-      },
-      asSystem(username),
-    )) as unknown as Promise<Schedule>
   }
 }

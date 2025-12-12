@@ -2,6 +2,7 @@ import type {
   CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
+  isOffenceAggravatedByTerroristConnectionForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -964,6 +965,37 @@ export default class OffenceService {
     return errors
   }
 
+  setIsOffenceAggravated(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    chargeUuid: string,
+    isOffenceAggravatedForm: isOffenceAggravatedByTerroristConnectionForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      isOffenceAggravatedForm,
+      {
+        isOffenceAggravatedByTerroristConnection: 'required',
+      },
+      {
+        'required.isOffenceAggravatedByTerroristConnection':
+          'Select Yes if the offence is aggravated by a terrorist connection',
+      },
+    )
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
+      offence.terrorRelated = isOffenceAggravatedForm.isOffenceAggravatedByTerroristConnection === 'true'
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
   setFirstSentenceConsecutiveTo(
     session: Partial<SessionData>,
     nomsId: string,
@@ -1236,5 +1268,19 @@ export default class OffenceService {
       }
     }
     return allOffences
+  }
+
+  setTerrorRelated(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    chargeUuid: string,
+    isTerrorRelated: boolean,
+  ) {
+    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+    const offence = this.getOffence(session.offences, id)
+    offence.terrorRelated = isTerrorRelated
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = offence
   }
 }

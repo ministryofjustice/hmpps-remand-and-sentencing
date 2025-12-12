@@ -167,6 +167,10 @@ declare module 'forms' {
     isSentenceConsecutiveToAnotherCase?: string
   }
 
+  export interface isOffenceAggravatedByTerroristConnectionForm {
+    isOffenceAggravatedByTerroristConnection?: string
+  }
+
   export interface FirstSentenceConsecutiveToForm {
     consecutiveToSentenceUuid?: string
   }

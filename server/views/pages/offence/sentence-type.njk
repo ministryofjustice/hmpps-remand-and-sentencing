@@ -5,7 +5,7 @@
 {% set pageTitle = applicationName + " - Sentence type " %}
 
 {% set fieldSetHtml %}
-    <h1 class="govuk-fieldset__heading{% if legacySentenceType %} govuk-!-static-margin-bottom-3{% endif %}">{% if isAddCourtAppearance%}Select the sentence type{%else%}Edit the sentence type{%endif%}</h1>
+    <h1 class="govuk-fieldset__heading{% if legacySentenceType %} govuk-!-static-margin-bottom-3{% endif %}">{% if displaySelect %}Select the sentence type{%else%}Edit the sentence type{%endif%}</h1>
     {% if legacySentenceType%}
     <p class="govuk-body-l govuk-!-static-margin-bottom-3" data-qa="legendParagraph">{{ legacySentenceType }}</p>
     {% endif %}
@@ -25,7 +25,7 @@
 {% endfor %}
 
 {% block pageContent %}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-sentence-type{{ submitQuery }}" autocomplete="off">
+            <form method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 

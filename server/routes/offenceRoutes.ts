@@ -1124,6 +1124,7 @@ export default class OffenceRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       backLink,
       submitQuery,
+      displaySelect: res.locals.isAddCourtAppearance,
     })
   }
 

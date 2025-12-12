@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
-import type { OffenceConvictionDateForm, OffenceOffenceDateForm } from 'forms'
+import type { OffenceConvictionDateForm, OffenceOffenceDateForm, OffenceSentenceTypeForm } from 'forms'
 import type { Offence } from 'models'
+import dayjs from 'dayjs'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import OffenceService from '../services/offenceService'
@@ -9,6 +10,8 @@ import BaseRoutes from './baseRoutes'
 import trimForm from '../utils/trim'
 import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import UnknownRecallSentenceJourneyUrls from './data/UnknownRecallSentenceJourneyUrls'
+import RefDataService from '../services/refDataService'
+import { getNextPeriodLengthType } from '../utils/utils'
 
 export default class UnknownRecallSentenceRoutes extends BaseRoutes {
   constructor(
@@ -16,6 +19,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
+    private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
@@ -40,7 +44,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, appearanceReference, chargeUuid } = req.params
-    const { submitToCheckAnswers } = req.params
+    const { submitToCheckAnswers } = req.query
     const offenceDateForm = (req.flash('offenceDateForm')[0] || {}) as OffenceOffenceDateForm
     let offenceStartDateDay: number | string = offenceDateForm['offenceStartDate-day']
     let offenceStartDateMonth: number | string = offenceDateForm['offenceStartDate-month']
@@ -87,7 +91,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
 
   public submitOffenceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, appearanceReference, chargeUuid } = req.params
-    const { submitToCheckAnswers } = req.params
+    const { submitToCheckAnswers } = req.query
     const offenceDateForm = trimForm<OffenceOffenceDateForm>(req.body)
     const errors = this.offenceService.setOffenceDates(
       req.session,
@@ -115,7 +119,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
 
   public getConvictionDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, appearanceReference, chargeUuid } = req.params
-    const { submitToCheckAnswers } = req.params
+    const { submitToCheckAnswers } = req.query
     const offenceConvictionDateForm = (req.flash('offenceConvictionDateForm')[0] || {}) as OffenceConvictionDateForm
     let convictionDateDay: number | string = offenceConvictionDateForm['convictionDate-day']
     let convictionDateMonth: number | string = offenceConvictionDateForm['convictionDate-month']
@@ -148,7 +152,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
 
   public submitConvictionDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, appearanceReference, chargeUuid } = req.params
-    const { submitToCheckAnswers } = req.params
+    const { submitToCheckAnswers } = req.query
     const offenceConvictionDateForm = trimForm<OffenceConvictionDateForm>(req.body)
 
     const errors = this.offenceService.setConvictionDateForm(
@@ -172,6 +176,88 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     }
 
     return res.redirect(UnknownRecallSentenceJourneyUrls.sentenceType(nomsId, appearanceReference, chargeUuid))
+  }
+
+  public getSentenceType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers } = req.query
+    let offenceSentenceTypeForm = (req.flash('offenceSentenceTypeForm')[0] || {}) as OffenceSentenceTypeForm
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
+    if (Object.keys(offenceSentenceTypeForm).length === 0) {
+      offenceSentenceTypeForm = {
+        sentenceType: offence?.sentence?.sentenceTypeId,
+      }
+    }
+    const convictionDate = dayjs(offence?.sentence?.convictionDate)
+    const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
+    const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
+    const offenceDate = dayjs(offence?.offenceEndDate ?? offence?.offenceStartDate)
+    const sentenceTypes = (
+      await this.refDataService.getSentenceTypes(ageAtConviction, convictionDate, offenceDate, req.user.username)
+    ).sort((a, b) => a.displayOrder - b.displayOrder)
+
+    let backLink = UnknownRecallSentenceJourneyUrls.convictionDate(nomsId, appearanceReference, chargeUuid)
+    if (submitToCheckAnswers) {
+      backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
+    }
+
+    const offenceHint = await this.getOffenceDescription(offence, req.user.username)
+    return res.render('pages/offence/sentence-type', {
+      nomsId,
+      chargeUuid,
+      appearanceReference,
+      offenceSentenceTypeForm,
+      sentenceTypes,
+      offenceHint,
+      errors: req.flash('errors') || [],
+      backLink,
+      displaySelect: true,
+      hideOffences: true,
+      isUnknownRecallSentence: true,
+    })
+  }
+
+  public submitSentenceType: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers } = req.query
+    const offenceSentenceTypeForm = trimForm<OffenceSentenceTypeForm>(req.body)
+    const errors = this.offenceService.setSentenceType(
+      req.session,
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+      offenceSentenceTypeForm,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceSentenceTypeForm', { ...offenceSentenceTypeForm })
+      return res.redirect(
+        `${UnknownRecallSentenceJourneyUrls.sentenceType(nomsId, appearanceReference, chargeUuid)}?hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
+      )
+    }
+
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
+    this.offenceService.updatePeriodLengths(req.session, nomsId, appearanceReference, chargeUuid, offence)
+
+    const nextPeriodLengthType = getNextPeriodLengthType(
+      this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid).sentence ?? {
+        sentenceUuid: crypto.randomUUID(),
+      },
+      null,
+    )
+
+    if (nextPeriodLengthType) {
+      return res.redirect(
+        UnknownRecallSentenceJourneyUrls.periodLength(nomsId, appearanceReference, chargeUuid, nextPeriodLengthType),
+      )
+    }
+
+    if (offence.sentence.sentenceTypeClassification === 'FINE' && !offence.sentence.fineAmount) {
+      return res.redirect(UnknownRecallSentenceJourneyUrls.fineAmount(nomsId, appearanceReference, chargeUuid))
+    }
+
+    return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
   }
 
   private async getOffenceDescription(sessionOffence: Offence, username: string): Promise<string> {

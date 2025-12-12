@@ -73,6 +73,7 @@ export default function routes(services: Services): Router {
     services.offenceService,
     services.remandAndSentencingService,
     services.manageOffencesService,
+    services.refDataService,
   )
 
   router.get('/', async (req, res, next) => {
@@ -387,7 +388,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-sentence-type',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/sentence-type',
     offenceRoutes.submitSentenceType,
   )
 
@@ -759,6 +760,16 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/conviction-date',
     unknownRecallSentenceRoutes.submitConvictionDate,
+  )
+
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/sentence-type',
+    unknownRecallSentenceRoutes.getSentenceType,
+  )
+
+  router.post(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/sentence-type',
+    unknownRecallSentenceRoutes.submitSentenceType,
   )
 
   return router

@@ -1,7 +1,6 @@
 import { SuperAgentRequest } from 'superagent'
 import dayjs from 'dayjs'
 import { stubFor } from './wiremock'
-import { Schedule } from '../../server/@types/manageOffencesApi/manageOffencesClientTypes'
 
 export default {
   stubGetOffenceByCode: ({

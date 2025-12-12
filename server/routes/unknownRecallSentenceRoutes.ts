@@ -1,5 +1,10 @@
 import { RequestHandler } from 'express'
-import type { OffenceConvictionDateForm, OffenceOffenceDateForm, OffenceSentenceTypeForm } from 'forms'
+import type {
+  OffenceConvictionDateForm,
+  OffenceOffenceDateForm,
+  OffenceSentenceTypeForm,
+  SentenceLengthForm,
+} from 'forms'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
 import CourtAppearanceService from '../services/courtAppearanceService'
@@ -8,10 +13,12 @@ import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import BaseRoutes from './baseRoutes'
 import trimForm from '../utils/trim'
-import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
+import { pageCourtCaseAppearanceToCourtAppearance, sentenceLengthToSentenceLengthForm } from '../utils/mappingUtils'
 import UnknownRecallSentenceJourneyUrls from './data/UnknownRecallSentenceJourneyUrls'
 import RefDataService from '../services/refDataService'
 import { getNextPeriodLengthType } from '../utils/utils'
+import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
+import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 
 export default class UnknownRecallSentenceRoutes extends BaseRoutes {
   constructor(
@@ -257,6 +264,107 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       return res.redirect(UnknownRecallSentenceJourneyUrls.fineAmount(nomsId, appearanceReference, chargeUuid))
     }
 
+    return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
+  }
+
+  public getPeriodLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers, periodLengthType } = req.query
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
+    const { sentence } = offence
+    const currentPeriodLength = sentence.periodLengths?.find(
+      periodLength => periodLength.periodLengthType === periodLengthType,
+    )
+    let periodLengthForm = (req.flash('periodLengthForm')[0] || {}) as SentenceLengthForm
+    if (Object.keys(periodLengthForm).length === 0) {
+      periodLengthForm = sentenceLengthToSentenceLengthForm(currentPeriodLength)
+    }
+    const expectedPeriodLengthTypeIndex = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths
+      .map(periodLength => periodLength.type)
+      .indexOf(periodLengthType as string)
+
+    const periodLengthHeader =
+      periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
+      currentPeriodLength?.legacyData?.sentenceTermDescription
+    let backLink = UnknownRecallSentenceJourneyUrls.sentenceType(nomsId, appearanceReference, chargeUuid)
+    if (submitToCheckAnswers) {
+      backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
+    } else if (expectedPeriodLengthTypeIndex >= 1) {
+      const previousPeriodLengthType =
+        sentenceTypePeriodLengths[sentence?.sentenceTypeClassification].periodLengths[expectedPeriodLengthTypeIndex - 1]
+          .type
+      backLink = `${UnknownRecallSentenceJourneyUrls.periodLength(nomsId, appearanceReference, chargeUuid, previousPeriodLengthType)}${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`
+    }
+    let sentenceTypeHint
+    if (sentence?.sentenceTypeId) {
+      sentenceTypeHint = (await this.refDataService.getSentenceTypeById(sentence.sentenceTypeId, req.user.username))
+        .hintText
+    }
+    const offenceHint = await this.getOffenceDescription(offence, req.user.username)
+    return res.render('pages/offence/period-length', {
+      nomsId,
+      chargeUuid,
+      appearanceReference,
+      periodLengthType,
+      periodLengthForm,
+      periodLengthHeader,
+      sentenceTypeHint,
+      offenceHint,
+      errors: req.flash('errors') || [],
+      backLink,
+      hideOffences: true,
+      isUnknownRecallSentence: true,
+    })
+  }
+
+  public submitPeriodLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers, periodLengthType } = req.query as {
+      submitToCheckAnswers: string
+      periodLengthType: string
+    }
+    const offenceSentenceLengthForm = trimForm<SentenceLengthForm>(req.body)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
+    this.offenceService.setInitialPeriodLengths(
+      req.session,
+      nomsId,
+      appearanceReference,
+      sentence?.periodLengths ?? [],
+      chargeUuid,
+    )
+    const currentPeriodLength = sentence.periodLengths?.find(
+      periodLength => periodLength.periodLengthType === periodLengthType,
+    )
+    const periodLengthHeader =
+      periodLengthTypeHeadings[periodLengthType]?.toLowerCase() ??
+      currentPeriodLength?.legacyData?.sentenceTermDescription
+    const errors = this.offenceService.setPeriodLength(
+      req.session,
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+      offenceSentenceLengthForm,
+      periodLengthType,
+      periodLengthHeader,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceSentenceLengthForm', { ...offenceSentenceLengthForm })
+      return res.redirect(
+        `${UnknownRecallSentenceJourneyUrls.periodLength(nomsId, appearanceReference, chargeUuid, periodLengthType)}&hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
+      )
+    }
+
+    const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType)
+    if (nextPeriodLengthType) {
+      return res.redirect(
+        UnknownRecallSentenceJourneyUrls.periodLength(nomsId, appearanceReference, chargeUuid, nextPeriodLengthType),
+      )
+    }
+
+    if (sentence.sentenceTypeClassification === 'FINE') {
+      return res.redirect(UnknownRecallSentenceJourneyUrls.fineAmount(nomsId, appearanceReference, chargeUuid))
+    }
     return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
   }
 

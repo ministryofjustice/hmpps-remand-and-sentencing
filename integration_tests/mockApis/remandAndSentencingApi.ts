@@ -1100,14 +1100,7 @@ export default {
               },
               sentence: {
                 sentenceUuid: 'b2e13910-348b-4bd3-96d9-7c7eeb8ebd9a',
-                periodLengths: [
-                  {
-                    periodLengthUuid: 'e7e15ea9-d419-4424-b321-70db5ee9add4',
-                    years: 4,
-                    periodOrder: 'years,months,weeks,days',
-                    periodLengthType: 'SENTENCE_LENGTH',
-                  },
-                ],
+                periodLengths: [],
                 sentenceServeType: 'CONCURRENT',
                 legacyData: {
                   active: true,

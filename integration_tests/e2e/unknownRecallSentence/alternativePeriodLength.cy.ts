@@ -36,9 +36,6 @@ context('Unknown recall sentence alternative period length', () => {
     offenceSentenceTypePage.continueButton().click()
     const offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
     offencePeriodLengthPage.alternativePeriodLengthLink().click()
-    cy.visit(
-      '/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/alternative-period-length?periodLengthType=SENTENCE_LENGTH',
-    )
     offenceAlternativePeriodLengthPage = Page.verifyOnPageTitle(OffenceAlternativePeriodLengthPage, 'sentence length')
   })
 

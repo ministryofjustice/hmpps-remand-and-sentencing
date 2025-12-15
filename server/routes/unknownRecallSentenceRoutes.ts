@@ -2,6 +2,7 @@ import { RequestHandler } from 'express'
 import type {
   OffenceAlternativePeriodLengthForm,
   OffenceConvictionDateForm,
+  OffenceFineAmountForm,
   OffenceOffenceDateForm,
   OffenceSentenceTypeForm,
   SentenceLengthForm,
@@ -464,6 +465,65 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     if (sentence.sentenceTypeClassification === 'FINE') {
       return res.redirect(UnknownRecallSentenceJourneyUrls.fineAmount(nomsId, appearanceReference, chargeUuid))
     }
+    return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
+  }
+
+  public getFineAmount: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers } = req.query
+    let offenceFineAmountForm = (req.flash('offenceFineAmountForm')[0] || {}) as OffenceFineAmountForm
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
+    const { sentence } = offence
+    if (Object.keys(offenceFineAmountForm).length === 0) {
+      offenceFineAmountForm = {
+        fineAmount: sentence?.fineAmount,
+      }
+    }
+    const lastPeriodLengthType = sentenceTypePeriodLengths[sentence?.sentenceTypeClassification]?.periodLengths.at(-1)
+      .type as string
+    let backLink = UnknownRecallSentenceJourneyUrls.periodLength(
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+      lastPeriodLengthType,
+    )
+    if (submitToCheckAnswers) {
+      backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
+    }
+    const offenceHint = await this.getOffenceDescription(offence, req.user.username)
+    return res.render('pages/offence/fine-amount', {
+      nomsId,
+      appearanceReference,
+      offenceFineAmountForm,
+      chargeUuid,
+      backLink,
+      offenceHint,
+      errors: req.flash('errors') || [],
+      hideOffences: true,
+      isUnknownRecallSentence: true,
+    })
+  }
+
+  public submitFineAmount: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers } = req.query
+    const offenceFineAmountForm = trimForm<OffenceFineAmountForm>(req.body)
+    const errors = this.offenceService.setOffenceFineAmount(
+      req.session,
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+      offenceFineAmountForm,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceFineAmountForm', { ...offenceFineAmountForm })
+      return res.redirect(
+        `${UnknownRecallSentenceJourneyUrls.fineAmount(nomsId, appearanceReference, chargeUuid)}?hasErrors=true${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`,
+      )
+    }
+
     return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
   }
 

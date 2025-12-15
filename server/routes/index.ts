@@ -802,5 +802,15 @@ export default function routes(services: Services): Router {
     unknownRecallSentenceRoutes.submitAlternativePeriodLength,
   )
 
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/fine-amount',
+    unknownRecallSentenceRoutes.getFineAmount,
+  )
+
+  router.post(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/fine-amount',
+    unknownRecallSentenceRoutes.submitFineAmount,
+  )
+
   return router
 }

@@ -27,6 +27,15 @@ export default class UnknownRecallSentenceJourneyUrls {
     return `${this.prefix(nomsId)}/court-appearance/${appearanceReference}/charge/${chargeUuid}/fine-amount`
   }
 
+  static alternativePeriodLength = (
+    nomsId: string,
+    appearanceReference: string,
+    chargeUuid: string,
+    periodLengthType: string,
+  ) => {
+    return `${this.prefix(nomsId)}/court-appearance/${appearanceReference}/charge/${chargeUuid}/alternative-period-length?periodLengthType=${periodLengthType}`
+  }
+
   static checkAnswers = (nomsId: string, appearanceReference: string, chargeUuid: string) => {
     return `${this.prefix(nomsId)}/court-appearance/${appearanceReference}/charge/${chargeUuid}/check-answers`
   }

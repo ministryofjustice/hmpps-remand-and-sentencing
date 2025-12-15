@@ -1308,6 +1308,7 @@ export default class OffenceRoutes extends BaseRoutes {
       sentenceTypeHint = (await this.refDataService.getSentenceTypeById(sentence.sentenceTypeId, req.user.username))
         .hintText
     }
+    const alternativePeriodLengthHref = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/alternative-period-length${submitQuery}`
     const offenceHint = await this.getOffenceHint(offence, req.user.username)
     return res.render('pages/offence/period-length', {
       nomsId,
@@ -1326,6 +1327,7 @@ export default class OffenceRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       backLink,
       submitQuery,
+      alternativePeriodLengthHref,
     })
   }
 

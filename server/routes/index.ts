@@ -418,7 +418,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-alternative-period-length',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/alternative-period-length',
     offenceRoutes.submitAlternativePeriodLength,
   )
 
@@ -790,6 +790,16 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/period-length',
     unknownRecallSentenceRoutes.submitPeriodLength,
+  )
+
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/alternative-period-length',
+    unknownRecallSentenceRoutes.getAlternativePeriodLength,
+  )
+
+  router.post(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/alternative-period-length',
+    unknownRecallSentenceRoutes.submitAlternativePeriodLength,
   )
 
   return router

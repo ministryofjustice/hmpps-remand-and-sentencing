@@ -12,4 +12,6 @@ export default class OffencePeriodLengthPage extends Page {
   weeksInput = (): PageElement => cy.get('#sentenceLength-weeks')
 
   daysInput = (): PageElement => cy.get('#sentenceLength-days')
+
+  alternativePeriodLengthLink = (): PageElement => cy.get('[data-qa=alternative-period-length-link]')
 }

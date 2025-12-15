@@ -51,7 +51,7 @@
                 }) }}
 
                 <p class="govuk-body govuk-!-margin-bottom-6">
-                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/alternative-period-length{{ submitQuery }}" class="govuk-link govuk-link--no-visited-state">The {{ periodLengthHeader }} is formatted differently</a>
+                    <a href="{{ alternativePeriodLengthHref }}" class="govuk-link govuk-link--no-visited-state" data-qa="alternative-period-length-link">The {{ periodLengthHeader }} is formatted differently</a>
                 </p>
 
                 {% if sentenceTypeHint %}

@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import type {
+  OffenceAlternativePeriodLengthForm,
   OffenceConvictionDateForm,
   OffenceOffenceDateForm,
   OffenceSentenceTypeForm,
@@ -13,7 +14,11 @@ import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import BaseRoutes from './baseRoutes'
 import trimForm from '../utils/trim'
-import { pageCourtCaseAppearanceToCourtAppearance, sentenceLengthToSentenceLengthForm } from '../utils/mappingUtils'
+import {
+  pageCourtCaseAppearanceToCourtAppearance,
+  sentenceLengthToAlternativeSentenceLengthForm,
+  sentenceLengthToSentenceLengthForm,
+} from '../utils/mappingUtils'
 import UnknownRecallSentenceJourneyUrls from './data/UnknownRecallSentenceJourneyUrls'
 import RefDataService from '../services/refDataService'
 import { getNextPeriodLengthType } from '../utils/utils'
@@ -269,7 +274,10 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
 
   public getPeriodLength: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, appearanceReference, chargeUuid } = req.params
-    const { submitToCheckAnswers, periodLengthType } = req.query
+    const { submitToCheckAnswers, periodLengthType } = req.query as {
+      submitToCheckAnswers: string
+      periodLengthType: string
+    }
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
     const { sentence } = offence
     const currentPeriodLength = sentence.periodLengths?.find(
@@ -314,6 +322,12 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       backLink,
       hideOffences: true,
       isUnknownRecallSentence: true,
+      alternativePeriodLengthHref: UnknownRecallSentenceJourneyUrls.alternativePeriodLength(
+        nomsId,
+        appearanceReference,
+        chargeUuid,
+        periodLengthType,
+      ),
     })
   }
 
@@ -355,6 +369,91 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       )
     }
 
+    const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType)
+    if (nextPeriodLengthType) {
+      return res.redirect(
+        UnknownRecallSentenceJourneyUrls.periodLength(nomsId, appearanceReference, chargeUuid, nextPeriodLengthType),
+      )
+    }
+
+    if (sentence.sentenceTypeClassification === 'FINE') {
+      return res.redirect(UnknownRecallSentenceJourneyUrls.fineAmount(nomsId, appearanceReference, chargeUuid))
+    }
+    return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
+  }
+
+  public getAlternativePeriodLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { submitToCheckAnswers, periodLengthType } = req.query as {
+      submitToCheckAnswers: string
+      periodLengthType: string
+    }
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
+    const { sentence } = offence
+    let offenceAlternativeSentenceLengthForm = (req.flash('offenceAlternativeSentenceLengthForm')[0] ||
+      {}) as OffenceAlternativePeriodLengthForm
+    if (Object.keys(offenceAlternativeSentenceLengthForm).length === 0) {
+      offenceAlternativeSentenceLengthForm = sentenceLengthToAlternativeSentenceLengthForm(
+        sentence?.periodLengths?.find(periodLength => periodLength.periodLengthType === periodLengthType),
+      )
+    }
+    const currentPeriodLength = sentence.periodLengths?.find(
+      periodLength => periodLength.periodLengthType === periodLengthType,
+    )
+    const periodLengthHeader =
+      periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
+      currentPeriodLength?.legacyData?.sentenceTermDescription
+    const offenceHint = await this.getOffenceDescription(offence, req.user.username)
+    const backLink = `${UnknownRecallSentenceJourneyUrls.periodLength(
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+      periodLengthType,
+    )}${submitToCheckAnswers ? '&submitToCheckAnswers=true' : ''}`
+    return res.render('pages/offence/alternative-period-length', {
+      nomsId,
+      chargeUuid,
+      appearanceReference,
+      offenceAlternativeSentenceLengthForm,
+      offenceHint,
+      errors: req.flash('errors') || [],
+      backLink,
+      periodLengthType,
+      periodLengthHeader,
+      hideOffences: true,
+      isUnknownRecallSentence: true,
+    })
+  }
+
+  public submitAlternativePeriodLength: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const { periodLengthType } = req.query as {
+      periodLengthType: string
+    }
+    const offenceAlternativeSentenceLengthForm = trimForm<OffenceAlternativePeriodLengthForm>(req.body)
+    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
+    this.offenceService.setInitialPeriodLengths(
+      req.session,
+      nomsId,
+      appearanceReference,
+      sentence?.periodLengths ?? [],
+      chargeUuid,
+    )
+    const errors = this.offenceService.setAlternativePeriodLength(
+      req.session,
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+      offenceAlternativeSentenceLengthForm,
+      periodLengthType as string,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceAlternativeSentenceLengthForm', { ...offenceAlternativeSentenceLengthForm })
+      return res.redirect(
+        `${UnknownRecallSentenceJourneyUrls.alternativePeriodLength(nomsId, appearanceReference, chargeUuid, periodLengthType)}&hasErrors=true`,
+      )
+    }
     const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType)
     if (nextPeriodLengthType) {
       return res.redirect(

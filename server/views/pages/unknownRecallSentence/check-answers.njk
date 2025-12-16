@@ -1,0 +1,178 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set offenceDateHref= "/person/" + nomsId + "/unknown-recall-sentence/court-appearance/" + appearanceReference + "/charge/" + chargeUuid + "/offence-date?submitToCheckAnswers=true" %}
+
+{% if offence.offenceStartDate %}
+  {% set offenceDateRow = {
+  key: {
+    text: "Committed on"
+  },
+  value: {
+    text: offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
+  },
+  actions: {
+    items: [{
+      href: offenceDateHref,
+      text: "Edit",
+      visuallyHiddenText: "committed on",
+      classes: "govuk-link--no-visited-state",
+      attributes: {
+        'data-qa': 'edit-offence-date'
+      }
+    }]
+  }
+}%}
+{% else %}
+{% set offenceDateRow = {
+      key: { text: "Committed on" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + offenceDateHref + '" data-qa="edit-offence-date-cta">Enter offence date</a>'
+      }
+    }%}
+{% endif %}
+
+{% set convictionDateHref= "/person/" + nomsId + "/unknown-recall-sentence/court-appearance/" + appearanceReference + "/charge/" + chargeUuid + "/conviction-date?submitToCheckAnswers=true" %}
+
+{% if offence.sentence.convictionDate %}
+    {% set convictionDateRow = {
+        key: { text: "Conviction date" },
+        value: {
+        text: (offence.sentence.convictionDate | formatDate)
+        },
+        actions: {
+        items: [{
+            href: convictionDateHref,
+            text: "Edit",
+            visuallyHiddenText: "conviction date",
+            classes: "govuk-link--no-visited-state",
+            attributes: {
+                    'data-qa': 'edit-conviction-date'
+                    }
+        }]
+        }
+    } %}
+{% else %}
+    {% set convictionDateRow = {
+        key: { text: "Conviction date" },
+        value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + convictionDateHref + '" data-qa="edit-conviction-date-' + chargeUuid + '">Enter conviction date</a>'
+        }
+    }%}
+{% endif %}
+
+{% set sentenceTypeHref = "/person/" + nomsId + "/unknown-recall-sentence/court-appearance/" + appearanceReference + "/charge/" + chargeUuid + "/sentence-type?submitToCheckAnswers=true"%}
+
+{% if sentenceType %}
+    {% set sentenceTypeRow = {
+        key: { text: "Sentence type" },
+        value: {
+            text: sentenceType
+        },
+        actions: {
+        items: [{
+            href: sentenceTypeHref,
+            text: "Edit",
+            visuallyHiddenText: "sentence type",
+            classes: "govuk-link--no-visited-state",
+            attributes: {
+            'data-qa': 'edit-sentence-type'
+            }
+        }]
+        }
+    } %}
+{% else %}
+    {% set sentenceTypeRow = {
+        key: { text: "Sentence type" },
+        value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + sentenceTypeHref + '" data-qa="edit-sentence-type-cta">Enter sentence type</a>'
+        }
+    }%}
+{% endif %}
+
+{% set summaryRows=[ offenceDateRow, convictionDateRow, sentenceTypeRow ] %}
+
+{% for periodLength in periodLengths %}
+    {% set periodLengthHref = "/person/" + nomsId + "/unknown-recall-sentence/court-appearance/" + appearanceReference + "/charge/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.periodLengthType + "&submitToCheckAnswers=true"%}
+        {% if periodLength.uuid === '-1' %}
+            {% set summaryRows = (summaryRows.concat({
+                key: { text: periodLengthTypeHeadings[periodLength.periodLengthType] },
+                value: {
+                html: '<a class="govuk-link govuk-link--no-visited-state" href="' + periodLengthHref + '" data-qa="edit-period-length-' + periodLength.periodLengthType + '-cta">Enter ' + (periodLengthTypeHeadings[periodLength.periodLengthType] | lower) + '</a>'
+                }
+            })) %}
+        {% else %}
+            {% set summaryRows = (summaryRows.concat(
+                {
+                    key: { text: periodLengthTypeHeadings[periodLength.periodLengthType] },
+                    value: {
+                        text: periodLength | formatLengths
+                    },
+                    actions: {
+                    items: [{
+                        href: periodLengthHref,
+                        text: "Edit",
+                        classes: "govuk-link--no-visited-state",
+                        attributes: {
+                        'data-qa': 'edit-period-length-' + periodLength.periodLengthType
+                        }
+                    }]
+                    }
+                }
+            ))%}
+        {% endif %}
+{% endfor %}
+
+{% if sentenceTypeClassification === 'FINE' %}
+    {% set fineAmountHref = "/person/" + nomsId + "/unknown-recall-sentence/court-appearance/" + appearanceReference + "/charge/" + chargeUuid + "/fine-amount?submitToCheckAnswers=true" %}
+    {% if offence.sentence.fineAmount %}
+      {% set fineAmountRow = {
+      key: { text: "Fine Amount" },
+      value: { text: "£" + offence.sentence.fineAmount },
+      actions: {
+        items: [{
+          href: fineAmountHref,
+          text: "Edit",
+          visuallyHiddenText: "fine amount",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-fine-amount'
+          }
+        }]
+      }
+      } %}
+    {% else %}
+      {% set fineAmountRow = {
+      key: { text: "Fine Amount" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + fineAmountHref + '" data-qa="edit-fine-amount-cta">Enter fine amount</a>'
+      }
+    }%}
+    {% endif %}
+    {% set summaryRows = summaryRows.concat([fineAmountRow]) %}
+{% endif %}
+
+{% set pageTitle = applicationName + " - check unknown recall sentence answers" %}
+{% block pageContent %}
+  {{ super() }}
+  <form method="post" autocomplete="off">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% include "../../partials/offenceCaption.njk" %}
+    <h1 class="govuk-heading-l">Check your answers</h1>
+
+    {{ govukSummaryList({
+      rows: summaryRows,
+      attributes: { 'data-qa': 'answers-summary-list' }
+    }) }}
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Confirm and save",
+        attributes: { 'data-qa': 'continue-button' }
+      }) }}
+
+      <a class="govuk-link govuk-link--no-visited-state" data-qa="cancel-link" href="/person/{{ nomsId }}/unknown-recall-sentence/court-appearance/{{ appearanceReference }}/charge/{{ chargeUuid }}/cancel-charge">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

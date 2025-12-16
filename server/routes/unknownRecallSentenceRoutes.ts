@@ -584,6 +584,13 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     return res.redirect(UnknownRecallSentenceJourneyUrls.landingPage(nomsId))
   }
 
+  public cancelCharge: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference } = req.params
+    this.offenceService.clearAllOffences(req.session, nomsId, appearanceReference)
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    return res.redirect(UnknownRecallSentenceJourneyUrls.landingPage(nomsId))
+  }
+
   private async getOffenceDescription(sessionOffence: Offence, username: string): Promise<string> {
     const { offenceCode } = sessionOffence
     if (offenceCode) {

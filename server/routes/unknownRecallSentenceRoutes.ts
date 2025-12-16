@@ -9,6 +9,7 @@ import type {
 } from 'forms'
 import type { Offence } from 'models'
 import dayjs from 'dayjs'
+import { PERIOD_TYPE_PRIORITY } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import OffenceService from '../services/offenceService'
@@ -25,6 +26,7 @@ import RefDataService from '../services/refDataService'
 import { getNextPeriodLengthType } from '../utils/utils'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
+import { SentenceType } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class UnknownRecallSentenceRoutes extends BaseRoutes {
   constructor(
@@ -525,6 +527,43 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     }
 
     return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
+  }
+
+  public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, appearanceReference, chargeUuid } = req.params
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, appearanceReference, chargeUuid)
+    let sentenceType: SentenceType
+    if (offence.sentence.sentenceTypeId) {
+      sentenceType = await this.refDataService.getSentenceTypeById(offence.sentence?.sentenceTypeId, req.user.username)
+    }
+    const periodLengths = offence.sentence?.periodLengths ?? []
+    const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentenceType.classification]?.periodLengths ?? []
+    expectedPeriodLengthTypes
+      .filter(expectedType => !periodLengths.some(periodLength => periodLength.periodLengthType === expectedType.type))
+      .forEach(missingPeriodLength =>
+        periodLengths.push({
+          periodLengthType: missingPeriodLength.type,
+          periodOrder: [],
+          uuid: '-1',
+          description: periodLengthTypeHeadings[missingPeriodLength.type],
+        }),
+      )
+    return res.render('pages/unknownRecallSentence/check-answers', {
+      nomsId,
+      appearanceReference,
+      chargeUuid,
+      offence,
+      errors: req.flash('errors') || [],
+      sentenceType: sentenceType?.description,
+      periodLengthTypeHeadings,
+      periodLengths: periodLengths.sort(
+        (a, b) =>
+          (PERIOD_TYPE_PRIORITY[a.periodLengthType] ?? PERIOD_TYPE_PRIORITY.UNSUPPORTED) -
+          (PERIOD_TYPE_PRIORITY[b.periodLengthType] ?? PERIOD_TYPE_PRIORITY.UNSUPPORTED),
+      ),
+      sentenceTypeClassification: sentenceType?.classification,
+      hideOffences: true,
+    })
   }
 
   private async getOffenceDescription(sessionOffence: Offence, username: string): Promise<string> {

@@ -812,5 +812,10 @@ export default function routes(services: Services): Router {
     unknownRecallSentenceRoutes.submitFineAmount,
   )
 
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/check-answers',
+    unknownRecallSentenceRoutes.getCheckAnswers,
+  )
+
   return router
 }

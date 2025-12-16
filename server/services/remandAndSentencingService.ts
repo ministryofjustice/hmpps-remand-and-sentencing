@@ -1,9 +1,10 @@
-import type { CourtAppearance, CourtCase, UploadedDocument } from 'models'
+import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
 import {
   ConsecutiveChainValidationRequest,
   CourtCaseCountNumbers,
   CourtCaseValidationDate,
+  CreateChargeResponse,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
@@ -25,7 +26,11 @@ import {
   SentenceTypeIsValid,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
-import { courtAppearanceToCreateCourtAppearance, courtCaseToCreateCourtCase } from '../utils/mappingUtils'
+import {
+  courtAppearanceToCreateCourtAppearance,
+  courtCaseToCreateCourtCase,
+  offenceToCreateCharge,
+} from '../utils/mappingUtils'
 
 export default class RemandAndSentencingService {
   constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
@@ -266,5 +271,16 @@ export default class RemandAndSentencingService {
 
   async getSentenceDetails(sentenceUuid: string, username: string): Promise<SentenceDetails> {
     return this.remandAndSentencingApiClient.getSentenceDetails(sentenceUuid, username)
+  }
+
+  async updateCharge(
+    offence: Offence,
+    prisonId: string,
+    appearanceUuid: string,
+    chargeUuid: string,
+    username: string,
+  ): Promise<CreateChargeResponse> {
+    const createCharge = offenceToCreateCharge(offence, prisonId, appearanceUuid)
+    return this.remandAndSentencingApiClient.updateCharge(createCharge, chargeUuid, username)
   }
 }

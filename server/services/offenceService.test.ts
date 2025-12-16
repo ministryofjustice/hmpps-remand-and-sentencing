@@ -427,4 +427,86 @@ describe('offenceService', () => {
     const periodLength = offence.sentence.periodLengths[0]
     expect(periodLength.years).toBe(correctManyAlterantivePeriodLengthsForm['secondSentenceLength-value'])
   })
+
+  describe('validateUnknownRecallSentenceMandatoryFields', () => {
+    it('all errors for nothing on offence', () => {
+      const offence = {} as Offence
+      const errors = service.validateUnknownRecallSentenceMandatoryFields(offence)
+      expect(errors).toEqual([
+        {
+          href: '#',
+          text: 'Enter the offence date',
+        },
+        {
+          href: '#',
+          text: 'Enter the conviction date',
+        },
+        {
+          href: '#',
+          text: 'Enter the sentence type',
+        },
+      ])
+    })
+
+    it('error when sentence type is unknown pre recall', () => {
+      const offence = {
+        offenceStartDate: new Date(),
+        sentence: {
+          convictionDate: new Date(),
+          sentenceTypeId: 'f9a1551e-86b1-425b-96f7-23465a0f05fc',
+          sentenceTypeClassification: 'LEGACY_RECALL',
+        },
+      } as Offence
+      const errors = service.validateUnknownRecallSentenceMandatoryFields(offence)
+      expect(errors).toEqual([
+        {
+          href: '#',
+          text: 'Enter the sentence type',
+        },
+      ])
+    })
+
+    it('error when not all required period lengths are entered', () => {
+      const offence = {
+        offenceStartDate: new Date(),
+        sentence: {
+          convictionDate: new Date(),
+          sentenceTypeId: '123',
+          sentenceTypeClassification: 'STANDARD',
+          periodLengths: [],
+        },
+      } as Offence
+      const errors = service.validateUnknownRecallSentenceMandatoryFields(offence)
+      expect(errors).toEqual([
+        {
+          href: '#',
+          text: 'Enter the sentence length',
+        },
+      ])
+    })
+
+    it('error when fine sentence type selected but no fine amount', () => {
+      const offence = {
+        offenceStartDate: new Date(),
+        sentence: {
+          convictionDate: new Date(),
+          sentenceTypeId: '123',
+          sentenceTypeClassification: 'FINE',
+          periodLengths: [
+            {
+              uuid: '1',
+              periodLengthType: 'TERM_LENGTH',
+            },
+          ],
+        },
+      } as Offence
+      const errors = service.validateUnknownRecallSentenceMandatoryFields(offence)
+      expect(errors).toEqual([
+        {
+          href: '#',
+          text: 'Enter the fine amount',
+        },
+      ])
+    })
+  })
 })

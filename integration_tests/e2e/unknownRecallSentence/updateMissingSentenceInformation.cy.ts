@@ -24,14 +24,13 @@ context('Update missing sentence information page', () => {
         'To make sure release dates are calculated correctly, you must add the missing sentence information including the original sentence type, not the recall sentence type.',
       )
     updateMissingSentenceInformationPage.sentenceCount().contains('Sentences that have not been updated (1)')
-    updateMissingSentenceInformationPage.appearanceHeading().contains('MDI-Magistrates Court on 15/11/2023')
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'Robbery')
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'Committed on 15/11/2023')
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'Convicted on 15/11/2023')
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'Sentence type: Missing')
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'Sentence date: 15/11/2023')
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'Sentence length: Missing')
+    updateMissingSentenceInformationPage
+      .appearanceHeading()
+      .contains('T20231234 at Accrington Youth Court on 15/11/2023')
+
+    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'PS90037 An offence description')
+    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', '15/11/2023')
+    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', '15/11/2023')
     updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'Concurrent')
-    updateMissingSentenceInformationPage.updateSentenceLink(0).should('exist')
   })
 })

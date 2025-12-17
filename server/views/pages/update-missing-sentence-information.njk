@@ -12,18 +12,17 @@
 
 <div class="govuk-grid-row govuk-!-margin-top-4">
     <div class="govuk-grid-column-two-thirds">
-<span class="govuk-caption-m">Update sentence information</span>
+<span class="govuk-caption-l">Update sentence information</span>
 
         <h1 class="govuk-heading-l">Update missing sentence information</h1>
 
-        <p class="govuk-body-s govuk-hint">To make sure release dates are calculated correctly, you must add the missing sentence information including the original sentence type, not the recall sentence type.</p>
+        <p class="govuk-body-l govuk-hint">To make sure release dates are calculated correctly, you must add the missing sentence information including the original sentence type, not the recall sentence type.</p>
 
                   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-top-4">
 
         {% if unknownPreRecallSentences and unknownPreRecallSentences.length > 0 %}
             <h2 class="govuk-heading-m govuk-!-margin-top-4">Sentences that have not been updated ({{ sentenceCount }})</h2>
         {% endif %}
-
         {% for sentenceGroup in unknownPreRecallSentences %}
 
             <h3 class="govuk-heading-s govuk-!-margin-top-4">
@@ -31,7 +30,9 @@
             {{ courtMap[sentenceGroup.courtCode] if courtMap[sentenceGroup.courtCode] else sentenceGroup.courtCode }}
             on {{ sentenceGroup.appearanceDate | formatDate }}
             </h3>
+
             {% for sentence in sentenceGroup.sentences %}
+            <span data-qa="offence-card-{{ loop.index0 }}">
             {{ offenceCard({
                     offenceCode: sentence.offenceCode,
                     offenceName: offenceMap[sentence.offenceCode],
@@ -49,6 +50,7 @@
                     }
                 })
             }}
+            </span>
             {% endfor %}
         {% else %}
             {{ govukInsetText({

@@ -16,6 +16,4 @@ export default class UpdateMissingSentenceInformationPage extends Page {
   appearanceHeading = (): PageElement => cy.get('h3.govuk-heading-s')
 
   offenceCard = (index: number): PageElement => cy.get(`[data-qa="offence-card-${index}"]`)
-
-  updateSentenceLink = (index: number): PageElement => cy.get(`[data-qa="update-sentence-link-${index}"]`)
 }

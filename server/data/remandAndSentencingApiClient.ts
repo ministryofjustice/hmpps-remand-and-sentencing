@@ -15,6 +15,7 @@ import {
   LatestOffenceDate,
   LegacySentenceType,
   LegacySentenceTypeGroupingSummary,
+  MissingSentenceAppearance,
   OffenceOutcome,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
@@ -475,6 +476,21 @@ export default class RemandAndSentencingApiClient extends RestClient {
     return this.get(
       {
         path: `/sentence/${sentenceUuid}/details`,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getSentencesWithUnknownRecallType(
+    sentenceUuids: string[],
+    username: string,
+  ): Promise<Array<MissingSentenceAppearance>> {
+    return this.get(
+      {
+        path: `/sentence/unknown-recall-type`,
+        query: {
+          sentenceUuids,
+        },
       },
       asSystem(username),
     )

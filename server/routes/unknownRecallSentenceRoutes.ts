@@ -24,6 +24,7 @@ import RefDataService from '../services/refDataService'
 import { getNextPeriodLengthType } from '../utils/utils'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default class UnknownRecallSentenceRoutes extends BaseRoutes {
   constructor(
@@ -31,6 +32,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
+    private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
@@ -465,6 +467,41 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       return res.redirect(UnknownRecallSentenceJourneyUrls.fineAmount(nomsId, appearanceReference, chargeUuid))
     }
     return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
+  }
+
+  public getUnknownRecallSentence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const sentenceUuids = req.query.sentenceUuids as string[]
+    const unknownPreRecallSentences = await this.remandAndSentencingService.getSentencesWithUnknownRecallType(
+      sentenceUuids,
+      res.locals.user.username,
+    )
+    const courtIds = unknownPreRecallSentences.map(appearance => appearance.courtCode)
+    const courtMap = await this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username)
+
+    const offenceIds = unknownPreRecallSentences
+      .flatMap(appearance => appearance.sentences)
+      .map(sentence => sentence.offenceCode)
+    const offenceMap: { [key: string]: string } = Object.fromEntries(
+      (await this.manageOffencesService.getOffencesByCodes(offenceIds, res.locals.user.username)).map(offence => [
+        offence.code,
+        offence.description,
+      ]),
+    )
+
+    const sentenceCount = unknownPreRecallSentences.reduce(
+      (acc, appearance) => acc + (appearance.sentences?.length ?? 0),
+      0,
+    )
+
+    return res.render('pages/update-missing-sentence-information', {
+      nomsId,
+      unknownPreRecallSentences,
+      courtMap,
+      offenceMap,
+      sentenceCount,
+      errors: req.flash('errors') || [],
+    })
   }
 
   private async getOffenceDescription(sessionOffence: Offence, username: string): Promise<string> {

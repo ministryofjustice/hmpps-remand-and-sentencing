@@ -1,0 +1,61 @@
+{% extends "../partials/prisonerBannerBackLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set pageTitle = applicationName + " - Update missing sentence information" %}
+{% set backLinkHref = "#" %} {# You should set a proper back link target here #}
+
+{% block content %}
+    {{ super() }}
+
+<div class="govuk-grid-row govuk-!-margin-top-4">
+    <div class="govuk-grid-column-two-thirds">
+<span class="govuk-caption-m">Update sentence information</span>
+
+        <h1 class="govuk-heading-l">Update missing sentence information</h1>
+
+        <p class="govuk-body-s govuk-hint">To make sure release dates are calculated correctly, you must add the missing sentence information including the original sentence type, not the recall sentence type.</p>
+
+                  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-top-4">
+
+        {% if unknownPreRecallSentences and unknownPreRecallSentences.length > 0 %}
+            <h2 class="govuk-heading-m govuk-!-margin-top-4">Sentences that have not been updated ({{ sentenceCount }})</h2>
+        {% endif %}
+
+        {% for sentenceGroup in unknownPreRecallSentences %}
+
+            <h3 class="govuk-heading-s govuk-!-margin-top-4">
+            {{ sentenceGroup.courtCaseReference + ' at ' if sentenceGroup.courtCaseReference }}
+            {{ courtMap[sentenceGroup.courtCode] if courtMap[sentenceGroup.courtCode] else sentenceGroup.courtCode }}
+            on {{ sentenceGroup.appearanceDate | formatDate }}
+            </h3>
+            {% for sentence in sentenceGroup.sentences %}
+            {{ offenceCard({
+                    offenceCode: sentence.offenceCode,
+                    offenceName: offenceMap[sentence.offenceCode],
+                    offenceStartDate: sentence.offenceStartDate | formatDate if sentence.offenceStartDate else 'Missing',
+                    convictionDate: sentence.convictionDate | formatDate if sentence.convictionDate else 'Missing',
+                    sentenceType: sentence.sentenceType or 'Missing',
+                    sentenceDate: sentenceGroup.appearanceDate | formatDate,
+                    periodLengths: sentence.periodLengths | periodLengthsToSentenceLengths,
+                    sentenceServeType: sentence.sentenceServeType,
+                    listItems: {
+                        classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-2",
+                        items: [{
+                            html: '<a href="/person/' + nomsId + '/update-sentence/' + sentence.chargeUuid + '" data-qa="update-sentence-link-'+ sentence.chargeUuid +'" class="govuk-link govuk-link--no-visited-state">Update sentence information</a>'
+                        }]
+                    }
+                })
+            }}
+            {% endfor %}
+        {% else %}
+            {{ govukInsetText({
+                text: "There are no offences with outcomes that need updating."
+            }) }}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

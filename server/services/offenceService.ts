@@ -1258,6 +1258,59 @@ export default class OffenceService {
     return errors
   }
 
+  validateUnknownRecallSentenceMandatoryFields(offence: Offence): { text: string; href: string }[] {
+    const errors: { text: string; href: string }[] = []
+    if (!offence.offenceStartDate) {
+      errors.push({
+        text: `Enter the offence date`,
+        href: '#',
+      })
+    }
+
+    if (!offence.sentence?.convictionDate) {
+      errors.push({
+        text: `Enter the conviction date`,
+        href: '#',
+      })
+    }
+
+    if (
+      !offence.sentence?.sentenceTypeId ||
+      offence.sentence?.sentenceTypeId === 'f9a1551e-86b1-425b-96f7-23465a0f05fc'
+    ) {
+      errors.push({
+        text: `Enter the sentence type`,
+        href: '#',
+      })
+    }
+    if (offence.sentence?.sentenceTypeClassification) {
+      const requiredPeriodLengthTypes =
+        sentenceTypePeriodLengths[offence.sentence?.sentenceTypeClassification]?.periodLengths ?? []
+      requiredPeriodLengthTypes
+        .filter(
+          requiredPeriodLengthType =>
+            !offence.sentence?.periodLengths.some(
+              periodLength => periodLength.periodLengthType === requiredPeriodLengthType.type,
+            ),
+        )
+        .forEach(missingPeriodLengthType => {
+          errors.push({
+            text: `Enter the ${periodLengthTypeHeadings[missingPeriodLengthType.type].toLowerCase()}`,
+            href: '#',
+          })
+        })
+
+      if (offence.sentence?.sentenceTypeClassification === 'FINE' && !offence.sentence?.fineAmount) {
+        errors.push({
+          text: 'Enter the fine amount',
+          href: '#',
+        })
+      }
+    }
+
+    return errors
+  }
+
   getAllOffences(session: Partial<SessionData>, nomsId: string, courtCaseReference: string): Offence[] {
     const allOffences: Offence[] = []
     const prefix = `${nomsId}-${courtCaseReference}-`

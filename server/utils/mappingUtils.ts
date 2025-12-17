@@ -80,9 +80,10 @@ const courtAppearanceToCreateNextCourtAppearance = (
   return nextCourtAppearance
 }
 
-const offenceToCreateCharge = (offence: Offence, prisonId: string): CreateCharge => {
+export const offenceToCreateCharge = (offence: Offence, prisonId: string, appearanceUuid: string): CreateCharge => {
   const sentence = sentenceToCreateSentence(offence.sentence, prisonId)
   return {
+    appearanceUuid,
     offenceCode: offence.offenceCode,
     offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),
     outcomeUuid: offence.outcomeUuid,
@@ -110,7 +111,7 @@ export const courtAppearanceToCreateCourtAppearance = (
     courtCode: courtAppearance.courtCode,
     courtCaseReference: courtAppearance.caseReferenceNumber,
     appearanceDate: dayjs(courtAppearance.warrantDate).format('YYYY-MM-DD'),
-    charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence, prisonId)),
+    charges: courtAppearance.offences.map(offence => offenceToCreateCharge(offence, prisonId, appearanceUuid)),
     warrantType: courtAppearance.warrantType,
     documents: courtAppearance.uploadedDocuments,
     prisonId,

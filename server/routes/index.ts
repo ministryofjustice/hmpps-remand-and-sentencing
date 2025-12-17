@@ -805,5 +805,30 @@ export default function routes(services: Services): Router {
 
   router.get('/person/:nomsId/unknown-recall-sentence', unknownRecallSentenceRoutes.getUnknownRecallSentence)
 
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/fine-amount',
+    unknownRecallSentenceRoutes.getFineAmount,
+  )
+
+  router.post(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/fine-amount',
+    unknownRecallSentenceRoutes.submitFineAmount,
+  )
+
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/check-answers',
+    unknownRecallSentenceRoutes.getCheckAnswers,
+  )
+
+  router.post(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/check-answers',
+    unknownRecallSentenceRoutes.submitCheckAnswers,
+  )
+
+  router.get(
+    '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/cancel-charge',
+    unknownRecallSentenceRoutes.cancelCharge,
+  )
+
   return router
 }

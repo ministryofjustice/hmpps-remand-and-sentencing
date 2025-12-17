@@ -119,3 +119,5 @@ export type PrisonerSentenceEnvelopeSentence = components['schemas']['PrisonerSe
 export type CourtCaseValidationDate = components['schemas']['CourtCaseValidationDate']
 
 export type SentenceDetails = components['schemas']['SentenceDetails']
+
+export type CreateChargeResponse = components['schemas']['CreateChargeResponse']

@@ -1814,7 +1814,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 14:43:09.061279485 */
+      /** @example 10:48:41.790780063 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1938,7 +1938,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:43:09.061279485 */
+      /** @example 10:48:41.790780063 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */

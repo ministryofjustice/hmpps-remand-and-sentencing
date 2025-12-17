@@ -10,6 +10,118 @@ See [here](https://github.com/ministryofjustice/hmpps-typescript-lib/blob/main/p
 See PR [#1205](https://github.com/ministryofjustice/hmpps-remand-and-sentencing/pull/1205)
 
 
+**December 12th 2025** - Updating shared linting library to 1.0.2.
+
+Updating: `@ministryofjustice/eslint-config-hmpps@1.0.1` -> `@ministryofjustice/eslint-config-hmpps@1.0.2`
+
+This has an improvement which means `.allowed-scripts.mjs` no longer needs to be added to `extraPathsAllowingDevDependencies` in `eslint.config.mjs` config.
+
+See PR [#643](https://github.com/ministryofjustice/hmpps-template-typescript/pull/643)
+
+**December 4th 2025** - Remove mocha-junit-reporter and reporter-config.json.
+
+Replaced the custom Node.js base image setup with the standardized `hmpps-node:24-alpine` base image from GitHub Container Registry `hmpps-base-container-images`. This simplifies maintenance and ensures consistency across projects. 
+
+See PR [#638](https://github.com/ministryofjustice/hmpps-template-typescript/pull/638)
+
+**December 2nd 2025** - Remove mocha-junit-reporter and reporter-config.json.
+
+The reporter was used for cypress (as cypress is built on top of Mocha) so is no longer needed as we have switched to playwright.
+
+See PR [#636](https://github.com/ministryofjustice/hmpps-template-typescript/pull/636)
+
+**December 2nd 2025** - Remove body-parser.
+
+Body-parser is no longer referenced in the template.
+`setupRequestParsing.ts` - seems to do what body-parser would have done, but uses express provided functions.
+
+See PR [#635](https://github.com/ministryofjustice/hmpps-template-typescript/pull/635)
+
+**November 28th 2025** - Adding @ministryofjustice/hmpps-npm-allow-scripts.
+
+Adding script allowlist library to provide some level of protection against supply chain attacks.
+
+Developers and build agents will need to run `npm run setup` rather than `npm install` or `npm ci` as otherwise, necessary `postinstall` scripts may not be run.
+ 
+See [here](https://github.com/ministryofjustice/hmpps-typescript-lib/blob/main/packages/npm-script-allowlist/README.md) for more information. 
+
+See PR [#632](https://github.com/ministryofjustice/hmpps-template-typescript/pull/632)
+
+**November 27th 2025** - Include activeCaseLoadId for prison users in app insights instrumentation.
+
+Following on from the previous change to add username and authSource, this change is to add the activeCaseLoadId
+only for prison users with that property set.
+
+See PR [#631](https://github.com/ministryofjustice/hmpps-template-typescript/pull/631)
+
+**November 26th 2025** - Include username and authSource in app insights instrumentation.
+
+To ensure adequate tracking and monitoring of user activities within applications built using the
+hmpps-template-typescript, we have enhanced the Application Insights integration to include both the username and
+authSource in the telemetry data.
+
+This PR also prevents requests for things like static assets or health endpoints from being logged to help reduce
+app insights data usage as well as SQS dependency logging.
+
+See PR [#629](https://github.com/ministryofjustice/hmpps-template-typescript/pull/629)
+
+**November 21st 2025** - Fix ESBuild watch mode
+
+Changes to nunjucks templates weren't triggering a rebuild - this fixes that.
+
+See PR [#621](https://github.com/ministryofjustice/hmpps-template-typescript/pull/621)
+
+**November 18th 2025** - Fix GHA push option
+
+The pipeline workflow contains an optional 'push' parameter to indicate whether the image generated during its build step should be pushed to gchr.io.
+It can only be provided when triggering the workflow manually.
+
+This should have been implemented as a coalesce operator but instead used `|| true`, meaning it was never false.
+
+See PR [#615](https://github.com/ministryofjustice/hmpps-template-typescript/pull/615)
+
+**November 6th 2025** - Cleanup prettier
+
+Removed unused prettier configuration file `prettierc.json` due to prettier rules being superseded by those defined in `eslint-config-hmpps`, and removed unused prettier dependencies
+
+See PR [#609](https://github.com/ministryofjustice/hmpps-template-typescript/pull/609)
+
+**October 29th 2025** - Move to node 24
+
+Node 24 is now LTS. Notes [here](https://nodejs.org/en/blog/release/v24.11.0)
+
+See PR [#607](https://github.com/ministryofjustice/hmpps-template-typescript/pull/607)
+
+**October 28th 2025** - Build process/ESBuild refactoring
+
+Refactored build process to leverage ESBuild’s native watch and rebuild features, removing need for `chokidar` and `concurrently`, and improved watch mode stability for Node/Express. Builds should now be even faster, typechecking too, and the Express server should no longer crash the whole process on an uncaught exception.
+
+See PR [#603](https://github.com/ministryofjustice/hmpps-template-typescript/pull/603)
+
+**October 27th 2025** - Switch to Playwright for E2E testing
+
+Refactored end-to-end testing to use Playwright instead of Cypress. All existing E2E tests have been migrated to Playwright, and Cypress dependencies removed. GitHub Actions have been updated to use the new testing framework. Mocks/stubs have been reworked as appropiate.
+
+See PR [#584](https://github.com/ministryofjustice/hmpps-template-typescript/pull/584)
+
+**September 28th 2025** - Cleaned up web-session middleware
+
+Removed middleware for keeping Redis cache alive. express-web-session handles this automatically, so this can be safely removed.
+
+See PR [#593](https://github.com/ministryofjustice/hmpps-template-typescript/pull/593)
+
+**August 27th 2025** - Extract Jest and lint-staged configuration to separate files
+
+Moved Jest and lint-staged configuration from `package.json` to dedicated config files (`jest.config.mjs` and `lint-staged.config.mjs`) for better maintainability.
+
+See PR [#582](https://github.com/ministryofjustice/hmpps-template-typescript/pull/582)
+
+**August 7th 2025** - Upgrading chokidar to v4 meant the paths needed changing.
+
+See PR [#575](https://github.com/ministryofjustice/hmpps-template-typescript/pull/575)
+
+See https://www.npmjs.com/package/chokidar#upgrading for details
+
 **June 23rd 2025** - Moving to version 0.0.1 of shared libraries
 
 See PR [#559](https://github.com/ministryofjustice/hmpps-template-typescript/pull/559)

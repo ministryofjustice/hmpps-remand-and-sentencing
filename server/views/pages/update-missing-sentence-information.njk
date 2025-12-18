@@ -5,7 +5,6 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitle = applicationName + " - Update missing sentence information" %}
-{% set backLinkHref = "#" %} {# You should set a proper back link target here #}
 
 {% block content %}
     {{ super() }}
@@ -32,7 +31,7 @@
             </h3>
 
             {% for sentence in sentenceGroup.sentences %}
-            <span data-qa="offence-card-{{ loop.index0 }}">
+            <span data-qa="allSentences">
             {{ offenceCard({
                     offenceCode: sentence.offenceCode,
                     offenceName: offenceMap[sentence.offenceCode],

@@ -482,20 +482,12 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     const courtIds = unknownPreRecallSentences.map(appearance => appearance.courtCode)
     const courtMap = await this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username)
 
-    const offenceIds = unknownPreRecallSentences
+    const offenceCodes = unknownPreRecallSentences
       .flatMap(appearance => appearance.sentences)
       .map(sentence => sentence.offenceCode)
-    const offenceMap: { [key: string]: string } = Object.fromEntries(
-      (await this.manageOffencesService.getOffencesByCodes(offenceIds, res.locals.user.username)).map(offence => [
-        offence.code,
-        offence.description,
-      ]),
-    )
+    const offenceMap = await this.manageOffencesService.getOffenceMap(offenceCodes, res.locals.user.username, [])
 
-    const sentenceCount = unknownPreRecallSentences.reduce(
-      (acc, appearance) => acc + (appearance.sentences?.length ?? 0),
-      0,
-    )
+    const sentenceCount = unknownPreRecallSentences.flatMap(appearance => appearance.sentences).length
 
     return res.render('pages/update-missing-sentence-information', {
       nomsId,

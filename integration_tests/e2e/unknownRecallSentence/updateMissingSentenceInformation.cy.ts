@@ -28,9 +28,18 @@ context('Update missing sentence information page', () => {
       .appearanceHeading()
       .contains('T20231234 at Accrington Youth Court on 15/11/2023')
 
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'PS90037 An offence description')
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', '15/11/2023')
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', '15/11/2023')
-    updateMissingSentenceInformationPage.offenceCard(0).should('contain.text', 'Concurrent')
+    updateMissingSentenceInformationPage
+      .allSentences()
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '15/11/2023',
+          'Conviction date': '15/11/2023',
+          'Sentence type': 'Missing',
+          'Sentencing warrant date': '15/11/2023',
+          'Consecutive or concurrent': 'Concurrent',
+        },
+      ])
   })
 })

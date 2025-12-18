@@ -73,6 +73,7 @@ export default function routes(services: Services): Router {
     services.offenceService,
     services.remandAndSentencingService,
     services.manageOffencesService,
+    services.courtRegisterService,
     services.refDataService,
   )
 
@@ -801,6 +802,8 @@ export default function routes(services: Services): Router {
     '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/alternative-period-length',
     unknownRecallSentenceRoutes.submitAlternativePeriodLength,
   )
+
+  router.get('/person/:nomsId/unknown-recall-sentence', unknownRecallSentenceRoutes.getUnknownRecallSentence)
 
   router.get(
     '/person/:nomsId/unknown-recall-sentence/court-appearance/:appearanceReference/charge/:chargeUuid/fine-amount',

@@ -852,8 +852,8 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Returns a list of sentences with the unknown recall type
-     * @description Returns a list of sentences with the unknown recall type
+     * Returns a list of sentences with the unknown recall type grouped by appearance
+     * @description Returns a list of sentences with the unknown recall type grouped by appearance
      */
     get: operations['getSentencesWithUnknownRecallType']
     put?: never
@@ -1814,7 +1814,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 10:48:41.790780063 */
+      /** @example 17:43:38.15667528 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1938,7 +1938,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:48:41.790780063 */
+      /** @example 17:43:38.15667528 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2553,6 +2553,27 @@ export interface components {
       legacyData?: components['schemas']['ChargeLegacyData']
       mergedFromCase?: components['schemas']['MergedFromCase']
     }
+    MissingSentenceAppearance: {
+      appearanceUuid: string
+      courtCode: string
+      courtCaseReference?: string
+      /** Format: date */
+      appearanceDate: string
+      sentences: components['schemas']['SentenceCardDetails'][]
+    }
+    SentenceCardDetails: {
+      offenceCode: string
+      /** Format: date */
+      offenceStartDate?: string
+      /** Format: uuid */
+      sentenceUuid: string
+      countNumber?: string
+      sentenceType: string
+      periodLengths: components['schemas']['PeriodLength'][]
+      sentenceServeType: string
+      /** Format: date */
+      convictedDate?: string
+    }
     CourtAppearanceAfterSentence: {
       /** Format: uuid */
       appearanceUuid: string
@@ -2763,7 +2784,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:48:41.790780063 */
+      /** @example 17:43:38.15667528 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3044,7 +3065,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:48:41.790780063 */
+      /** @example 17:43:38.15667528 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -3064,7 +3085,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:48:41.790780063 */
+      /** @example 17:43:38.15667528 */
       appearanceTime?: string
       courtId: string
     }
@@ -3119,7 +3140,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:48:41.790780063 */
+      /** @example 17:43:38.15667528 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -3129,7 +3150,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:48:41.790780063 */
+      /** @example 17:43:38.15667528 */
       appearanceTime?: string
       courtId: string
     }
@@ -3236,13 +3257,13 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
+      first?: boolean
+      last?: boolean
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       numberOfElements?: number
@@ -3270,13 +3291,13 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['PagedCourtCase'][]
       /** Format: int32 */
       number?: number
+      first?: boolean
+      last?: boolean
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       numberOfElements?: number
@@ -3371,7 +3392,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:48:41.790780063 */
+      /** @example 17:43:38.15667528 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -5896,13 +5917,13 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description Returns a list of sentences with an unknown recall type */
+      /** @description Returns a list of sentences with an unknown recall type grouped by appearance */
       200: {
         headers: {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['Sentence'][]
+          '*/*': components['schemas']['MissingSentenceAppearance'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -5911,7 +5932,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['Sentence'][]
+          '*/*': components['schemas']['MissingSentenceAppearance'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
@@ -5920,7 +5941,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['Sentence'][]
+          '*/*': components['schemas']['MissingSentenceAppearance'][]
         }
       }
     }

@@ -54,9 +54,10 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, sessionAppearance)
     const sessionOffence = sessionAppearance.offences.find(offence => offence.chargeUuid === chargeUuid)
     this.offenceService.setSessionOffence(req.session, nomsId, appearanceReference, sessionOffence)
-    return res.redirect(
-      `/person/${nomsId}/unknown-recall-sentence/court-appearance/${appearanceReference}/charge/${chargeUuid}/offence-date`,
-    )
+    if (!sessionOffence.offenceStartDate) {
+      return res.redirect(UnknownRecallSentenceJourneyUrls.offenceDate(nomsId, appearanceReference, chargeUuid))
+    }
+    return res.redirect(UnknownRecallSentenceJourneyUrls.convictionDate(nomsId, appearanceReference, chargeUuid))
   }
 
   public getOffenceDate: RequestHandler = async (req, res): Promise<void> => {
@@ -150,9 +151,13 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       convictionDateYear = convictionDate.getFullYear()
     }
     const offenceHint = await this.getOffenceDescription(offence, res.locals.user.username)
-    let backLink = UnknownRecallSentenceJourneyUrls.offenceDate(nomsId, appearanceReference, chargeUuid)
+    const storedOffence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+
+    let backLink = UnknownRecallSentenceJourneyUrls.landingPage(nomsId)
     if (submitToCheckAnswers) {
       backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
+    } else if (!storedOffence.offenceStartDate) {
+      backLink = UnknownRecallSentenceJourneyUrls.offenceDate(nomsId, appearanceReference, chargeUuid)
     }
     return res.render('pages/offence/offence-conviction-date', {
       nomsId,

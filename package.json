@@ -100,7 +100,6 @@
     "aws-sdk-client-mock": "^4.1.0",
     "axe-core": "^4.11.0",
     "cheerio": "^1.1.2",
-    "chokidar": "^4.0.3",
     "concurrently": "^9.2.1",
     "cypress": "^15.7.0",
     "cypress-axe": "^1.7.0",

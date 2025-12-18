@@ -28,6 +28,8 @@ import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { SentenceType } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import CourtRegisterService from '../services/courtRegisterService'
+import UnknownRecallSentenceService from '../services/unknownRecallSentenceService'
+import config from '../config'
 
 export default class UnknownRecallSentenceRoutes extends BaseRoutes {
   constructor(
@@ -37,6 +39,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
+    private readonly unknownRecallSentenceService: UnknownRecallSentenceService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
@@ -86,7 +89,8 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     }
 
     const offenceName = await this.getOffenceDescription(offence, res.locals.user.username)
-    let backLink = UnknownRecallSentenceJourneyUrls.landingPage(nomsId)
+    const sentenceUuids = this.unknownRecallSentenceService.getSentenceUuids(req.session, nomsId)
+    let backLink = UnknownRecallSentenceJourneyUrls.landingPage(nomsId, sentenceUuids)
     if (submitToCheckAnswers) {
       backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
     }
@@ -152,8 +156,8 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     }
     const offenceHint = await this.getOffenceDescription(offence, res.locals.user.username)
     const storedOffence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
-
-    let backLink = UnknownRecallSentenceJourneyUrls.landingPage(nomsId)
+    const sentenceUuids = this.unknownRecallSentenceService.getSentenceUuids(req.session, nomsId)
+    let backLink = UnknownRecallSentenceJourneyUrls.landingPage(nomsId, sentenceUuids)
     if (submitToCheckAnswers) {
       backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
     } else if (!storedOffence.offenceStartDate) {
@@ -493,7 +497,10 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     const offenceMap = await this.manageOffencesService.getOffenceMap(offenceCodes, res.locals.user.username, [])
 
     const sentenceCount = unknownPreRecallSentences.flatMap(appearance => appearance.sentences).length
-
+    const storedSentenceUuids = unknownPreRecallSentences
+      .flatMap(appearance => appearance.sentences)
+      .map(sentence => sentence.sentenceUuid)
+    this.unknownRecallSentenceService.setSentenceUuids(req.session, nomsId, storedSentenceUuids)
     return res.render('pages/update-missing-sentence-information', {
       nomsId,
       unknownPreRecallSentences,
@@ -615,14 +622,20 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     await this.remandAndSentencingService.updateCharge(offence, prisonId, appearanceReference, chargeUuid, username)
     this.offenceService.clearAllOffences(req.session, nomsId, appearanceReference)
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    return res.redirect(UnknownRecallSentenceJourneyUrls.landingPage(nomsId))
+    this.unknownRecallSentenceService.removeSentenceUuid(req.session, nomsId, offence.sentence.sentenceUuid)
+    const sentenceUuids = this.unknownRecallSentenceService.getSentenceUuids(req.session, nomsId)
+    if (sentenceUuids.length > 0) {
+      return res.redirect(UnknownRecallSentenceJourneyUrls.landingPage(nomsId, sentenceUuids))
+    }
+    return res.redirect(`${config.recordRecallsService.ui_url}/person/${nomsId}`)
   }
 
   public cancelCharge: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, appearanceReference } = req.params
     this.offenceService.clearAllOffences(req.session, nomsId, appearanceReference)
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    return res.redirect(UnknownRecallSentenceJourneyUrls.landingPage(nomsId))
+    const sentenceUuids = this.unknownRecallSentenceService.getSentenceUuids(req.session, nomsId)
+    return res.redirect(UnknownRecallSentenceJourneyUrls.landingPage(nomsId, sentenceUuids))
   }
 
   private async getOffenceDescription(sessionOffence: Offence, username: string): Promise<string> {

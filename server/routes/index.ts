@@ -75,6 +75,7 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.courtRegisterService,
     services.refDataService,
+    services.unknownRecallSentenceService,
   )
 
   router.get('/', async (req, res, next) => {

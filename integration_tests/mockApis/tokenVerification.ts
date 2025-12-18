@@ -1,4 +1,4 @@
-import type { SuperAgentRequest } from 'superagent'
+import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
 export default {
@@ -14,6 +14,7 @@ export default {
         jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
       },
     }),
+
   stubVerifyToken: (active = true): SuperAgentRequest =>
     stubFor({
       request: {

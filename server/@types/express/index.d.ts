@@ -6,7 +6,6 @@ export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
     returnTo: string
-    nowInMinutes: number
     courtCases: Map<string, CourtCase>
     courtAppearances: Map<string, CourtAppearance>
     savedCourtCases: Map<string, CourtCase>

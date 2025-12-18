@@ -3429,4 +3429,38 @@ export default {
       },
     })
   },
+
+  stubGetSentencesWithUnknownRecallType: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/sentence/unknown-recall-type',
+        queryParameters: {
+          sentenceUuids: {
+            equalTo: 'a-sentence-uuid',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            appearanceDate: '2023-11-15',
+            courtCode: 'ACCRYC',
+            courtCaseReference: 'T20231234',
+            sentences: [
+              {
+                chargeUuid: '123e4567-e89b-12d3-a456-426614174000',
+                offenceCode: 'PS90037',
+                offenceStartDate: '2023-11-15',
+                convictionDate: '2023-11-15',
+                sentenceServeType: 'CONCURRENT',
+              },
+            ],
+          },
+        ],
+      },
+    })
+  },
 }

@@ -27,6 +27,7 @@ import { getNextPeriodLengthType } from '../utils/utils'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { SentenceType } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default class UnknownRecallSentenceRoutes extends BaseRoutes {
   constructor(
@@ -34,6 +35,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
+    private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
@@ -468,6 +470,33 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       return res.redirect(UnknownRecallSentenceJourneyUrls.fineAmount(nomsId, appearanceReference, chargeUuid))
     }
     return res.redirect(UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid))
+  }
+
+  public getUnknownRecallSentence: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId } = req.params
+    const sentenceUuids = req.query.sentenceUuids as string[]
+    const unknownPreRecallSentences = await this.remandAndSentencingService.getSentencesWithUnknownRecallType(
+      sentenceUuids,
+      res.locals.user.username,
+    )
+    const courtIds = unknownPreRecallSentences.map(appearance => appearance.courtCode)
+    const courtMap = await this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username)
+
+    const offenceCodes = unknownPreRecallSentences
+      .flatMap(appearance => appearance.sentences)
+      .map(sentence => sentence.offenceCode)
+    const offenceMap = await this.manageOffencesService.getOffenceMap(offenceCodes, res.locals.user.username, [])
+
+    const sentenceCount = unknownPreRecallSentences.flatMap(appearance => appearance.sentences).length
+
+    return res.render('pages/update-missing-sentence-information', {
+      nomsId,
+      unknownPreRecallSentences,
+      courtMap,
+      offenceMap,
+      sentenceCount,
+      errors: req.flash('errors') || [],
+    })
   }
 
   public getFineAmount: RequestHandler = async (req, res): Promise<void> => {

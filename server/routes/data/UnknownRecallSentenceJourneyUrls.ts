@@ -3,8 +3,8 @@ export default class UnknownRecallSentenceJourneyUrls {
     return `/person/${nomsId}/unknown-recall-sentence`
   }
 
-  static landingPage = (nomsId: string) => {
-    return this.prefix(nomsId)
+  static landingPage = (nomsId: string, sentenceUuids: string[]) => {
+    return `${this.prefix(nomsId)}?sentenceUuids=${sentenceUuids}`
   }
 
   static offenceDate = (nomsId: string, appearanceReference: string, chargeUuid: string) => {

@@ -43,6 +43,9 @@ export default function setUpWebSession(): Router {
     if (!req.session.courtAppearances) {
       req.session.courtAppearances = new Map<string, CourtAppearance>()
     }
+    if (!req.session.unknownRecallSentenceUuids) {
+      req.session.unknownRecallSentenceUuids = new Map<string, string[]>()
+    }
     next()
   })
 

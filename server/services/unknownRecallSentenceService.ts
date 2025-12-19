@@ -10,10 +10,4 @@ export default class UnknownRecallSentenceService {
   getSentenceUuids(session: Partial<SessionData>, nomsId: string): string[] {
     return session.unknownRecallSentenceUuids[nomsId]
   }
-
-  removeSentenceUuid(session: Partial<SessionData>, nomsId: string, toRemoveUuid: string) {
-    const sessionUuids = this.getSentenceUuids(session, nomsId)
-    // eslint-disable-next-line no-param-reassign
-    session.unknownRecallSentenceUuids[nomsId] = sessionUuids.filter(sentenceUuid => sentenceUuid !== toRemoveUuid)
-  }
 }

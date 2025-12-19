@@ -622,9 +622,13 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     await this.remandAndSentencingService.updateCharge(offence, prisonId, appearanceReference, chargeUuid, username)
     this.offenceService.clearAllOffences(req.session, nomsId, appearanceReference)
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
-    this.unknownRecallSentenceService.removeSentenceUuid(req.session, nomsId, offence.sentence.sentenceUuid)
     const sentenceUuids = this.unknownRecallSentenceService.getSentenceUuids(req.session, nomsId)
-    if (sentenceUuids.length > 0) {
+    const storedSentences = await this.remandAndSentencingService.getSentencesWithUnknownRecallType(
+      sentenceUuids,
+      username,
+    )
+
+    if (storedSentences.length > 0) {
       return res.redirect(UnknownRecallSentenceJourneyUrls.landingPage(nomsId, sentenceUuids))
     }
     return res.redirect(`${config.recordRecallsService.ui_url}/person/${nomsId}`)

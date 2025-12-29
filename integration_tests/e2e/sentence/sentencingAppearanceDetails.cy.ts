@@ -506,24 +506,6 @@ context('Sentencing appearance details Page', () => {
           },
         ])
     })
-
-    it('should come back to appearance page when clicked back on overall case outcome page', () => {
-      courtCaseAppearanceDetailsPage
-        .editFieldLink(
-          'A1234AB',
-          '83517113-5c14-4628-9133-1e3cb12e31fa',
-          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          'overall-case-outcome?backTo=sentencingCourtAppearance',
-          true,
-        )
-        .click()
-      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-        CourtCaseOverallCaseOutcomePage,
-        'Edit the overall case outcome',
-      )
-      courtCaseOverallCaseOutcomePage.backLink().click()
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-    })
   })
 
   context('legacy sentence appearance', () => {

@@ -1,11 +1,10 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/linearJourneyPageLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set pageTitle = applicationName + " - Check next appearance answers" %}
 
 {% block content %}
-    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             {% include "../../partials/nextAppearanceCaption.njk" %}
@@ -106,5 +105,5 @@
 
         </div>
     </div>
-
+    {{ super() }}
 {% endblock %}

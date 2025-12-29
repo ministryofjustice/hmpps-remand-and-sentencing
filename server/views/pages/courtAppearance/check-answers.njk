@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/linearJourneyPageLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set isNonSentencingWarrant = courtAppearance.warrantType == 'NON_SENTENCING'%}
@@ -120,4 +120,6 @@
             </form>
         </div>
     </div>
+
+    {{ super() }}
 {% endblock %}

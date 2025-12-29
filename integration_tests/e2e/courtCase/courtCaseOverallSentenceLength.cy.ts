@@ -1,11 +1,9 @@
 import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import Page from '../../pages/page'
-import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 
 context('Add Court Case Sentence Length Page', () => {
   let courtCaseOverallSentenceLengthPage: CourtCaseOverallSentenceLengthPage
-  let offenceConvictionDatePage: OffenceConvictionDatePage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()

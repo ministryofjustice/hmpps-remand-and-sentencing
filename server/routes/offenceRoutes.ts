@@ -2508,6 +2508,7 @@ export default class OffenceRoutes extends BaseRoutes {
       outcomeMap,
       mergedFromText,
       courtMap,
+      errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })
   }
@@ -2515,6 +2516,14 @@ export default class OffenceRoutes extends BaseRoutes {
   public submitReviewOffences: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const reviewOffenceForm = trimForm<ReviewOffencesForm>(req.body)
+
+    const errors = this.offenceService.validateReviewOffencesForm(reviewOffenceForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences?hasErrors=true`,
+      )
+    }
     this.courtAppearanceService.setOffenceSentenceAccepted(
       req.session,
       nomsId,

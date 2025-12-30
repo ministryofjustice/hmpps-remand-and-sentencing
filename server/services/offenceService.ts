@@ -14,12 +14,13 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
+  ReviewOffencesForm,
   SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
 } from 'forms'
-import type { Offence, Sentence, SentenceLength, CourtAppearance } from 'models'
+import type { CourtAppearance, Offence, Sentence, SentenceLength } from 'models'
 import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
 import { groupAndSortPeriodLengths } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
@@ -929,6 +930,18 @@ export default class OffenceService {
     )
 
     return errors
+  }
+
+  validateReviewOffencesForm(reviewOffenceForm: ReviewOffencesForm) {
+    return validate(
+      reviewOffenceForm,
+      {
+        changeOffence: 'required',
+      },
+      {
+        'required.changeOffence': 'Select whether you have finished reviewing offences.',
+      },
+    )
   }
 
   setIsSentenceConsecutiveTo(

@@ -825,6 +825,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public newJourney: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
+    this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     let courtAppearanceUuid = appearanceReference
     if (!res.locals.isAddCourtCase) {
       const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(

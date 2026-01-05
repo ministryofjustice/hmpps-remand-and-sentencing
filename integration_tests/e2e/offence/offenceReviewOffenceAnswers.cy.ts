@@ -59,6 +59,14 @@ context('Review Offences Page', () => {
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     })
 
+    it('shows error if Continue button pressed without selecting an outcome', () => {
+      offenceReviewOffencesPage.continueButton().click()
+      offenceReviewOffencesPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Select whether you have finished reviewing offences.')
+    })
+
     it('update outcome and return to review offences page', () => {
       cy.task('stubGetOffenceByCode', {})
       offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()

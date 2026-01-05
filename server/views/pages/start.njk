@@ -146,8 +146,10 @@
                                         <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceCourtCaseReference-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.caseReference if courtCaseDetails.latestAppearance.caseReference else 'Not entered'}}</p>
                                         <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Hearing date</h3>
                                         <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceWarrantDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.warrantDate | formatDate }}</p>
-                                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
-                                        <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceOutcome-{{courtCaseDetails.courtCaseUuid}}"> {{ courtCaseDetails.latestAppearance.outcome if courtCaseDetails.latestAppearance.outcome else 'Not entered' }}</p>
+                                        {% if courtCaseDetails.latestAppearance.warrantType === 'SENTENCING' %}
+                                            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
+                                            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceOutcome-{{courtCaseDetails.courtCaseUuid}}"> {{ courtCaseDetails.latestAppearance.outcome if courtCaseDetails.latestAppearance.outcome else 'Not entered' }}</p>
+                                        {% endif %}
                                     </div>
                                     <div class="govuk-grid-column-two-thirds">
                                         <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
@@ -155,6 +157,9 @@
                                         {% if courtCaseDetails.latestAppearance.warrantType === 'SENTENCING' %}
                                             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
                                             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceConvictionDate-{{courtCaseDetails.courtCaseUuid}}">{{ courtCaseDetails.latestAppearance.convictionDate | formatDate if courtCaseDetails.latestAppearance.convictionDate else 'Not entered' }}</p>
+                                        {% else%}
+                                            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
+                                            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="latestAppearanceOutcome-{{courtCaseDetails.courtCaseUuid}}"> {{ courtCaseDetails.latestAppearance.outcome if courtCaseDetails.latestAppearance.outcome else 'Not entered' }}</p>
                                         {% endif %}
 
                                     </div>

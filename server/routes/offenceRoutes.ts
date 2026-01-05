@@ -356,12 +356,13 @@ export default class OffenceRoutes extends BaseRoutes {
     const { submitToEditOffence, backTo } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
 
-    const errors = this.offenceService.updateOffenceOutcome(
+    const { errors, outcome } = await this.offenceService.updateOffenceOutcome(
       req.session,
       nomsId,
       courtCaseReference,
       offenceOutcomeForm,
       chargeUuid,
+      req.user.username,
     )
 
     if (errors.length > 0) {
@@ -372,7 +373,6 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    // --- START: REPLACEMENT LOGIC (Remains untouched as it was previously finalized) ---
     if (offenceOutcomeForm.offenceOutcome === REPLACEMENT_OUTCOME_UUID) {
       return this.initiateOffenceReplacement(
         req,
@@ -385,11 +385,6 @@ export default class OffenceRoutes extends BaseRoutes {
         appearanceReference,
       )
     }
-    // --- END: REPLACEMENT LOGIC ---
-
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-
-    const outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, req.user.username)
 
     if (submitToEditOffence) {
       this.offenceService.setOnFinishGoToEdit(req.session, nomsId, courtCaseReference, chargeUuid)
@@ -406,11 +401,6 @@ export default class OffenceRoutes extends BaseRoutes {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
       )
-    }
-
-    // Delete sentence if non-custodial
-    if (outcome.outcomeType === 'NON_CUSTODIAL') {
-      delete offence.sentence
     }
 
     this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)

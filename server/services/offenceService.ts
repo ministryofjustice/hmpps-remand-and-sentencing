@@ -378,32 +378,40 @@ export default class OffenceService {
     return { errors, outcome, hasSentencesAfter: false }
   }
 
-  updateOffenceOutcome(
+  async updateOffenceOutcome(
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     offenceOutcomeForm: OffenceOffenceOutcomeForm,
     chargeUuid: string,
-  ): {
-    text?: string
-    html?: string
-    href: string
-  }[] {
+    username: string,
+  ): Promise<{
+    errors: {
+      text?: string
+      html?: string
+      href: string
+    }[]
+    outcome: OffenceOutcome
+  }> {
     const errors = validate(
       offenceOutcomeForm,
       { offenceOutcome: 'required' },
       { 'required.offenceOutcome': 'You must select the new outcome for this offence' },
     )
+    let outcome: OffenceOutcome
     if (errors.length === 0) {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
-
+      outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
+      if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
+        delete offence.sentence
+      }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome
       offence.updatedOutcome = true
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
     }
-    return errors
+    return { errors, outcome }
   }
 
   setSentenceReturnUrlKey(

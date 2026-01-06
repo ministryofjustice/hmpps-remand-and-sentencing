@@ -11,9 +11,9 @@ export default class CourtCaseDetailsPage extends Page {
 
   hearingActionList = (appearanceUuid: string): PageElement => cy.get(`[data-qa=hearingActionList-${appearanceUuid}]`)
 
-  editAppearanceLink = (courtCaseReference: string, appearanceReference: string): PageElement =>
+  editHearingLink = (courtCaseReference: string, appearanceReference: string): PageElement =>
     cy.get(
-      `a[href*="/person/A1234AB/edit-court-case/${courtCaseReference}/edit-court-appearance/${appearanceReference}/non-sentencing/load-appearance-details"]`,
+      `a[href*="/person/A1234AB/edit-court-case/${courtCaseReference}/edit-court-appearance/${appearanceReference}/non-sentencing/load-hearing-details"]`,
     )
 
   deleteAppearanceLink = (courtCaseReference: string, appearanceReference: string): PageElement =>

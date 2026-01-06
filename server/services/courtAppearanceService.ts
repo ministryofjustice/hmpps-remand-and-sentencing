@@ -95,7 +95,7 @@ export default class CourtAppearanceService {
         referenceNumberSelect: 'required',
       },
       {
-        'required.referenceNumberSelect': 'Select ‘Yes’ if this appearance uses the same case reference.',
+        'required.referenceNumberSelect': 'Select ‘Yes’ if this hearing uses the same case reference.',
       },
     )
     if (errors.length === 0) {

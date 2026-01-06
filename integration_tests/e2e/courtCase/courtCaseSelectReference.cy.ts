@@ -19,6 +19,6 @@ context('Select reference page', () => {
     courtCaseSelectReferencePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem Select ‘Yes’ if this appearance uses the same case reference.')
+      .should('equal', 'There is a problem Select ‘Yes’ if this hearing uses the same case reference.')
   })
 })

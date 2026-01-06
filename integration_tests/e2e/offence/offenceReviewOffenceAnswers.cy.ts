@@ -61,6 +61,7 @@ context('Review Offences Page', () => {
 
     it('shows error if Continue button pressed without selecting an outcome', () => {
       offenceReviewOffencesPage.continueButton().click()
+      offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
       offenceReviewOffencesPage
         .errorSummary()
         .trimTextContent()
@@ -75,6 +76,16 @@ context('Review Offences Page', () => {
       offenceUpdateOutcomePage.radioLabelContains('Lie on file').click()
       offenceUpdateOutcomePage.continueButton().click()
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+    })
+
+    it('shows error when there are offences which need outcome updating', () => {
+      offenceReviewOffencesPage.radioLabelSelector('true').click()
+      offenceReviewOffencesPage.continueButton().click()
+      offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+      offenceReviewOffencesPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', 'There is a problem Update the offence outcome')
     })
   })
 })

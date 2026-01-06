@@ -29,6 +29,7 @@
             }) }}
 
             {% for offence in unchangedOffences %}
+                {% set offenceId = 'offences.' + offence.index %}
                 {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
@@ -61,7 +62,9 @@
                             items: [{
                                 html: '<a href="/person/'+ nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference  + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + offence.chargeUuid + '/update-offence-outcome?backTo=reviewOffences" data-qa="update-outcome-link-'+ offence.chargeUuid +'" class="govuk-link govuk-link--no-visited-state">Update outcome</a>'
                             }]
-                        }
+                        },
+                        id: offenceId,
+                        errorMessage: errors | findErrorsBeginningWith(offenceId)
                     })
                 }}
             {% endfor %}

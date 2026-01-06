@@ -1,4 +1,4 @@
-import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetailsPage'
+import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
@@ -467,7 +467,7 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetAppearanceTypeByUuid')
       cy.task('stubGetChargeOutcomeById', {})
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/hearing-details',
       )
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage
@@ -507,7 +507,7 @@ context('Add Offence Edit offence Page', () => {
         hasSentenceAfterOnOtherCourtAppearance: false,
       })
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/hearing-details',
       )
       courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
       courtCaseAppearanceDetailsPage

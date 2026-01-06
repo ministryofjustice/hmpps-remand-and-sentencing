@@ -4,14 +4,14 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
-{% set pageTitle = applicationName + " - Appearance details" %}
+{% set pageTitle = applicationName + " - Hearing details" %}
 
 {% set caseReferenceHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference" %}
 
-{% if appearance.caseReferenceNumber %}
+{% if hearing.caseReferenceNumber %}
   {% set caseReferenceRow = {
     key: { text: "Case reference" },
-    value: { text: appearance.caseReferenceNumber },
+    value: { text: hearing.caseReferenceNumber },
     actions: {
       items: [{
         href: caseReferenceHref,
@@ -30,11 +30,11 @@
   } %}
 {% endif %}
 
-{% set appearanceSummaryRows = [
+{% set hearingSummaryRows = [
   caseReferenceRow,
   {
-    key: { text: "Warrant date" },
-    value: { text: appearance.warrantDate | formatDate },
+    key: { text: "Hearing date" },
+    value: { text: hearing.warrantDate | formatDate },
     actions: {
       items: [{
         href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/warrant-date",
@@ -46,9 +46,9 @@
   }
 ] %}
 
-{% set appearanceSummaryRows = appearanceSummaryRows.concat({
+{% set hearingSummaryRows = hearingSummaryRows.concat({
   key: { text: "Location" },
-  value: { text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode },
+  value: { text: courtMap[hearing.courtCode] if courtMap[hearing.courtCode] else hearing.courtCode },
   actions: {
     items: [{
       href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/court-name",
@@ -59,7 +59,7 @@
   }
 }) %}
 
-{% set appearanceSummaryRows = appearanceSummaryRows.concat({
+{% set hearingSummaryRows = hearingSummaryRows.concat({
   key: { text: "Overall case outcome" },
   value: { text: overallCaseOutcome },
   actions: {
@@ -74,7 +74,7 @@
 
 {% set nextAppearanceSummaryRows = [{
   key: { text: "Next appearance set" },
-  value: { text: "Yes" if appearance.nextAppearanceSelect else "No future appearance scheduled" },
+  value: { text: "Yes" if hearing.nextAppearanceSelect else "No future appearance scheduled" },
   actions: {
     items: [{
       href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-select",
@@ -85,11 +85,11 @@
   }
 }] %}
 
-{% if appearance.nextAppearanceSelect %}
+{% if hearing.nextAppearanceSelect %}
   {% set nextAppearanceSummaryRows = nextAppearanceSummaryRows.concat([
     {
       key: { text: "Location" },
-      value: { text: courtMap[appearance.nextAppearanceCourtCode] },
+      value: { text: courtMap[hearing.nextAppearanceCourtCode] },
       actions: {
         items: [{
           href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-court-name",
@@ -113,7 +113,7 @@
     },
     {
       key: { text: "Date" },
-      value: { text: appearance.nextAppearanceDate | formatDateTime(appearance.nextAppearanceTimeSet) },
+      value: { text: hearing.nextAppearanceDate | formatDateTime(hearing.nextAppearanceTimeSet) },
       actions: {
         items: [{
           href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-date",
@@ -153,7 +153,7 @@
   {{ super() }}
   <div class="govuk-grid-row govuk-!-margin-top-4">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Edit appearance</h1>
+      <h1 class="govuk-heading-l">Edit hearing</h1>
 
       {% if mergedFromText %}
         {{ govukInsetText({
@@ -172,9 +172,9 @@
       {% endif %}
 
       {{ govukSummaryList({
-        card: { title: { text: "Appearance information" } },
-        rows: appearanceSummaryRows,
-        attributes: { "data-qa": "appearanceSummaryList" }
+        card: { title: { text: "Hearing information" } },
+        rows: hearingSummaryRows,
+        attributes: { "data-qa": "hearingSummaryList" }
       }) }}
 
       {{ govukSummaryList({
@@ -198,17 +198,17 @@
         attributes: { "data-qa": "documentsSummaryList" }
       }) }}
 
-      <h2 class="govuk-heading-m">Offences ({{ appearance.offences | length }})</h2>
+      <h2 class="govuk-heading-m">Offences ({{ hearing.offences | length }})</h2>
 
       {{ govukButton({
         text: "Add an offence",
         classes: "govuk-button--link",
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + appearance.offences | length + "/add-another-offence",
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
         attributes: { "data-qa": "addAnotherOffence" }
       }) }}
 
       <span data-qa="allOffences">
-        {% for offence in appearance.offences %}
+        {% for offence in hearing.offences %}
           {% set offenceId = 'offences.' + loop.index0 %}
           {{
             offenceCard({

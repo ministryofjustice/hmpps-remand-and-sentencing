@@ -1,4 +1,4 @@
-{% extends "../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../partials/goToCourtCaseLayout.njk" %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageTitle = applicationName + " - Sentences" %}
@@ -7,7 +7,7 @@
     {{ super() }}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-           <h1 class="govuk-heading-l govuk-!-margin-top-4">Sentences</h1>  
+           <h1 class="govuk-heading-l govuk-!-margin-top-4">Sentences</h1>
               {{ govukTable({
                 head: [
                   {

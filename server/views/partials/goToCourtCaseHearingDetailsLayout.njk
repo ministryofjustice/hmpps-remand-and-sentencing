@@ -1,4 +1,4 @@
-{% extends "./goToCourtHearingLayout.njk" %}
+{% extends "./goToCourtCaseLayout.njk" %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
@@ -13,6 +13,7 @@
 {% endset %}
 
 {% block content %}
+    {{ super() }}
 
     <div class="govuk-grid-row govuk-!-margin-top-4">
 
@@ -65,5 +66,4 @@
             </div>
         {% endif %}
     </div>
-        {{ super() }}
 {% endblock %}

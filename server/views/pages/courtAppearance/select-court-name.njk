@@ -1,10 +1,9 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/goToCourtHearingLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitle = applicationName + " - Same court name page" %}
 {% block content %}
-    {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-select-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
@@ -46,5 +45,5 @@
 
         </div>
     </div>
-
+    {{ super() }}
 {% endblock %}

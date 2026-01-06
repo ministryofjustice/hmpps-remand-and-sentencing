@@ -1,4 +1,4 @@
-{% extends "../../partials/prisonerBannerBackLayout.njk" %}
+{% extends "../../partials/goToCourtHearingLayout.njk" %}
 {% from "moj/components/interruption-card/macro.njk" import interruptionCard %}
 
 {% set pageTitle = "offence - sentence length mismatch" %}
@@ -20,7 +20,7 @@
                     href: backLink
                 }
             })%}
-                <p class="govuk-body">The sentence lengths you have entered total:</p> 
+                <p class="govuk-body">The sentence lengths you have entered total:</p>
                 <p class="govuk-body govuk-!-font-weight-bold">{{ overallSentenceLengthComparison.custodialLength | formatLengthsWithoutPeriodOrder }}</p>
                 <p>This does not match the overall sentence length from the warrant, which is:</p>
                 <p class="govuk-body govuk-!-font-weight-bold">{{ courtAppearance.overallSentenceLength | formatLengths }}</p>

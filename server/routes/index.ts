@@ -115,18 +115,18 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/load-appearance-details',
-    sentencingRoutes.loadAppearanceDetails,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/load-hearing-details',
+    sentencingRoutes.loadHearingDetails,
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/appearance-details',
-    sentencingRoutes.getAppearanceDetails,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/hearing-details',
+    sentencingRoutes.getHearingDetails,
   )
 
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/submit-details-edit',
-    sentencingRoutes.submitAppearanceDetailsEdit,
+    sentencingRoutes.submitHearingDetailsEdit,
   )
 
   router.get(
@@ -155,18 +155,18 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/load-appearance-details',
-    remandRoutes.loadAppearanceDetails,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/load-hearing-details',
+    remandRoutes.loadHearingDetails,
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/appearance-details',
-    remandRoutes.getAppearanceDetails,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/hearing-details',
+    remandRoutes.getHearingDetails,
   )
 
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/submit-details-edit',
-    remandRoutes.submitAppearanceDetailsEdit,
+    remandRoutes.submitHearingDetailsEdit,
   )
 
   router.get(

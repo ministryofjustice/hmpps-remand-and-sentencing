@@ -12,7 +12,7 @@ declare namespace Cypress {
     getOffenceCards()
     trimTextContent()
     getAppearances()
-    getAppearanceCardDetails()
+    getHearingCardDetails()
     getRadioOptions()
     getListItems()
     createCourtCase(personId: string, courtCaseNumber: string, appearanceReference: string): Chainable<AUTWindow>

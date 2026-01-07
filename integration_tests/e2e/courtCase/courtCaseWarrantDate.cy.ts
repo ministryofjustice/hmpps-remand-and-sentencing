@@ -7,7 +7,7 @@ import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseSelectCourtNamePage from '../../pages/courtCaseSelectCourtNamePage'
 import StartPage from '../../pages/startPage'
 import CourtCaseDetailsPage from '../../pages/courtCaseDetailsPage'
-import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetailsPage'
+import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
@@ -207,15 +207,15 @@ context('Court Case Warrant Date Page', () => {
       startPage.editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
       const courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Accrington Youth Court',
+        'Hearings for C894623 at Accrington Youth Court',
       )
 
       courtCaseDetailsPage
-        .editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
+        .editHearingLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
         .click()
 
-      const courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      editWarrantDate(courtCaseAppearanceDetailsPage)
+      const courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      editWarrantDate(courtCaseHearingDetailsPage)
 
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       enterWarrantDate(courtCaseWarrantDatePage, '15', '12', '2023')
@@ -228,21 +228,21 @@ context('Court Case Warrant Date Page', () => {
       startPage.editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
       const courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Accrington Youth Court',
+        'Hearings for C894623 at Accrington Youth Court',
       )
 
       courtCaseDetailsPage
-        .editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
+        .editHearingLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
         .click()
 
-      const courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      editWarrantDate(courtCaseAppearanceDetailsPage)
+      const courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      editWarrantDate(courtCaseHearingDetailsPage)
 
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       enterWarrantDate(courtCaseWarrantDatePage, '15', '12', '2024')
       expectHearingDateError(courtCaseWarrantDatePage)
       enterWarrantDate(courtCaseWarrantDatePage, '14', '12', '2024')
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
 
     it('caption should not be shown for edit court appearance journey', () => {
@@ -250,15 +250,15 @@ context('Court Case Warrant Date Page', () => {
       startPage.editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6').click()
       const courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Accrington Youth Court',
+        'Hearings for C894623 at Accrington Youth Court',
       )
 
       courtCaseDetailsPage
-        .editAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
+        .editHearingLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
         .click()
 
-      const courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      editWarrantDate(courtCaseAppearanceDetailsPage)
+      const courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      editWarrantDate(courtCaseHearingDetailsPage)
       const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
       courtCaseWarrantDatePage
         .captionText()

@@ -1,5 +1,5 @@
 import AppearanceUpdatedConfirmationPage from '../../pages/appearanceUpdatedConfirmationPage'
-import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetailsPage'
+import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
@@ -11,8 +11,8 @@ import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import Page from '../../pages/page'
 
-context('Court Case Appearance details Page', () => {
-  let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
+context('Court Case Hearing details Page', () => {
+  let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
 
   beforeEach(() => {
     cy.task('happyPathStubs')
@@ -45,13 +45,13 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetAllAppearanceOutcomes')
       cy.signIn()
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/hearing-details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
 
     it('displays person details', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .prisonerBanner()
         .should('contain.text', 'Meza, Cormac')
         .and('contain.text', 'A1234AB')
@@ -60,20 +60,20 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('button to confirm changes is displayed', () => {
-      courtCaseAppearanceDetailsPage.confirmButton().should('contain.text', 'Confirm changes')
+      courtCaseHearingDetailsPage.confirmButton().should('contain.text', 'Confirm changes')
     })
 
-    it('appearance summary shows correct data', () => {
-      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+    it('hearing summary shows correct data', () => {
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
     })
 
     it('next appearance summary shows correct data', () => {
-      courtCaseAppearanceDetailsPage.nextAppearanceSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseHearingDetailsPage.nextAppearanceSummaryList().getSummaryList().should('deep.equal', {
         'Next appearance set': 'Yes',
         Location: 'Southampton Magistrate Court',
         'Appearance type': 'Court appearance',
@@ -82,7 +82,7 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('displays offences correctly', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .allOffences()
         .getOffenceCards()
         .should('deep.equal', [
@@ -96,14 +96,14 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('can edit fields and return back to details page', () => {
-      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
 
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editFieldLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -122,10 +122,10 @@ context('Court Case Appearance details Page', () => {
         'Overall case outcome': 'Remanded in custody',
       })
       courtCaseReferencePage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'T12345678',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
@@ -136,14 +136,14 @@ context('Court Case Appearance details Page', () => {
         courtId: 'ACCRYC',
         courtName: 'Accrington Youth Court',
       })
-      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
 
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editFieldLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -165,10 +165,10 @@ context('Court Case Appearance details Page', () => {
       courtCaseCourtNamePage.firstAutoCompleteOption().click()
       courtCaseCourtNamePage.continueButton().click()
 
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         Location: 'Accrington Youth Court',
         'Overall case outcome': 'Remanded in custody',
       })
@@ -178,7 +178,7 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubUpdateCourtAppearance')
       cy.task('stubGetLatestCourtAppearance', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
       cy.task('stubGetCourtById', {})
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editFieldLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -190,14 +190,14 @@ context('Court Case Appearance details Page', () => {
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
       courtCaseReferencePage.input().clear().type('T12345678')
       courtCaseReferencePage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage.confirmButton().click()
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage.confirmButton().click()
       Page.verifyOnPage(AppearanceUpdatedConfirmationPage)
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
     })
 
-    it('can add another offence and go back to appearance details', () => {
-      courtCaseAppearanceDetailsPage.addAnotherButton().click()
+    it('can add another offence and go back to hearing details', () => {
+      courtCaseHearingDetailsPage.addAnotherButton().click()
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
       offenceOffenceDatePage.dayDateInput('offenceStartDate').type('12')
       offenceOffenceDatePage.monthDateInput('offenceStartDate').type('5')
@@ -218,8 +218,8 @@ context('Court Case Appearance details Page', () => {
       offenceOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
       offenceOffenceOutcomePage.continueButton().click()
 
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
         .allOffences()
         .getOffenceCards()
         .should('deep.equal', [
@@ -238,7 +238,7 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('can delete an offence', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .deleteOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -249,12 +249,12 @@ context('Court Case Appearance details Page', () => {
         .click()
       const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
       offenceDeleteOffencePage.deleteButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage.allOffences().getOffenceCards().should('deep.equal', [])
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage.allOffences().getOffenceCards().should('deep.equal', [])
     })
 
     it('displays merged from cases correctly', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .mergedCaseInset()
         .should(
           'contain.text',
@@ -263,7 +263,7 @@ context('Court Case Appearance details Page', () => {
     })
 
     it('editing appearance outcome from remand to non-custodial with remand outcome offences results in error', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editFieldLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -310,21 +310,21 @@ context('Court Case Appearance details Page', () => {
       cy.task('stubGetAppearanceTypeByUuid')
       cy.signIn()
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/hearing-details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
 
     it('can edit overall outcome and return back to details page', () => {
       cy.task('stubGetAllAppearanceOutcomes')
-      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'A Nomis description',
       })
 
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editFieldLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -339,10 +339,10 @@ context('Court Case Appearance details Page', () => {
       courtCaseOverallCaseOutcomePage.legendParagraph().should('contain', 'A Nomis description')
       courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
       courtCaseOverallCaseOutcomePage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Remanded in custody',
       })
@@ -351,7 +351,7 @@ context('Court Case Appearance details Page', () => {
     it('can edit offence outcome and return back to details page', () => {
       cy.task('stubGetOffenceByCode', {})
       cy.task('stubGetAllChargeOutcomes')
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editFieldLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -366,8 +366,8 @@ context('Court Case Appearance details Page', () => {
       courtCaseOverallCaseOutcomePage.legendParagraph().should('contain', 'A Nomis description')
       courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
       courtCaseOverallCaseOutcomePage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -390,7 +390,7 @@ context('Court Case Appearance details Page', () => {
         Outcome: 'Remanded in custody',
       })
       offenceEditOffencePage.continueButton().click()
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
   })
 })

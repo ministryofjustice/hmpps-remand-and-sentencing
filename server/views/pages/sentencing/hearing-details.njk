@@ -4,14 +4,14 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
-{% set pageTitle = applicationName + " - Appearance details" %}
+{% set pageTitle = applicationName + " - Hearing details" %}
 
 {% set caseReferenceHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference" %}
 
-{% if appearance.caseReferenceNumber %}
+{% if hearing.caseReferenceNumber %}
   {% set caseReferenceRow = {
     key: { text: "Case reference" },
-    value: { text: appearance.caseReferenceNumber },
+    value: { text: hearing.caseReferenceNumber },
     actions: {
       items: [{
         href: caseReferenceHref,
@@ -30,15 +30,15 @@
   } %}
 {% endif %}
 
-{% set appearanceSummaryRows = [
+{% set hearingSummaryRows = [
   caseReferenceRow,
   {
-    key: { text: "Warrant date" },
-    value: { text: appearance.warrantDate | formatDate }
+    key: { text: "Hearing date" },
+    value: { text: hearing.warrantDate | formatDate }
   },
   {
     key: { text: "Location" },
-    value: { text: courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode },
+    value: { text: courtMap[hearing.courtCode] if courtMap[hearing.courtCode] else hearing.courtCode },
     actions: {
       items: [{
         href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/court-name",
@@ -63,8 +63,8 @@
 ] %}
 
 {% set overallSentenceLengthText = "Not entered" %}
-{% if appearance.overallSentenceLength %}
-  {% set overallSentenceLengthText = appearance.overallSentenceLength | formatLengths %}
+{% if hearing.overallSentenceLength %}
+  {% set overallSentenceLengthText = hearing.overallSentenceLength | formatLengths %}
 {% endif %}
 
 {% set offenceRows = [{
@@ -102,7 +102,7 @@
   {{ super() }}
   <div class="govuk-grid-row govuk-!-margin-top-4">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Edit appearance</h1>
+      <h1 class="govuk-heading-l">Edit hearing</h1>
 
       {% if mergedFromText %}
         {{ govukInsetText({
@@ -121,9 +121,9 @@
       {% endif %}
 
       {{ govukSummaryList({
-        card: { title: { text: "Appearance information" } },
-        rows: appearanceSummaryRows,
-        attributes: { "data-qa": "appearanceSummaryList" }
+        card: { title: { text: "Hearing information" } },
+        rows: hearingSummaryRows,
+        attributes: { "data-qa": "hearingSummaryList" }
       }) }}
 
       {{ govukSummaryList({
@@ -141,7 +141,7 @@
         attributes: { "data-qa": "documentsSummaryList" }
       }) }}
 
-      <h2 class="govuk-heading-m">Offences ({{ appearance.offences | length }})</h2>
+      <h2 class="govuk-heading-m">Offences ({{ hearing.offences | length }})</h2>
 
       {{ govukSummaryList({
         rows: offenceRows,
@@ -151,7 +151,7 @@
       {{ govukButton({
         text: "Add an offence",
         classes: "govuk-button--link",
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + appearance.offences | length + "/add-another-offence",
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
         attributes: { "data-qa": "addAnotherOffence" }
       }) }}
 

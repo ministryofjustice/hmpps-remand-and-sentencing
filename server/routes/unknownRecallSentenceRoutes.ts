@@ -88,7 +88,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       offenceEndDateYear = offenceEndDate.getFullYear()
     }
 
-    const offenceName = await this.getOffenceDescription(offence, res.locals.user.username)
+    const offenceHint = await this.getOffenceDescriptionHint(offence, res.locals.user.username)
     const sentenceUuids = this.unknownRecallSentenceService.getSentenceUuids(req.session, nomsId)
     let backLink = UnknownRecallSentenceJourneyUrls.landingPage(nomsId, sentenceUuids)
     if (submitToCheckAnswers) {
@@ -104,7 +104,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       offenceEndDateMonth,
       offenceEndDateYear,
       errors: req.flash('errors') || [],
-      offenceName,
+      offenceName: offenceHint?.text,
       hideOffences: true,
       isUnknownRecallSentence: true,
       backLink,
@@ -154,7 +154,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       convictionDateMonth = convictionDate.getMonth() + 1
       convictionDateYear = convictionDate.getFullYear()
     }
-    const offenceHint = await this.getOffenceDescription(offence, res.locals.user.username)
+    const offenceHint = await this.getOffenceDescriptionHint(offence, res.locals.user.username)
     const storedOffence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     const sentenceUuids = this.unknownRecallSentenceService.getSentenceUuids(req.session, nomsId)
     let backLink = UnknownRecallSentenceJourneyUrls.landingPage(nomsId, sentenceUuids)
@@ -227,7 +227,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
     }
 
-    const offenceHint = await this.getOffenceDescription(offence, req.user.username)
+    const offenceHint = await this.getOffenceDescriptionHint(offence, req.user.username)
     return res.render('pages/offence/sentence-type', {
       nomsId,
       chargeUuid,
@@ -322,7 +322,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       sentenceTypeHint = (await this.refDataService.getSentenceTypeById(sentence.sentenceTypeId, req.user.username))
         .hintText
     }
-    const offenceHint = await this.getOffenceDescription(offence, req.user.username)
+    const offenceHint = await this.getOffenceDescriptionHint(offence, req.user.username)
     return res.render('pages/offence/period-length', {
       nomsId,
       chargeUuid,
@@ -417,7 +417,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     const periodLengthHeader =
       periodLengthTypeHeadings[periodLengthType as string]?.toLowerCase() ??
       currentPeriodLength?.legacyData?.sentenceTermDescription
-    const offenceHint = await this.getOffenceDescription(offence, req.user.username)
+    const offenceHint = await this.getOffenceDescriptionHint(offence, req.user.username)
     const backLink = `${UnknownRecallSentenceJourneyUrls.periodLength(
       nomsId,
       appearanceReference,
@@ -533,7 +533,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     if (submitToCheckAnswers) {
       backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
     }
-    const offenceHint = await this.getOffenceDescription(offence, req.user.username)
+    const offenceHint = await this.getOffenceDescriptionHint(offence, req.user.username)
     return res.render('pages/offence/fine-amount', {
       nomsId,
       appearanceReference,
@@ -642,7 +642,10 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     return res.redirect(UnknownRecallSentenceJourneyUrls.landingPage(nomsId, sentenceUuids))
   }
 
-  private async getOffenceDescription(sessionOffence: Offence, username: string): Promise<string> {
+  private async getOffenceDescriptionHint(
+    sessionOffence: Offence,
+    username: string,
+  ): Promise<{ text: string } | undefined> {
     const { offenceCode } = sessionOffence
     if (offenceCode) {
       const apiOffence = await this.manageOffencesService.getOffenceByCode(
@@ -650,8 +653,10 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
         username,
         sessionOffence.legacyData?.offenceDescription,
       )
-      return `${offenceCode} - ${apiOffence.description}`
+      return {
+        text: `${offenceCode} - ${apiOffence.description}`,
+      }
     }
-    return ''
+    return undefined
   }
 }

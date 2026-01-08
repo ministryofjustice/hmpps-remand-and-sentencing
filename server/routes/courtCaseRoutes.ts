@@ -53,6 +53,7 @@ import RefDataService from '../services/refDataService'
 import SentencingTaskListModel from './data/SentencingTaskListModel'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import NonSentencingTaskListModel from './data/NonSentencingTaskListModel'
+import AuditService from '../services/auditService'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -64,6 +65,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     private readonly courtRegisterService: CourtRegisterService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
     private readonly refDataService: RefDataService,
+    private readonly auditService: AuditService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
@@ -152,6 +154,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
     paginationUrl.searchParams.set('sortBy', sortBy)
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
     const paginationResults = getPaginationResults(courtCases)
+
+    const courtCaseUuids = courtCases.content.map(courtCase => courtCase.courtCaseUuid)
+
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,

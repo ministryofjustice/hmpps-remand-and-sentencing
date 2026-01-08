@@ -19,7 +19,7 @@ context('Court Case Delete Hearing Page', () => {
       cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/details')
       courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Accrington Youth Court',
+        'Hearings for C894623 at Accrington Youth Court',
       )
     })
 
@@ -45,7 +45,7 @@ context('Court Case Delete Hearing Page', () => {
       deleteAppearancePage.continueButton().click()
       courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Accrington Youth Court',
+        'Hearings for C894623 at Accrington Youth Court',
       )
       courtCaseDetailsPage.notificationBanner().should('contain.text', 'This hearing has been deleted')
       courtCaseDetailsPage
@@ -77,7 +77,7 @@ context('Court Case Delete Hearing Page', () => {
       cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/details')
       courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Accrington Youth Court',
+        'Hearings for C894623 at Accrington Youth Court',
       )
     })
 

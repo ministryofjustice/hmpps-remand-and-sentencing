@@ -38,24 +38,24 @@ const getTable = subject => {
   )
 }
 
-const getAppearanceCardDetails = subject => {
+const getHearingCardDetails = subject => {
   if (subject.get().length > 1) {
     throw new Error(`Selector "${subject.selector}" returned more than 1 element.`)
   }
 
   const card = subject.get()[0]
 
-  const appearances = [...card.querySelectorAll('[data-qa=appearance]')].map(appearance => {
-    const headers = [...appearance.querySelectorAll('h3')].map(e => e.textContent.replace(/\s/g, ' '))
+  const hearings = [...card.querySelectorAll('[data-qa=hearing]')].map(hearing => {
+    const headers = [...hearing.querySelectorAll('h3')].map(e => e.textContent.replace(/\s/g, ' '))
 
     const values = headers.map(field => {
       const value =
         field !== 'Offences'
-          ? appearance
+          ? hearing
               .querySelector(`[data-qa=${field.toLowerCase().replace(' ', '-')}]`)
               .textContent.replace(/\r?\n|\r|\n/g, '')
               .trim()
-          : getOffenceDetails(appearance.querySelector(`[data-qa=${field.toLowerCase().replace(' ', '-')}]`))
+          : getOffenceDetails(hearing.querySelector(`[data-qa=${field.toLowerCase().replace(' ', '-')}]`))
 
       return {
         [field]: value,
@@ -64,7 +64,7 @@ const getAppearanceCardDetails = subject => {
     return Object.assign({}, ...values)
   })
 
-  return appearances
+  return hearings
 }
 
 const getOffenceDetails = detailsElement => {
@@ -225,7 +225,7 @@ Cypress.Commands.add('getActions', { prevSubject: true }, getActions)
 Cypress.Commands.add('getTaskList', { prevSubject: true }, getTaskList)
 Cypress.Commands.add('trimTextContent', { prevSubject: true }, trimTextContent)
 Cypress.Commands.add('getOffenceCards', { prevSubject: true }, getOffenceCards)
-Cypress.Commands.add('getAppearanceCardDetails', { prevSubject: true }, getAppearanceCardDetails)
+Cypress.Commands.add('getHearingCardDetails', { prevSubject: true }, getHearingCardDetails)
 Cypress.Commands.add('getRadioOptions', { prevSubject: true }, getRadioOptions)
 Cypress.Commands.add('getListItems', { prevSubject: true }, getListItems)
 Cypress.Commands.add('createCourtCase', (personId: string, courtCaseNumber: string, appearanceReference: string) => {

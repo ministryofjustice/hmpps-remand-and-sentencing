@@ -183,7 +183,7 @@ export default class SentencingRoutes extends BaseRoutes {
     )
   }
 
-  public loadAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
+  public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { username } = res.locals.user
     const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
@@ -198,11 +198,11 @@ export default class SentencingRoutes extends BaseRoutes {
       pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
     )
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`,
     )
   }
 
-  public getAppearanceDetails: RequestHandler = async (req, res): Promise<void> => {
+  public getHearingDetails: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { username } = res.locals.user
     if (!this.courtAppearanceService.sessionCourtAppearanceExists(req.session, nomsId, appearanceReference)) {
@@ -217,32 +217,32 @@ export default class SentencingRoutes extends BaseRoutes {
         pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
       )
     }
-    const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     const consecutiveToSentenceDetailsFromApi = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
-    const chargeCodes = appearance.offences
+    const chargeCodes = hearing.offences
       .map(offences => offences.offenceCode)
       .concat(
         consecutiveToSentenceDetailsFromApi.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode),
       )
-    const courtIds = [appearance.courtCode, appearance.nextAppearanceCourtCode]
+    const courtIds = [hearing.courtCode, hearing.nextAppearanceCourtCode]
       .concat(consecutiveToSentenceDetailsFromApi.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
-      .concat(appearance.offences.map(offence => offence.mergedFromCase?.courtCode))
+      .concat(hearing.offences.map(offence => offence.mergedFromCase?.courtCode))
       .filter(courtId => courtId !== undefined && courtId !== null)
-    const sentenceTypeIds = appearance.offences
+    const sentenceTypeIds = hearing.offences
       .filter(offence => offence.sentence?.sentenceTypeId)
       .map(offence => offence.sentence?.sentenceTypeId)
-    const offenceOutcomeIds = appearance.offences.map(offence => offence.outcomeUuid)
-    const outcomePromise = appearance.appearanceOutcomeUuid
+    const offenceOutcomeIds = hearing.offences.map(offence => offence.outcomeUuid)
+    const outcomePromise = hearing.appearanceOutcomeUuid
       ? this.refDataService
-          .getAppearanceOutcomeByUuid(appearance.appearanceOutcomeUuid, req.user.username)
+          .getAppearanceOutcomeByUuid(hearing.appearanceOutcomeUuid, req.user.username)
           .then(outcome => outcome.outcomeName)
-      : Promise.resolve(appearance.legacyData?.outcomeDescription ?? 'Not entered')
-    const appearanceTypePromise = appearance.nextAppearanceTypeUuid
+      : Promise.resolve(hearing.legacyData?.outcomeDescription ?? 'Not entered')
+    const appearanceTypePromise = hearing.nextAppearanceTypeUuid
       ? this.refDataService
-          .getAppearanceTypeByUuid(appearance.nextAppearanceTypeUuid, req.user.username)
+          .getAppearanceTypeByUuid(hearing.nextAppearanceTypeUuid, req.user.username)
           .then(appearanceType => appearanceType.description)
       : Promise.resolve('Not entered')
-    const { offences } = appearance
+    const { offences } = hearing
     const sentenceUuids = offences
       .filter(offence => offence.sentence?.sentenceUuid)
       .map(offence => offence.sentence.sentenceUuid)
@@ -261,7 +261,7 @@ export default class SentencingRoutes extends BaseRoutes {
       this.manageOffencesService.getOffenceMap(
         Array.from(new Set(chargeCodes)),
         req.user.username,
-        offencesToOffenceDescriptions(appearance.offences, consecutiveToSentenceDetailsFromApi.sentences),
+        offencesToOffenceDescriptions(hearing.offences, consecutiveToSentenceDetailsFromApi.sentences),
       ),
       this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), req.user.username),
       this.refDataService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), req.user.username),
@@ -285,7 +285,7 @@ export default class SentencingRoutes extends BaseRoutes {
         },
         [[], []] as [typeof offences, typeof offences],
       )
-    const allSentenceUuids = appearance.offences
+    const allSentenceUuids = hearing.offences
       .map(offence => offence.sentence?.sentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
     const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
@@ -306,21 +306,21 @@ export default class SentencingRoutes extends BaseRoutes {
       .getUploadedDocuments(req.session, nomsId, appearanceReference)
       .map(document => ({
         ...document,
-        documentType: getUiDocumentType(document.documentType, appearance.warrantType),
+        documentType: getUiDocumentType(document.documentType, hearing.warrantType),
       }))
 
     const mergedFromText = this.getMergedFromText(
-      appearance.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
+      hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
       courtMap,
     )
 
-    return res.render('pages/sentencing/appearance-details', {
+    return res.render('pages/sentencing/hearing-details', {
       nomsId,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      appearance: { ...appearance, offences: orderOffences(appearance.offences) },
+      hearing: { ...hearing, offences: orderOffences(hearing.offences) },
       offenceMap,
       courtMap,
       sentenceTypeMap,
@@ -342,7 +342,7 @@ export default class SentencingRoutes extends BaseRoutes {
     })
   }
 
-  public submitAppearanceDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
+  public submitHearingDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const errors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
       req.session,
@@ -352,7 +352,7 @@ export default class SentencingRoutes extends BaseRoutes {
     if (errors.length > 0) {
       req.flash('errors', errors)
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details?hasErrors=true`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details?hasErrors=true`,
       )
     }
     return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference)
@@ -666,7 +666,7 @@ export default class SentencingRoutes extends BaseRoutes {
       documentRows,
       isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     })
   }
@@ -676,7 +676,7 @@ export default class SentencingRoutes extends BaseRoutes {
     this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId, appearanceReference)
     return res.redirect(
       this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
-        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+        ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`
         : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
     )
   }
@@ -702,7 +702,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       overallSentenceLengthComparison,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`,
     })
   }
 
@@ -732,9 +732,9 @@ export default class SentencingRoutes extends BaseRoutes {
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
       if (warrantType === 'SENTENCING') {
-        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`
       } else {
-        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`
+        goBackLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`
       }
     }
     return res.render('pages/sentencing/delete-sentence-in-chain', {
@@ -767,11 +767,11 @@ export default class SentencingRoutes extends BaseRoutes {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`,
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/appearance-details`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`,
       )
     }
     return res.redirect(
@@ -840,7 +840,7 @@ export default class SentencingRoutes extends BaseRoutes {
         offence.legacyData?.offenceDescription,
       ),
     ])
-    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`
     return res.render('pages/sentencing/cannot-delete-offence', {
       nomsId,
       courtCaseReference,
@@ -934,7 +934,7 @@ export default class SentencingRoutes extends BaseRoutes {
       lineNumber: offence.sentence?.legacyData?.nomisLineReference,
       offenceCode: offence.offenceCode,
       offenceDescription: offenceDetails.description,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/appearance-details`,
+      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`,
     })
   }
 

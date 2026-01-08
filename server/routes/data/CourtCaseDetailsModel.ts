@@ -26,9 +26,9 @@ export default class CourtCaseDetailsModel {
 
   overallCaseStatus: string
 
-  appearanceTotal: number
+  hearingTotal: number
 
-  appearances: PageCourtCaseAppearance[]
+  hearings: PageCourtCaseAppearance[]
 
   mergedToCaseDetails: MergedToCaseDetails
 
@@ -41,8 +41,8 @@ export default class CourtCaseDetailsModel {
     this.caseReferences = Array.from(
       new Set(
         pageCourtCaseContent.appearances
-          .filter(appearance => !!appearance.courtCaseReference)
-          .map(appearance => appearance.courtCaseReference),
+          .filter(hearing => !!hearing.courtCaseReference)
+          .map(hearing => hearing.courtCaseReference),
       ),
     ).join(', ')
     this.overallCaseOutcome =
@@ -66,12 +66,12 @@ export default class CourtCaseDetailsModel {
       )
     }
     this.overallCaseStatus = pageCourtCaseContent.status
-    this.appearanceTotal = pageCourtCaseContent.appearances.length
-    this.appearances = pageCourtCaseContent.appearances
-      .map(appearance => {
-        const sortedCharges = orderCharges(appearance.charges)
-        const hasAnyRecalls = appearance.charges.some(charge => charge.sentence?.hasRecall)
-        return { ...appearance, charges: sortedCharges, hasAnyRecalls }
+    this.hearingTotal = pageCourtCaseContent.appearances.length
+    this.hearings = pageCourtCaseContent.appearances
+      .map(hearing => {
+        const sortedCharges = orderCharges(hearing.charges)
+        const hasAnyRecalls = hearing.charges.some(charge => charge.sentence?.hasRecall)
+        return { ...hearing, charges: sortedCharges, hasAnyRecalls }
       })
       .sort((a, b) => sortByDateDesc(a.appearanceDate, b.appearanceDate))
 

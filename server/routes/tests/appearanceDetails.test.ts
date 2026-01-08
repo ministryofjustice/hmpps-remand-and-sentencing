@@ -13,7 +13,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /sentencing/appearance-details', () => {
+describe('GET /sentencing/hearing-details', () => {
   beforeEach(() => {
     defaultServices.courtAppearanceService.sessionCourtAppearanceExists.mockReturnValue(true)
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
@@ -64,7 +64,7 @@ describe('GET /sentencing/appearance-details', () => {
   })
   it('Displays correct consecutive to details if consecutive to another case', async () => {
     await request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/appearance-details')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(res => {
@@ -88,7 +88,7 @@ describe('GET /sentencing/appearance-details', () => {
     })
 
     return request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/appearance-details')
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(res => {

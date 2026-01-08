@@ -1,4 +1,4 @@
-import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetailsPage'
+import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import Page from '../../pages/page'
@@ -17,7 +17,7 @@ import CannotChangeSentenceOutcomePage from '../../pages/cannotChangeSentenceOut
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 
 context('Sentencing appearance details Page', () => {
-  let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
+  let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffencesByCodes', {})
@@ -45,7 +45,7 @@ context('Sentencing appearance details Page', () => {
     })
   })
 
-  context('DPS sentence appearance', () => {
+  context('DPS sentence hearing', () => {
     beforeEach(() => {
       cy.task('stubGetSentenceAppearanceDetails')
       cy.task('stubGetSentenceTypesByIds', [
@@ -76,28 +76,28 @@ context('Sentencing appearance details Page', () => {
       cy.task('stubGetAllAppearanceOutcomes')
       cy.signIn()
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/hearing-details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
 
-    it('appearance summary shows correct data', () => {
-      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+    it('hearing summary shows correct data', () => {
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'C894623',
-        'Warrant date': '15/12/2023',
+        'Hearing date': '15/12/2023',
         Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'Imprisonment',
       })
     })
 
     it('overall displays correctly', () => {
-      courtCaseAppearanceDetailsPage.overallSummaryList().getSummaryList().should('deep.equal', {
+      courtCaseHearingDetailsPage.overallSummaryList().getSummaryList().should('deep.equal', {
         'Overall sentence length': '4 years 0 months 0 weeks 0 days',
       })
     })
 
     it('displays offences correctly', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .custodialOffences()
         .getOffenceCards()
         .should('deep.equal', [
@@ -137,7 +137,7 @@ context('Sentencing appearance details Page', () => {
             'Consecutive or concurrent': 'Concurrent',
           },
         ])
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .noNonCustodialOutcomeInset()
         .trimTextContent()
         .should('equal', 'There are no offences with non-custodial outcomes.')
@@ -160,7 +160,7 @@ context('Sentencing appearance details Page', () => {
           outcomeType: 'REMAND',
         },
       ])
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -198,14 +198,14 @@ context('Sentencing appearance details Page', () => {
         'Consecutive to': 'Count 1',
       })
       offenceEditOffencePage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage.confirmButton().click()
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage.confirmButton().click()
       Page.verifyOnPage(AppearanceUpdatedConfirmationPage)
       cy.task('verifyUpdateSentenceCourtAppearanceRequest').should('equal', 1)
     })
 
     it('can edit alternative overall sentence length', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editFieldLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -223,7 +223,7 @@ context('Sentencing appearance details Page', () => {
       courtCaseAlternativeSentenceLengthPage.sentenceLengthInput('second').clear().type('2')
       courtCaseAlternativeSentenceLengthPage.sentenceLengthDropDown('second').select('years')
       courtCaseAlternativeSentenceLengthPage.continueButton().click()
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
 
     it('can delete an offence sentences after on same case', () => {
@@ -252,7 +252,7 @@ context('Sentencing appearance details Page', () => {
           classification: 'FINE',
         },
       ])
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .deleteOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -265,8 +265,8 @@ context('Sentencing appearance details Page', () => {
       offenceDeleteOffencePage.deleteButton().click()
       const sentencingDeleteSentenceInChainPage = Page.verifyOnPage(SentencingDeleteSentenceInChainPage)
       sentencingDeleteSentenceInChainPage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
         .custodialOffences()
         .getOffenceCards()
         .should('deep.equal', [
@@ -297,13 +297,13 @@ context('Sentencing appearance details Page', () => {
             'Consecutive or concurrent': 'Concurrent',
           },
         ])
-      courtCaseAppearanceDetailsPage.confirmButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage.confirmButton().click()
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
         .errorSummary()
         .trimTextContent()
         .should('equal', 'There is a problem Select consecutive or concurrent')
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .selectConsecutiveConcurrentLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -314,8 +314,8 @@ context('Sentencing appearance details Page', () => {
       const offenceSentenceServeTypePage = Page.verifyOnPage(OffenceSentenceServeTypePage)
       offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
       offenceSentenceServeTypePage.continueButton().click()
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
         .custodialOffences()
         .getOffenceCards()
         .should('deep.equal', [
@@ -357,7 +357,7 @@ context('Sentencing appearance details Page', () => {
         sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
       })
 
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .deleteOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -395,7 +395,7 @@ context('Sentencing appearance details Page', () => {
       cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {
         sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
       })
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -445,7 +445,7 @@ context('Sentencing appearance details Page', () => {
           classification: 'STANDARD',
         },
       ])
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -466,7 +466,7 @@ context('Sentencing appearance details Page', () => {
       offenceEditOffencePage.continueButton().click()
 
       // Fine amount is no longer displayed
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .custodialOffences()
         .getOffenceCards()
         .should('deep.equal', [
@@ -508,7 +508,7 @@ context('Sentencing appearance details Page', () => {
     })
   })
 
-  context('legacy sentence appearance', () => {
+  context('legacy sentence hearing', () => {
     beforeEach(() => {
       cy.task('stubGetLegacySentenceAppearanceDetails')
       cy.task('stubGetCourtsByIds')
@@ -525,22 +525,22 @@ context('Sentencing appearance details Page', () => {
       ])
       cy.signIn()
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3f20856f-fa17-493b-89c7-205970c749b8/sentencing/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3f20856f-fa17-493b-89c7-205970c749b8/sentencing/hearing-details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
 
-    it('appearance details are correct', () => {
-      courtCaseAppearanceDetailsPage.appearanceSummaryList().getSummaryList().should('deep.equal', {
+    it('hearing details are correct', () => {
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
         'Case reference': 'BB7937',
-        'Warrant date': '27/01/2025',
+        'Hearing date': '27/01/2025',
         Location: 'Southampton Magistrate Court',
         'Overall case outcome': 'A Nomis description',
       })
     })
 
     it('can edit an unsupported period length', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -589,7 +589,7 @@ context('Sentencing appearance details Page', () => {
         'Consecutive or concurrent': 'Concurrent',
       })
       offenceEditOffencePage.continueButton().click()
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
 
     it('editing charge with legacy outcome to sentencing results in adding sentence information', () => {
@@ -602,7 +602,7 @@ context('Sentencing appearance details Page', () => {
         convictionDate: '2023-12-17',
         offenceDate: '2023-12-15',
       })
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editFieldLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -618,8 +618,8 @@ context('Sentencing appearance details Page', () => {
       courtCaseOverallCaseOutcomePage.legendParagraph().should('contain', 'A Nomis description')
       courtCaseOverallCaseOutcomePage.radioLabelContains('Imprisonment').click()
       courtCaseOverallCaseOutcomePage.continueButton().click()
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage
+      Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -674,7 +674,7 @@ context('Sentencing appearance details Page', () => {
     })
 
     it('should show error if sentence type is tried to add while offence date is not available', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -692,7 +692,7 @@ context('Sentencing appearance details Page', () => {
     })
 
     it('should show error if sentence type is tried to add while conviction date is not available', () => {
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',

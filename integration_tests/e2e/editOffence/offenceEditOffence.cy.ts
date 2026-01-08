@@ -1,4 +1,4 @@
-import CourtCaseAppearanceDetailsPage from '../../pages/courtCaseAppearanceDetailsPage'
+import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
@@ -448,7 +448,7 @@ context('Add Offence Edit offence Page', () => {
   })
 
   context('edit remand', () => {
-    let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
+    let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
     beforeEach(() => {
       cy.task('stubGetRemandNomisAppearanceDetails')
       cy.task('stubGetCourtsByIds')
@@ -467,10 +467,10 @@ context('Add Offence Edit offence Page', () => {
       cy.task('stubGetAppearanceTypeByUuid')
       cy.task('stubGetChargeOutcomeById', {})
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/hearing-details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
@@ -483,11 +483,11 @@ context('Add Offence Edit offence Page', () => {
 
     it('can cancel edit and return to appearance details page', () => {
       offenceEditOffencePage.cancelEditLink().click()
-      Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
+      Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
   })
   context('edit sentence many period lengths of same type', () => {
-    let courtCaseAppearanceDetailsPage: CourtCaseAppearanceDetailsPage
+    let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
     beforeEach(() => {
       cy.task('stubGetSentenceAppearanceDetailsManyPeriodLengthsSameType')
       cy.task('stubGetCourtsByIds')
@@ -507,10 +507,10 @@ context('Add Offence Edit offence Page', () => {
         hasSentenceAfterOnOtherCourtAppearance: false,
       })
       cy.visit(
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/appearance-details',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/hearing-details',
       )
-      courtCaseAppearanceDetailsPage = Page.verifyOnPageTitle(CourtCaseAppearanceDetailsPage, 'Edit appearance')
-      courtCaseAppearanceDetailsPage
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
         .editOffenceLink(
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',

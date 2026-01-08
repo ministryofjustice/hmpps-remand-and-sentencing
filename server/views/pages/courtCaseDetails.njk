@@ -33,10 +33,10 @@
           <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
               <h1 class="govuk-heading-l govuk-!-margin-top-4">
-                  {% if courtCaseDetails.appearances | length == 0 %}
-                      Appearances
+                  {% if courtCaseDetails.hearings | length == 0 %}
+                      Hearings
                   {% else %}
-                      Appearances{{ ' for ' + courtCaseDetails.latestCaseReference if courtCaseDetails.latestCaseReference }} at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }}
+                      Hearings{{ ' for ' + courtCaseDetails.latestCaseReference if courtCaseDetails.latestCaseReference }} at {{ courtMap[courtCaseDetails.latestCourtCode] if courtMap[courtCaseDetails.latestCourtCode] else courtCaseDetails.latestCourtCode }}
                   {% endif %}
               </h1>
             </div>
@@ -53,17 +53,17 @@
 
           <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-          {% if courtCaseDetails.appearances | length == 0 %}
-              <p>There are no saved appearances.</p>
+          {% if courtCaseDetails.hearings | length == 0 %}
+              <p>There are no saved hearings.</p>
           {% endif %}
 
-          <div data-qa="appearances-section">
-            {% for appearance in courtCaseDetails.appearances %}
+          <div data-qa="hearings-section">
+            {% for hearing in courtCaseDetails.hearings %}
                 {% if loop.index != 1 %}
                     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
                 {% endif %}
-                <div data-qa="appearance">
-                    {{ appearanceCard(appearance, courtCaseDetails) }}
+                <div data-qa="hearing">
+                    {{ hearingCard(hearing, courtCaseDetails) }}
                 </div>
             {% endfor %}
           </div>
@@ -72,32 +72,32 @@
     </div>
 {% endblock %}
 
-{% macro appearanceCard(appearance, courtCaseDetails) %}
+{% macro hearingCard(hearing, courtCaseDetails) %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <h2 class="govuk-heading-m">
-              {{ appearance.courtCaseReference + ' at ' if appearance.courtCaseReference }}
-              {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
-              on {{ appearance.appearanceDate | formatDate }}
+              {{ hearing.courtCaseReference + ' at ' if hearing.courtCaseReference }}
+              {{ courtMap[hearing.courtCode] if courtMap[hearing.courtCode] else hearing.courtCode }}
+              on {{ hearing.appearanceDate | formatDate }}
             </h2>
         </div>
 
         <div class="govuk-grid-column-one-quarter">
-            <ul class="offence-card-actions-list" data-qa="appearanceActionList-{{appearance.appearanceUuid}}">
-                {% if not appearance.hasAnyRecalls and not viewOnlyEnabled %}
+            <ul class="offence-card-actions-list" data-qa="hearingActionList-{{hearing.appearanceUuid}}">
+                {% if not hearing.hasAnyRecalls and not viewOnlyEnabled %}
                     <li class="offence-card-action-link">
                         <a class="govuk-link--no-visited-state"
-                           href="{% if appearance.warrantType == 'NON_SENTENCING' %}
-                                      /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/non-sentencing/load-appearance-details
+                           href="{% if hearing.warrantType == 'NON_SENTENCING' %}
+                                      /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ hearing.appearanceUuid }}/non-sentencing/load-hearing-details
                                   {% else %}
-                                      /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ appearance.appearanceUuid }}/sentencing/load-appearance-details
+                                      /person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ hearing.appearanceUuid }}/sentencing/load-hearing-details
                                   {% endif %}">
                             Edit
                         </a>
                     </li>
-                    {% if appearance.canDelete %}
+                    {% if hearing.canDelete %}
                       <li class="offence-card-action-link">
-                        <a href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/{{ appearance.appearanceUuid }}/confirm-delete"
+                        <a href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/{{ hearing.appearanceUuid }}/confirm-delete"
                            class="govuk-link--no-visited-state">Delete</a>
                       </li>
                     {% endif %}
@@ -107,24 +107,24 @@
     </div>
 
     <div class="govuk-!-margin-bottom-6">
-    {% if appearance.source == 'NOMIS' %}
-        {{ govukTag({
-                          text: "From NOMIS"
-                        }) }}
-                        {% endif %}
+    {% if hearing.source == 'NOMIS' %}
+      {{ govukTag({
+        text: "From NOMIS"
+      }) }}
+    {% endif %}
     </div>
 
-    {% if appearance.mergedFromCases and appearance.mergedFromCases | length > 0 %}
+    {% if hearing.mergedFromCases and hearing.mergedFromCases | length > 0 %}
       {{ govukInsetText({
-        html: appearance.mergedFromCases | join('<br>'),
+        html: hearing.mergedFromCases | join('<br>'),
         classes: "govuk-!-margin-0",
         attributes: { "data-qa": "mergedFromText" }
       }) }}
     {% endif %}
 
-    {% if not appearance.canDelete %}
+    {% if not hearing.canDelete %}
       {{ govukInsetText({
-        text: "You cannot delete an appearance that includes sentences.",
+        text: "You cannot delete a hearing that includes sentences.",
         classes: "govuk-!-margin-0"
       }) }}
     {% endif %}
@@ -136,18 +136,18 @@
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Case reference</h3>
             <p data-qa="case-reference" class="govuk-body govuk-!-margin-bottom-3">
-              {{ appearance.courtCaseReference if appearance.courtCaseReference else 'Not entered' }}
+              {{ hearing.courtCaseReference if hearing.courtCaseReference else 'Not entered' }}
             </p>
 
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Warrant date</h3>
-            <p data-qa="warrant-date" class="govuk-body govuk-!-margin-bottom-3">
-              {{ appearance.appearanceDate | formatDate }}
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Hearing date</h3>
+            <p data-qa="hearing-date" class="govuk-body govuk-!-margin-bottom-3">
+              {{ hearing.appearanceDate | formatDate }}
             </p>
 
-            {% if appearance.warrantType == 'SENTENCING' and appearance.overallConvictionDate %}
+            {% if hearing.warrantType == 'SENTENCING' and hearing.overallConvictionDate %}
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Conviction date</h3>
                 <p data-qa="conviction-date" class="govuk-body govuk-!-margin-bottom-2">
-                  {{ appearance.overallConvictionDate | formatDate }}
+                  {{ hearing.overallConvictionDate | formatDate }}
                 </p>
             {% endif %}
         </div>
@@ -155,35 +155,35 @@
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Location</h3>
             <p class="govuk-body govuk-!-margin-bottom-2" data-qa="location">
-              {{ courtMap[appearance.courtCode] if courtMap[appearance.courtCode] else appearance.courtCode }}
+              {{ courtMap[hearing.courtCode] if courtMap[hearing.courtCode] else hearing.courtCode }}
             </p>
 
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h3>
             <p class="govuk-body govuk-!-margin-bottom-3" data-qa="outcome">
-              {{ appearance.outcome | appearanceOutcomeOrLegacy(appearance.legacyData) }}
+              {{ hearing.outcome | appearanceOutcomeOrLegacy(hearing.legacyData) }}
             </p>
         </div>
 
         <div class="govuk-grid-one-third">
-            {% if appearance.warrantType == 'NON_SENTENCING' %}
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next hearing</h3>
-                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="next-hearing">
-                  {{ appearance.nextCourtAppearance | formatNextHearing(courtMap) }}
+            {% if hearing.warrantType == 'NON_SENTENCING' %}
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next appearance</h3>
+                <p class="govuk-body govuk-!-margin-bottom-2" data-qa="next-appearance">
+                  {{ hearing.nextCourtAppearance | formatNextHearing(courtMap) }}
                 </p>
             {% endif %}
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Court documents</h3>
             <ul class="govuk-list govuk-list--no--bullet govuk-!-margin-bottom-3" data-qa="court-documents">
-                {% if appearance.documentsWithUiType | length == 0 %}
+                {% if hearing.documentsWithUiType | length == 0 %}
                     No documents uploaded
                 {% else %}
-                    {% for document in appearance.documentsWithUiType %}
+                    {% for document in hearing.documentsWithUiType %}
                       <span style="vertical-align: middle;">
                         <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
                           <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"></path>
                         </svg>
                         <a class="govuk-link govuk-link--no-visited-state"
                            target="_blank"
-                           href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/edit-court-appearance/{{ appearance.appearanceUuid }}/{{ document.documentUUID }}/download-document">
+                           href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/edit-court-appearance/{{ hearing.appearanceUuid }}/{{ document.documentUUID }}/download-document">
                           <strong>{{ document.documentType }}</strong>
                         </a>
                       </span>
@@ -196,7 +196,7 @@
         <div class="govuk-grid-column-full govuk-!-margin-top-4">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Offences</h3>
             {% set offenceDetailsHtml %}
-              {% for charge in appearance.charges %}
+              {% for charge in hearing.charges %}
                   {{ offenceCard({
                       offenceCode: charge.offenceCode,
                       offenceName: offenceMap[charge.offenceCode],
@@ -220,7 +220,7 @@
               {% endfor %}
             {% endset %}
             {{ govukDetails({
-                summaryText: 'offences (' + appearance.charges | length  + ')',
+                summaryText: 'offences (' + hearing.charges | length  + ')',
                 html: offenceDetailsHtml,
                 classes: "filter white show-toggle govuk-!-margin-bottom-0",
                 attributes: { "data-qa": "offences" }

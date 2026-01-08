@@ -9,7 +9,7 @@ context('Court Case details Page', () => {
     cy.task('stubGetOffencesByCodes', {})
   })
 
-  context('Latest remand appearance', () => {
+  context('Latest remand hearing', () => {
     beforeEach(() => {
       cy.task('stubGetCourtCaseRemandLatest')
       cy.task('stubGetCourtsByIds')
@@ -17,21 +17,21 @@ context('Court Case details Page', () => {
       cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/details')
       courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Accrington Youth Court',
+        'Hearings for C894623 at Accrington Youth Court',
       )
     })
 
-    it('appearances tab shows correct data', () => {
+    it('hearing tab shows correct data', () => {
       courtCaseDetailsPage
-        .appearancesSection()
-        .getAppearanceCardDetails()
+        .hearingsSection()
+        .getHearingCardDetails()
         .should('deep.equal', [
           {
             'Case reference': 'C894623',
             Location: 'Accrington Youth Court',
-            'Warrant date': '15/12/2023',
+            'Hearing date': '15/12/2023',
             Outcome: 'Remanded in custody',
-            'Next hearing': '15/12/2024 at Accrington Youth Court',
+            'Next appearance': '15/12/2024 at Accrington Youth Court',
             'Court documents': 'No documents uploaded',
             Offences: {
               'offences (2)': [
@@ -51,9 +51,9 @@ context('Court Case details Page', () => {
           {
             'Case reference': 'F23325',
             Location: 'Birmingham Crown Court',
-            'Warrant date': '15/10/2022',
+            'Hearing date': '15/10/2022',
             Outcome: 'Lie on file',
-            'Next hearing': '15/12/2023 at Birmingham Crown Court',
+            'Next appearance': '15/12/2023 at Birmingham Crown Court',
             'Court documents': 'No documents uploaded',
             Offences: {
               'offences (1)': [
@@ -71,7 +71,7 @@ context('Court Case details Page', () => {
 
     it('should show delete button', () => {
       courtCaseDetailsPage
-        .appearanceActionList('a6400fd8-aef4-4567-b18c-d1f452651933')
+        .hearingActionList('a6400fd8-aef4-4567-b18c-d1f452651933')
         .children()
         .should('have.length', 2)
         .and('contain.text', 'Delete')
@@ -92,19 +92,19 @@ context('Court Case details Page', () => {
       cy.visit('/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/details')
       courtCaseDetailsPage = Page.verifyOnPageTitle(
         CourtCaseDetailsPage,
-        'Appearances for C894623 at Accrington Youth Court',
+        'Hearings for C894623 at Accrington Youth Court',
       )
     })
 
-    it('appearance shows correct data', () => {
+    it('hearings shows correct data', () => {
       // ensure 2 appearances are shown
       courtCaseDetailsPage
-        .appearancesSection()
-        .getAppearanceCardDetails()
+        .hearingsSection()
+        .getHearingCardDetails()
         .should('deep.equal', [
           {
             'Case reference': 'C894623',
-            'Warrant date': '15/12/2023',
+            'Hearing date': '15/12/2023',
             Location: 'Accrington Youth Court',
             Outcome: 'Imprisonment',
             'Court documents': 'No documents uploaded',
@@ -148,7 +148,7 @@ context('Court Case details Page', () => {
           },
           {
             'Case reference': 'F23325',
-            'Warrant date': '15/10/2022',
+            'Hearing date': '15/10/2022',
             Location: 'Birmingham Crown Court',
             Outcome: 'A Nomis Outcome',
             'Court documents': 'No documents uploaded',
@@ -170,17 +170,11 @@ context('Court Case details Page', () => {
     })
 
     it('do not show edit or delete when appearance contains a recall', () => {
-      courtCaseDetailsPage
-        .appearanceActionList('a6400fd8-aef4-4567-b18c-d1f452651933')
-        .children()
-        .should('have.length', 0)
+      courtCaseDetailsPage.hearingActionList('a6400fd8-aef4-4567-b18c-d1f452651933').children().should('have.length', 0)
     })
 
     it('show edit or delete when appearance has no recalls', () => {
-      courtCaseDetailsPage
-        .appearanceActionList('5b4cbea0-edd3-4bac-9485-b3e3cd46ad77')
-        .children()
-        .should('have.length', 2)
+      courtCaseDetailsPage.hearingActionList('5b4cbea0-edd3-4bac-9485-b3e3cd46ad77').children().should('have.length', 2)
     })
   })
 })

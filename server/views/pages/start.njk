@@ -8,10 +8,27 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
 
 {% set pageTitle = applicationName + " - Home" %}
 
 {% block content %}
+{% if successMessages and successMessages.length %}
+
+{% set html %}
+  <h3 class="govuk-notification-banner__heading">
+    This court case has been deleted.
+  </h3>
+  <p class="govuk-body" data-qa="notification-banner-content">{{successMessages[0]}}</p>
+{% endset %}
+
+  {{ govukNotificationBanner({
+    html: html,
+    type: "success"
+  }) }}
+{% endif %}
+
     <h1 class="govuk-heading-xl">Court cases</h1>
     {{ thingsToDo(serviceDefinitions, 'courtCases') }}
     <div class="govuk-grid-row">

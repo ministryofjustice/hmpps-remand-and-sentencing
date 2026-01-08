@@ -87,6 +87,10 @@ declare module 'forms' {
     deleteDocument?: string
   }
 
+  export interface DeleteHearingForm {
+    deleteHearing?: string
+  }
+
   export interface OffenceFinishedAddingForm {
     finishedAddingOffences?: string
   }

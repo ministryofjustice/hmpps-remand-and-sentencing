@@ -41,4 +41,8 @@ export default class StartPage extends Page {
 
   editAppearanceLink = (courtCaseReference: string): PageElement =>
     cy.get(`a[href="/person/A1234AB/view-court-case/${courtCaseReference}/details"]`)
+
+  notificationBanner = (): PageElement => cy.get('.govuk-notification-banner')
+
+  notificationBannerContent = (): PageElement => cy.get('[data-qa=notification-banner-content]')
 }

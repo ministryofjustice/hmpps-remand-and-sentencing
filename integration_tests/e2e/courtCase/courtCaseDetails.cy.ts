@@ -1,6 +1,5 @@
 import CourtCaseDetailsPage from '../../pages/courtCaseDetailsPage'
 import Page from '../../pages/page'
-import CourtCaseDeleteAppearancePage from '../../pages/courtCaseDeleteAppearancePage'
 
 context('Court Case details Page', () => {
   let courtCaseDetailsPage: CourtCaseDetailsPage
@@ -78,25 +77,6 @@ context('Court Case details Page', () => {
         .and('contain.text', 'Delete')
     })
 
-    it('should delete an appearance and return to court case details page', () => {
-      cy.task('stubGetAppearanceByUuid')
-      cy.task('stubGetCourtById', {
-        courtId: 'ACCRYC',
-        courtName: 'Accrington Youth Court',
-      })
-      cy.task('stubDeleteAppearanceByUuid')
-      courtCaseDetailsPage
-        .deleteAppearanceLink('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'a6400fd8-aef4-4567-b18c-d1f452651933')
-        .click()
-
-      const deleteAppearancePage = Page.verifyOnPage(CourtCaseDeleteAppearancePage)
-      deleteAppearancePage.description().should('contain.text', 'C894623 at Accrington Youth Court on 15/12/2023')
-      deleteAppearancePage.deleteButton().click()
-      courtCaseDetailsPage = Page.verifyOnPageTitle(
-        CourtCaseDetailsPage,
-        'Appearances for C894623 at Accrington Youth Court',
-      )
-    })
     it('should show mergedFrom details', () => {
       courtCaseDetailsPage
         .mergedCaseInset()

@@ -6,10 +6,26 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {%- from "govuk/components/tag/macro.njk" import govukTag -%}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% set pageTitle = applicationName + " - Court case details" %}
 
 {% block content %}
+{% if successMessages and successMessages.length %}
+
+{% set html %}
+  <h3 class="govuk-notification-banner__heading">
+    This hearing has been deleted.
+  </h3>
+  <p class="govuk-body" data-qa="notification-banner-content">{{successMessages[0]}}</p>
+{% endset %}
+
+  {{ govukNotificationBanner({
+    html: html,
+    type: "success"
+  }) }}
+{% endif %}
+
     {{ super() }}
     <div class="govuk-grid-row">
 

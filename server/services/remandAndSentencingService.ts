@@ -1,5 +1,8 @@
 import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
+// eslint-disable-next-line import/no-unresolved
+import { DeleteHearingForm } from 'forms'
+import validate from '../validation/validation'
 import {
   ConsecutiveChainValidationRequest,
   CourtCaseCountNumbers,
@@ -99,8 +102,30 @@ export default class RemandAndSentencingService {
     return this.remandAndSentencingApiClient.getCourtAppearanceByAppearanceUuid(appearanceUuid, username)
   }
 
-  async deleteCourtAppearance(appearanceUuid: string, username: string): Promise<void> {
-    return this.remandAndSentencingApiClient.deleteCourtAppearance(appearanceUuid, username)
+  async deleteCourtAppearance(
+    appearanceUuid: string,
+    username: string,
+    deleteHearingForm: DeleteHearingForm,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    const errors = validate(
+      deleteHearingForm,
+      {
+        deleteHearing: 'required',
+      },
+      {
+        'required.deleteHearing': 'You must select an option.',
+      },
+    )
+    if (deleteHearingForm.deleteHearing === 'true') {
+      await this.remandAndSentencingApiClient.deleteCourtAppearance(appearanceUuid, username)
+    }
+    return errors
   }
 
   async getCourtCaseDetails(courtCaseUuid: string, username: string): Promise<PageCourtCaseContent> {

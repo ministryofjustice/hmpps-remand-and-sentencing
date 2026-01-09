@@ -47,12 +47,18 @@ import config from '../config'
 import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
-import { MergedFromCase, SearchDocuments } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import {
+  MergedFromCase,
+  PagePagedCourtCase,
+  SearchDocuments,
+  SentenceConsecutiveToDetailsResponse,
+} from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import documentTypes from '../resources/documentTypes'
 import RefDataService from '../services/refDataService'
 import SentencingTaskListModel from './data/SentencingTaskListModel'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import NonSentencingTaskListModel from './data/NonSentencingTaskListModel'
+import AuditService, { Page } from '../services/auditService'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -64,6 +70,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     private readonly courtRegisterService: CourtRegisterService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
     private readonly refDataService: RefDataService,
+    private readonly auditService: AuditService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
@@ -152,6 +159,17 @@ export default class CourtCaseRoutes extends BaseRoutes {
     paginationUrl.searchParams.set('sortBy', sortBy)
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
     const paginationResults = getPaginationResults(courtCases)
+
+    if (!courtCases.empty) {
+      const auditDetails = this.getCourtCasesAuditUuids(courtCases, consecutiveToSentenceDetails)
+      await this.auditService.logPageView(Page.COURT_CASES, {
+        who: res.locals.user.username,
+        correlationId: req.id,
+        subjectType: 'PRISONER_ID',
+        subjectId: nomsId,
+        details: auditDetails,
+      })
+    }
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
@@ -168,6 +186,57 @@ export default class CourtCaseRoutes extends BaseRoutes {
       paginationResults,
       viewOnlyEnabled: config.featureToggles.viewOnlyEnabled,
     })
+  }
+
+  private getCourtCasesAuditUuids(
+    courtCases: PagePagedCourtCase,
+    consecutiveToSentenceDetails: SentenceConsecutiveToDetailsResponse,
+  ): {
+    courtCaseUuids: string[]
+    courtAppearanceUuids: string[]
+    chargeUuids: string[]
+    sentenceUuids: string[]
+    periodLengthUuids: string[]
+  } {
+    const courtCaseUuids = Array.from(new Set(courtCases.content.map(courtCase => courtCase.courtCaseUuid)))
+    const courtAppearanceUuids = Array.from(
+      new Set(
+        courtCases.content
+          .flatMap(courtCase =>
+            [courtCase.latestCourtAppearance.appearanceUuid, courtCase.mergedToCase?.appearanceUuid].concat(
+              courtCase.mergedFromCases.map(mergedFromCase => mergedFromCase.appearanceUuid),
+            ),
+          )
+          .filter(courtAppearanceUuid => courtAppearanceUuid),
+      ),
+    )
+    const chargeUuids = Array.from(
+      new Set(
+        courtCases.content.flatMap(courtCase =>
+          courtCase.latestCourtAppearance.charges.map(charge => charge.chargeUuid),
+        ),
+      ),
+    )
+    const sentenceUuids = Array.from(
+      new Set(
+        courtCases.content
+          .flatMap(courtCase => courtCase.latestCourtAppearance.charges.map(charge => charge.sentence?.sentenceUuid))
+          .concat(consecutiveToSentenceDetails.sentences.map(sentence => sentence.sentenceUuid))
+          .filter(sentenceUuid => sentenceUuid),
+      ),
+    )
+    const periodLengthUuids = Array.from(
+      new Set(
+        courtCases.content
+          .flatMap(courtCase =>
+            courtCase.latestCourtAppearance.charges
+              .flatMap(charge => charge.sentence?.periodLengths?.map(periodLength => periodLength.periodLengthUuid))
+              .concat(courtCase.overallSentenceLength?.periodLengthUuid),
+          )
+          .filter(periodLengthUuid => periodLengthUuid),
+      ),
+    )
+    return { courtCaseUuids, courtAppearanceUuids, chargeUuids, sentenceUuids, periodLengthUuids }
   }
 
   public documents: RequestHandler = async (req, res): Promise<void> => {

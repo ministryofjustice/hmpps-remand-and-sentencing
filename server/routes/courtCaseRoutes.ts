@@ -13,6 +13,7 @@ import type {
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
   DeleteDocumentForm,
+  DeleteHearingForm,
   ReceivedCustodialSentenceForm,
   UploadedDocumentForm,
 } from 'forms'
@@ -170,6 +171,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         details: auditDetails,
       })
     }
+    const successMessage = req.flash('success')[0]
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
@@ -184,6 +186,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       appearanceUuid: crypto.randomUUID(),
       paginationResults,
+      successMessage,
       viewOnlyEnabled: config.featureToggles.viewOnlyEnabled,
     })
   }
@@ -390,6 +393,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           }))
         : [],
     }))
+    const successMessage = req.flash('success')[0]
 
     return res.render('pages/courtCaseDetails', {
       nomsId,
@@ -400,6 +404,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       courtMap,
       consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}`,
+      successMessage,
       viewOnlyEnabled: config.featureToggles.viewOnlyEnabled,
     })
   }
@@ -430,9 +435,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
       username,
     )
     const courtDetails = await this.courtRegisterService.findCourtById(appearance.courtCode, req.user.username)
-    const description = `${appearance.courtCaseReference ? appearance.courtCaseReference : 'Case held'} at ${courtDetails.courtName} on ${dayjs(appearance.appearanceDate).format(config.dateFormat)}`
+    const description = `${appearance.courtCaseReference ? appearance.courtCaseReference : 'Hearing'} at ${courtDetails.courtName} on ${dayjs(appearance.appearanceDate).format(config.dateFormat)}. All the information for this hearing will be lost.`
     const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
     const lastAppearance = courtCaseDetails.appearances.length === 1
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
     return res.render('pages/courtAppearance/delete-appearance', {
       nomsId,
       courtCaseReference,
@@ -443,15 +449,44 @@ export default class CourtCaseRoutes extends BaseRoutes {
       description,
       courtDetails,
       lastAppearance,
+      backLink,
+      errors: req.flash('errors') || [],
     })
   }
 
   public submitDeleteAppearanceConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
     const { username } = res.locals.user as PrisonUser
-    await this.remandAndSentencingService.deleteCourtAppearance(appearanceReference, username)
+    const deleteHearingForm = trimForm<DeleteHearingForm>(req.body)
     const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
+    const appearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+      appearanceReference,
+      username,
+    )
+    const courtDetails = await this.courtRegisterService.findCourtById(appearance.courtCode, username)
+    const deletedCourtCaseCourtName = courtDetails?.courtName ?? 'Unknown court'
+    const formattedDate = dayjs(appearance.appearanceDate).format(config.dateFormat)
+
+    const errors = await this.remandAndSentencingService.deleteCourtAppearance(
+      appearanceReference,
+      username,
+      deleteHearingForm,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${appearanceReference}/confirm-delete?hasErrors=true`,
+      )
+    }
     const lastAppearance = courtCaseDetails.appearances.length === 0
+    const caseReference = courtCaseDetails.latestAppearance?.courtCaseReference ?? ''
+
+    const successMessage = lastAppearance
+      ? `Court case ${caseReference ? `${caseReference} ` : ''}at ${deletedCourtCaseCourtName} on ${formattedDate}`
+      : `Hearing at ${deletedCourtCaseCourtName} on ${formattedDate}`
+
+    req.flash('success', successMessage)
     if (lastAppearance) {
       return res.redirect(`/person/${nomsId}`)
     }

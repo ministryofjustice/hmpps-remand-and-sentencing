@@ -2174,6 +2174,143 @@ export default {
     })
   },
 
+  stubGetCourtCaseWithOneAppearance: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          prisonerId: 'A1234AB',
+          courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          latestAppearance: {
+            appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
+            outcome: {
+              outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+              outcomeName: 'Remanded in custody',
+              nomisCode: '3452',
+              outcomeType: 'REMAND',
+              displayOrder: 10,
+            },
+            courtCode: 'ACCRYC',
+            courtCaseReference: 'C894623',
+            appearanceDate: '2023-12-15',
+            warrantType: 'NON_SENTENCING',
+            nextCourtAppearance: {
+              appearanceDate: '2024-12-15',
+              courtCode: 'ACCRYC',
+              appearanceType: {
+                appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                description: 'Court appearance',
+                displayOrder: 10,
+              },
+            },
+            charges: [
+              {
+                chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                offenceCode: 'PS90037',
+                offenceStartDate: '2025-12-15',
+                outcome: {
+                  outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                  outcomeName: 'Remanded in custody',
+                  nomisCode: '3452',
+                  outcomeType: 'REMAND',
+                  displayOrder: 10,
+                  dispositionCode: 'INTERIM',
+                },
+              },
+              {
+                chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+                offenceCode: 'PS90037',
+                outcome: {
+                  outcomeUuid: '92e69bb5-9769-478b-9ee6-77c91808d9af',
+                  outcomeName: 'Commit to Crown Court for trial in custody',
+                  nomisCode: '7869',
+                  outcomeType: 'REMAND',
+                  displayOrder: 20,
+                  dispositionCode: 'INTERIM',
+                },
+              },
+            ],
+          },
+          appearances: [
+            {
+              appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
+              outcome: {
+                outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+                outcomeName: 'Remanded in custody',
+                nomisCode: '3452',
+                outcomeType: 'REMAND',
+                displayOrder: 10,
+              },
+              courtCode: 'ACCRYC',
+              courtCaseReference: 'C894623',
+              appearanceDate: '2023-12-15',
+              warrantType: 'NON_SENTENCING',
+              nextCourtAppearance: {
+                appearanceDate: '2024-12-15',
+                courtCode: 'ACCRYC',
+                appearanceType: {
+                  appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+                  description: 'Court appearance',
+                  displayOrder: 10,
+                },
+              },
+              charges: [
+                {
+                  chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                  offenceCode: 'PS90037',
+                  offenceStartDate: '2023-12-15',
+                  outcome: {
+                    outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                    outcomeName: 'Remanded in custody',
+                    nomisCode: '3452',
+                    outcomeType: 'REMAND',
+                    displayOrder: 10,
+                    dispositionCode: 'INTERIM',
+                  },
+                },
+                {
+                  chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+                  offenceCode: 'PS90037',
+                  outcome: {
+                    outcomeUuid: '92e69bb5-9769-478b-9ee6-77c91808d9af',
+                    outcomeName: 'Commit to Crown Court for trial in custody',
+                    nomisCode: '7869',
+                    outcomeType: 'REMAND',
+                    displayOrder: 20,
+                    dispositionCode: 'INTERIM',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    })
+  },
+
+  stubGetCourtCaseWithNoAppearances: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          prisonerId: 'A1234AB',
+          courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          appearances: [],
+        },
+      },
+    })
+  },
+
   stubGetCourtCaseSentenceLatest: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -2935,11 +3072,15 @@ export default {
     })
   },
 
-  stubDeleteAppearanceByUuid: (): SuperAgentRequest => {
+  stubDeleteAppearanceByUuid: ({
+    appearanceUuid = 'a6400fd8-aef4-4567-b18c-d1f452651933',
+  }: {
+    appearanceUuid: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'DELETE',
-        urlPath: `/remand-and-sentencing-api/court-appearance/a6400fd8-aef4-4567-b18c-d1f452651933`,
+        urlPath: `/remand-and-sentencing-api/court-appearance/${appearanceUuid}`,
       },
       response: {
         status: 204,

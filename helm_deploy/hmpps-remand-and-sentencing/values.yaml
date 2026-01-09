@@ -1,6 +1,7 @@
 generic-service:
   nameOverride: hmpps-remand-and-sentencing
-  productId: "DPS014" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
+  productId: "DPS014"
+  serviceAccountName: hmpps-remand-and-sentencing
 
 
   # the IRSA service account name for accessing AWS resources
@@ -38,7 +39,7 @@ generic-service:
     REDIS_TLS_ENABLED: "true"
     TOKEN_VERIFICATION_ENABLED: "true"
     AUDIT_SQS_REGION: "eu-west-2"
-    AUDIT_SERVICE_NAME: "UNASSIGNED" # Your audit service name
+    AUDIT_SERVICE_NAME: "hmpps-remand-and-sentencing"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -59,9 +60,9 @@ generic-service:
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"
-    #sqs-hmpps-audit-secret:
-    #  AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
-    #  AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
+    sqs-hmpps-audit-secret:
+     AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
+     AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
 
   allowlist:
     ark-dom1-farnborough: 194.33.192.0/24

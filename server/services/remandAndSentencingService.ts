@@ -1,7 +1,6 @@
 import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
-// eslint-disable-next-line import/no-unresolved
-import { DeleteHearingForm } from 'forms'
+import type { DeleteHearingForm } from 'forms'
 import validate from '../validation/validation'
 import {
   ConsecutiveChainValidationRequest,

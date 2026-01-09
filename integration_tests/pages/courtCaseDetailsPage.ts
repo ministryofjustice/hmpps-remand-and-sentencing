@@ -21,7 +21,7 @@ export default class CourtCaseDetailsPage extends Page {
 
   mergedCaseInset = (): PageElement => cy.get(`[data-qa=mergedFromText]`)
 
-  notificationBanner = (): PageElement => cy.get('.govuk-notification-banner')
+  notificationBannerHeading = (): PageElement => cy.get('[data-qa=notification-banner-heading]')
 
   notificationBannerContent = (): PageElement => cy.get('[data-qa=notification-banner-content]')
 }

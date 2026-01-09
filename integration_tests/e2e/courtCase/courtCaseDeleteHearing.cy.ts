@@ -47,7 +47,7 @@ context('Court Case Delete Hearing Page', () => {
         CourtCaseDetailsPage,
         'Hearings for C894623 at Accrington Youth Court',
       )
-      courtCaseDetailsPage.notificationBanner().should('contain.text', 'This hearing has been deleted')
+      courtCaseDetailsPage.notificationBannerHeading().should('contain.text', 'This hearing has been deleted')
       courtCaseDetailsPage
         .notificationBannerContent()
         .should('contain.text', 'Hearing at Accrington Youth Court on 15/12/2023')
@@ -112,12 +112,8 @@ context('Court Case Delete Hearing Page', () => {
       deleteAppearancePage.radioLabelSelector('true').click()
       deleteAppearancePage.continueButton().click()
       const startPage = Page.verifyOnPage(StartPage)
-      startPage.notificationBanner().should('contain.text', 'This court case has been deleted')
-      startPage.notificationBannerContent().should(($el: JQuery<HTMLElement>) => {
-        const actualText: string = $el.text().replace(/\s+/g, ' ').trim()
-        const expectedText: string = 'Court case at Accrington Youth Court on 15/12/2023'
-        expect(actualText).to.equal(expectedText)
-      })
+      startPage.notificationBannerHeading().should('contain.text', 'This court case has been deleted')
+      startPage.notificationBannerContent().should('contain.text', 'Court case at Accrington Youth Court on 15/12/2023')
     })
   })
 })

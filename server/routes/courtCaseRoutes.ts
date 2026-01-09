@@ -153,7 +153,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     paginationUrl.searchParams.set('sortBy', sortBy)
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
     const paginationResults = getPaginationResults(courtCases)
-    const successMessages = req.flash('success') || []
+    const successMessage = req.flash('success')[0]
     return res.render('pages/start', {
       nomsId,
       newCourtCaseId,
@@ -168,7 +168,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       appearanceUuid: crypto.randomUUID(),
       paginationResults,
-      successMessages,
+      successMessage,
       viewOnlyEnabled: config.featureToggles.viewOnlyEnabled,
     })
   }
@@ -324,7 +324,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           }))
         : [],
     }))
-    const successMessages = req.flash('success') || []
+    const successMessage = req.flash('success')[0]
 
     return res.render('pages/courtCaseDetails', {
       nomsId,
@@ -335,7 +335,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       courtMap,
       consecutiveToSentenceDetailsMap,
       backLink: `/person/${nomsId}`,
-      successMessages,
+      successMessage,
       viewOnlyEnabled: config.featureToggles.viewOnlyEnabled,
     })
   }
@@ -412,8 +412,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
     }
     const lastAppearance = courtCaseDetails.appearances.length === 0
     const caseReference = courtCaseDetails.latestAppearance?.courtCaseReference ?? ''
+
     const successMessage = lastAppearance
-      ? `Court case ${caseReference} at ${deletedCourtCaseCourtName} on ${formattedDate}`
+      ? `Court case ${caseReference ? `${caseReference} ` : ''}at ${deletedCourtCaseCourtName} on ${formattedDate}`
       : `Hearing at ${deletedCourtCaseCourtName} on ${formattedDate}`
 
     req.flash('success', successMessage)

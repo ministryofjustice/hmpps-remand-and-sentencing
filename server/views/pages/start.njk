@@ -14,13 +14,13 @@
 {% set pageTitle = applicationName + " - Home" %}
 
 {% block content %}
-{% if successMessages and successMessages.length %}
+{% if successMessage %}
 
 {% set html %}
-  <h3 class="govuk-notification-banner__heading">
+  <h3 class="govuk-notification-banner__heading" data-qa="notification-banner-heading">
     This court case has been deleted.
   </h3>
-  <p class="govuk-body" data-qa="notification-banner-content">{{successMessages[0]}}</p>
+  <p class="govuk-body" data-qa="notification-banner-content">{{successMessage}}</p>
 {% endset %}
 
   {{ govukNotificationBanner({

@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 
 {% set pageTitle = applicationName + " - Delete an appearance" %}
@@ -9,34 +10,47 @@
 {% block content %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
+
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ appearanceReference }}/submit-delete-appearance" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <h1 class="govuk-heading-l">
+                  Are you sure you want to delete this hearing?
+                </h1>
 
-                {% call govukFieldset({
-                        legend: {
-                            text: "Are you sure you want to delete this appearance?",
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--l"
-                        }
-                }) %}
                     <div class="govuk-body" data-qa="appearance-description"> {{description }} </div>
 
                     {% if lastAppearance %}
-                                              {{ govukInsetText({
-                                                text: "By deleting this appearance, you will be removing the court case from this person's record."
-                                              }) }}
+                                              <p class="govuk-body" data-qa="last-appearance-message">
+                                                This is the only hearing in this court case. Deleting this hearing will also delete the court case.
+                                              </p>
+
                                             {% endif %}
 
-                    <div class="govuk-button-group">
-                    {{ govukButton({
-                        text: "Yes, delete appearance",
-                        classes: "govuk-button--warning",
-                        attributes: {  'data-qa': 'delete-button' }
-                    }) }}
-                    <a class="govuk-link govuk-link--no-visited-state" href="/person/{{nomsId}}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/details">Cancel and go back</a>
-                {% endcall %}
+                    {{ govukRadios({
+                                        name: "deleteHearing",
+                                        fieldset: {
+                                            legend: {
+                                            text: "Are you sure you want to delete this hearing?",
+                                                classes: "govuk-fieldset__legend--s"
+                                            }
+                                        },
+                                        errorMessage:  errors | findError('deleteHearing'),
+                                        items: [
+                                            {
+                                                value: "true",
+                                                text: "Yes"
+                                            },
+                                            {
+                                                value: "false",
+                                                text: "No"
+                                            }
+                                        ]
+                                    }) }}
+
+                                                    {{ govukButton({
+                                                        text: "Continue",
+                                                        attributes: {  'data-qa': 'continue-button' }
+                                                    }) }}
             </form>
-        </div>
     </div>
 {% endblock %}

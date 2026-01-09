@@ -20,4 +20,8 @@ export default class CourtCaseDetailsPage extends Page {
     cy.get(`a[href*="/person/A1234AB/edit-court-case/${courtCaseReference}/${appearanceReference}/confirm-delete"]`)
 
   mergedCaseInset = (): PageElement => cy.get(`[data-qa=mergedFromText]`)
+
+  notificationBannerHeading = (): PageElement => cy.get('[data-qa=notification-banner-heading]')
+
+  notificationBannerContent = (): PageElement => cy.get('[data-qa=notification-banner-content]')
 }

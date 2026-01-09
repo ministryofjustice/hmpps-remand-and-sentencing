@@ -27,6 +27,7 @@ const setupCourtCase = () => {
         appearanceCount: 2,
         caseReferences: ['C123'],
         latestCourtAppearance: {
+          appearanceUuid: '836',
           caseReference: 'C123',
           courtCode: 'ACCRYC',
           warrantDate: '2023-12-15',

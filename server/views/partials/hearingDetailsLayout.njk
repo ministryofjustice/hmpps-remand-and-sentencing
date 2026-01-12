@@ -12,10 +12,8 @@
     </dl>
 {% endset %}
 
-{% block content %}
-
+{% block hearingContent %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
-
         <div class="govuk-grid-column-two-thirds">
             {% block pageContent %}{% endblock %}
         </div>
@@ -65,5 +63,4 @@
             </div>
         {% endif %}
     </div>
-        {{ super() }}
 {% endblock %}

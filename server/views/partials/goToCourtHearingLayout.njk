@@ -4,10 +4,11 @@
 
 {% block content %}
     {{ super() }}
+    {% block hearingContent %}{% endblock %}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-!-margin-top-2">
+            <div class="govuk-!-margin-top-8"> {# Increased margin for better separation #}
                 <a href="/person/{{ nomsId }}/{{addOrEditCourtCase}}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{ appearanceReference }}/task-list"
                    class="govuk-link govuk-body-m"
                    data-qa="return-to-appearance-link">

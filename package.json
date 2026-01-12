@@ -41,7 +41,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.962.0",
+    "@aws-sdk/client-sqs": "^3.964.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.10",
     "@microsoft/applicationinsights-web": "^3.3.10",
     "@ministryofjustice/frontend": "^8.0.0",
@@ -71,7 +71,7 @@
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "redis": "^5.10.0",
-    "superagent": "^10.2.3",
+    "superagent": "^10.3.0",
     "validatorjs": "^3.22.1"
   },
   "devDependencies": {
@@ -95,12 +95,12 @@
     "@types/passport-oauth2": "^1.8.0",
     "@types/superagent": "^8.1.9",
     "@types/supertest": "^6.0.3",
-    "@typescript-eslint/parser": "8.51.0",
+    "@typescript-eslint/parser": "8.52.0",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
-    "axe-core": "^4.11.0",
+    "axe-core": "^4.11.1",
     "cheerio": "^1.1.2",
-    "cypress": "^15.8.1",
+    "cypress": "^15.8.2",
     "cypress-axe": "^1.7.0",
     "cypress-multi-reporters": "^2.0.5",
     "del": "8.0.1",
@@ -115,7 +115,7 @@
     "lint-staged": "^16.2.7",
     "nock": "^14.0.10",
     "openapi-typescript": "^7.10.1",
-    "supertest": "^7.1.4",
+    "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
   }

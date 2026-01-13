@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class CourtCaseCancelCourtCasePage extends Page {
-  constructor() {
-    super(`Are you sure you want to cancel adding a court case?`)
+  constructor(title: string) {
+    super(title)
   }
 
   description = (): PageElement => cy.get('[data-qa=cancel-court-case-description]')

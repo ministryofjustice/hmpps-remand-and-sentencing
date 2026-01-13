@@ -33,7 +33,7 @@
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ appearanceReference }}/submit-cancel-court-case?isHearing={{ isHearing }}&returnUrl={{ backLink }}" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <h1 class="govuk-heading-l">
-                  Are you sure you want to cancel adding a court case?
+                  {{header}}
                 </h1>
 
                     <div class="govuk-body" data-qa="cancel-court-case-description"> {{description }} </div>
@@ -42,7 +42,7 @@
                                         name: "cancelCourtCase",
                                         fieldset: {
                                             legend: {
-                                            text: "Are you sure you want to cancel adding a court case?",
+                                            text: header,
                                                 classes: "govuk-fieldset__legend--s"
                                             }
                                         },

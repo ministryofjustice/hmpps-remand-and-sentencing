@@ -9,10 +9,11 @@ import OverallSentencingRoutes from './overallSentencingRoutes'
 import SentencingRoutes from './sentencingRoutes'
 import RemandRoutes from './remandRoutes'
 import UnknownRecallSentenceRoutes from './unknownRecallSentenceRoutes'
+import setCurrentPageUrl from '../middleware/currentPageUrl'
 
 export default function routes(services: Services): Router {
   const router = Router()
-
+  router.use(setCurrentPageUrl)
   router.use('/sentence-types', sentenceTypeRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
@@ -108,6 +109,16 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/submit-delete-appearance',
     courtCaseRoutes.submitDeleteAppearanceConfirmation,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/confirm-cancel-court-case',
+    courtCaseRoutes.getCancelCourtCase,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/submit-cancel-court-case',
+    courtCaseRoutes.submitCancelCourtCase,
   )
 
   router.get(

@@ -3,6 +3,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set isNonSentencingWarrant = courtAppearance.warrantType == 'NON_SENTENCING'%}
 {% set warrantOrHearing = 'Warrant' if courtAppearance.warrantType === 'SENTENCING' else 'Hearing' %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set checkAnswersRows = [] %}
 
@@ -113,10 +114,13 @@
 
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-answers" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                {{ govukButton({
-                    text: "Confirm and continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
+                <div class="govuk-button-group">
+                                {{ govukButton({
+                                    text: "Confirm and continue",
+                                    attributes: {  'data-qa': 'continue-button' }
+                                }) }}
+                                {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
             </form>
         </div>
     </div>

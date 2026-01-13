@@ -3,6 +3,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Review offences" %}
 {% set hideOffences = true %}
@@ -133,10 +134,13 @@
                         ]
                     }) }}
 
-                    {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
+                    <div class="govuk-button-group">
+                                {{ govukButton({
+                                    text: "Continue",
+                                    attributes: {  'data-qa': 'continue-button' }
+                                }) }}
+                                {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                    </div>
             </form>
 
 {% endblock %}

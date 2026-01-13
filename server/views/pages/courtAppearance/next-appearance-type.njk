@@ -1,6 +1,7 @@
 {% extends "../../partials/hearingDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading{% if currentlySetTypeDescription %} govuk-!-static-margin-bottom-3{% endif %}">{% if isAddCourtAppearance%}How will they attend the appearance?{%else%}Edit the next appearance type{%endif%}</h1>
@@ -40,10 +41,13 @@
         {% include "../../partials/nextAppearanceCaption.njk" %}
         {{ govukRadios(radiosData) }}
 
-        {{ govukButton({
-            text: "Continue",
-            attributes: {  'data-qa': 'continue-button' }
-        }) }}
+        <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
     </form>
 
 {% endblock %}

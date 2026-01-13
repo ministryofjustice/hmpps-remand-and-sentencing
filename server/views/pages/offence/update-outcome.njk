@@ -1,6 +1,7 @@
 {% extends "../../partials/hearingDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Update offence outcome" %}
 
@@ -38,10 +39,13 @@
 
         {{ govukRadios(radiosData) }}
 
-        {{ govukButton({
-            text: "Continue",
-            attributes: {  'data-qa': 'continue-button' }
-        }) }}
+        <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
     </form>
 
 {% endblock %}

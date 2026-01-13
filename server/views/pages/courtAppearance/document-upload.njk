@@ -1,6 +1,7 @@
 {% extends "../../partials/hearingDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Upload a document" %}
 {% block pageContent %}
@@ -24,9 +25,12 @@
                     }
                 }) }}
 
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
+                <div class="govuk-button-group">
+                            {{ govukButton({
+                                text: "Continue",
+                                attributes: {  'data-qa': 'continue-button' }
+                            }) }}
+                            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
             </form>
 {% endblock %}

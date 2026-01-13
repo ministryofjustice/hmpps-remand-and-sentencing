@@ -5,6 +5,8 @@
 {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
 
 {% set hideOffences = true %}
 
@@ -15,7 +17,7 @@
         <h1 class="govuk-heading-l">
             You have added {{courtAppearance.offences.length }} {{"offence" if courtAppearance.offences.length === 1 else "offences"}}
         </h1>
-        
+
         {% if courtAppearance.warrantType === 'SENTENCING' %}
             {{ govukSummaryList({
                 rows: [
@@ -88,6 +90,7 @@
                                 formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-offence-answers">
                             Continue
                         </button>
+                        {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
                     </div>
                 </form>
             </div>

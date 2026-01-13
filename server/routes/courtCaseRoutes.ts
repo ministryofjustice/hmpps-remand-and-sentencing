@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import type {
+  CancelCourtCaseForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
   CourtCaseNextAppearanceCourtNameForm,
@@ -482,6 +483,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const lastAppearance = courtCaseDetails.appearances.length === 0
     const caseReference = courtCaseDetails.latestAppearance?.courtCaseReference ?? ''
 
+    if (deleteHearingForm.deleteHearing === 'false') {
+      return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+    }
     const successMessage = lastAppearance
       ? `Court case ${caseReference ? `${caseReference} ` : ''}at ${deletedCourtCaseCourtName} on ${formattedDate}`
       : `Hearing at ${deletedCourtCaseCourtName} on ${formattedDate}`
@@ -491,6 +495,51 @@ export default class CourtCaseRoutes extends BaseRoutes {
       return res.redirect(`/person/${nomsId}`)
     }
     return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+  }
+
+  public getCancelCourtCase: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { returnUrl, isHearing } = req.query
+    const courtCode = this.courtAppearanceService.getCourtCode(req.session, nomsId, appearanceReference)
+    const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId, appearanceReference)
+    const courtDetails =
+      courtCode !== undefined ? await this.courtRegisterService.findCourtById(courtCode, req.user.username) : null
+    const description = `You have not finished adding the information${courtCode && warrantDate !== undefined ? ` for the court case at ${courtDetails.courtName} on ${dayjs(warrantDate).format(config.dateFormat)}.` : '.'} Any information you have entered will be lost.`
+    const backLink = (returnUrl as string) || `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
+    const header = `Are you sure you want to cancel ${addOrEditCourtAppearance === 'add-court-appearance' ? 'adding' : 'editing'} a court case?`
+    return res.render('pages/courtAppearance/cancel-court-case', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      description,
+      courtDetails,
+      backLink,
+      isHearing,
+      header,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitCancelCourtCase: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const cancelCourtCaseForm = trimForm<CancelCourtCaseForm>(req.body)
+    const { returnUrl, isHearing } = req.query
+
+    const errors = await this.remandAndSentencingService.cancelCourtCase(cancelCourtCaseForm)
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      const errorUrl = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/confirm-cancel-court-case?hasErrors=true&isHearing=${isHearing}&returnUrl=${returnUrl}`
+      return res.redirect(errorUrl)
+    }
+
+    if (cancelCourtCaseForm.cancelCourtCase === 'false') {
+      return res.redirect(<string>returnUrl || `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`)
+    }
+
+    return res.redirect(`/person/${nomsId}`)
   }
 
   public getAppearanceUpdatedConfirmation: RequestHandler = async (req, res): Promise<void> => {

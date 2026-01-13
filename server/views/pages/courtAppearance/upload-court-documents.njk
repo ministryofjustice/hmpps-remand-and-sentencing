@@ -3,7 +3,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {%- from "govuk/components/tag/macro.njk" import govukTag -%}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
-
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - upload remand court documents" %}
 
@@ -55,7 +55,7 @@
               }
             ]
           }) }}
-        
+
         {% if not loop.last %}
           <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-4">
         {% endif %}
@@ -68,7 +68,7 @@
           </div>
         {% endif %}
 
-        
+
 
       {% endfor %}
 
@@ -77,6 +77,7 @@
               text: "Continue",
               attributes: { 'data-qa': 'continue-button' }
           }) }}
+          {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
         </div>
 
     {% endcall %}

@@ -1,6 +1,6 @@
 import type { CourtAppearance, CourtCase, Offence, UploadedDocument } from 'models'
 import { Dayjs } from 'dayjs'
-import type { DeleteHearingForm } from 'forms'
+import type { CancelCourtCaseForm, DeleteHearingForm } from 'forms'
 import validate from '../validation/validation'
 import {
   ConsecutiveChainValidationRequest,
@@ -125,6 +125,22 @@ export default class RemandAndSentencingService {
       await this.remandAndSentencingApiClient.deleteCourtAppearance(appearanceUuid, username)
     }
     return errors
+  }
+
+  cancelCourtCase(cancelCourtCaseForm: CancelCourtCaseForm): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    return validate(
+      cancelCourtCaseForm,
+      {
+        cancelCourtCase: 'required',
+      },
+      {
+        'required.cancelCourtCase': 'Select Yes if you would like to cancel adding the court case.',
+      },
+    )
   }
 
   async getCourtCaseDetails(courtCaseUuid: string, username: string): Promise<PageCourtCaseContent> {

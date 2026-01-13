@@ -91,6 +91,10 @@ declare module 'forms' {
     deleteHearing?: string
   }
 
+  export interface CancelCourtCaseForm {
+    cancelCourtCase?: string
+  }
+
   export interface OffenceFinishedAddingForm {
     finishedAddingOffences?: string
   }

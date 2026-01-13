@@ -1,13 +1,27 @@
 {% extends "./prisonerBannerLayout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
-{% block subNavigation %}{% endblock %}
+{% block subNavigation %}
+<div class="govuk-grid-row" role="navigation">
+            {% if backLink.length %}
+                <div class="govuk-grid-column-one-half">
+                    {{ govukBackLink({
+                        text: "Back",
+                        href: backLink,
+                        attributes: {  'data-qa': 'back-link' }
+                    }) }}
+                </div>
+            {% endif %}
+            </div>
+{% endblock %}
 
 {% block content %}
     {{ super() }}
-
+    {% block hearingContent %}{% endblock %}
+{% if addOrEditCourtAppearance === 'add-court-appearance' %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-!-margin-top-2">
+            <div class="govuk-!-margin-top-8">
                 <a href="/person/{{ nomsId }}/{{addOrEditCourtCase}}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{ appearanceReference }}/task-list"
                    class="govuk-link govuk-body-m"
                    data-qa="return-to-appearance-link">
@@ -16,4 +30,5 @@
             </div>
         </div>
     </div>
+    {% endif %}
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends "../../partials/hearingDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
-
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Add a court case " + warrantOrHearing + " Date" %}
 
@@ -43,9 +43,13 @@
             ]
         }) }}
 
-        {{ govukButton({
-            text: "Continue",
-            attributes: {  'data-qa': 'continue-button' }
-        }) }}
+        <div class="govuk-button-group">
+                        {{ govukButton({
+                            text: "Continue",
+                            attributes: {  'data-qa': 'continue-button' }
+                        }) }}
+
+                        {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                          </div>
     </form>
 {% endblock %}

@@ -3,7 +3,7 @@
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
 {% from "govuk/components/hint/macro.njk" import govukHint %}
-
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - first sentence consecutive to" %}
 
@@ -22,7 +22,7 @@
                             classes: "govuk-fieldset__legend--l"
                         }
                     }) %}
-                    
+
                     {% if offenceHint %}
                         {{
                             govukHint(offenceHint)
@@ -62,9 +62,12 @@
                 </div>
 
 
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
+                <div class="govuk-button-group">
+                            {{ govukButton({
+                                text: "Continue",
+                                attributes: {  'data-qa': 'continue-button' }
+                            }) }}
+                            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
             </form>
 {% endblock %}

@@ -6,6 +6,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/hint/macro.njk" import govukHint %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set yesHtml %}
   {{ govukInput({
@@ -76,10 +77,13 @@
                   }]
                 }) }}
 
-                {{ govukButton({
-                  text: "Continue",
-                  attributes: {  'data-qa': 'continue-button' }
-                }) }}
+                <div class="govuk-button-group">
+                            {{ govukButton({
+                                text: "Continue",
+                                attributes: {  'data-qa': 'continue-button' }
+                            }) }}
+                            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
 
                 {% endcall %}
             </form>

@@ -26,13 +26,11 @@
                 }) }}
 
                 <div class="govuk-button-group">
-                                                {{ govukButton({
-                                                    text: "Continue",
-                                                    attributes: {  'data-qa': 'continue-button' }
-                                                }) }}
-
-                                                {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
-
+                            {{ govukButton({
+                                text: "Continue",
+                                attributes: {  'data-qa': 'continue-button' }
+                            }) }}
+                            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
                 </div>
             </form>
 {% endblock %}

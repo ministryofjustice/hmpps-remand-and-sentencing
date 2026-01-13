@@ -127,14 +127,12 @@ export default class RemandAndSentencingService {
     return errors
   }
 
-  async cancelCourtCase(cancelCourtCaseForm: CancelCourtCaseForm): Promise<
-    {
-      text?: string
-      html?: string
-      href: string
-    }[]
-  > {
-    const errors = validate(
+  cancelCourtCase(cancelCourtCaseForm: CancelCourtCaseForm): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    return validate(
       cancelCourtCaseForm,
       {
         cancelCourtCase: 'required',
@@ -143,7 +141,6 @@ export default class RemandAndSentencingService {
         'required.cancelCourtCase': 'Select Yes if you would like to cancel adding the court case.',
       },
     )
-    return errors
   }
 
   async getCourtCaseDetails(courtCaseUuid: string, username: string): Promise<PageCourtCaseContent> {

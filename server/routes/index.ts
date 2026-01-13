@@ -9,15 +9,11 @@ import OverallSentencingRoutes from './overallSentencingRoutes'
 import SentencingRoutes from './sentencingRoutes'
 import RemandRoutes from './remandRoutes'
 import UnknownRecallSentenceRoutes from './unknownRecallSentenceRoutes'
+import setCurrentPageUrl from '../middleware/currentPageUrl'
 
 export default function routes(services: Services): Router {
   const router = Router()
-
-  router.use((req, res, next) => {
-    res.locals.currentPageUrl = req.originalUrl
-    next()
-  })
-
+  router.use(setCurrentPageUrl)
   router.use('/sentence-types', sentenceTypeRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(

@@ -2,6 +2,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "../../components/alternativeSentenceLength/macro.njk" import alternativeSentenceLength%}
+{% from "../../components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
 {% set pageTitle = applicationName + " - Correct many " + periodLengthHeader %}
 
 {% block pageContent %}
@@ -58,10 +60,13 @@
 
                 {% endcall %}
 
-                {{ govukButton({
-                    text: "Continue",
-                    attributes: {  'data-qa': 'continue-button' }
-                }) }}
+                <div class="govuk-button-group">
+                            {{ govukButton({
+                                text: "Continue",
+                                attributes: {  'data-qa': 'continue-button' }
+                            }) }}
+                            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
             </form>
 
 {% endblock %}

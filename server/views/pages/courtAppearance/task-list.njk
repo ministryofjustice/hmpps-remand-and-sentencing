@@ -1,6 +1,7 @@
 {% extends "../../partials/goToCourtCaseLayout.njk" %}
 {% from "govuk/components/task-list/macro.njk" import govukTaskList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - task list page" %}
 {% block content %}
@@ -32,6 +33,7 @@
                             "data-qa": "continue-button"
                         }
                     }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl, false) }}
                 </form>
             </div>
         </div>

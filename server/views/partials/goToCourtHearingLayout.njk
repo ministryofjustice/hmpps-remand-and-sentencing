@@ -18,7 +18,7 @@
 {% block content %}
     {{ super() }}
     {% block hearingContent %}{% endblock %}
-
+{% if addOrEditCourtAppearance === 'add-court-appearance' %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-!-margin-top-8">
@@ -30,4 +30,5 @@
             </div>
         </div>
     </div>
+    {% endif %}
 {% endblock %}

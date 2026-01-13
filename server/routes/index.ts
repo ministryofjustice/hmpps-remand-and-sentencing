@@ -13,6 +13,11 @@ import UnknownRecallSentenceRoutes from './unknownRecallSentenceRoutes'
 export default function routes(services: Services): Router {
   const router = Router()
 
+  router.use((req, res, next) => {
+    res.locals.currentPageUrl = req.originalUrl
+    next()
+  })
+
   router.use('/sentence-types', sentenceTypeRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
@@ -108,6 +113,16 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/submit-delete-appearance',
     courtCaseRoutes.submitDeleteAppearanceConfirmation,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/confirm-cancel-court-case',
+    courtCaseRoutes.getCancelCourtCase,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/submit-cancel-court-case',
+    courtCaseRoutes.submitCancelCourtCase,
   )
 
   router.get(

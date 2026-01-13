@@ -1,0 +1,10 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% macro cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl, isHearing) %}
+{% set isHearing = isHearing if isHearing is defined else true %}
+  {{ govukButton({
+      text: "Cancel",
+      classes: "govuk-button--secondary",
+      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/confirm-cancel-court-case?isHearing=" + isHearing + "&returnUrl=" + currentPageUrl | urlencode
+  }) }}
+{% endmacro %}

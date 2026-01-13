@@ -1,0 +1,83 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% set pageTitle = applicationName + " - Cancel adding court case" %}
+
+{% block subNavigation %}
+    <div class="govuk-grid-row" role="navigation">
+        {% if backLink.length %}
+            <div class="govuk-grid-column-one-half">
+                {{ govukBackLink({
+                    text: "Back",
+                    href: backLink,
+                    attributes: {  'data-qa': 'back-link' }
+                }) }}
+            </div>
+        {% endif %}
+        {% if isHearing !== 'true' %}
+            <div class="{{'govuk-grid-column-one-half' if backLink.length else 'govuk-grid-column-full'}} govuk-!-text-align-right">
+                <a href="/person/{{ nomsId }}" class="govuk-link govuk-link--no-visited-state govuk-body-s">Go to Court cases</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ appearanceReference }}/submit-cancel-court-case?isHearing={{ isHearing }}&returnUrl={{ backLink }}" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <h1 class="govuk-heading-l">
+                  Are you sure you want to cancel adding a court case?
+                </h1>
+
+                    <div class="govuk-body" data-qa="appearance-description"> {{description }} </div>
+
+                    {{ govukRadios({
+                                        name: "cancelCourtCase",
+                                        fieldset: {
+                                            legend: {
+                                            text: "Are you sure you want to cancel adding a court case?",
+                                                classes: "govuk-fieldset__legend--s"
+                                            }
+                                        },
+                                        errorMessage:  errors | findError('deleteHearing'),
+                                        items: [
+                                            {
+                                                value: "true",
+                                                text: "Yes, cancel adding a court case"
+                                            },
+                                            {
+                                                value: "false",
+                                                text: "No, get back to the court case"
+                                            }
+                                        ]
+                                    }) }}
+
+                    {{ govukButton({
+                        text: "Continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+            </form>
+        </div>
+    </div>
+
+    {% if isHearing === 'true' %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-!-margin-top-8">
+                    <a href="/person/{{ nomsId }}/{{addOrEditCourtCase}}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{ appearanceReference }}/task-list"
+                       class="govuk-link govuk-body-m"
+                       data-qa="return-to-appearance-link">
+                      Go back to court hearing
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

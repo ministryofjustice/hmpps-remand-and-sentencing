@@ -1,6 +1,7 @@
 {% extends "../../partials/goToCourtCaseLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - received sentence page" %}
 {% block content %}
@@ -39,11 +40,14 @@
                         }
                     ]
                 }) }}
-
+<div class="govuk-button-group">
                 {{ govukButton({
                     text: "Continue",
                     attributes: {  'data-qa': 'continue-button' }
                 }) }}
+
+{{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl, false) }}
+                  </div>
             </form>
 
         </div>

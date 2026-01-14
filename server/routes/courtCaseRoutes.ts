@@ -504,7 +504,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId, appearanceReference)
     const courtDetails =
       courtCode !== undefined ? await this.courtRegisterService.findCourtById(courtCode, req.user.username) : null
-    const description = `You have not finished adding the information${courtCode && warrantDate !== undefined ? ` for the court case at ${courtDetails.courtName} on ${dayjs(warrantDate).format(config.dateFormat)}.` : '.'} Any information you have entered will be lost.`
+    const description = `You have not finished ${addOrEditCourtAppearance === 'add-court-appearance' ? 'adding' : 'editing'} the information${courtCode && warrantDate !== undefined ? ` for the court case at ${courtDetails.courtName} on ${dayjs(warrantDate).format(config.dateFormat)}.` : '.'} Any information you have entered will be lost.`
     const backLink = (returnUrl as string) || `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
     const header = `Are you sure you want to cancel ${addOrEditCourtAppearance === 'add-court-appearance' ? 'adding' : 'editing'} a court case?`
     return res.render('pages/courtAppearance/cancel-court-case', {

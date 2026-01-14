@@ -69,7 +69,7 @@ context('Court Case Cancel Court Case Page', () => {
       )
   })
 
-  it('should show correct header for edit journey', () => {
+  it('should show correct header and description for edit journey', () => {
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetOffenceByCode', {})
     cy.task('stubGetAllChargeOutcomes')
@@ -102,6 +102,15 @@ context('Court Case Cancel Court Case Page', () => {
 
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Edit case reference')
     courtCaseReferencePage.cancelButton().click()
-    Page.verifyOnPageTitle(CourtCaseCancelCourtCasePage, 'Are you sure you want to cancel editing a court case?')
+    const courtCaseCancelCourtCasePage = Page.verifyOnPageTitle(
+      CourtCaseCancelCourtCasePage,
+      'Are you sure you want to cancel editing a court case?',
+    )
+    courtCaseCancelCourtCasePage
+      .description()
+      .should(
+        'contain',
+        'You have not finished editing the information for the court case at Southampton Magistrate Court on 15/12/2023. Any information you have entered will be lost.',
+      )
   })
 })

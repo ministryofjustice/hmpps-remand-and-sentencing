@@ -265,7 +265,12 @@
             preventDoubleClick: true,
             attributes: { 'data-qa': 'confirm-button' }
           }) }}
-          <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/details">Cancel changes</a>
+          {{ govukButton({
+                  text: "Cancel changes",
+                  classes: "govuk-button--secondary",
+                  attributes: { 'data-qa': 'cancel-button' },
+                  href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/details"
+                }) }}
         </div>
       </form>
     </div>

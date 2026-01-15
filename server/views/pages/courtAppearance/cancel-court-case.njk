@@ -49,7 +49,7 @@
                                             },
                                             {
                                                 value: "false",
-                                                text: "No, get back to the court case"
+                                                text: "No, go back to the court case"
                                             }
                                         ]
                                     }) }}
@@ -61,18 +61,4 @@
             </form>
         </div>
     </div>
-
-    {% if isHearing === 'true' %}
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <div class="govuk-!-margin-top-8">
-                    <a href="/person/{{ nomsId }}/{{addOrEditCourtCase}}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{ appearanceReference }}/task-list"
-                       class="govuk-link govuk-body-m"
-                       data-qa="return-to-appearance-link">
-                      Go back to court hearing
-                    </a>
-                </div>
-            </div>
-        </div>
-    {% endif %}
 {% endblock %}

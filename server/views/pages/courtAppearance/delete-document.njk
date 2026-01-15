@@ -1,4 +1,4 @@
-{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% extends "../../partials/backLinkLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
@@ -7,7 +7,8 @@
     <h1 class="govuk-fieldset__heading govuk-!-static-margin-bottom-3">Are you sure you want to delete this document?</h1>
     <p class="govuk-body"><a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/download-document" target="_blank" class="govuk-link govuk-link--no-visited-state">{{ document.fileName }}</a></p>
 {% endset %}
-{% block pageContent %}
+{% block content %}
+{{super()}}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/submit-delete-document" autocomplete="off">

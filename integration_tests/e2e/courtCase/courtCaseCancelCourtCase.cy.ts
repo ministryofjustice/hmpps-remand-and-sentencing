@@ -104,7 +104,7 @@ context('Court Case Cancel Court Case Page', () => {
     courtCaseReferencePage.cancelButton().click()
     const courtCaseCancelCourtCasePage = Page.verifyOnPageTitle(
       CourtCaseCancelCourtCasePage,
-      'Are you sure you want to cancel editing a court case?',
+      'Are you sure you want to cancel editing the court case?',
     )
     courtCaseCancelCourtCasePage
       .description()

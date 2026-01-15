@@ -128,7 +128,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can cancel edit and return to check offence answers page', () => {
-      offenceEditOffencePage.cancelEditLink().click()
+      offenceEditOffencePage.cancelButton().click()
       Page.verifyOnPageTitle(OffenceCheckOffenceAnswersPage, 'You have added 1 offence')
     })
   })
@@ -482,7 +482,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('can cancel edit and return to appearance details page', () => {
-      offenceEditOffencePage.cancelEditLink().click()
+      offenceEditOffencePage.cancelButton().click()
       Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
   })
@@ -694,7 +694,7 @@ context('Add Offence Edit offence Page', () => {
     })
 
     it('canceling the edit offence takes you back to the update offence outcome page', () => {
-      offenceEditOffencePage.cancelEditLink().click()
+      offenceEditOffencePage.cancelButton().click()
       Page.verifyOnPageTitle(
         OffenceUpdateOffenceOutcomesPage,
         'Update offence outcomes for appearance on 13 May 2023 at Southampton Magistrate Court',

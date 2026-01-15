@@ -1,10 +1,10 @@
-{% extends "../../partials/backLinkLayout.njk" %}
+{% extends "../../partials/hearingDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Same case reference page" %}
-{% block content %}
+{% block pageContent %}
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">

@@ -71,6 +71,26 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/received-custodial-sentence`
   }
 
+  static overallCaseOutcome = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/overall-case-outcome`
+  }
+
+  static sentencingOverallCaseOutcome = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/sentencing/overall-case-outcome`
+  }
+
   static selectCourtName = (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -159,6 +179,20 @@ export const urlMapByName = {
       addOrEditCourtAppearance,
       courtAppearanceUuid,
     ),
+  sentencingCourtAppearance: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.sentencingHearing(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+    ),
   updateOffenceOutcomes: (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -217,6 +251,20 @@ export const urlMapByName = {
       addOrEditCourtAppearance,
       courtAppearanceUuid,
     ),
+  nonSentencingCourtAppearance: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.nonSentencingHearing(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+    ),
   receivedCustodialSentence: (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -225,6 +273,34 @@ export const urlMapByName = {
     courtAppearanceUuid: string,
   ) =>
     JourneyUrls.receivedCustodialSentence(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+    ),
+  overallCaseOutcome: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.overallCaseOutcome(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseUuid,
+      addOrEditCourtAppearance,
+      courtAppearanceUuid,
+    ),
+  sentencingOverallCaseOutcome: (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) =>
+    JourneyUrls.sentencingOverallCaseOutcome(
       nomsId,
       addOrEditCourtCase,
       courtCaseUuid,

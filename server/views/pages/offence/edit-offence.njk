@@ -299,8 +299,12 @@ offenceDateRow,
         text: "Accept changes",
         attributes: { 'data-qa': 'continue-button' }
       }) }}
-
-      <a class="govuk-link govuk-link--no-visited-state" data-qa="cancel-edit-offence" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/cancel-offence">Cancel changes</a>
+      {{ govukButton({
+        text: "Cancel changes",
+        classes: "govuk-button--secondary",
+        attributes: { 'data-qa': 'cancel-button' },
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/cancel-offence"
+      }) }}
     </div>
   </form>
 {% endblock %}

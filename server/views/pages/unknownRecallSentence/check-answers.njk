@@ -171,8 +171,12 @@
         text: "Confirm and save",
         attributes: { 'data-qa': 'continue-button' }
       }) }}
-
-      <a class="govuk-link govuk-link--no-visited-state" data-qa="cancel-link" href="/person/{{ nomsId }}/unknown-recall-sentence/court-appearance/{{ appearanceReference }}/charge/{{ chargeUuid }}/cancel-charge">Cancel</a>
+      {{ govukButton({
+        text: "Cancel",
+        classes: "govuk-button--secondary",
+        href: "/person/" + nomsId + "/unknown-recall-sentence/court-appearance/" + appearanceReference + "/charge/" + chargeUuid + "/cancel-charge",
+        attributes: { 'data-qa': 'cancel-button' }
+      }) }}
     </div>
   </form>
 {% endblock %}

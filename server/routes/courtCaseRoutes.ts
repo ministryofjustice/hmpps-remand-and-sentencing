@@ -51,6 +51,7 @@ import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import {
   MergedFromCase,
+  PageCourtCaseContent,
   PagePagedCourtCase,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
@@ -395,7 +396,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
         : [],
     }))
     const successMessage = req.flash('success')[0]
-
+    const auditDetails = this.getCourtCaseAuditUuids(courtCaseDetails, consecutiveToSentenceDetails)
+    await this.auditService.logPageView(Page.COURT_CASE, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      subjectType: 'PRISONER_ID',
+      subjectId: nomsId,
+      details: auditDetails,
+    })
     return res.render('pages/courtCaseDetails', {
       nomsId,
       courtCaseReference,
@@ -408,6 +416,48 @@ export default class CourtCaseRoutes extends BaseRoutes {
       successMessage,
       viewOnlyEnabled: config.featureToggles.viewOnlyEnabled,
     })
+  }
+
+  private getCourtCaseAuditUuids(
+    courtCase: PageCourtCaseContent,
+    consecutiveToSentenceDetails: SentenceConsecutiveToDetailsResponse,
+  ): {
+    courtCaseUuid: string
+    courtAppearanceUuids: string[]
+    chargeUuids: string[]
+    sentenceUuids: string[]
+    periodLengthUuids: string[]
+  } {
+    const { courtCaseUuid } = courtCase
+    const courtAppearanceUuids = courtCase.appearances.map(appearance => appearance.appearanceUuid)
+    const chargeUuids = Array.from(
+      new Set(courtCase.appearances.flatMap(appearance => appearance.charges).map(charge => charge.chargeUuid)),
+    )
+    const sentenceUuids = Array.from(
+      new Set(
+        courtCase.appearances
+          .flatMap(appearance => appearance.charges)
+          .map(charge => charge.sentence?.sentenceUuid)
+          .concat(
+            consecutiveToSentenceDetails.sentences
+              .map(sentence => sentence.sentenceUuid)
+              .filter(sentenceUuid => sentenceUuid),
+          ),
+      ),
+    )
+    const periodLengthUuids = Array.from(
+      new Set(
+        courtCase.appearances
+          .flatMap(appearance =>
+            appearance.charges
+              .flatMap(charge => charge.sentence?.periodLengths)
+              .map(periodLength => periodLength?.periodLengthUuid)
+              .concat(appearance.overallSentenceLength?.periodLengthUuid),
+          )
+          .filter(periodLengthUuid => periodLengthUuid),
+      ),
+    )
+    return { courtCaseUuid, courtAppearanceUuids, chargeUuids, sentenceUuids, periodLengthUuids }
   }
 
   private offenceGetMergedFromText(mergedFromCases: MergedFromCase[], courtMap: { [key: string]: string }): string[] {

@@ -155,7 +155,13 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceEndDateMonth = offenceEndDate.getMonth() + 1
       offenceEndDateYear = offenceEndDate.getFullYear()
     }
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+    let backLink = JourneyUrls.checkOffenceAnswers(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
     const { warrantType, offences } = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -174,18 +180,48 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'NON_SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`
+        backLink = JourneyUrls.reviewOffences(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
+        backLink = JourneyUrls.updateOffenceOutcomes(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
       }
     } else if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'NON_SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`
+        backLink = JourneyUrls.nonSentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`
+        backLink = JourneyUrls.sentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
       }
     } else if (isFirstOffence) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
+      backLink = JourneyUrls.taskList(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
     }
 
     return res.render('pages/offence/offence-date', {
@@ -412,7 +448,13 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+      JourneyUrls.reviewOffences(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 
@@ -468,9 +510,21 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=${submitToEditOffence}`
     } else if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
+        backLink = JourneyUrls.updateOffenceOutcomes(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
       } else {
-        backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/review-offences`
+        backLink = JourneyUrls.reviewOffences(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
       }
     }
 
@@ -1617,7 +1671,13 @@ export default class OffenceRoutes extends BaseRoutes {
       lineNumber: offence.sentence?.legacyData?.nomisLineReference,
       offenceCode: offence.offenceCode,
       offenceDescription: offenceDetails.description,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`,
+      backLink: JourneyUrls.nonSentencingHearing(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     })
   }
 
@@ -1668,7 +1728,13 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type`
     if (invalidatedFrom) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+      backLink = JourneyUrls.checkOffenceAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
     } else if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     } else if (sentence?.sentenceTypeClassification === 'FINE') {
@@ -2014,7 +2080,13 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
     )
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      JourneyUrls.taskList(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 
@@ -2031,9 +2103,21 @@ export default class OffenceRoutes extends BaseRoutes {
       req.user.username,
     )
     const isAddJourney = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`
+    let backLink = JourneyUrls.updateOffenceOutcomes(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
     if (isAddJourney) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+      backLink = JourneyUrls.checkOffenceAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
     }
 
     return res.render('pages/offence/sentence-length-mismatch', {
@@ -2053,7 +2137,13 @@ export default class OffenceRoutes extends BaseRoutes {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.setOffenceSentenceAccepted(req.session, nomsId, true, appearanceReference)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      JourneyUrls.taskList(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 
@@ -2150,12 +2240,30 @@ export default class OffenceRoutes extends BaseRoutes {
         } as ConsecutiveToDetails,
       }
     }
-    let cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`
+    let cancelLink = JourneyUrls.checkOffenceAnswers(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (courtAppearance.warrantType === 'SENTENCING') {
-        cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`
+        cancelLink = JourneyUrls.sentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
       } else {
-        cancelLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`
+        cancelLink = JourneyUrls.nonSentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
       }
     }
 
@@ -2206,15 +2314,33 @@ export default class OffenceRoutes extends BaseRoutes {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`,
+          JourneyUrls.sentencingHearing(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          ),
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`,
+        JourneyUrls.nonSentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+      JourneyUrls.checkOffenceAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 
@@ -2420,25 +2546,55 @@ export default class OffenceRoutes extends BaseRoutes {
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`,
+          JourneyUrls.sentencingHearing(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          ),
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`,
+        JourneyUrls.nonSentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+        JourneyUrls.checkOffenceAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+        JourneyUrls.updateOffenceOutcomes(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+      JourneyUrls.reviewOffences(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 
@@ -2534,7 +2690,13 @@ export default class OffenceRoutes extends BaseRoutes {
       appearanceReference,
     )
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      JourneyUrls.taskList(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 
@@ -2551,7 +2713,13 @@ export default class OffenceRoutes extends BaseRoutes {
     const backLink =
       backTo === 'OUTCOME'
         ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome`
-        : `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`
+        : JourneyUrls.taskList(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          )
 
     const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
 
@@ -2685,7 +2853,13 @@ export default class OffenceRoutes extends BaseRoutes {
     )
 
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/task-list`,
+      JourneyUrls.taskList(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 

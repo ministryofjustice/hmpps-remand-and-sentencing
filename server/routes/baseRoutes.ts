@@ -19,6 +19,7 @@ import { formatDate } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
+import JourneyUrls from './data/JourneyUrls'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -79,33 +80,70 @@ export default abstract class BaseRoutes {
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     if (offence.onFinishGoToEdit) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`,
+        JourneyUrls.editOffence(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid,
+        ),
       )
     }
     this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
     if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/check-offence-answers`,
+        JourneyUrls.checkOffenceAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
         return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details`,
+          JourneyUrls.sentencingHearing(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          ),
         )
       }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`,
+        JourneyUrls.nonSentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
     if (warrantType === 'SENTENCING') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/update-offence-outcomes`,
+        JourneyUrls.updateOffenceOutcomes(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/review-offences`,
+      JourneyUrls.reviewOffences(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 

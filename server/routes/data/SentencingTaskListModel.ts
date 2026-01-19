@@ -1,5 +1,6 @@
 import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
+import JourneyUrls from './JourneyUrls'
 
 export default class SentencingTaskListModel extends TaskListModel {
   constructor(
@@ -57,10 +58,22 @@ export default class SentencingTaskListModel extends TaskListModel {
     }
 
     if (courtAppearance.warrantInformationAccepted) {
-      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/check-overall-answers`
+      return JourneyUrls.sentencingCheckOverallAnswers(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
     }
 
-    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/overall-sentence-length`
+    return JourneyUrls.sentencingOverallSentenceLength(
+      this.nomsId,
+      this.addOrEditCourtCase,
+      this.courtCaseReference,
+      this.addOrEditCourtAppearance,
+      this.appearanceReference,
+    )
   }
 
   private getWarrantInformationStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
@@ -123,12 +136,31 @@ export default class SentencingTaskListModel extends TaskListModel {
     if (this.allWarrantInformationFilledOut(courtAppearance)) {
       if (courtAppearance.offences.length) {
         if (this.isAddCourtCase()) {
-          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+          href = JourneyUrls.checkOffenceAnswers(
+            this.nomsId,
+            this.addOrEditCourtCase,
+            this.courtCaseReference,
+            this.addOrEditCourtAppearance,
+            this.appearanceReference,
+          )
         } else {
-          href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/update-offence-outcomes`
+          href = JourneyUrls.updateOffenceOutcomes(
+            this.nomsId,
+            this.addOrEditCourtCase,
+            this.courtCaseReference,
+            this.addOrEditCourtAppearance,
+            this.appearanceReference,
+          )
         }
       } else {
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/0/add-another-offence`
+        href = JourneyUrls.addAnotherOffence(
+          this.nomsId,
+          this.addOrEditCourtCase,
+          this.courtCaseReference,
+          this.addOrEditCourtAppearance,
+          this.appearanceReference,
+          '0',
+        )
       }
     }
     return href
@@ -159,7 +191,13 @@ export default class SentencingTaskListModel extends TaskListModel {
   getCourtDocumentsHref(courtAppearance: CourtAppearance): string {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/sentencing/upload-court-documents`
+      href = JourneyUrls.sentencingUploadCourtDocuments(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
     }
     return href
   }

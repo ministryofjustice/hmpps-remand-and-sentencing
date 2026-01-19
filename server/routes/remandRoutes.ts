@@ -9,6 +9,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtRegisterService from '../services/courtRegisterService'
 import { getUiDocumentType, offencesToOffenceDescriptions, orderOffences } from '../utils/utils'
 import RefDataService from '../services/refDataService'
+import JourneyUrls from './data/JourneyUrls'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -27,7 +28,13 @@ export default class RemandRoutes extends BaseRoutes {
     const { username } = res.locals.user
     await this.setAppearanceDetailsToSession(appearanceReference, username, req, nomsId, courtCaseReference)
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`,
+      JourneyUrls.nonSentencingHearing(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
     )
   }
 
@@ -223,7 +230,13 @@ export default class RemandRoutes extends BaseRoutes {
         offence.legacyData?.offenceDescription,
       ),
     ])
-    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details`
+    const backLink = JourneyUrls.nonSentencingHearing(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
     return res.render('pages/courtAppearance/cannot-delete-offence', {
       nomsId,
       courtCaseReference,

@@ -604,6 +604,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       ),
       sentenceTypeClassification: sentenceType?.classification,
       hideOffences: true,
+      isUnknownRecallSentence: true,
     })
   }
 

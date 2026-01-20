@@ -19,6 +19,10 @@ context('Unknown recall sentence fine amount', () => {
     offenceFineAmountPage = Page.verifyOnPage(OffenceFineAmountPage)
   })
 
+  it('cancel button should not be visible', () => {
+    offenceFineAmountPage.cancelButton().should('not.exist')
+  })
+
   it("submitting a fine amount that isn't a number", () => {
     offenceFineAmountPage.input().type('bazinga')
     offenceFineAmountPage.continueButton().click()

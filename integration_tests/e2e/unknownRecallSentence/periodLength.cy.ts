@@ -35,6 +35,11 @@ context('Unknown recall sentence period length', () => {
     offenceSentenceTypePage.continueButton().click()
     offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')
   })
+
+  it('cancel button should not be visible', () => {
+    offencePeriodLengthPage.cancelButton().should('not.exist')
+  })
+
   it('submitting without entering anything in the inputs results in an error', () => {
     offencePeriodLengthPage.continueButton().click()
     offencePeriodLengthPage = Page.verifyOnPageTitle(OffencePeriodLengthPage, 'sentence length')

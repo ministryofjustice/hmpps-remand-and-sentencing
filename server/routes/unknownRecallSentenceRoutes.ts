@@ -108,6 +108,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       hideOffences: true,
       isUnknownRecallSentence: true,
       backLink,
+      showCancelButton: false,
     })
   }
 
@@ -173,6 +174,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       backLink,
       hideOffences: true,
       isUnknownRecallSentence: true,
+      showCancelButton: false,
     })
   }
 
@@ -240,6 +242,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       displaySelect: true,
       hideOffences: true,
       isUnknownRecallSentence: true,
+      showCancelButton: false,
     })
   }
 
@@ -342,6 +345,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
         chargeUuid,
         periodLengthType,
       ),
+      showCancelButton: false,
     })
   }
 
@@ -436,6 +440,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       periodLengthHeader,
       hideOffences: true,
       isUnknownRecallSentence: true,
+      showCancelButton: false,
     })
   }
 
@@ -544,6 +549,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       hideOffences: true,
       isUnknownRecallSentence: true,
+      showCancelButton: false,
     })
   }
 

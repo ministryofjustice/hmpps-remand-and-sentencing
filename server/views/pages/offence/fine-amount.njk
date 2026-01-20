@@ -32,7 +32,9 @@
                   text: "Continue",
                   attributes: {  'data-qa': 'continue-button' }
               }) }}
-              {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+              {% if showCancelButton or showCancelButton == null %}
+                  {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+              {% endif %}
   </div>
   </form>
 {% endblock %}

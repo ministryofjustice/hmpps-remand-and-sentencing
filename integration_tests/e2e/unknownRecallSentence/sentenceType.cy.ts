@@ -32,6 +32,10 @@ context('Unknown recall sentence sentence type', () => {
     offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)
   })
 
+  it('cancel button should not be visible', () => {
+    offenceSentenceTypePage.cancelButton().should('not.exist')
+  })
+
   it('submitting without selecting an option results in error', () => {
     offenceSentenceTypePage.continueButton().click()
     offenceSentenceTypePage = Page.verifyOnPage(OffenceSentenceTypePage)

@@ -21,6 +21,10 @@ context('Unknown recall sentence conviction date', () => {
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')
   })
 
+  it('cancel button should not be visible', () => {
+    offenceConvictionDatePage.cancelButton().should('not.exist')
+  })
+
   it('submitting without entering anything in the inputs results in an error', () => {
     offenceConvictionDatePage.continueButton().click()
     offenceConvictionDatePage = Page.verifyOnPageTitle(OffenceConvictionDatePage, 'Enter the conviction date')

@@ -89,7 +89,11 @@ Validator.register(
 )
 Validator.register('wholeNumber', wholeNumberValidate, 'must be a whole number')
 Validator.register('minNumber', minNumberValidate, 'must be greater than number')
-Validator.register('isUniqueTimePeriod', isUniqueTimePeriod, 'More than one of the same type of date is not allowed')
+Validator.register(
+  'isUniqueTimePeriod',
+  isUniqueTimePeriod,
+  'More than one of the same period length unit is not allowed',
+)
 Validator.register('atLeastOneNumberInString', atLeastOneNumberInString, 'Must enter at least one number')
 Validator.register('isNotTrue', isNotTrue, 'Cannot be true')
 Validator.register(

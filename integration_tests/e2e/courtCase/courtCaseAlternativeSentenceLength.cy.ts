@@ -57,7 +57,7 @@ context('Court Case Alternative Sentence Length Page', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem More than one of the same type of date is not allowed More than one of the same type of date is not allowed',
+        'There is a problem More than one of the same period length unit is not allowed More than one of the same period length unit is not allowed',
       )
   })
 })

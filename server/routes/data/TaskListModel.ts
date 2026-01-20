@@ -1,4 +1,5 @@
 import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
+import JourneyUrls from './JourneyUrls'
 
 export default abstract class TaskListModel {
   items: TaskListItem[]
@@ -63,12 +64,30 @@ export default abstract class TaskListModel {
 
   getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/check-answers`
+      return JourneyUrls.checkAppearanceAnswers(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
     }
     if (this.isAddCourtCase() || !caseReferenceSet) {
-      return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/reference`
+      return JourneyUrls.reference(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
     }
-    return `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/select-reference`
+    return JourneyUrls.selectReference(
+      this.nomsId,
+      this.addOrEditCourtCase,
+      this.courtCaseReference,
+      this.addOrEditCourtAppearance,
+      this.appearanceReference,
+    )
   }
 
   abstract allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean

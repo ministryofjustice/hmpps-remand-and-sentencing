@@ -1,6 +1,7 @@
 import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
 import { AppearanceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import JourneyUrls from './JourneyUrls'
 
 export default class RemandTaskListModel extends TaskListModel {
   constructor(
@@ -69,11 +70,30 @@ export default class RemandTaskListModel extends TaskListModel {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
       if (courtAppearance.offences.length === 0) {
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/0/add-another-offence`
+        href = JourneyUrls.addAnotherOffence(
+          this.nomsId,
+          this.addOrEditCourtCase,
+          this.courtCaseReference,
+          this.addOrEditCourtAppearance,
+          this.appearanceReference,
+          '0',
+        )
       } else if (this.isAddCourtCase()) {
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/offences/check-offence-answers`
+        href = JourneyUrls.checkOffenceAnswers(
+          this.nomsId,
+          this.addOrEditCourtCase,
+          this.courtCaseReference,
+          this.addOrEditCourtAppearance,
+          this.appearanceReference,
+        )
       } else {
-        href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/review-offences`
+        href = JourneyUrls.reviewOffences(
+          this.nomsId,
+          this.addOrEditCourtCase,
+          this.courtCaseReference,
+          this.addOrEditCourtAppearance,
+          this.appearanceReference,
+        )
       }
     }
     return href
@@ -132,9 +152,21 @@ export default class RemandTaskListModel extends TaskListModel {
     if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
       return null
     }
-    let href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/next-appearance-select`
+    let href = JourneyUrls.nextAppearanceSelect(
+      this.nomsId,
+      this.addOrEditCourtCase,
+      this.courtCaseReference,
+      this.addOrEditCourtAppearance,
+      this.appearanceReference,
+    )
     if (courtAppearance.nextCourtAppearanceAccepted) {
-      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/check-next-appearance-answers`
+      href = JourneyUrls.checkNextAppearanceAnswers(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
     }
     return href
   }
@@ -163,7 +195,13 @@ export default class RemandTaskListModel extends TaskListModel {
   getCourtDocumentsHref(courtAppearance: CourtAppearance): string {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      href = `/person/${this.nomsId}/${this.addOrEditCourtCase}/${this.courtCaseReference}/${this.addOrEditCourtAppearance}/${this.appearanceReference}/upload-court-documents`
+      href = JourneyUrls.uploadCourtDocuments(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
     }
     return href
   }

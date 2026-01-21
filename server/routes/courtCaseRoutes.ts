@@ -2574,8 +2574,19 @@ export default class CourtCaseRoutes extends BaseRoutes {
       // Stream to client
       fileStream.pipe(res)
 
-      fileStream.on('end', () => {
+      fileStream.on('end', async () => {
         logger.info(`Successfully streamed document ${documentId} to client.`)
+        await this.auditService.logViewDocument({
+          who: username,
+          subjectId: nomsId,
+          subjectType: 'PRISONER_ID',
+          correlationId: req.id,
+          details: {
+            courtCaseId: courtCaseReference,
+            hearingId: appearanceReference,
+            documentId,
+          },
+        })
       })
 
       fileStream.on('error', err => {

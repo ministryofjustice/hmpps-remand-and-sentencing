@@ -28,4 +28,12 @@ export default class AuditService {
     }
     await this.hmppsAuditClient.sendMessage(event)
   }
+
+  async logViewDocument(eventDetails: PageViewEventDetails) {
+    const event: AuditEvent = {
+      ...eventDetails,
+      what: 'VIEW_DOCUMENT',
+    }
+    await this.hmppsAuditClient.sendMessage(event)
+  }
 }

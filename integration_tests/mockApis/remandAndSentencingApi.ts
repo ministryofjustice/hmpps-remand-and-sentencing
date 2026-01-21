@@ -2011,15 +2011,11 @@ export default {
     })
   },
 
-  stubGetCourtCaseRemandLatest: ({
-    courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-  }: {
-    courtCaseUuid?: string
-  } = {}): SuperAgentRequest => {
+  stubGetCourtCaseRemandLatest: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}`,
+        urlPath: '/remand-and-sentencing-api/court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6',
       },
       response: {
         status: 200,

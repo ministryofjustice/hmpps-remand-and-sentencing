@@ -45,7 +45,6 @@ context('New Court Case journey', () => {
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-12' })
-    cy.task('stubGetCourtCaseRemandLatest', { courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019' })
 
     cy.signIn()
     cy.visit('/person/A1234AB')

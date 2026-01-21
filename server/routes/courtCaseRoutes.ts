@@ -1373,7 +1373,35 @@ export default class CourtCaseRoutes extends BaseRoutes {
     )
     if (addOrEditCourtCase === 'add-court-case') {
       const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createCourtCase(nomsId, username, courtCase, prisonId, courtCaseReference)
+      const courtCaseResponse = await this.remandAndSentencingService.createCourtCase(
+        nomsId,
+        username,
+        courtCase,
+        prisonId,
+        courtCaseReference,
+      )
+      const createdCourtCase = await this.remandAndSentencingService.getCourtCaseDetails(
+        courtCaseResponse.courtCaseUuid,
+        username,
+      )
+      const auditDetails = {
+        courtCaseId: createdCourtCase.courtCaseUuid,
+        hearingIds: createdCourtCase.appearances.map(appearance => appearance.appearanceUuid),
+        nextAppearanceId: createdCourtCase.appearances[0].nextCourtAppearance?.futureSkeletonAppearanceUuid,
+        offenceIds: createdCourtCase.appearances.flatMap(appearance =>
+          appearance.charges.map(charge => charge.chargeUuid),
+        ),
+        sentenceIds: createdCourtCase.appearances.flatMap(appearance =>
+          appearance.charges.map(charge => charge.sentence?.sentenceUuid).filter(Boolean),
+        ),
+      }
+      await this.auditService.logCreateCourtCase({
+        who: username,
+        subjectId: nomsId,
+        subjectType: 'PRISONER_ID',
+        correlationId: req.id,
+        details: auditDetails,
+      })
     } else {
       await this.remandAndSentencingService.createCourtAppearance(
         username,

@@ -1380,13 +1380,15 @@ export default class CourtCaseRoutes extends BaseRoutes {
         prisonId,
         courtCaseReference,
       )
-
       const auditDetails = {
-        courtCaseId: courtCaseResponse.courtCaseUuid,
-        hearingIds: (courtCaseResponse.appearances || []).map(appearance => appearance.appearanceUuid),
-        offenceIds: (courtCaseResponse.charges || []).map(charge => charge.chargeUuid),
-        sentenceIds: courtAppearance.offences.flatMap(offence =>
+        courtCaseUuid: courtCaseResponse.courtCaseUuid,
+        courtAppearanceUuids: (courtCaseResponse.appearances || []).map(appearance => appearance.appearanceUuid),
+        chargeUuids: (courtCaseResponse.charges || []).map(charge => charge.chargeUuid),
+        sentenceUuids: courtAppearance.offences.flatMap(offence =>
           offence.sentence ? [offence.sentence.sentenceUuid] : [],
+        ),
+        periodLengthUuids: courtAppearance.offences.flatMap(offence =>
+          offence.sentence ? offence.sentence.periodLengths?.map(periodLength => periodLength.uuid) : [],
         ),
       }
       await this.auditService.logCreateCourtCase({

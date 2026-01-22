@@ -743,6 +743,10 @@ export default class OffenceService {
         'secondSentenceLength-value': 'minWholeNumber:0',
         'thirdSentenceLength-value': 'minWholeNumber:0',
         'fourthSentenceLength-value': 'minWholeNumber:0',
+        'firstSentenceLength-period': 'isUniqueTimePeriod',
+        'secondSentenceLength-period': 'isUniqueTimePeriod',
+        'thirdSentenceLength-period': 'isUniqueTimePeriod',
+        'fourthSentenceLength-period': 'isUniqueTimePeriod',
       },
       {
         'requireAlternativeSentenceLength.firstSentenceLength-value': 'You must enter the sentence length',

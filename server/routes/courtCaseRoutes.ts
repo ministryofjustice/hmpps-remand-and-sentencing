@@ -1373,7 +1373,33 @@ export default class CourtCaseRoutes extends BaseRoutes {
     )
     if (addOrEditCourtCase === 'add-court-case') {
       const courtCase = { appearances: [courtAppearance] } as CourtCase
-      await this.remandAndSentencingService.createCourtCase(nomsId, username, courtCase, prisonId, courtCaseReference)
+      const courtCaseResponse = await this.remandAndSentencingService.createCourtCase(
+        nomsId,
+        username,
+        courtCase,
+        prisonId,
+        courtCaseReference,
+      )
+      const auditDetails = {
+        courtCaseUuid: courtCaseResponse.courtCaseUuid,
+        courtAppearanceUuids: (courtCaseResponse.appearances || []).map(appearance => appearance.appearanceUuid),
+        chargeUuids: (courtCaseResponse.charges || []).map(charge => charge.chargeUuid),
+        sentenceUuids: (courtAppearance.offences ?? []).flatMap(offence =>
+          offence.sentence?.sentenceUuid ? [offence.sentence.sentenceUuid] : [],
+        ),
+
+        periodLengthUuids: (courtAppearance.offences ?? [])
+          .flatMap(offence => offence.sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
+          .concat(courtAppearance.overallSentenceLength?.uuid)
+          .filter(uuid => uuid),
+      }
+      await this.auditService.logCreateCourtCase({
+        who: username,
+        subjectId: nomsId,
+        subjectType: 'PRISONER_ID',
+        correlationId: req.id,
+        details: auditDetails,
+      })
     } else {
       await this.remandAndSentencingService.createCourtAppearance(
         username,
@@ -2574,8 +2600,19 @@ export default class CourtCaseRoutes extends BaseRoutes {
       // Stream to client
       fileStream.pipe(res)
 
-      fileStream.on('end', () => {
+      fileStream.on('end', async () => {
         logger.info(`Successfully streamed document ${documentId} to client.`)
+        await this.auditService.logViewDocument({
+          who: username,
+          subjectId: nomsId,
+          subjectType: 'PRISONER_ID',
+          correlationId: req.id,
+          details: {
+            courtCaseId: courtCaseReference,
+            hearingId: appearanceReference,
+            documentId,
+          },
+        })
       })
 
       fileStream.on('error', err => {

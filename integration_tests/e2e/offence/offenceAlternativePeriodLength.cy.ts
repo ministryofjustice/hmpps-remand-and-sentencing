@@ -4,7 +4,6 @@ import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
 import Page from '../../pages/page'
-import CourtCaseAlternativeSentenceLengthPage from '../../pages/courtCaseAlternativeSentenceLengthPage'
 
 context('Add Offence Alternative Period Length Page', () => {
   let offenceAlternativePeriodLengthPage: OffenceAlternativePeriodLengthPage

@@ -44,4 +44,12 @@ export default class AuditService {
     }
     await this.hmppsAuditClient.sendMessage(event)
   }
+
+  async logViewSentenceConsecutiveTo(eventDetails: PageViewEventDetails) {
+    const event: AuditEvent = {
+      ...eventDetails,
+      what: 'VIEW_SENT_CONSEC_TO',
+    }
+    await this.hmppsAuditClient.sendMessage(event)
+  }
 }

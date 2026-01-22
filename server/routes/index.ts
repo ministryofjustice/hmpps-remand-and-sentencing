@@ -59,6 +59,7 @@ export default function routes(services: Services): Router {
     services.courtRegisterService,
     services.calculateReleaseDatesService,
     services.refDataService,
+    services.auditService,
   )
 
   const remandRoutes = new RemandRoutes(

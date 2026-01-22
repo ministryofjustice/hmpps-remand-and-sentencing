@@ -42,6 +42,7 @@ import RefDataService from '../services/refDataService'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
+import AuditService from '../services/auditService'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -52,6 +53,7 @@ export default class SentencingRoutes extends BaseRoutes {
     private readonly courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly refDataService: RefDataService,
+    private readonly auditService: AuditService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
@@ -584,6 +586,23 @@ export default class SentencingRoutes extends BaseRoutes {
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
+    const auditDetails = {
+      courtCaseUuid: courtCaseReference,
+      courtAppearanceUuids: [appearanceReference],
+      chargeUuids: chargeUuid ? [chargeUuid] : [],
+      sentenceUuids: sentence?.sentenceUuid ? [sentence.sentenceUuid] : [],
+      periodLengthUuids: (sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
+        .concat(courtAppearance.overallSentenceLength?.uuid)
+        .filter(uuid => uuid),
+    }
+
+    await this.auditService.logViewSentenceConsecutiveTo({
+      who: res.locals.user.username,
+      subjectId: nomsId,
+      subjectType: 'PRISONER_ID',
+      correlationId: req.id,
+      details: auditDetails,
+    })
     return res.render('pages/sentencing/sentence-consecutive-to', {
       nomsId,
       courtCaseReference,

@@ -1834,7 +1834,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 07:53:31.372578 */
+      /** @example 13:39:57.245433485 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1864,6 +1864,7 @@ export interface components {
       offenceEndDate?: string
       legacyData: components['schemas']['ChargeLegacyData']
       performedByUser?: string
+      offenceCode?: string
     }
     LegacyLinkChargeToCase: {
       sourceCourtCaseUuid: string
@@ -1891,7 +1892,12 @@ export interface components {
       /** Format: uuid */
       appearanceOutcomeUuid: string
       /** @enum {string} */
-      immigrationDetentionRecordType: 'IS91' | 'DEPORTATION_ORDER' | 'NO_LONGER_OF_INTEREST' | 'UNKNOWN'
+      immigrationDetentionRecordType:
+        | 'IS91'
+        | 'DEPORTATION_ORDER'
+        | 'NO_LONGER_OF_INTEREST'
+        | 'IMMIGRATION_BAIL'
+        | 'UNKNOWN'
       /** Format: date */
       recordDate: string
       homeOfficeReferenceNumber?: string
@@ -1904,6 +1910,8 @@ export interface components {
     SaveImmigrationDetentionResponse: {
       /** Format: uuid */
       immigrationDetentionUuid: string
+      /** Format: uuid */
+      courtAppearanceUuid?: string
     }
     CreateCharge: {
       /** Format: uuid */
@@ -1958,7 +1966,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:53:31.372578 */
+      /** @example 13:39:57.245433485 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2713,6 +2721,8 @@ export interface components {
       courtCaseReference?: string
       /** Format: date */
       appearanceDate: string
+      /** Format: uuid */
+      appearanceUuid: string
       sentences: components['schemas']['SentenceToChainTo'][]
     }
     SentenceToChainTo: {
@@ -2721,6 +2731,8 @@ export interface components {
       offenceStartDate?: string
       /** Format: date */
       offenceEndDate?: string
+      /** Format: uuid */
+      chargeUuid: string
       /** Format: uuid */
       sentenceUuid: string
       countNumber?: string
@@ -2806,7 +2818,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:53:31.372578 */
+      /** @example 13:39:57.245433485 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3087,7 +3099,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 07:53:31.372578 */
+      /** @example 13:39:57.245433485 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -3107,7 +3119,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:53:31.372578 */
+      /** @example 13:39:57.245433485 */
       appearanceTime?: string
       courtId: string
     }
@@ -3162,7 +3174,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 07:53:31.372578 */
+      /** @example 13:39:57.245433485 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -3172,7 +3184,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:53:31.372578 */
+      /** @example 13:39:57.245433485 */
       appearanceTime?: string
       courtId: string
     }
@@ -3181,7 +3193,12 @@ export interface components {
       immigrationDetentionUuid: string
       prisonerId: string
       /** @enum {string} */
-      immigrationDetentionRecordType: 'IS91' | 'DEPORTATION_ORDER' | 'NO_LONGER_OF_INTEREST' | 'UNKNOWN'
+      immigrationDetentionRecordType:
+        | 'IS91'
+        | 'DEPORTATION_ORDER'
+        | 'NO_LONGER_OF_INTEREST'
+        | 'IMMIGRATION_BAIL'
+        | 'UNKNOWN'
       /** Format: date */
       recordDate: string
       homeOfficeReferenceNumber?: string
@@ -3279,51 +3296,51 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      pageable?: components['schemas']['PageableObject']
-      sort?: components['schemas']['SortObject']
-      first?: boolean
-      last?: boolean
-      /** Format: int32 */
-      numberOfElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
+      first?: boolean
+      last?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
+      /** Format: int64 */
+      offset?: number
+      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
       unpaged?: boolean
-      sort?: components['schemas']['SortObject']
-      /** Format: int64 */
-      offset?: number
+      paged?: boolean
+      /** Format: int32 */
+      pageNumber?: number
     }
     SortObject: {
+      empty?: boolean
       sorted?: boolean
       unsorted?: boolean
-      empty?: boolean
     }
     PagePagedCourtCase: {
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      pageable?: components['schemas']['PageableObject']
-      sort?: components['schemas']['SortObject']
-      first?: boolean
-      last?: boolean
-      /** Format: int32 */
-      numberOfElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['PagedCourtCase'][]
       /** Format: int32 */
       number?: number
+      first?: boolean
+      last?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -3422,7 +3439,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 07:53:31.372578 */
+      /** @example 13:39:57.245433485 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string

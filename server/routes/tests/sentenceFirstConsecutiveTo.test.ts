@@ -45,12 +45,15 @@ describe('GET First sentence consecutive to', () => {
           courtCode: 'ACCRYC',
           courtCaseReference: 'C123',
           appearanceDate: '2023-03-12',
+          appearanceUuid: '1',
           sentences: [
             {
               offenceCode: 'CC12345',
               offenceStartDate: '2023-01-12',
+              chargeUuid: '1',
               sentenceUuid: '1',
               countNumber: '1',
+              offenceEndDate: '2023-03-12',
             },
           ],
         },

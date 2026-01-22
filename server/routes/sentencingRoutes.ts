@@ -432,13 +432,15 @@ export default class SentencingRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
     const auditDetails = {
-      courtCaseUuid: courtCaseReference,
-      courtAppearanceUuids: [appearanceReference],
-      chargeUuids: chargeUuid ? [chargeUuid] : [],
-      sentenceUuids: sentence?.sentenceUuid ? [sentence.sentenceUuid] : [],
-      periodLengthUuids: (sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
-        .concat(courtAppearance.overallSentenceLength?.uuid)
-        .filter(uuid => uuid),
+      courtCaseUuid: sentencesToChainTo.appearances.map(appearance => appearance.courtCaseReference),
+      courtAppearanceUuids: sentencesToChainTo.appearances.map(appearance => appearance.appearanceUuid),
+      chargeUuids: sentencesToChainTo.appearances
+        .flatMap(appearance => appearance.sentences)
+        .map(sentenceDetails => sentenceDetails.chargeUuid),
+      sentenceUuids: sentencesToChainTo.appearances
+        .flatMap(appearance => appearance.sentences)
+        .map(sentenceDetails => sentenceDetails.sentenceUuid),
+      periodLengthUuids: [],
     }
 
     await this.auditService.logPageView(Page.SENT_CONSEC_TO, {

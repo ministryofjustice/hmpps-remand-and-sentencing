@@ -4,6 +4,7 @@ import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
 import Page from '../../pages/page'
+import CourtCaseAlternativeSentenceLengthPage from '../../pages/courtCaseAlternativeSentenceLengthPage'
 
 context('Add Offence Alternative Period Length Page', () => {
   let offenceAlternativePeriodLengthPage: OffenceAlternativePeriodLengthPage
@@ -72,5 +73,21 @@ context('Add Offence Alternative Period Length Page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem The sentence length cannot be 0')
+  })
+
+  it('submitting more than 1 of the same time unit results in an error', () => {
+    offenceAlternativePeriodLengthPage.sentenceLengthInput('first').type('2')
+    offenceAlternativePeriodLengthPage.sentenceLengthInput('second').type('2')
+    offenceAlternativePeriodLengthPage.sentenceLengthDropDown('first').select('years')
+    offenceAlternativePeriodLengthPage.sentenceLengthDropDown('second').select('years')
+    offenceAlternativePeriodLengthPage.continueButton().click()
+    offenceAlternativePeriodLengthPage = Page.verifyOnPageTitle(OffenceAlternativePeriodLengthPage, 'sentence length')
+    offenceAlternativePeriodLengthPage
+      .errorSummary()
+      .trimTextContent()
+      .should(
+        'equal',
+        'There is a problem More than one of the same period length unit is not allowed More than one of the same period length unit is not allowed',
+      )
   })
 })

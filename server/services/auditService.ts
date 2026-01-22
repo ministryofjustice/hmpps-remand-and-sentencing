@@ -4,6 +4,7 @@ export enum Page {
   EXAMPLE_PAGE = 'EXAMPLE_PAGE',
   COURT_CASES = 'COURT_CASES',
   COURT_CASE = 'COURT_CASE',
+  SENT_CONSEC_TO = 'SENT_CONSEC_TO',
 }
 
 export interface PageViewEventDetails {
@@ -41,14 +42,6 @@ export default class AuditService {
     const event: AuditEvent = {
       ...eventDetails,
       what: 'CREATE_COURT_CASE',
-    }
-    await this.hmppsAuditClient.sendMessage(event)
-  }
-
-  async logViewSentenceConsecutiveTo(eventDetails: PageViewEventDetails) {
-    const event: AuditEvent = {
-      ...eventDetails,
-      what: 'VIEW_SENT_CONSEC_TO',
     }
     await this.hmppsAuditClient.sendMessage(event)
   }

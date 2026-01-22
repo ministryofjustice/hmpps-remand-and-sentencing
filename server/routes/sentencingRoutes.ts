@@ -1,10 +1,10 @@
 import { RequestHandler } from 'express'
 import type {
-  FirstSentenceConsecutiveToForm,
+  CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
+  FirstSentenceConsecutiveToForm,
   SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
-  CorrectAlternativeManyPeriodLengthsForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
@@ -42,7 +42,7 @@ import RefDataService from '../services/refDataService'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
-import AuditService from '../services/auditService'
+import AuditService, { Page } from '../services/auditService'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -431,6 +431,23 @@ export default class SentencingRoutes extends BaseRoutes {
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
+    const auditDetails = {
+      courtCaseUuid: courtCaseReference,
+      courtAppearanceUuids: [appearanceReference],
+      chargeUuids: chargeUuid ? [chargeUuid] : [],
+      sentenceUuids: sentence?.sentenceUuid ? [sentence.sentenceUuid] : [],
+      periodLengthUuids: (sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
+        .concat(courtAppearance.overallSentenceLength?.uuid)
+        .filter(uuid => uuid),
+    }
+
+    await this.auditService.logPageView(Page.SENT_CONSEC_TO, {
+      who: res.locals.user.username,
+      subjectId: nomsId,
+      subjectType: 'PRISONER_ID',
+      correlationId: req.id,
+      details: auditDetails,
+    })
     return res.render('pages/sentencing/first-sentence-consecutive-to', {
       nomsId,
       courtCaseReference,
@@ -586,23 +603,6 @@ export default class SentencingRoutes extends BaseRoutes {
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
-    const auditDetails = {
-      courtCaseUuid: courtCaseReference,
-      courtAppearanceUuids: [appearanceReference],
-      chargeUuids: chargeUuid ? [chargeUuid] : [],
-      sentenceUuids: sentence?.sentenceUuid ? [sentence.sentenceUuid] : [],
-      periodLengthUuids: (sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
-        .concat(courtAppearance.overallSentenceLength?.uuid)
-        .filter(uuid => uuid),
-    }
-
-    await this.auditService.logViewSentenceConsecutiveTo({
-      who: res.locals.user.username,
-      subjectId: nomsId,
-      subjectType: 'PRISONER_ID',
-      correlationId: req.id,
-      details: auditDetails,
-    })
     return res.render('pages/sentencing/sentence-consecutive-to', {
       nomsId,
       courtCaseReference,

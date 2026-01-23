@@ -4,6 +4,7 @@ export enum Page {
   EXAMPLE_PAGE = 'EXAMPLE_PAGE',
   COURT_CASES = 'COURT_CASES',
   COURT_CASE = 'COURT_CASE',
+  SENT_CONSEC_TO = 'SENT_CONSEC_TO',
 }
 
 export interface PageViewEventDetails {

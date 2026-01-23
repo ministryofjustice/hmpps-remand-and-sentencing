@@ -53,10 +53,12 @@ describe('GET Sentence consecutive to', () => {
           courtCode: 'ACCRYC',
           courtCaseReference: 'C123',
           appearanceDate: '2023-03-12',
+          appearanceUuid: '1',
           sentences: [
             {
               offenceCode: 'CC12345',
               offenceStartDate: '2023-01-12',
+              chargeUuid: '1',
               sentenceUuid: '1',
               countNumber: '1',
             },
@@ -66,10 +68,12 @@ describe('GET Sentence consecutive to', () => {
           courtCode: 'GHEUTY',
           courtCaseReference: 'G123',
           appearanceDate: '2023-03-12',
+          appearanceUuid: '2',
           sentences: [
             {
               offenceCode: 'BB6557',
               offenceStartDate: '2023-01-12',
+              chargeUuid: '2',
               sentenceUuid: '3',
               countNumber: '1',
             },

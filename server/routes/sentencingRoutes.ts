@@ -1,10 +1,10 @@
 import { RequestHandler } from 'express'
 import type {
-  FirstSentenceConsecutiveToForm,
+  CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
+  FirstSentenceConsecutiveToForm,
   SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
-  CorrectAlternativeManyPeriodLengthsForm,
 } from 'forms'
 import dayjs from 'dayjs'
 import type { CourtAppearance } from 'models'
@@ -42,6 +42,7 @@ import RefDataService from '../services/refDataService'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
+import AuditService, { Page } from '../services/auditService'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -52,6 +53,7 @@ export default class SentencingRoutes extends BaseRoutes {
     private readonly courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly refDataService: RefDataService,
+    private readonly auditService: AuditService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
   }
@@ -429,6 +431,25 @@ export default class SentencingRoutes extends BaseRoutes {
     if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
+    const auditDetails = {
+      courtCaseUuids: [],
+      courtAppearanceUuids: sentencesToChainTo.appearances.map(appearance => appearance.appearanceUuid),
+      chargeUuids: sentencesToChainTo.appearances
+        .flatMap(appearance => appearance.sentences)
+        .map(sentenceDetails => sentenceDetails.chargeUuid),
+      sentenceUuids: sentencesToChainTo.appearances
+        .flatMap(appearance => appearance.sentences)
+        .map(sentenceDetails => sentenceDetails.sentenceUuid),
+      periodLengthUuids: [],
+    }
+
+    await this.auditService.logPageView(Page.SENT_CONSEC_TO, {
+      who: res.locals.user.username,
+      subjectId: nomsId,
+      subjectType: 'PRISONER_ID',
+      correlationId: req.id,
+      details: auditDetails,
+    })
     return res.render('pages/sentencing/first-sentence-consecutive-to', {
       nomsId,
       courtCaseReference,

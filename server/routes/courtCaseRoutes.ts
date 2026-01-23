@@ -422,13 +422,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
     courtCase: PageCourtCaseContent,
     consecutiveToSentenceDetails: SentenceConsecutiveToDetailsResponse,
   ): {
-    courtCaseUuid: string
+    courtCaseUuids: string[]
     courtAppearanceUuids: string[]
     chargeUuids: string[]
     sentenceUuids: string[]
     periodLengthUuids: string[]
   } {
-    const { courtCaseUuid } = courtCase
+    const courtCaseUuids = [courtCase.courtCaseUuid]
     const courtAppearanceUuids = courtCase.appearances.map(appearance => appearance.appearanceUuid)
     const chargeUuids = Array.from(
       new Set(courtCase.appearances.flatMap(appearance => appearance.charges).map(charge => charge.chargeUuid)),
@@ -457,7 +457,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           .filter(periodLengthUuid => periodLengthUuid),
       ),
     )
-    return { courtCaseUuid, courtAppearanceUuids, chargeUuids, sentenceUuids, periodLengthUuids }
+    return { courtCaseUuids, courtAppearanceUuids, chargeUuids, sentenceUuids, periodLengthUuids }
   }
 
   private offenceGetMergedFromText(mergedFromCases: MergedFromCase[], courtMap: { [key: string]: string }): string[] {
@@ -1381,7 +1381,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         courtCaseReference,
       )
       const auditDetails = {
-        courtCaseUuid: courtCaseResponse.courtCaseUuid,
+        courtCaseUuids: [courtCaseResponse.courtCaseUuid],
         courtAppearanceUuids: (courtCaseResponse.appearances || []).map(appearance => appearance.appearanceUuid),
         chargeUuids: (courtCaseResponse.charges || []).map(charge => charge.chargeUuid),
         sentenceUuids: (courtAppearance.offences ?? []).flatMap(offence =>
@@ -2608,8 +2608,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
           subjectType: 'PRISONER_ID',
           correlationId: req.id,
           details: {
-            courtCaseId: courtCaseReference,
-            hearingId: appearanceReference,
+            courtCaseUuids: [courtCaseReference],
+            courtAppearanceUuids: [appearanceReference],
             documentId,
           },
         })

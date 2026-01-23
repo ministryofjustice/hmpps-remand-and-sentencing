@@ -6,4 +6,6 @@ export default class OffenceAlternativePeriodLengthPage extends Page {
   }
 
   sentenceLengthInput = (prefix: string): PageElement => cy.get(`#${prefix}SentenceLength-value`)
+
+  sentenceLengthDropDown = (prefix: string): PageElement => cy.get(`#${prefix}SentenceLength-period`)
 }

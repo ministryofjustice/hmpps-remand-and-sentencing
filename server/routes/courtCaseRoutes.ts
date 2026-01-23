@@ -1401,13 +1401,32 @@ export default class CourtCaseRoutes extends BaseRoutes {
         details: auditDetails,
       })
     } else {
-      await this.remandAndSentencingService.createCourtAppearance(
+      const courtAppearanceResponse = await this.remandAndSentencingService.createCourtAppearance(
         username,
         courtCaseReference,
         appearanceReference,
         courtAppearance,
         prisonId,
       )
+      const auditDetails = {
+        courtCaseUuids: [courtCaseReference],
+        courtAppearanceUuids: [courtAppearanceResponse.appearanceUuid],
+        chargesUuids: courtAppearance.offences?.map(offence => offence.chargeUuid),
+        sentenceUuids: (courtAppearance.offences ?? []).flatMap(offence =>
+          offence.sentence?.sentenceUuid ? [offence.sentence.sentenceUuid] : [],
+        ),
+        periodLengthUuids: (courtAppearance.offences ?? [])
+          .flatMap(offence => offence.sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
+          .concat(courtAppearance.overallSentenceLength?.uuid)
+          .filter(uuid => uuid),
+      }
+      await this.auditService.logCreateHearing({
+        who: username,
+        subjectId: nomsId,
+        subjectType: 'PRISONER_ID',
+        correlationId: req.id,
+        details: auditDetails,
+      })
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     if (courtAppearance.warrantType === 'SENTENCING') {

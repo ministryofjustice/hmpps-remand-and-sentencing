@@ -7,7 +7,7 @@ export enum Page {
   SENT_CONSEC_TO = 'SENT_CONSEC_TO',
 }
 
-export interface PageViewEventDetails {
+export interface AuditEventDetails {
   who: string
   subjectId?: string
   subjectType?: string
@@ -22,7 +22,7 @@ export default class AuditService {
     await this.hmppsAuditClient.sendMessage(event)
   }
 
-  async logPageView(page: Page, eventDetails: PageViewEventDetails) {
+  async logPageView(page: Page, eventDetails: AuditEventDetails) {
     const event: AuditEvent = {
       ...eventDetails,
       what: `PAGE_VIEW_${page}`,
@@ -30,7 +30,7 @@ export default class AuditService {
     await this.hmppsAuditClient.sendMessage(event)
   }
 
-  async logViewDocument(eventDetails: PageViewEventDetails) {
+  async logViewDocument(eventDetails: AuditEventDetails) {
     const event: AuditEvent = {
       ...eventDetails,
       what: 'VIEW_DOCUMENT',
@@ -38,10 +38,18 @@ export default class AuditService {
     await this.hmppsAuditClient.sendMessage(event)
   }
 
-  async logCreateCourtCase(eventDetails: PageViewEventDetails) {
+  async logCreateCourtCase(eventDetails: AuditEventDetails) {
     const event: AuditEvent = {
       ...eventDetails,
       what: 'CREATE_COURT_CASE',
+    }
+    await this.hmppsAuditClient.sendMessage(event)
+  }
+
+  async logCreateHearing(eventDetails: AuditEventDetails) {
+    const event: AuditEvent = {
+      ...eventDetails,
+      what: 'CREATE_HEARING',
     }
     await this.hmppsAuditClient.sendMessage(event)
   }

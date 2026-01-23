@@ -432,7 +432,7 @@ export default class SentencingRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence`
     }
     const auditDetails = {
-      courtCaseUuid: [],
+      courtCaseUuids: [],
       courtAppearanceUuids: sentencesToChainTo.appearances.map(appearance => appearance.appearanceUuid),
       chargeUuids: sentencesToChainTo.appearances
         .flatMap(appearance => appearance.sentences)

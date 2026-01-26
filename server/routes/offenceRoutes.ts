@@ -58,7 +58,7 @@ import config from '../config'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
-import AuditService from '../services/auditService'
+import AuditService, { Page } from '../services/auditService'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -2642,6 +2642,23 @@ export default class OffenceRoutes extends BaseRoutes {
       offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
       courtMap,
     )
+
+    const auditDetails = {
+      courtCaseUuids: [courtCaseReference],
+      courtAppearanceUuids: [appearanceReference],
+      chargeUuid: offences?.map(offence => offence.chargeUuid),
+      sentenceUuids: [],
+      periodLengthUuids: [],
+      documentUuids: [],
+    }
+
+    await this.auditService.logPageView(Page.REVIEW_OFFENCES, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      subjectType: 'PRISONER_ID',
+      subjectId: nomsId,
+      details: auditDetails,
+    })
 
     return res.render('pages/offence/review-offences', {
       nomsId,

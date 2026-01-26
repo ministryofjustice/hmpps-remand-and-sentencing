@@ -5,6 +5,7 @@ export enum Page {
   COURT_CASES = 'COURT_CASES',
   COURT_CASE = 'COURT_CASE',
   SENT_CONSEC_TO = 'SENT_CONSEC_TO',
+  REVIEW_OFFENCES = 'REVIEW_OFFENCES',
 }
 
 export interface AuditEventDetails {

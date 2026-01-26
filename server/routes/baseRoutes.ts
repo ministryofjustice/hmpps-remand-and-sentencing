@@ -20,6 +20,7 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
+import AuditService from '../services/auditService'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -30,16 +31,20 @@ export default abstract class BaseRoutes {
 
   manageOffencesService: ManageOffencesService
 
+  auditService: AuditService
+
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
+    auditService: AuditService,
   ) {
     this.courtAppearanceService = courtAppearanceService
     this.offenceService = offenceService
     this.remandAndSentencingService = remandAndSentencingService
     this.manageOffencesService = manageOffencesService
+    this.auditService = auditService
   }
 
   protected isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
@@ -234,6 +239,23 @@ export default abstract class BaseRoutes {
       courtAppearance,
       prisonId,
     )
+    const auditDetails = {
+      courtCaseUuids: [courtCaseReference],
+      courtAppearanceUuids: [appearanceReference],
+      chargeUuids: courtAppearance.offences?.map(offence => offence.chargeUuid),
+      sentenceUuids: courtAppearance.offences?.map(offence => offence.sentence?.sentenceUuid),
+      periodLengthUuids: courtAppearance.offences?.flatMap(
+        offence => offence.sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [],
+      ),
+      documentUuids: courtAppearance.uploadedDocuments?.map(document => document.documentUUID),
+    }
+    await this.auditService.logEditHearing({
+      who: username,
+      subjectId: nomsId,
+      subjectType: 'PRISONER_ID',
+      correlationId: req.id,
+      details: auditDetails,
+    })
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     return res.redirect(`/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/appearance-updated-confirmation`)
   }

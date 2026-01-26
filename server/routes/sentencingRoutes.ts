@@ -50,12 +50,12 @@ export default class SentencingRoutes extends BaseRoutes {
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
+    auditService: AuditService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly refDataService: RefDataService,
-    private readonly auditService: AuditService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
   }
 
   public getIsSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
@@ -441,6 +441,7 @@ export default class SentencingRoutes extends BaseRoutes {
         .flatMap(appearance => appearance.sentences)
         .map(sentenceDetails => sentenceDetails.sentenceUuid),
       periodLengthUuids: [],
+      documentUuids: [],
     }
 
     await this.auditService.logPageView(Page.SENT_CONSEC_TO, {

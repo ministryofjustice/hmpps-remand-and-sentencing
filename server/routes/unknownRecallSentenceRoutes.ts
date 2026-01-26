@@ -30,6 +30,7 @@ import { SentenceType } from '../@types/remandAndSentencingApi/remandAndSentenci
 import CourtRegisterService from '../services/courtRegisterService'
 import UnknownRecallSentenceService from '../services/unknownRecallSentenceService'
 import config from '../config'
+import AuditService from '../services/auditService'
 
 export default class UnknownRecallSentenceRoutes extends BaseRoutes {
   constructor(
@@ -37,11 +38,12 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
+    auditService: AuditService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
     private readonly unknownRecallSentenceService: UnknownRecallSentenceService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
   }
 
   public loadCharge: RequestHandler = async (req, res): Promise<void> => {

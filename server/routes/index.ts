@@ -21,11 +21,11 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.remandAndSentencingService,
     services.manageOffencesService,
+    services.auditService,
     services.documentManagementService,
     services.courtRegisterService,
     services.courtCasesReleaseDatesService,
     services.refDataService,
-    services.auditService,
   )
   const apiRoutes = new ApiRoutes(
     services.prisonerService,
@@ -38,6 +38,7 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.courtAppearanceService,
     services.remandAndSentencingService,
+    services.auditService,
     services.calculateReleaseDatesService,
     services.courtRegisterService,
     services.refDataService,
@@ -47,8 +48,9 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.offenceService,
     services.remandAndSentencingService,
-    services.refDataService,
     services.manageOffencesService,
+    services.auditService,
+    services.refDataService,
   )
 
   const sentencingRoutes = new SentencingRoutes(
@@ -56,18 +58,19 @@ export default function routes(services: Services): Router {
     services.offenceService,
     services.remandAndSentencingService,
     services.manageOffencesService,
+    services.auditService,
     services.courtRegisterService,
     services.calculateReleaseDatesService,
     services.refDataService,
-    services.auditService,
   )
 
   const remandRoutes = new RemandRoutes(
     services.courtAppearanceService,
     services.offenceService,
     services.remandAndSentencingService,
-    services.courtRegisterService,
     services.manageOffencesService,
+    services.auditService,
+    services.courtRegisterService,
     services.refDataService,
   )
 
@@ -76,6 +79,7 @@ export default function routes(services: Services): Router {
     services.offenceService,
     services.remandAndSentencingService,
     services.manageOffencesService,
+    services.auditService,
     services.courtRegisterService,
     services.refDataService,
     services.unknownRecallSentenceService,

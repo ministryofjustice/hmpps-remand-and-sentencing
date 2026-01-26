@@ -10,17 +10,19 @@ import CourtRegisterService from '../services/courtRegisterService'
 import { getUiDocumentType, offencesToOffenceDescriptions, orderOffences } from '../utils/utils'
 import RefDataService from '../services/refDataService'
 import JourneyUrls from './data/JourneyUrls'
+import AuditService from '../services/auditService'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
-    private readonly courtRegisterService: CourtRegisterService,
     manageOffencesService: ManageOffencesService,
+    auditService: AuditService,
+    private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
   }
 
   public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {

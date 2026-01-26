@@ -69,13 +69,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
     courtAppearanceService: CourtAppearanceService,
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
+    auditService: AuditService,
     private readonly documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
     private readonly refDataService: RefDataService,
-    private readonly auditService: AuditService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
   }
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -202,6 +202,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     chargeUuids: string[]
     sentenceUuids: string[]
     periodLengthUuids: string[]
+    documentUuids: string[]
   } {
     const courtCaseUuids = Array.from(new Set(courtCases.content.map(courtCase => courtCase.courtCaseUuid)))
     const courtAppearanceUuids = Array.from(
@@ -241,7 +242,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           .filter(periodLengthUuid => periodLengthUuid),
       ),
     )
-    return { courtCaseUuids, courtAppearanceUuids, chargeUuids, sentenceUuids, periodLengthUuids }
+    return { courtCaseUuids, courtAppearanceUuids, chargeUuids, sentenceUuids, periodLengthUuids, documentUuids: [] }
   }
 
   public documents: RequestHandler = async (req, res): Promise<void> => {
@@ -427,6 +428,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     chargeUuids: string[]
     sentenceUuids: string[]
     periodLengthUuids: string[]
+    documentUuids: string[]
   } {
     const courtCaseUuids = [courtCase.courtCaseUuid]
     const courtAppearanceUuids = courtCase.appearances.map(appearance => appearance.appearanceUuid)
@@ -457,7 +459,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           .filter(periodLengthUuid => periodLengthUuid),
       ),
     )
-    return { courtCaseUuids, courtAppearanceUuids, chargeUuids, sentenceUuids, periodLengthUuids }
+    return { courtCaseUuids, courtAppearanceUuids, chargeUuids, sentenceUuids, periodLengthUuids, documentUuids: [] }
   }
 
   private offenceGetMergedFromText(mergedFromCases: MergedFromCase[], courtMap: { [key: string]: string }): string[] {
@@ -1387,11 +1389,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
         sentenceUuids: (courtAppearance.offences ?? []).flatMap(offence =>
           offence.sentence?.sentenceUuid ? [offence.sentence.sentenceUuid] : [],
         ),
-
         periodLengthUuids: (courtAppearance.offences ?? [])
           .flatMap(offence => offence.sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
           .concat(courtAppearance.overallSentenceLength?.uuid)
           .filter(uuid => uuid),
+        documentUuids: [],
       }
       await this.auditService.logCreateCourtCase({
         who: username,
@@ -1419,6 +1421,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           .flatMap(offence => offence.sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
           .concat(courtAppearance.overallSentenceLength?.uuid)
           .filter(uuid => uuid),
+        documentUuids: [],
       }
       await this.auditService.logCreateHearing({
         who: username,

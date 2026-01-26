@@ -53,4 +53,12 @@ export default class AuditService {
     }
     await this.hmppsAuditClient.sendMessage(event)
   }
+
+  async logEditHearing(eventDetails: AuditEventDetails) {
+    const event: AuditEvent = {
+      ...eventDetails,
+      what: 'EDIT_HEARING',
+    }
+    await this.hmppsAuditClient.sendMessage(event)
+  }
 }

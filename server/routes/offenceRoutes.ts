@@ -58,6 +58,7 @@ import config from '../config'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
+import AuditService from '../services/auditService'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -65,11 +66,12 @@ export default class OffenceRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     courtAppearanceService: CourtAppearanceService,
     remandAndSentencingService: RemandAndSentencingService,
+    auditService: AuditService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService)
+    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
   }
 
   public validateSentenceTypeAccess: RequestHandler = async (req, res): Promise<void> => {

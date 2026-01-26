@@ -242,10 +242,10 @@ export default abstract class BaseRoutes {
     const auditDetails = {
       courtCaseUuids: [courtCaseReference],
       courtAppearanceUuids: [appearanceReference],
-      chargeUuids: courtAppearance.offences.map(offence => offence.chargeUuid),
-      sentenceUuids: courtAppearance.offences.map(offence => offence.sentence?.sentenceUuid),
-      periodLengthUuids: courtAppearance.offences.flatMap(
-        offence => offence.sentence?.periodLengths.map(periodLength => periodLength.uuid) ?? [],
+      chargeUuids: courtAppearance.offences?.map(offence => offence.chargeUuid),
+      sentenceUuids: courtAppearance.offences?.map(offence => offence.sentence?.sentenceUuid),
+      periodLengthUuids: courtAppearance.offences?.flatMap(
+        offence => offence.sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [],
       ),
       documentUuids: courtAppearance.uploadedDocuments?.map(document => document.documentUUID),
     }

@@ -184,7 +184,7 @@ context('Add Offence Conviction Date Page tests with a full create court appeara
     receivedCustodialSentencePage.radioLabelSelector('true').click()
     receivedCustodialSentencePage.continueButton().click()
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
-    courtCaseTaskListPage.appearanceInformationLink().click()
+    courtCaseTaskListPage.hearingInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type(caseRef)

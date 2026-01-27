@@ -295,7 +295,7 @@ context('New Court Case journey', () => {
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Incomplete',
         },
         {
@@ -311,7 +311,7 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
       ])
-    courtCaseTaskListPage.appearanceInformationLink().click()
+    courtCaseTaskListPage.hearingInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type(caseRef)
@@ -342,7 +342,7 @@ context('New Court Case journey', () => {
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Completed',
         },
         {
@@ -403,7 +403,7 @@ context('New Court Case journey', () => {
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Completed',
         },
         {
@@ -469,7 +469,7 @@ context('New Court Case journey', () => {
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Completed',
         },
         {

@@ -25,7 +25,7 @@ export default class SentencingTaskListModel extends TaskListModel {
     if (this.isAddCourtCase()) {
       this.pageHeading = 'Add a court case'
     } else {
-      this.pageHeading = 'Add a court appearance to a court case'
+      this.pageHeading = 'Add a court hearing to a court case'
     }
   }
 
@@ -33,12 +33,12 @@ export default class SentencingTaskListModel extends TaskListModel {
     if (this.isAddCourtCase()) {
       this.finishHeading = 'Finish adding a court case'
     } else {
-      this.finishHeading = 'Finish adding a court appearance'
+      this.finishHeading = 'Finish adding a court hearing'
     }
   }
 
   getAppearanceInformationTitleText(): string {
-    return 'Add appearance information'
+    return 'Add hearing information'
   }
 
   private getWarrantInformationItem(courtAppearance: CourtAppearance): TaskListItem {

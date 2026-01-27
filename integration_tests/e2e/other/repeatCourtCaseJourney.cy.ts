@@ -294,13 +294,13 @@ context('Repeat Court Case journey', () => {
     receivedCustodialSentencePage.radioLabelSelector('true').click()
     receivedCustodialSentencePage.continueButton().click()
 
-    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court hearing')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Incomplete',
         },
         {
@@ -316,7 +316,7 @@ context('Repeat Court Case journey', () => {
           status: 'Cannot start yet',
         },
       ])
-    courtCaseTaskListPage.appearanceInformationLink().click()
+    courtCaseTaskListPage.hearingInformationLink().click()
 
     const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
     courtCaseSelectReferencePage.radioLabelSelector('true').click()
@@ -344,13 +344,13 @@ context('Repeat Court Case journey', () => {
     })
     courtCaseCheckAnswersPage.continueButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court hearing')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Completed',
         },
         {
@@ -404,7 +404,7 @@ context('Repeat Court Case journey', () => {
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Completed',
         },
         {
@@ -452,13 +452,13 @@ context('Repeat Court Case journey', () => {
     offenceUpdateOffenceOutcomesPage.radioLabelSelector('true').click()
     offenceUpdateOffenceOutcomesPage.continueButton().click()
 
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court appearance')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court hearing')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
       .should('deep.equal', [
         {
-          name: 'Add appearance information',
+          name: 'Add hearing information',
           status: 'Completed',
         },
         {

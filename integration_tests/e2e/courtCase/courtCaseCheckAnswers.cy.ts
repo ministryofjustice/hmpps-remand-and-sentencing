@@ -145,7 +145,7 @@ context('Court Case Check Answers Page', () => {
     it('after confirm and continue warrant date is no longer editable', () => {
       courtCaseCheckAnswersPage.continueButton().click()
       const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
-      courtCaseTaskListPage.appearanceInformationLink().click()
+      courtCaseTaskListPage.hearingInformationLink().click()
       courtCaseCheckAnswersPage.changeLink('A1234AB', '0', '0', 'warrant-date').should('not.exist')
     })
   })

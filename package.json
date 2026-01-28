@@ -41,7 +41,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.974.0",
+    "@aws-sdk/client-sqs": "^3.975.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.11",
     "@microsoft/applicationinsights-web": "^3.3.11",
     "@ministryofjustice/frontend": "^8.0.0",
@@ -99,7 +99,7 @@
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "axe-core": "^4.11.1",
-    "cheerio": "^1.1.2",
+    "cheerio": "^1.2.0",
     "cypress": "^15.9.0",
     "cypress-axe": "^1.7.0",
     "cypress-multi-reporters": "^2.0.5",

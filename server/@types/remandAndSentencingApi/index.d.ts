@@ -1352,6 +1352,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/immigration-detention/court-appearance/{courtAppearanceUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve immigration record by court appearance uuid
+     * @description This endpoint will retrieve the court appearance and map it to the immigration detention dto
+     */
+    get: operations['getImmigrationDetentionByCourtAppearanceUuid']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/court-case/{prisonerId}/recallable-court-cases': {
     parameters: {
       query?: never
@@ -1834,7 +1854,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 13:39:57.245433485 */
+      /** @example 14:34:41.421099001 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1906,6 +1926,8 @@ export interface components {
       noLongerOfInterestComment?: string
       createdByUsername: string
       createdByPrison: string
+      /** Format: uuid */
+      courtAppearanceUuid?: string
     }
     SaveImmigrationDetentionResponse: {
       /** Format: uuid */
@@ -1966,7 +1988,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:39:57.245433485 */
+      /** @example 14:34:41.421099001 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2818,7 +2840,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:39:57.245433485 */
+      /** @example 14:34:41.421099001 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3099,7 +3121,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 13:39:57.245433485 */
+      /** @example 14:34:41.421099001 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -3119,7 +3141,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:39:57.245433485 */
+      /** @example 14:34:41.421099001 */
       appearanceTime?: string
       courtId: string
     }
@@ -3174,7 +3196,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 13:39:57.245433485 */
+      /** @example 14:34:41.421099001 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -3184,13 +3206,15 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:39:57.245433485 */
+      /** @example 14:34:41.421099001 */
       appearanceTime?: string
       courtId: string
     }
     ImmigrationDetention: {
       /** Format: uuid */
       immigrationDetentionUuid: string
+      /** Format: uuid */
+      courtAppearanceUuid: string
       prisonerId: string
       /** @enum {string} */
       immigrationDetentionRecordType:
@@ -3303,22 +3327,22 @@ export interface components {
       number?: number
       first?: boolean
       last?: boolean
+      pageable?: components['schemas']['PageableObject']
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
       /** Format: int64 */
       offset?: number
+      /** Format: int32 */
+      pageNumber?: number
+      paged?: boolean
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
       unpaged?: boolean
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
     }
     SortObject: {
       empty?: boolean
@@ -3337,10 +3361,10 @@ export interface components {
       number?: number
       first?: boolean
       last?: boolean
+      pageable?: components['schemas']['PageableObject']
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -3373,6 +3397,7 @@ export interface components {
       offenceStartDate?: string
       /** Format: date */
       offenceEndDate?: string
+      terrorRelated?: boolean
       outcome?: components['schemas']['PagedChargeOutcome']
       legacyData?: components['schemas']['ChargeLegacyData']
       sentence?: components['schemas']['PagedSentence']
@@ -3439,7 +3464,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:39:57.245433485 */
+      /** @example 14:34:41.421099001 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -6970,6 +6995,55 @@ export interface operations {
     requestBody?: never
     responses: {
       /** @description Returns all active immigration detention records for person */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description No active records found for this person */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+    }
+  }
+  getImmigrationDetentionByCourtAppearanceUuid: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        courtAppearanceUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Return court appearance as immigration detention dto */
       200: {
         headers: {
           [name: string]: unknown

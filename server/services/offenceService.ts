@@ -2,7 +2,7 @@ import type {
   CorrectAlternativeManyPeriodLengthsForm,
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
-  isOffenceAggravatedByTerroristConnectionForm,
+  IsOffenceAggravatedByTerroristConnectionForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -995,7 +995,7 @@ export default class OffenceService {
     nomsId: string,
     courtCaseReference: string,
     chargeUuid: string,
-    isOffenceAggravatedForm: isOffenceAggravatedByTerroristConnectionForm,
+    isOffenceAggravatedForm: IsOffenceAggravatedByTerroristConnectionForm,
   ): {
     text?: string
     html?: string

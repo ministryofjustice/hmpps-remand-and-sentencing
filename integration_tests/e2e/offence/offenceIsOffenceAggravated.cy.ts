@@ -1,5 +1,6 @@
 import Page from '../../pages/page'
 import OffenceIsOffenceAggravatedPage from '../../pages/offenceIsOffenceAggravatedPage'
+import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 
 context('Is offence Aggravated by Terrorist Connection Page', () => {
   let offenceIsOffenceAggravatedPage: OffenceIsOffenceAggravatedPage
@@ -18,5 +19,13 @@ context('Is offence Aggravated by Terrorist Connection Page', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem Select Yes if the offence is aggravated by a terrorist connection')
+  })
+
+  it('submitting and going back on the page should prepopulate the radio button', () => {
+    offenceIsOffenceAggravatedPage.radioLabelSelector('true').click()
+    offenceIsOffenceAggravatedPage.continueButton().click()
+    Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/is-offence-aggravated')
+    offenceIsOffenceAggravatedPage.radioSelector('true').should('be.checked')
   })
 })

@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import type {
-  isOffenceAggravatedByTerroristConnectionForm,
+  IsOffenceAggravatedByTerroristConnectionForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -879,6 +879,14 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { submitToEditOffence } = req.query
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    let isOffenceAggravatedByTerroristConnectionForm = (req.flash('isOffenceAggravatedByTerroristConnectionForm')[0] ||
+      {}) as IsOffenceAggravatedByTerroristConnectionForm
+    if (Object.keys(isOffenceAggravatedByTerroristConnectionForm).length === 0) {
+      isOffenceAggravatedByTerroristConnectionForm = {
+        isOffenceAggravatedByTerroristConnection: offence.terrorRelated?.toString(),
+      }
+    }
     return res.render('pages/offence/is-offence-aggravated', {
       nomsId,
       courtCaseReference,
@@ -888,6 +896,7 @@ export default class OffenceRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       addOrEditCourtAppearance,
       submitToEditOffence,
+      isOffenceAggravatedByTerroristConnectionForm,
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code`,
     })
   }
@@ -902,18 +911,20 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { submitToEditOffence } = req.query
-    const isOffenceAggravatedForm = trimForm<isOffenceAggravatedByTerroristConnectionForm>(req.body)
+    const isOffenceAggravatedByTerroristConnectionForm = trimForm<IsOffenceAggravatedByTerroristConnectionForm>(
+      req.body,
+    )
     const errors = this.offenceService.setIsOffenceAggravated(
       req.session,
       nomsId,
       courtCaseReference,
       chargeUuid,
-      isOffenceAggravatedForm,
+      isOffenceAggravatedByTerroristConnectionForm,
     )
 
     if (errors.length > 0) {
       req.flash('errors', errors)
-      req.flash('isOffenceAggravatedByTerroristConnectionForm', { ...isOffenceAggravatedForm })
+      req.flash('isOffenceAggravatedByTerroristConnectionForm', { ...isOffenceAggravatedByTerroristConnectionForm })
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated?hasErrors=true${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
       )

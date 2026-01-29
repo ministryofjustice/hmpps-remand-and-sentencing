@@ -175,7 +175,7 @@ declare module 'forms' {
     isSentenceConsecutiveToAnotherCase?: string
   }
 
-  export interface isOffenceAggravatedByTerroristConnectionForm {
+  export interface IsOffenceAggravatedByTerroristConnectionForm {
     isOffenceAggravatedByTerroristConnection?: string
   }
 

@@ -59,6 +59,7 @@ import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
+import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -855,7 +856,7 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       }
     }
-    if (offence.schedules.some(schedule => schedule.code === '19ZA' && schedule.partNumber === 3)) {
+    if (this.showOffenceAggravated(offence)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
@@ -1018,7 +1019,7 @@ export default class OffenceRoutes extends BaseRoutes {
       }
     }
 
-    if (offence.schedules.some(schedule => schedule.code === '19ZA' && schedule.partNumber === 3)) {
+    if (this.showOffenceAggravated(offence)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
@@ -1088,6 +1089,11 @@ export default class OffenceRoutes extends BaseRoutes {
       sessionOffence.legacyData?.offenceDescription,
     )
 
+    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
+    if (this.showOffenceAggravated(offence)) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
+    }
+
     return res.render('pages/offence/confirm-offence', {
       nomsId,
       courtCaseReference,
@@ -1098,7 +1104,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       submitToEditOffence,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code`,
+      backLink,
     })
   }
 
@@ -1969,6 +1975,10 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type`,
     )
+  }
+
+  private showOffenceAggravated(offence: APIOffence) {
+    return offence.schedules?.some(schedule => schedule.code === '19ZA' && schedule.partNumber === 3)
   }
 
   private periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom): string {

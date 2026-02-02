@@ -60,6 +60,7 @@ import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import OffenceJourneyUrls from './data/OffenceJourneyUrls'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -846,28 +847,33 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    if (offence.endDate) {
-      const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-      const offenceEndDate = dayjs(offence.endDate)
-      const enteredStartDate = dayjs(sessionOffence.offenceStartDate)
-      if (offenceEndDate.isBefore(enteredStartDate)) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/inactive-offence?backTo=CODE${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
-        )
-      }
+    if (offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))) {
+      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
+    }
+    const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    if (this.showOffenceInactive(offence, sessionOffence)) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/inactive-offence?backTo=CODE${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+      )
     }
     if (this.showOffenceAggravated(offence)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
-    if (offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))) {
-      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
-    }
 
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
     )
+  }
+
+  private showOffenceInactive(apiOffence: APIOffence, sessionOffence: Offence): boolean {
+    if (apiOffence.endDate) {
+      const apiOffenceEndDate = dayjs(apiOffence.endDate)
+      const enteredStartDate = dayjs(sessionOffence.offenceStartDate)
+      return apiOffenceEndDate.isBefore(enteredStartDate)
+    }
+    return false
   }
 
   getIsOffenceAggravated: RequestHandler = async (req, res): Promise<void> => {
@@ -879,7 +885,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence } = req.query
+    const { submitToEditOffence } = req.query as { submitToEditOffence: string }
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     let isOffenceAggravatedByTerroristConnectionForm = (req.flash('isOffenceAggravatedByTerroristConnectionForm')[0] ||
       {}) as IsOffenceAggravatedByTerroristConnectionForm
@@ -887,6 +893,32 @@ export default class OffenceRoutes extends BaseRoutes {
       isOffenceAggravatedByTerroristConnectionForm = {
         isOffenceAggravatedByTerroristConnection: offence.terrorRelated?.toString(),
       }
+    }
+    const apiOffence = await this.manageOffencesService.getOffenceByCode(
+      offence.offenceCode,
+      req.user.username,
+      offence.legacyData?.offenceDescription,
+    )
+
+    let backLink = OffenceJourneyUrls.offenceCode(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      chargeUuid,
+      submitToEditOffence,
+    )
+    if (this.showOffenceInactive(apiOffence, offence)) {
+      backLink = OffenceJourneyUrls.inactiveOffence(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+        submitToEditOffence,
+      )
     }
     return res.render('pages/offence/is-offence-aggravated', {
       nomsId,
@@ -898,7 +930,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       submitToEditOffence,
       isOffenceAggravatedByTerroristConnectionForm,
-      backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code`,
+      backLink,
     })
   }
 
@@ -1047,12 +1079,34 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, backTo } = req.query
+    const { submitToEditOffence, backTo } = req.query as { submitToEditOffence: string; backTo: string }
     const offence = await this.manageOffencesService.getOffenceByCode(
       this.offenceService.getOffenceCode(req.session, nomsId, courtCaseReference, chargeUuid),
       req.user.username,
       '',
     )
+
+    let continueLink = OffenceJourneyUrls.confirmOffenceCode(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      chargeUuid,
+      submitToEditOffence,
+    )
+
+    if (this.showOffenceAggravated(offence)) {
+      continueLink = OffenceJourneyUrls.isOffenceAggravated(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+        submitToEditOffence,
+      )
+    }
 
     return res.render('pages/offence/inactive-offence', {
       nomsId,
@@ -1065,6 +1119,7 @@ export default class OffenceRoutes extends BaseRoutes {
       submitToEditOffence,
       backTo,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      continueLink,
       backLink:
         backTo === 'NAME'
           ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-name${submitToEditOffence ? '?submitToEditOffence=true' : ''}`

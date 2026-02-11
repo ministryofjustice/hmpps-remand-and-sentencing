@@ -3,6 +3,7 @@
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Add a court case Next Court Date" %}
@@ -68,6 +69,13 @@
                 errorMessage: errors | findError('nextAppearanceTime'),
                 value: nextAppearanceTime
             }) }}
+
+
+{{ govukInsetText({
+          text: appearanceAttendingMediumInsetText,
+          classes: "govuk-!-margin-top-2",
+          attributes: { "data-qa": "nextAppearanceDateInset" }
+        }) }}
 
         {% endcall %}
 

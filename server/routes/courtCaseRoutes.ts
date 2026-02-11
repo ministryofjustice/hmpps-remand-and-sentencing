@@ -1868,6 +1868,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
       currentlySetTypeDescription = currentlySetType.description
     }
+    console.log(appearanceTypes)
     return res.render('pages/courtAppearance/next-appearance-type', {
       nomsId,
       nextAppearanceTypeForm,
@@ -1967,6 +1968,15 @@ export default class CourtCaseRoutes extends BaseRoutes {
         : ''
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-type`
+    const nextAppearanceTypeUuid = this.courtAppearanceService.getNextAppearanceTypeUuid(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const appearanceAttendingMediumInsetText =
+      nextAppearanceTypeUuid === '63e8fce0-033c-46ad-9edf-391b802d547a'
+        ? 'You will still need to book transport for this person, using the Book a secure move service.'
+        : 'You will still need to book a video link for this person, using the Book a video link service.'
 
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
@@ -2007,6 +2017,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       submitToCheckAnswers,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      appearanceAttendingMediumInsetText,
       errors: req.flash('errors') || [],
       backLink,
     })

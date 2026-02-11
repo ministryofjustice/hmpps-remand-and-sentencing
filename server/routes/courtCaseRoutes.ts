@@ -1868,7 +1868,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
       currentlySetTypeDescription = currentlySetType.description
     }
-    console.log(appearanceTypes)
     return res.render('pages/courtAppearance/next-appearance-type', {
       nomsId,
       nextAppearanceTypeForm,

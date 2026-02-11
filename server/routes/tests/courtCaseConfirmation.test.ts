@@ -3,7 +3,6 @@ import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices, user } from '../testutils/appSetup'
 import { PageCourtCaseAppearance } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import { HmppsUser } from '../../interfaces/hmppsUser'
 
 let app: Express
 

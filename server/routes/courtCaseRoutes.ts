@@ -2385,17 +2385,25 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getConfirmationPage: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, appearanceReference } = req.params as { nomsId: string; appearanceReference: string }
-    const courtAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
-      appearanceReference,
-      req.user.username,
-    )
+
     const prisonerUser = res.locals.user as PrisonUser
-    const showBookASecureMoveLink =
-      prisonerUser.hasBookASecureMoveAccess &&
-      courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid === '63e8fce0-033c-46ad-9edf-391b802d547a' // court appearance type
-    const showBookAVideoLink =
-      prisonerUser.hasBookAVideoLinkAccess &&
-      courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid === '1da09b6e-55cb-4838-a157-ee6944f2094c' // video link type
+    let showBookASecureMoveLink = false
+    let showBookAVideoLink = false
+    if (prisonerUser.hasBookASecureMoveAccess || prisonerUser.hasBookAVideoLinkAccess) {
+      const courtAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+        appearanceReference,
+        req.user.username,
+      )
+      showBookASecureMoveLink =
+        prisonerUser.hasBookASecureMoveAccess &&
+        courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid ===
+          '63e8fce0-033c-46ad-9edf-391b802d547a' // court appearance type
+      showBookAVideoLink =
+        prisonerUser.hasBookAVideoLinkAccess &&
+        courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid ===
+          '1da09b6e-55cb-4838-a157-ee6944f2094c' // video link type
+    }
+
     return res.render('pages/courtAppearance/confirmation', {
       nomsId,
       showBookASecureMoveLink,

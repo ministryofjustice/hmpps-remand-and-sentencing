@@ -4,7 +4,7 @@
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Same court name page" %}
-{% block content %}
+{% block hearingContent %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-select-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
@@ -49,5 +49,4 @@
 
         </div>
     </div>
-    {{ super() }}
 {% endblock %}

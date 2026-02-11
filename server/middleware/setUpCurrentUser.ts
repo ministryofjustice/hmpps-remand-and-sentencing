@@ -36,6 +36,8 @@ export default function setUpCurrentUser(userService: UserService) {
         res.locals.user.staffId = parseInt(userId, 10) || undefined
         res.locals.user.hasInactiveBookingsAccess = userRoles.includes('INACTIVE_BOOKINGS')
         res.locals.user.hasRecallsAccess = userRoles.includes('RECALL_MAINTAINER')
+        res.locals.user.hasBookASecureMoveAccess = userRoles.includes('PECS_PRISON')
+        res.locals.user.hasBookAVideoLinkAccess = userRoles.includes('VIDEO_LINK_COURT_USER')
         await getUserCaseLoads(res, userService)
       }
 

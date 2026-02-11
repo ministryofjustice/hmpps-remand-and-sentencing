@@ -61,6 +61,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.appInsightsApplicationName = applicationInfo.applicationName
   app.locals.buildNumber = config.buildNumber
   app.locals.adjustmentServiceUrl = config.adjustmentService.ui_url
+  app.locals.bookSecureMoveServiceUrl = config.bookASecureMoveService.ui_url
+  app.locals.bookVideoLinkServiceUrl = config.bookAVideoLinkService.ui_url
 
   if (config.environmentName === 'LOCAL') {
     app.locals.environment = 'local'

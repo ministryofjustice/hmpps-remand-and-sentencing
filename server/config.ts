@@ -166,6 +166,12 @@ export default {
   recordRecallsService: {
     ui_url: get('RECORD_RECALLS_UI_URL', 'http://127.0.0.1:3000/recalls', requiredInProduction),
   },
+  bookASecureMoveService: {
+    ui_url: get('BOOK_SECURE_MOVE_UI_URL', 'http://127.0.0.1:3000/bsm', requiredInProduction),
+  },
+  bookAVideoLinkService: {
+    ui_url: get('BOOK_VIDEO_LINK_UI_URL', 'http://127.0.0.1:3000/bvl', requiredInProduction),
+  },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   sqs: {
     audit: auditConfig(),

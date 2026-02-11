@@ -25,6 +25,16 @@
             <div class="govuk-!-margin-top-6">
                 <h2 class="govuk-heading-l">What you can do next</h2>
                 <div class="govuk-body govuk-!-margin-top-6">
+                    {% if showBookASecureMoveLink %}
+                        <a class="govuk-link govuk-link--no-visited-state" href="{{ bookSecureMoveServiceUrl }}" data-qa="bookASecureMoveLink">
+                                Book a secure move
+                        </a>
+                    {% endif %}
+                    {% if showBookAVideoLink %}
+                        <a class="govuk-link govuk-link--no-visited-state" href="{{ bookVideoLinkServiceUrl }}" data-qa="bookAVideoLinkLink">
+                                Book a video link
+                        </a>
+                    {% endif %}
                     <span>You can go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
                     <ul class="govuk-list govuk-!-margin-top-2">
                         <li>

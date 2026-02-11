@@ -30,6 +30,8 @@ export interface PrisonUser extends BaseUser {
   caseLoads: CaseLoad[]
   hasInactiveBookingsAccess: boolean
   hasRecallsAccess: boolean
+  hasBookASecureMoveAccess: boolean
+  hasBookAVideoLinkAccess: boolean
 }
 
 /**

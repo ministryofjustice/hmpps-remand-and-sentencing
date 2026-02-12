@@ -6,4 +6,6 @@ export default class CourtCaseNextAppearanceDatePage extends Page {
   }
 
   nextAppearanceTimeInput = (): PageElement => cy.get('#nextAppearanceTime')
+
+  nextAppearanceDateInset = (): PageElement => cy.get('[data-qa="nextAppearanceDateInset"]')
 }

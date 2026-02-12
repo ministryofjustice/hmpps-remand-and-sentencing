@@ -62,6 +62,7 @@ import SentencingTaskListModel from './data/SentencingTaskListModel'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import NonSentencingTaskListModel from './data/NonSentencingTaskListModel'
 import AuditService, { Page } from '../services/auditService'
+import { COURT_APPEARANCE_TYPE_UUID, VIDEO_LINK_APPEARANCE_TYPE_UUID } from '../resources/courtAppearanceTypes'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -1967,6 +1968,15 @@ export default class CourtCaseRoutes extends BaseRoutes {
         : ''
     }
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-type`
+    const nextAppearanceTypeUuid = this.courtAppearanceService.getNextAppearanceTypeUuid(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const appearanceAttendingMediumInsetText =
+      nextAppearanceTypeUuid === COURT_APPEARANCE_TYPE_UUID
+        ? 'You will still need to book transport for this person, using the Book a secure move service.'
+        : 'You will still need to book a video link for this person, using the Book a video link service.'
 
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
@@ -2007,6 +2017,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       submitToCheckAnswers,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      appearanceAttendingMediumInsetText,
       errors: req.flash('errors') || [],
       backLink,
     })
@@ -2396,12 +2407,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
       showBookASecureMoveLink =
         prisonerUser.hasBookASecureMoveAccess &&
-        courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid ===
-          '63e8fce0-033c-46ad-9edf-391b802d547a' // court appearance type
+        courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid === COURT_APPEARANCE_TYPE_UUID // court appearance type
       showBookAVideoLink =
         prisonerUser.hasBookAVideoLinkAccess &&
-        courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid ===
-          '1da09b6e-55cb-4838-a157-ee6944f2094c' // video link type
+        courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid === VIDEO_LINK_APPEARANCE_TYPE_UUID // video link type
     }
 
     return res.render('pages/courtAppearance/confirmation', {

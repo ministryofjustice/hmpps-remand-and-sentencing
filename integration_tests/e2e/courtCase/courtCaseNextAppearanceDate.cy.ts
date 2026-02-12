@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearanceDatePage'
 import Page from '../../pages/page'
+import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 
 context('Next appearance date page', () => {
   let courtCaseNextAppearanceDatePage: CourtCaseNextAppearanceDatePage
@@ -75,4 +76,29 @@ context('Next appearance date page', () => {
       .then(text => text.trim())
       .should('equal', 'Add next court appearance')
   })
+
+  it('shows inset text for secure move', () => {
+    verifyInsetTextForOption(
+      '63e8fce0-033c-46ad-9edf-391b802d547a',
+      'You will still need to book transport for this person, using the Book a secure move service.',
+    )
+  })
+
+  it('shows inset text for video link', () => {
+    verifyInsetTextForOption(
+      '1da09b6e-55cb-4838-a157-ee6944f2094c',
+      'You will still need to book a video link for this person, using the Book a video link service.',
+    )
+  })
 })
+
+function verifyInsetTextForOption(optionId, expectedText) {
+  cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-type')
+
+  const page = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
+  page.radioLabelSelector(optionId).click()
+  page.continueButton().click()
+
+  const nextPage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
+  nextPage.nextAppearanceDateInset().trimTextContent().should('equal', expectedText)
+}

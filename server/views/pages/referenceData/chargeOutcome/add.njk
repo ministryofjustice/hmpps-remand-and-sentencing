@@ -1,0 +1,88 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set typeItems = [] %}
+
+{% for type in types %}
+    {% set typeItems = typeItems.concat({
+        value: type,
+        text: type
+    })%}
+{% endfor %}
+
+{% set dispositionCodeItems = [] %}
+
+{% for dispositionCode in dispositionCodes %}
+    {% set dispositionCodeItems = dispositionCodeItems.concat({
+        value: dispositionCode,
+        text: dispositionCode
+    })%}
+{% endfor %}
+
+{% block content %}
+<div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
+
+            <h1 class="govuk-heading-l">Add Charge Outcome</h1>
+            <form method="post">
+                {{ govukInput({
+                    label: {
+                        text: "UUID"
+                    },
+                    id: "outcomeUuid",
+                    name: "outcomeUuid"
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Name"
+                    },
+                    id: "outcomeName",
+                    name: "outcomeName"
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "NOMIS Code"
+                    },
+                    id: "nomisCode",
+                    name: "nomisCode"
+                }) }}
+
+                {{ govukSelect({
+                    id: "outcomeType",
+                    name: "outcomeType",
+                    label: {
+                        text: "Outcome type"
+                    },
+                    items: typeItems
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Display order"
+                    },
+                    id: "displayOrder",
+                    name: "displayOrder"
+                }) }}
+
+                {{ govukSelect({
+                    id: "dispositionCode",
+                    name: "dispositionCode",
+                    label: {
+                        text: "Disposition Code"
+                    },
+                    items: dispositionCodeItems
+                }) }}
+
+                {{ govukButton({
+                    text: "Save and continue"
+                }) }}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

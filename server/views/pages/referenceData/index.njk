@@ -1,0 +1,24 @@
+{% extends "../../partials/layout.njk" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
+            <h1 class="govuk-heading-l">Reference data admin</h1>
+            <p class="govuk-body">
+                This page helps you find and review the reference data held in Remand and Sentencing. The currently supported reference data is:
+                <ul class="govuk-list">
+                    <li>
+                        <a class="govuk-link govuk-link--no-visited-state" href="/admin/charge-outcomes">Charge outcomes</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-link--no-visited-state" href="#">Appearance Outcomes</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-link--no-visited-state" href="#">Sentence Types</a>
+                    </li>
+                </ul>
+            </p>
+        </div>
+    </div>
+
+{% endblock %}

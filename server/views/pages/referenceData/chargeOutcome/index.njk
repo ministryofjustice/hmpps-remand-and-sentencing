@@ -1,0 +1,117 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set tableRows = [] %}
+
+{% for chargeOutcome in chargeOutcomes %}
+    {% set editHtml %}
+        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/charge-outcomes/{{ chargeOutcome.outcomeUuid }}">Edit</a>
+    {% endset %}
+    {% set tableRows = tableRows.concat([
+        [ {
+            text: chargeOutcome.outcomeUuid
+        },
+        {
+            text: chargeOutcome.outcomeName
+        },
+        {
+            text: chargeOutcome.nomisCode
+        },
+        {
+            text: chargeOutcome.outcomeType
+        },
+        {
+            text: chargeOutcome.displayOrder
+        },
+        {
+            text: chargeOutcome.dispositionCode
+        }, {
+            html: editHtml
+        }]]) %}
+{% endfor %}
+
+{% block content %}
+<div class="govuk-grid-row">
+        <div class="govuk-grid-column-full govuk-!-margin-top-8">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-three-quarters">
+                    <h1 class="govuk-heading-l">Charge outcome admin</h1>
+                    <p class="govuk-body">
+                        This page helps you find and review the charge outcome reference data held in Remand and Sentencing.
+                    </p>
+                </div>
+                <div class="govuk-grid-column-one-quarter">
+                    {{ govukButton({
+                        text: "Add a charge outcome",
+                        href: '/admin/charge-outcomes/add',
+                        classes: 'govuk-link--no-visited-state'
+                    }) }}
+                    {# <div class="actions-list">
+                        <ul class="govuk-list actions-list-list">
+                            <span class="govuk-heading-m actions-list-header">Actions</span>
+                            <li><a class="govuk-link--no-visited-state" href="/admin/charge-outcomes/add">Add a charge outcome</a></li>
+                        </ul>
+                    </div> #}
+
+                    
+                </div>
+            </div>
+            
+            {{
+                govukTable({
+                    caption: "Charge outcomes",
+                    attributes: {
+                        "data-module": "moj-sortable-table"
+                    },
+                    captionClasses: "govuk-table__caption--m",
+                    classes: "govuk-table--small-text-until-tablet",
+                    head: [
+                        {
+                        text: "UUID",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Name",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "NOMIS Code",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Type",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Display Order",
+                        attributes: {
+                            "aria-sort": "none"
+                        },
+                        format: "numeric"
+                        },
+                        {
+                        text: "Disposition Code",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Edit"
+                        }
+                    ],
+                    rows: tableRows
+                })
+            }}
+        </div>
+    </div>
+
+{% endblock %}

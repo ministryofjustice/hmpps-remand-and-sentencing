@@ -1,0 +1,99 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set tableRows = [] %}
+
+{% for chargeOutcome in chargeOutcomes %}
+    {% set tableRows = tableRows.concat([
+        [ {
+            text: chargeOutcome.outcomeUuid
+        },
+        {
+            text: chargeOutcome.outcomeName
+        },
+        {
+            text: chargeOutcome.nomisCode
+        },
+        {
+            text: chargeOutcome.outcomeType
+        },
+        {
+            text: chargeOutcome.displayOrder
+        },
+        {
+            text: chargeOutcome.dispositionCode
+        },
+        {
+            text: chargeOutcome.status
+        }]]) %}
+{% endfor %}
+
+{% block content %}
+<div class="govuk-grid-row">
+        <div class="govuk-grid-column-full govuk-!-margin-top-8">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-three-quarters">
+                    <h1 class="govuk-heading-l">Charge outcome admin</h1>
+                    <p class="govuk-body">
+                        This page helps you find and review the charge outcome reference data held in Remand and Sentencing.
+                    </p>
+                </div>
+            </div>
+            
+            {{
+                govukTable({
+                    caption: "Charge outcomes",
+                    attributes: {
+                        "data-module": "moj-sortable-table"
+                    },
+                    captionClasses: "govuk-table__caption--m",
+                    classes: "govuk-table--small-text-until-tablet",
+                    head: [
+                        {
+                        text: "UUID",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Name",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "NOMIS Code",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Type",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Display Order",
+                        attributes: {
+                            "aria-sort": "none"
+                        },
+                        format: "numeric"
+                        },
+                        {
+                        text: "Disposition Code",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Status"
+                        }
+                    ],
+                    rows: tableRows
+                })
+            }}
+        </div>
+    </div>
+
+{% endblock %}

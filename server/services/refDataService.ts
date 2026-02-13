@@ -16,6 +16,10 @@ export default class RefDataService {
     return getOrSetRefDataInCache(cacheKey, () => this.remandAndSentencingApiClient.getAllChargeOutcomes(username))
   }
 
+  async getAllUncachedChargeOutcomes(username: string): Promise<OffenceOutcome[]> {
+    return this.remandAndSentencingApiClient.getAllChargeOutcomes(username, 'ACTIVE,INACTIVE')
+  }
+
   async getChargeOutcomeMap(outcomeIds: string[], username: string): Promise<{ [key: string]: OffenceOutcome }> {
     const outcomeIdsToSearch = outcomeIds.filter(outcomeId => outcomeId)
     if (!outcomeIdsToSearch.length) return {}

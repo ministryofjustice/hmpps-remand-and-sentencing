@@ -10,11 +10,15 @@ import SentencingRoutes from './sentencingRoutes'
 import RemandRoutes from './remandRoutes'
 import UnknownRecallSentenceRoutes from './unknownRecallSentenceRoutes'
 import setCurrentPageUrl from '../middleware/currentPageUrl'
+import referenceDataAdminRoutes from './referenceDataAdminRoutes'
+import chargeOutcomeDataAdminRoutes from './chargeOutcomeDataAdminRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
   router.use(setCurrentPageUrl)
   router.use('/sentence-types', sentenceTypeRoutes(services))
+  router.use('/admin/reference-data', referenceDataAdminRoutes())
+  router.use('/admin/charge-outcomes', chargeOutcomeDataAdminRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
     services.offenceService,

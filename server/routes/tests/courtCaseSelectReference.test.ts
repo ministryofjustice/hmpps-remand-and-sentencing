@@ -43,6 +43,7 @@ describe('GET Select reference', () => {
             dispositionCode: 'F',
             nomisCode: '15',
             outcomeType: 'NON_SENTENCING',
+            status: 'ACTIVE',
           },
         },
       ],

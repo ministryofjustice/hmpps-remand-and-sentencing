@@ -8,5 +8,8 @@ export default function chargeOutcomeDataAdminRoutes(services: Services): Router
   router.use(authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   const routes = new ChargeOutcomeAdminRoutesHandler(services.refDataService)
   router.get('/', routes.index)
+
+  router.get('/add', routes.add)
+  router.post('/add', routes.submitAdd)
   return router
 }

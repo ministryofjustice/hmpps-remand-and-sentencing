@@ -43,6 +43,7 @@ describe('GET Select court name ', () => {
             dispositionCode: 'F',
             nomisCode: '15',
             outcomeType: 'NON_SENTENCING',
+            status: 'ACTIVE',
           },
         },
       ],

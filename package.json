@@ -41,7 +41,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.987.0",
+    "@aws-sdk/client-sqs": "^3.988.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.11",
     "@microsoft/applicationinsights-web": "^3.3.11",
     "@ministryofjustice/frontend": "^8.0.0",
@@ -114,7 +114,7 @@
     "jsonwebtoken": "^9.0.3",
     "lint-staged": "^16.2.7",
     "nock": "^14.0.11",
-    "openapi-typescript": "^7.12.0",
+    "openapi-typescript": "^7.13.0",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"

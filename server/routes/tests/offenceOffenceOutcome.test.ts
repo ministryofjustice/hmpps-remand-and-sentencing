@@ -42,6 +42,7 @@ describe('GET Offence outcome', () => {
         nomisCode: '10',
         outcomeName: 'Offence outcome',
         dispositionCode: 'F',
+        status: 'ACTIVE',
       },
     ])
     defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue({

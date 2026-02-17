@@ -56,6 +56,7 @@ describe('GET /sentencing/hearing-details', () => {
         outcomeType: 'CONVICTION',
         displayOrder: 1,
         dispositionCode: 'CONVICTED',
+        status: 'ACTIVE',
       },
     })
     defaultServices.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance.mockResolvedValue({

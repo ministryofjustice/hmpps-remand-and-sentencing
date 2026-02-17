@@ -808,6 +808,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/charge-outcome': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create charge outcome
+     * @description This endpoint will create a new charge outcome and migrate any charge data over that needs to be mapped to the newly created charge outcome
+     */
+    post: operations['createChargeOutcome']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sentence/{sentenceUuid}': {
     parameters: {
       query?: never
@@ -1854,7 +1874,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 14:34:41.421099001 */
+      /** @example 13:50:44.42609 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -1988,7 +2008,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:34:41.421099001 */
+      /** @example 13:50:44.42609 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2494,6 +2514,43 @@ export interface components {
     UpdateSentenceTypeResponse: {
       updatedSentenceUuids: string[]
     }
+    CreateChargeOutcome: {
+      /** Format: uuid */
+      outcomeUuid?: string
+      outcomeName: string
+      nomisCode: string
+      outcomeType: string
+      /** Format: int32 */
+      displayOrder: number
+      dispositionCode: string
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE'
+    }
+    FieldError: {
+      field: string
+      message?: string
+    }
+    FieldErrorErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
+      fieldErrors?: components['schemas']['FieldError'][]
+    }
+    ChargeOutcome: {
+      /** Format: uuid */
+      outcomeUuid: string
+      outcomeName: string
+      nomisCode: string
+      outcomeType: string
+      /** Format: int32 */
+      displayOrder: number
+      dispositionCode: string
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE'
+    }
     FineAmount: {
       fineAmount: number
     }
@@ -2556,16 +2613,6 @@ export interface components {
       hintText?: string
       /** Format: int32 */
       displayOrder: number
-    }
-    ChargeOutcome: {
-      /** Format: uuid */
-      outcomeUuid: string
-      outcomeName: string
-      nomisCode: string
-      outcomeType: string
-      /** Format: int32 */
-      displayOrder: number
-      dispositionCode: string
     }
     MergedFromCase: {
       caseReference?: string
@@ -2840,7 +2887,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:34:41.421099001 */
+      /** @example 13:50:44.42609 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3121,7 +3168,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 14:34:41.421099001 */
+      /** @example 13:50:44.42609 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -3135,13 +3182,15 @@ export interface components {
       prisonerId: string
       active: boolean
       merged: boolean
+      /** @enum {string} */
+      status: 'ACTIVE' | 'DUPLICATE' | 'DELETED' | 'MERGED' | 'INACTIVE'
       courtCaseLegacyData?: components['schemas']['CourtCaseLegacyData']
       appearances: components['schemas']['ReconciliationCourtAppearance'][]
     }
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:34:41.421099001 */
+      /** @example 13:50:44.42609 */
       appearanceTime?: string
       courtId: string
     }
@@ -3196,7 +3245,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 14:34:41.421099001 */
+      /** @example 13:50:44.42609 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -3206,7 +3255,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:34:41.421099001 */
+      /** @example 13:50:44.42609 */
       appearanceTime?: string
       courtId: string
     }
@@ -3320,51 +3369,51 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      first?: boolean
+      last?: boolean
+      /** Format: int32 */
+      numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
+      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       size?: number
       content?: components['schemas']['CourtCase'][]
       /** Format: int32 */
       number?: number
-      first?: boolean
-      last?: boolean
-      pageable?: components['schemas']['PageableObject']
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
       empty?: boolean
     }
     PageableObject: {
-      /** Format: int64 */
-      offset?: number
+      unpaged?: boolean
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      paged?: boolean
-      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
-      unpaged?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int64 */
+      offset?: number
     }
     SortObject: {
-      empty?: boolean
-      sorted?: boolean
       unsorted?: boolean
+      sorted?: boolean
+      empty?: boolean
     }
     PagePagedCourtCase: {
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      first?: boolean
+      last?: boolean
+      /** Format: int32 */
+      numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
+      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       size?: number
       content?: components['schemas']['PagedCourtCase'][]
       /** Format: int32 */
       number?: number
-      first?: boolean
-      last?: boolean
-      pageable?: components['schemas']['PageableObject']
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
       empty?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -3464,7 +3513,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:34:41.421099001 */
+      /** @example 13:50:44.42609 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -5907,6 +5956,57 @@ export interface operations {
       }
     }
   }
+  createChargeOutcome: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateChargeOutcome']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome']
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FieldErrorErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeOutcome']
+        }
+      }
+    }
+  }
   getSentence: {
     parameters: {
       query?: never
@@ -7691,13 +7791,6 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
       /** @description No Content */
       204: {
         headers: {

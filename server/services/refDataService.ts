@@ -2,6 +2,7 @@ import { Dayjs } from 'dayjs'
 import {
   AppearanceOutcome,
   AppearanceType,
+  CreateChargeOutcome,
   OffenceOutcome,
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -18,6 +19,10 @@ export default class RefDataService {
 
   async getAllUncachedChargeOutcomes(username: string): Promise<OffenceOutcome[]> {
     return this.remandAndSentencingApiClient.getAllChargeOutcomes(username, 'ACTIVE,INACTIVE')
+  }
+
+  async createChargeOutcome(createChargeOutcome: CreateChargeOutcome, username: string): Promise<OffenceOutcome> {
+    return this.remandAndSentencingApiClient.createChargeOutcome(createChargeOutcome, username)
   }
 
   async getChargeOutcomeMap(outcomeIds: string[], username: string): Promise<{ [key: string]: OffenceOutcome }> {

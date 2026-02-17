@@ -121,3 +121,7 @@ export type CourtCaseValidationDate = components['schemas']['CourtCaseValidation
 export type SentenceDetails = components['schemas']['SentenceDetails']
 
 export type CreateChargeResponse = components['schemas']['CreateChargeResponse']
+
+export type CreateChargeOutcome = components['schemas']['CreateChargeOutcome']
+
+export type FieldErrorErrorResponse = components['schemas']['FieldErrorErrorResponse']

@@ -518,4 +518,18 @@ export default class RemandAndSentencingApiClient extends RestClient {
       asSystem(username),
     )
   }
+
+  async updateChargeOutcome(
+    chargeOutcomeUuid: string,
+    updateChargeOutcome: CreateChargeOutcome,
+    username: string,
+  ): Promise<OffenceOutcome> {
+    return this.put(
+      {
+        path: `/charge-outcome/${chargeOutcomeUuid}`,
+        data: updateChargeOutcome,
+      },
+      asSystem(username),
+    )
+  }
 }

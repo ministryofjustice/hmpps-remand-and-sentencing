@@ -1,0 +1,135 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+
+{% set typeItems = [] %}
+
+{% for type in types %}
+    {% set typeItems = typeItems.concat({
+        value: type,
+        text: type,
+        selected: type === updateChargeOutcome.outcomeType
+    })%}
+{% endfor %}
+
+{% set dispositionCodeItems = [] %}
+
+{% for dispositionCode in dispositionCodes %}
+    {% set dispositionCodeItems = dispositionCodeItems.concat({
+        value: dispositionCode,
+        text: dispositionCode,
+        selected: dispositionCode === updateChargeOutcome.dispositionCode
+    })%}
+{% endfor %}
+
+{% set statusItems = [] %}
+
+{% for status in statuses %}
+    {% set statusItems = statusItems.concat({
+        value: status,
+        text: status,
+        selected: status === updateChargeOutcome.status
+    })%}
+{% endfor %}
+
+{% block content %}
+{% if errors | length %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errors
+        }) }}
+    </div>
+{% endif %}
+<div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
+
+            <h1 class="govuk-heading-l">Edit Charge Outcome</h1>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {{ govukInput({
+                    label: {
+                        text: "UUID"
+                    },
+                    id: "outcomeUuid",
+                    name: "outcomeUuid",
+                    value: updateChargeOutcome.outcomeUuid,
+                    errorMessage: errors | findError('outcomeUuid')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Name"
+                    },
+                    id: "outcomeName",
+                    name: "outcomeName",
+                    value: updateChargeOutcome.outcomeName,
+                    errorMessage: errors | findError('outcomeName')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "NOMIS Code"
+                    },
+                    id: "nomisCode",
+                    name: "nomisCode",
+                    value: updateChargeOutcome.nomisCode,
+                    errorMessage: errors | findError('nomisCode')
+                }) }}
+
+                {{ govukSelect({
+                    id: "outcomeType",
+                    name: "outcomeType",
+                    label: {
+                        text: "Outcome type"
+                    },
+                    items: typeItems,
+                    errorMessage: errors | findError('outcomeType')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Display order"
+                    },
+                    id: "displayOrder",
+                    name: "displayOrder",
+                    value: updateChargeOutcome.displayOrder,
+                    inputmode: "numeric",
+                    errorMessage: errors | findError('displayOrder')
+                }) }}
+
+                {{ govukSelect({
+                    id: "dispositionCode",
+                    name: "dispositionCode",
+                    label: {
+                        text: "Disposition Code"
+                    },
+                    items: dispositionCodeItems,
+                    errorMessage: errors | findError('dispositionCode')
+                }) }}
+
+                {{ govukSelect({
+                    id: "status",
+                    name: "status",
+                    label: {
+                        text: "Status"
+                    },
+                    items: statusItems,
+                    errorMessage: errors | findError('status')
+                }) }}
+
+                {{ govukButton({
+                    text: "Save and continue",
+                    attributes: {
+                        'data-qa': 'continue-button'
+                    }
+                }) }}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

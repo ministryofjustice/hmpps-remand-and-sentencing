@@ -57,4 +57,49 @@ export default class ChargeOutcomeAdminRoutesHandler {
       throw e
     }
   }
+
+  edit = async (req: Request, res: Response) => {
+    const chargeOutcomes = await this.refDataService.getAllUncachedChargeOutcomes(req.user.username)
+    const { chargeOutcomeUuid } = req.params as { chargeOutcomeUuid: string }
+    const existingChargeOutcome = chargeOutcomes.find(chargeOutcome => chargeOutcome.outcomeUuid === chargeOutcomeUuid)
+    const types = new Set(chargeOutcomes.map(outcome => outcome.outcomeType))
+    const dispositionCodes = new Set(chargeOutcomes.map(outcome => outcome.dispositionCode))
+    const statuses: CreateChargeOutcome['status'][] = ['ACTIVE', 'INACTIVE']
+    const updateChargeOutcome = (req.flash('updateChargeOutcome')[0] || {
+      ...existingChargeOutcome,
+    }) as CreateChargeOutcome
+    return res.render('pages/referenceData/chargeOutcome/edit', {
+      types,
+      dispositionCodes,
+      statuses,
+      updateChargeOutcome,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  submitEdit = async (req: Request, res: Response) => {
+    const { chargeOutcomeUuid } = req.params as { chargeOutcomeUuid: string }
+    const updateChargeOutcome = trimForm<CreateChargeOutcome>(req.body)
+    try {
+      await this.refDataService.updateChargeOutcome(chargeOutcomeUuid, updateChargeOutcome, req.user.username)
+      req.flash('successMessage', 'charge outcome successfully updated')
+      return res.redirect('/admin/charge-outcomes')
+    } catch (e) {
+      if (e instanceof SanitisedError) {
+        const sanitisedError = e as SanitisedError
+        if (sanitisedError.responseStatus === 400) {
+          const fieldErrors = e.data as FieldErrorErrorResponse
+          req.flash(
+            'errors',
+            fieldErrors.fieldErrors?.map(fieldError => {
+              return { href: `#${fieldError.field}`, text: fieldError.message ?? '' }
+            }) ?? [],
+          )
+          req.flash('updateChargeOutcome', { ...updateChargeOutcome })
+          return res.redirect(`/admin/charge-outcomes/edit/${chargeOutcomeUuid}`)
+        }
+      }
+      throw e
+    }
+  }
 }

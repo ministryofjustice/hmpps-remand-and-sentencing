@@ -9,5 +9,8 @@ export default function chargeOutcomeDataAdminRoutes(services: Services): Router
 
   router.get('/add', routes.add)
   router.post('/add', routes.submitAdd)
+
+  router.get('/edit/:chargeOutcomeUuid', routes.edit)
+  router.post('/edit/:chargeOutcomeUuid', routes.submitEdit)
   return router
 }

@@ -6,6 +6,9 @@
 {% set tableRows = [] %}
 
 {% for chargeOutcome in chargeOutcomes %}
+    {% set editHtml %}
+        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/charge-outcomes/{{ chargeOutcome.outcomeUuid }}">Edit</a>
+    {% endset %}
     {% set tableRows = tableRows.concat([
         [ {
             text: chargeOutcome.outcomeUuid
@@ -27,6 +30,8 @@
         },
         {
             text: chargeOutcome.status
+        }, {
+            html: editHtml
         }]]) %}
 {% endfor %}
 
@@ -107,6 +112,9 @@
                         },
                         {
                         text: "Status"
+                        },
+                        {
+                        text: "Edit"
                         }
                     ],
                     rows: tableRows

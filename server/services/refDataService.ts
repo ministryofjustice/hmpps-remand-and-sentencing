@@ -25,6 +25,14 @@ export default class RefDataService {
     return this.remandAndSentencingApiClient.createChargeOutcome(createChargeOutcome, username)
   }
 
+  async updateChargeOutcome(
+    chargeOutcomeUuid: string,
+    updateChargeOutcome: CreateChargeOutcome,
+    username: string,
+  ): Promise<OffenceOutcome> {
+    return this.remandAndSentencingApiClient.updateChargeOutcome(chargeOutcomeUuid, updateChargeOutcome, username)
+  }
+
   async getChargeOutcomeMap(outcomeIds: string[], username: string): Promise<{ [key: string]: OffenceOutcome }> {
     const outcomeIdsToSearch = outcomeIds.filter(outcomeId => outcomeId)
     if (!outcomeIdsToSearch.length) return {}

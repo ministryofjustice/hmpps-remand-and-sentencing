@@ -134,15 +134,4 @@ describe('GET Start', () => {
     const newJourneyLinks = $('a[href*="new-journey"]')
     expect(newJourneyLinks.length).toEqual(2)
   })
-
-  it('should not show journey links or action menu when in view only', async () => {
-    setupCourtCase()
-    config.featureToggles.viewOnlyEnabled = true
-    const res = await request(app).get('/person/A1234AB').expect('Content-Type', /html/)
-    const $ = cheerio.load(res.text)
-    const actionsList = $('.actions-list')
-    expect(actionsList.length).toEqual(0)
-    const newJourneyLinks = $('a[href*="new-journey"]')
-    expect(newJourneyLinks.length).toEqual(0)
-  })
 })

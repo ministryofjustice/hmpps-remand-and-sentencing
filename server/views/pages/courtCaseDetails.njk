@@ -84,7 +84,7 @@
 
         <div class="govuk-grid-column-one-quarter">
             <ul class="offence-card-actions-list" data-qa="hearingActionList-{{hearing.appearanceUuid}}">
-                {% if not hearing.hasAnyRecalls and not viewOnlyEnabled %}
+                {% if not hearing.hasAnyRecalls%}
                     <li class="offence-card-action-link">
                         <a class="govuk-link--no-visited-state"
                            href="{% if hearing.warrantType == 'NON_SENTENCING' %}

@@ -402,21 +402,3 @@ describe('GET tests for NOMIS tag', () => {
     expect(nomisTag.length).toBe(0)
   })
 })
-
-describe('view only feature enabled', () => {
-  beforeEach(() => {
-    setupDefaultMocks()
-  })
-
-  it('should not display edit or delete links', async () => {
-    const courtCase = createCourtCase('DPS')
-    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
-    config.featureToggles.viewOnlyEnabled = true
-    const res = await request(app).get('/person/A1234AB/edit-court-case/1/details').expect('Content-Type', /html/)
-    const $ = cheerio.load(res.text)
-    const editLink = $('a[href*="load-hearing-details"]')
-    expect(editLink.length).toEqual(0)
-    const deleteLink = $('a[href*="confirm-delete"]')
-    expect(deleteLink.length).toEqual(0)
-  })
-})

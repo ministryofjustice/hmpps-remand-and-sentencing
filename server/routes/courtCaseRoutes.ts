@@ -190,7 +190,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceUuid: crypto.randomUUID(),
       paginationResults,
       successMessage,
-      viewOnlyEnabled: config.featureToggles.viewOnlyEnabled,
     })
   }
 
@@ -416,7 +415,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       consecutiveToSentenceDetailsMap,
       backLink: JourneyUrls.courtCases(nomsId),
       successMessage,
-      viewOnlyEnabled: config.featureToggles.viewOnlyEnabled,
     })
   }
 

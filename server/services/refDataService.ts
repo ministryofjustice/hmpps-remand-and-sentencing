@@ -7,14 +7,17 @@ import {
   SentenceType,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
-import getOrSetRefDataInCache from '../cache/refDataCache'
+import getOrSetRefDataInCache, { clearCache } from '../cache/refDataCache'
 
 export default class RefDataService {
+  chargeOutcomeCacheKey = 'charge-outcomes:all'
+
   constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
 
   async getAllChargeOutcomes(username: string): Promise<OffenceOutcome[]> {
-    const cacheKey = 'charge-outcomes:all'
-    return getOrSetRefDataInCache(cacheKey, () => this.remandAndSentencingApiClient.getAllChargeOutcomes(username))
+    return getOrSetRefDataInCache(this.chargeOutcomeCacheKey, () =>
+      this.remandAndSentencingApiClient.getAllChargeOutcomes(username),
+    )
   }
 
   async getAllUncachedChargeOutcomes(username: string): Promise<OffenceOutcome[]> {
@@ -23,6 +26,10 @@ export default class RefDataService {
 
   async createChargeOutcome(createChargeOutcome: CreateChargeOutcome, username: string): Promise<OffenceOutcome> {
     return this.remandAndSentencingApiClient.createChargeOutcome(createChargeOutcome, username)
+  }
+
+  async clearChargeOutcomeCache(): Promise<number | `${number}`> {
+    return clearCache(this.chargeOutcomeCacheKey)
   }
 
   async updateChargeOutcome(

@@ -37,6 +37,7 @@ export default class ChargeOutcomeAdminRoutesHandler {
     const createChargeOutcome = trimForm<CreateChargeOutcome>(req.body)
     try {
       await this.refDataService.createChargeOutcome(createChargeOutcome, req.user.username)
+      await this.refDataService.clearChargeOutcomeCache()
       req.flash('successMessage', 'charge outcome successfully created')
       return res.redirect('/admin/charge-outcomes')
     } catch (e) {
@@ -82,6 +83,7 @@ export default class ChargeOutcomeAdminRoutesHandler {
     const updateChargeOutcome = trimForm<CreateChargeOutcome>(req.body)
     try {
       await this.refDataService.updateChargeOutcome(chargeOutcomeUuid, updateChargeOutcome, req.user.username)
+      await this.refDataService.clearChargeOutcomeCache()
       req.flash('successMessage', 'charge outcome successfully updated')
       return res.redirect('/admin/charge-outcomes')
     } catch (e) {

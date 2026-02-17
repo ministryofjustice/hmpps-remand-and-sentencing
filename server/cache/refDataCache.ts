@@ -38,3 +38,10 @@ export default async function getOrSetJson<T>(
   }
   return apiData
 }
+
+export async function clearCache(cacheKey: string): Promise<number | `${number}`> {
+  if (!config.redis.enabled || !redis) {
+    return Promise.resolve(0)
+  }
+  return redis.del(getFullCacheName(cacheKey))
+}

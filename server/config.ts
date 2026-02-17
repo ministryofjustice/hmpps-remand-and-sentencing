@@ -179,7 +179,4 @@ export default {
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
-  featureToggles: {
-    viewOnlyEnabled: get('FEATURES_VIEW_ONLY_ENABLED', false, requiredInProduction) === 'true',
-  },
 }

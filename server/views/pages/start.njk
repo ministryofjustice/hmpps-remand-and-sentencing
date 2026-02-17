@@ -240,7 +240,7 @@
                             html: govukTag({ text: "Recalled", classes: "govuk-tag--purple" }),
                             visuallyHiddenText: "Recalled"
                           }) %}
-                        {% elif courtCaseDetails.warrantType !== 'SENTENCING' and not viewOnlyEnabled %}
+                        {% elif courtCaseDetails.warrantType !== 'SENTENCING'%}
                           {% set _ = actions.push({
                             href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/new-journey",
                             text: "Add hearing",
@@ -273,12 +273,9 @@
                         }}
                 {% else %}
                     <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
-                    {% if not viewOnlyEnabled %}
                         <p class="gouk-body"><a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey">Add a court case now</a>
-                    {% endif %}
                     </p>
                 {% endfor %}
-
                 </div>
             </div>
 
@@ -287,7 +284,6 @@
             {% endif %}
 
         </div>
-        {% if not viewOnlyEnabled %}
             <div class="govuk-grid-column-one-third">
 
                 <div class="actions-list">
@@ -297,7 +293,6 @@
                     </ul>
                 </div>
             </div>
-        {% endif %}
     </div>
 
 {% endblock %}

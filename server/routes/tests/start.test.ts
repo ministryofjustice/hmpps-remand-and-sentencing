@@ -2,7 +2,6 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
-import config from '../../config'
 
 let app: Express
 
@@ -133,16 +132,5 @@ describe('GET Start', () => {
     expect(actionsList.length).toEqual(1)
     const newJourneyLinks = $('a[href*="new-journey"]')
     expect(newJourneyLinks.length).toEqual(2)
-  })
-
-  it('should not show journey links or action menu when in view only', async () => {
-    setupCourtCase()
-    config.featureToggles.viewOnlyEnabled = true
-    const res = await request(app).get('/person/A1234AB').expect('Content-Type', /html/)
-    const $ = cheerio.load(res.text)
-    const actionsList = $('.actions-list')
-    expect(actionsList.length).toEqual(0)
-    const newJourneyLinks = $('a[href*="new-journey"]')
-    expect(newJourneyLinks.length).toEqual(0)
   })
 })

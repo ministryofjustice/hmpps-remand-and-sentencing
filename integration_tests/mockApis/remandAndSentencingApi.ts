@@ -3642,4 +3642,27 @@ export default {
       },
     })
   },
+
+  stubBadRequestUpdateChargeOutcome: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: '/remand-and-sentencing-api/charge-outcome/85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+      },
+      response: {
+        status: 400,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 400,
+          userMessage: 'Failed validation',
+          fieldErrors: [
+            {
+              field: 'nomisCode',
+              message: 'nomisCode outcome code is already mapped',
+            },
+          ],
+        },
+      },
+    })
+  },
 }

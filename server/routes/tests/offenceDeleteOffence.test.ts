@@ -64,6 +64,7 @@ describe('GET Delete offence', () => {
       displayOrder: 10,
       outcomeName: 'An offence outcome',
       outcomeType: 'SENTENCING',
+      status: 'ACTIVE',
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/2/delete-offence')
@@ -131,6 +132,7 @@ describe('GET Delete offence', () => {
       displayOrder: 10,
       outcomeName: 'An offence outcome',
       outcomeType: 'SENTENCING',
+      status: 'ACTIVE',
     })
     return request(app)
       .get('/person/A1234AB/edit-court-case/0/edit-court-appearance/0/offences/2/delete-offence')

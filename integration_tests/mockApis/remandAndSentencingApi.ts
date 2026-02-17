@@ -2821,7 +2821,14 @@ export default {
         urlPath: '/remand-and-sentencing-api/charge-outcome/status',
         queryParameters: {
           statuses: {
-            equalTo: 'ACTIVE',
+            or: [
+              {
+                equalTo: 'ACTIVE',
+              },
+              {
+                equalTo: 'ACTIVE,INACTIVE',
+              },
+            ],
           },
         },
       },
@@ -2835,6 +2842,8 @@ export default {
             nomisCode: '3452',
             outcomeType: 'REMAND',
             displayOrder: 10,
+            dispositionCode: 'INTERIM',
+            status: 'ACTIVE',
           },
           {
             outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
@@ -2842,6 +2851,8 @@ export default {
             nomisCode: '7863',
             outcomeType: 'NON_CUSTODIAL',
             displayOrder: 20,
+            dispositionCode: 'INTERIM',
+            status: 'ACTIVE',
           },
           {
             outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
@@ -2849,6 +2860,8 @@ export default {
             nomisCode: '09753',
             outcomeType: 'SENTENCING',
             displayOrder: 10,
+            dispositionCode: 'FINAL',
+            status: 'ACTIVE',
           },
           {
             outcomeUuid: REPLACEMENT_OUTCOME_UUID,
@@ -2856,6 +2869,8 @@ export default {
             nomisCode: '2060',
             outcomeType: 'NON_CUSTODIAL',
             displayOrder: 30,
+            dispositionCode: 'FINAL',
+            status: 'ACTIVE',
           },
         ],
       },
@@ -3601,6 +3616,29 @@ export default {
             ],
           },
         ],
+      },
+    })
+  },
+
+  stubBadRequestCreateChargeOutcome: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: '/remand-and-sentencing-api/charge-outcome',
+      },
+      response: {
+        status: 400,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 400,
+          userMessage: 'Failed validation',
+          fieldErrors: [
+            {
+              field: 'nomisCode',
+              message: 'nomisCode outcome code is already mapped',
+            },
+          ],
+        },
       },
     })
   },

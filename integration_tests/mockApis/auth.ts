@@ -132,7 +132,7 @@ export default {
   stubAuthManageDetails: manageDetails,
   stubSignIn: (
     userToken: UserToken = {
-      roles: ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR'],
+      roles: ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR', 'ROLE_RAS_REFERENCE_ADMIN'],
     },
   ): Promise<[Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), token(userToken), tokenVerification.stubVerifyToken()]),

@@ -48,6 +48,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware(['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']))
   app.use('/admin/reference-data', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/charge-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
+  app.use('/admin/appearance-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services.userService))
   app.use('/person/:nomsId', populateCurrentPrisoner(services.prisonerSearchService))

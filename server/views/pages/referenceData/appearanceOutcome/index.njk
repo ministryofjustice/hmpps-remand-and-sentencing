@@ -5,33 +5,34 @@
 
 {% set tableRows = [] %}
 
-{% for chargeOutcome in chargeOutcomes %}
-    {% set editHtml %}
-        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/charge-outcomes/{{ chargeOutcome.outcomeUuid }}">Edit</a>
-    {% endset %}
+{% for appearanceOutcome in appearanceOutcomes %}
     {% set tableRows = tableRows.concat([
         [ {
-            text: chargeOutcome.outcomeUuid
+            text: appearanceOutcome.outcomeUuid
         },
         {
-            text: chargeOutcome.outcomeName
+            text: appearanceOutcome.outcomeName
         },
         {
-            text: chargeOutcome.nomisCode
+            text: appearanceOutcome.nomisCode
         },
         {
-            text: chargeOutcome.outcomeType
+            text: appearanceOutcome.outcomeType
         },
         {
-            text: chargeOutcome.displayOrder
+            text: appearanceOutcome.displayOrder
         },
         {
-            text: chargeOutcome.dispositionCode
+            text: chargeOutcomeNames[appearanceOutcome.relatedChargeOutcomeUuid]
         },
         {
-            text: chargeOutcome.status
-        }, {
-            html: editHtml
+            text: appearanceOutcome.isSubList
+        },
+        {
+            text: appearanceOutcome.dispositionCode
+        },
+        {
+            text: appearanceOutcome.status
         }]]) %}
 {% endfor %}
 
@@ -50,23 +51,16 @@
         <div class="govuk-grid-column-full govuk-!-margin-top-8">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-three-quarters">
-                    <h1 class="govuk-heading-l">Charge outcome admin</h1>
+                    <h1 class="govuk-heading-l">Appearance outcome admin</h1>
                     <p class="govuk-body">
-                        This page helps you find and review the charge outcome reference data held in Remand and Sentencing.
+                        This page helps you find and review the appearance outcome reference data held in Remand and Sentencing.
                     </p>
-                </div>
-                <div class="govuk-grid-column-one-quarter">
-                    {{ govukButton({
-                        text: "Add a charge outcome",
-                        href: '/admin/charge-outcomes/add',
-                        classes: 'govuk-link--no-visited-state'
-                    }) }}
                 </div>
             </div>
             
             {{
                 govukTable({
-                    caption: "Charge outcomes",
+                    caption: "Appearance outcomes",
                     attributes: {
                         "data-module": "moj-sortable-table"
                     },
@@ -105,6 +99,18 @@
                         format: "numeric"
                         },
                         {
+                        text: "Related Charge Outcome",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Is sub list",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
                         text: "Disposition Code",
                         attributes: {
                             "aria-sort": "none"
@@ -112,9 +118,6 @@
                         },
                         {
                         text: "Status"
-                        },
-                        {
-                        text: "Edit"
                         }
                     ],
                     rows: tableRows

@@ -12,6 +12,7 @@ import UnknownRecallSentenceRoutes from './unknownRecallSentenceRoutes'
 import setCurrentPageUrl from '../middleware/currentPageUrl'
 import referenceDataAdminRoutes from './referenceDataAdminRoutes'
 import chargeOutcomeDataAdminRoutes from './chargeOutcomeDataAdminRoutes'
+import appearanceOutcomeDataAdminRoutes from './appearanceOutcomeDataAdminRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -19,6 +20,7 @@ export default function routes(services: Services): Router {
   router.use('/sentence-types', sentenceTypeRoutes(services))
   router.use('/admin/reference-data', referenceDataAdminRoutes())
   router.use('/admin/charge-outcomes', chargeOutcomeDataAdminRoutes(services))
+  router.use('/admin/appearance-outcomes', appearanceOutcomeDataAdminRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
     services.offenceService,

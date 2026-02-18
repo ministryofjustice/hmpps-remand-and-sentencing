@@ -71,6 +71,10 @@ export default class RefDataService {
     return getOrSetRefDataInCache(cacheKey, () => this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username))
   }
 
+  async getAllUncachedAppearanceOutcomes(username: string): Promise<AppearanceOutcome[]> {
+    return this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username, 'ACTIVE,INACTIVE')
+  }
+
   async getAppearanceOutcomeByUuid(appearanceOutcomeUuid: string, username: string): Promise<AppearanceOutcome> {
     const allActiveOutcomes = await this.getAllAppearanceOutcomes(username)
     const outcome = allActiveOutcomes.find(o => o.outcomeUuid === appearanceOutcomeUuid)

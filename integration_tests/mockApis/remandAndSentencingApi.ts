@@ -2713,7 +2713,14 @@ export default {
         urlPath: '/remand-and-sentencing-api/appearance-outcome/status',
         queryParameters: {
           statuses: {
-            equalTo: 'ACTIVE',
+            or: [
+              {
+                equalTo: 'ACTIVE',
+              },
+              {
+                equalTo: 'ACTIVE,INACTIVE',
+              },
+            ],
           },
         },
       },

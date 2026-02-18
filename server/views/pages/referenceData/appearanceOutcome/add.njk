@@ -3,6 +3,8 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
 
 
 {% set typeItems = [] %}
@@ -108,6 +110,16 @@
                     errorMessage: errors | findError('outcomeType')
                 }) }}
 
+                {{ govukSelect({
+                    id: "warrantType",
+                    name: "warrantType",
+                    label: {
+                        text: "Warrant Type"
+                    },
+                    items: typeItems,
+                    errorMessage: errors | findError('warrantType')
+                }) }}
+
                 {{ govukInput({
                     label: {
                         text: "Display order"
@@ -137,6 +149,28 @@
                     },
                     items: statusItems,
                     errorMessage: errors | findError('status')
+                }) }}
+
+                {{ govukRadios({
+                    classes: "govuk-radios--inline",
+                    name: "isSubList",
+                    fieldset: {
+                        legend: {
+                            text: "Is sub list"
+                        }
+                    },
+                    items: [
+                        {
+                        value: "true",
+                        text: "Yes",
+                        checked: createAppearanceOutcome.isSubList === 'true'
+                        },
+                        {
+                        value: "false",
+                        text: "No",
+                        checked: createAppearanceOutcome.isSubList === 'false'
+                        }
+                    ]
                 }) }}
 
                 {{ govukButton({

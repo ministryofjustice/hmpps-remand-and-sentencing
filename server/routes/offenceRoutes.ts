@@ -2431,6 +2431,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {

@@ -51,6 +51,8 @@ describe('GET Court case documents', () => {
               outcomeType: 'NON_SENTENCING',
               relatedChargeOutcomeUuid: '2',
               dispositionCode: 'INTERIM',
+              status: 'ACTIVE',
+              warrantType: 'NON_SENTENCING',
             },
             charges: [],
             documents: [

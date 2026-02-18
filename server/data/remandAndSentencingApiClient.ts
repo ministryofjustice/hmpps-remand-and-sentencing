@@ -6,6 +6,7 @@ import {
   ConsecutiveChainValidationRequest,
   CourtCaseCountNumbers,
   CourtCaseValidationDate,
+  CreateAppearanceOutcome,
   CreateCharge,
   CreateChargeOutcome,
   CreateChargeResponse,
@@ -528,6 +529,19 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: `/charge-outcome/${chargeOutcomeUuid}`,
         data: updateChargeOutcome,
+      },
+      asSystem(username),
+    )
+  }
+
+  async createAppearanceOutcome(
+    createAppearanceOutcome: CreateAppearanceOutcome,
+    username: string,
+  ): Promise<AppearanceOutcome> {
+    return this.post(
+      {
+        path: '/appearance-outcome',
+        data: createAppearanceOutcome,
       },
       asSystem(username),
     )

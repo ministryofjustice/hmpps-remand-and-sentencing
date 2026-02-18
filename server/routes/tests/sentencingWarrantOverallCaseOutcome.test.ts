@@ -29,6 +29,8 @@ describe('Court Case Overall Case Outcome', () => {
         outcomeName: 'Appearance sentencing outcome',
         relatedChargeOutcomeUuid: '3',
         dispositionCode: 'FINAL',
+        status: 'ACTIVE',
+        warrantType: 'SENTENCING',
       },
     ])
     return request(app)

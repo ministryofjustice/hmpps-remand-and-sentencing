@@ -1,6 +1,11 @@
 import type { Request, Response } from 'express'
+import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import RefDataService from '../../services/refDataService'
-import { CreateAppearanceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import {
+  CreateAppearanceOutcome,
+  FieldErrorErrorResponse,
+} from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import trimForm from '../../utils/trim'
 
 export default class AppearanceOutcomeAdminRoutesHandler {
   constructor(private readonly refDataService: RefDataService) {}
@@ -43,12 +48,12 @@ export default class AppearanceOutcomeAdminRoutesHandler {
   }
 
   submitAdd = async (req: Request, res: Response) => {
-    const createChargeOutcome = trimForm<CreateChargeOutcome>(req.body)
+    const createAppearanceOutcome = trimForm<CreateAppearanceOutcome>(req.body)
     try {
-      await this.refDataService.createChargeOutcome(createChargeOutcome, req.user.username)
-      await this.refDataService.clearChargeOutcomeCache()
-      req.flash('successMessage', 'charge outcome successfully created')
-      return res.redirect('/admin/charge-outcomes')
+      await this.refDataService.createAppearanceOutcome(createAppearanceOutcome, req.user.username)
+      await this.refDataService.clearAppearanceOutcomeCache()
+      req.flash('successMessage', 'appearance outcome successfully created')
+      return res.redirect('/admin/appearance-outcomes')
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError
@@ -60,8 +65,8 @@ export default class AppearanceOutcomeAdminRoutesHandler {
               return { href: `#${fieldError.field}`, text: fieldError.message ?? '' }
             }) ?? [],
           )
-          req.flash('createChargeOutcome', { ...createChargeOutcome })
-          return res.redirect('/admin/charge-outcomes/add')
+          req.flash('createAppearanceOutcome', { ...createAppearanceOutcome })
+          return res.redirect('/admin/appearance-outcomes/add')
         }
       }
       throw e

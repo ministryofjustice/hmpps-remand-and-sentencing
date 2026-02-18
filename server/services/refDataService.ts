@@ -2,6 +2,7 @@ import { Dayjs } from 'dayjs'
 import {
   AppearanceOutcome,
   AppearanceType,
+  CreateAppearanceOutcome,
   CreateChargeOutcome,
   OffenceOutcome,
   SentenceType,
@@ -11,6 +12,8 @@ import getOrSetRefDataInCache, { clearCache } from '../cache/refDataCache'
 
 export default class RefDataService {
   chargeOutcomeCacheKey = 'charge-outcomes:all'
+
+  appearanceOutcomeCacheKey = 'appearance-outcomes:all'
 
   constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
 
@@ -67,12 +70,24 @@ export default class RefDataService {
   }
 
   async getAllAppearanceOutcomes(username: string): Promise<AppearanceOutcome[]> {
-    const cacheKey = 'appearance-outcomes:all'
-    return getOrSetRefDataInCache(cacheKey, () => this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username))
+    return getOrSetRefDataInCache(this.appearanceOutcomeCacheKey, () =>
+      this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username),
+    )
   }
 
   async getAllUncachedAppearanceOutcomes(username: string): Promise<AppearanceOutcome[]> {
     return this.remandAndSentencingApiClient.getAllAppearanceOutcomes(username, 'ACTIVE,INACTIVE')
+  }
+
+  async createAppearanceOutcome(
+    createAppearanceOutcome: CreateAppearanceOutcome,
+    username: string,
+  ): Promise<AppearanceOutcome> {
+    return this.remandAndSentencingApiClient.createAppearanceOutcome(createAppearanceOutcome, username)
+  }
+
+  async clearAppearanceOutcomeCache(): Promise<number | `${number}`> {
+    return clearCache(this.appearanceOutcomeCacheKey)
   }
 
   async getAppearanceOutcomeByUuid(appearanceOutcomeUuid: string, username: string): Promise<AppearanceOutcome> {

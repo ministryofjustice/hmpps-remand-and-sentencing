@@ -58,6 +58,8 @@ describe('GET Update Offence outcome', () => {
       outcomeName: 'Appearance sentencing outcome',
       relatedChargeOutcomeUuid: '3',
       dispositionCode: 'FINAL',
+      status: 'ACTIVE',
+      warrantType: 'NON_SENTENCING',
     })
     const courtAppearance = {
       warrantType: 'NON_SENTENCING',

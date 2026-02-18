@@ -41,6 +41,8 @@ describe('GET Warrant Information Check Answers', () => {
       outcomeName: 'Appearance sentencing outcome',
       relatedChargeOutcomeUuid: '3',
       dispositionCode: 'FINAL',
+      status: 'ACTIVE',
+      warrantType: 'SENTENCING',
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/check-overall-answers')

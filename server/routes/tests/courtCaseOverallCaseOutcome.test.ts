@@ -29,6 +29,8 @@ describe('Court Case Overall Case Outcome', () => {
         outcomeName: 'Appearance outcome',
         relatedChargeOutcomeUuid: '2',
         dispositionCode: 'INTERIM',
+        status: 'ACTIVE',
+        warrantType: 'NON_SENTENCING',
       },
     ])
     return request(app)
@@ -63,6 +65,8 @@ describe('Court Case Overall Case Outcome', () => {
         outcomeName: 'Appearance outcome',
         relatedChargeOutcomeUuid: '2',
         dispositionCode: 'INTERIM',
+        status: 'ACTIVE',
+        warrantType: 'NON_SENTENCING',
       },
     ])
     return request(app)
@@ -90,6 +94,8 @@ describe('Court Case Overall Case Outcome', () => {
         outcomeName: 'Appearance outcome',
         relatedChargeOutcomeUuid: '2',
         dispositionCode: 'INTERIM',
+        status: 'ACTIVE',
+        warrantType: 'NON_SENTENCING',
       },
     ])
     return request(app)

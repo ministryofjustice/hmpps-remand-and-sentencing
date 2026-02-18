@@ -19,7 +19,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-            folder: [courtCase, documents, editOffence, offence, other, sentence, unknownRecallSentence, chargeOutcomeAdmin]
+            folder: [courtCase, documents, editOffence, offence, other, sentence, unknownRecallSentence, referenceDataAdmin]
     steps:
       - uses: actions/checkout@v6
       - name: Use Node.js ${{ inputs.node_version_file }}

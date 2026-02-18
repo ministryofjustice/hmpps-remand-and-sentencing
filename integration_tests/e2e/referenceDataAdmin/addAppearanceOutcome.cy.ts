@@ -6,6 +6,7 @@ context('Add appearance outcome page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetAllChargeOutcomes')
     cy.signIn()
     cy.visit('/admin/appearance-outcomes/add')
     addAppearanceOutcomePage = Page.verifyOnPage(AddAppearanceOutcomePage)

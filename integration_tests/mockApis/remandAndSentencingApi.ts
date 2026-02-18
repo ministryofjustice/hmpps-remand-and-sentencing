@@ -2736,6 +2736,8 @@ export default {
             displayOrder: 10,
             relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
             dispositionCode: 'INTERIM',
+            status: 'ACTIVE',
+            warrantType: 'NON_SENTENCING',
           },
           {
             outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcc',
@@ -2745,6 +2747,8 @@ export default {
             displayOrder: 10,
             relatedChargeOutcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
             dispositionCode: 'INTERIM',
+            status: 'ACTIVE',
+            warrantType: 'NON_SENTENCING',
           },
           {
             outcomeUuid: '7fd9efee-200e-4579-a766-e6bf9a499096',
@@ -2754,6 +2758,8 @@ export default {
             displayOrder: 20,
             relatedChargeOutcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
             dispositionCode: 'INTERIM',
+            status: 'ACTIVE',
+            warrantType: 'NON_SENTENCING',
           },
           {
             outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
@@ -2763,6 +2769,8 @@ export default {
             displayOrder: 10,
             relatedChargeOutcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
             dispositionCode: 'FINAL',
+            status: 'ACTIVE',
+            warrantType: 'SENTENCING',
           },
           {
             outcomeUuid: '4b2a225e-5bb1-4bf7-8719-6ff9f3ee0d11',
@@ -2772,6 +2780,8 @@ export default {
             displayOrder: 20,
             relatedChargeOutcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
             dispositionCode: 'FINAL',
+            status: 'ACTIVE',
+            warrantType: 'SENTENCING',
           },
         ],
       },

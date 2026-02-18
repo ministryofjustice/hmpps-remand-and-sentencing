@@ -7,7 +7,11 @@
 
 
 
-{% set typeItems = [] %}
+{% set typeItems = [{
+        value: "",
+        text: "Select outcome type",
+        selected: not createAppearanceOutcome.outcomeType
+    }] %}
 
 {% for type in types %}
     {% set typeItems = typeItems.concat({
@@ -17,7 +21,11 @@
     })%}
 {% endfor %}
 
-{% set dispositionCodeItems = [] %}
+{% set dispositionCodeItems = [{
+        value: "",
+        text: "Select disposition code",
+        selected: not createAppearanceOutcome.dispositionCode
+    }] %}
 
 {% for dispositionCode in dispositionCodes %}
     {% set dispositionCodeItems = dispositionCodeItems.concat({
@@ -27,7 +35,11 @@
     })%}
 {% endfor %}
 
-{% set statusItems = [] %}
+{% set statusItems = [{
+        value: "",
+        text: "Select status",
+        selected: not createAppearanceOutcome.status
+    }] %}
 
 {% for status in statuses %}
     {% set statusItems = statusItems.concat({
@@ -37,7 +49,11 @@
     })%}
 {% endfor %}
 
-{% set warrantTypeItems = [] %}
+{% set warrantTypeItems = [{
+        value: "",
+        text: "Select warrant type",
+        selected: not createAppearanceOutcome.warrantType
+    }] %}
 {% for warrantType in warrantTypes %}
     {% set warrantTypeItems = warrantTypeItems.concat({
         value: warrantType,
@@ -46,7 +62,11 @@
     })%}
 {% endfor %}
 
-{% set relatedChargeItems = [] %}
+{% set relatedChargeItems = [{
+        value: "",
+        text: "Select related charge outcome",
+        selected: not createAppearanceOutcome.relatedChargeOutcomeUuid
+    }] %}
 {% for chargeOutcome in sortedChargeOutcomes %}
     {% set relatedChargeItems = relatedChargeItems.concat({
         value: chargeOutcome.outcomeUuid,
@@ -116,8 +136,18 @@
                     label: {
                         text: "Warrant Type"
                     },
-                    items: typeItems,
+                    items: warrantTypeItems,
                     errorMessage: errors | findError('warrantType')
+                }) }}
+
+                {{ govukSelect({
+                    id: "relatedChargeOutcomeUuid",
+                    name: "relatedChargeOutcomeUuid",
+                    label: {
+                        text: "Related charge outcome"
+                    },
+                    items: relatedChargeItems,
+                    errorMessage: errors | findError('relatedChargeOutcomeUuid')
                 }) }}
 
                 {{ govukInput({

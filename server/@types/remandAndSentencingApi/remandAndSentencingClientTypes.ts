@@ -125,3 +125,5 @@ export type CreateChargeResponse = components['schemas']['CreateChargeResponse']
 export type CreateChargeOutcome = components['schemas']['CreateChargeOutcome']
 
 export type FieldErrorErrorResponse = components['schemas']['FieldErrorErrorResponse']
+
+export type CreateAppearanceOutcome = components['schemas']['CreateAppearanceOutcome']

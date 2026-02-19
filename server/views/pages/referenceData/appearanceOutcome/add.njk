@@ -1,0 +1,217 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+
+
+{% set typeItems = [{
+        value: "",
+        text: "Select outcome type",
+        selected: not createAppearanceOutcome.outcomeType
+    }] %}
+
+{% for type in types %}
+    {% set typeItems = typeItems.concat({
+        value: type,
+        text: type,
+        selected: type === createAppearanceOutcome.outcomeType
+    })%}
+{% endfor %}
+
+{% set dispositionCodeItems = [{
+        value: "",
+        text: "Select disposition code",
+        selected: not createAppearanceOutcome.dispositionCode
+    }] %}
+
+{% for dispositionCode in dispositionCodes %}
+    {% set dispositionCodeItems = dispositionCodeItems.concat({
+        value: dispositionCode,
+        text: dispositionCode,
+        selected: dispositionCode === createAppearanceOutcome.dispositionCode
+    })%}
+{% endfor %}
+
+{% set statusItems = [{
+        value: "",
+        text: "Select status",
+        selected: not createAppearanceOutcome.status
+    }] %}
+
+{% for status in statuses %}
+    {% set statusItems = statusItems.concat({
+        value: status,
+        text: status,
+        selected: status === createAppearanceOutcome.status
+    })%}
+{% endfor %}
+
+{% set warrantTypeItems = [{
+        value: "",
+        text: "Select warrant type",
+        selected: not createAppearanceOutcome.warrantType
+    }] %}
+{% for warrantType in warrantTypes %}
+    {% set warrantTypeItems = warrantTypeItems.concat({
+        value: warrantType,
+        text: warrantType,
+        selected: warrantType === createAppearanceOutcome.warrantType
+    })%}
+{% endfor %}
+
+{% set relatedChargeItems = [{
+        value: "",
+        text: "Select related charge outcome",
+        selected: not createAppearanceOutcome.relatedChargeOutcomeUuid
+    }] %}
+{% for chargeOutcome in sortedChargeOutcomes %}
+    {% set relatedChargeItems = relatedChargeItems.concat({
+        value: chargeOutcome.outcomeUuid,
+        text: chargeOutcome.outcomeName,
+        selected: chargeOutcome.outcomeUuid === createAppearanceOutcome.relatedChargeOutcomeUuid
+    })%}
+{% endfor %}
+
+{% block content %}
+{% if errors | length %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errors
+        }) }}
+    </div>
+{% endif %}
+<div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
+
+            <h1 class="govuk-heading-l">Add Appearance Outcome</h1>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {{ govukInput({
+                    label: {
+                        text: "UUID"
+                    },
+                    id: "outcomeUuid",
+                    name: "outcomeUuid",
+                    value: createAppearanceOutcome.outcomeUuid,
+                    errorMessage: errors | findError('outcomeUuid')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Name"
+                    },
+                    id: "outcomeName",
+                    name: "outcomeName",
+                    value: createAppearanceOutcome.outcomeName,
+                    errorMessage: errors | findError('outcomeName')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "NOMIS Code"
+                    },
+                    id: "nomisCode",
+                    name: "nomisCode",
+                    value: createAppearanceOutcome.nomisCode,
+                    errorMessage: errors | findError('nomisCode')
+                }) }}
+
+                {{ govukSelect({
+                    id: "outcomeType",
+                    name: "outcomeType",
+                    label: {
+                        text: "Outcome type"
+                    },
+                    items: typeItems,
+                    errorMessage: errors | findError('outcomeType')
+                }) }}
+
+                {{ govukSelect({
+                    id: "warrantType",
+                    name: "warrantType",
+                    label: {
+                        text: "Warrant Type"
+                    },
+                    items: warrantTypeItems,
+                    errorMessage: errors | findError('warrantType')
+                }) }}
+
+                {{ govukSelect({
+                    id: "relatedChargeOutcomeUuid",
+                    name: "relatedChargeOutcomeUuid",
+                    label: {
+                        text: "Related charge outcome"
+                    },
+                    items: relatedChargeItems,
+                    errorMessage: errors | findError('relatedChargeOutcomeUuid')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Display order"
+                    },
+                    id: "displayOrder",
+                    name: "displayOrder",
+                    value: createAppearanceOutcome.displayOrder,
+                    inputmode: "numeric",
+                    errorMessage: errors | findError('displayOrder')
+                }) }}
+
+                {{ govukSelect({
+                    id: "dispositionCode",
+                    name: "dispositionCode",
+                    label: {
+                        text: "Disposition Code"
+                    },
+                    items: dispositionCodeItems,
+                    errorMessage: errors | findError('dispositionCode')
+                }) }}
+
+                {{ govukSelect({
+                    id: "status",
+                    name: "status",
+                    label: {
+                        text: "Status"
+                    },
+                    items: statusItems,
+                    errorMessage: errors | findError('status')
+                }) }}
+
+                {{ govukRadios({
+                    classes: "govuk-radios--inline",
+                    name: "isSubList",
+                    fieldset: {
+                        legend: {
+                            text: "Is sub list"
+                        }
+                    },
+                    items: [
+                        {
+                        value: "true",
+                        text: "Yes",
+                        checked: createAppearanceOutcome.isSubList === 'true'
+                        },
+                        {
+                        value: "false",
+                        text: "No",
+                        checked: createAppearanceOutcome.isSubList === 'false'
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Save and continue",
+                    attributes: {
+                        'data-qa': 'continue-button'
+                    }
+                }) }}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

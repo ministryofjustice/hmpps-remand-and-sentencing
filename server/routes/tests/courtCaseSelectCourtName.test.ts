@@ -30,6 +30,8 @@ describe('GET Select court name ', () => {
         outcomeType: 'NON_SENTENCING',
         relatedChargeOutcomeUuid: '1',
         dispositionCode: 'INTERIM',
+        status: 'ACTIVE',
+        warrantType: 'NON_SENTENCING',
       },
       charges: [
         {

@@ -31,6 +31,8 @@ describe('GET task list', () => {
       outcomeName: 'Remand in custody',
       outcomeType: 'NON_SENTENCING',
       relatedChargeOutcomeUuid: '789',
+      status: 'ACTIVE',
+      warrantType: 'NON_SENTENCING',
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/task-list')

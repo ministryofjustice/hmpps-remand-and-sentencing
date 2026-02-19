@@ -6,5 +6,9 @@ export default function appearanceOutcomeDataAdminRoutes(services: Services): Ro
   const router = Router()
   const routes = new AppearanceOutcomeAdminRoutesHandler(services.refDataService)
   router.get('/', routes.index)
+
+  router.get('/add', routes.add)
+  router.post('/add', routes.submitAdd)
+
   return router
 }

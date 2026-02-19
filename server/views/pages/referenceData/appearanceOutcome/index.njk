@@ -20,6 +20,9 @@
             text: appearanceOutcome.outcomeType
         },
         {
+            text: appearanceOutcome.warrantType
+        },
+        {
             text: appearanceOutcome.displayOrder
         },
         {
@@ -56,6 +59,13 @@
                         This page helps you find and review the appearance outcome reference data held in Remand and Sentencing.
                     </p>
                 </div>
+                <div class="govuk-grid-column-one-quarter">
+                    {{ govukButton({
+                        text: "Add an appearance outcome",
+                        href: '/admin/appearance-outcomes/add',
+                        classes: 'govuk-link--no-visited-state'
+                    }) }}
+                </div>
             </div>
             
             {{
@@ -87,6 +97,12 @@
                         },
                         {
                         text: "Type",
+                        attributes: {
+                            "aria-sort": "none"
+                        }
+                        },
+                        {
+                        text: "Warrant type",
                         attributes: {
                             "aria-sort": "none"
                         }

@@ -28,6 +28,7 @@ generic-service:
     RECORD_RECALLS_UI_URL: "https://record-a-recall-dev.hmpps.service.justice.gov.uk"
     BOOK_SECURE_MOVE_UI_URL: "https://hmpps-book-secure-move-frontend-staging.apps.cloud-platform.service.justice.gov.uk"
     BOOK_VIDEO_LINK_UI_URL: "https://book-a-video-link-dev.prison.service.justice.gov.uk"
+    FEATURES_FILTER_COURT_CASES_ENABLED: 'true'
 
   scheduledDowntime:
     enabled: true

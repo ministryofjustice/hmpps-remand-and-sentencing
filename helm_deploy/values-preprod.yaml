@@ -28,6 +28,7 @@ generic-service:
     RECORD_RECALLS_UI_URL: "https://record-a-recall-preprod.hmpps.service.justice.gov.uk"
     BOOK_SECURE_MOVE_UI_URL: "https://hmpps-book-secure-move-frontend-preprod.apps.cloud-platform.service.justice.gov.uk"
     BOOK_VIDEO_LINK_UI_URL: "https://book-a-video-link-preprod.prison.service.justice.gov.uk"
+    FEATURES_FILTER_COURT_CASES_ENABLED: 'false'
 
   allowlist:
     penetration-test-ip-1: 54.37.241.156/30

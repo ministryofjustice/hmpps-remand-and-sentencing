@@ -179,4 +179,7 @@ export default {
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
+  featureToggles: {
+    filterCourtCases: get('FEATURES_FILTER_COURT_CASES_ENABLED', false, requiredInProduction) === 'true',
+  },
 }

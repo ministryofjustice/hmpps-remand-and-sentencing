@@ -60,6 +60,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
   async searchCourtCases(
     prisonerId: string,
     sortBy: string,
+    bookingId: string,
     page: number,
     username: string,
   ): Promise<PagePagedCourtCase> {
@@ -69,6 +70,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         query: {
           prisonerId,
           pagedCourtCaseOrderBy: sortBy,
+          bookingId,
           page,
         },
       },

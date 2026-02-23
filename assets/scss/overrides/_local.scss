@@ -104,3 +104,14 @@
 .show-toggle.govuk-details[open] > .govuk-details__summary > .govuk-details__summary-text::before {
   content: "Hide ";
 }
+
+.results {
+  float: right;
+  color: #0b0c0c;
+}
+
+.filter > .govuk-details__summary {
+  padding-left: 0;
+  width: 100%;
+  padding-bottom: 10px;
+}

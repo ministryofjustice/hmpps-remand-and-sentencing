@@ -82,11 +82,19 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { token, username } = res.locals.user
-    const sortBy = getAsStringOrDefault(req.query.sortBy, 'STATUS_APPEARANCE_DATE_DESC')
+    const { sortBy, includeCasesFromPreviousPeriodsOfCustody } = req.query as {
+      sortBy: string
+      includeCasesFromPreviousPeriodsOfCustody: string
+    }
+    const sortByQuery = getAsStringOrDefault(sortBy, 'STATUS_APPEARANCE_DATE_DESC')
+    let bookingId = ''
+    if (config.featureToggles.filterCourtCases && !includeCasesFromPreviousPeriodsOfCustody) {
+      bookingId = res.locals.prisoner.bookingId
+    }
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
 
     const [courtCases, serviceDefinitions] = await Promise.all([
-      this.remandAndSentencingService.searchCourtCases(nomsId, username, sortBy, pageNumber),
+      this.remandAndSentencingService.searchCourtCases(nomsId, username, sortByQuery, bookingId, pageNumber),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
     const consecutiveToSentenceUuids = courtCases.content
@@ -160,7 +168,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
     )
     const newCourtCaseId = crypto.randomUUID()
     const paginationUrl = new URL(JourneyUrls.courtCases(nomsId), config.domain)
-    paginationUrl.searchParams.set('sortBy', sortBy)
+    paginationUrl.searchParams.set('sortBy', sortByQuery)
+    if (includeCasesFromPreviousPeriodsOfCustody) {
+      paginationUrl.searchParams.set(
+        'includeCasesFromPreviousPeriodsOfCustody',
+        includeCasesFromPreviousPeriodsOfCustody,
+      )
+    }
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
     const paginationResults = getPaginationResults(courtCases)
 
@@ -182,6 +196,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
       sortBy,
+      includeCasesFromPreviousPeriodsOfCustody,
       courtCaseTotal: courtCaseDetailModels.length,
       offenceOutcomeMap,
       serviceDefinitions,

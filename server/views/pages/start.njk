@@ -9,7 +9,8 @@
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
-
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
 {% set pageTitle = applicationName + " - Home" %}
 
@@ -37,28 +38,89 @@
             {% if courtCaseDetailModels.length %}
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
-                    <div class="content-top">
-                        <div>
-                            <span class="govuk-body govuk-!-font-weight-bold">Sort by:</span>
-                            <span class="govuk-body govuk-!-margin-left-2">
-                                {% if sortBy === 'APPEARANCE_DATE_DESC' %}
-                                    Most recent
-                                {% else %}
-                                    <a href="/person/{{nomsId}}?sortBy=APPEARANCE_DATE_DESC" class="govuk-link govuk-link--no-visited-state">Most recent</a>
-                                {% endif %}
-                                <span class="seperator">|</span>
-                                {% if sortBy === 'APPEARANCE_DATE_ASC'%}
-                                    Earliest
-                                {% else %}
-                                    <a href="/person/{{nomsId}}?sortBy=APPEARANCE_DATE_ASC" class="govuk-link govuk-link--no-visited-state">Earliest</a>
-                                {% endif %}
+                    {% if filterCourtCasesEnabled %}
+                        <details class="govuk-details filter govuk-!-margin-bottom-2">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    Filter and sort
+                                </span>
+                                <div class="gouk-body govuk-!-font-weight-bold results">Showing <strong>{{ paginationResults.from }}</strong> to <strong>{{ paginationResults.to }}</strong> of <strong>{{ paginationResults.count }}</strong> court cases</div>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <form>
+                                    {{ govukRadios({
+                                        name: "sortBy",
+                                        classes: "govuk-radios--small",
+                                        fieldset: {
+                                            legend: {
+                                                text: "Sort by",
+                                                classes: "govuk-fieldset__legend--s"
+                                            }
+                                        },
+                                        items: [
+                                            {
+                                                value: "APPEARANCE_DATE_DESC",
+                                                text: "Court appearance (most recent)",
+                                                checked: sortBy === 'APPEARANCE_DATE_DESC'
+                                            },
+                                            {
+                                                value: "APPEARANCE_DATE_ASC",
+                                                text: "Court appearance (earliest)",
+                                                checked: sortBy === 'APPEARANCE_DATE_ASC'
+                                            }
+                                        ]
+                                    }) }}
 
-                            </span>
+                                    {{
+                                        govukCheckboxes({
+                                            name: 'includeCasesFromPreviousPeriodsOfCustody',
+                                            classes: "govuk-checkboxes--small",
+                                            fieldset: {
+                                                legend: {
+                                                    text: "Previous cases",
+                                                    classes: "govuk-fieldset__legend--s"
+                                                }
+                                            },
+                                            items: [{
+                                                value: 'true',
+                                                text: 'Include cases from previous periods of custody',
+                                                checked: includeCasesFromPreviousPeriodsOfCustody === 'true'
+                                            }]
+                                        })
+                                    }}
+
+                                    {{ govukButton({
+                                        text: "Apply",
+                                        classes: 'govuk-!-margin-bottom-1'
+                                    }) }}
+
+                                </form>
+                            </div>
+                        </details>
+                    {% else %}
+                        <div class="content-top">
+                            <div>
+                                <span class="govuk-body govuk-!-font-weight-bold">Sort by:</span>
+                                <span class="govuk-body govuk-!-margin-left-2">
+                                    {% if sortBy === 'APPEARANCE_DATE_DESC' %}
+                                        Most recent
+                                    {% else %}
+                                        <a href="/person/{{nomsId}}?sortBy=APPEARANCE_DATE_DESC" class="govuk-link govuk-link--no-visited-state">Most recent</a>
+                                    {% endif %}
+                                    <span class="seperator">|</span>
+                                    {% if sortBy === 'APPEARANCE_DATE_ASC'%}
+                                        Earliest
+                                    {% else %}
+                                        <a href="/person/{{nomsId}}?sortBy=APPEARANCE_DATE_ASC" class="govuk-link govuk-link--no-visited-state">Earliest</a>
+                                    {% endif %}
+
+                                </span>
+                            </div>
+                            <div>
+                                <span class="govuk-body">Showing <strong>{{ paginationResults.from }}</strong> to <strong>{{ paginationResults.to }}</strong> of <strong>{{ paginationResults.count }}</strong> court cases</span>
+                            </div>
                         </div>
-                        <div>
-                            <span class="govuk-body">Showing <strong>{{ paginationResults.from }}</strong> to <strong>{{ paginationResults.to }}</strong> of <strong>{{ paginationResults.count }}</strong> court cases</span>
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endif %}

@@ -11,6 +11,8 @@
         {% include "../../partials/nextAppearanceCaption.njk" %}
         {{ govukRadios({
             name: "nextAppearanceSelect",
+            id: "nextAppearanceSelect",
+            errorMessage: errors | findError('nextAppearanceSelect'),
             fieldset: {
                 legend: {
                 text: "Has the next appearance been set?",

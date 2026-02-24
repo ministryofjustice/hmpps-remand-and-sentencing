@@ -15,6 +15,8 @@
                 {% include "../../partials/nextAppearanceCaption.njk" %}
                 {{ govukRadios({
                     name: "nextAppearanceCourtSelect",
+                    id: "nextAppearanceCourtSelect",
+                    errorMessage: errors | findError('nextAppearanceCourtSelect'),
                     fieldset: {
                         legend: {
                             html: fieldSetHtml,

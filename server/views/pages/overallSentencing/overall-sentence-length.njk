@@ -17,25 +17,33 @@
         },
         items: [{
             classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
-            label: "Years",
+            label: {
+              text: "Years"
+            },
             name:"years",
             value: overallSentenceLengthForm["sentenceLength-years"]
         },
             {
                 classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
-                label: "Months",
+                label: {
+                   text: "Months"
+                },
                 name:"months",
                 value: overallSentenceLengthForm["sentenceLength-months"]
             },
             {
                 classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
-                label: "Weeks",
+                label: {
+                   text: "Weeks"
+                },
                 name:"weeks",
                 value: overallSentenceLengthForm["sentenceLength-weeks"]
             },
             {
                 classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
-                label: "Days",
+                label: {
+                   text: "Days"
+                },
                 name:"days",
                 value: overallSentenceLengthForm["sentenceLength-days"]
             }]

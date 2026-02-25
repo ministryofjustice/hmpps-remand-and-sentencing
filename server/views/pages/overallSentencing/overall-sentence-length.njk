@@ -17,7 +17,9 @@
         },
         items: [{
             classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
-            label: "Years",
+            label: {
+              text: "Years"
+            },
             name:"years",
             value: overallSentenceLengthForm["sentenceLength-years"]
         },

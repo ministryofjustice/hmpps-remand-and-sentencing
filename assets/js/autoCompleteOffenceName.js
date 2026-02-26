@@ -24,6 +24,9 @@ window.addEventListener('load', function () {
     name: 'offenceName',
     id: 'offence-name',
     menuClasses: 'govuk-body',
+    inputAttributes: {
+      'aria-labelledby': 'offence-name-label'
+    },
     templates: {
       inputValue: function (result) {
         if (!result || typeof result === 'string') {
@@ -61,9 +64,4 @@ window.addEventListener('load', function () {
       request.send()
     }, 100),
   })
-
-  const autocompleteInput = document.getElementById('offence-name')
-  if (autocompleteInput) {
-    autocompleteInput.setAttribute('aria-labelledby', 'offence-name-label')
-  }
 })

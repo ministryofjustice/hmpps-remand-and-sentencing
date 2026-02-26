@@ -20,6 +20,9 @@ window.addEventListener('load', function () {
     name: 'courtName',
     id: 'court-name',
     menuClasses: 'govuk-body',
+    inputAttributes: {
+      'aria-labelledby': 'court-name-label'
+    },
     onConfirm: function (confirmed) {
       if (confirmed && confirmed.courtId) {
         document.getElementById('court-code').value = confirmed.courtId
@@ -59,9 +62,4 @@ window.addEventListener('load', function () {
       request.send()
     }, 100),
   })
-
-  const autocompleteInput = document.getElementById('court-name')
-  if (autocompleteInput) {
-    autocompleteInput.setAttribute('aria-labelledby', 'court-name-label')
-  }
 })

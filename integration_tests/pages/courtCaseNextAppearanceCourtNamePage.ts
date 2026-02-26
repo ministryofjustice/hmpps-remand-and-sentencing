@@ -5,7 +5,7 @@ export default class CourtCaseNextAppearanceCourtNamePage extends Page {
     super('What court is the next appearance at?')
   }
 
-  autoCompleteInput = (): PageElement => cy.get('#next-appearance-court-name')
+  autoCompleteInput = (): PageElement => cy.get('.autocomplete__input')
 
-  secondAutoCompleteOption = (): PageElement => cy.get('#next-appearance-court-name__option--1')
+  secondAutoCompleteOption = (): PageElement => cy.get('[id="next-appearance-court-name__option--1"]')
 }

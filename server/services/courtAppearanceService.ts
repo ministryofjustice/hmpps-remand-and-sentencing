@@ -712,7 +712,7 @@ export default class CourtAppearanceService {
         nextAppearanceSelect: 'required',
       },
       {
-        'required.nextAppearanceSelect': 'You must select the appearance has been set',
+        'required.nextAppearanceSelect': 'You must select whether the appearance has been set',
       },
     )
     if (errors.length === 0) {

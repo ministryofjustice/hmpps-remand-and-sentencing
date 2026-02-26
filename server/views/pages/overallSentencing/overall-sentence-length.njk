@@ -5,53 +5,51 @@
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set yesHtml %}
-    {{ govukDateInput({
-        id: "sentenceLength",
-        namePrefix: "sentenceLength",
-        errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
-        fieldset: {
-            legend: {
-                text: "Enter the overall sentence length",
-                classes: "govuk-label govuk-!-font-weight-bold"
-            }
-        },
-        items: [{
-            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
-            label: {
-              text: "Years"
-            },
-            name:"years",
-            value: overallSentenceLengthForm["sentenceLength-years"]
-        },
-            {
-                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
-                label: {
-                   text: "Months"
-                },
-                name:"months",
-                value: overallSentenceLengthForm["sentenceLength-months"]
-            },
-            {
-                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
-                label: {
-                   text: "Weeks"
-                },
-                name:"weeks",
-                value: overallSentenceLengthForm["sentenceLength-weeks"]
-            },
-            {
-                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
-                label: {
-                   text: "Days"
-                },
-                name:"days",
-                value: overallSentenceLengthForm["sentenceLength-days"]
-            }]
-    }) }}
-    <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-6             ">
-        <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/alternative-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" class="govuk-link govuk-link--no-visited-state">The
-            sentence length is formatted differently</a>
-    </p>
+  {{ govukDateInput({
+    id: "sentenceLength",
+    namePrefix: "sentenceLength",
+    errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
+    fieldset: {
+      legend: {
+        text: "Enter the overall sentence length",
+        classes: "govuk-label govuk-!-font-weight-bold"
+      }
+    },
+    items: [
+      {
+        id: "sentenceLength-years",
+        name: "years",
+        label: "Years",
+        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
+        value: overallSentenceLengthForm["sentenceLength-years"]
+      },
+      {
+        id: "sentenceLength-months",
+        name: "months",
+        label: "Months",
+        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
+        value: overallSentenceLengthForm["sentenceLength-months"]
+      },
+      {
+        id: "sentenceLength-weeks",
+        name: "weeks",
+        label: "Weeks",
+        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
+        value: overallSentenceLengthForm["sentenceLength-weeks"]
+      },
+      {
+        id: "sentenceLength-days",
+        name: "days",
+        label: "Days",
+        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
+        value: overallSentenceLengthForm["sentenceLength-days"]
+      }
+    ]
+  }) }}
+  <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-6             ">
+          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/alternative-overall-sentence-length{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" class="govuk-link govuk-link--no-visited-state">The
+              sentence length is formatted differently</a>
+      </p>
 {% endset %}
 
 {% set pageTitle = applicationName + " - Add overall sentence length" %}

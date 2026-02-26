@@ -18,7 +18,7 @@ window.addEventListener('load', function () {
     selectElement: document.querySelector('#court-name'),
     confirmOnBlur: false,
     name: 'courtName',
-    id: 'court-name-autocomplete',
+    id: 'court-name',
     menuClasses: 'govuk-body',
     onConfirm: function (confirmed) {
       if (confirmed && confirmed.courtId) {
@@ -60,7 +60,7 @@ window.addEventListener('load', function () {
     }, 100),
   })
 
-  const autocompleteInput = document.getElementById('court-name-autocomplete')
+  const autocompleteInput = document.getElementById('court-name')
   if (autocompleteInput) {
     autocompleteInput.setAttribute('aria-labelledby', 'court-name-label')
   }

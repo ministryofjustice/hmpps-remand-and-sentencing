@@ -22,7 +22,7 @@ window.addEventListener('load', function () {
     selectElement: document.querySelector('#offence-name'),
     confirmOnBlur: false,
     name: 'offenceName',
-    id: 'offence-name-autocomplete',
+    id: 'offence-name',
     menuClasses: 'govuk-body',
     templates: {
       inputValue: function (result) {
@@ -62,7 +62,7 @@ window.addEventListener('load', function () {
     }, 100),
   })
 
-  const autocompleteInput = document.getElementById('offence-name-autocomplete')
+  const autocompleteInput = document.getElementById('offence-name')
   if (autocompleteInput) {
     autocompleteInput.setAttribute('aria-labelledby', 'offence-name-label')
   }

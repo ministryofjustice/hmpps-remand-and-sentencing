@@ -18,7 +18,7 @@ window.addEventListener('load', function () {
     selectElement: document.querySelector('#next-appearance-court-name'),
     menuClasses: 'govuk-body',
     confirmOnBlur: false,
-    id: 'next-appearance-court-name-autocomplete',
+    id: 'next-appearance-court-name-search',
     name: 'nextAppearanceCourtName',
     onConfirm: function (confirmed) {
       if (confirmed && confirmed.courtId) {
@@ -62,7 +62,7 @@ window.addEventListener('load', function () {
     }, 100),
   })
 
-  const autocompleteInput = document.getElementById('next-appearance-court-name-autocomplete')
+  const autocompleteInput = document.getElementById('next-appearance-court-name-search')
   if (autocompleteInput) {
     autocompleteInput.setAttribute('aria-labelledby', 'next-appearance-court-name-label')
   }

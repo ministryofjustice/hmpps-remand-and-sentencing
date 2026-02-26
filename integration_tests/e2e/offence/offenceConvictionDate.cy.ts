@@ -196,6 +196,7 @@ context('Add Offence Conviction Date Page tests with a full create court appeara
     courtCaseWarrantDatePage.continueButton().click()
     const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
     courtCaseCourtNamePage.autoCompleteInput().type('cou')
+    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     courtCaseCourtNamePage.firstAutoCompleteOption().click()
     courtCaseCourtNamePage.continueButton().click()
 

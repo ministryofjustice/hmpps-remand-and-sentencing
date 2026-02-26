@@ -12,18 +12,20 @@
         <input type="hidden" name="courtCode" id="court-code" value="{{courtNameForm.courtCode}}">
         {% include "../../partials/hearingCaption.njk" %}
         {{ govukSelect({
-            label: {
-                text: "What is the court name?" if isAddCourtAppearance else "Edit the court name",
-                classes: "govuk-label--l",
-                isPageHeading: true
-            },
-            hint: {
-                text: "Start typing the name of the court from the warrant."
-            },
-            id: "court-name",
-            name: "courtName",
-            errorMessage: errors | findError('courtCode'),
-            items: []
+          label: {
+            text: "What is the court name?" if isAddCourtAppearance else "Edit the court name",
+            classes: "govuk-label--l",
+            isPageHeading: true,
+            for: "court-name-autocomplete",
+            attributes: { id: "court-name-label" }
+          },
+          hint: {
+              text: "Start typing the name of the court from the warrant."
+          },
+          id: "court-name",
+          name: "courtName",
+          errorMessage: errors | findError('courtCode'),
+          items: []
         }) }}
 
 <div class="govuk-button-group">

@@ -10,20 +10,24 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/offenceCaption.njk" %}
 
+
                 {{ govukSelect({
-                    label: {
-                        text: "Look up an offence",
-                        classes: "govuk-label--l",
-                        isPageHeading: true
-                    },
-                    hint: {
-                        text: "Start typing the name of the offence from the warrant."
-                    },
-                    id: "offence-name",
-                    name: "offenceName",
-                    errorMessage:  errors | findError('offenceName'),
-                    items: []
-                })}}
+                  label: {
+                      text: "Look up an offence",
+                      classes: "govuk-label--l",
+                      isPageHeading: true,
+                      for: "offence-name-autocomplete",
+                      attributes: { id: "offence-name-label" }
+                  },
+                  hint: {
+                      text: "Start typing the name of the offence from the warrant."
+                  },
+                  id: "offence-name",
+                  name: "offenceName",
+                  errorMessage: errors | findError('offenceName'),
+                  items: []
+                }) }}
+
 
                 <div class="govuk-button-group">
                     <button type="submit"

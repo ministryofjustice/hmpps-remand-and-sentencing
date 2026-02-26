@@ -15,7 +15,9 @@
             label: {
                 text: "What court is the next appearance at?"  if isAddCourtAppearance else "Edit next court appearance location",
                 classes: "govuk-label--l",
-                isPageHeading: true
+                isPageHeading: true,
+                for: "next-appearance-court-name-autocomplete",
+                attributes: { id: "next-appearance-court-name-label" }
             },
             hint: {
                 text: "Start typing the name of the court"

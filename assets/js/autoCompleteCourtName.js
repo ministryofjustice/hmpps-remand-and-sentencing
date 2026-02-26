@@ -18,6 +18,7 @@ window.addEventListener('load', function () {
     selectElement: document.querySelector('#court-name'),
     confirmOnBlur: false,
     name: 'courtName',
+    id: 'court-name-autocomplete',
     menuClasses: 'govuk-body',
     onConfirm: function (confirmed) {
       if (confirmed && confirmed.courtId) {
@@ -43,10 +44,8 @@ window.addEventListener('load', function () {
     minLength: 3,
     source: debounce(function (query, populateResults) {
       request.open('GET', '/api/search-court?searchString=' + query, true)
-      // Time to wait before giving up fetching the search index
       request.timeout = 2 * 1000
       request.onreadystatechange = function () {
-        // XHR client readyState DONE
         if (request.readyState === XMLHttpRequest.DONE) {
           if (request.status === 200) {
             var response = request.responseText
@@ -60,4 +59,9 @@ window.addEventListener('load', function () {
       request.send()
     }, 100),
   })
+
+  const autocompleteInput = document.getElementById('court-name-autocomplete')
+  if (autocompleteInput) {
+    autocompleteInput.setAttribute('aria-labelledby', 'court-name-label')
+  }
 })

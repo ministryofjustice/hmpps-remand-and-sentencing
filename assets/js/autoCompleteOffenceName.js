@@ -22,7 +22,11 @@ window.addEventListener('load', function () {
     selectElement: document.querySelector('#offence-name'),
     confirmOnBlur: false,
     name: 'offenceName',
+    id: 'offence-name',
     menuClasses: 'govuk-body',
+    inputAttributes: {
+      'aria-labelledby': 'offence-name-label'
+    },
     templates: {
       inputValue: function (result) {
         if (!result || typeof result === 'string') {

@@ -10,7 +10,7 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{%- from "moj/components/date-picker/macro.njk" import mojDatePicker -%}
 
 {% set pageTitle = applicationName + " - Home" %}
 
@@ -36,10 +36,18 @@
 
         <div class="govuk-grid-column-two-thirds">
             {% if courtCaseDetailModels.length %}
+            {% if filterErrors | length %}
+                <div class="govuk-grid-row govuk-!-margin-top-4">
+                    {{ govukErrorSummary({
+                        titleText: "There is a problem",
+                        errorList: filterErrors
+                    }) }}
+                </div>
+            {% endif %}
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
                     {% if filterCourtCasesEnabled %}
-                        <details class="govuk-details filter govuk-!-margin-bottom-2">
+                        <details class="govuk-details filter govuk-!-margin-bottom-2"{% if filterErrors | length %} open {% endif %}>
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
                                     Filter and sort
@@ -71,23 +79,27 @@
                                         ]
                                     }) }}
 
-                                    {{
-                                        govukCheckboxes({
-                                            name: 'includeCasesFromPreviousPeriodsOfCustody',
-                                            classes: "govuk-checkboxes--small",
-                                            fieldset: {
-                                                legend: {
-                                                    text: "Previous cases",
-                                                    classes: "govuk-fieldset__legend--s"
-                                                }
-                                            },
-                                            items: [{
-                                                value: 'true',
-                                                text: 'Include cases from previous periods of custody',
-                                                checked: includeCasesFromPreviousPeriodsOfCustody === 'true'
-                                            }]
-                                        })
-                                    }}
+                                    {{ mojDatePicker({
+                                    id: "appearanceDateFrom",
+                                    name: "appearanceDateFrom",
+                                    label: {
+                                        text: "Latest hearing date from",
+                                        classes: "govuk-label--s"
+                                    },
+                                    value: appearanceDateFrom,
+                                    errorMessage: filterErrors | findError('appearanceDateFrom')
+                                    }) }}
+
+                                    {{ mojDatePicker({
+                                    id: "appearanceDateTo",
+                                    name: "appearanceDateTo",
+                                    label: {
+                                        text: "Latest hearing date to",
+                                        classes: "govuk-label--s"
+                                    },
+                                    value: appearanceDateTo,
+                                    errorMessage: filterErrors | findError('appearanceDateTo')
+                                    }) }}
 
                                     {{ govukButton({
                                         text: "Apply",

@@ -161,7 +161,7 @@ export default abstract class TaskListModel {
       }
     }
 
-    if (courtAppearance.documentUploadAccepted) {
+    if (courtAppearance.documentUploadAccepted && courtAppearance.uploadedDocuments?.length > 0) {
       status = {
         text: 'Completed',
       }

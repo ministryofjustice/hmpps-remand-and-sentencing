@@ -82,19 +82,35 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { token, username } = res.locals.user
-    const { sortBy, includeCasesFromPreviousPeriodsOfCustody } = req.query as {
+    const { sortBy, appearanceDateFrom, appearanceDateTo } = req.query as {
       sortBy: string
-      includeCasesFromPreviousPeriodsOfCustody: string
+      appearanceDateFrom: string
+      appearanceDateTo: string
     }
     const sortByQuery = getAsStringOrDefault(sortBy, 'STATUS_APPEARANCE_DATE_DESC')
-    let bookingId = ''
-    if (config.featureToggles.filterCourtCases && !includeCasesFromPreviousPeriodsOfCustody) {
-      bookingId = res.locals.prisoner.bookingId
+    let searchAppearanceDateFrom
+    let searchAppearanceDateTo
+    const filterErrors = []
+    if (config.featureToggles.filterCourtCases) {
+      const validatedSearchParameters = this.validateAndGetCourtCaseSearchParameters(
+        appearanceDateFrom,
+        appearanceDateTo,
+      )
+      searchAppearanceDateFrom = validatedSearchParameters.searchAppearanceDateFrom
+      searchAppearanceDateTo = validatedSearchParameters.searchAppearanceDateTo
+      filterErrors.push(...validatedSearchParameters.filterErrors)
     }
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
 
     const [courtCases, serviceDefinitions] = await Promise.all([
-      this.remandAndSentencingService.searchCourtCases(nomsId, username, sortByQuery, bookingId, pageNumber),
+      this.remandAndSentencingService.searchCourtCases(
+        nomsId,
+        username,
+        sortByQuery,
+        searchAppearanceDateFrom,
+        searchAppearanceDateTo,
+        pageNumber,
+      ),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
     ])
     const consecutiveToSentenceUuids = courtCases.content
@@ -169,11 +185,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const newCourtCaseId = crypto.randomUUID()
     const paginationUrl = new URL(JourneyUrls.courtCases(nomsId), config.domain)
     paginationUrl.searchParams.set('sortBy', sortByQuery)
-    if (includeCasesFromPreviousPeriodsOfCustody) {
-      paginationUrl.searchParams.set(
-        'includeCasesFromPreviousPeriodsOfCustody',
-        includeCasesFromPreviousPeriodsOfCustody,
-      )
+    if (appearanceDateFrom) {
+      paginationUrl.searchParams.set('appearanceDateFrom', appearanceDateFrom)
+    }
+    if (appearanceDateTo) {
+      paginationUrl.searchParams.set('appearanceDateTo', appearanceDateTo)
     }
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
     const paginationResults = getPaginationResults(courtCases)
@@ -196,7 +212,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
       sortBy,
-      includeCasesFromPreviousPeriodsOfCustody,
+      appearanceDateFrom,
+      appearanceDateTo,
       courtCaseTotal: courtCaseDetailModels.length,
       offenceOutcomeMap,
       serviceDefinitions,
@@ -205,7 +222,63 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceUuid: crypto.randomUUID(),
       paginationResults,
       successMessage,
+      filterErrors,
     })
+  }
+
+  private validateAndGetCourtCaseSearchParameters(
+    appearanceDateFrom: string,
+    appearanceDateTo: string,
+  ): {
+    searchAppearanceDateFrom: string | undefined
+    searchAppearanceDateTo: string | undefined
+    filterErrors: Array<{
+      text: string
+      href: string
+    }>
+  } {
+    let searchAppearanceDateFrom
+    let searchAppearanceDateTo
+    let appearanceDateFromDate
+    const filterErrors: Array<{
+      text: string
+      href: string
+    }> = []
+    if (appearanceDateFrom) {
+      appearanceDateFromDate = dayjs(appearanceDateFrom)
+      if (appearanceDateFromDate.isValid()) {
+        searchAppearanceDateFrom = appearanceDateFromDate.format('YYYY-MM-DD')
+      } else {
+        appearanceDateFromDate = undefined
+        filterErrors.push({
+          text: `This date does not exist.`,
+          href: '#appearanceDateFrom',
+        })
+      }
+    }
+    if (appearanceDateTo) {
+      const appearanceDateToDate = dayjs(appearanceDateTo)
+      if (appearanceDateToDate.isValid()) {
+        if (appearanceDateFromDate && appearanceDateFromDate.isAfter(appearanceDateToDate)) {
+          searchAppearanceDateFrom = undefined
+          filterErrors.push({
+            text: `The latest hearing to date must be after the latest hearding from date`,
+            href: '#appearanceDateTo',
+          })
+        }
+        searchAppearanceDateTo = appearanceDateToDate.format('YYYY-MM-DD')
+      } else {
+        filterErrors.push({
+          text: `This date does not exist.`,
+          href: '#appearanceDateTo',
+        })
+      }
+    }
+    return {
+      searchAppearanceDateFrom,
+      searchAppearanceDateTo,
+      filterErrors,
+    }
   }
 
   private getCourtCasesAuditUuids(

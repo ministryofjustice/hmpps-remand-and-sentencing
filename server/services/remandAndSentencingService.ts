@@ -53,10 +53,18 @@ export default class RemandAndSentencingService {
     prisonerId: string,
     username: string,
     sortBy: string,
-    bookingId: string,
+    appearanceDateFrom: string,
+    appearanceDateTo: string,
     page: number,
   ): Promise<PagePagedCourtCase> {
-    return this.remandAndSentencingApiClient.searchCourtCases(prisonerId, sortBy, bookingId, page, username)
+    return this.remandAndSentencingApiClient.searchCourtCases(
+      prisonerId,
+      sortBy,
+      appearanceDateFrom,
+      appearanceDateTo,
+      page,
+      username,
+    )
   }
 
   async createCourtAppearance(

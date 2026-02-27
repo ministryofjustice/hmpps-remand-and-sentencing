@@ -217,7 +217,7 @@ context('Court Case Warrant Date Page', () => {
       const courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       editWarrantDate(courtCaseHearingDetailsPage)
 
-      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       enterWarrantDate(courtCaseWarrantDatePage, '15', '12', '2023')
       expectWarrantDateError(courtCaseWarrantDatePage)
     })
@@ -238,7 +238,7 @@ context('Court Case Warrant Date Page', () => {
       const courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       editWarrantDate(courtCaseHearingDetailsPage)
 
-      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       enterWarrantDate(courtCaseWarrantDatePage, '15', '12', '2024')
       expectHearingDateError(courtCaseWarrantDatePage)
       enterWarrantDate(courtCaseWarrantDatePage, '14', '12', '2024')
@@ -259,7 +259,7 @@ context('Court Case Warrant Date Page', () => {
 
       const courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       editWarrantDate(courtCaseHearingDetailsPage)
-      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage
         .captionText()
         .invoke('text')
@@ -299,7 +299,7 @@ context('Court Case Warrant Date Page', () => {
       const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
       courtCaseReferencePage.input().type('T12345678')
       courtCaseReferencePage.continueButton().click()
-      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')

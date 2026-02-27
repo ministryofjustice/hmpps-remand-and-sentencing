@@ -171,6 +171,6 @@ describe('GET Start', () => {
     const $ = cheerio.load(res.text)
     const errorSummary = $('.govuk-error-summary').text()
     expect(errorSummary).toContain('There is a problem')
-    expect(errorSummary).toContain('The latest hearing from date must be after the latest hearding to date')
+    expect(errorSummary).toContain('The latest hearing to date must be after the latest hearding from date')
   })
 })

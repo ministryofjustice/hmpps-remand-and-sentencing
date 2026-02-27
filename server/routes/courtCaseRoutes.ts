@@ -262,7 +262,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         if (appearanceDateFromDate && appearanceDateFromDate.isAfter(appearanceDateToDate)) {
           searchAppearanceDateFrom = undefined
           filterErrors.push({
-            text: `The latest hearing from date must be after the latest hearding to date`,
+            text: `The latest hearing to date must be after the latest hearding from date`,
             href: '#appearanceDateTo',
           })
         }

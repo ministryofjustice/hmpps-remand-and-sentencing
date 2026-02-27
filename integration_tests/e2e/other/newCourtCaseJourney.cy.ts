@@ -104,7 +104,7 @@ context('New Court Case journey', () => {
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
     courtCaseReferencePage.input().type('T12345678')
     courtCaseReferencePage.continueButton().click()
-    const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
     courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
     courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
     courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
@@ -118,7 +118,7 @@ context('New Court Case journey', () => {
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'T12345678',
-      'Hearing date': '13/05/2023',
+      'Warrant date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Remanded in custody',
     })

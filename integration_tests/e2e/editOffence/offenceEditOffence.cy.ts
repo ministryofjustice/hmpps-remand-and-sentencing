@@ -57,7 +57,7 @@ context('Add Offence Edit offence Page', () => {
       courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
       courtCaseOverallCaseOutcomePage.continueButton().click()
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage.dayDateInput('warrantDate').type('13')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2025')

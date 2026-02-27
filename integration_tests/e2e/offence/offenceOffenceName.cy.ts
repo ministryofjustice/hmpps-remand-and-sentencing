@@ -6,6 +6,7 @@ import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import OffenceIsOffenceAggravatedPage from '../../pages/offenceIsOffenceAggravatedPage'
+import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 
 context('Add Offence Offence Name Page', () => {
   let offenceOffenceNamePage: OffenceOffenceNamePage
@@ -55,9 +56,16 @@ context('Add Offence Offence Name Page', () => {
       receivedCustodialSentencePage.radioLabelSelector('false').click()
       receivedCustodialSentencePage.continueButton().click()
 
+      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
+        CourtCaseOverallCaseOutcomePage,
+        'Select the overall case outcome',
+      )
+      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
+      courtCaseOverallCaseOutcomePage.continueButton().click()
+
       // Warrant Date
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
-      const courtCaseWarrantDatePage = Page.verifyOnPage(CourtCaseWarrantDatePage)
+      const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
       courtCaseWarrantDatePage.dayDateInput('warrantDate').clear().type('20')
       courtCaseWarrantDatePage.monthDateInput('warrantDate').clear().type('5')
       courtCaseWarrantDatePage.yearDateInput('warrantDate').clear().type('2025')

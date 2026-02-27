@@ -2,7 +2,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set isNonSentencingWarrant = courtAppearance.warrantType == 'NON_SENTENCING'%}
-{% set warrantOrHearing = 'Warrant' if courtAppearance.warrantType === 'SENTENCING' else 'Hearing' %}
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set checkAnswersRows = [] %}

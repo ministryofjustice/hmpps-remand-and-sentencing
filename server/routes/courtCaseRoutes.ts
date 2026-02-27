@@ -38,6 +38,7 @@ import {
   formatDate,
   orderOffences,
   consecutiveToSentenceDetailsToOffenceDescriptions,
+  convertToTitleCase,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import { chargeToOffence } from '../utils/mappingUtils'
@@ -968,6 +969,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
 
+    const appearanceOutcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+
+    const warrantOrHearing = await this.getWarrantOrHearing(res, req.user.username, appearanceOutcomeUuid, warrantType)
+
     return res.render('pages/courtAppearance/warrant-date', {
       nomsId,
       submitToCheckAnswers,
@@ -981,6 +990,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       errors: req.flash('errors') || [],
       backLink,
       showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      warrantOrHearing,
     })
   }
 
@@ -1727,6 +1737,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getCheckAnswers: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -1751,6 +1762,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     }
 
+    const warrantOrHearing = await this.getWarrantOrHearing(
+      res,
+      req.user.username,
+      courtAppearance.appearanceOutcomeUuid,
+      warrantType,
+      true,
+    )
+
     return res.render('pages/courtAppearance/check-answers', {
       nomsId,
       courtAppearance: { ...courtAppearance, offences: orderOffences(courtAppearance.offences) },
@@ -1760,6 +1779,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      warrantOrHearing,
     })
   }
 
@@ -2919,6 +2939,24 @@ export default class CourtCaseRoutes extends BaseRoutes {
             appearanceReference,
           ),
     )
+  }
+
+  private async getWarrantOrHearing(
+    res,
+    username: string,
+    outcomeUuid: string,
+    warrantType: string,
+    capital: boolean = false,
+  ) {
+    let { warrantOrHearing } = res.locals
+
+    if (warrantType === 'NON_SENTENCING') {
+      const outcome = await this.refDataService.getAppearanceOutcomeByUuid(outcomeUuid, username)
+      if (outcome.outcomeType === 'REMAND') {
+        warrantOrHearing = 'warrant'
+      }
+    }
+    return capital ? convertToTitleCase(warrantOrHearing) : warrantOrHearing
   }
 
   private getDocumentName(documentType: string, warrantType: string): string {

@@ -23,6 +23,7 @@ describe('GET Court Case Check Answers', () => {
     const appearanceOutcome = {
       outcomeUuid,
       outcomeName: 'Appearance outcome',
+      outcomeType: 'REMAND',
     } as AppearanceOutcome
     const courtAppearance = {
       warrantType: 'NON_SENTENCING',
@@ -37,6 +38,7 @@ describe('GET Court Case Check Answers', () => {
       courtName: 'A court',
     } as CourtDto
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue(courtAppearance)
+    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue(courtAppearance.warrantType)
     defaultServices.courtRegisterService.findCourtById.mockResolvedValue(court)
     defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue(appearanceOutcome)
 

@@ -38,6 +38,7 @@ import {
   formatDate,
   orderOffences,
   consecutiveToSentenceDetailsToOffenceDescriptions,
+  convertToTitleCase,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import { chargeToOffence } from '../utils/mappingUtils'
@@ -974,14 +975,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    const warrantOrHearing = await this.getWarrantOrHearing(
-      res,
-      req.user.username,
-      appearanceOutcomeUuid,
-      warrantType,
-      nomsId,
-      appearanceReference,
-    )
+    const warrantOrHearing = await this.getWarrantOrHearing(res, req.user.username, appearanceOutcomeUuid, warrantType)
 
     return res.render('pages/courtAppearance/warrant-date', {
       nomsId,
@@ -1773,8 +1767,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       req.user.username,
       courtAppearance.appearanceOutcomeUuid,
       warrantType,
-      nomsId,
-      appearanceReference,
       true,
     )
 
@@ -2954,8 +2946,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
     username: string,
     outcomeUuid: string,
     warrantType: string,
-    nomsId: string,
-    appearanceReference: string,
     capital: boolean = false,
   ) {
     let { warrantOrHearing } = res.locals
@@ -2966,7 +2956,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         warrantOrHearing = 'warrant'
       }
     }
-    return capital ? warrantOrHearing.charAt(0).toUpperCase() + warrantOrHearing.slice(1) : warrantOrHearing
+    return capital ? convertToTitleCase(warrantOrHearing) : warrantOrHearing
   }
 
   private getDocumentName(documentType: string, warrantType: string): string {

@@ -2,6 +2,7 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
+import config from '../../config'
 
 let app: Express
 
@@ -132,5 +133,44 @@ describe('GET Start', () => {
     expect(actionsList.length).toEqual(1)
     const newJourneyLinks = $('a[href*="new-journey"]')
     expect(newJourneyLinks.length).toEqual(2)
+  })
+
+  it('should render error when appearance from date is invalid', async () => {
+    config.featureToggles.filterCourtCases = true
+    setupCourtCase()
+    const res = await request(app)
+      .get('/person/A1234AB')
+      .query({ appearanceDateFrom: 'NotValidDate' })
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const errorSummary = $('.govuk-error-summary').text()
+    expect(errorSummary).toContain('There is a problem')
+    expect(errorSummary).toContain('This date does not exist.')
+  })
+
+  it('should render error when appearance to date is invalid', async () => {
+    config.featureToggles.filterCourtCases = true
+    setupCourtCase()
+    const res = await request(app)
+      .get('/person/A1234AB')
+      .query({ appearanceDateTo: 'NotValidDate' })
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const errorSummary = $('.govuk-error-summary').text()
+    expect(errorSummary).toContain('There is a problem')
+    expect(errorSummary).toContain('This date does not exist.')
+  })
+
+  it('should render error when appearance from date is after appearance to date', async () => {
+    config.featureToggles.filterCourtCases = true
+    setupCourtCase()
+    const res = await request(app)
+      .get('/person/A1234AB')
+      .query({ appearanceDateFrom: '12/2/2026', appearanceDateTo: '12/1/2026' })
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const errorSummary = $('.govuk-error-summary').text()
+    expect(errorSummary).toContain('There is a problem')
+    expect(errorSummary).toContain('The latest hearing from date must be after the latest hearding to date')
   })
 })

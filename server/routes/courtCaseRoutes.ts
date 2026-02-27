@@ -90,15 +90,15 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const sortByQuery = getAsStringOrDefault(sortBy, 'STATUS_APPEARANCE_DATE_DESC')
     let searchAppearanceDateFrom
     let searchAppearanceDateTo
+    const filterErrors = []
     if (config.featureToggles.filterCourtCases) {
-      if (appearanceDateFrom) {
-        const appearanceDateFromDate = dayjs(appearanceDateFrom)
-        searchAppearanceDateFrom = appearanceDateFromDate.format('YYYY-MM-DD')
-      }
-      if (appearanceDateTo) {
-        const appearanceDateToDate = dayjs(appearanceDateTo)
-        searchAppearanceDateTo = appearanceDateToDate.format('YYYY-MM-DD')
-      }
+      const validatedSearchParameters = this.validateAndGetCourtCaseSearchParameters(
+        appearanceDateFrom,
+        appearanceDateTo,
+      )
+      searchAppearanceDateFrom = validatedSearchParameters.searchAppearanceDateFrom
+      searchAppearanceDateTo = validatedSearchParameters.searchAppearanceDateTo
+      filterErrors.push(...validatedSearchParameters.filterErrors)
     }
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
 
@@ -222,7 +222,63 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceUuid: crypto.randomUUID(),
       paginationResults,
       successMessage,
+      filterErrors,
     })
+  }
+
+  private validateAndGetCourtCaseSearchParameters(
+    appearanceDateFrom: string,
+    appearanceDateTo: string,
+  ): {
+    searchAppearanceDateFrom: string | undefined
+    searchAppearanceDateTo: string | undefined
+    filterErrors: Array<{
+      text: string
+      href: string
+    }>
+  } {
+    let searchAppearanceDateFrom
+    let searchAppearanceDateTo
+    let appearanceDateFromDate
+    const filterErrors: Array<{
+      text: string
+      href: string
+    }> = []
+    if (appearanceDateFrom) {
+      appearanceDateFromDate = dayjs(appearanceDateFrom)
+      if (appearanceDateFromDate.isValid()) {
+        searchAppearanceDateFrom = appearanceDateFromDate.format('YYYY-MM-DD')
+      } else {
+        appearanceDateFromDate = undefined
+        filterErrors.push({
+          text: `This date does not exist.`,
+          href: '#appearanceDateFrom',
+        })
+      }
+    }
+    if (appearanceDateTo) {
+      const appearanceDateToDate = dayjs(appearanceDateTo)
+      if (appearanceDateToDate.isValid()) {
+        if (appearanceDateFromDate && appearanceDateFromDate.isAfter(appearanceDateToDate)) {
+          searchAppearanceDateFrom = undefined
+          filterErrors.push({
+            text: `The latest hearing from date must be after the latest hearding to date`,
+            href: '#appearanceDateTo',
+          })
+        }
+        searchAppearanceDateTo = appearanceDateToDate.format('YYYY-MM-DD')
+      } else {
+        filterErrors.push({
+          text: `This date does not exist.`,
+          href: '#appearanceDateTo',
+        })
+      }
+    }
+    return {
+      searchAppearanceDateFrom,
+      searchAppearanceDateTo,
+      filterErrors,
+    }
   }
 
   private getCourtCasesAuditUuids(

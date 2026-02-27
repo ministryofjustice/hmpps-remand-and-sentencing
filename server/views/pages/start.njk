@@ -36,10 +36,18 @@
 
         <div class="govuk-grid-column-two-thirds">
             {% if courtCaseDetailModels.length %}
+            {% if filterErrors | length %}
+                <div class="govuk-grid-row govuk-!-margin-top-4">
+                    {{ govukErrorSummary({
+                        titleText: "There is a problem",
+                        errorList: filterErrors
+                    }) }}
+                </div>
+            {% endif %}
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
                     {% if filterCourtCasesEnabled %}
-                        <details class="govuk-details filter govuk-!-margin-bottom-2">
+                        <details class="govuk-details filter govuk-!-margin-bottom-2"{% if filterErrors | length %} open {% endif %}>
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
                                     Filter and sort
@@ -78,7 +86,8 @@
                                         text: "Latest hearing date from",
                                         classes: "govuk-label--s"
                                     },
-                                    value: appearanceDateFrom
+                                    value: appearanceDateFrom,
+                                    errorMessage: filterErrors | findError('appearanceDateFrom')
                                     }) }}
 
                                     {{ mojDatePicker({
@@ -88,7 +97,8 @@
                                         text: "Latest hearing date to",
                                         classes: "govuk-label--s"
                                     },
-                                    value: appearanceDateTo
+                                    value: appearanceDateTo,
+                                    errorMessage: filterErrors | findError('appearanceDateTo')
                                     }) }}
 
                                     {{ govukButton({

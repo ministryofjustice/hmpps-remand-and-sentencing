@@ -10,5 +10,8 @@ export default function appearanceOutcomeDataAdminRoutes(services: Services): Ro
   router.get('/add', routes.add)
   router.post('/add', routes.submitAdd)
 
+  router.get('/edit/:appearanceOutcomeUuid', routes.edit)
+  router.post('/edit/:appearanceOutcomeUuid', routes.submitEdit)
+
   return router
 }

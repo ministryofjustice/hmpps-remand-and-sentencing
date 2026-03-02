@@ -550,4 +550,18 @@ export default class RemandAndSentencingApiClient extends RestClient {
       asSystem(username),
     )
   }
+
+  async updateAppearanceOutcome(
+    appearanceOutcomeUuid: string,
+    updateAppearanceOutcome: CreateAppearanceOutcome,
+    username: string,
+  ): Promise<AppearanceOutcome> {
+    return this.put(
+      {
+        path: `/appearance-outcome/${appearanceOutcomeUuid}`,
+        data: updateAppearanceOutcome,
+      },
+      asSystem(username),
+    )
+  }
 }

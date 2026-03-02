@@ -86,6 +86,18 @@ export default class RefDataService {
     return this.remandAndSentencingApiClient.createAppearanceOutcome(createAppearanceOutcome, username)
   }
 
+  async updateAppearanceOutcome(
+    appearanceOutcomeUuid: string,
+    updateAppearanceOutcome: CreateAppearanceOutcome,
+    username: string,
+  ): Promise<AppearanceOutcome> {
+    return this.remandAndSentencingApiClient.updateAppearanceOutcome(
+      appearanceOutcomeUuid,
+      updateAppearanceOutcome,
+      username,
+    )
+  }
+
   async clearAppearanceOutcomeCache(): Promise<number | `${number}`> {
     return clearCache(this.appearanceOutcomeCacheKey)
   }

@@ -12,9 +12,7 @@
             visuallyHiddenText: params.errorMessage.visuallyHiddenText
         }) | trim | indent(2) }}
     {% endif %}
-    <label class="govuk-label govuk-visually-hidden" for="{{ params.id }}-value">
-        Sentence length value
-    </label>
+    <label class="govuk-label govuk-visually-hidden" for="{{ params.id }}-value">{{ params.label | default('Sentence length') }} value</label>
     <input class="govuk-input govuk-input--width-2 govuk-!-margin-right-2 {%- if params.errorMessage %} govuk-input--error{% endif %}"
            id="{{ params.id }}-value"
            name="{{ params.name }}-value"
@@ -22,9 +20,7 @@
            type="text"
            inputmode="numeric">
 
-    <label class="govuk-label govuk-visually-hidden" for="{{ params.id }}-period">
-        Sentence length unit
-    </label>
+    <label class="govuk-label govuk-visually-hidden" for="{{ params.id }}-period">{{ params.label | default('Sentence length') }} unit</label>
     <select class="govuk-select alternative-sentence-length-select {%- if params.errorMessage %} govuk-select--error{% endif %}"
             id="{{ params.id }}-period"
             name="{{ params.name }}-period">

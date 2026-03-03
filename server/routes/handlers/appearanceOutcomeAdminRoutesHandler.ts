@@ -72,4 +72,63 @@ export default class AppearanceOutcomeAdminRoutesHandler {
       throw e
     }
   }
+
+  edit = async (req: Request, res: Response) => {
+    const [appearanceOutcomes, chargeOutcomes] = await Promise.all([
+      this.refDataService.getAllUncachedAppearanceOutcomes(req.user.username),
+      this.refDataService.getAllUncachedChargeOutcomes(req.user.username),
+    ])
+    const { appearanceOutcomeUuid } = req.params as { appearanceOutcomeUuid: string }
+    const existingAppearanceOutcome = appearanceOutcomes.find(
+      appearanceOutcome => appearanceOutcome.outcomeUuid === appearanceOutcomeUuid,
+    )
+    const types = new Set(appearanceOutcomes.map(outcome => outcome.outcomeType))
+    const dispositionCodes = new Set(appearanceOutcomes.map(outcome => outcome.dispositionCode))
+    const warrantTypes = new Set(appearanceOutcomes.map(outcome => outcome.warrantType))
+    const sortedChargeOutcomes = chargeOutcomes.sort((a, b) => a.outcomeName.localeCompare(b.outcomeName))
+    const statuses: CreateAppearanceOutcome['status'][] = ['ACTIVE', 'INACTIVE']
+    const updateAppearanceOutcome = (req.flash('updateAppearanceOutcome')[0] || {
+      ...existingAppearanceOutcome,
+    }) as CreateAppearanceOutcome
+    return res.render('pages/referenceData/appearanceOutcome/edit', {
+      types,
+      dispositionCodes,
+      statuses,
+      warrantTypes,
+      sortedChargeOutcomes,
+      updateAppearanceOutcome,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  submitEdit = async (req: Request, res: Response) => {
+    const { appearanceOutcomeUuid } = req.params as { appearanceOutcomeUuid: string }
+    const updateAppearanceOutcome = trimForm<CreateAppearanceOutcome>(req.body)
+    try {
+      await this.refDataService.updateAppearanceOutcome(
+        appearanceOutcomeUuid,
+        updateAppearanceOutcome,
+        req.user.username,
+      )
+      await this.refDataService.clearAppearanceOutcomeCache()
+      req.flash('successMessage', 'appearance outcome successfully updated')
+      return res.redirect('/admin/appearance-outcomes')
+    } catch (e) {
+      if (e instanceof SanitisedError) {
+        const sanitisedError = e as SanitisedError
+        if (sanitisedError.responseStatus === 400) {
+          const fieldErrors = e.data as FieldErrorErrorResponse
+          req.flash(
+            'errors',
+            fieldErrors.fieldErrors?.map(fieldError => {
+              return { href: `#${fieldError.field}`, text: fieldError.message ?? '' }
+            }) ?? [],
+          )
+          req.flash('updateAppearanceOutcome', { ...updateAppearanceOutcome })
+          return res.redirect(`/admin/appearance-outcomes/edit/${appearanceOutcomeUuid}`)
+        }
+      }
+      throw e
+    }
+  }
 }

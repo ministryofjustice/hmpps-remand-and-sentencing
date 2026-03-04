@@ -1,8 +1,8 @@
 function debounce(fn, delay) {
-  var timer = null
+  let timer = null
   return function () {
-    var context = this,
-      args = arguments
+    const context = this
+    const args = arguments
     clearTimeout(timer)
     timer = setTimeout(function () {
       fn.apply(context, args)
@@ -10,56 +10,65 @@ function debounce(fn, delay) {
   }
 }
 
-const request = new XMLHttpRequest()
-
 window.addEventListener('load', function () {
-  accessibleAutocomplete.enhanceSelectElement({
-    defaultValue: document.getElementById('autocomplete-script').dataset.court,
-    selectElement: document.querySelector('#court-name'),
-    confirmOnBlur: false,
-    name: 'courtName',
+  const select = document.querySelector('#court-name')
+  const courtCodeInput = document.getElementById('court-code')
+  const defaultCourt = document
+    .getElementById('autocomplete-script')
+    .dataset.court
+
+  select.classList.add('govuk-visually-hidden')
+
+  accessibleAutocomplete({
+    element: select.parentElement,
     id: 'court-name',
-    menuClasses: 'govuk-body',
-    inputAttributes: {
-      'aria-labelledby': 'court-name-label'
-    },
-    onConfirm: function (confirmed) {
-      if (confirmed && confirmed.courtId) {
-        document.getElementById('court-code').value = confirmed.courtId
-      } else {
-        document.getElementById('court-code').value = ''
-      }
-    },
-    templates: {
-      inputValue: function (result) {
-        return (result && result.courtName) ?? ''
-      },
-      suggestion: function (result) {
-        if (result.unableToLoad) {
-          return 'No results found'
-        }
-        if (typeof result === 'string') {
-          return 'Clear the selection'
-        }
-        return result && result.courtName
-      },
-    },
+    name: 'courtName',
+    defaultValue: defaultCourt,
+    confirmOnBlur: false,
     minLength: 3,
+    displayMenu: 'overlay',
+    inputClasses: 'govuk-input',
+
     source: debounce(function (query, populateResults) {
-      request.open('GET', '/api/search-court?searchString=' + query, true)
-      request.timeout = 2 * 1000
+      const request = new XMLHttpRequest()
+      request.open(
+        'GET',
+        '/api/search-court?searchString=' + query,
+        true
+      )
+      request.timeout = 2000
+
       request.onreadystatechange = function () {
         if (request.readyState === XMLHttpRequest.DONE) {
           if (request.status === 200) {
-            var response = request.responseText
-            var json = JSON.parse(response)
-            populateResults(json)
+            populateResults(JSON.parse(request.responseText))
           } else {
             populateResults([{ unableToLoad: true }])
           }
         }
       }
+
       request.send()
     }, 100),
+
+    onConfirm: function (confirmed) {
+      if (confirmed && confirmed.courtId) {
+        courtCodeInput.value = confirmed.courtId
+      } else {
+        courtCodeInput.value = ''
+      }
+    },
+
+    templates: {
+      inputValue: function (result) {
+        return result && result.courtName ? result.courtName : ''
+      },
+      suggestion: function (result) {
+        if (result && result.unableToLoad) {
+          return 'No results found'
+        }
+        return result && result.courtName
+      }
+    }
   })
 })

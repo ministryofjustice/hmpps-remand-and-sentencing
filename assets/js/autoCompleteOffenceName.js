@@ -1,67 +1,78 @@
-function debounce(fn, delay) {
-  var timer = null
-  return function () {
-    var context = this,
-      args = arguments
-    clearTimeout(timer)
-    timer = setTimeout(function () {
-      fn.apply(context, args)
-    }, delay)
+(function () {
+  function debounce(fn, delay) {
+    let timer = null
+    return function () {
+      const context = this
+      const args = arguments
+      clearTimeout(timer)
+      timer = setTimeout(function () {
+        fn.apply(context, args)
+      }, delay)
+    }
   }
-}
 
-function offenceValue(offence) {
-  return offence.code + ' ' + offence.description
-}
+  function offenceValue(offence) {
+    return offence.code + ' ' + offence.description
+  }
 
-const request = new XMLHttpRequest()
+  const request = new XMLHttpRequest()
 
-window.addEventListener('load', function () {
-  accessibleAutocomplete.enhanceSelectElement({
-    defaultValue: document.getElementById('autocomplete-script').dataset.offence,
-    selectElement: document.querySelector('#offence-name'),
-    confirmOnBlur: false,
-    name: 'offenceName',
-    id: 'offence-name',
-    menuClasses: 'govuk-body',
-    inputAttributes: {
-      'aria-labelledby': 'offence-name-label'
-    },
-    templates: {
-      inputValue: function (result) {
-        if (!result || typeof result === 'string') {
-          return ''
-        }
-        return offenceValue(result)
-      },
-      suggestion: function (result) {
-        if (result.unableToLoad) {
-          return 'No results found'
-        }
-        if (typeof result === 'string') {
-          return 'Clear the selection'
-        }
-        return result && offenceValue(result)
-      },
-    },
-    minLength: 2,
-    source: debounce(function (query, populateResults) {
-      request.open('GET', '/api/search-offence?searchString=' + query, true)
-      // Time to wait before giving up fetching the search index
-      request.timeout = 2 * 1000
-      request.onreadystatechange = function () {
-        // XHR client readyState DONE
-        if (request.readyState === XMLHttpRequest.DONE) {
-          if (request.status === 200) {
-            var response = request.responseText
-            var json = JSON.parse(response)
-            populateResults(json)
-          } else {
-            populateResults([{ unableToLoad: true }])
+  window.addEventListener('load', function () {
+    const select = document.querySelector('#offence-name')
+    const autocompleteScript = document.getElementById('autocomplete-script')
+    const defaultOffence = autocompleteScript ? autocompleteScript.dataset.offence : ''
+
+    if (select) {
+      select.classList.add('govuk-visually-hidden')
+
+      accessibleAutocomplete({
+        element: select.parentElement,
+        id: 'offence-name',
+        name: 'offenceName',
+        defaultValue: defaultOffence,
+        confirmOnBlur: false,
+        minLength: 2,
+        displayMenu: 'overlay',
+        inputClasses: 'govuk-input',
+
+        source: debounce(function (query, populateResults) {
+          request.open('GET', '/api/search-offence?searchString=' + encodeURIComponent(query), true)
+          request.timeout = 2000
+          request.onreadystatechange = function () {
+            if (request.readyState === XMLHttpRequest.DONE) {
+              if (request.status === 200) {
+                try {
+                  const json = JSON.parse(request.responseText)
+                  populateResults(json)
+                } catch (e) {
+                  populateResults([])
+                }
+              } else {
+                populateResults([{ unableToLoad: true }])
+              }
+            }
+          }
+          request.send()
+        }, 100),
+
+        templates: {
+          inputValue: function (result) {
+            if (!result || typeof result === 'string') {
+              return ''
+            }
+            return offenceValue(result)
+          },
+          suggestion: function (result) {
+            if (result && result.unableToLoad) {
+              return 'No results found'
+            }
+            if (typeof result === 'string') {
+              return 'Clear the selection'
+            }
+            return result && offenceValue(result)
           }
         }
-      }
-      request.send()
-    }, 100),
+      })
+    }
   })
-})
+})()

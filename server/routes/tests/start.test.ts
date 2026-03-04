@@ -173,4 +173,16 @@ describe('GET Start', () => {
     expect(errorSummary).toContain('There is a problem')
     expect(errorSummary).toContain('The latest hearing to date must be after the latest hearding from date')
   })
+
+  it('should render page correctly when valid date supplied', async () => {
+    config.featureToggles.filterCourtCases = true
+    setupCourtCase()
+    const res = await request(app)
+      .get('/person/A1234AB')
+      .query({ appearanceDateFrom: '01/01/2026', appearanceDateTo: '12/1/2026' })
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const errorSummary = $('.govuk-error-summary')
+    expect(errorSummary.length).toBe(0)
+  })
 })

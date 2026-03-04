@@ -1166,7 +1166,7 @@ export default class CourtAppearanceService {
 
   setDocumentUploadedTrue(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-    courtAppearance.documentUploadAccepted = true
+    if (courtAppearance.uploadedDocuments?.length > 0) courtAppearance.documentUploadAccepted = true
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

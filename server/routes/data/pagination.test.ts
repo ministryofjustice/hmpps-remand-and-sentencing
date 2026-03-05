@@ -1,4 +1,4 @@
-import { PagePagedCourtCase } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { SearchCourtCasesPage } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import { govukPaginationFromPagePagedCourtCase, getPaginationResults } from './pagination'
 
 describe('pagination tests', () => {
@@ -31,7 +31,8 @@ describe('pagination tests', () => {
       },
       numberOfElements: 1,
       empty: false,
-    } as PagePagedCourtCase
+      prisonerCourtCaseTotal: 1,
+    } as SearchCourtCasesPage
     const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result).toBeNull()
   })
@@ -64,6 +65,7 @@ describe('pagination tests', () => {
       },
       numberOfElements: 14,
       empty: false,
+      prisonerCourtCaseTotal: 14,
     }
     const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.previous).toEqual({
@@ -99,7 +101,8 @@ describe('pagination tests', () => {
       first: true,
       numberOfElements: 20,
       empty: false,
-    } as PagePagedCourtCase
+      prisonerCourtCaseTotal: 34,
+    } as SearchCourtCasesPage
     const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.next).toEqual({
       href: `http://localhost/?pageNumber=2`,
@@ -134,6 +137,7 @@ describe('pagination tests', () => {
       },
       numberOfElements: 14,
       empty: false,
+      prisonerCourtCaseTotal: 34,
     }
     const result = getPaginationResults(pageCourtCase)
     expect(result).toEqual({
@@ -171,7 +175,8 @@ describe('pagination tests', () => {
       },
       numberOfElements: 8,
       empty: false,
-    } as PagePagedCourtCase
+      prisonerCourtCaseTotal: 38,
+    } as SearchCourtCasesPage
     const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.items).toEqual([
       {
@@ -223,7 +228,8 @@ describe('pagination tests', () => {
       },
       numberOfElements: 8,
       empty: false,
-    } as PagePagedCourtCase
+      prisonerCourtCaseTotal: 38,
+    } as SearchCourtCasesPage
     const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.items).toEqual([
       {
@@ -282,7 +288,8 @@ describe('pagination tests', () => {
       },
       numberOfElements: 8,
       empty: false,
-    } as PagePagedCourtCase
+      prisonerCourtCaseTotal: 38,
+    } as SearchCourtCasesPage
     const result = govukPaginationFromPagePagedCourtCase(pageCourtCase, baseUrl)
     expect(result.items).toEqual([
       {

@@ -23,9 +23,9 @@ import {
   OffenceOutcome,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
-  PagePagedCourtCase,
   PrisonerDocuments,
   PrisonerSentenceEnvelopes,
+  SearchCourtCasesPage,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
   SentenceDetails,
@@ -64,8 +64,8 @@ export default class RemandAndSentencingApiClient extends RestClient {
     appearanceDateTo: string,
     page: number,
     username: string,
-  ): Promise<PagePagedCourtCase> {
-    return (await this.get(
+  ): Promise<SearchCourtCasesPage> {
+    return this.get(
       {
         path: `/court-case/paged/search`,
         query: {
@@ -77,7 +77,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<PagePagedCourtCase>
+    )
   }
 
   async putCourtAppearance(

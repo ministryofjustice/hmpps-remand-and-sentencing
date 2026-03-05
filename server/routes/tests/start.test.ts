@@ -88,6 +88,7 @@ const setupCourtCase = () => {
     last: true,
     first: true,
     empty: true,
+    prisonerCourtCaseTotal: 1,
   })
   defaultServices.courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue({
     services: {

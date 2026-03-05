@@ -17,9 +17,9 @@ import {
   MissingSentenceAppearance,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
-  PagePagedCourtCase,
   PrisonerDocuments,
   PrisonerSentenceEnvelopes,
+  SearchCourtCasesPage,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
   SentenceDetails,
@@ -56,7 +56,7 @@ export default class RemandAndSentencingService {
     appearanceDateFrom: string,
     appearanceDateTo: string,
     page: number,
-  ): Promise<PagePagedCourtCase> {
+  ): Promise<SearchCourtCasesPage> {
     return this.remandAndSentencingApiClient.searchCourtCases(
       prisonerId,
       sortBy,

@@ -510,6 +510,7 @@ export default {
           last: true,
           first: true,
           empty: true,
+          prisonerCourtCaseTotal: 1,
         },
       },
     })
@@ -559,6 +560,7 @@ export default {
           last: false,
           first: false,
           empty: true,
+          prisonerCourtCaseTotal: 0,
         },
       },
     })

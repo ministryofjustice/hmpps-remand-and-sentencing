@@ -54,7 +54,7 @@
                                 <span class="govuk-details__summary-text">
                                     Filter and sort
                                 </span>
-                                <div class="gouk-body govuk-!-font-weight-bold results">Showing <strong>{{ paginationResults.from }}</strong> to <strong>{{ paginationResults.to }}</strong> of <strong>{{ prisonerCourtCaseTotal }}</strong> court cases</div>
+                                <div class="gouk-body govuk-!-font-weight-bold results">Showing {% if paginationResults.count%}<strong>{{ paginationResults.from }}</strong> to <strong>{{ paginationResults.to }}</strong>{% else %}<strong>0</strong>{% endif %} of <strong>{{ prisonerCourtCaseTotal }}</strong> court cases</div>
                             </summary>
                             <div class="govuk-details__text">
                                 <form>

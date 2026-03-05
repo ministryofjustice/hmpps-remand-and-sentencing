@@ -53,7 +53,7 @@ import CourtRegisterService from '../services/courtRegisterService'
 import {
   MergedFromCase,
   PageCourtCaseContent,
-  PagePagedCourtCase,
+  SearchCourtCasesPage,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -224,6 +224,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       paginationResults,
       successMessage,
       filterErrors,
+      prisonerCourtCaseTotal: courtCases.prisonerCourtCaseTotal,
     })
   }
 
@@ -283,7 +284,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
   }
 
   private getCourtCasesAuditUuids(
-    courtCases: PagePagedCourtCase,
+    courtCases: SearchCourtCasesPage,
     consecutiveToSentenceDetails: SentenceConsecutiveToDetailsResponse,
   ): {
     courtCaseUuids: string[]

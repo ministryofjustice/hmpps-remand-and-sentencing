@@ -17,8 +17,6 @@ window.addEventListener('load', function () {
     .getElementById('autocomplete-script')
     .dataset.court
 
-  select.classList.add('govuk-visually-hidden')
-
   accessibleAutocomplete({
     element: select.parentElement,
     id: 'court-name',
@@ -28,6 +26,7 @@ window.addEventListener('load', function () {
     minLength: 3,
     displayMenu: 'overlay',
     inputClasses: 'govuk-input',
+    menuClasses: 'govuk-body',
 
     source: debounce(function (query, populateResults) {
       const request = new XMLHttpRequest()
@@ -66,6 +65,9 @@ window.addEventListener('load', function () {
       suggestion: function (result) {
         if (result && result.unableToLoad) {
           return 'No results found'
+        }
+        if (typeof result === 'string') {
+          return 'Clear the selection'
         }
         return result && result.courtName
       }

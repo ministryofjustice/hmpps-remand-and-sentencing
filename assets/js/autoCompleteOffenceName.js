@@ -23,7 +23,6 @@
     const defaultOffence = autocompleteScript ? autocompleteScript.dataset.offence : ''
 
     if (select) {
-      select.classList.add('govuk-visually-hidden')
 
       accessibleAutocomplete({
         element: select.parentElement,
@@ -34,6 +33,7 @@
         minLength: 2,
         displayMenu: 'overlay',
         inputClasses: 'govuk-input',
+        menuClasses: 'govuk-body',
 
         source: debounce(function (query, populateResults) {
           request.open('GET', '/api/search-offence?searchString=' + encodeURIComponent(query), true)

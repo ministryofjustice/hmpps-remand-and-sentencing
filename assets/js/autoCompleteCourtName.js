@@ -10,6 +10,8 @@ function debounce(fn, delay) {
   }
 }
 
+const request = new XMLHttpRequest()
+
 window.addEventListener('load', function () {
   const select = document.querySelector('#court-name')
   const courtCodeInput = document.getElementById('court-code')

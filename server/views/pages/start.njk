@@ -11,6 +11,8 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {%- from "moj/components/date-picker/macro.njk" import mojDatePicker -%}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
 
 {% set pageTitle = applicationName + " - Home" %}
 
@@ -79,27 +81,34 @@
                                         ]
                                     }) }}
 
-                                    {{ mojDatePicker({
-                                    id: "appearanceDateFrom",
-                                    name: "appearanceDateFrom",
-                                    label: {
-                                        text: "Latest hearing date from",
-                                        classes: "govuk-label--s"
-                                    },
-                                    value: appearanceDateFrom,
-                                    errorMessage: filterErrors | findError('appearanceDateFrom')
-                                    }) }}
+                                    {% call govukFieldset({
+                                        legend: {
+                                            text: "Filter by date range",
+                                            classes: "govuk-fieldset__legend--s"
+                                        }
+                                    }) %}
 
-                                    {{ mojDatePicker({
-                                    id: "appearanceDateTo",
-                                    name: "appearanceDateTo",
-                                    label: {
-                                        text: "Latest hearing date to",
-                                        classes: "govuk-label--s"
-                                    },
-                                    value: appearanceDateTo,
-                                    errorMessage: filterErrors | findError('appearanceDateTo')
-                                    }) }}
+                                        {{ mojDatePicker({
+                                        id: "appearanceDateFrom",
+                                        name: "appearanceDateFrom",
+                                        label: {
+                                            text: "Latest hearing date: from"
+                                        },
+                                        value: appearanceDateFrom,
+                                        errorMessage: filterErrors | findError('appearanceDateFrom')
+                                        }) }}
+
+                                        {{ mojDatePicker({
+                                        id: "appearanceDateTo",
+                                        name: "appearanceDateTo",
+                                        label: {
+                                            text: "Latest hearing date: to"
+                                        },
+                                        value: appearanceDateTo,
+                                        errorMessage: filterErrors | findError('appearanceDateTo')
+                                        }) }}
+
+                                    {% endcall %}
 
                                     {{ govukButton({
                                         text: "Apply",

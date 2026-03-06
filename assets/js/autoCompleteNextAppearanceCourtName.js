@@ -13,12 +13,16 @@ function debounce(fn, delay) {
 const request = new XMLHttpRequest()
 
 window.addEventListener('load', function () {
-  accessibleAutocomplete.enhanceSelectElement({
-    defaultValue: document.getElementById('autocomplete-script').dataset.nextAppearanceCourtName,
-    selectElement: document.querySelector('#next-appearance-court-name'),
-    menuClasses: 'govuk-body',
-    confirmOnBlur: false,
+  const select = document.querySelector('#next-appearance-court-name')
+  accessibleAutocomplete({
+    element: select.parentElement,
+    id: 'next-appearance-court-name',
     name: 'nextAppearanceCourtName',
+    defaultValue: document.getElementById('autocomplete-script').dataset.nextAppearanceCourtName,
+    menuClasses: 'govuk-body',
+    inputClasses: 'govuk-input',
+    displayMenu: 'overlay',
+    confirmOnBlur: false,
     onConfirm: function (confirmed) {
       if (confirmed && confirmed.courtId) {
         document.getElementById('court-code').value = confirmed.courtId

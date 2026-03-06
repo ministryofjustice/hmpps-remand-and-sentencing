@@ -88,6 +88,7 @@ const setupCourtCase = () => {
     last: true,
     first: true,
     empty: true,
+    prisonerCourtCaseTotal: 1,
   })
   defaultServices.courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue({
     services: {
@@ -179,7 +180,7 @@ describe('GET Start', () => {
     setupCourtCase()
     const res = await request(app)
       .get('/person/A1234AB')
-      .query({ appearanceDateFrom: '01/01/2026', appearanceDateTo: '12/1/2026' })
+      .query({ appearanceDateFrom: '1/1/2026', appearanceDateTo: '12/12/2026' })
       .expect('Content-Type', /html/)
     const $ = cheerio.load(res.text)
     const errorSummary = $('.govuk-error-summary')

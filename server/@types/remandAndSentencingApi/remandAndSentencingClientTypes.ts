@@ -10,8 +10,6 @@ export type CreateCharge = components['schemas']['CreateCharge']
 
 export type CreateCourtCaseResponse = components['schemas']['CreateCourtCaseResponse']
 
-export type PageCourtCase = components['schemas']['PageCourtCase']
-
 export type CreateCourtAppearanceResponse = components['schemas']['CreateCourtAppearanceResponse']
 
 export type PageCourtCaseContent = components['schemas']['CourtCase']
@@ -63,8 +61,6 @@ export type SentenceToChainTo = components['schemas']['SentenceToChainTo']
 export type SentenceConsecutiveToDetailsResponse = components['schemas']['SentenceConsecutiveToDetailsResponse']
 
 export type SentenceConsecutiveToDetails = components['schemas']['SentenceConsecutiveToDetails']
-
-export type PagePagedCourtCase = components['schemas']['PagePagedCourtCase']
 
 export type PagedCourtCase = components['schemas']['PagedCourtCase']
 
@@ -127,3 +123,5 @@ export type CreateChargeOutcome = components['schemas']['CreateChargeOutcome']
 export type FieldErrorErrorResponse = components['schemas']['FieldErrorErrorResponse']
 
 export type CreateAppearanceOutcome = components['schemas']['CreateAppearanceOutcome']
+
+export type SearchCourtCasesPage = components['schemas']['SearchCourtCasesPage']

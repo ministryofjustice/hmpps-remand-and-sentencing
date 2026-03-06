@@ -11,6 +11,8 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {%- from "moj/components/date-picker/macro.njk" import mojDatePicker -%}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
 
 {% set pageTitle = applicationName + " - Home" %}
 
@@ -35,7 +37,7 @@
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
-            {% if courtCaseDetailModels.length %}
+            {% if prisonerCourtCaseTotal %}
             {% if filterErrors | length %}
                 <div class="govuk-grid-row govuk-!-margin-top-4">
                     {{ govukErrorSummary({
@@ -47,12 +49,12 @@
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
                     {% if filterCourtCasesEnabled %}
-                        <details class="govuk-details filter govuk-!-margin-bottom-2"{% if filterErrors | length %} open {% endif %}>
+                        <details class="govuk-details filter filter-box govuk-!-margin-bottom-2"{% if filterErrors | length %} open {% endif %}>
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
                                     Filter and sort
                                 </span>
-                                <div class="gouk-body govuk-!-font-weight-bold results">Showing <strong>{{ paginationResults.from }}</strong> to <strong>{{ paginationResults.to }}</strong> of <strong>{{ paginationResults.count }}</strong> court cases</div>
+                                <div class="gouk-body govuk-!-font-weight-bold results">Showing {% if paginationResults.count%}<strong>{{ paginationResults.from }}</strong> to <strong>{{ paginationResults.to }}</strong>{% else %}<strong>0</strong>{% endif %} of <strong>{{ prisonerCourtCaseTotal }}</strong> court cases</div>
                             </summary>
                             <div class="govuk-details__text">
                                 <form>
@@ -79,27 +81,34 @@
                                         ]
                                     }) }}
 
-                                    {{ mojDatePicker({
-                                    id: "appearanceDateFrom",
-                                    name: "appearanceDateFrom",
-                                    label: {
-                                        text: "Latest hearing date from",
-                                        classes: "govuk-label--s"
-                                    },
-                                    value: appearanceDateFrom,
-                                    errorMessage: filterErrors | findError('appearanceDateFrom')
-                                    }) }}
+                                    {% call govukFieldset({
+                                        legend: {
+                                            text: "Filter by date range",
+                                            classes: "govuk-fieldset__legend--s"
+                                        }
+                                    }) %}
 
-                                    {{ mojDatePicker({
-                                    id: "appearanceDateTo",
-                                    name: "appearanceDateTo",
-                                    label: {
-                                        text: "Latest hearing date to",
-                                        classes: "govuk-label--s"
-                                    },
-                                    value: appearanceDateTo,
-                                    errorMessage: filterErrors | findError('appearanceDateTo')
-                                    }) }}
+                                        {{ mojDatePicker({
+                                        id: "appearanceDateFrom",
+                                        name: "appearanceDateFrom",
+                                        label: {
+                                            text: "Latest hearing date: from"
+                                        },
+                                        value: appearanceDateFrom,
+                                        errorMessage: filterErrors | findError('appearanceDateFrom')
+                                        }) }}
+
+                                        {{ mojDatePicker({
+                                        id: "appearanceDateTo",
+                                        name: "appearanceDateTo",
+                                        label: {
+                                            text: "Latest hearing date: to"
+                                        },
+                                        value: appearanceDateTo,
+                                        errorMessage: filterErrors | findError('appearanceDateTo')
+                                        }) }}
+
+                                    {% endcall %}
 
                                     {{ govukButton({
                                         text: "Apply",

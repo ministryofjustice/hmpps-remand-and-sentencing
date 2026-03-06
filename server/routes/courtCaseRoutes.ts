@@ -53,7 +53,7 @@ import CourtRegisterService from '../services/courtRegisterService'
 import {
   MergedFromCase,
   PageCourtCaseContent,
-  PagePagedCourtCase,
+  SearchCourtCasesPage,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -215,7 +215,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       sortBy,
       appearanceDateFrom,
       appearanceDateTo,
-      courtCaseTotal: courtCaseDetailModels.length,
       offenceOutcomeMap,
       serviceDefinitions,
       pagination,
@@ -224,6 +223,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       paginationResults,
       successMessage,
       filterErrors,
+      prisonerCourtCaseTotal: courtCases.prisonerCourtCaseTotal,
     })
   }
 
@@ -246,7 +246,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       href: string
     }> = []
     if (appearanceDateFrom) {
-      appearanceDateFromDate = dayjs(appearanceDateFrom, 'DD/MM/YYYY')
+      appearanceDateFromDate = dayjs(appearanceDateFrom, 'D/M/YYYY')
       if (appearanceDateFromDate.isValid()) {
         searchAppearanceDateFrom = appearanceDateFromDate.format('YYYY-MM-DD')
       } else {
@@ -258,7 +258,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     }
     if (appearanceDateTo) {
-      const appearanceDateToDate = dayjs(appearanceDateTo, 'DD/MM/YYYY')
+      const appearanceDateToDate = dayjs(appearanceDateTo, 'D/M/YYYY')
       if (appearanceDateToDate.isValid()) {
         if (appearanceDateFromDate && appearanceDateFromDate.isAfter(appearanceDateToDate)) {
           searchAppearanceDateFrom = undefined
@@ -283,7 +283,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
   }
 
   private getCourtCasesAuditUuids(
-    courtCases: PagePagedCourtCase,
+    courtCases: SearchCourtCasesPage,
     consecutiveToSentenceDetails: SentenceConsecutiveToDetailsResponse,
   ): {
     courtCaseUuids: string[]

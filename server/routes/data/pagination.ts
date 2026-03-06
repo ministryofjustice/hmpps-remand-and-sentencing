@@ -1,4 +1,4 @@
-import { PagePagedCourtCase } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { SearchCourtCasesPage } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 type PageLink = {
   href: string
@@ -24,85 +24,87 @@ type PageViewModel = {
 }
 
 export function govukPaginationFromPagePagedCourtCase(
-  pageCourtCases: PagePagedCourtCase,
+  searchCourtCasesPage: SearchCourtCasesPage,
   url: URL,
 ): PageViewModel | null {
-  if (pageCourtCases.totalPages > 1) {
+  if (searchCourtCasesPage.totalPages > 1) {
     return {
-      previous: getPrevious(pageCourtCases, url),
-      next: getNext(pageCourtCases, url),
-      items: getNumberedPageItems(pageCourtCases, url),
+      previous: getPrevious(searchCourtCasesPage, url),
+      next: getNext(searchCourtCasesPage, url),
+      items: getNumberedPageItems(searchCourtCasesPage, url),
     }
   }
   return null
 }
 
-export function getPaginationResults(pageCourtCases: PagePagedCourtCase): ResultsMetaData {
+export function getPaginationResults(searchCourtCasesPage: SearchCourtCasesPage): ResultsMetaData {
   return {
-    from: pageCourtCases.pageable.offset + 1,
-    to: pageCourtCases.pageable.offset + pageCourtCases.numberOfElements,
-    count: pageCourtCases.totalElements,
+    from: searchCourtCasesPage.pageable.offset + 1,
+    to: searchCourtCasesPage.pageable.offset + searchCourtCasesPage.numberOfElements,
+    count: searchCourtCasesPage.totalElements,
   }
 }
 
-function getNumberedPageItems(pageCourtCases: PagePagedCourtCase, url: URL): NumberedPageLink[] {
+function getNumberedPageItems(searchCourtCasesPage: SearchCourtCasesPage, url: URL): NumberedPageLink[] {
   url.searchParams.set('pageNumber', '1')
   const numberedPageLinks = [
     {
       number: 1,
       href: url.href,
-      current: pageCourtCases.first,
+      current: searchCourtCasesPage.first,
     } as NumberedPageLink,
   ]
-  if (pageCourtCases.pageable.pageNumber >= 3) {
+  if (searchCourtCasesPage.pageable.pageNumber >= 3) {
     numberedPageLinks.push({
       ellipsis: true,
     })
   }
-  numberPageRange(pageCourtCases, pageCourtCases.pageable.pageNumber, pageCourtCases.pageable.pageNumber + 2).forEach(
-    pageNumber => {
-      url.searchParams.set('pageNumber', pageNumber.toString())
-      numberedPageLinks.push({
-        number: pageNumber,
-        href: url.href,
-        current: pageNumber === pageCourtCases.pageable.pageNumber + 1,
-      } as NumberedPageLink)
-    },
-  )
-  if (pageCourtCases.pageable.pageNumber < pageCourtCases.totalPages - 3) {
+  numberPageRange(
+    searchCourtCasesPage,
+    searchCourtCasesPage.pageable.pageNumber,
+    searchCourtCasesPage.pageable.pageNumber + 2,
+  ).forEach(pageNumber => {
+    url.searchParams.set('pageNumber', pageNumber.toString())
+    numberedPageLinks.push({
+      number: pageNumber,
+      href: url.href,
+      current: pageNumber === searchCourtCasesPage.pageable.pageNumber + 1,
+    } as NumberedPageLink)
+  })
+  if (searchCourtCasesPage.pageable.pageNumber < searchCourtCasesPage.totalPages - 3) {
     numberedPageLinks.push({
       ellipsis: true,
     })
   }
-  url.searchParams.set('pageNumber', pageCourtCases.totalPages.toString())
+  url.searchParams.set('pageNumber', searchCourtCasesPage.totalPages.toString())
   numberedPageLinks.push({
-    number: pageCourtCases.totalPages,
+    number: searchCourtCasesPage.totalPages,
     href: url.href,
-    current: pageCourtCases.last,
+    current: searchCourtCasesPage.last,
   } as NumberedPageLink)
   return numberedPageLinks
 }
 
-function numberPageRange(pageCourtCases: PagePagedCourtCase, start: number, end: number): number[] {
+function numberPageRange(searchCourtCasesPage: SearchCourtCasesPage, start: number, end: number): number[] {
   return Array.from({ length: end + 1 - start }, (_, key) => key + start).filter(
-    i => i > 1 && i < pageCourtCases.totalPages,
+    i => i > 1 && i < searchCourtCasesPage.totalPages,
   )
 }
 
-function getPrevious(pageCourtCases: PagePagedCourtCase, url: URL): PageLink | null {
-  url.searchParams.set('pageNumber', pageCourtCases.pageable.pageNumber.toString())
+function getPrevious(searchCourtCasesPage: SearchCourtCasesPage, url: URL): PageLink | null {
+  url.searchParams.set('pageNumber', searchCourtCasesPage.pageable.pageNumber.toString())
   return (
-    (!pageCourtCases.first && {
+    (!searchCourtCasesPage.first && {
       href: url.href,
     }) ||
     null
   )
 }
 
-function getNext(pageCourtCases: PagePagedCourtCase, url: URL): PageLink | null {
-  url.searchParams.set('pageNumber', (pageCourtCases.pageable.pageNumber + 2).toString())
+function getNext(searchCourtCasesPage: SearchCourtCasesPage, url: URL): PageLink | null {
+  url.searchParams.set('pageNumber', (searchCourtCasesPage.pageable.pageNumber + 2).toString())
   return (
-    (!pageCourtCases.last && {
+    (!searchCourtCasesPage.last && {
       href: url.href,
     }) ||
     null

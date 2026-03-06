@@ -5,7 +5,7 @@ export default class CourtCaseCourtNamePage extends Page {
     super(title)
   }
 
-  autoCompleteInput = (): PageElement => cy.get('#court-name')
+  autoCompleteInput = (): PageElement => cy.get('.autocomplete__input')
 
   firstAutoCompleteOption = (): PageElement => cy.get('#court-name__option--0')
 }

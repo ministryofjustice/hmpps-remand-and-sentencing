@@ -150,11 +150,15 @@ context('Start Page', () => {
       ])
   })
 
-  it('displays recalled tag when there is a recalled sentence', () => {
-    startPage
-      .courtCaseCard('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
-      .getActions()
-      .should('equal', 'Recalled Recalled (XX1234 at Accrington Youth Court)')
+  it('displays inactive and recalled tags on inactive recalled case', () => {
+    const card = startPage.courtCaseCard('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
+
+    card.within(() => {
+      cy.get('strong.govuk-tag', { timeout: 8000 }).should('have.length', 2)
+
+      cy.get('strong.govuk-tag').eq(0).should('contain.text', 'Inactive')
+      cy.get('strong.govuk-tag').eq(1).should('contain.text', 'Recalled')
+    })
 
     startPage
       .recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7')

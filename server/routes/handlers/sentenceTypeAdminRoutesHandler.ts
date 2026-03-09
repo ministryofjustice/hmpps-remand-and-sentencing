@@ -16,18 +16,18 @@ export default class SentenceTypeAdminRoutesHandler {
             sentenceTypeUuid: sentenceTypeDetails.sentenceTypeUuid.slice(0, 7),
             minAgeInclusive: sentenceTypeDetails.minAgeInclusive ?? 0,
             maxAgeExclusive: sentenceTypeDetails.maxAgeExclusive ?? 999,
-            minDateInclusive: dayjs(sentenceTypeDetails.minDateInclusive ?? '1000-01-01').format(config.dateFormat),
-            maxDateExclusive: dayjs(sentenceTypeDetails.maxDateExclusive ?? '9999-12-31').format(config.dateFormat),
-            minOffenceDateInclusive: dayjs(sentenceTypeDetails.minOffenceDateInclusive ?? '1000-01-01').format(
-              config.dateFormat,
-            ),
-            maxOffenceDateExclusive: dayjs(sentenceTypeDetails.maxOffenceDateExclusive ?? '9999-12-31').format(
-              config.dateFormat,
-            ),
+            minDateInclusive: this.formatDateElse(sentenceTypeDetails.minDateInclusive, '01/01/0001'),
+            maxDateExclusive: this.formatDateElse(sentenceTypeDetails.maxDateExclusive, '31/12/9999'),
+            minOffenceDateInclusive: this.formatDateElse(sentenceTypeDetails.minOffenceDateInclusive, '01/01/0001'),
+            maxOffenceDateExclusive: this.formatDateElse(sentenceTypeDetails.maxOffenceDateExclusive, '31/12/9999'),
           }
         })
         .sort((a, b) => a.description.localeCompare(b.description)),
       successMessage: req.flash('successMessage')[0],
     })
+  }
+
+  private formatDateElse(date: string, fallback: string): string {
+    return date ? dayjs(date).format(config.dateFormat) : fallback
   }
 }

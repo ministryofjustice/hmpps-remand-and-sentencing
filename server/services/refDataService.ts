@@ -1,5 +1,6 @@
 import { Dayjs } from 'dayjs'
 import {
+  AllSentenceTypes,
   AppearanceOutcome,
   AppearanceType,
   CreateAppearanceOutcome,
@@ -151,5 +152,9 @@ export default class RefDataService {
 
   async getAppearanceTypeByUuid(appearanceTypeUuid: string, username: string): Promise<AppearanceType> {
     return this.remandAndSentencingApiClient.getAppearanceTypeByUuid(appearanceTypeUuid, username)
+  }
+
+  async getAllUncachedSentenceTypes(username: string): Promise<AllSentenceTypes> {
+    return this.remandAndSentencingApiClient.getAllSentenceTypes(username)
   }
 }

@@ -125,3 +125,5 @@ export type FieldErrorErrorResponse = components['schemas']['FieldErrorErrorResp
 export type CreateAppearanceOutcome = components['schemas']['CreateAppearanceOutcome']
 
 export type SearchCourtCasesPage = components['schemas']['SearchCourtCasesPage']
+
+export type AllSentenceTypes = components['schemas']['AllSentenceTypes']

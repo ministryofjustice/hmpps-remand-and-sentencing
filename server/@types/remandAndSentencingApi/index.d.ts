@@ -1140,6 +1140,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sentence-type/all': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Search all sentence types
+     * @description This endpoint will search all sentence types
+     */
+    get: operations['getAllSentenceTypes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/recall/person/{prisonerId}': {
     parameters: {
       query?: never
@@ -1950,7 +1970,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 12:11:45.596341 */
+      /** @example 12:14:57.389411256 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -2084,7 +2104,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:11:45.596341 */
+      /** @example 12:14:57.389411256 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2819,6 +2839,48 @@ export interface components {
     SentenceTypeIsValid: {
       isStillValid: boolean
     }
+    AllSentenceTypes: {
+      sentenceTypes: components['schemas']['SentenceTypeDetails'][]
+    }
+    SentenceTypeDetails: {
+      /** Format: uuid */
+      sentenceTypeUuid: string
+      description: string
+      /** Format: int32 */
+      minAgeInclusive?: number
+      /** Format: int32 */
+      maxAgeExclusive?: number
+      /** Format: date */
+      minDateInclusive?: string
+      /** Format: date */
+      maxDateExclusive?: string
+      /** Format: date */
+      minOffenceDateInclusive?: string
+      /** Format: date */
+      maxOffenceDateExclusive?: string
+      /** @enum {string} */
+      classification:
+        | 'STANDARD'
+        | 'EXTENDED'
+        | 'SOPC'
+        | 'INDETERMINATE'
+        | 'BOTUS'
+        | 'CIVIL'
+        | 'DTO'
+        | 'FINE'
+        | 'LEGACY'
+        | 'NON_CUSTODIAL'
+        | 'LEGACY_RECALL'
+        | 'UNKNOWN'
+      hintText?: string
+      nomisCjaCode: string
+      nomisSentenceCalcType: string
+      /** Format: int32 */
+      displayOrder: number
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE'
+      isRecallable: boolean
+    }
     Recall: {
       /** Format: uuid */
       recallUuid: string
@@ -2987,7 +3049,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:11:45.596341 */
+      /** @example 12:14:57.389411256 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3268,7 +3330,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 12:11:45.596341 */
+      /** @example 12:14:57.389411256 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -3290,7 +3352,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:11:45.596341 */
+      /** @example 12:14:57.389411256 */
       appearanceTime?: string
       courtId: string
     }
@@ -3345,7 +3407,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 12:11:45.596341 */
+      /** @example 12:14:57.389411256 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -3355,7 +3417,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:11:45.596341 */
+      /** @example 12:14:57.389411256 */
       appearanceTime?: string
       courtId: string
     }
@@ -3467,15 +3529,15 @@ export interface components {
       sort?: string[]
     }
     PageableObject: {
+      /** Format: int64 */
+      offset?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      /** Format: int32 */
-      pageSize?: number
-      sort?: components['schemas']['SortObject']
       unpaged?: boolean
-      /** Format: int64 */
-      offset?: number
     }
     PagedAppearancePeriodLength: {
       /** Format: uuid */
@@ -3574,7 +3636,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:11:45.596341 */
+      /** @example 12:14:57.389411256 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -3651,19 +3713,19 @@ export interface components {
       /** Format: int32 */
       totalPages?: number
       /** Format: int32 */
-      numberOfElements?: number
-      first?: boolean
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
+      first?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
       empty?: boolean
     }
     SortObject: {
+      empty?: boolean
       sorted?: boolean
       unsorted?: boolean
-      empty?: boolean
     }
     DeleteRecallResponse: {
       /** Format: uuid */
@@ -6743,6 +6805,35 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['SentenceType'][]
+        }
+      }
+    }
+  }
+  getAllSentenceTypes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns sentence types */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AllSentenceTypes']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AllSentenceTypes']
         }
       }
     }

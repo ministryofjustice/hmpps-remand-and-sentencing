@@ -1,6 +1,7 @@
 import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import {
+  AllSentenceTypes,
   AppearanceOutcome,
   AppearanceType,
   ConsecutiveChainValidationRequest,
@@ -560,6 +561,15 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: `/appearance-outcome/${appearanceOutcomeUuid}`,
         data: updateAppearanceOutcome,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getAllSentenceTypes(username: string): Promise<AllSentenceTypes> {
+    return this.get(
+      {
+        path: `/sentence-type/all`,
       },
       asSystem(username),
     )

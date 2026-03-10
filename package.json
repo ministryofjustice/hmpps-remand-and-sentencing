@@ -38,7 +38,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1001.0",
+    "@aws-sdk/client-sqs": "^3.1002.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.11",
     "@microsoft/applicationinsights-web": "^3.3.11",
     "@ministryofjustice/frontend": "^8.0.1",
@@ -62,7 +62,7 @@
     "helmet": "^8.1.0",
     "http-errors": "^2.0.1",
     "jwt-decode": "^4.0.0",
-    "multer": "^2.1.0",
+    "multer": "^2.1.1",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",

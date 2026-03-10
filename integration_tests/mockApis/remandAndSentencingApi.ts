@@ -3730,4 +3730,27 @@ export default {
       },
     })
   },
+
+  stubBadRequestCreateSentenceType: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: '/remand-and-sentencing-api/sentence-type',
+      },
+      response: {
+        status: 400,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 400,
+          userMessage: 'Failed validation',
+          fieldErrors: [
+            {
+              field: 'nomisCjaCode',
+              message: 'CJA code and Sentence Calc Type combination is already mapped',
+            },
+          ],
+        },
+      },
+    })
+  },
 }

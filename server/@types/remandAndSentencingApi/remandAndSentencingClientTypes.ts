@@ -127,3 +127,7 @@ export type CreateAppearanceOutcome = components['schemas']['CreateAppearanceOut
 export type SearchCourtCasesPage = components['schemas']['SearchCourtCasesPage']
 
 export type AllSentenceTypes = components['schemas']['AllSentenceTypes']
+
+export type SentenceTypeDetails = components['schemas']['SentenceTypeDetails']
+
+export type CreateSentenceType = components['schemas']['CreateSentenceType']

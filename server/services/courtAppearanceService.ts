@@ -1036,6 +1036,8 @@ export default class CourtAppearanceService {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const offenceReference = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
     if (offenceReference === -1 || offenceReference > courtAppearance.offences.length) {
+      // eslint-disable-next-line no-param-reassign
+      offence.createChargeOrder = this.getNextCreateChargeOrder(courtAppearance)
       courtAppearance.offences.push(offence)
     } else {
       const existingOffence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
@@ -1047,6 +1049,16 @@ export default class CourtAppearanceService {
 
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  getNextCreateChargeOrder(courtAppearance: CourtAppearance): number {
+    const allCreateChargeOrderNumbers = courtAppearance.offences
+      .filter(offence => offence.createChargeOrder !== undefined)
+      .map(offence => offence.createChargeOrder)
+    if (allCreateChargeOrderNumbers.length) {
+      return Math.max(...allCreateChargeOrderNumbers) + 1
+    }
+    return 0
   }
 
   deleteOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {

@@ -88,6 +88,7 @@ export const offenceToCreateCharge = (offence: Offence, prisonId: string, appear
     offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),
     outcomeUuid: offence.outcomeUuid,
     prisonId,
+    createChargeOrder: offence.createChargeOrder,
     ...(offence.terrorRelated !== undefined && { terrorRelated: offence.terrorRelated }),
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
     ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),

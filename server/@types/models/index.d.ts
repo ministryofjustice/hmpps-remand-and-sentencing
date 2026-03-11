@@ -50,6 +50,7 @@ declare module 'models' {
     mergedFromCase?: PagedMergedFromCase
     onFinishGoToEdit?: boolean
     replacesOffenceUuid?: string
+    createChargeOrder?: number
   }
 
   export interface Sentence {

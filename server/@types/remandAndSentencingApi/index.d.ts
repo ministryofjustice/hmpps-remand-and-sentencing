@@ -1990,7 +1990,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 13:16:34.86929 */
+      /** @example 06:23:52.900162573 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -2091,6 +2091,8 @@ export interface components {
       prisonId: string
       /** Format: uuid */
       replacingChargeUuid?: string
+      /** Format: int32 */
+      createChargeOrder?: number
     }
     CreateCourtAppearance: {
       courtCaseUuid?: string
@@ -2124,7 +2126,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:16:34.86929 */
+      /** @example 06:23:52.900162573 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -3064,6 +3066,8 @@ export interface components {
       sentence?: components['schemas']['Sentence']
       legacyData?: components['schemas']['ChargeLegacyData']
       mergedFromCase?: components['schemas']['MergedFromCase']
+      /** Format: date-time */
+      createdAt: string
     }
     CourtAppearance: {
       /** Format: uuid */
@@ -3108,7 +3112,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:16:34.86929 */
+      /** @example 06:23:52.900162573 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3389,7 +3393,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 13:16:34.86929 */
+      /** @example 06:23:52.900162573 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -3411,7 +3415,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:16:34.86929 */
+      /** @example 06:23:52.900162573 */
       appearanceTime?: string
       courtId: string
     }
@@ -3466,7 +3470,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 13:16:34.86929 */
+      /** @example 06:23:52.900162573 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -3476,7 +3480,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:16:34.86929 */
+      /** @example 06:23:52.900162573 */
       appearanceTime?: string
       courtId: string
     }
@@ -3590,15 +3594,15 @@ export interface components {
       sort?: string[]
     }
     PageableObject: {
-      unpaged?: boolean
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
-      /** Format: int32 */
-      pageSize?: number
-      sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageNumber?: number
+      paged?: boolean
+      /** Format: int32 */
+      pageSize?: number
+      unpaged?: boolean
     }
     PagedAppearancePeriodLength: {
       /** Format: uuid */
@@ -3697,7 +3701,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:16:34.86929 */
+      /** @example 06:23:52.900162573 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -3768,25 +3772,25 @@ export interface components {
       total?: number
       /** Format: int64 */
       prisonerCourtCaseTotal: number
+      last?: boolean
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      last?: boolean
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
+      first?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
       empty?: boolean
     }
     SortObject: {
-      unsorted?: boolean
-      sorted?: boolean
       empty?: boolean
+      sorted?: boolean
+      unsorted?: boolean
     }
     DeleteRecallResponse: {
       /** Format: uuid */

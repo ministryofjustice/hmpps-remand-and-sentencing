@@ -241,7 +241,7 @@ export function orderCharges(charges: Charge[]): Charge[] {
       if (subGroupA !== subGroup) return subGroupA - subGroup
       if (subGroupA !== RasGroup.RAS_WITH_MINUS_ONE_COUNT) return rasCountForCharge(a) - rasCountForCharge(b)
     }
-    const createdAtDifference = chargeCreatedAtDate(b) - chargeCreatedAtDate(a)
+    const createdAtDifference = chargeCreatedAtDate(a) - chargeCreatedAtDate(b)
     if (createdAtDifference === 0) {
       const dateDifference = chargeDate(b) - chargeDate(a)
       if (dateDifference === 0) {

@@ -76,6 +76,7 @@ const makeCharge = (id: string, opts: Partial<Charge> = {}): Charge =>
     offenceCode: 'X123',
     offenceStartDate: undefined,
     offenceEndDate: undefined,
+    createdAt: '2025-03-11T14:30:00.000Z',
     ...opts,
   }) satisfies Charge
 

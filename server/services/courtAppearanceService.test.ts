@@ -73,6 +73,28 @@ describe('courtAppearanceService', () => {
     expect(secondConsecutiveTo.sentence.consecutiveToSentenceUuid).toBeUndefined()
   })
 
+  it('first next create charge order is 0', () => {
+    const courtAppearance = {
+      offences: [],
+    } as CourtAppearance
+    const result = service.getNextCreateChargeOrder(courtAppearance)
+    expect(result).toBe(0)
+  })
+
+  it('next create charge order must increment largest existing create charge order number', () => {
+    const firstOffence = {
+      createChargeOrder: 0,
+    } as Offence
+    const secondOffence = {
+      createChargeOrder: 3,
+    } as Offence
+    const courtAppearance = {
+      offences: [secondOffence, firstOffence],
+    } as CourtAppearance
+    const result = service.getNextCreateChargeOrder(courtAppearance)
+    expect(result).toBe(4)
+  })
+
   describe('validate warrant date', () => {
     it('submitting a sentencing warrant date before an existing remand appearance returns error', async () => {
       const nomsId = 'P123'

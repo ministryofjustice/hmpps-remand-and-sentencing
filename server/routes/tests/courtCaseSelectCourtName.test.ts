@@ -47,6 +47,7 @@ describe('GET Select court name ', () => {
             outcomeType: 'NON_SENTENCING',
             status: 'ACTIVE',
           },
+          createdAt: '2025-03-11T14:30:00.000Z',
         },
       ],
       documents: [],

@@ -50,6 +50,11 @@ context('Sentencing appearance details Page', () => {
       cy.task('stubGetSentenceAppearanceDetails')
       cy.task('stubGetSentenceTypesByIds', [
         {
+          sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+          description: 'Imprisonment in Default of Fine',
+          classification: 'FINE',
+        },
+        {
           sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
           description: 'EDS (Extended Determinate Sentence)',
           classification: 'EXTENDED',
@@ -58,11 +63,6 @@ context('Sentencing appearance details Page', () => {
           sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
           description: 'SDS (Standard Determinate Sentence)',
           classification: 'STANDARD',
-        },
-        {
-          sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
-          description: 'Imprisonment in Default of Fine',
-          classification: 'FINE',
         },
       ])
       cy.task('stubGetChargeOutcomesByIds', [
@@ -242,14 +242,14 @@ context('Sentencing appearance details Page', () => {
       })
       cy.task('stubGetSentenceTypesByIds', [
         {
-          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
-          description: 'SDS (Standard Determinate Sentence)',
-          classification: 'STANDARD',
-        },
-        {
           sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
           description: 'Imprisonment in Default of Fine',
           classification: 'FINE',
+        },
+        {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          classification: 'STANDARD',
         },
       ])
       courtCaseHearingDetailsPage
@@ -435,14 +435,14 @@ context('Sentencing appearance details Page', () => {
       })
       cy.task('stubGetSentenceTypesByIds', [
         {
-          sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
-          description: 'EDS (Extended Determinate Sentence)',
-          classification: 'EXTENDED',
-        },
-        {
           sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
           description: 'SDS (Standard Determinate Sentence)',
           classification: 'STANDARD',
+        },
+        {
+          sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
+          description: 'EDS (Extended Determinate Sentence)',
+          classification: 'EXTENDED',
         },
       ])
       courtCaseHearingDetailsPage

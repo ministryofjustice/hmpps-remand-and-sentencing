@@ -311,29 +311,33 @@
                         {% endset %}
 
                         {% set actions = [] %}
+
                         {% if courtCaseDetails.overallCaseStatus == "INACTIVE" or courtCaseDetails.overallCaseStatus == "MERGED" %}
-                          {% set _ = actions.push({
+                        {% set _ = actions.push({
                             href: null,
                             html: govukTag({ text: "Inactive" }),
                             visuallyHiddenText: "Inactive"
-                          }) %}
-                        {% elif courtCaseDetails.hasARecall %}
-                          {% set _ = actions.push({
+                        }) %}
+                        {% endif %}
+
+                        {% if courtCaseDetails.hasARecall %}
+                        {% set _ = actions.push({
                             href: null,
                             html: govukTag({ text: "Recalled", classes: "govuk-tag--purple" }),
                             visuallyHiddenText: "Recalled"
-                          }) %}
-                        {% elif courtCaseDetails.warrantType !== 'SENTENCING'%}
-                          {% set _ = actions.push({
+                        }) %}
+                        {% endif %}
+
+                        {% if courtCaseDetails.warrantType !== 'SENTENCING' %}
+                        {% set _ = actions.push({
                             href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/new-journey",
                             text: "Add hearing",
                             visuallyHiddenText: "Add hearing",
                             attributes: {
-                              'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
+                            'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
                             }
-                          }) %}
+                        }) %}
                         {% endif %}
-
                         {{
                             govukSummaryList({
                                 card: {

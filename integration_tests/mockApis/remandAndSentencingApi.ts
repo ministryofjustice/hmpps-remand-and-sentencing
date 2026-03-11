@@ -361,7 +361,7 @@ export default {
             {
               prisonerId: 'A1234AB',
               courtCaseUuid: 'e3ef1929-98b7-4034-bfdf-5c597f51fca7',
-              status: 'courtCaseStatus',
+              courtCaseStatus: 'INACTIVE',
               appearanceCount: 1,
               caseReferences: ['XX1234'],
               firstDayInCustody: '2024-01-23',

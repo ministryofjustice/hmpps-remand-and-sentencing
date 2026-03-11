@@ -209,12 +209,13 @@ export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
   } as Sentence
 }
 
-export const chargeToOffence = (charge: Charge): Offence => {
+export const chargeToOffence = (charge: Charge, createChargeOrder: number): Offence => {
   return {
     offenceCode: charge.offenceCode,
     outcomeUuid: charge.outcome?.outcomeUuid,
     chargeUuid: charge.chargeUuid,
     terrorRelated: charge.terrorRelated,
+    createChargeOrder,
     ...(charge.offenceStartDate && { offenceStartDate: dayjs(charge.offenceStartDate).toDate() }),
     ...(charge.offenceEndDate && { offenceEndDate: dayjs(charge.offenceEndDate).toDate() }),
     ...(charge.sentence && { sentence: apiSentenceToSentence(charge.sentence) }),
@@ -396,7 +397,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
 ): CourtAppearance {
   const offences = pageCourtCaseAppearance.charges
     .sort((a, b) => {
-      return sortByDateDesc(a.offenceStartDate, b.offenceStartDate)
+      return sortByDateDesc(a.createdAt, b.createdAt)
     })
     .map(chargeToOffence)
   populateConsecutiveToSentenceUuid(offences)

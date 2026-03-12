@@ -26,7 +26,7 @@
 .autocomplete__input {
   width: 80% !important;
   padding: 5px;
-  color: #0b0c0c;
+  color: govuk-colour("black");
 }
 
 .autocomplete__hint {
@@ -65,12 +65,12 @@
   margin-top: 1rem;
   margin-bottom: 1rem;
   padding: 1.5rem;
-  background-color: #f3f2f1;
+  background-color: govuk-colour("black", $variant: "tint-95");
   border-radius: 4px;
 }
 
 .moj-timeline__document-icon {
-  fill: #1d70b8;
+  fill: govuk-colour("blue");
 }
 
 @media (min-width: 40.0625em) {
@@ -133,7 +133,7 @@
 
 .results {
   float: right;
-  color: #0b0c0c;
+  color: govuk-colour("black");
 }
 
 .filter-box > .govuk-details__summary {
@@ -143,6 +143,6 @@
 }
 
 .filter-box > .govuk-details__text {
-  background-color: govuk-colour("light-grey");
-  border-left: 4px solid govuk-colour("mid-grey");
+  background-color: govuk-colour("black", $variant: "tint-95");
+  border-left: 4px solid govuk-colour("black", $variant: "tint-80");
 }

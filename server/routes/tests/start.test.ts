@@ -243,4 +243,53 @@ describe('GET Start', () => {
     const checkboxChecked = $('.govuk-checkboxes__input').prop('checked')
     expect(checkboxChecked).toBe(true)
   })
+
+  it('display correct empty state content for when booking is active, has no court cases but there are court cases on other bookings', async () => {
+    config.featureToggles.filterCourtCases = true
+    setupCourtCase()
+    defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue({
+      totalPages: 0,
+      totalElements: 0,
+      size: 20,
+      content: [],
+      number: 0,
+      sort: {
+        empty: true,
+        sorted: true,
+        unsorted: true,
+      },
+      numberOfElements: 0,
+      pageable: {
+        offset: 0,
+        sort: {
+          empty: true,
+          sorted: true,
+          unsorted: true,
+        },
+        pageSize: 0,
+        pageNumber: 0,
+        paged: true,
+        unpaged: true,
+      },
+      last: true,
+      first: true,
+      empty: true,
+      prisonerCourtCaseTotal: 1,
+    })
+    defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
+      suppliedBookingCount: 0,
+      otherBookingCount: 1,
+    })
+    defaultServices.prisonerService.getBookingDetails.mockResolvedValue({
+      activeFlag: true,
+    })
+    const res = await request(app)
+      .get('/person/A1234AB')
+      .query({ appearanceDateFrom: '1/1/2026', appearanceDateTo: '12/12/2026' })
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const bodyText = $('.govuk-body').text()
+    expect(bodyText).toContain('There are no court cases recorded for this period of custody')
+    expect(bodyText).toContain('You can use the filters to show court cases from previous periods of custody.')
+  })
 })

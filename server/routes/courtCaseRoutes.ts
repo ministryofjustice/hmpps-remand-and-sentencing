@@ -96,6 +96,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let bookingId = ''
     let searchAppearanceDateFrom
     let searchAppearanceDateTo
+    let bookingCourtCaseCount
+    let bookingDetails
     const filterErrors = []
     if (config.featureToggles.filterCourtCases) {
       const validatedSearchParameters = this.validateAndGetCourtCaseSearchParameters(
@@ -106,10 +108,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
       searchAppearanceDateTo = validatedSearchParameters.searchAppearanceDateTo
       filterErrors.push(...validatedSearchParameters.filterErrors)
       if (!includeCasesFromPreviousPeriodsOfCustodyValue && res.locals.prisoner.bookingId) {
-        const [bookingCourtCaseCount, bookingDetails] = await Promise.all([
+        const [bookingCourtCaseCountResponse, bookingDetailsResponse] = await Promise.all([
           this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, bookingId, username),
           this.prisonerService.getBookingDetails(bookingId, username),
         ])
+        bookingCourtCaseCount = bookingCourtCaseCountResponse
+        bookingDetails = bookingDetailsResponse
         if (
           bookingCourtCaseCount.suppliedBookingCount === 0 &&
           bookingCourtCaseCount.otherBookingCount > 0 &&
@@ -252,6 +256,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       successMessage,
       filterErrors,
       prisonerCourtCaseTotal: courtCases.prisonerCourtCaseTotal,
+      bookingCourtCaseCount,
+      bookingDetails,
     })
   }
 

@@ -64,6 +64,7 @@ import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import NonSentencingTaskListModel from './data/NonSentencingTaskListModel'
 import AuditService, { Page } from '../services/auditService'
 import { COURT_APPEARANCE_TYPE_UUID, VIDEO_LINK_APPEARANCE_TYPE_UUID } from '../resources/courtAppearanceTypes'
+import PrisonerService from '../services/prisonerService'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -76,6 +77,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     private readonly courtRegisterService: CourtRegisterService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
     private readonly refDataService: RefDataService,
+    private readonly prisonerService: PrisonerService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
   }
@@ -89,6 +91,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceDateTo: string
       includeCasesFromPreviousPeriodsOfCustody: string
     }
+    let includeCasesFromPreviousPeriodsOfCustodyValue = includeCasesFromPreviousPeriodsOfCustody
     const sortByQuery = getAsStringOrDefault(sortBy, 'STATUS_APPEARANCE_DATE_DESC')
     let bookingId = ''
     let searchAppearanceDateFrom
@@ -102,8 +105,20 @@ export default class CourtCaseRoutes extends BaseRoutes {
       searchAppearanceDateFrom = validatedSearchParameters.searchAppearanceDateFrom
       searchAppearanceDateTo = validatedSearchParameters.searchAppearanceDateTo
       filterErrors.push(...validatedSearchParameters.filterErrors)
-      if (!includeCasesFromPreviousPeriodsOfCustody) {
-        bookingId = res.locals.prisoner.bookingId
+      if (!includeCasesFromPreviousPeriodsOfCustodyValue && res.locals.prisoner.bookingId) {
+        const [bookingCourtCaseCount, bookingDetails] = await Promise.all([
+          this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, bookingId, username),
+          this.prisonerService.getBookingDetails(bookingId, username),
+        ])
+        if (
+          bookingCourtCaseCount.suppliedBookingCount === 0 &&
+          bookingCourtCaseCount.otherBookingCount > 0 &&
+          !bookingDetails.activeFlag
+        ) {
+          includeCasesFromPreviousPeriodsOfCustodyValue = 'true'
+        } else {
+          bookingId = res.locals.prisoner.bookingId
+        }
       }
     }
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
@@ -198,10 +213,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
     if (appearanceDateTo) {
       paginationUrl.searchParams.set('appearanceDateTo', appearanceDateTo)
     }
-    if (includeCasesFromPreviousPeriodsOfCustody) {
+    if (includeCasesFromPreviousPeriodsOfCustodyValue) {
       paginationUrl.searchParams.set(
         'includeCasesFromPreviousPeriodsOfCustody',
-        includeCasesFromPreviousPeriodsOfCustody,
+        includeCasesFromPreviousPeriodsOfCustodyValue,
       )
     }
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
@@ -225,7 +240,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
       sortBy,
-      includeCasesFromPreviousPeriodsOfCustody,
+      includeCasesFromPreviousPeriodsOfCustody: includeCasesFromPreviousPeriodsOfCustodyValue,
       appearanceDateFrom,
       appearanceDateTo,
       offenceOutcomeMap,

@@ -1,0 +1,225 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{%- from "moj/components/date-picker/macro.njk" import mojDatePicker -%}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+
+{% set statusItems = [{
+        value: "",
+        text: "Select status",
+        selected: not createSentenceType.status
+    }] %}
+
+{% for status in statuses %}
+    {% set statusItems = statusItems.concat({
+        value: status,
+        text: status,
+        selected: status === createSentenceType.status
+    })%}
+{% endfor %}
+
+{% set classificationItems = [{
+        value: "",
+        text: "Select classification",
+        selected: not createSentenceType.warrantType
+    }] %}
+{% for classification in classifications %}
+    {% set classificationItems = classificationItems.concat({
+        value: classification,
+        text: classification,
+        selected: classification === createSentenceType.classification
+    })%}
+{% endfor %}
+
+{% block content %}
+{% if errors | length %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errors
+        }) }}
+    </div>
+{% endif %}
+<div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-8">
+
+            <h1 class="govuk-heading-l">Add Sentence Type</h1>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                {{ govukInput({
+                    label: {
+                        text: "UUID"
+                    },
+                    id: "sentenceTypeUuid",
+                    name: "sentenceTypeUuid",
+                    value: createSentenceType.sentenceTypeUuid,
+                    errorMessage: errors | findError('sentenceTypeUuid')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Description"
+                    },
+                    id: "description",
+                    name: "description",
+                    value: createSentenceType.description,
+                    errorMessage: errors | findError('description')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Minimum age (inclusive)"
+                    },
+                    id: "minAgeInclusive",
+                    name: "minAgeInclusive",
+                    value: createSentenceType.minAgeInclusive,
+                    inputmode: "numeric",
+                    errorMessage: errors | findError('minAgeInclusive')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Maximum age (exclusive)"
+                    },
+                    id: "maxAgeExclusive",
+                    name: "maxAgeExclusive",
+                    value: createSentenceType.maxAgeExclusive,
+                    inputmode: "numeric",
+                    errorMessage: errors | findError('maxAgeExclusive')
+                }) }}
+
+                {{ mojDatePicker({
+                    id: "minDateInclusive",
+                    name: "minDateInclusive",
+                    label: {
+                        text: "Minimum conviction date (inclusive)"
+                    },
+                    errorMessage: errors | findError('minDateInclusive')
+                }) }}
+
+                {{ mojDatePicker({
+                    id: "maxDateExclusive",
+                    name: "maxDateExclusive",
+                    label: {
+                        text: "Maximum conviction date (exclusive)"
+                    },
+                    errorMessage: errors | findError('maxDateExclusive')
+                }) }}
+
+                {{ mojDatePicker({
+                    id: "minOffenceDateInclusive",
+                    name: "minOffenceDateInclusive",
+                    label: {
+                        text: "Minimum offence date (inclusive)"
+                    },
+                    errorMessage: errors | findError('minOffenceDateInclusive')
+                }) }}
+
+                {{ mojDatePicker({
+                    id: "maxOffenceDateExclusive",
+                    name: "maxOffenceDateExclusive",
+                    label: {
+                        text: "Maximum offence date (exclusive)"
+                    },
+                    errorMessage: errors | findError('maxOffenceDateExclusive')
+                }) }}
+
+                {{ govukSelect({
+                    id: "classification",
+                    name: "classification",
+                    label: {
+                        text: "Classification"
+                    },
+                    items: classificationItems,
+                    errorMessage: errors | findError('classification')
+                }) }}
+
+                {{ govukTextarea({
+                    label: {
+                        text: "Hint text"
+                    },
+                    id: "hintText",
+                    name: "hintText",
+                    value: createSentenceType.hintText,
+                    errorMessage: errors | findError('hintText')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "NOMIS CJA Code"
+                    },
+                    id: "nomisCjaCode",
+                    name: "nomisCjaCode",
+                    value: createSentenceType.nomisCjaCode,
+                    errorMessage: errors | findError('nomisCjaCode')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "NOMIS Sentence Calc Type"
+                    },
+                    id: "nomisSentenceCalcType",
+                    name: "nomisSentenceCalcType",
+                    value: createSentenceType.nomisSentenceCalcType,
+                    errorMessage: errors | findError('nomisSentenceCalcType')
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Display order"
+                    },
+                    id: "displayOrder",
+                    name: "displayOrder",
+                    value: createSentenceType.displayOrder,
+                    inputmode: "numeric",
+                    errorMessage: errors | findError('displayOrder')
+                }) }}
+
+                {{ govukSelect({
+                    id: "status",
+                    name: "status",
+                    label: {
+                        text: "Status"
+                    },
+                    items: statusItems,
+                    errorMessage: errors | findError('status')
+                }) }}
+
+                {{ govukRadios({
+                    classes: "govuk-radios--inline",
+                    name: "isRecallable",
+                    fieldset: {
+                        legend: {
+                            text: "Is recallable"
+                        }
+                    },
+                    items: [
+                        {
+                        value: "true",
+                        text: "Yes",
+                        checked: createSentenceType.isRecallable === 'true'
+                        },
+                        {
+                        value: "false",
+                        text: "No",
+                        checked: createSentenceType.isRecallable === 'false'
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Save and continue",
+                    attributes: {
+                        'data-qa': 'continue-button'
+                    }
+                }) }}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

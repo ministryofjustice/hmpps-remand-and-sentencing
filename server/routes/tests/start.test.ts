@@ -49,6 +49,7 @@ const setupCourtCase = () => {
                 outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                 outcomeName: 'Remanded in custody',
               },
+              createdAt: '2025-03-11T14:30:00.000Z',
             },
             {
               chargeUuid: '789',
@@ -57,6 +58,7 @@ const setupCourtCase = () => {
                 outcomeUuid: '92e69bb5-9769-478b-9ee6-77c91808d9af',
                 outcomeName: 'Commit to Crown Court for trial in custody',
               },
+              createdAt: '2025-03-11T14:31:00.000Z',
             },
           ],
         },

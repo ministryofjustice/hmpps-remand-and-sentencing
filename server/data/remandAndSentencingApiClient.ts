@@ -1,6 +1,7 @@
 import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import {
+  AllSentenceTypes,
   AppearanceOutcome,
   AppearanceType,
   ConsecutiveChainValidationRequest,
@@ -14,6 +15,7 @@ import {
   CreateCourtAppearanceResponse,
   CreateCourtCase,
   CreateCourtCaseResponse,
+  CreateSentenceType,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LatestOffenceDate,
@@ -32,6 +34,7 @@ import {
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
+  SentenceTypeDetails,
   SentenceTypeIsValid,
   UploadedDocument,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -560,6 +563,25 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: `/appearance-outcome/${appearanceOutcomeUuid}`,
         data: updateAppearanceOutcome,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getAllSentenceTypes(username: string): Promise<AllSentenceTypes> {
+    return this.get(
+      {
+        path: `/sentence-type/all`,
+      },
+      asSystem(username),
+    )
+  }
+
+  async createSentenceType(createSentenceType: CreateSentenceType, username: string): Promise<SentenceTypeDetails> {
+    return this.post(
+      {
+        path: '/sentence-type',
+        data: createSentenceType,
       },
       asSystem(username),
     )

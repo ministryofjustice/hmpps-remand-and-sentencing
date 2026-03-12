@@ -159,6 +159,7 @@ enum RasGroup {
 }
 
 const toTime = (iso?: string) => (iso ? new Date(iso).getTime() : 0)
+const chargeCreatedAtDate = (c: Charge) => toTime(c.createdAt)
 const chargeDate = (c: Charge) => toTime(c.offenceEndDate ?? c.offenceStartDate)
 const getChargeOffenceCode = (c: Charge) => c.offenceCode
 const getChargeCount = (c: Charge) => c.sentence?.chargeNumber
@@ -240,11 +241,15 @@ export function orderCharges(charges: Charge[]): Charge[] {
       if (subGroupA !== subGroup) return subGroupA - subGroup
       if (subGroupA !== RasGroup.RAS_WITH_MINUS_ONE_COUNT) return rasCountForCharge(a) - rasCountForCharge(b)
     }
-    const dateDifference = chargeDate(b) - chargeDate(a)
-    if (dateDifference === 0) {
-      return getChargeOffenceCode(a).localeCompare(getChargeOffenceCode(b))
+    const createdAtDifference = chargeCreatedAtDate(a) - chargeCreatedAtDate(b)
+    if (createdAtDifference === 0) {
+      const dateDifference = chargeDate(b) - chargeDate(a)
+      if (dateDifference === 0) {
+        return getChargeOffenceCode(a).localeCompare(getChargeOffenceCode(b))
+      }
+      return dateDifference
     }
-    return dateDifference
+    return createdAtDifference
   })
 }
 

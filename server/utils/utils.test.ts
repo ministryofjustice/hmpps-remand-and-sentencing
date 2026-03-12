@@ -76,6 +76,7 @@ const makeCharge = (id: string, opts: Partial<Charge> = {}): Charge =>
     offenceCode: 'X123',
     offenceStartDate: undefined,
     offenceEndDate: undefined,
+    createdAt: '2025-03-11T14:30:00.000Z',
     ...opts,
   }) satisfies Charge
 
@@ -98,14 +99,21 @@ const withSentence = (
 
 const withNoSentence = (
   id: string,
-  { offenceCode, start, end }: { offenceCode: string; start?: string; end?: string } = { offenceCode: 'X123' },
-) => makeCharge(id, { offenceCode, offenceStartDate: start, offenceEndDate: end })
+  { offenceCode, start, end, createdAt }: { offenceCode: string; start?: string; end?: string; createdAt: string } = {
+    offenceCode: 'X123',
+    createdAt: '2025-03-11T14:30:00.000Z',
+  },
+) => makeCharge(id, { offenceCode, offenceStartDate: start, offenceEndDate: end, createdAt })
 
 describe('orderCharges', () => {
   test('groups in order: NOMIS -> RaS -> No sentence', () => {
     const nomis = withSentence('N1', { offenceCode: 'X123', chargeNumber: undefined, nomisLine: '5' }) // NOMIS
     const ras = withSentence('R1', { offenceCode: 'X123', chargeNumber: '2' }) // RaS with count
-    const none = withNoSentence('X1', { offenceCode: 'X123', start: '2024-01-01' }) // No sentence
+    const none = withNoSentence('X1', {
+      offenceCode: 'X123',
+      start: '2024-01-01',
+      createdAt: '2025-03-11T14:30:00.000Z',
+    }) // No sentence
 
     const input = [none, ras, nomis]
     const out = orderCharges(input).map(c => c.chargeUuid)
@@ -145,12 +153,19 @@ describe('orderCharges', () => {
   })
 
   test('No sentence: ordered by offence date DESC (AC4)', () => {
-    const a = withNoSentence('A', { offenceCode: 'X123', start: '2024-01-02' })
-    const b = withNoSentence('B', { offenceCode: 'X123', end: '2024-03-01' }) // end date preferred, newer
-    const c = withNoSentence('C', { offenceCode: 'X123', start: '2023-12-31' })
+    const a = withNoSentence('A', { offenceCode: 'X123', start: '2024-01-02', createdAt: '2025-03-11T14:30:00.000Z' })
+    const b = withNoSentence('B', { offenceCode: 'X123', end: '2024-03-01', createdAt: '2025-03-11T14:30:00.000Z' }) // end date preferred, newer
+    const c = withNoSentence('C', { offenceCode: 'X123', start: '2023-12-31', createdAt: '2025-03-11T14:30:00.000Z' })
 
     const out = orderCharges([a, c, b]).map(cg => cg.chargeUuid)
     expect(out).toEqual(['B', 'A', 'C'])
+  })
+
+  test('No sentence: ordered by created at ASC', () => {
+    const a = withNoSentence('A', { offenceCode: 'X123', start: '2024-01-02', createdAt: '2025-03-11T14:30:00.000Z' })
+    const b = withNoSentence('B', { offenceCode: 'X123', end: '2024-03-01', createdAt: '2025-03-11T14:31:00.000Z' })
+    const out = orderCharges([a, b]).map(cg => cg.chargeUuid)
+    expect(out).toEqual(['A', 'B'])
   })
 
   test('Mixed: full ordering across all groups and rules', () => {
@@ -168,8 +183,16 @@ describe('orderCharges', () => {
     const r1 = withSentence('R1', { offenceCode: 'X123', chargeNumber: '1' })
 
     // No sentence (by date desc)
-    const xNew = withNoSentence('X_NEW', { offenceCode: 'X123', end: '2024-08-01' })
-    const xOld = withNoSentence('X_OLD', { offenceCode: 'X123', start: '2023-05-01' })
+    const xNew = withNoSentence('X_NEW', {
+      offenceCode: 'X123',
+      end: '2024-08-01',
+      createdAt: '2025-03-11T14:30:00.000Z',
+    })
+    const xOld = withNoSentence('X_OLD', {
+      offenceCode: 'X123',
+      start: '2023-05-01',
+      createdAt: '2025-03-11T14:30:00.000Z',
+    })
 
     const input = [xOld, r2, n2, mOld, xNew, r1, n1, mNew, nBad]
     const out = orderCharges(input).map(c => c.chargeUuid)
@@ -261,7 +284,11 @@ describe('orderCharges', () => {
       start: '2024-01-01',
     })
 
-    const noSentence = withNoSentence('NO_SENT', { offenceCode: 'X123', start: '2023-01-01' })
+    const noSentence = withNoSentence('NO_SENT', {
+      offenceCode: 'X123',
+      start: '2023-01-01',
+      createdAt: '2025-03-11T14:30:00.000Z',
+    })
 
     const out = orderCharges([rasWithBoth, noSentence, nomisOnly]).map(c => c.chargeUuid)
 
@@ -270,8 +297,16 @@ describe('orderCharges', () => {
   })
 
   test('fallback to ordering by offence code when dates are the same', () => {
-    const first = withNoSentence('FIRST', { offenceCode: 'A123', start: '2025-01-01' })
-    const second = withNoSentence('SECOND', { offenceCode: 'B123', start: '2025-01-01' })
+    const first = withNoSentence('FIRST', {
+      offenceCode: 'A123',
+      start: '2025-01-01',
+      createdAt: '2025-03-11T14:30:00.000Z',
+    })
+    const second = withNoSentence('SECOND', {
+      offenceCode: 'B123',
+      start: '2025-01-01',
+      createdAt: '2025-03-11T14:30:00.000Z',
+    })
 
     const out = orderCharges([second, first]).map(c => c.chargeUuid)
 

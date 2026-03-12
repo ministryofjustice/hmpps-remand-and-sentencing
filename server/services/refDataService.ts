@@ -1,11 +1,14 @@
 import { Dayjs } from 'dayjs'
 import {
+  AllSentenceTypes,
   AppearanceOutcome,
   AppearanceType,
   CreateAppearanceOutcome,
   CreateChargeOutcome,
+  CreateSentenceType,
   OffenceOutcome,
   SentenceType,
+  SentenceTypeDetails,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
 import getOrSetRefDataInCache, { clearCache } from '../cache/refDataCache'
@@ -151,5 +154,13 @@ export default class RefDataService {
 
   async getAppearanceTypeByUuid(appearanceTypeUuid: string, username: string): Promise<AppearanceType> {
     return this.remandAndSentencingApiClient.getAppearanceTypeByUuid(appearanceTypeUuid, username)
+  }
+
+  async getAllUncachedSentenceTypes(username: string): Promise<AllSentenceTypes> {
+    return this.remandAndSentencingApiClient.getAllSentenceTypes(username)
+  }
+
+  async createSentenceType(createSentenceType: CreateSentenceType, username: string): Promise<SentenceTypeDetails> {
+    return this.remandAndSentencingApiClient.createSentenceType(createSentenceType, username)
   }
 }

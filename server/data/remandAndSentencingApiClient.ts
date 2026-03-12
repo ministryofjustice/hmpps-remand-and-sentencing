@@ -65,6 +65,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     sortBy: string,
     appearanceDateFrom: string,
     appearanceDateTo: string,
+    bookingId: string,
     page: number,
     username: string,
   ): Promise<SearchCourtCasesPage> {
@@ -76,6 +77,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
           pagedCourtCaseOrderBy: sortBy,
           appearanceDateFrom,
           appearanceDateTo,
+          bookingId,
           page,
         },
       },

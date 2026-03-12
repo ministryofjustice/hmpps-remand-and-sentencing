@@ -12,6 +12,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {%- from "moj/components/date-picker/macro.njk" import mojDatePicker -%}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
 
 {% set pageTitle = applicationName + " - Home" %}
@@ -81,34 +82,23 @@
                                         ]
                                     }) }}
 
-                                    {% call govukFieldset({
-                                        legend: {
-                                            text: "Filter by date range",
-                                            classes: "govuk-fieldset__legend--s"
-                                        }
-                                    }) %}
-
-                                        {{ mojDatePicker({
-                                        id: "appearanceDateFrom",
-                                        name: "appearanceDateFrom",
-                                        label: {
-                                            text: "Latest hearing date: from"
-                                        },
-                                        value: appearanceDateFrom,
-                                        errorMessage: filterErrors | findError('appearanceDateFrom')
-                                        }) }}
-
-                                        {{ mojDatePicker({
-                                        id: "appearanceDateTo",
-                                        name: "appearanceDateTo",
-                                        label: {
-                                            text: "Latest hearing date: to"
-                                        },
-                                        value: appearanceDateTo,
-                                        errorMessage: filterErrors | findError('appearanceDateTo')
-                                        }) }}
-
-                                    {% endcall %}
+                                    {{
+                                        govukCheckboxes({
+                                            name: 'includeCasesFromPreviousPeriodsOfCustody',
+                                            classes: "govuk-checkboxes--small",
+                                            fieldset: {
+                                                legend: {
+                                                    text: "Previous cases",
+                                                    classes: "govuk-fieldset__legend--s"
+                                                }
+                                            },
+                                            items: [{
+                                                value: 'true',
+                                                text: 'Include cases from previous periods of custody',
+                                                checked: includeCasesFromPreviousPeriodsOfCustody === 'true'
+                                            }]
+                                        })
+                                    }}
 
                                     {{ govukButton({
                                         text: "Apply",

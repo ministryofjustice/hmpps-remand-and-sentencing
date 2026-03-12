@@ -83,12 +83,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId } = req.params
     const { token, username } = res.locals.user
-    const { sortBy, appearanceDateFrom, appearanceDateTo } = req.query as {
+    const { sortBy, appearanceDateFrom, appearanceDateTo, includeCasesFromPreviousPeriodsOfCustody } = req.query as {
       sortBy: string
       appearanceDateFrom: string
       appearanceDateTo: string
+      includeCasesFromPreviousPeriodsOfCustody: string
     }
     const sortByQuery = getAsStringOrDefault(sortBy, 'STATUS_APPEARANCE_DATE_DESC')
+    let bookingId = ''
     let searchAppearanceDateFrom
     let searchAppearanceDateTo
     const filterErrors = []
@@ -100,6 +102,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
       searchAppearanceDateFrom = validatedSearchParameters.searchAppearanceDateFrom
       searchAppearanceDateTo = validatedSearchParameters.searchAppearanceDateTo
       filterErrors.push(...validatedSearchParameters.filterErrors)
+      if (!includeCasesFromPreviousPeriodsOfCustody) {
+        bookingId = res.locals.prisoner.bookingId
+      }
     }
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
 
@@ -110,6 +115,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         sortByQuery,
         searchAppearanceDateFrom,
         searchAppearanceDateTo,
+        bookingId,
         pageNumber,
       ),
       this.courtCasesReleaseDatesService.getServiceDefinitions(nomsId, token),
@@ -192,6 +198,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
     if (appearanceDateTo) {
       paginationUrl.searchParams.set('appearanceDateTo', appearanceDateTo)
     }
+    if (includeCasesFromPreviousPeriodsOfCustody) {
+      paginationUrl.searchParams.set(
+        'includeCasesFromPreviousPeriodsOfCustody',
+        includeCasesFromPreviousPeriodsOfCustody,
+      )
+    }
     const pagination = govukPaginationFromPagePagedCourtCase(courtCases, paginationUrl)
     const paginationResults = getPaginationResults(courtCases)
 
@@ -213,6 +225,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
       sortBy,
+      includeCasesFromPreviousPeriodsOfCustody,
       appearanceDateFrom,
       appearanceDateTo,
       offenceOutcomeMap,

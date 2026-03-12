@@ -109,8 +109,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       filterErrors.push(...validatedSearchParameters.filterErrors)
       if (!includeCasesFromPreviousPeriodsOfCustodyValue && res.locals.prisoner.bookingId) {
         const [bookingCourtCaseCountResponse, bookingDetailsResponse] = await Promise.all([
-          this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, bookingId, username),
-          this.prisonerService.getBookingDetails(bookingId, username),
+          this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, res.locals.prisoner.bookingId, username),
+          this.prisonerService.getBookingDetails(res.locals.prisoner.bookingId, username),
         ])
         bookingCourtCaseCount = bookingCourtCaseCountResponse
         bookingDetails = bookingDetailsResponse

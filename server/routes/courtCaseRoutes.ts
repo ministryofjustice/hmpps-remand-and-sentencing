@@ -114,11 +114,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ])
         bookingCourtCaseCount = bookingCourtCaseCountResponse
         bookingDetails = bookingDetailsResponse
-        if (
-          bookingCourtCaseCount.suppliedBookingCount === 0 &&
-          bookingCourtCaseCount.otherBookingCount > 0 &&
-          !bookingDetails.activeFlag
-        ) {
+        if (!bookingDetails.activeFlag) {
           includeCasesFromPreviousPeriodsOfCustodyValue = 'true'
         } else {
           bookingId = res.locals.prisoner.bookingId
@@ -1353,7 +1349,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           return !dispositionCode || dispositionCode === 'INTERIM' || dispositionCode === 'I'
         })
         .sort((a, b) => {
-          return sortByDateDesc(a.createdAt, b.createdAt)
+          return sortByDateDesc(b.createdAt, a.createdAt)
         })
         .map((charge, index) => chargeToOffence(charge, index))
         .forEach(offence =>

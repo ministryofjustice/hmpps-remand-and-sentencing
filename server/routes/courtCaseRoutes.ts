@@ -98,6 +98,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let searchAppearanceDateTo
     let bookingCourtCaseCount
     let bookingDetails
+    let disableIncludeCasesFromPreviousPeriodsOfCustody = false
     const filterErrors = []
     if (config.featureToggles.filterCourtCases) {
       const validatedSearchParameters = this.validateAndGetCourtCaseSearchParameters(
@@ -116,6 +117,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         bookingDetails = bookingDetailsResponse
         if (!bookingDetails.activeFlag) {
           includeCasesFromPreviousPeriodsOfCustodyValue = 'true'
+          disableIncludeCasesFromPreviousPeriodsOfCustody = true
         } else {
           bookingId = res.locals.prisoner.bookingId
         }
@@ -254,6 +256,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       prisonerCourtCaseTotal: courtCases.prisonerCourtCaseTotal,
       bookingCourtCaseCount,
       bookingDetails,
+      disableIncludeCasesFromPreviousPeriodsOfCustody,
     })
   }
 

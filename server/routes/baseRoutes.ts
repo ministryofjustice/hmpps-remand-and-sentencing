@@ -249,8 +249,12 @@ export default abstract class BaseRoutes {
         prisonId,
       )
     } catch (e) {
-      if (e?.status === 409) {
-        req.flash('errors', [{ text: "You cannot make an update to an appearance that's been deleted." }])
+      const status = e?.responseStatus ?? e?.data?.status ?? e?.status
+      if (status === 409) {
+        req.flash('errors', {
+          text: "You cannot make an update to an appearance that's been deleted.",
+          href: '#',
+        })
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/edit-court-appearance/${appearanceReference}/${sentencingRoute ? 'sentencing' : 'non-sentencing'}/hearing-details?hasErrors=true`,
         )

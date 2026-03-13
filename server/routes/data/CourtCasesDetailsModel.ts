@@ -9,7 +9,7 @@ import {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { pagedAppearancePeriodLengthToSentenceLength, pagedChargeToOffence } from '../../utils/mappingUtils'
-import { sortByDateDesc } from '../../utils/utils'
+import { orderOffences, sortByDateDesc } from '../../utils/utils'
 
 export default class CourtCasesDetailsModel {
   courtCaseUuid: string
@@ -104,7 +104,7 @@ export default class CourtCasesDetailsModel {
         return sortByDateDesc(b.createdAt, a.createdAt)
       })
       .slice(0, 6)
-    this.offences = charges?.map(charge => pagedChargeToOffence(charge))
+    this.offences = orderOffences(charges?.map((charge, index) => pagedChargeToOffence(charge, index)))
     this.sentenceTypeMap = Object.fromEntries(
       charges
         ?.filter(charge => charge.sentence?.sentenceType)

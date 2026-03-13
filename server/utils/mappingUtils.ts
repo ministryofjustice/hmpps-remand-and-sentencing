@@ -224,11 +224,12 @@ export const chargeToOffence = (charge: Charge, createChargeOrder: number): Offe
   } as Offence
 }
 
-export const pagedChargeToOffence = (pagedCharge: PagedCharge): Offence => {
+export const pagedChargeToOffence = (pagedCharge: PagedCharge, createChargeOrder: number): Offence => {
   return {
     offenceCode: pagedCharge.offenceCode,
     outcomeUuid: pagedCharge.outcome?.outcomeUuid,
     terrorRelated: pagedCharge.terrorRelated,
+    createChargeOrder,
     ...(pagedCharge.offenceStartDate && { offenceStartDate: dayjs(pagedCharge.offenceStartDate).toDate() }),
     ...(pagedCharge.offenceEndDate && { offenceEndDate: dayjs(pagedCharge.offenceEndDate).toDate() }),
     ...(pagedCharge.legacyData && { legacyData: { ...pagedCharge.legacyData } }),

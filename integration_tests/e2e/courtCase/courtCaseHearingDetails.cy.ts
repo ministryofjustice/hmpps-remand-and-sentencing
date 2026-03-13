@@ -210,10 +210,7 @@ context('Court Case Hearing details Page', () => {
       courtCaseHearingDetailsPage
         .errorSummary()
         .trimTextContent()
-        .should(
-          'equal',
-          "There is a problem You cannot make an update to an appearance that's been deleted.",
-        )
+        .should('equal', "There is a problem You cannot make an update to an appearance that's been deleted.")
     })
 
     it('can add another offence and go back to hearing details', () => {

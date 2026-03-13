@@ -218,10 +218,7 @@ context('Sentencing appearance details Page', () => {
       courtCaseHearingDetailsPage
         .errorSummary()
         .trimTextContent()
-        .should(
-          'equal',
-          "There is a problem You cannot make an update to an appearance that's been deleted.",
-        )
+        .should('equal', "There is a problem You cannot make an update to an appearance that's been deleted.")
     })
 
     it('can edit alternative overall sentence length', () => {

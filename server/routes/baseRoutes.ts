@@ -21,8 +21,6 @@ import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
-import { Request, ParamsDictionary, Response } from 'express-serve-static-core'
-import { ParsedQs } from 'qs'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -227,8 +225,8 @@ export default abstract class BaseRoutes {
   }
 
   protected async updateCourtAppearance(
-    req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-    res: Response<any, Record<string, any>, number>,
+    req,
+    res,
     nomsId: string,
     addOrEditCourtCase: string,
     courtCaseReference: string,

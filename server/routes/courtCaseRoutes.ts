@@ -1353,7 +1353,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           return !dispositionCode || dispositionCode === 'INTERIM' || dispositionCode === 'I'
         })
         .sort((a, b) => {
-          return sortByDateDesc(a.createdAt, b.createdAt)
+          return sortByDateDesc(b.createdAt, a.createdAt)
         })
         .map((charge, index) => chargeToOffence(charge, index))
         .forEach(offence =>

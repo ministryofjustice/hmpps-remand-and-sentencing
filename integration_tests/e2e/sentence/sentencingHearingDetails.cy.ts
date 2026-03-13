@@ -204,6 +204,23 @@ context('Sentencing appearance details Page', () => {
       cy.task('verifyUpdateSentenceCourtAppearanceRequest').should('equal', 1)
     })
 
+    it('shows an error and returns to sentencing hearing details when the appearance has been deleted', () => {
+      cy.task('stubUpdateSentenceCourtAppearanceConflict')
+      cy.task('stubGetLatestCourtAppearanceWithSentencing', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
+
+      courtCaseHearingDetailsPage.confirmButton().click()
+
+      cy.url().should(
+        'include',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/hearing-details?hasErrors=true',
+      )
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', "There is a problem You cannot make an update to an appearance that's been deleted.")
+    })
+
     it('can edit alternative overall sentence length', () => {
       courtCaseHearingDetailsPage
         .editFieldLink(

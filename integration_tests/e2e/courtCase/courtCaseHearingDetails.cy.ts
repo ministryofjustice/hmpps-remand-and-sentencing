@@ -196,6 +196,23 @@ context('Court Case Hearing details Page', () => {
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
     })
 
+    it('shows an error and returns to non-sentencing hearing details when the appearance has been deleted', () => {
+      cy.task('stubUpdateCourtAppearanceConflict')
+      cy.task('stubGetLatestCourtAppearance', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
+
+      courtCaseHearingDetailsPage.confirmButton().click()
+
+      cy.url().should(
+        'include',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/hearing-details?hasErrors=true',
+      )
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
+        .errorSummary()
+        .trimTextContent()
+        .should('equal', "There is a problem You cannot make an update to an appearance that's been deleted.")
+    })
+
     it('can add another offence and go back to hearing details', () => {
       courtCaseHearingDetailsPage.addAnotherButton().click()
       const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')

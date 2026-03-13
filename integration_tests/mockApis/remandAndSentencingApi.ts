@@ -3560,6 +3560,42 @@ export default {
     })
   },
 
+  stubUpdateCourtAppearanceConflict: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPattern:
+          '/remand-and-sentencing-api/court-appearance/([a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12})',
+      },
+      response: {
+        status: 409,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 409,
+          userMessage: "You cannot make an update to an appearance that's been deleted.",
+        },
+      },
+    })
+  },
+
+  stubUpdateSentenceCourtAppearanceConflict: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPattern:
+          '/remand-and-sentencing-api/court-appearance/([a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12})',
+      },
+      response: {
+        status: 409,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 409,
+          userMessage: "You cannot make an update to an appearance that's been deleted.",
+        },
+      },
+    })
+  },
+
   stubCreateNonCustodialCourtAppearance: (): SuperAgentRequest => {
     return stubFor({
       request: {

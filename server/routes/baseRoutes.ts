@@ -224,7 +224,15 @@ export default abstract class BaseRoutes {
     )
   }
 
-  protected async updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference) {
+  protected async updateCourtAppearance(
+    req,
+    res,
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+    sentencingRoute = true,
+  ) {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -232,13 +240,26 @@ export default abstract class BaseRoutes {
     )
     const { username } = res.locals.user
     const { prisonId } = res.locals.prisoner
-    await this.remandAndSentencingService.updateCourtAppearance(
-      username,
-      courtCaseReference,
-      appearanceReference,
-      courtAppearance,
-      prisonId,
-    )
+    try {
+      await this.remandAndSentencingService.updateCourtAppearance(
+        username,
+        courtCaseReference,
+        appearanceReference,
+        courtAppearance,
+        prisonId,
+      )
+    } catch (e) {
+      const status = e?.responseStatus ?? e?.data?.status ?? e?.status
+      if (status === 409) {
+        req.flash('errors', {
+          text: "You cannot make an update to an appearance that's been deleted.",
+          href: '#',
+        })
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/edit-court-appearance/${appearanceReference}/${sentencingRoute ? 'sentencing' : 'non-sentencing'}/hearing-details?hasErrors=true`,
+        )
+      }
+    }
     const auditDetails = {
       courtCaseUuids: [courtCaseReference],
       courtAppearanceUuids: [appearanceReference],

@@ -397,7 +397,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
 ): CourtAppearance {
   const offences = pageCourtCaseAppearance.charges
     .sort((a, b) => {
-      return sortByDateDesc(a.createdAt, b.createdAt)
+      return sortByDateDesc(b.createdAt, a.createdAt)
     })
     .map(chargeToOffence)
   populateConsecutiveToSentenceUuid(offences)

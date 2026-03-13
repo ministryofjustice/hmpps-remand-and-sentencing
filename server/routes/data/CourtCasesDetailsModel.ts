@@ -101,7 +101,7 @@ export default class CourtCasesDetailsModel {
     }
     const charges = pagedCourtCase.latestCourtAppearance?.charges
       .sort((a, b) => {
-        return sortByDateDesc(a.createdAt, b.createdAt)
+        return sortByDateDesc(b.createdAt, a.createdAt)
       })
       .slice(0, 6)
     this.offences = orderOffences(charges?.map(charge => pagedChargeToOffence(charge)))

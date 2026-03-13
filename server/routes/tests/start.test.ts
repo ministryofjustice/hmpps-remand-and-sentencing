@@ -196,7 +196,7 @@ describe('GET Start', () => {
     expect(errorSummary.length).toBe(0)
   })
 
-  it('should auto check previous periods of custody when the booking is inactive, there are no court cases on the booking and there are court cases on other bookings', async () => {
+  it('should auto check previous periods of custody when the booking is inactive', async () => {
     config.featureToggles.filterCourtCases = true
     setupCourtCase()
     defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue({
@@ -229,7 +229,7 @@ describe('GET Start', () => {
       prisonerCourtCaseTotal: 1,
     })
     defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
-      suppliedBookingCount: 0,
+      suppliedBookingCount: 1,
       otherBookingCount: 1,
     })
     defaultServices.prisonerService.getBookingDetails.mockResolvedValue({

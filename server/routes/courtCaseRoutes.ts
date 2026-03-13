@@ -114,11 +114,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ])
         bookingCourtCaseCount = bookingCourtCaseCountResponse
         bookingDetails = bookingDetailsResponse
-        if (
-          bookingCourtCaseCount.suppliedBookingCount === 0 &&
-          bookingCourtCaseCount.otherBookingCount > 0 &&
-          !bookingDetails.activeFlag
-        ) {
+        if (!bookingDetails.activeFlag) {
           includeCasesFromPreviousPeriodsOfCustodyValue = 'true'
         } else {
           bookingId = res.locals.prisoner.bookingId

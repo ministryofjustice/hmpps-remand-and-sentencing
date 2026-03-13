@@ -131,3 +131,5 @@ export type AllSentenceTypes = components['schemas']['AllSentenceTypes']
 export type SentenceTypeDetails = components['schemas']['SentenceTypeDetails']
 
 export type CreateSentenceType = components['schemas']['CreateSentenceType']
+
+export type PersonCourtCaseCount = components['schemas']['PersonCourtCaseCount']

@@ -3,7 +3,7 @@ import { RestClient, asSystem, asUser } from '@ministryofjustice/hmpps-rest-clie
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
-import { CaseLoad } from '../@types/prisonApi/types'
+import { CaseLoad, InmateDetail } from '../@types/prisonApi/types'
 
 export default class PrisonApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -25,5 +25,9 @@ export default class PrisonApiClient extends RestClient {
 
   async getUsersCaseloads(userToken: string): Promise<CaseLoad[]> {
     return this.get({ path: `/api/users/me/caseLoads` }, asUser(userToken)) as Promise<CaseLoad[]>
+  }
+
+  async getBookingDetails(bookingId: string, username: string): Promise<InmateDetail> {
+    return this.get({ path: `/api/bookings/${bookingId}`, query: { basicInfo: true } }, asSystem(username))
   }
 }

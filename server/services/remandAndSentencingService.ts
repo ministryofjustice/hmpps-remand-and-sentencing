@@ -17,6 +17,7 @@ import {
   MissingSentenceAppearance,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  PersonCourtCaseCount,
   PrisonerDocuments,
   PrisonerSentenceEnvelopes,
   SearchCourtCasesPage,
@@ -341,5 +342,13 @@ export default class RemandAndSentencingService {
   ): Promise<CreateChargeResponse> {
     const createCharge = offenceToCreateCharge(offence, prisonId, appearanceUuid)
     return this.remandAndSentencingApiClient.updateCharge(createCharge, chargeUuid, username)
+  }
+
+  async getBookingCourtCaseCount(
+    prisonerId: string,
+    bookingId: string,
+    username: string,
+  ): Promise<PersonCourtCaseCount> {
+    return this.remandAndSentencingApiClient.getBookingCourtCaseCount(prisonerId, bookingId, username)
   }
 }

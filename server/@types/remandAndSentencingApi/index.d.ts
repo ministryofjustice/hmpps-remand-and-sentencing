@@ -3622,12 +3622,12 @@ export interface components {
     PageableObject: {
       /** Format: int64 */
       offset?: number
-      paged?: boolean
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
-      pageNumber?: number
-      /** Format: int32 */
       pageSize?: number
+      /** Format: int32 */
+      pageNumber?: number
+      paged?: boolean
       unpaged?: boolean
     }
     PagedAppearancePeriodLength: {

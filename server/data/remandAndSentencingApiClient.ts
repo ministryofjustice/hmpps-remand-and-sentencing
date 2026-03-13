@@ -25,6 +25,7 @@ import {
   OffenceOutcome,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
+  PersonCourtCaseCount,
   PrisonerDocuments,
   PrisonerSentenceEnvelopes,
   SearchCourtCasesPage,
@@ -584,6 +585,22 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: '/sentence-type',
         data: createSentenceType,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getBookingCourtCaseCount(
+    prisonerId: string,
+    bookingId: string,
+    username: string,
+  ): Promise<PersonCourtCaseCount> {
+    return this.get(
+      {
+        path: `/person/${prisonerId}/booking-court-case-count`,
+        query: {
+          bookingId,
+        },
       },
       asSystem(username),
     )

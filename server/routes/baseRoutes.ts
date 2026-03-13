@@ -21,6 +21,8 @@ import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
+import { Request, ParamsDictionary, Response } from 'express-serve-static-core'
+import { ParsedQs } from 'qs'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -224,7 +226,15 @@ export default abstract class BaseRoutes {
     )
   }
 
-  protected async updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference) {
+  protected async updateCourtAppearance(
+    req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
+    res: Response<any, Record<string, any>, number>,
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+    sentencingRoute = true,
+  ) {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -232,13 +242,22 @@ export default abstract class BaseRoutes {
     )
     const { username } = res.locals.user
     const { prisonId } = res.locals.prisoner
-    await this.remandAndSentencingService.updateCourtAppearance(
-      username,
-      courtCaseReference,
-      appearanceReference,
-      courtAppearance,
-      prisonId,
-    )
+    try {
+      await this.remandAndSentencingService.updateCourtAppearance(
+        username,
+        courtCaseReference,
+        appearanceReference,
+        courtAppearance,
+        prisonId,
+      )
+    } catch (e) {
+      if (e?.status === 409) {
+        req.flash('errors', [{ text: "You cannot make an update to an appearance that's been deleted." }])
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/edit-court-appearance/${appearanceReference}/${sentencingRoute ? 'sentencing' : 'non-sentencing'}/hearing-details?hasErrors=true`,
+        )
+      }
+    }
     const auditDetails = {
       courtCaseUuids: [courtCaseReference],
       courtAppearanceUuids: [appearanceReference],

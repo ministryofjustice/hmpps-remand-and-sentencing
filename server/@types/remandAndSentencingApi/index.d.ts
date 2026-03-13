@@ -449,8 +449,8 @@ export interface paths {
      */
     get: operations['getCourtAppearanceDetails']
     /**
-     * Create Court appearance
-     * @description This endpoint will create a court appearance in a given court case
+     * Update Court appearance
+     * @description This endpoint will update a court appearance in a given court case
      */
     put: operations['updateCourtAppearance']
     post?: never
@@ -1328,6 +1328,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/person/{prisonerId}/booking-court-case-count': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * retrieve court case count for person
+     * @description This endpoint will retrieve the court case count for a person by booking id
+     */
+    get: operations['courtCaseCount']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/sentence-type/summary': {
     parameters: {
       query?: never
@@ -1990,7 +2010,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 09:23:24.291992 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -2126,7 +2146,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:23:24.291992 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -3112,7 +3132,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:23:24.291992 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3206,6 +3226,12 @@ export interface components {
     }
     PrisonerDocuments: {
       courtCaseDocuments: components['schemas']['CourtCaseDocuments'][]
+    }
+    PersonCourtCaseCount: {
+      /** Format: int64 */
+      suppliedBookingCount: number
+      /** Format: int64 */
+      otherBookingCount: number
     }
     LegacySentenceTypeGroupingSummary: {
       nomisSentenceTypeReference: string
@@ -3393,7 +3419,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:23:24.291992 */
+      /** @example 14:51:07.703938788 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -3415,7 +3441,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:23:24.291992 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtId: string
     }
@@ -3470,7 +3496,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 09:23:24.291992 */
+      /** @example 14:51:07.703938788 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -3480,7 +3506,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:23:24.291992 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtId: string
     }
@@ -3594,15 +3620,15 @@ export interface components {
       sort?: string[]
     }
     PageableObject: {
+      /** Format: int64 */
+      offset?: number
       paged?: boolean
+      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageNumber?: number
       /** Format: int32 */
       pageSize?: number
-      sort?: components['schemas']['SortObject']
       unpaged?: boolean
-      /** Format: int64 */
-      offset?: number
     }
     PagedAppearancePeriodLength: {
       /** Format: uuid */
@@ -3703,7 +3729,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 09:23:24.291992 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -3779,20 +3805,20 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
-      /** Format: int32 */
-      numberOfElements?: number
-      sort?: components['schemas']['SortObject']
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
+      first?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
       empty?: boolean
     }
     SortObject: {
+      empty?: boolean
       sorted?: boolean
       unsorted?: boolean
-      empty?: boolean
     }
     DeleteRecallResponse: {
       /** Format: uuid */
@@ -7232,6 +7258,48 @@ export interface operations {
       }
     }
   }
+  courtCaseCount: {
+    parameters: {
+      query?: {
+        bookingId?: string
+      }
+      header?: never
+      path: {
+        prisonerId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns total count and optional booking count */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonCourtCaseCount']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonCourtCaseCount']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PersonCourtCaseCount']
+        }
+      }
+    }
+  }
   getLegacySentenceTypeSummary: {
     parameters: {
       query: {
@@ -7923,6 +7991,7 @@ export interface operations {
         pagedCourtCaseOrderBy?: 'STATUS_APPEARANCE_DATE_DESC' | 'APPEARANCE_DATE_ASC' | 'APPEARANCE_DATE_DESC'
         appearanceDateFrom?: string
         appearanceDateTo?: string
+        bookingId?: string
       }
       header?: never
       path?: never

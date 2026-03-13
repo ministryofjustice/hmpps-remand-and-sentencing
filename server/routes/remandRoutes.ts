@@ -163,7 +163,7 @@ export default class RemandRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/hearing-details?hasErrors=true`,
       )
     }
-    return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference)
+    return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference,false)
   }
 
   public checkDeleteOffence: RequestHandler = async (req, res): Promise<void> => {

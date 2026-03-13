@@ -202,6 +202,7 @@ const getOffenceCode = (o: Offence) => o.offenceCode
 const getOffenceCount = (o: Offence) => o.sentence?.countNumber
 const isNomisOffence = (o: Offence) => !!o.sentence && (getOffenceCount(o) == null || getOffenceCount(o) === '')
 const isOffenceRasMinusOne = (o: Offence) => !!o.sentence && getOffenceCount(o) === '-1'
+const offenceCreateChargeOrder = (o: Offence) => o.createChargeOrder ?? 0
 const isRasWithCountOffence = (o: Offence) => {
   if (!o.sentence) return false
   const n = Number(getOffenceCount(o))
@@ -268,11 +269,15 @@ export function orderOffences(offences: Offence[]): Offence[] {
       if (subGroupA !== subGroupB) return subGroupA - subGroupB
       if (subGroupA !== RasGroup.RAS_WITH_MINUS_ONE_COUNT) return rasCountForOffence(a) - rasCountForOffence(b)
     }
-    const dateDifference = offenceDate(b) - offenceDate(a)
-    if (dateDifference === 0) {
-      return getOffenceCode(a).localeCompare(getOffenceCode(b))
+    const createChargeOrderDifference = offenceCreateChargeOrder(a) - offenceCreateChargeOrder(b)
+    if (createChargeOrderDifference === 0) {
+      const dateDifference = offenceDate(b) - offenceDate(a)
+      if (dateDifference === 0) {
+        return getOffenceCode(a).localeCompare(getOffenceCode(b))
+      }
+      return dateDifference
     }
-    return dateDifference
+    return createChargeOrderDifference
   })
 }
 

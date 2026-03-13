@@ -96,6 +96,7 @@ export default {
                   {
                     offenceCode: 'PS90037',
                     offenceStartDate: '2023-12-15',
+                    createdAt: '2025-07-10T14:30:00.000Z',
                     outcome: {
                       outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
                       outcomeName: 'Remanded in custody',
@@ -103,6 +104,7 @@ export default {
                   },
                   {
                     offenceCode: 'PS11111',
+                    createdAt: '2025-07-10T14:31:00.000Z',
                     outcome: {
                       outcomeUuid: '92e69bb5-9769-478b-9ee6-77c91808d9af',
                       outcomeName: 'Commit to Crown Court for trial in custody',

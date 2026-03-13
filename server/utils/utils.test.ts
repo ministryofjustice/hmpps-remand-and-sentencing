@@ -354,14 +354,17 @@ const withOffenceSentence = (
     } as Sentence,
   })
 
-const withOffenceNoSentence = (code: string, { start, end }: { start?: string; end?: string } = {}): Offence =>
-  makeOffence(code, { offenceStartDate: d(start), offenceEndDate: d(end) })
+const withOffenceNoSentence = (
+  code: string,
+  createChargeOrder: number,
+  { start, end }: { start?: string; end?: string } = {},
+): Offence => makeOffence(code, { offenceStartDate: d(start), offenceEndDate: d(end), createChargeOrder })
 
 describe('orderOffences', () => {
   test('groups in order: NOMIS -> RaS -> No sentence', () => {
     const nomis = withOffenceSentence('N1', { chargeNumber: undefined, nomisLine: '5' }) // NOMIS
     const ras = withOffenceSentence('R1', { chargeNumber: '2' }) // RaS with count
-    const none = withOffenceNoSentence('X1', { start: '2024-01-01' }) // No sentence
+    const none = withOffenceNoSentence('X1', 0, { start: '2024-01-01' }) // No sentence
 
     const input = [none, ras, nomis]
     const out = orderOffences(input).map(o => o.offenceCode)
@@ -399,13 +402,13 @@ describe('orderOffences', () => {
     expect(out).toEqual(['R0', 'R1', 'R5', 'R10'])
   })
 
-  test('No sentence: ordered by offence date DESC', () => {
-    const a = withOffenceNoSentence('A', { start: '2024-01-02' })
-    const b = withOffenceNoSentence('B', { end: '2024-03-01' }) // end date preferred, newer
-    const c = withOffenceNoSentence('C', { start: '2023-12-31' })
+  test('No sentence: ordered by create charge order ASC', () => {
+    const a = withOffenceNoSentence('A', 2, { start: '2024-01-02' })
+    const b = withOffenceNoSentence('B', 1, { end: '2024-03-01' }) // end date preferred, newer
+    const c = withOffenceNoSentence('C', 0, { start: '2023-12-31' })
 
     const out = orderOffences([a, c, b]).map(o => o.offenceCode)
-    expect(out).toEqual(['B', 'A', 'C'])
+    expect(out).toEqual(['C', 'B', 'A'])
   })
 
   test('Mixed: full ordering across all groups and rules', () => {
@@ -423,8 +426,8 @@ describe('orderOffences', () => {
     const r1 = withOffenceSentence('R1', { chargeNumber: '1' })
 
     // No sentence (by date desc)
-    const xNew = withOffenceNoSentence('X_NEW', { end: '2024-08-01' })
-    const xOld = withOffenceNoSentence('X_OLD', { start: '2023-05-01' })
+    const xNew = withOffenceNoSentence('X_NEW', 0, { end: '2024-08-01' })
+    const xOld = withOffenceNoSentence('X_OLD', 1, { start: '2023-05-01' })
 
     const input = [xOld, r2, n2, mOld, xNew, r1, n1, mNew, nBad]
     const out = orderOffences(input).map(o => o.offenceCode)
@@ -440,14 +443,17 @@ describe('orderOffences', () => {
       // RaS counted by count asc
       'R1',
       'R2',
-      // No sentence by date desc
+      // No sentence by create charge order asc
       'X_NEW',
       'X_OLD',
     ])
   })
 
   test('Does not mutate the original array', () => {
-    const original = [withOffenceNoSentence('X'), withOffenceSentence('N', { chargeNumber: undefined, nomisLine: '1' })]
+    const original = [
+      withOffenceNoSentence('X', 0),
+      withOffenceSentence('N', { chargeNumber: undefined, nomisLine: '1' }),
+    ]
     const snapshot = [...original]
     orderOffences(original)
     expect(original).toEqual(snapshot)
@@ -506,15 +512,15 @@ describe('orderOffences', () => {
       start: '2024-01-01',
     })
 
-    const noSentence = withOffenceNoSentence('NO_SENT', { start: '2023-01-01' })
+    const noSentence = withOffenceNoSentence('NO_SENT', 0, { start: '2023-01-01' })
 
     const out = orderOffences([rasWithBoth, noSentence, nomisOnly]).map(o => o.offenceCode)
     expect(out).toEqual(['NOMIS_ONLY', 'RAS_WITH_BOTH', 'NO_SENT'])
   })
 
   test('fallback to offence code when dates are the same', () => {
-    const first = withOffenceNoSentence('A123', { start: '2025-01-01' })
-    const second = withOffenceNoSentence('B123', { start: '2025-01-01' })
+    const first = withOffenceNoSentence('A123', 0, { start: '2025-01-01' })
+    const second = withOffenceNoSentence('B123', 0, { start: '2025-01-01' })
     const out = orderOffences([second, first]).map(o => o.offenceCode)
     expect(out).toEqual(['A123', 'B123'])
   })

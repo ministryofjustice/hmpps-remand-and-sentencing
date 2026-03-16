@@ -73,6 +73,9 @@
             <h2 class="govuk-heading-m govuk-!-margin-top-8">Offences with updated outcomes</h2>
 
             {% for offence in changedOffences %}
+                {% set multipleCountLinkHtml %}
+                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference }}/offences/{{offence.chargeUuid }}/load-replicate-offence">Add multiple counts</a>
+                {% endset %}
                 {{
                     offenceCard({
                         offenceCode: offence.offenceCode,
@@ -99,6 +102,12 @@
                                     visuallyHiddenText: "edit offence"
                                 }
                             ]
+                        },
+                        listItems: {
+                            classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
+                            items: [{
+                                html: multipleCountLinkHtml
+                            }] if replicateOffenceEnabled
                         }
                     })
                 }}

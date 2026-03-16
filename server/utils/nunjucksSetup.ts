@@ -64,6 +64,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.bookSecureMoveServiceUrl = config.bookASecureMoveService.ui_url
   app.locals.bookVideoLinkServiceUrl = config.bookAVideoLinkService.ui_url
   app.locals.filterCourtCasesEnabled = config.featureToggles.filterCourtCases
+  app.locals.replicateOffenceEnabled = config.featureToggles.replicateOffence
 
   if (config.environmentName === 'LOCAL') {
     app.locals.environment = 'local'

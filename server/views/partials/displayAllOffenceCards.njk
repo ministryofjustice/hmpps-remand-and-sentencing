@@ -3,6 +3,9 @@
 
 {% for offence in offences %}
     {% set offenceId = 'offences.' + offence.index %}
+    {% set multipleCountLinkHtml %}
+        <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference }}/offences/{{offence.chargeUuid }}/load-replicate-offence">Add multiple counts</a>
+    {% endset %}
     {{ offenceCard({
         offenceCode: offence.offenceCode,
         offenceName: offenceMap[offence.offenceCode],
@@ -37,7 +40,13 @@
             ]
         },
         id: offenceId,
-        errorMessage: errors | findErrorsBeginningWith(offenceId)
+        errorMessage: errors | findErrorsBeginningWith(offenceId),
+        listItems: {
+            classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
+            items: [{
+                html: multipleCountLinkHtml
+            }] if replicateOffenceEnabled and showAddMultipleCountsLink
+        }
     }) }}
 {% else %}
     {{ govukInsetText({

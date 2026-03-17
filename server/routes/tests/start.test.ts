@@ -242,6 +242,8 @@ describe('GET Start', () => {
     const $ = cheerio.load(res.text)
     const checkboxChecked = $('.govuk-checkboxes__input').prop('checked')
     expect(checkboxChecked).toBe(true)
+    const checkboxDisabled = $('.govuk-checkboxes__input').prop('disabled')
+    expect(checkboxDisabled).toBe(true)
   })
 
   it('display correct empty state content for when booking is active, has no court cases but there are court cases on other bookings', async () => {

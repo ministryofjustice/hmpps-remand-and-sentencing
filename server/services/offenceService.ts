@@ -3,6 +3,7 @@ import type {
   CorrectManyPeriodLengthsForm,
   FirstSentenceConsecutiveToForm,
   IsOffenceAggravatedByTerroristConnectionForm,
+  IsOffenceDateSameForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -25,7 +26,7 @@ import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
 import { groupAndSortPeriodLengths } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import validate from '../validation/validation'
-import { extractKeyValue, toDateString } from '../utils/utils'
+import { extractKeyValue, formatDate, toDateString } from '../utils/utils'
 import {
   alternativeSentenceLengthFormToSentenceLength,
   sentenceLengthFormToSentenceLength,
@@ -165,6 +166,51 @@ export default class OffenceService {
         offence.offenceEndDate = offenceEndDate.toDate()
       } else {
         delete offence.offenceEndDate
+      }
+      // eslint-disable-next-line no-param-reassign
+      session.offences[id] = offence
+    }
+    return errors
+  }
+
+  setIsOffenceDateSame(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    chargeUuid: string,
+    isOffenceDateSameForm: IsOffenceDateSameForm,
+    originalOffence: Offence,
+    warrantDate: Date,
+    overallConvictionDate: Date,
+  ) {
+    const errors = validate(
+      isOffenceDateSameForm,
+      {
+        offenceDateIsSame: 'required',
+      },
+      {
+        'required.offenceDateIsSame': `You must select whether the offence date is ${formatDate(originalOffence.offenceStartDate)}${originalOffence.offenceEndDate ? ` to ${formatDate(originalOffence.offenceEndDate)}` : ''}`,
+      },
+    )
+    if (isOffenceDateSameForm.offenceDateIsSame === 'false') {
+      const offenceDateErrors = this.setOffenceDates(
+        session,
+        nomsId,
+        courtCaseReference,
+        { ...isOffenceDateSameForm },
+        warrantDate,
+        overallConvictionDate,
+        chargeUuid,
+      )
+      errors.push(...offenceDateErrors)
+    }
+    if (errors.length === 0) {
+      const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
+      const offence = this.getOffence(session.offences, id)
+      offence.offenceDateIsSame = isOffenceDateSameForm.offenceDateIsSame
+      if (isOffenceDateSameForm.offenceDateIsSame === 'true') {
+        offence.offenceStartDate = originalOffence.offenceStartDate
+        offence.offenceEndDate = originalOffence.offenceEndDate
       }
       // eslint-disable-next-line no-param-reassign
       session.offences[id] = offence
@@ -1126,6 +1172,24 @@ export default class OffenceService {
     // eslint-disable-next-line no-param-reassign
     session.offences[id] = offence
     return id
+  }
+
+  setSessionReplicatedOffence(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    originalOffence: Offence,
+  ): Offence {
+    const replicatedOffence: Offence = {
+      chargeUuid: crypto.randomUUID(),
+      offenceCode: originalOffence.offenceCode,
+      replicatedFromUuid: originalOffence.chargeUuid,
+      legacyData: originalOffence.legacyData,
+    }
+    const id = this.getOffenceId(nomsId, courtCaseReference, replicatedOffence.chargeUuid)
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = replicatedOffence
+    return replicatedOffence
   }
 
   invalidateFromOffenceDate(

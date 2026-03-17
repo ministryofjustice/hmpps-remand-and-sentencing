@@ -210,4 +210,14 @@ declare module 'forms' {
     'fourthSentenceLength-value'?: string
     'fourthSentenceLength-period'?: string
   }
+
+  export interface IsOffenceDateSameForm {
+    'offenceStartDate-day'?: string
+    'offenceStartDate-month'?: string
+    'offenceStartDate-year'?: string
+    'offenceEndDate-day'?: string
+    'offenceEndDate-month'?: string
+    'offenceEndDate-year'?: string
+    offenceDateIsSame?: string
+  }
 }

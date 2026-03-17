@@ -10,6 +10,7 @@ import OffenceOffenceCodePage from '../../pages/offenceOffenceCodePage'
 import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import Page from '../../pages/page'
+import ErrorPage from '../../pages/error'
 
 context('Court Case Hearing details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -196,7 +197,7 @@ context('Court Case Hearing details Page', () => {
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
     })
 
-    it('shows an error and returns to non-sentencing hearing details when the appearance has been deleted', () => {
+    it('shows an error and goes to the generic error page when the appearance has been deleted', () => {
       cy.task('stubUpdateCourtAppearanceConflict')
       cy.task('stubGetLatestCourtAppearance', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
 
@@ -204,13 +205,17 @@ context('Court Case Hearing details Page', () => {
 
       cy.url().should(
         'include',
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/hearing-details?hasErrors=true',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/non-sentencing/submit-details-edit',
       )
-      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
-      courtCaseHearingDetailsPage
-        .errorSummary()
+      const errorPage = Page.verifyOnPageTitle(ErrorPage, 'There is a problem')
+      errorPage
+        .bodyText()
         .trimTextContent()
-        .should('equal', "There is a problem You cannot make an update to an appearance that's been deleted.")
+        .should('equal', "This appearance has been deleted in NOMIS. You cannot make an update to an appearance that's been deleted.")
+
+      errorPage
+        .courtCasesLink()
+        .should('have.attr', 'href', '/person/A1234AB')
     })
 
     it('can add another offence and go back to hearing details', () => {

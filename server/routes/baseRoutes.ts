@@ -21,6 +21,8 @@ import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
+import { NextFunction } from 'express'
+import createError, { HttpError } from 'http-errors'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -227,11 +229,11 @@ export default abstract class BaseRoutes {
   protected async updateCourtAppearance(
     req,
     res,
+    next: NextFunction,
     nomsId: string,
     addOrEditCourtCase: string,
     courtCaseReference: string,
     appearanceReference: string,
-    sentencingRoute = true,
   ) {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
@@ -251,14 +253,12 @@ export default abstract class BaseRoutes {
     } catch (e) {
       const status = e?.responseStatus ?? e?.data?.status ?? e?.status
       if (status === 409) {
-        req.flash('errors', {
-          text: "You cannot make an update to an appearance that's been deleted.",
-          href: '#',
-        })
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/edit-court-appearance/${appearanceReference}/${sentencingRoute ? 'sentencing' : 'non-sentencing'}/hearing-details?hasErrors=true`,
-        )
+        const err = new Error("This appearance has been deleted in NOMIS. You cannot make an update to an appearance that's been deleted.")
+        ;(err as HttpError).status = 409
+        ;(err as HttpError).nomsId = nomsId
+        return next(err)
       }
+      return next(e)
     }
     const auditDetails = {
       courtCaseUuids: [courtCaseReference],

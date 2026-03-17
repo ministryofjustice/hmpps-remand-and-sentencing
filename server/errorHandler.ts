@@ -8,7 +8,7 @@ export default function createErrorHandler(production: boolean) {
   return (error: HTTPError | FullPageError, req: Request, res: Response, next: NextFunction): void => {
     logger.error(`Error handling request for '${req.originalUrl}', user '${res.locals.user?.username}'`, error)
     if ('errorKey' in error) {
-      res.locals.errorKey = FullPageErrorType[error.errorKey]
+      res.locals.errorKey = FullPageErrorType[error.errorKey] || error.errorKey
     } else {
       if (error.status === 401 || error.status === 403) {
         logger.info('Logging user out')
@@ -19,6 +19,14 @@ export default function createErrorHandler(production: boolean) {
         ? 'Something went wrong. The error has been logged. Please try again'
         : error.message
       res.locals.stack = production ? null : error.stack
+    }
+
+    if ('nomsId' in error) {
+      res.locals.nomsId = error.nomsId
+    }
+
+    if (error.status === 409 && error.message) {
+      res.locals.message = error.message
     }
 
     res.locals.status = error.status

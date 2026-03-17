@@ -351,7 +351,7 @@ export default class SentencingRoutes extends BaseRoutes {
     })
   }
 
-  public submitHearingDetailsEdit: RequestHandler = async (req, res): Promise<void> => {
+  public submitHearingDetailsEdit: RequestHandler = async (req, res, next): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const errors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
       req.session,
@@ -364,7 +364,15 @@ export default class SentencingRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/hearing-details?hasErrors=true`,
       )
     }
-    return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference)
+    return this.updateCourtAppearance(
+      req,
+      res,
+      next,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      appearanceReference,
+    )
   }
 
   public getFirstSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {
@@ -765,9 +773,17 @@ export default class SentencingRoutes extends BaseRoutes {
     })
   }
 
-  public continueSentenceLengthMismatch: RequestHandler = async (req, res): Promise<void> => {
+  public continueSentenceLengthMismatch: RequestHandler = async (req, res, next): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase } = req.params
-    return this.updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference)
+    return this.updateCourtAppearance(
+      req,
+      res,
+      next,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      appearanceReference,
+    )
   }
 
   public getDeleteSentenceInChain: RequestHandler = async (req, res): Promise<void> => {

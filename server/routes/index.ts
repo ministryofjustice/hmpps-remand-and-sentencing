@@ -14,6 +14,7 @@ import referenceDataAdminRoutes from './referenceDataAdminRoutes'
 import chargeOutcomeDataAdminRoutes from './chargeOutcomeDataAdminRoutes'
 import appearanceOutcomeDataAdminRoutes from './appearanceOutcomeDataAdminRoutes'
 import sentenceTypeDataAdminRoutes from './sentenceTypeDataAdminRoutes'
+import ReplicateChargeRoutes from './replicateChargeRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -92,6 +93,14 @@ export default function routes(services: Services): Router {
     services.courtRegisterService,
     services.refDataService,
     services.unknownRecallSentenceService,
+  )
+
+  const replicateChargeRoutes = new ReplicateChargeRoutes(
+    services.offenceService,
+    services.manageOffencesService,
+    services.courtAppearanceService,
+    services.remandAndSentencingService,
+    services.auditService,
   )
 
   router.get('/', async (req, res, next) => {
@@ -598,6 +607,16 @@ export default function routes(services: Services): Router {
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/cancel-offence',
     offenceRoutes.cancelOffenceInputs,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/load-replicate-offence',
+    replicateChargeRoutes.loadReplicateOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/is-offence-date-same',
+    replicateChargeRoutes.getIsOffenceDateSame,
   )
 
   router.get(

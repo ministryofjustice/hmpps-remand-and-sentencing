@@ -51,6 +51,7 @@ declare module 'models' {
     onFinishGoToEdit?: boolean
     replacesOffenceUuid?: string
     createChargeOrder?: number
+    replicatedFromUuid?: string
   }
 
   export interface Sentence {

@@ -66,9 +66,9 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
     let offenceEndDateMonth: number | string = isOffenceDateSameForm['offenceEndDate-month']
     let offenceEndDateYear: number | string = isOffenceDateSameForm['offenceEndDate-year']
     let { offenceDateIsSame } = isOffenceDateSameForm
-    const replicatedOffence = this.offenceService.getSessionOffence(res.session, nomsId, courtCaseReference, chargeUuid)
+    const replicatedOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     const originalOffence = this.courtAppearanceService.getOffence(
-      res.session,
+      req.session,
       nomsId,
       replicatedOffence.replicatedFromUuid,
       appearanceReference,
@@ -146,9 +146,9 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
       chargeUuid,
     } = req.params
     const isOffenceDateSameForm = trimForm<IsOffenceDateSameForm>(req.body)
-    const replicatedOffence = this.offenceService.getSessionOffence(res.session, nomsId, courtCaseReference, chargeUuid)
+    const replicatedOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     const originalOffence = this.courtAppearanceService.getOffence(
-      res.session,
+      req.session,
       nomsId,
       replicatedOffence.replicatedFromUuid,
       appearanceReference,

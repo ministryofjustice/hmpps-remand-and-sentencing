@@ -4,7 +4,7 @@
 {% for offence in offences %}
     {% set offenceId = 'offences.' + offence.index %}
     {% set multipleCountLinkHtml %}
-        <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference }}/offences/{{offence.chargeUuid }}/load-replicate-offence">Add multiple counts</a>
+        <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference }}/offences/{{offence.chargeUuid }}/load-replicate-offence" data-qa="add-multiple-count-link-{{offence.index}}">Add multiple counts</a>
     {% endset %}
     {{ offenceCard({
         offenceCode: offence.offenceCode,
@@ -44,10 +44,7 @@
         listItems: {
             classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
             items: [{
-                html: multipleCountLinkHtml,
-                attributes: {
-                    'data-qa': 'add-multiple-count-link-' + offence.index
-                }
+                html: multipleCountLinkHtml
             }] if replicateOffenceEnabled and showAddMultipleCountsLink
         }
     }) }}

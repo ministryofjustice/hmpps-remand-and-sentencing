@@ -219,11 +219,12 @@ context('Sentencing appearance details Page', () => {
       errorPage
         .bodyText()
         .trimTextContent()
-        .should('equal', "This appearance has been deleted in NOMIS. You cannot make an update to an appearance that's been deleted.")
+        .should(
+          'equal',
+          "This appearance has been deleted in NOMIS. You cannot make an update to an appearance that's been deleted.",
+        )
 
-      errorPage
-        .courtCasesLink()
-        .should('have.attr', 'href', '/person/A1234AB')
+      errorPage.courtCasesLink().should('have.attr', 'href', '/person/A1234AB')
     })
 
     it('can edit alternative overall sentence length', () => {

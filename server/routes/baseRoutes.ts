@@ -2,6 +2,7 @@ import type { Offence } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
+import { HttpError } from 'http-errors'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -21,8 +22,6 @@ import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
-import { NextFunction } from 'express'
-import createError, { HttpError } from 'http-errors'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService

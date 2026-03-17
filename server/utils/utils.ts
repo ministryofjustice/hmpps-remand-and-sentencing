@@ -34,7 +34,7 @@ export const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
-export const formatDate = (date?: string): string | null => {
+export const formatDate = (date?: string | Date): string | null => {
   if (!date) return null
 
   return dayjs(date).format(config.dateFormat)

@@ -1,0 +1,123 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Replicate offence - date" %}
+
+{% set noHtml%}
+    {{ govukDateInput({
+        id: "offenceStartDate",
+        namePrefix: "offenceStartDate",
+        errorMessage: errors | findErrorsBeginningWith('offenceStartDate'),
+        fieldset: {
+            legend: {
+                text: "Offence start date",
+                classes: "govuk-label--s govuk-!-font-weight-bold"
+            }
+        },
+        items: [
+            {
+                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceStartDate-day') else ''),
+                name:"day",
+                value: offenceStartDateDay
+            },
+            {
+                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceStartDate-month') else ''),
+                name:"month",
+                value: offenceStartDateMonth
+            },
+            {
+                classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('offenceStartDate-year') else ''),
+                name:"year",
+                value: offenceStartDateYear
+            }
+        ]
+    }) }}
+
+    {{ govukDateInput({
+        id: "offenceEndDate",
+        namePrefix: "offenceEndDate",
+        errorMessage: errors | findErrorsBeginningWith('offenceEndDate'),
+        fieldset: {
+            legend: {
+                text: "Offence end date (optional)",
+                classes: "govuk-label--s govuk-!-font-weight-bold"
+            }
+        },
+        hint: {
+            text: "This only applies to offences that occur over multiple days"
+        },
+        items: [
+            {
+                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceEndDate-day') else ''),
+                name:"day",
+                value: offenceEndDateDay
+            },
+            {
+                classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceEndDate-month') else ''),
+                name:"month",
+                value: offenceEndDateMonth
+            },
+            {
+                classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('offenceEndDate-year') else ''),
+                name:"year",
+                value: offenceEndDateYear
+            }
+        ]
+    }) }}
+{% endset %}
+
+{% block pageContent %}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/offenceCaption.njk" %}
+
+        {{ govukRadios({
+                    name: "offenceDateIsSame",
+                    fieldset: {
+                        legend: {
+                            text: "Is the offence date " + (originalOffence.offenceStartDate | formateDate) + (" to " + (originalOffence.offenceEndDate | formatDate) if originalOffence.offenceEndDate else "") +"?",
+                            classes: "govuk-fieldset__legend--l",
+                            isPageHeading: true
+                        }
+                    },
+                    hint: {
+                        html: govukInsetText({
+                                text: "This is for the offence " + replicatedOffence.offenceCode + " " + offenceDetails.description,
+                                classes: "govuk-!-margin-top-3",
+                                attributes: {  'data-qa': 'hintInset' }
+                            })
+                    },
+                    errorMessage: errors | findError('offenceDateIsSame'),
+                    items: [
+                        {
+                            value: "true",
+                            text: "Yes",
+                            checked: offenceDateIsSame === 'true'
+                        },
+                        {
+                            value: "false",
+                            checked: offenceDateIsSame === 'false',
+                            text: "No",
+                            conditional: {
+                                html: noHtml
+                            }
+                        }
+                    ]
+                }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+
+            {% if showCancelButton or showCancelButton == null %}
+                {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+            {% endif %}
+        </div>
+    </form>
+
+{% endblock %}

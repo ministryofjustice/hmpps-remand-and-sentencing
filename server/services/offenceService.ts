@@ -1128,6 +1128,24 @@ export default class OffenceService {
     return id
   }
 
+  setSessionReplicatedOffence(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    originalOffence: Offence,
+  ): Offence {
+    const replicatedOffence: Offence = {
+      chargeUuid: crypto.randomUUID(),
+      offenceCode: originalOffence.offenceCode,
+      replicatedFromUuid: originalOffence.chargeUuid,
+      legacyData: originalOffence.legacyData,
+    }
+    const id = this.getOffenceId(nomsId, courtCaseReference, replicatedOffence.chargeUuid)
+    // eslint-disable-next-line no-param-reassign
+    session.offences[id] = replicatedOffence
+    return replicatedOffence
+  }
+
   invalidateFromOffenceDate(
     session: Partial<SessionData>,
     nomsId: string,

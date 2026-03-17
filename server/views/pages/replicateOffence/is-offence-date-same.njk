@@ -78,17 +78,15 @@
                     name: "offenceDateIsSame",
                     fieldset: {
                         legend: {
-                            text: "Is the offence date " + (originalOffence.offenceStartDate | formateDate) + (" to " + (originalOffence.offenceEndDate | formatDate) if originalOffence.offenceEndDate else "") +"?",
+                            text: "Is the offence date " + (originalOffence.offenceStartDate | formatDate) + (" to " + (originalOffence.offenceEndDate | formatDate) if originalOffence.offenceEndDate else "") +"?",
                             classes: "govuk-fieldset__legend--l",
                             isPageHeading: true
                         }
                     },
                     hint: {
-                        html: govukInsetText({
-                                text: "This is for the offence " + replicatedOffence.offenceCode + " " + offenceDetails.description,
-                                classes: "govuk-!-margin-top-3",
-                                attributes: {  'data-qa': 'hintInset' }
-                            })
+                        text: "This is for the offence " + replicatedOffence.offenceCode + " " + offenceDetails.description,
+                        classes: "govuk-!-margin-top-3",
+                        attributes: {  'data-qa': 'hintInset' }
                     },
                     errorMessage: errors | findError('offenceDateIsSame'),
                     items: [

@@ -44,7 +44,10 @@
         listItems: {
             classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
             items: [{
-                html: multipleCountLinkHtml
+                html: multipleCountLinkHtml,
+                attributes: {
+                    'data-qa': 'add-multiple-count-link-' + offence.index
+                }
             }] if replicateOffenceEnabled and showAddMultipleCountsLink
         }
     }) }}

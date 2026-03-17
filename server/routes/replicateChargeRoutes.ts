@@ -75,7 +75,7 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
     )
     const offenceDetails = await this.manageOffencesService.getOffenceByCode(
       replicatedOffence.offenceCode,
-      res.user.username,
+      req.user.username,
       replicatedOffence.legacyData?.offenceDescription,
     )
 
@@ -132,6 +132,7 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
       replicatedOffence,
       offenceDetails,
       backLink,
+      errors: req.flash('errors') || [],
     })
   }
 

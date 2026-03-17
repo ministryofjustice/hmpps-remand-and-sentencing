@@ -619,6 +619,11 @@ export default function routes(services: Services): Router {
     replicateChargeRoutes.getIsOffenceDateSame,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/is-offence-date-same',
+    replicateChargeRoutes.submitIsOffenceDateSame,
+  )
+
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/next-appearance-select',
     courtCaseRoutes.getNextAppearanceSelect,

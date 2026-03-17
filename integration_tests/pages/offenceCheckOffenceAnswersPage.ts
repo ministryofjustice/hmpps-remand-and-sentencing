@@ -25,6 +25,9 @@ export default class OffenceCheckOffenceAnswersPage extends Page {
       `a[href="/person/${personId}/add-court-case/${courtCaseId}/add-court-appearance/${appearanceReference}/offences/${chargeUuid}/select-consecutive-concurrent"]`,
     )
 
+  addMultipleCountsLink = (offenceIndex: string): PageElement =>
+    cy.get(`[data-qa="add-multiple-count-link-${offenceIndex}"]`)
+
   editOffenceLink = (chargeUuid: string): PageElement => cy.get(`[data-qa="edit-offence-link-${chargeUuid}"]`)
 
   finishAddingButton = (): PageElement => cy.get('[data-qa="finishAddingButton"]')

@@ -144,7 +144,8 @@ export default class OffenceService {
         'isAfterDate.offenceEndDate-day': 'The offence end date must be after the offence start date',
         'isWithinLast100Years.offenceEndDate-day': 'All dates must be within the last 100 years from today’s date',
         'isSameOrBeforeWarrantDate.offenceEndDate-day': 'The offence end date must be on or before the warrant date',
-        'isSameOrBeforeConvictionDate.offenceEndDate-day': 'The offence end date must be on or before the conviction date',
+        'isSameOrBeforeConvictionDate.offenceEndDate-day':
+          'The offence end date must be on or before the conviction date',
       },
     )
 

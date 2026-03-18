@@ -5,5 +5,5 @@ export default class CourtCaseOverallConvictionDatePage extends Page {
     super('Is the conviction date the same for all offences on the warrant?')
   }
 
-  hintInset = (): PageElement => cy.get('[data-qa=hintInset]')
+  hintText = (): PageElement => cy.get('#overallConvictionDateAppliedAll-hint')
 }

@@ -6,4 +6,7 @@ export default class OffenceReviewOffencesPage extends Page {
   }
 
   updateOutcomeLink = (chargeUuid: string): PageElement => cy.get(`[data-qa="update-outcome-link-${chargeUuid}"]`)
+
+  addMultipleCountsLink = (chargeUuid: string): PageElement =>
+    cy.get(`[data-qa="add-multiple-count-link-${chargeUuid}"]`)
 }

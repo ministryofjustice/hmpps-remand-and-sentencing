@@ -7,6 +7,8 @@ import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import Page from '../../pages/page'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
+import IsOffenceDateSamePage from '../../pages/IsOffenceDateSamePage'
+import ReplicateOffenceOutcomePage from '../../pages/replicateOffenceOutcomePage'
 
 context('Check Offence Answers Page', () => {
   let offenceCheckOffenceAnswersPage: OffenceCheckOffenceAnswersPage
@@ -79,6 +81,26 @@ context('Check Offence Answers Page', () => {
       cy.createOffence('A1234AB', '0', '0', '0')
       offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     })
+
+    it('can add multiple counts', () => {
+      cy.createOffence('A1234AB', '0', '0', '0')
+      offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+        OffenceCheckOffenceAnswersPage,
+        'You have added 1 offence',
+      )
+      offenceCheckOffenceAnswersPage.addMultipleCountsLink('0').click()
+      const isOffenceDateSamePage = Page.verifyOnPageTitle(IsOffenceDateSamePage, '15/07/2023')
+      isOffenceDateSamePage.radioLabelSelector('true').click()
+      isOffenceDateSamePage.continueButton().click()
+      const replicateOffenceOutcomePage = Page.verifyOnPage(ReplicateOffenceOutcomePage)
+      replicateOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
+      replicateOffenceOutcomePage.continueButton().click()
+      offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+        OffenceCheckOffenceAnswersPage,
+        'You have added 2 offence',
+      )
+    })
+
     it('changing an existing offence results in changes in the offence', () => {
       cy.task('stubGetChargeOutcomesByIds', [
         {

@@ -4,6 +4,8 @@ import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import IsOffenceDateSamePage from '../../pages/IsOffenceDateSamePage'
+import ReplicateOffenceOutcomePage from '../../pages/replicateOffenceOutcomePage'
 
 context('Review Offences Page', () => {
   let offenceReviewOffencesPage: OffenceReviewOffencesPage
@@ -86,6 +88,24 @@ context('Review Offences Page', () => {
         .errorSummary()
         .trimTextContent()
         .should('equal', 'There is a problem Update the offence outcome')
+    })
+
+    it('can add multiple counts', () => {
+      cy.task('stubGetOffenceByCode', {})
+      offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
+
+      const offenceUpdateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+      offenceUpdateOutcomePage.radioLabelContains('Remanded in custody').click()
+      offenceUpdateOutcomePage.continueButton().click()
+      offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+      offenceReviewOffencesPage.addMultipleCountsLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
+      const isOffenceDateSamePage = Page.verifyOnPageTitle(IsOffenceDateSamePage, '12/05/2023')
+      isOffenceDateSamePage.radioLabelSelector('true').click()
+      isOffenceDateSamePage.continueButton().click()
+      const replicateOffenceOutcomePage = Page.verifyOnPage(ReplicateOffenceOutcomePage)
+      replicateOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
+      replicateOffenceOutcomePage.continueButton().click()
+      offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     })
   })
 })

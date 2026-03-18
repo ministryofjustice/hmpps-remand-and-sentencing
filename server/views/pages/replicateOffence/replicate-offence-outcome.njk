@@ -1,0 +1,65 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/hint/macro.njk" import govukHint %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Replicate offence - outcome" %}
+
+{% set fieldSetHtml %}
+    <h1 class="govuk-fieldset__heading">
+        Select the outcome for this offence
+    </h1>
+{% endset %}
+
+{% set radiosData = {
+    name: "offenceOutcome",
+    fieldset: {
+        legend: {
+            html: fieldSetHtml,
+            classes: "govuk-fieldset__legend--l"
+        }
+    },
+    hint: offenceHint,
+    items: []
+} %}
+
+{% for caseOutcome in primaryOutcomes %}
+    {% set caseOutcomeRow = {
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
+    } %}
+    {{ radiosData.items.push(caseOutcomeRow) }}
+{% endfor %}
+
+{% if primaryOutcomes.length and nonCustodialOutcomes.length %}
+    {{ radiosData.items.push({ divider: "or" }) }}
+{% endif %}
+
+{% for caseOutcome in nonCustodialOutcomes %}
+    {% set caseOutcomeRow = {
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
+    } %}
+    {{ radiosData.items.push(caseOutcomeRow) }}
+{% endfor %}
+
+{% block pageContent %}
+    <form method="post" autocomplete="off">
+
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/offenceCaption.njk" %}
+
+        {{ govukRadios(radiosData) }}
+
+        <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+{% endblock %}

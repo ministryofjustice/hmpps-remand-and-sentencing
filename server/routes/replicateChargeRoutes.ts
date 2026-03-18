@@ -1,4 +1,4 @@
-import type { IsOffenceDateSameForm } from 'forms'
+import type { IsOffenceDateSameForm, OffenceOffenceOutcomeForm } from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -8,6 +8,7 @@ import BaseRoutes from './baseRoutes'
 import ReplicateOffenceJourneyUrls from './data/ReplicateOffenceJourneyUrls'
 import JourneyUrls from './data/JourneyUrls'
 import trimForm from '../utils/trim'
+import RefDataService from '../services/refDataService'
 
 export default class ReplicateChargeRoutes extends BaseRoutes {
   constructor(
@@ -16,6 +17,7 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
     courtAppearanceService: CourtAppearanceService,
     remandAndSentencingService: RemandAndSentencingService,
     auditService: AuditService,
+    private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
   }
@@ -174,6 +176,7 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
           chargeUuid,
+          true,
         ),
       )
     }
@@ -186,6 +189,110 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
         appearanceReference,
         chargeUuid,
       ),
+    )
+  }
+
+  public getReplicateOffenceOutcome = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      chargeUuid,
+    } = req.params
+    let offenceOutcomeForm = (req.flash('offenceOutcomeForm')[0] || {}) as OffenceOffenceOutcomeForm
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    if (Object.keys(offenceOutcomeForm).length === 0) {
+      offenceOutcomeForm = {
+        offenceOutcome: offence.outcomeUuid,
+      }
+    }
+    const outcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId, appearanceReference)
+    const appearanceOutcome = await this.refDataService.getAppearanceOutcomeByUuid(outcomeUuid, req.user.username)
+    const [caseOutcomes, offenceHint] = await Promise.all([
+      this.refDataService.getAllChargeOutcomes(req.user.username),
+      this.getOffenceHint(offence, req.user.username),
+    ])
+    let outcomeTypes = ['REMAND', 'NON_CUSTODIAL']
+    if (appearanceOutcome.outcomeType === 'NON_CUSTODIAL') {
+      outcomeTypes = ['NON_CUSTODIAL']
+    }
+
+    const chargeOutcomes = caseOutcomes
+      .filter(caseOutcome => outcomeTypes.includes(caseOutcome.outcomeType))
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+
+    const primaryOutcomes = chargeOutcomes.filter(o => o.outcomeType !== 'NON_CUSTODIAL')
+    const nonCustodialOutcomes = chargeOutcomes.filter(o => o.outcomeType === 'NON_CUSTODIAL')
+    const backLink = ReplicateOffenceJourneyUrls.isOffenceDateSame(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      chargeUuid,
+    )
+    return res.render('pages/replicateOffence/replicate-offence-outcome', {
+      nomsId,
+      courtCaseReference,
+      offenceOutcomeForm,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink,
+      primaryOutcomes,
+      nonCustodialOutcomes,
+      offenceHint,
+    })
+  }
+
+  public submitReplicateOffenceOutcome = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      chargeUuid,
+    } = req.params
+    const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
+    const { errors } = await this.offenceService.setOffenceOutcome(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      offenceOutcomeForm,
+      [],
+      req.user.username,
+      chargeUuid,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
+      return res.redirect(
+        ReplicateOffenceJourneyUrls.replicateOffenceOutcome(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid,
+          true,
+        ),
+      )
+    }
+    return this.saveSessionOffenceInAppearance(
+      req,
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      chargeUuid,
     )
   }
 }

@@ -53,11 +53,9 @@
         <p class="govuk-body">Status code: {{ status }}</p>
       {% endif %}
 
-       {# For debugging purpose
-       {% if stack %}
-         <pre>{{ stack }}</pre>
-       {% endif %}
-       #}
+      {% if stack %}
+        <pre>{{ stack }}</pre>
+      {% endif %}
 
     </div>
   </div>

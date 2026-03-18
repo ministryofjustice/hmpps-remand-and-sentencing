@@ -28,8 +28,8 @@ describe('GET Court case overall conviction date', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
-        const hintInset = $('[data-qa=hintInset]').text()
-        expect(hintInset).toContain(
+        const hintText = $('#overallConvictionDateAppliedAll-hint').text()
+        expect(hintText).toContain(
           'This is not always the same as the sentencing date. You can find the conviction date on the Prison court register.',
         )
       })

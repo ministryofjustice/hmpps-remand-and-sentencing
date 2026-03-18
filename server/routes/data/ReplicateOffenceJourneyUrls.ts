@@ -6,8 +6,9 @@ export default class ReplicateOffenceJourneyUrls {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
     chargeUuid: string,
+    hasErrors?: boolean,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/is-offence-date-same`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/is-offence-date-same${hasErrors ? '?hasErrors=true' : ''}`
   }
 
   static replicateOffenceOutcome = (
@@ -17,7 +18,8 @@ export default class ReplicateOffenceJourneyUrls {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
     chargeUuid: string,
+    hasErrors?: boolean,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/replicate-offence-outcome`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/offences/${chargeUuid}/replicate-offence-outcome${hasErrors ? '?hasErrors=true' : ''}`
   }
 }

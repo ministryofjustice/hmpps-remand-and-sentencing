@@ -21,6 +21,7 @@ import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
+import FullPageError from '../model/FullPageError'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -224,7 +225,15 @@ export default abstract class BaseRoutes {
     )
   }
 
-  protected async updateCourtAppearance(req, res, nomsId, addOrEditCourtCase, courtCaseReference, appearanceReference) {
+  protected async updateCourtAppearance(
+    req,
+    res,
+    next,
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseReference: string,
+    appearanceReference: string,
+  ) {
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -232,13 +241,21 @@ export default abstract class BaseRoutes {
     )
     const { username } = res.locals.user
     const { prisonId } = res.locals.prisoner
-    await this.remandAndSentencingService.updateCourtAppearance(
-      username,
-      courtCaseReference,
-      appearanceReference,
-      courtAppearance,
-      prisonId,
-    )
+    try {
+      await this.remandAndSentencingService.updateCourtAppearance(
+        username,
+        courtCaseReference,
+        appearanceReference,
+        courtAppearance,
+        prisonId,
+      )
+    } catch (e) {
+      const status = e?.responseStatus ?? e?.data?.status ?? e?.status
+      if (status === 409) {
+        throw FullPageError.appearanceDeletedError(nomsId)
+      }
+      return next(e)
+    }
     const auditDetails = {
       courtCaseUuids: [courtCaseReference],
       courtAppearanceUuids: [appearanceReference],

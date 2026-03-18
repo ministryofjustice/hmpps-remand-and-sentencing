@@ -449,8 +449,8 @@ export interface paths {
      */
     get: operations['getCourtAppearanceDetails']
     /**
-     * Create Court appearance
-     * @description This endpoint will create a court appearance in a given court case
+     * Update Court appearance
+     * @description This endpoint will update a court appearance in a given court case
      */
     put: operations['updateCourtAppearance']
     post?: never
@@ -2010,7 +2010,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 11:21:55.68182757 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -2146,7 +2146,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:21:55.68182757 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -3132,7 +3132,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:21:55.68182757 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3419,7 +3419,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 11:21:55.68182757 */
+      /** @example 14:51:07.703938788 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -3441,7 +3441,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:21:55.68182757 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtId: string
     }
@@ -3496,7 +3496,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 11:21:55.68182757 */
+      /** @example 14:51:07.703938788 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -3506,7 +3506,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:21:55.68182757 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtId: string
     }
@@ -3729,7 +3729,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:21:55.68182757 */
+      /** @example 14:51:07.703938788 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string

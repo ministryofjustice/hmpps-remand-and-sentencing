@@ -15,6 +15,7 @@ import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
 import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import CannotChangeSentenceOutcomePage from '../../pages/cannotChangeSentenceOutcomePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import ErrorPage from '../../pages/error'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -202,6 +203,28 @@ context('Sentencing appearance details Page', () => {
       courtCaseHearingDetailsPage.confirmButton().click()
       Page.verifyOnPage(AppearanceUpdatedConfirmationPage)
       cy.task('verifyUpdateSentenceCourtAppearanceRequest').should('equal', 1)
+    })
+
+    it('shows an error and goes to the generic error page when the appearance has been deleted', () => {
+      cy.task('stubUpdateSentenceCourtAppearanceConflict')
+      cy.task('stubGetLatestCourtAppearanceWithSentencing', { courtCaseUuid: '83517113-5c14-4628-9133-1e3cb12e31fa' })
+
+      courtCaseHearingDetailsPage.confirmButton().click()
+
+      cy.url().should(
+        'include',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/submit-details-edit',
+      )
+      const errorPage = Page.verifyOnPageTitle(ErrorPage, 'There is a problem')
+      errorPage
+        .bodyText()
+        .trimTextContent()
+        .should(
+          'equal',
+          "This appearance has been deleted. You cannot make an update to an appearance that's been deleted.",
+        )
+
+      errorPage.courtCasesLink().should('have.attr', 'href', '/person/A1234AB')
     })
 
     it('can edit alternative overall sentence length', () => {

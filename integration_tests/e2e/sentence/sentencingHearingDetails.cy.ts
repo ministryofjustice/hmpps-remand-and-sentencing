@@ -221,7 +221,7 @@ context('Sentencing appearance details Page', () => {
         .trimTextContent()
         .should(
           'equal',
-          "This appearance has been deleted in NOMIS. You cannot make an update to an appearance that's been deleted.",
+          "This appearance has been deleted. You cannot make an update to an appearance that's been deleted.",
         )
 
       errorPage.courtCasesLink().should('have.attr', 'href', '/person/A1234AB')

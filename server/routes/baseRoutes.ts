@@ -2,7 +2,6 @@ import type { Offence } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
-import { HttpError } from 'http-errors'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -22,6 +21,7 @@ import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
+import FullPageError from '../model/FullPageError'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -252,12 +252,7 @@ export default abstract class BaseRoutes {
     } catch (e) {
       const status = e?.responseStatus ?? e?.data?.status ?? e?.status
       if (status === 409) {
-        const err = new Error(
-          "This appearance has been deleted in NOMIS. You cannot make an update to an appearance that's been deleted.",
-        )
-        ;(err as HttpError).status = 409
-        ;(err as HttpError).nomsId = nomsId
-        return next(err)
+        throw FullPageError.appearanceDeletedError(nomsId)
       }
       return next(e)
     }

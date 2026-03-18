@@ -137,7 +137,7 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence end date must be before the warrant date')
+      .should('equal', 'There is a problem The offence end date must be on or before the warrant date')
 
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('06')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
@@ -172,20 +172,20 @@ context('Add Offence Offence Date Page', () => {
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('05')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2025')
-    offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('07')
+    offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('08')
     offenceOffenceDatePage.monthDateInput('offenceEndDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceEndDate').clear().type('2025')
     offenceOffenceDatePage.continueButton().click()
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence end date must be before the conviction date')
+      .should('equal', 'There is a problem The offence end date must be on or before the conviction date')
 
     // success route - offence dates less thean conviction date
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('05')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2025')
-    offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('06')
+    offenceOffenceDatePage.dayDateInput('offenceEndDate').clear().type('07')
     offenceOffenceDatePage.monthDateInput('offenceEndDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceEndDate').clear().type('2025')
     offenceOffenceDatePage.continueButton().click()

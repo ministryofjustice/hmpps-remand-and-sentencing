@@ -108,12 +108,12 @@ export default class OffenceService {
         offenceOffenceDateForm['offenceEndDate-month'],
         offenceOffenceDateForm['offenceEndDate-day'],
       )
-      isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastDate:${endDateString}|isWithinLast100Years:${endDateString}|isBeforeWarrantDate:${warrantDateString},${endDateString}`
+      isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastDate:${endDateString}|isWithinLast100Years:${endDateString}|isSameOrBeforeWarrantDate:${warrantDateString},${endDateString}`
       if (startDateString) {
         isValidOffenceEndDateRule += `|isAfterDate:${startDateString},${endDateString}`
       }
       if (convictionDateString) {
-        isValidOffenceEndDateRule += `|isBeforeConvictionDate:${convictionDateString},${endDateString}`
+        isValidOffenceEndDateRule += `|isSameOrBeforeConvictionDate:${convictionDateString},${endDateString}`
       }
     }
 
@@ -143,8 +143,9 @@ export default class OffenceService {
         'isPastDate.offenceEndDate-day': 'The offence end date must be a date from the past',
         'isAfterDate.offenceEndDate-day': 'The offence end date must be after the offence start date',
         'isWithinLast100Years.offenceEndDate-day': 'All dates must be within the last 100 years from today’s date',
-        'isBeforeWarrantDate.offenceEndDate-day': 'The offence end date must be before the warrant date',
-        'isBeforeConvictionDate.offenceEndDate-day': 'The offence end date must be before the conviction date',
+        'isSameOrBeforeWarrantDate.offenceEndDate-day': 'The offence end date must be on or before the warrant date',
+        'isSameOrBeforeConvictionDate.offenceEndDate-day':
+          'The offence end date must be on or before the conviction date',
       },
     )
 

@@ -137,7 +137,7 @@ context('Unknown recall sentence offence date', () => {
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence end date must be before the warrant date')
+      .should('equal', 'There is a problem The offence end date must be on or before the warrant date')
   })
 
   it('Dates must be within 100 years', () => {

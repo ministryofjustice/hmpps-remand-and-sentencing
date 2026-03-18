@@ -24,6 +24,7 @@ import isWithinNextOneYear from './isWithinNextOneYear'
 import isBeforeWarrantDate from './isBeforeWarrantDate'
 import isBeforeConvictionDate from './isBeforeConvictionDate'
 import isSameOrBeforeWarrantDate from './isSameOrBeforeWarrantDate'
+import isSameOrBeforeConvictionDate from './isSameOrBeforeConvictionDate'
 import isAfterOffenceEndDate from './isAfterOffenceEndDate'
 import isAfterOffenceStartDate from './isAfterOffenceStartDate'
 
@@ -63,6 +64,11 @@ Validator.register('isBeforeWarrantDate', isBeforeWarrantDate, 'date must be bef
 Validator.register('isBeforeConvictionDate', isBeforeConvictionDate, 'date must be before conviction date')
 Validator.register('isFutureOrCurrentDate', isFutureOrCurrentDate, 'date cannot be date in the past')
 Validator.register('isSameOrBeforeWarrantDate', isSameOrBeforeWarrantDate, 'date must be same or before warrant date')
+Validator.register(
+  'isSameOrBeforeConvictionDate',
+  isSameOrBeforeConvictionDate,
+  'date must be same or before conviction date',
+)
 Validator.register('isAfterOffenceEndDate', isAfterOffenceEndDate, 'date must be after offence end date')
 Validator.register('isAfterOffenceStartDate', isAfterOffenceStartDate, 'date must be after offence end date')
 Validator.registerImplicit(

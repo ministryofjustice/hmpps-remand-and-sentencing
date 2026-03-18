@@ -74,7 +74,7 @@
 
             {% for offence in changedOffences %}
                 {% set multipleCountLinkHtml %}
-                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference }}/offences/{{offence.chargeUuid }}/load-replicate-offence">Add multiple counts</a>
+                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference }}/offences/{{offence.chargeUuid }}/load-replicate-offence" data-qa="add-multiple-count-link-{{offence.chargeUuid}}">Add multiple counts</a>
                 {% endset %}
                 {{
                     offenceCard({

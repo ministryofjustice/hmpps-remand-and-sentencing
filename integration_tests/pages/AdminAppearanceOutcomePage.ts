@@ -5,5 +5,5 @@ export default class AdminChargeOutcomePage extends Page {
     super('Appearance outcome admin')
   }
 
-  editLink = (outcomeUuid: string): PageElement => cy.get(`[data-qa="edit-link-${outcomeUuid}]`)
+  editLink = (outcomeUuid: string): PageElement => cy.get(`[data-qa="edit-link-${outcomeUuid}"]`)
 }

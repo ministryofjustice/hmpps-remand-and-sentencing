@@ -11,7 +11,7 @@ context('Edit appearance outcome page', () => {
     cy.signIn()
     cy.visit('/admin/appearance-outcomes')
     const adminAppearanceOutcomePage = Page.verifyOnPage(AdminAppearanceOutcomePage)
-    adminAppearanceOutcomePage.editLink('85ffc6bf-6a2c-4f2b-8db8-5b466b602537').click()
+    adminAppearanceOutcomePage.editLink('6da892fa-d85e-44de-95d4-a7f06c3a2dcb').click()
     editAppearanceOutcomePage = Page.verifyOnPage(EditAppearanceOutcomePage)
   })
 

@@ -7,7 +7,7 @@
 
 {% for appearanceOutcome in appearanceOutcomes %}
     {% set editHtml %}
-        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/appearance-outcomes/edit/{{ appearanceOutcomes.outcomeUuid }}" data-qa="edit-link-{{ chargeOutcome.outcomeUuid }}">Edit</a>
+        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/appearance-outcomes/edit/{{ appearanceOutcome.outcomeUuid }}" data-qa="edit-link-{{ appearanceOutcome.outcomeUuid }}">Edit</a>
     {% endset %}
     {% set tableRows = tableRows.concat([
         [ {

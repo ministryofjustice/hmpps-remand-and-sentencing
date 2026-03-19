@@ -1,5 +1,6 @@
 import Page from '../../pages/page'
 import EditAppearanceOutcomePage from '../../pages/EditAppearanceOutcomePage'
+import AdminAppearanceOutcomePage from '../../pages/AdminAppearanceOutcomePage'
 
 context('Edit appearance outcome page', () => {
   let editAppearanceOutcomePage: EditAppearanceOutcomePage
@@ -8,7 +9,9 @@ context('Edit appearance outcome page', () => {
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetAllChargeOutcomes')
     cy.signIn()
-    cy.visit('/admin/appearance-outcomes/edit/85ffc6bf-6a2c-4f2b-8db8-5b466b602537')
+    cy.visit('/admin/appearance-outcomes')
+    const adminAppearanceOutcomePage = Page.verifyOnPage(AdminAppearanceOutcomePage)
+    adminAppearanceOutcomePage.editLink('85ffc6bf-6a2c-4f2b-8db8-5b466b602537').click()
     editAppearanceOutcomePage = Page.verifyOnPage(EditAppearanceOutcomePage)
   })
 

@@ -1,5 +1,6 @@
 import Page from '../../pages/page'
 import EditChargeOutcomePage from '../../pages/EditChargeOutcomePage'
+import AdminChargeOutcomePage from '../../pages/AdminChargeOutcomePage'
 
 context('Edit charge outcome page', () => {
   let editChargeOutcomePage: EditChargeOutcomePage
@@ -7,7 +8,9 @@ context('Edit charge outcome page', () => {
     cy.task('happyPathStubs')
     cy.task('stubGetAllChargeOutcomes')
     cy.signIn()
-    cy.visit('/admin/charge-outcomes/edit/85ffc6bf-6a2c-4f2b-8db8-5b466b602537')
+    cy.visit('/admin/charge-outcomes')
+    const adminChargeOutcomePage = Page.verifyOnPage(AdminChargeOutcomePage)
+    adminChargeOutcomePage.editLink('85ffc6bf-6a2c-4f2b-8db8-5b466b602537').click()
     editChargeOutcomePage = Page.verifyOnPage(EditChargeOutcomePage)
   })
 

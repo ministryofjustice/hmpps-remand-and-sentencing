@@ -7,7 +7,7 @@
 
 {% for appearanceOutcome in appearanceOutcomes %}
     {% set editHtml %}
-        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/appearance-outcomes/{{ appearanceOutcomes.outcomeUuid }}">Edit</a>
+        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/appearance-outcomes/edit/{{ appearanceOutcome.outcomeUuid }}" data-qa="edit-link-{{ appearanceOutcome.outcomeUuid }}">Edit</a>
     {% endset %}
     {% set tableRows = tableRows.concat([
         [ {
@@ -51,7 +51,7 @@
         {{ govukNotificationBanner({
                 text: successMessage,
                 type: "success"
-            }) }} 
+            }) }}
     </div>
 </div>
 {% endif %}
@@ -72,7 +72,7 @@
                     }) }}
                 </div>
             </div>
-            
+
             {{
                 govukTable({
                     caption: "Appearance outcomes",

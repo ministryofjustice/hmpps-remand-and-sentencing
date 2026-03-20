@@ -2235,7 +2235,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    this.offenceService.clearOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-date`,
     )

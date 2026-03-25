@@ -307,6 +307,10 @@ context('New Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
+          name: 'Add aggravating factors',
+          status: 'Cannot start yet',
+        },
+        {
           name: 'Upload court documents',
           status: 'Cannot start yet',
         },
@@ -351,6 +355,10 @@ context('New Court Case journey', () => {
         },
         {
           name: 'Add offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Add aggravating factors',
           status: 'Cannot start yet',
         },
         {
@@ -413,6 +421,10 @@ context('New Court Case journey', () => {
         {
           name: 'Add offences',
           status: 'Incomplete',
+        },
+        {
+          name: 'Add aggravating factors',
+          status: 'Cannot start yet',
         },
         {
           name: 'Upload court documents',
@@ -479,6 +491,10 @@ context('New Court Case journey', () => {
         {
           name: 'Add offences',
           status: 'Completed',
+        },
+        {
+          name: 'Add aggravating factors',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',

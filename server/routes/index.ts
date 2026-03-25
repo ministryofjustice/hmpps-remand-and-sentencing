@@ -911,8 +911,5 @@ export default function routes(services: Services): Router {
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/select-offence-with-aggravated-factors',
     sentencingRoutes.getSelectOffenceWithAggravatedFactors,
   )
-
-
-
   return router
 }

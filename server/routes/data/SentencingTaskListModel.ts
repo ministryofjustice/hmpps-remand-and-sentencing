@@ -1,7 +1,6 @@
 import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
 import JourneyUrls from './JourneyUrls'
-import { c } from 'openapi-typescript'
 
 export default class SentencingTaskListModel extends TaskListModel {
   constructor(

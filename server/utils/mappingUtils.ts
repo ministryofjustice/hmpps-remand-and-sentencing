@@ -75,6 +75,9 @@ const courtAppearanceToCreateNextCourtAppearance = (
       ...(courtAppearance.nextAppearanceTimeSet
         ? { appearanceTime: appearanceDate.format('HH:mm:[00].[000000]') }
         : {}),
+      ...(courtAppearance.nextAppearanceSubTypeUuid && courtAppearance.nextAppearanceSubTypeUuid !== 'NONE'
+        ? { courtAppearanceSubtypeUuid: courtAppearance.nextAppearanceSubTypeUuid }
+        : {}),
     } as CreateNextCourtAppearance
   }
   return nextCourtAppearance
@@ -438,6 +441,7 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
     nextAppearanceTypeUuid: nextCourtAppearance?.appearanceType.appearanceTypeUuid,
     nextAppearanceTimeSet: typeof nextCourtAppearance?.appearanceTime === 'string',
     nextAppearanceDate,
+    nextAppearanceSubTypeUuid: nextCourtAppearance?.courtAppearanceSubType?.appearanceSubtypeUuid ?? 'NONE',
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
   } as CourtAppearance
 }

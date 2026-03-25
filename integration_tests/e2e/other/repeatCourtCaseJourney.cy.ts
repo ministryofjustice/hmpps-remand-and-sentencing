@@ -312,6 +312,10 @@ context('Repeat Court Case journey', () => {
           status: 'Cannot start yet',
         },
         {
+          name: 'Add aggravating factors',
+          status: 'Cannot start yet',
+        },
+        {
           name: 'Upload court documents',
           status: 'Cannot start yet',
         },
@@ -359,6 +363,10 @@ context('Repeat Court Case journey', () => {
         },
         {
           name: 'Update offence outcomes',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Add aggravating factors',
           status: 'Cannot start yet',
         },
         {
@@ -416,6 +424,10 @@ context('Repeat Court Case journey', () => {
           status: 'Incomplete',
         },
         {
+          name: 'Add aggravating factors',
+          status: 'Cannot start yet',
+        },
+        {
           name: 'Upload court documents',
           status: 'Optional',
         },
@@ -468,6 +480,10 @@ context('Repeat Court Case journey', () => {
         {
           name: 'Update offence outcomes',
           status: 'Completed',
+        },
+        {
+          name: 'Add aggravating factors',
+          status: 'Optional',
         },
         {
           name: 'Upload court documents',

@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
-import { appWithAllRoutes } from '../testutils/appSetup'
+import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
 
 let app: Express
 
@@ -15,6 +15,9 @@ afterEach(() => {
 
 describe('GET Next appearance date', () => {
   it('should render page on new journey', () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+    })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-date')
       .expect('Content-Type', /html/)

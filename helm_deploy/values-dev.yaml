@@ -30,6 +30,7 @@ generic-service:
     BOOK_VIDEO_LINK_UI_URL: "https://book-a-video-link-dev.prison.service.justice.gov.uk"
     FEATURES_FILTER_COURT_CASES_ENABLED: 'true'
     FEATURES_REPLICATE_OFFENCE_ENABLED: 'true'
+    FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED: 'true'
 
   scheduledDowntime:
     enabled: true

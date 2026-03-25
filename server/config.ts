@@ -182,5 +182,6 @@ export default {
   featureToggles: {
     filterCourtCases: get('FEATURES_FILTER_COURT_CASES_ENABLED', false, requiredInProduction) === 'true',
     replicateOffence: get('FEATURES_REPLICATE_OFFENCE_ENABLED', false, requiredInProduction) === 'true',
+    nextAppearanceSubtype: get('FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED', false, requiredInProduction) === 'true',
   },
 }

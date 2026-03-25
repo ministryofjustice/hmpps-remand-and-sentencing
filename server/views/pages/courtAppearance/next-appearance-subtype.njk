@@ -1,0 +1,58 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set radiosData = {
+                    id: "nextAppearanceSubtype",
+                    errorMessage: errors | findError('nextAppearanceSubtype'),
+                    name: "nextAppearanceSubtype",
+                    fieldset: {
+                        legend: {
+                            text: 'Select the type of discharge',
+                            classes: "govuk-fieldset__legend--l",
+                            isPageHeading: true
+                        }
+                    },
+                    items: []
+    } %}
+
+{% for subtype in subtypes %}
+    {%- set subtypeRow = {
+        value: subtype.appearanceSubtypeUuid,
+        text: subtype.description,
+        checked: subtype.appearanceSubtypeUuid === nextAppearanceSubtypeForm.nextAppearanceSubtype
+    } -%}
+    {{ radiosData.items.push(subtypeRow) }}
+{% endfor %}
+
+{{ radiosData.items.push({
+      divider: "or"
+    }, {
+      value: "NONE",
+      text: "Do not include the type of discharge",
+      checked: "NONE" === nextAppearanceSubtypeForm.nextAppearanceSubtype,
+      hint: {
+        text: "It will be saved as '" + appearanceType.description + "'"
+      }
+    })}}
+
+
+{% set pageTitle = applicationName + " - Next appearance subtype" %}
+{% block pageContent %}
+    {{ super() }}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/nextAppearanceCaption.njk" %}
+        {{ govukRadios(radiosData) }}
+
+        <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+
+{% endblock %}

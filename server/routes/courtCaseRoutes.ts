@@ -7,6 +7,7 @@ import type {
   CourtCaseNextAppearanceCourtSelectForm,
   CourtCaseNextAppearanceDateForm,
   CourtCaseNextAppearanceSelectForm,
+  CourtCaseNextAppearanceSubtypeForm,
   CourtCaseNextAppearanceTypeForm,
   CourtCaseOverallCaseOutcomeForm,
   CourtCaseReferenceForm,
@@ -65,6 +66,7 @@ import NonSentencingTaskListModel from './data/NonSentencingTaskListModel'
 import AuditService, { Page } from '../services/auditService'
 import { COURT_APPEARANCE_TYPE_UUID, VIDEO_LINK_APPEARANCE_TYPE_UUID } from '../resources/courtAppearanceTypes'
 import PrisonerService from '../services/prisonerService'
+import NextCourtAppearanceJourneyUrls from './data/NextCourtAppearanceJourneyUrls'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -2083,6 +2085,142 @@ export default class CourtCaseRoutes extends BaseRoutes {
     )
   }
 
+  public getNextAppearanceSubtype: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query
+    const { warrantType, nextAppearanceSubTypeUuid, nextAppearanceTypeUuid } =
+      this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    let nextAppearanceSubtypeForm = (req.flash('nextAppearanceSubtypeForm')[0] ||
+      {}) as CourtCaseNextAppearanceSubtypeForm
+    if (Object.keys(nextAppearanceSubtypeForm).length === 0) {
+      nextAppearanceSubtypeForm = {
+        nextAppearanceSubtype: nextAppearanceSubTypeUuid,
+      }
+    }
+    let backLink = NextCourtAppearanceJourneyUrls.nextAppearanceType(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      if (warrantType === 'SENTENCING') {
+        backLink = JourneyUrls.sentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
+      } else {
+        backLink = JourneyUrls.nonSentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
+      }
+    } else if (submitToCheckAnswers) {
+      backLink = JourneyUrls.checkNextAppearanceAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    }
+    const [apiSubtypes, appearanceType] = await Promise.all([
+      this.refDataService.getAllAppearanceSubtypes(req.user.username),
+      this.refDataService.getAppearanceTypeByUuid(nextAppearanceTypeUuid, req.user.username),
+    ])
+    const subtypes = apiSubtypes
+      .filter(subtype => subtype.appearanceTypeUuid === nextAppearanceTypeUuid)
+      .sort((first, second) => first.displayOrder - second.displayOrder)
+    return res.render('pages/courtAppearance/next-appearance-subtype', {
+      nomsId,
+      nextAppearanceSubtypeForm,
+      courtCaseReference,
+      appearanceReference,
+      subtypes,
+      appearanceType,
+      submitToCheckAnswers,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      errors: req.flash('errors') || [],
+      backLink,
+    })
+  }
+
+  public submitNextAppearanceSubtype: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    const nextAppearanceSubtypeForm = trimForm<CourtCaseNextAppearanceSubtypeForm>(req.body)
+    const errors = this.courtAppearanceService.setNextAppearanceSubtype(
+      req.session,
+      nomsId,
+      appearanceReference,
+      nextAppearanceSubtypeForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('nextAppearanceSubtypeForm', { ...nextAppearanceSubtypeForm })
+      return res.redirect(
+        NextCourtAppearanceJourneyUrls.nextAppearanceSubtype(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          'true',
+          submitToCheckAnswers,
+        ),
+      )
+    }
+    if (
+      this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance) &&
+      this.courtAppearanceService.isNextCourtAppearanceAccepted(req.session, nomsId, appearanceReference)
+    ) {
+      if (warrantType === 'SENTENCING') {
+        return res.redirect(
+          JourneyUrls.sentencingHearing(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          ),
+        )
+      }
+      return res.redirect(
+        JourneyUrls.nonSentencingHearing(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
+
+    if (submitToCheckAnswers) {
+      return res.redirect(
+        JourneyUrls.checkNextAppearanceAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-date`,
+    )
+  }
+
   public getNextAppearanceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
@@ -2106,7 +2244,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ? dayjs(nextAppearanceDate).format('HH:mm')
         : ''
     }
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/next-appearance-type`
+    let backLink = NextCourtAppearanceJourneyUrls.nextAppearanceType(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
     const nextAppearanceTypeUuid = this.courtAppearanceService.getNextAppearanceTypeUuid(
       req.session,
       nomsId,

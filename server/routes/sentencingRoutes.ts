@@ -1338,6 +1338,14 @@ export default class SentencingRoutes extends BaseRoutes {
     })
   }
 
+  public getCheckAggravateFactorsAnswers: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/sentencing/check-aggravate-factors-answers',{})
+  }
+
+  public getSelectOffenceWithAggravatedFactors: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/sentencing/select-offence-with-aggravated-factors',{})
+  }
+
   private consecutiveOrConcurrentDescription(
     sentence: PrisonerSentenceEnvelopeSentence,
     consecutiveToSentenceDetailsMap: { [sentenceUuid: string]: { countNumber?: string; lineNumber?: string } },

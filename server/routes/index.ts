@@ -892,5 +892,17 @@ export default function routes(services: Services): Router {
     unknownRecallSentenceRoutes.cancelCharge,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/check-aggravated-factors-answers',
+    sentencingRoutes.getCheckAggravateFactorsAnswers,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/select-offence-with-aggravated-factors',
+    sentencingRoutes.getSelectOffenceWithAggravatedFactors,
+  )
+
+
+
   return router
 }

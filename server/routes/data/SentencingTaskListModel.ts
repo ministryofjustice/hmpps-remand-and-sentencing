@@ -1,6 +1,7 @@
 import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
 import JourneyUrls from './JourneyUrls'
+import { c } from 'openapi-typescript'
 
 export default class SentencingTaskListModel extends TaskListModel {
   constructor(
@@ -17,6 +18,7 @@ export default class SentencingTaskListModel extends TaskListModel {
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getWarrantInformationItem(courtAppearance),
       this.getOffenceSentencesItem(courtAppearance),
+      this.getAggravatingFactorsItem(courtAppearance),
       this.getCourtDocumentsItem(courtAppearance),
     ]
   }
@@ -200,5 +202,59 @@ export default class SentencingTaskListModel extends TaskListModel {
       )
     }
     return href
+  }
+
+  getAggravatingFactorsItem(courtAppearance: CourtAppearance): TaskListItem {
+    return {
+      title: {
+        text: 'Add aggravating factors',
+        classes: 'govuk-link--no-visited-state',
+      },
+      href: this.getAggravatingFactorsHref(courtAppearance),
+      status: this.getAggravatingFactorsStatus(courtAppearance),
+    }
+  }
+
+  private getAggravatingFactorsHref(courtAppearance: CourtAppearance): string {
+    let href
+    if (courtAppearance.offenceSentenceAccepted) {
+      href = JourneyUrls.selectOffenceWithAggravatedFactors(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
+    }
+    if (courtAppearance.offenceAggravatedFactorsAccepted) {
+      href = JourneyUrls.checkAggravatedFactorsAnswers(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
+    }
+    return href
+  }
+
+  private getAggravatingFactorsStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
+    if (courtAppearance.offenceSentenceAccepted !== true) {
+      return {
+        text: 'Cannot start yet',
+        classes: 'govuk-task-list__status--cannot-start-yet',
+      }
+    }
+    if (courtAppearance.offenceAggravatedFactorsAccepted) {
+      return {
+        text: 'Completed',
+      }
+    }
+    return {
+      tag: {
+        text: 'Optional',
+        classes: 'govuk-tag--grey',
+      },
+    }
   }
 }

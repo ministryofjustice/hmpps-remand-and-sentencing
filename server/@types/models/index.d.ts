@@ -28,6 +28,7 @@ declare module 'models' {
     appearanceInformationAccepted?: boolean
     warrantInformationAccepted?: boolean
     offenceSentenceAccepted?: boolean
+    offenceAggravatedFactorsAccepted?: boolean
     nextCourtAppearanceAccepted?: boolean
     overallConvictionDate?: Date
     overallConvictionDateAppliedAll?: string

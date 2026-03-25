@@ -2027,7 +2027,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public submitNextAppearanceType: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { submitToCheckAnswers } = req.query
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const nextAppearanceTypeForm = trimForm<CourtCaseNextAppearanceTypeForm>(req.body)
     const errors = this.courtAppearanceService.setNextAppearanceType(
@@ -2068,7 +2068,22 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
       )
     }
-
+    if (config.featureToggles.nextAppearanceSubtype) {
+      const allSubtypes = await this.refDataService.getAllAppearanceSubtypes(req.user.username)
+      if (allSubtypes.some(subtype => subtype.appearanceTypeUuid === nextAppearanceTypeForm.nextAppearanceType)) {
+        return res.redirect(
+          NextCourtAppearanceJourneyUrls.nextAppearanceSubtype(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+            null,
+            submitToCheckAnswers,
+          ),
+        )
+      }
+    }
     if (submitToCheckAnswers) {
       return res.redirect(
         JourneyUrls.checkNextAppearanceAnswers(
@@ -2224,7 +2239,11 @@ export default class CourtCaseRoutes extends BaseRoutes {
   public getNextAppearanceDate: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const { submitToCheckAnswers } = req.query
-    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    const { warrantType, nextAppearanceSubTypeUuid } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     const nextAppearanceDateForm = (req.flash('nextAppearanceDateForm')[0] || {}) as CourtCaseNextAppearanceDateForm
     const nextAppearanceDateValue = this.courtAppearanceService.getNextAppearanceDate(
       req.session,
@@ -2281,6 +2300,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     } else if (submitToCheckAnswers) {
       backLink = JourneyUrls.checkNextAppearanceAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    } else if (config.featureToggles.nextAppearanceSubtype && nextAppearanceSubTypeUuid) {
+      backLink = NextCourtAppearanceJourneyUrls.nextAppearanceSubtype(
         nomsId,
         addOrEditCourtCase,
         courtCaseReference,

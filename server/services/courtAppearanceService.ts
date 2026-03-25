@@ -756,6 +756,9 @@ export default class CourtAppearanceService {
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      if (courtAppearance.nextAppearanceTypeUuid !== nextAppearanceTypeForm.nextAppearanceType) {
+        delete courtAppearance.nextAppearanceSubTypeUuid
+      }
       courtAppearance.nextAppearanceTypeUuid = nextAppearanceTypeForm.nextAppearanceType
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance

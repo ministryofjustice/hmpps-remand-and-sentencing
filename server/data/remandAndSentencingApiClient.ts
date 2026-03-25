@@ -5,6 +5,7 @@ import {
   AppearanceOutcome,
   AppearanceType,
   ConsecutiveChainValidationRequest,
+  CourtAppearanceSubtype,
   CourtCaseCountNumbers,
   CourtCaseValidationDate,
   CreateAppearanceOutcome,
@@ -600,6 +601,18 @@ export default class RemandAndSentencingApiClient extends RestClient {
         path: `/person/${prisonerId}/booking-court-case-count`,
         query: {
           bookingId,
+        },
+      },
+      asSystem(username),
+    )
+  }
+
+  async getAllAppearanceSubtypes(username: string): Promise<CourtAppearanceSubtype[]> {
+    return this.get(
+      {
+        path: `/court-appearance-subtype/status`,
+        query: {
+          statuses: 'ACTIVE',
         },
       },
       asSystem(username),

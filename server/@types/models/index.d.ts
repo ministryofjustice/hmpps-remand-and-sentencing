@@ -21,6 +21,7 @@ declare module 'models' {
     nextAppearanceTypeUuid?: string
     nextAppearanceDate?: Date
     nextAppearanceTimeSet?: boolean
+    nextAppearanceSubTypeUuid?: string
     offences?: Offence[]
     warrantType?: string
     overallSentenceLength?: SentenceLength

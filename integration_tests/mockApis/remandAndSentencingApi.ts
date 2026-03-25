@@ -3813,4 +3813,36 @@ export default {
       },
     })
   },
+
+  stubGetAllAppearanceSubtypes: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-appearance-subtype/status',
+        queryParameters: {
+          statuses: {
+            equalTo: 'ACTIVE',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            appearanceSubtypeUuid: '3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73',
+            description: 'Discharged to court',
+            displayOrder: 10,
+            appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+          },
+          {
+            appearanceSubtypeUuid: '8b7d2a91-5e3c-4f6f-8c2d-9a1b7e4c5d20',
+            description: 'Production of unsentenced prisoner',
+            displayOrder: 20,
+            appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+          },
+        ],
+      },
+    })
+  },
 }

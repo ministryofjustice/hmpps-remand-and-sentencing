@@ -3,6 +3,7 @@ import {
   AllSentenceTypes,
   AppearanceOutcome,
   AppearanceType,
+  CourtAppearanceSubtype,
   CreateAppearanceOutcome,
   CreateChargeOutcome,
   CreateSentenceType,
@@ -17,6 +18,8 @@ export default class RefDataService {
   chargeOutcomeCacheKey = 'charge-outcomes:all'
 
   appearanceOutcomeCacheKey = 'appearance-outcomes:all'
+
+  appearanceSubtypeCacheKey = 'court-appearance-subtypes:all'
 
   constructor(private readonly remandAndSentencingApiClient: RemandAndSentencingApiClient) {}
 
@@ -154,6 +157,12 @@ export default class RefDataService {
 
   async getAppearanceTypeByUuid(appearanceTypeUuid: string, username: string): Promise<AppearanceType> {
     return this.remandAndSentencingApiClient.getAppearanceTypeByUuid(appearanceTypeUuid, username)
+  }
+
+  async getAllAppearanceSubtypes(username: string): Promise<CourtAppearanceSubtype[]> {
+    return getOrSetRefDataInCache(this.appearanceSubtypeCacheKey, () =>
+      this.remandAndSentencingApiClient.getAllAppearanceSubtypes(username),
+    )
   }
 
   async getAllUncachedSentenceTypes(username: string): Promise<AllSentenceTypes> {

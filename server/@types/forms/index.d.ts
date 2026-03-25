@@ -40,6 +40,10 @@ declare module 'forms' {
     nextAppearanceType?: string
   }
 
+  export interface CourtCaseNextAppearanceSubtypeForm {
+    nextAppearanceSubtype?: string
+  }
+
   export interface CourtCaseNextAppearanceDateForm {
     'nextAppearanceDate-year'?: string
     'nextAppearanceDate-month'?: string

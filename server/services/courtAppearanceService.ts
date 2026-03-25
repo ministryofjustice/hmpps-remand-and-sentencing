@@ -7,6 +7,7 @@ import type {
   CourtCaseNextAppearanceCourtSelectForm,
   CourtCaseNextAppearanceDateForm,
   CourtCaseNextAppearanceSelectForm,
+  CourtCaseNextAppearanceSubtypeForm,
   CourtCaseNextAppearanceTypeForm,
   CourtCaseOverallCaseOutcomeForm,
   CourtCaseOverallConvictionDateForm,
@@ -756,6 +757,35 @@ export default class CourtAppearanceService {
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.nextAppearanceTypeUuid = nextAppearanceTypeForm.nextAppearanceType
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  setNextAppearanceSubtype(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    nextAppearanceSubtypeForm: CourtCaseNextAppearanceSubtypeForm,
+  ) {
+    const errors = validate(
+      nextAppearanceSubtypeForm,
+      {
+        nextAppearanceSubtype: 'required',
+      },
+      {
+        'required.nextAppearanceSubtype': 'You must select the type of discharge',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      if (nextAppearanceSubtypeForm.nextAppearanceSubtype) {
+        courtAppearance.nextAppearanceSubTypeUuid = nextAppearanceSubtypeForm.nextAppearanceSubtype
+      } else {
+        delete courtAppearance.nextAppearanceSubTypeUuid
+      }
+
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

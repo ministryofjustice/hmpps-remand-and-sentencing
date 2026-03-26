@@ -52,6 +52,7 @@ import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import {
+  CourtAppearanceSubtype,
   MergedFromCase,
   PageCourtCaseContent,
   SearchCourtCasesPage,
@@ -2069,8 +2070,16 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
     if (config.featureToggles.nextAppearanceSubtype) {
+      const { nextAppearanceSubTypeUuid } = this.courtAppearanceService.getSessionCourtAppearance(
+        req.session,
+        nomsId,
+        appearanceReference,
+      )
       const allSubtypes = await this.refDataService.getAllAppearanceSubtypes(req.user.username)
-      if (allSubtypes.some(subtype => subtype.appearanceTypeUuid === nextAppearanceTypeForm.nextAppearanceType)) {
+      if (
+        !nextAppearanceSubTypeUuid &&
+        allSubtypes.some(subtype => subtype.appearanceTypeUuid === nextAppearanceTypeForm.nextAppearanceType)
+      ) {
         return res.redirect(
           NextCourtAppearanceJourneyUrls.nextAppearanceSubtype(
             nomsId,
@@ -2647,19 +2656,34 @@ export default class CourtCaseRoutes extends BaseRoutes {
     )
     let nextAppearanceCourtName
     let nextAppearanceType
+    let nextAppearanceSubtype
     if (courtAppearance.nextAppearanceSelect) {
-      const [court, appearanceType] = await Promise.all([
+      const subtypesPromise = config.featureToggles.nextAppearanceSubtype
+        ? this.refDataService.getAllAppearanceSubtypes(req.user.username)
+        : Promise.resolve([] as CourtAppearanceSubtype[])
+
+      const [court, appearanceType, subtypes] = await Promise.all([
         this.courtRegisterService.findCourtById(courtAppearance.nextAppearanceCourtCode, req.user.username),
         this.refDataService.getAppearanceTypeByUuid(courtAppearance.nextAppearanceTypeUuid, req.user.username),
+        subtypesPromise,
       ])
       nextAppearanceCourtName = court.courtName
       nextAppearanceType = appearanceType.description
+      if (courtAppearance.nextAppearanceSubTypeUuid) {
+        const subtype = subtypes.find(
+          apiSubtype => apiSubtype.appearanceSubtypeUuid === courtAppearance.nextAppearanceSubTypeUuid,
+        ) ?? {
+          description: 'Not included',
+        }
+        nextAppearanceSubtype = subtype.description
+      }
     }
     return res.render('pages/courtAppearance/check-next-appearance-answers', {
       nomsId,
       courtAppearance,
       nextAppearanceCourtName,
       nextAppearanceType,
+      nextAppearanceSubtype,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,

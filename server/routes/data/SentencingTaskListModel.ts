@@ -2,6 +2,7 @@ import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
 import JourneyUrls from './JourneyUrls'
 import AggravatingFactorsJourneyUrls from './AggravatingFactorsJourneyUrls'
+import config from '../../config'
 
 export default class SentencingTaskListModel extends TaskListModel {
   constructor(
@@ -18,9 +19,13 @@ export default class SentencingTaskListModel extends TaskListModel {
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getWarrantInformationItem(courtAppearance),
       this.getOffenceSentencesItem(courtAppearance),
-      this.getAggravatingFactorsItem(courtAppearance),
-      this.getCourtDocumentsItem(courtAppearance),
     ]
+
+    if (config.featureToggles.addAggravatingFactors) {
+      this.items.push(this.getAggravatingFactorsItem(courtAppearance))
+    }
+
+    this.items.push(this.getCourtDocumentsItem(courtAppearance))
   }
 
   setPageHeading() {

@@ -20,6 +20,7 @@ describe('GET Next appearance type', () => {
         appearanceTypeUuid: '1',
         description: 'Appearance Type',
         displayOrder: 10,
+        hasSubtypes: true,
       },
     ])
     return request(app)

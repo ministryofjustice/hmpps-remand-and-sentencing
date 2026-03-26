@@ -11,6 +11,8 @@ import { getUiDocumentType, offencesToOffenceDescriptions, orderOffences } from 
 import RefDataService from '../services/refDataService'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
+import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import config from '../config'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -75,10 +77,19 @@ export default class RemandRoutes extends BaseRoutes {
           .then(outcome => outcome.outcomeName)
       : Promise.resolve(hearing.legacyData?.outcomeDescription ?? 'Not entered')
     const appearanceTypePromise = hearing.nextAppearanceTypeUuid
-      ? this.refDataService
-          .getAppearanceTypeByUuid(hearing.nextAppearanceTypeUuid, req.user.username)
-          .then(appearanceType => appearanceType.description)
-      : Promise.resolve('Not entered')
+      ? this.refDataService.getAppearanceTypeByUuid(hearing.nextAppearanceTypeUuid, req.user.username)
+      : Promise.resolve({
+          description: 'Not entered',
+          hasSubtypes: false,
+        } as AppearanceType)
+    const appearanceSubtypePromise =
+      config.featureToggles.nextAppearanceSubtype &&
+      hearing.nextAppearanceSubTypeUuid &&
+      hearing.nextAppearanceSubTypeUuid !== 'NONE'
+        ? this.refDataService.getAppearanceSubtypeByUuid(hearing.nextAppearanceSubTypeUuid, req.user.username)
+        : Promise.resolve({
+            description: 'Not included',
+          } as CourtAppearanceSubtype)
     const sentenceUuids = hearing.offences
       .filter(offence => offence.sentence?.sentenceUuid)
       .map(offence => offence.sentence.sentenceUuid)
@@ -91,8 +102,9 @@ export default class RemandRoutes extends BaseRoutes {
       sentenceTypeMap,
       overallCaseOutcome,
       outcomeMap,
-      appearanceTypeDescription,
+      appearanceType,
       hasSentenceAfterOnOtherCourtAppearance,
+      appearanceSubtype,
     ] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
         Array.from(new Set(chargeCodes)),
@@ -105,6 +117,7 @@ export default class RemandRoutes extends BaseRoutes {
       this.refDataService.getChargeOutcomeMap(Array.from(new Set(offenceOutcomeIds)), req.user.username),
       appearanceTypePromise,
       hasSentenceAfterOnOtherCourtAppearancePromise,
+      appearanceSubtypePromise,
     ])
     const allSentenceUuids = hearing.offences
       .map(offence => offence.sentence?.sentenceUuid)
@@ -127,6 +140,14 @@ export default class RemandRoutes extends BaseRoutes {
       courtMap,
     )
 
+    let appearanceSubtypeDescription
+    if (
+      config.featureToggles.nextAppearanceSubtype &&
+      (hearing.nextAppearanceSubTypeUuid || appearanceType.hasSubtypes)
+    ) {
+      appearanceSubtypeDescription = appearanceSubtype.description
+    }
+
     return res.render('pages/courtAppearance/hearing-details', {
       nomsId,
       courtCaseReference,
@@ -139,7 +160,8 @@ export default class RemandRoutes extends BaseRoutes {
       sentenceTypeMap,
       overallCaseOutcome,
       outcomeMap,
-      appearanceTypeDescription,
+      appearanceTypeDescription: appearanceType.description,
+      appearanceSubtypeDescription,
       consecutiveToSentenceDetailsMap,
       documentsWithUiType,
       mergedFromText,

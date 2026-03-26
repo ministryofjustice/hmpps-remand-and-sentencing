@@ -618,4 +618,13 @@ export default class RemandAndSentencingApiClient extends RestClient {
       asSystem(username),
     )
   }
+
+  async getAppearanceSubtypeByUuid(appearanceSubtypeUuid: string, username: string): Promise<CourtAppearanceSubtype> {
+    return this.get(
+      {
+        path: `/court-appearance-subtype/${appearanceSubtypeUuid}`,
+      },
+      asSystem(username),
+    )
+  }
 }

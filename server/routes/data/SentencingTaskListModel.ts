@@ -1,6 +1,7 @@
 import type { CourtAppearance, TaskListItem, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
 import JourneyUrls from './JourneyUrls'
+import AggravatingFactorsJourneyUrls from './AggravatingFactorsJourneyUrls'
 
 export default class SentencingTaskListModel extends TaskListModel {
   constructor(
@@ -217,7 +218,7 @@ export default class SentencingTaskListModel extends TaskListModel {
   private getAggravatingFactorsHref(courtAppearance: CourtAppearance): string {
     let href
     if (courtAppearance.offenceSentenceAccepted) {
-      href = JourneyUrls.selectOffenceWithAggravatedFactors(
+      href = AggravatingFactorsJourneyUrls.selectOffenceWithAggravatedFactors(
         this.nomsId,
         this.addOrEditCourtCase,
         this.courtCaseReference,
@@ -226,7 +227,7 @@ export default class SentencingTaskListModel extends TaskListModel {
       )
     }
     if (courtAppearance.offenceAggravatedFactorsAccepted) {
-      href = JourneyUrls.checkAggravatedFactorsAnswers(
+      href = AggravatingFactorsJourneyUrls.checkAggravatedFactorsAnswers(
         this.nomsId,
         this.addOrEditCourtCase,
         this.courtCaseReference,

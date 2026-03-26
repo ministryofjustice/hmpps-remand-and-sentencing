@@ -15,6 +15,7 @@ import chargeOutcomeDataAdminRoutes from './chargeOutcomeDataAdminRoutes'
 import appearanceOutcomeDataAdminRoutes from './appearanceOutcomeDataAdminRoutes'
 import sentenceTypeDataAdminRoutes from './sentenceTypeDataAdminRoutes'
 import ReplicateChargeRoutes from './replicateChargeRoutes'
+import AggravatingFactorsRoutes from './aggravatingFactorsRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -102,6 +103,14 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.auditService,
     services.refDataService,
+  )
+
+  const aggravatingFactorsRoutes = new AggravatingFactorsRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
   )
 
   router.get('/', async (req, res, next) => {
@@ -902,5 +911,14 @@ export default function routes(services: Services): Router {
     unknownRecallSentenceRoutes.cancelCharge,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/check-aggravated-factors-answers',
+    aggravatingFactorsRoutes.getCheckAggravateFactorsAnswers,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/select-offence-with-aggravated-factors',
+    aggravatingFactorsRoutes.getSelectOffenceWithAggravatedFactors,
+  )
   return router
 }

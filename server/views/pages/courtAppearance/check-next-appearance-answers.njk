@@ -5,91 +5,113 @@
 
 {% set pageTitle = applicationName + " - Check next appearance answers" %}
 
+{% if courtAppearance.nextAppearanceSelect %}
+{% set checkAnswerRows = [
+    {
+        key: {
+            text: "Next appearance type"
+        },
+        value: {
+            text: nextAppearanceType
+        },
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-type?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "next appearance type"
+                }
+            ]
+        }
+    }]%}
+
+{% if nextAppearanceSubtype %}
+    {% set checkAnswerRows = checkAnswerRows.concat({
+        key: {
+            text: "Discharge type"
+        },
+        value: {
+            text: nextAppearanceSubtype
+        },
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-subtype?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "discharge type"
+                }
+            ]
+        }
+    })%}
+{% endif %}
+
+{% set checkAnswerRows = checkAnswerRows.concat([
+    {
+        key: {
+            text: "Next appearance date"
+        },
+        value: {
+            text: courtAppearance.nextAppearanceDate | formatDateTime(courtAppearance.nextAppearanceTimeSet)
+        },
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-date?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "next appearance date"
+                }
+            ]
+        }
+    },
+    {
+        key: {
+            text: "Next appearance location"
+        },
+        value: {
+            text: nextAppearanceCourtName
+        },
+        actions: {
+            items: [
+                {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-court-select?submitToCheckAnswers=true",
+                    text: "Edit",
+                    visuallyHiddenText: "next appearance location"
+                }
+            ]
+        }
+    }
+])%}
+{% else %}
+    {% set checkAnswerRows = [
+        {
+            key: {
+                text: "Next court date set"
+        },
+            value: {
+                text: "Date to be fixed"
+        },
+            actions: {
+                items: [
+                    {
+                        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-select?submitToCheckAnswers=true",
+                        text: "Edit",
+                        visuallyHiddenText: "next court date set"
+                    }
+                ]
+        }
+        }
+    ]%}
+{% endif %}
+
 {% block content %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             {% include "../../partials/nextAppearanceCaption.njk" %}
             <h1 class="govuk-heading-l">Check your answers</h1>
 
-            {% if courtAppearance.nextAppearanceSelect %}
-                {{ govukSummaryList({
-                    rows: [
-                        {
-                            key: {
-                            text: "Next appearance type"
-                        },
-                            value: {
-                            text: nextAppearanceType
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-type?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "next appearance type"
-                                }
-                            ]
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Next appearance date"
-                        },
-                            value: {
-                            text: courtAppearance.nextAppearanceDate | formatDateTime(courtAppearance.nextAppearanceTimeSet)
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-date?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "next appearance date"
-                                }
-                            ]
-                        }
-                        },
-                        {
-                            key: {
-                            text: "Next appearance location"
-                        },
-                            value: {
-                            text: nextAppearanceCourtName
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-court-select?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "next appearance location"
-                                }
-                            ]
-                        }
-                        }
-                    ]
-                }) }}
-            {% else %}
-                {{ govukSummaryList({
-                    rows: [
-                        {
-                            key: {
-                            text: "Next court date set"
-                        },
-                            value: {
-                            text: "Date to be fixed"
-                        },
-                            actions: {
-                            items: [
-                                {
-                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-select?submitToCheckAnswers=true",
-                                    text: "Edit",
-                                    visuallyHiddenText: "next court date set"
-                                }
-                            ]
-                        }
-                        }
-                    ]
-                }) }}
-            {% endif %}
+            {{ govukSummaryList({
+                rows: checkAnswerRows
+            }) }}
 
             <form method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">

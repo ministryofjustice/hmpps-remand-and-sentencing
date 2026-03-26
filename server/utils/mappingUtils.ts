@@ -435,13 +435,19 @@ function nextCourtAppearanceToCourtAppearance(nextCourtAppearance: NextCourtAppe
       `${nextCourtAppearance.appearanceDate}${nextCourtAppearance.appearanceTime ? `T${nextCourtAppearance.appearanceTime}` : ''}`,
     )
   }
+  let nextAppearanceSubTypeUuid
+  if (nextCourtAppearance?.courtAppearanceSubType?.appearanceSubtypeUuid) {
+    nextAppearanceSubTypeUuid = nextCourtAppearance?.courtAppearanceSubType?.appearanceSubtypeUuid
+  } else if (nextCourtAppearance?.appearanceType?.hasSubtypes) {
+    nextAppearanceSubTypeUuid = 'NONE'
+  }
   return {
     nextAppearanceSelect: !!nextCourtAppearance,
     nextAppearanceCourtCode: nextCourtAppearance?.courtCode,
     nextAppearanceTypeUuid: nextCourtAppearance?.appearanceType.appearanceTypeUuid,
     nextAppearanceTimeSet: typeof nextCourtAppearance?.appearanceTime === 'string',
     nextAppearanceDate,
-    nextAppearanceSubTypeUuid: nextCourtAppearance?.courtAppearanceSubType?.appearanceSubtypeUuid ?? 'NONE',
+    nextAppearanceSubTypeUuid,
     nextCourtAppearanceAccepted: !!nextCourtAppearance,
   } as CourtAppearance
 }

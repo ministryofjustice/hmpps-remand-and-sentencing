@@ -28,6 +28,7 @@ generic-service:
     FEATURES_FILTER_COURT_CASES_ENABLED: 'true'
     FEATURES_REPLICATE_OFFENCE_ENABLED: 'true'
     FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED: 'false'
+    FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED: 'false'
 
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts

@@ -50,7 +50,7 @@
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
                         <details class="govuk-details filter filter-box govuk-!-margin-bottom-2"{% if filterErrors | length %} open {% endif %}>
-                            <summary class="govuk-details__summary">
+                            <summary class="govuk-details__summary" data-qa="filterSortSummary">
                                 <span class="govuk-details__summary-text">
                                     Filter and sort
                                 </span>
@@ -102,7 +102,10 @@
 
                                     {{ govukButton({
                                         text: "Apply",
-                                        classes: 'govuk-!-margin-bottom-1'
+                                        classes: 'govuk-!-margin-bottom-1',
+                                        attributes: {
+                                            'data-qa': 'applyButton'
+                                        }
                                     }) }}
 
                                 </form>

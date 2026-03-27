@@ -36,6 +36,10 @@ export default class StartPage extends Page {
 
   sortLink = (sortBy: string): PageElement => cy.get(`a[href="/person/A1234AB?sortBy=${sortBy}"]`)
 
+  applyButton = (): PageElement => cy.get('[data-qa=applyButton]')
+
+  filterSortSummary = (): PageElement => cy.get('[data-qa=filterSortSummary]')
+
   addAppearanceLink = (courtCaseReference: string): PageElement =>
     cy.get(`[data-qa=add-appearance-link-${courtCaseReference}]`)
 

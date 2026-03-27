@@ -25,7 +25,6 @@ generic-service:
     RECORD_RECALLS_UI_URL: "https://record-a-recall.hmpps.service.justice.gov.uk"
     BOOK_SECURE_MOVE_UI_URL: "https://bookasecuremove.service.justice.gov.uk"
     BOOK_VIDEO_LINK_UI_URL: "https://book-a-video-link.prison.service.justice.gov.uk"
-    FEATURES_FILTER_COURT_CASES_ENABLED: 'true'
     FEATURES_REPLICATE_OFFENCE_ENABLED: 'true'
     FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED: 'false'
     FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED: 'false'

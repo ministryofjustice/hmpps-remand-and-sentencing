@@ -146,7 +146,6 @@ describe('GET Start', () => {
   })
 
   it('should render error when appearance from date is invalid', async () => {
-    config.featureToggles.filterCourtCases = true
     setupCourtCase()
     const res = await request(app)
       .get('/person/A1234AB')
@@ -159,7 +158,6 @@ describe('GET Start', () => {
   })
 
   it('should render error when appearance to date is invalid', async () => {
-    config.featureToggles.filterCourtCases = true
     setupCourtCase()
     const res = await request(app)
       .get('/person/A1234AB')
@@ -172,7 +170,6 @@ describe('GET Start', () => {
   })
 
   it('should render error when appearance from date is after appearance to date', async () => {
-    config.featureToggles.filterCourtCases = true
     setupCourtCase()
     const res = await request(app)
       .get('/person/A1234AB')
@@ -185,7 +182,6 @@ describe('GET Start', () => {
   })
 
   it('should render page correctly when valid date supplied', async () => {
-    config.featureToggles.filterCourtCases = true
     setupCourtCase()
     const res = await request(app)
       .get('/person/A1234AB')
@@ -197,7 +193,6 @@ describe('GET Start', () => {
   })
 
   it('should auto check previous periods of custody when the booking is inactive', async () => {
-    config.featureToggles.filterCourtCases = true
     setupCourtCase()
     defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue({
       totalPages: 0,
@@ -247,7 +242,6 @@ describe('GET Start', () => {
   })
 
   it('display correct empty state content for when booking is active, has no court cases but there are court cases on other bookings', async () => {
-    config.featureToggles.filterCourtCases = true
     setupCourtCase()
     defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue({
       totalPages: 0,

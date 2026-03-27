@@ -49,7 +49,6 @@
             {% endif %}
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
-                    {% if filterCourtCasesEnabled %}
                         <details class="govuk-details filter filter-box govuk-!-margin-bottom-2"{% if filterErrors | length %} open {% endif %}>
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
@@ -109,30 +108,6 @@
                                 </form>
                             </div>
                         </details>
-                    {% else %}
-                        <div class="content-top">
-                            <div>
-                                <span class="govuk-body govuk-!-font-weight-bold">Sort by:</span>
-                                <span class="govuk-body govuk-!-margin-left-2">
-                                    {% if sortBy === 'APPEARANCE_DATE_DESC' %}
-                                        Most recent
-                                    {% else %}
-                                        <a href="/person/{{nomsId}}?sortBy=APPEARANCE_DATE_DESC" class="govuk-link govuk-link--no-visited-state">Most recent</a>
-                                    {% endif %}
-                                    <span class="seperator">|</span>
-                                    {% if sortBy === 'APPEARANCE_DATE_ASC'%}
-                                        Earliest
-                                    {% else %}
-                                        <a href="/person/{{nomsId}}?sortBy=APPEARANCE_DATE_ASC" class="govuk-link govuk-link--no-visited-state">Earliest</a>
-                                    {% endif %}
-
-                                </span>
-                            </div>
-                            <div>
-                                <span class="govuk-body">Showing <strong>{{ paginationResults.from }}</strong> to <strong>{{ paginationResults.to }}</strong> of <strong>{{ paginationResults.count }}</strong> court cases</span>
-                            </div>
-                        </div>
-                    {% endif %}
                 </div>
             </div>
             {% endif %}
@@ -350,13 +325,9 @@
                             })
                         }}
                 {% else %}
-                    {% if filterCourtCasesEnabled %}
-                        {% if bookingCourtCaseCount and bookingDetails and bookingDetails.activeFlag and bookingCourtCaseCount.otherBookingCount > 0 %}
-                            <p class="govuk-body">There are no court cases recorded for this period of custody for {{ prisoner | firstNameSpaceLastName }}.</p>
-                            <p class="govuk-body">You can use the filters to show court cases from previous periods of custody.</p>
-                        {% else %}
-                            <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
-                        {% endif %}
+                    {% if bookingCourtCaseCount and bookingDetails and bookingDetails.activeFlag and bookingCourtCaseCount.otherBookingCount > 0 %}
+                        <p class="govuk-body">There are no court cases recorded for this period of custody for {{ prisoner | firstNameSpaceLastName }}.</p>
+                        <p class="govuk-body">You can use the filters to show court cases from previous periods of custody.</p>
                     {% else %}
                         <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
                     {% endif %}

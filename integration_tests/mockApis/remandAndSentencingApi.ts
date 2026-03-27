@@ -3845,4 +3845,48 @@ export default {
       },
     })
   },
+
+  stubGetBookingCourtCaseCount: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/person/A1234AB/booking-court-case-count',
+        queryParameters: {
+          bookingId: {
+            equalTo: '1234',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          suppliedBookingCount: 1,
+          otherBookingCount: 1,
+        },
+      },
+    })
+  },
+
+  stubGetEmptyBookingCourtCaseCount: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/person/A1234AB/booking-court-case-count',
+        queryParameters: {
+          bookingId: {
+            equalTo: '1234',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          suppliedBookingCount: 0,
+          otherBookingCount: 0,
+        },
+      },
+    })
+  },
 }

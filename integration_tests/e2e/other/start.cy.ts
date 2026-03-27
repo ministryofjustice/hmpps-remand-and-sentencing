@@ -89,7 +89,9 @@ context('Start Page', () => {
 
   it('can sort by earliest', () => {
     cy.task('stubSearchCourtCases', { sortBy: 'APPEARANCE_DATE_ASC' })
-    startPage.sortLink('APPEARANCE_DATE_ASC').click()
+    startPage.filterSortSummary().click()
+    startPage.radioLabelContains('Court appearance (earliest)').click()
+    startPage.applyButton().click()
     Page.verifyOnPage(StartPage)
   })
 
@@ -180,6 +182,7 @@ context('Start Page', () => {
 
   it('displays empty content when no court cases', () => {
     cy.task('stubEmptySearchCourtCases', {})
+    cy.task('stubGetEmptyBookingCourtCaseCount')
     cy.reload()
     startPage.courtCasesContent().should('contain.text', 'There are no court cases recorded for Cormac Meza')
   })

@@ -37,6 +37,36 @@ export default {
       },
     }),
 
+  stubGetBookingById: (): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/prison-api/api/bookings/1234',
+        queryParameters: {
+          basicInfo: {
+            equalTo: 'true',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          offenderNo: 'A1234AB',
+          bookingId: 1234,
+          bookingNo: '12345A',
+          offenderId: 1,
+          rootOffenderId: 1,
+          firstName: 'CORMAC',
+          lastName: 'MEZA',
+          dateOfBirth: '1965-02-03',
+          activeFlag: true,
+          agencyId: 'MDI',
+          assignedLivingUnitId: 1,
+        },
+      },
+    }),
+
   stubPrisonApiPing: (httpStatus = 200): SuperAgentRequest =>
     stubFor({
       request: {

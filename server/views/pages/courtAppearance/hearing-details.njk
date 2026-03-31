@@ -110,7 +110,24 @@
           classes: "govuk-link--no-visited-state"
         }]
       }
-    },
+    }]) %}
+  {% if appearanceSubtypeDescription %}
+    {% set nextAppearanceSummaryRows = nextAppearanceSummaryRows.concat([
+    {
+      key: { text: "Discharge type" },
+      value: { text: appearanceSubtypeDescription },
+      actions: {
+        items: [{
+          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-subtype",
+          text: "Edit",
+          visuallyHiddenText: "discharge type",
+          classes: "govuk-link--no-visited-state"
+        }]
+      }
+    }
+    ]) %}
+  {% endif %}
+  {% set nextAppearanceSummaryRows = nextAppearanceSummaryRows.concat([
     {
       key: { text: "Date" },
       value: { text: hearing.nextAppearanceDate | formatDateTime(hearing.nextAppearanceTimeSet) },

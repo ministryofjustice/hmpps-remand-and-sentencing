@@ -97,33 +97,25 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let includeCasesFromPreviousPeriodsOfCustodyValue = includeCasesFromPreviousPeriodsOfCustody
     const sortByQuery = getAsStringOrDefault(sortBy, 'STATUS_APPEARANCE_DATE_DESC')
     let bookingId = ''
-    let searchAppearanceDateFrom
-    let searchAppearanceDateTo
     let bookingCourtCaseCount
     let bookingDetails
     let disableIncludeCasesFromPreviousPeriodsOfCustody = false
     const filterErrors = []
-    if (config.featureToggles.filterCourtCases) {
-      const validatedSearchParameters = this.validateAndGetCourtCaseSearchParameters(
-        appearanceDateFrom,
-        appearanceDateTo,
-      )
-      searchAppearanceDateFrom = validatedSearchParameters.searchAppearanceDateFrom
-      searchAppearanceDateTo = validatedSearchParameters.searchAppearanceDateTo
-      filterErrors.push(...validatedSearchParameters.filterErrors)
-      if (!includeCasesFromPreviousPeriodsOfCustodyValue && res.locals.prisoner.bookingId) {
-        const [bookingCourtCaseCountResponse, bookingDetailsResponse] = await Promise.all([
-          this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, res.locals.prisoner.bookingId, username),
-          this.prisonerService.getBookingDetails(res.locals.prisoner.bookingId, username),
-        ])
-        bookingCourtCaseCount = bookingCourtCaseCountResponse
-        bookingDetails = bookingDetailsResponse
-        if (!bookingDetails.activeFlag) {
-          includeCasesFromPreviousPeriodsOfCustodyValue = 'true'
-          disableIncludeCasesFromPreviousPeriodsOfCustody = true
-        } else {
-          bookingId = res.locals.prisoner.bookingId
-        }
+    const validatedSearchParameters = this.validateAndGetCourtCaseSearchParameters(appearanceDateFrom, appearanceDateTo)
+    const { searchAppearanceDateFrom, searchAppearanceDateTo } = validatedSearchParameters
+    filterErrors.push(...validatedSearchParameters.filterErrors)
+    if (!includeCasesFromPreviousPeriodsOfCustodyValue && res.locals.prisoner.bookingId) {
+      const [bookingCourtCaseCountResponse, bookingDetailsResponse] = await Promise.all([
+        this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, res.locals.prisoner.bookingId, username),
+        this.prisonerService.getBookingDetails(res.locals.prisoner.bookingId, username),
+      ])
+      bookingCourtCaseCount = bookingCourtCaseCountResponse
+      bookingDetails = bookingDetailsResponse
+      if (!bookingDetails.activeFlag) {
+        includeCasesFromPreviousPeriodsOfCustodyValue = 'true'
+        disableIncludeCasesFromPreviousPeriodsOfCustody = true
+      } else {
+        bookingId = res.locals.prisoner.bookingId
       }
     }
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1

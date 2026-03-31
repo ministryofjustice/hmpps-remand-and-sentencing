@@ -165,6 +165,16 @@ export default class RefDataService {
     )
   }
 
+  async getAppearanceSubtypeByUuid(appearanceSubtypeUuid: string, username: string): Promise<CourtAppearanceSubtype> {
+    const allActiveSubtypes = await this.getAllAppearanceSubtypes(username)
+    const subtype = allActiveSubtypes.find(st => st.appearanceSubtypeUuid === appearanceSubtypeUuid)
+    if (subtype) {
+      return subtype
+    }
+    // There is the potential that the subtype for the appearanceSubtypeUuid is inactive, therefore call the api in this scenario
+    return this.remandAndSentencingApiClient.getAppearanceSubtypeByUuid(appearanceSubtypeUuid, username)
+  }
+
   async getAllUncachedSentenceTypes(username: string): Promise<AllSentenceTypes> {
     return this.remandAndSentencingApiClient.getAllSentenceTypes(username)
   }

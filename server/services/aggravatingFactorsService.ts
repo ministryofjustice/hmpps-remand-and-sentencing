@@ -131,7 +131,7 @@ export default class AggravatingFactorsService {
     chargeUuid: string,
     isEditing: boolean,
   ) {
-    if (!isEditing) {
+    if (isEditing) {
       return this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
     }
 

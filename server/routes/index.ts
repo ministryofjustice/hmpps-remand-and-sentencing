@@ -933,7 +933,7 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/check-aggravated-factors-answers',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/check-aggravating-factors-answers',
     aggravatingFactorsRoutes.getCheckAggravateFactorsAnswers,
   )
   return router

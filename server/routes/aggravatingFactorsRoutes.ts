@@ -7,7 +7,7 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import ManageOffencesService from '../services/manageOffencesService'
 import AuditService from '../services/auditService'
 import { offencesToOffenceDescriptions, orderOffences } from '../utils/utils'
-import trimForm from '../utils/trim'
+import trimForm, { normaliseToArray } from '../utils/trim'
 import JourneyUrls from './data/JourneyUrls'
 import AggravatingFactorsJourneyUrls from './data/AggravatingFactorsJourneyUrls'
 import AggravatingFactorsService from '../services/aggravatingFactorsService'
@@ -79,7 +79,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
 
   public submitSelectOffenceWithAggravatedFactors: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const normalised = req.body.aggravatedOffenceUuids ?? (req.body['aggravatedOffenceUuids[]'] as string[])
+    const normalised = normaliseToArray(req.body.aggravatedOffenceUuids ?? req.body.aggravatedOffenceUuids)
     const offenceWithAggravatingFactorsForm = trimForm<OffenceWithAggravatingFactorsForm>({
       aggravatedOffenceUuids: normalised,
     } as unknown as Record<string, unknown>)
@@ -195,8 +195,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       chargeUuid,
     } = req.params
     const isEditing = req.query.isEditing === 'true'
-    const selected = ((req.body as Record<string, unknown>).selectedAggravatingFactors ??
-      (req.body as Record<string, unknown>)['selectedAggravatingFactors[]']) as string[]
+    const selected = normaliseToArray((req.body as Record<string, unknown>).selectedAggravatingFactors)
 
     const selectWhichAggravatingFactorsForm = trimForm<SelectWhichAggravatingFactorsForm>({
       terroristConnection: selected.includes('terroristConnection'),

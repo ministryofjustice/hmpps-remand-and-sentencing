@@ -27,7 +27,10 @@ context('Court Case Cancel Court Case Page', () => {
     )
     courtCaseCancelCourtCasePage
       .description()
-      .should('contain', 'You have not finished adding the information. Any information you have entered will be lost.')
+      .should(
+        'contain',
+        'You have not finished adding the information for the court case. Any information you have entered will be lost.',
+      )
   })
 
   it('should show court name and hearing date once it is provided', () => {

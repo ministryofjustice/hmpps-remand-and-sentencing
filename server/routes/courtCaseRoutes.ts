@@ -70,6 +70,7 @@ import PrisonerService from '../services/prisonerService'
 import NextCourtAppearanceJourneyUrls from './data/NextCourtAppearanceJourneyUrls'
 import AddJourneyCancelDetailsModel from './data/AddJourneyCancelDetailsModel'
 import RepeatJourneyCancelDetailsModel from './data/RepeatJourneyCancelDetailsModel'
+import EditJourneyCancelDetailsModel from './data/EditJourneyCancelDetailsModel'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -678,6 +679,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let model = new AddJourneyCancelDetailsModel(courtDetails, warrantDate)
     if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       model = new RepeatJourneyCancelDetailsModel(courtDetails, warrantDate)
+    } else if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      model = new EditJourneyCancelDetailsModel(courtDetails, warrantDate)
     }
     const backLink = (returnUrl as string) || `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
     return res.render('pages/courtAppearance/cancel-court-case', {

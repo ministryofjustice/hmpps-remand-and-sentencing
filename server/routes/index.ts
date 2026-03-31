@@ -912,13 +912,28 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/check-aggravated-factors-answers',
-    aggravatingFactorsRoutes.getCheckAggravateFactorsAnswers,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/select-offence-with-aggravated-factors',
+    aggravatingFactorsRoutes.getSelectOffenceWithAggravatedFactors,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/submit-select-offence-with-aggravated-factors',
+    aggravatingFactorsRoutes.submitSelectOffenceWithAggravatedFactors,
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/select-offence-with-aggravated-factors',
-    aggravatingFactorsRoutes.getSelectOffenceWithAggravatedFactors,
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/:chargeUuid/select-which-aggravating-factors-apply',
+    aggravatingFactorsRoutes.getSelectWhichAggravatingFactorsApply,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/:chargeUuid/submit-select-which-aggravating-factors-apply',
+    aggravatingFactorsRoutes.submitSelectWhichAggravatingFactorsApply,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/check-aggravated-factors-answers',
+    aggravatingFactorsRoutes.getCheckAggravateFactorsAnswers,
   )
   return router
 }

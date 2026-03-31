@@ -1,0 +1,84 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
+{% from "govuk/components/hint/macro.njk" import govukHint %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - sentence offences with aggravated factors" %}
+
+{# removed unused radioIdIndex - checkboxes use loop.index0 inside the loop #}
+{% block pageContent %}
+    <form method="post"
+          action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/submit-select-offence-with-aggravated-factors" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% include "../../partials/aggravatingOffenceFactorsCaption.njk" %}
+        <div class="govuk-form-group {%- if errorMessage %} govuk-form-group--error{% endif %}">
+            {% call govukFieldset({
+                legend: {
+                    text: "Select the offences with aggravating factors",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            }) %}
+
+{{ govukHint({ text: "Select all that apply" }) }}
+
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+                    {% if offences.length %}
+
+                      {% for offence in offences %}
+                        <div class="govuk-checkboxes__item">
+                          <input
+                            class="govuk-checkboxes__input"
+                            id="offence-{{ loop.index0 }}"
+                            name="aggravatedOffenceUuids[]"
+                            type="checkbox"
+                            data-qa="aggravatedOffenceCheckbox-{{ loop.index0 }}"
+                            value="{{ offence.chargeUuid }}"
+{% if selectedOffenceUuids and offence.chargeUuid in selectedOffenceUuids %}checked{% endif %}>
+                          <label
+                            class="govuk-label govuk-checkboxes__label"
+                            for="offence-{{ loop.index0 }}">
+                            {# First line identifier: either Count (if present) or the offence code #}
+                            {% if offence.sentence and offence.sentence.countNumber and offence.sentence.countNumber !== '-1' %}
+                              <div data-qa="aggravatedOffenceFirstLine-{{ loop.index0 }}">
+                                <div data-qa="aggravatedOffenceCount-{{ loop.index0 }}">
+                                  Count {{ offence.sentence.countNumber }}
+                                </div>
+                              </div>
+                              <div>
+                                {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}
+                              </div>
+                            {% else %}
+                              <div data-qa="aggravatedOffenceFirstLine-{{ loop.index0 }}">
+                                {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}
+                              </div>
+                            {% endif %}
+
+                            {% if offence.offenceStartDate %}
+                              <span class="govuk-hint">
+                                Committed on
+                                {{ offence.offenceStartDate | formatDate }}
+                                {{ ' to ' + (offence.offenceEndDate | formatDate) if offence.offenceEndDate }}
+                              </span>
+                            {% endif %}
+                          </label>
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+                </div>
+            {% endcall %}
+        </div>
+
+
+        <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+{% endblock %}

@@ -1,10 +1,15 @@
 import { RequestHandler } from 'express'
+import type { OffenceWithAggravatingFactorsForm, SelectWhichAggravatingFactorsForm } from 'forms'
 import BaseRoutes from './baseRoutes'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import ManageOffencesService from '../services/manageOffencesService'
 import AuditService from '../services/auditService'
+import { offencesToOffenceDescriptions, orderAggravatedOffence, orderOffences } from '../utils/utils'
+import trimForm, { normaliseToArray } from '../utils/trim'
+import JourneyUrls from './data/JourneyUrls'
+import AggravatingFactorsJourneyUrls from './data/AggravatingFactorsJourneyUrls'
 
 export default class AggravatingFactorsRoutes extends BaseRoutes {
   constructor(
@@ -17,11 +22,207 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
   }
 
-  public getCheckAggravateFactorsAnswers: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/sentencing/check-aggravate-factors-answers', {})
+  public getSelectOffenceWithAggravatedFactors: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const offences = orderAggravatedOffence(courtAppearance.offences)
+    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
+    const offenceCodes = Array.from(
+      new Set(
+        offences
+          .map(offence => offence.offenceCode)
+          .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
+      ),
+    )
+
+    const aggravatingOffenceFactorForm = req.flash('aggravatingOffenceFactorForm')[0] || {}
+
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      offenceCodes,
+      req.user.username,
+      offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
+    )
+
+    // Get any previously selected offences from session so checkboxes can be preselected
+    const selectedOffenceUuids = this.offenceService
+      .getAggravatingOffenceQueue(req.session)
+      .map(entry => entry.offenceUuid)
+
+    const backLink = JourneyUrls.taskList(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
+
+    return res.render('pages/offenceWithAggravatingFactors/select-offence-with-aggravating-factors', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      aggravatingOffenceFactorForm,
+      offences,
+      offenceMap,
+      selectedOffenceUuids,
+      backLink,
+      errors: req.flash('errors') || [],
+    })
   }
 
-  public getSelectOffenceWithAggravatedFactors: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/sentencing/select-offence-with-aggravated-factors', {})
+  public submitSelectOffenceWithAggravatedFactors: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const normalised = normaliseToArray(req.body.aggravatedOffenceUuids ?? req.body['aggravatedOffenceUuids[]'])
+    const offenceWithAggravatingFactorsForm = trimForm<OffenceWithAggravatingFactorsForm>({
+      aggravatedOffenceUuids: normalised,
+    } as unknown as Record<string, unknown>)
+
+    const errors = this.offenceService.setAggravatingOffenceIds(req.session, offenceWithAggravatingFactorsForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('offenceWithAggravatingFactorsForm', { ...offenceWithAggravatingFactorsForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/select-offence-with-aggravated-factors?hasErrors=true`,
+      )
+    }
+    const chargeUuid = this.offenceService.getNextUnprocessedAggravatingOffenceId(req.session, null)
+    if (chargeUuid) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/${chargeUuid}/select-which-aggravating-factors-apply`,
+      )
+    }
+    // No unprocessed offences — go to check answers
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/check-answers`,
+    )
+  }
+
+  public getSelectWhichAggravatingFactorsApply: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      chargeUuid,
+    } = req.params
+    const offenceHint = await this.getOffenceHint(
+      this.courtAppearanceService
+        .getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+        .offences.find(offence => offence.chargeUuid === chargeUuid),
+      req.user.username,
+    )
+    const selectWhichAggravatingFactorsForm = req.flash('selectWhichAggravatingFactorsForm')[0] || {}
+    let backLink = AggravatingFactorsJourneyUrls.selectOffenceWithAggravatingFactors(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
+
+    if (this.offenceService.anyAggravatingOffencesProcessed(req.session)) {
+      const lastProcessedChargeUuid = this.offenceService.getLastProcessedAggravatingOffenceId(req.session, chargeUuid)
+      backLink = AggravatingFactorsJourneyUrls.selectWhichAggravatingFactorsApply(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        lastProcessedChargeUuid,
+      )
+    }
+
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    const { terrorRelated, foreignPowerRelated } = offence
+
+    return res.render('pages/offenceWithAggravatingFactors/select-which-aggravating-factors-apply', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offenceHint,
+      chargeUuid,
+      backLink,
+      selectWhichAggravatingFactorsForm,
+      terrorRelated,
+      foreignPowerRelated,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitSelectWhichAggravatingFactorsApply: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      chargeUuid,
+    } = req.params
+    const selected = normaliseToArray(
+      (req.body as Record<string, unknown>).selectedAggravatingFactors ??
+        (req.body as Record<string, unknown>)['selectedAggravatingFactors[]'],
+    )
+
+    const isAdd = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
+
+    const selectWhichAggravatingFactorsForm = trimForm<SelectWhichAggravatingFactorsForm>({
+      terroristConnection: selected.includes('terroristConnection'),
+      foreignPower: selected.includes('foreignPower'),
+    } as unknown as Record<string, unknown>)
+
+    const errors = this.offenceService.setAggravatingFactors(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      selectWhichAggravatingFactorsForm,
+      chargeUuid,
+      isAdd,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('selectWhichAggravatingFactorsForm', { ...selectWhichAggravatingFactorsForm })
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/${chargeUuid}/select-which-aggravating-factors-apply?hasErrors=true`,
+      )
+    }
+
+    // Redirect to next unprocessed aggravating offence or the check answers page
+    const nextChargeUuid = this.offenceService.getNextUnprocessedAggravatingOffenceId(req.session, chargeUuid)
+    if (nextChargeUuid) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/${nextChargeUuid}/select-which-aggravating-factors-apply`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/check-aggravating-factors-answers`,
+    )
+  }
+
+  public getCheckAggravateFactorsAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const offences = orderOffences(courtAppearance.offences)
+    return res.render('pages/offenceWithAggravatingFactors/check-aggravating-factors-answers', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offences,
+      errors: req.flash('errors') || [],
+    })
   }
 }

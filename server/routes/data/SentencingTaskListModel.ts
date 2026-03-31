@@ -223,7 +223,7 @@ export default class SentencingTaskListModel extends TaskListModel {
   private getAggravatingFactorsHref(courtAppearance: CourtAppearance): string {
     let href
     if (courtAppearance.offenceSentenceAccepted) {
-      href = AggravatingFactorsJourneyUrls.selectOffenceWithAggravatedFactors(
+      href = AggravatingFactorsJourneyUrls.selectOffenceWithAggravatingFactors(
         this.nomsId,
         this.addOrEditCourtCase,
         this.courtCaseReference,
@@ -232,7 +232,7 @@ export default class SentencingTaskListModel extends TaskListModel {
       )
     }
     if (courtAppearance.offenceAggravatedFactorsAccepted) {
-      href = AggravatingFactorsJourneyUrls.checkAggravatedFactorsAnswers(
+      href = AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
         this.nomsId,
         this.addOrEditCourtCase,
         this.courtCaseReference,

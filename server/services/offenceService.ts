@@ -15,7 +15,9 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
+  OffenceWithAggravatingFactorsForm,
   ReviewOffencesForm,
+  SelectWhichAggravatingFactorsForm,
   SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
   SentenceLengthForm,
@@ -1425,5 +1427,125 @@ export default class OffenceService {
     offence.terrorRelated = isTerrorRelated
     // eslint-disable-next-line no-param-reassign
     session.offences[id] = offence
+  }
+
+  setAggravatingOffenceIds(
+    session: Partial<SessionData>,
+    offenceWithAggravatingFactorsForm: OffenceWithAggravatingFactorsForm,
+  ) {
+    const errors = validate(
+      offenceWithAggravatingFactorsForm,
+      {
+        aggravatedOffenceUuids: 'required',
+      },
+      {
+        'required.aggravatedOffenceUuids': 'Select at least one offence to apply aggravating factors to',
+      },
+    )
+    if (errors.length === 0) {
+      // eslint-disable-next-line no-param-reassign
+      session.aggravatingOffenceIds = (offenceWithAggravatingFactorsForm.aggravatedOffenceUuids || []).map(uuid => ({
+        offenceUuid: uuid,
+        processed: false,
+      }))
+    }
+    return errors
+  }
+
+  getAggravatingOffenceQueue(session: Partial<SessionData>) {
+    return session.aggravatingOffenceIds || []
+  }
+
+  anyAggravatingOffencesProcessed(session: Partial<SessionData>) {
+    return this.getAggravatingOffenceQueue(session).some(e => e.processed)
+  }
+
+  getNextUnprocessedAggravatingOffenceId(session: Partial<SessionData>, chargeUuid: string | null): string | undefined {
+    const queue = this.getAggravatingOffenceQueue(session)
+    if (!chargeUuid) {
+      return queue[0]?.offenceUuid
+    }
+
+    const currentIndex = queue.findIndex(e => e.offenceUuid === chargeUuid)
+    if (currentIndex === -1) {
+      return undefined // Not found in queue
+    }
+
+    const nextEntry = queue[currentIndex + 1]
+    return nextEntry?.offenceUuid
+  }
+
+  getLastProcessedAggravatingOffenceId(session: Partial<SessionData>, chargeUuid: string): string | null {
+    const queue = this.getAggravatingOffenceQueue(session)
+
+    // Find the index of the current item
+    const currentIndex = queue.findIndex(e => e.offenceUuid === chargeUuid)
+    if (currentIndex === -1) return null // chargeUuid not found
+
+    // Look backwards from the element before the given chargeUuid
+    // eslint-disable-next-line no-plusplus
+    for (let i = currentIndex - 1; i >= 0; i--) {
+      if (queue[i].processed) {
+        return queue[i].offenceUuid
+      }
+    }
+
+    return null
+  }
+
+  // Mark a specific offence as processed by uuid
+  markAggravatingOffenceProcessed(session: Partial<SessionData>, offenceUuid: string) {
+    if (!session.aggravatingOffenceIds) return
+    const idx = session.aggravatingOffenceIds.findIndex(e => e.offenceUuid === offenceUuid)
+    // eslint-disable-next-line no-param-reassign
+    if (idx !== -1) session.aggravatingOffenceIds[idx].processed = true
+  }
+
+  setAggravatingFactors(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    form: SelectWhichAggravatingFactorsForm,
+    chargeUuid: string,
+    isAddJourney: boolean,
+  ) {
+    if (!isAddJourney) {
+      return this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
+    }
+
+    const anySelectedForm = {
+      anySelected: form.terroristConnection || form.foreignPower ? 'true' : '',
+    }
+
+    const errors = validate(
+      anySelectedForm,
+      { anySelected: 'required' },
+      {
+        'required.anySelected': 'Select at least one aggravating factor applicable to the offence',
+      },
+    )
+
+    if (errors.length === 0) {
+      this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
+    }
+
+    return errors
+  }
+
+  private updateOffenceWithAggravatingFactors(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtCaseReference: string,
+    chargeUuid: string,
+    form: SelectWhichAggravatingFactorsForm,
+  ) {
+    const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    if (form.terroristConnection) offence.terrorRelated = true
+    else offence.terrorRelated = null
+    if (form.foreignPower) offence.foreignPowerRelated = true
+    else offence.foreignPowerRelated = null
+    this.setSessionOffence(session, nomsId, courtCaseReference, offence)
+    this.markAggravatingOffenceProcessed(session, chargeUuid)
+    return []
   }
 }

@@ -281,6 +281,33 @@ export function orderOffences(offences: Offence[]): Offence[] {
   })
 }
 
+/**
+ * Orders aggravated offences by:
+ * 1. Ascending numeric count number (missing/non-numeric counts are treated as Infinity and come last)
+ * 2. Ascending offence date (older first) — used both as a tie-breaker for equal counts and to order offences without counts
+ * 3. Offence code lexicographic comparison as a deterministic final tie-breaker
+ */
+export function orderAggravatedOffence(offences: Offence[]): Offence[] {
+  if (!offences) return offences
+
+  const getNumericCount = (o: Offence) => {
+    const n = Number(getOffenceCount(o))
+    return Number.isFinite(n) && n >= 0 ? n : Number.POSITIVE_INFINITY
+  }
+
+  return [...offences].sort((a, b) => {
+    const countA = getNumericCount(a)
+    const countB = getNumericCount(b)
+    if (countA !== countB) return countA - countB
+
+    const dateA = offenceDate(a)
+    const dateB = offenceDate(b)
+    if (dateA !== dateB) return dateA - dateB
+
+    return getOffenceCode(a).localeCompare(getOffenceCode(b))
+  })
+}
+
 export function offencesToOffenceDescriptions(
   offences: Offence[],
   consecutiveToSentenceDetails: SentenceConsecutiveToDetails[],

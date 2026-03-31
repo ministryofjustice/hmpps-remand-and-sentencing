@@ -111,6 +111,7 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.manageOffencesService,
     services.auditService,
+    services.aggravatingFactorsService,
   )
 
   router.get('/', async (req, res, next) => {

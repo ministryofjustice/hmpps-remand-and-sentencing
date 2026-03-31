@@ -201,7 +201,7 @@ declare module 'forms' {
 
   export interface SelectWhichAggravatingFactorsForm {
     terroristConnection?: boolean
-    foreignPower: boolean
+    foreignPower?: boolean
   }
 
   export interface CorrectManyPeriodLengthsForm {

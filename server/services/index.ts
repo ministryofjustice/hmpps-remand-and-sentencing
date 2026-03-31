@@ -14,6 +14,7 @@ import RefDataService from './refDataService'
 import CalculateReleaseDatesService from './calculateReleaseDatesService'
 import CourtCasesReleaseDatesService from './courtCasesReleaseDatesService'
 import UnknownRecallSentenceService from './unknownRecallSentenceService'
+import AggravatingFactorsService from './aggravatingFactorsService'
 
 export const services = () => {
   const data = dataAccess()
@@ -44,6 +45,7 @@ export const services = () => {
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(data.courtCasesReleaseDatesApiClient)
   const offenceService = new OffenceService(manageOffencesService, remandAndSentencingService, refDataService)
   const unknownRecallSentenceService = new UnknownRecallSentenceService()
+  const aggravatingFactorsService = new AggravatingFactorsService(offenceService)
 
   return {
     applicationInfo: data.applicationInfo,
@@ -62,6 +64,7 @@ export const services = () => {
     courtCasesReleaseDatesService,
     refDataService,
     unknownRecallSentenceService,
+    aggravatingFactorsService,
   }
 }
 

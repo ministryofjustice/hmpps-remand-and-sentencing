@@ -1,14 +1,10 @@
 import { SessionData } from 'express-session'
-import type {
-  OffenceWithAggravatingFactorsForm,
-  SelectWhichAggravatingFactorsForm,
-} from 'forms'
+import type { OffenceWithAggravatingFactorsForm, SelectWhichAggravatingFactorsForm } from 'forms'
 import validate from '../validation/validation'
 import OffenceService from './offenceService'
 
 export default class AggravatingFactorsService {
   constructor(private readonly offenceService: OffenceService) {}
-
 
   setAggravatingOffenceIds(
     session: Partial<SessionData>,

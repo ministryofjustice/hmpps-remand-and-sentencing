@@ -71,11 +71,14 @@ context('Select offence with aggravating factors Page', () => {
     courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
-    let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
+
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1', '2')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3')
-    offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offence')
+    const offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+      OffenceCheckOffenceAnswersPage,
+      'You have added 3 offence',
+    )
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
     cy.visit(
@@ -86,7 +89,7 @@ context('Select offence with aggravating factors Page', () => {
 
   it('page should load up with offences sorted by count number', () => {
     selectOffenceWithAggravatingFactorsPage.getAggravatedOffenceCounts().then(counts => {
-      const sorted = [...counts].sort((a, b) => a - b)
+      const sorted = [1, 2, 3]
       expect(counts).to.deep.equal(sorted)
     })
   })

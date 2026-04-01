@@ -139,18 +139,29 @@ export default class RemandAndSentencingService {
     return errors
   }
 
-  cancelCourtCase(cancelCourtCaseForm: CancelCourtCaseForm): {
+  cancelCourtCase(
+    cancelCourtCaseForm: CancelCourtCaseForm,
+    isRepeat: boolean,
+    isEdit: boolean,
+  ): {
     text?: string
     html?: string
     href: string
   }[] {
+    let suffix = ' adding the court case'
+    if (isRepeat) {
+      suffix = ' adding the hearing'
+    } else if (isEdit) {
+      suffix = ' editing the court case'
+    }
+
     return validate(
       cancelCourtCaseForm,
       {
         cancelCourtCase: 'required',
       },
       {
-        'required.cancelCourtCase': 'Select Yes if you would like to cancel adding the court case.',
+        'required.cancelCourtCase': `Select Yes if you would like to cancel${suffix}.`,
       },
     )
   }

@@ -5,29 +5,27 @@ export default class SelectOffenceWithAggravatedFactorsPage extends Page {
     super('Select the offences with aggravating factors')
   }
 
-  // Returns the checkbox input element for the given index (0-based)
+  // The macro places the data-qa attribute directly on the input element
   aggravatedOffenceCheckbox = (index: number): PageElement => cy.get(`[data-qa=aggravatedOffenceCheckbox-${index}]`)
 
-  // Returns the first line container (which contains the Count or the offence code) for the given index
+  // In the new Nunjucks file, we have specific divs for Count and FirstLine
   aggravatedOffenceFirstLine = (index: number): PageElement => cy.get(`[data-qa=aggravatedOffenceFirstLine-${index}]`)
 
-  // Returns the Count element for the given index (if present)
   aggravatedOffenceCount = (index: number): PageElement => cy.get(`[data-qa=aggravatedOffenceCount-${index}]`)
 
-  // Returns all first-line elements (for mapping/order assertions)
-  allAggravatedOffenceFirstLines = (): PageElement => cy.get('[data-qa^="aggravatedOffenceFirstLine-"]')
+  // Returns all elements that represent the "First Line" or "Count" for mapping
+  // Note: We use a comma to select either the Count div OR the FirstLine div
+  allAggravatedOffenceIdentifiers = (): PageElement =>
+    cy.get('[data-qa^="aggravatedOffenceFirstLine-"], [data-qa^="aggravatedOffenceCount-"]')
 
-  // Extracts numeric Count values from the rendered list (filters out non-count items)
+  // Extracts numeric Count values from the rendered list
   getAggravatedOffenceCounts = (): Cypress.Chainable<number[]> =>
-    this.allAggravatedOffenceFirstLines().then($els => {
+    cy.get('[data-qa^="aggravatedOffenceCount-"]').then($els => {
       const counts: number[] = Array.from($els)
         .map(el => {
-          const countEl = el.querySelector('[data-qa^="aggravatedOffenceCount-"]')
-          if (countEl) {
-            const m = countEl.textContent.trim().match(/Count\s+(\d+)/)
-            return m ? parseInt(m[1], 10) : null
-          }
-          return null
+          const text = el.textContent.trim()
+          const m = text.match(/Count\s+(\d+)/)
+          return m ? parseInt(m[1], 10) : null
         })
         .filter((c): c is number => c !== null)
 

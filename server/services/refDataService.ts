@@ -140,8 +140,8 @@ export default class RefDataService {
       .filter(caseOutcome => outcomeTypes.includes(caseOutcome.outcomeType))
       .sort((a, b) => a.displayOrder - b.displayOrder)
 
-    const primaryOutcomes = chargeOutcomes.filter(o => o.outcomeType !== 'NON_CUSTODIAL')
-    const nonCustodialOutcomes = chargeOutcomes.filter(o => o.outcomeType === 'NON_CUSTODIAL')
+    const primaryOutcomes = allOutcomes.filter(o => o.outcomeType !== 'NON_CUSTODIAL')
+    const nonCustodialOutcomes = allOutcomes.filter(o => o.outcomeType === 'NON_CUSTODIAL')
     return { primaryOutcomes, nonCustodialOutcomes, allOutcomes }
   }
 

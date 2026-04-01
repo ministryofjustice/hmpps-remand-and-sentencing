@@ -1,6 +1,6 @@
 import Page, { PageElement } from './page'
 
-export default class SelectOffenceWithAggravatedFactorsPage extends Page {
+export default class AggravatingFactorsSelectOffenceWithAggravatedFactorsPage extends Page {
   constructor() {
     super('Select the offences with aggravating factors')
   }

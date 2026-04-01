@@ -134,6 +134,7 @@ export default class AggravatingFactorsService {
     if (isEditing) {
       return this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
     }
+    console.log('isEditing', isEditing)
 
     const anySelectedForm = {
       anySelected: form.terroristConnection || form.foreignPower ? 'true' : '',
@@ -147,8 +148,10 @@ export default class AggravatingFactorsService {
       },
     )
 
+    console.log('errors', errors.length)
+
     if (errors.length === 0) {
-      this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
+      return this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
     }
 
     return errors
@@ -162,10 +165,14 @@ export default class AggravatingFactorsService {
     form: SelectWhichAggravatingFactorsForm,
   ) {
     const offence = this.offenceService.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
+    console.log(form.foreignPower)
+    console.log(form.terroristConnection)
     if (form.terroristConnection) offence.terrorRelated = true
     else offence.terrorRelated = null
     if (form.foreignPower) offence.foreignPowerRelated = true
     else offence.foreignPowerRelated = null
+    console.log(offence.foreignPowerRelated)
+    console.log(offence.terrorRelated)
     this.offenceService.setSessionOffence(session, nomsId, courtCaseReference, offence)
     this.markAggravatingOffenceProcessed(session, chargeUuid)
     return []

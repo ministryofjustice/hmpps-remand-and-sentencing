@@ -4,8 +4,9 @@ import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
-import SelectOffenceWithAggravatedFactorsPage from '../../pages/selectOffenceWithAggravatedFactorsPage'
-import SelectWhichAggravatingFactorsApplyPage from '../../pages/selectWhichAggravatingFactorsApplyPage'
+import AggravatingFactorsSelectOffenceWithAggravatedFactorsPage from '../../pages/./aggravatingFactorsSelectOffenceWithAggravatedFactorsPage'
+import SelectWhichAggravatingFactorsApplyPage from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
+import AggravatingFactorsCheckAnswersPage from '../../pages/aggravatingFactorsCheckAnswersPage'
 
 context('Select which aggravating factors apply Page', () => {
   let selectWhichAggravatingFactorsApplyPage: SelectWhichAggravatingFactorsApplyPage
@@ -81,7 +82,7 @@ context('Select which aggravating factors apply Page', () => {
     cy.visit(
       '/person/A1234AB/add-court-case/0/add-court-appearance/0/aggravating-factors/select-offence-with-aggravated-factors',
     )
-    const selectOffenceWithAggravatingFactorsPage = new SelectOffenceWithAggravatedFactorsPage()
+    const selectOffenceWithAggravatingFactorsPage = new AggravatingFactorsSelectOffenceWithAggravatedFactorsPage()
     selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(0).click()
     selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(1).click()
     selectOffenceWithAggravatingFactorsPage.continueButton().click()
@@ -100,5 +101,14 @@ context('Select which aggravating factors apply Page', () => {
     selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
+  })
+
+  it.only('once all aggravating factors are processed should move on to the check answers page', () => {
+    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.continueButton().click()
+    Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
+    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.continueButton().click()
+    Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
   })
 })

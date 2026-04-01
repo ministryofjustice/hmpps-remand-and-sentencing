@@ -241,7 +241,13 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    const offences = orderOffences(courtAppearance.offences)
+    console.log(courtAppearance.offences.length)
+    const offences = orderOffences(
+      courtAppearance.offences.filter(
+        offence => offence.terrorRelated === true || offence.foreignPowerRelated === true,
+      ),
+    )
+    console.log(offences.length)
     return res.render('pages/offenceWithAggravatingFactors/check-aggravating-factors-answers', {
       nomsId,
       courtCaseReference,

@@ -43,28 +43,22 @@
          actions: {
              items: [
                  {
-                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/aggravating-factors/" + offence.chargeUuid + "/load-edit-offence",
+                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/aggravating-factors/" + offence.chargeUuid + "/select-which-aggravating-factors-apply?isEditing=true",
                      text: "Edit",
-                     visuallyHiddenText: "edit offence",
+                     visuallyHiddenText: "edit aggravating factor",
                      attributes: {
-                         'data-qa': 'edit-offence-link-' + offence.chargeUuid
+                         'data-qa': 'edit-aggravating-factor-link-' + offence.chargeUuid
                      }
                  },
                  {
-                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/delete-offence",
+                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/aggravating-factors/" + offence.chargeUuid + "/delete-aggravating-factor",
                      text: "Delete",
-                     visuallyHiddenText: "delete offence"
+                     visuallyHiddenText: "delete aggravating factor"
                  }
              ]
          },
          id: offenceId,
-         errorMessage: errors | findErrorsBeginningWith(offenceId),
-         listItems: {
-             classes: 'govuk-!-margin-top-4 govuk-!-margin-bottom-2',
-             items: [{
-                 html: multipleCountLinkHtml
-             }] if replicateOffenceEnabled and showAddMultipleCountsLink
-         }
+         errorMessage: errors | findErrorsBeginningWith(offenceId)
      }) }}
 {% else %}
     {{ govukInsetText({
@@ -88,14 +82,14 @@
                         items: [
                             {
                                 value: "true",
-                                text: "Yes, I've finished adding offences",
+                                text: "Yes, I've finished",
                                 attributes: {
                                 "data-qa": "finishAddingRadio"
                             }
                             },
                             {
                                 value: "false",
-                                text: "No, I'll come back later",
+                                text: "No, I'll come back to it later",
                                 attributes: {
                                 "data-qa": "notFinishedRadio"
                             }
@@ -108,7 +102,7 @@
                                 class="govuk-button"
                                 data-module="govuk-button"
                                 data-qa="finishAddingButton"
-                                formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-offence-answers">
+                                formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-aggravating-factors-answers">
                             Continue
                         </button>
                         {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}

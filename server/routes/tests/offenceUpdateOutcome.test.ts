@@ -38,28 +38,30 @@ describe('GET Update Offence outcome', () => {
       changedDate: dayjs().subtract(2, 'days').format('YYYY-MM-DD'),
       isChild: false,
     })
-    defaultServices.refDataService.getAllChargeOutcomes.mockResolvedValue([
-      {
-        outcomeUuid: '1',
-        outcomeType: 'NON_SENTENCING',
-        displayOrder: 10,
-        nomisCode: '10',
-        outcomeName: 'Offence outcome',
-        dispositionCode: 'F',
-        status: 'ACTIVE',
-      },
-    ])
-    defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue({
-      outcomeUuid: '123',
-      outcomeType: 'NON_SENTENCING',
-      displayOrder: 10,
-      isSubList: false,
-      nomisCode: '10',
-      outcomeName: 'Appearance sentencing outcome',
-      relatedChargeOutcomeUuid: '3',
-      dispositionCode: 'FINAL',
-      status: 'ACTIVE',
-      warrantType: 'NON_SENTENCING',
+    defaultServices.refDataService.getPrimaryNonCustodialChargeOutcomes.mockResolvedValue({
+      primaryOutcomes: [
+        {
+          outcomeUuid: '1',
+          outcomeType: 'NON_SENTENCING',
+          displayOrder: 10,
+          nomisCode: '10',
+          outcomeName: 'Offence outcome',
+          dispositionCode: 'F',
+          status: 'ACTIVE',
+        },
+      ],
+      nonCustodialOutcomes: [],
+      allOutcomes: [
+        {
+          outcomeUuid: '1',
+          outcomeType: 'NON_SENTENCING',
+          displayOrder: 10,
+          nomisCode: '10',
+          outcomeName: 'Offence outcome',
+          dispositionCode: 'F',
+          status: 'ACTIVE',
+        },
+      ],
     })
     const courtAppearance = {
       warrantType: 'NON_SENTENCING',

@@ -11,6 +11,7 @@ export declare module 'express-session' {
     savedCourtCases: Map<string, CourtCase>
     offences: Map<string, Offence>
     unknownRecallSentenceUuids: Map<string, string[]>
+    aggravatingChargeUuids?: { chargeUuid: string; processed: boolean }[]
   }
 }
 

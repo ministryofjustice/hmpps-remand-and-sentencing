@@ -195,6 +195,14 @@ declare module 'forms' {
     _csrf?: string
   }
 
+  export interface OffenceWithAggravatingFactorsForm {
+    aggravatedOffenceUuids?: string[]
+  }
+
+  export interface SelectWhichAggravatingFactorsForm {
+    aggravatedFactors?: string[]
+  }
+
   export interface CorrectManyPeriodLengthsForm {
     correctPeriodLengthUuid?: string
     'sentenceLength-years'?: string

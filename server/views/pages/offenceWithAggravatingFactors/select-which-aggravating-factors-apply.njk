@@ -1,0 +1,70 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
+{% from "govuk/components/hint/macro.njk" import govukHint %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+
+
+{% set pageTitle = applicationName + " - sentence offences with aggravated factors" %}
+
+{% block pageContent %}
+  <form method="post"
+        action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/{{chargeUuid}}/submit-select-which-aggravating-factors-apply"
+        autocomplete="off">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% include "../../partials/aggravatingOffenceFactorsCaption.njk" %}
+
+    <div class="govuk-form-group {%- if errorMessage %} govuk-form-group--error{% endif %}">
+      {% if selectWhichAggravatingFactorsForm and selectWhichAggravatingFactorsForm.aggravatedFactors is defined %}
+        {% set selectedFactors = selectWhichAggravatingFactorsForm.aggravatedFactors %}
+      {% else %}
+        {% set selectedFactors = [] %}
+        {% if terrorRelated %}
+          {% set selectedFactors = selectedFactors.concat(['terrorRelated']) %}
+        {% endif %}
+        {% if foreignPowerRelated %}
+          {% set selectedFactors = selectedFactors.concat(['foreignPowerRelated']) %}
+        {% endif %}
+      {% endif %}
+
+      {{ govukCheckboxes({
+        name: 'aggravatedFactors',
+        fieldset: {
+          legend: {
+            text: "Select which aggravating factors apply",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        hint: offenceHint,
+        items: [
+          {
+            id: 'aggravating-factor-terror-related',
+            value: "terrorRelated",
+            text: "Offence aggravated by a terrorist connection",
+            checked: selectedFactors.includes('terrorRelated'),
+            attributes: { "data-qa": "terrorRelatedCheckbox" }
+          },
+          {
+            id: 'aggravating-factor-foreign-power',
+            value: "foreignPowerRelated",
+            text: "Offence aggravated by foreign power condition being mate",
+            checked: selectedFactors.includes('foreignPowerRelated'),
+            attributes: { "data-qa": "foreignPowerRelatedCheckbox" }
+          }
+        ]
+      }) }}
+    </div>
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Continue",
+        attributes: { 'data-qa': 'continue-button' }
+      }) }}
+      {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+    </div>
+  </form>
+{% endblock %}

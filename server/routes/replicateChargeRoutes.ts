@@ -209,22 +209,10 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
       }
     }
     const outcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId, appearanceReference)
-    const appearanceOutcome = await this.refDataService.getAppearanceOutcomeByUuid(outcomeUuid, req.user.username)
-    const [caseOutcomes, offenceHint] = await Promise.all([
-      this.refDataService.getAllChargeOutcomes(req.user.username),
+    const [primaryNonCustodialOutcomes, offenceHint] = await Promise.all([
+      this.refDataService.getPrimaryNonCustodialChargeOutcomes(outcomeUuid, req.user.username),
       this.getOffenceHint(offence, req.user.username),
     ])
-    let outcomeTypes = ['REMAND', 'NON_CUSTODIAL']
-    if (appearanceOutcome.outcomeType === 'NON_CUSTODIAL') {
-      outcomeTypes = ['NON_CUSTODIAL']
-    }
-
-    const chargeOutcomes = caseOutcomes
-      .filter(caseOutcome => outcomeTypes.includes(caseOutcome.outcomeType))
-      .sort((a, b) => a.displayOrder - b.displayOrder)
-
-    const primaryOutcomes = chargeOutcomes.filter(o => o.outcomeType !== 'NON_CUSTODIAL')
-    const nonCustodialOutcomes = chargeOutcomes.filter(o => o.outcomeType === 'NON_CUSTODIAL')
     const backLink = ReplicateOffenceJourneyUrls.isOffenceDateSame(
       nomsId,
       addOrEditCourtCase,
@@ -243,8 +231,8 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       errors: req.flash('errors') || [],
       backLink,
-      primaryOutcomes,
-      nonCustodialOutcomes,
+      primaryOutcomes: primaryNonCustodialOutcomes.primaryOutcomes,
+      nonCustodialOutcomes: primaryNonCustodialOutcomes.nonCustodialOutcomes,
       offenceHint,
     })
   }

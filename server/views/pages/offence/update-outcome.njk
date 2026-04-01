@@ -24,12 +24,25 @@
         items: []
     } %}
 
-{% for caseOutcome in outcomes %}
-    {%- set caseOutcomeRow = {
+{% for caseOutcome in primaryOutcomes %}
+    {% set caseOutcomeRow = {
         value: caseOutcome.outcomeUuid,
         text: caseOutcome.outcomeName,
         checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
-    } -%}
+    } %}
+    {{ radiosData.items.push(caseOutcomeRow) }}
+{% endfor %}
+
+{% if primaryOutcomes.length and nonCustodialOutcomes.length %}
+    {{ radiosData.items.push({ divider: "or" }) }}
+{% endif %}
+
+{% for caseOutcome in nonCustodialOutcomes %}
+    {% set caseOutcomeRow = {
+        value: caseOutcome.outcomeUuid,
+        text: caseOutcome.outcomeName,
+        checked: caseOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
+    } %}
     {{ radiosData.items.push(caseOutcomeRow) }}
 {% endfor %}
 

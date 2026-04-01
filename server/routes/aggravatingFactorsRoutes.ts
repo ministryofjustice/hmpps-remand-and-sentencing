@@ -195,11 +195,10 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       chargeUuid,
     } = req.params
     const isEditing = req.query.isEditing === 'true'
-    const selected = normaliseToArray((req.body as Record<string, unknown>).selectedAggravatingFactors)
+    const selected = normaliseToArray(req.body.aggravatedFactors)
 
     const selectWhichAggravatingFactorsForm = trimForm<SelectWhichAggravatingFactorsForm>({
-      terroristConnection: selected.includes('terroristConnection'),
-      foreignPower: selected.includes('foreignPower'),
+      aggravatedFactors: selected,
     } as unknown as Record<string, unknown>)
 
     const errors = this.aggravatingFactorsService.setAggravatingFactors(
@@ -219,7 +218,6 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       )
     }
 
-    // Redirect to next unprocessed aggravating offence or the check answers page
     const nextChargeUuid = this.aggravatingFactorsService.getNextUnprocessedAggravatingOffenceId(
       req.session,
       chargeUuid,

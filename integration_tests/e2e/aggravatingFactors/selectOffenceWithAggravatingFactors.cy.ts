@@ -4,8 +4,10 @@ import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
-import AggravatingFactorsSelectOffenceWithAggravatedFactorsPage from '../../pages/./aggravatingFactorsSelectOffenceWithAggravatedFactorsPage'
-import AggravatingFactorsSelectWhichAggravatedFactorsApplyPage from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
+import AggravatingFactorsSelectOffenceWithAggravatedFactorsPage
+  from '../../pages/aggravatingFactorsSelectOffenceWithAggravatedFactorsPage'
+import AggravatingFactorsSelectWhichAggravatedFactorsApplyPage
+  from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
 
 context('Select offence with aggravating factors Page', () => {
   let selectOffenceWithAggravatingFactorsPage: AggravatingFactorsSelectOffenceWithAggravatedFactorsPage

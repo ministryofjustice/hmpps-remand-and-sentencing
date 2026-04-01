@@ -1,6 +1,5 @@
 import { SessionData } from 'express-session'
 import type {
-  IsOffenceAggravatedByTerroristConnectionForm,
   OffenceWithAggravatingFactorsForm,
   SelectWhichAggravatingFactorsForm,
 } from 'forms'
@@ -10,46 +9,6 @@ import OffenceService from './offenceService'
 export default class AggravatingFactorsService {
   constructor(private readonly offenceService: OffenceService) {}
 
-  setIsOffenceAggravated(
-    session: Partial<SessionData>,
-    nomsId: string,
-    courtCaseReference: string,
-    chargeUuid: string,
-    isOffenceAggravatedForm: IsOffenceAggravatedByTerroristConnectionForm,
-  ): {
-    text?: string
-    html?: string
-    href: string
-  }[] {
-    const errors = validate(
-      isOffenceAggravatedForm,
-      {
-        isOffenceAggravatedByTerroristConnection: 'required',
-      },
-      {
-        'required.isOffenceAggravatedByTerroristConnection':
-          'Select Yes if the offence is aggravated by a terrorist connection',
-      },
-    )
-    if (errors.length === 0) {
-      const offence = this.offenceService.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
-      offence.terrorRelated = isOffenceAggravatedForm.isOffenceAggravatedByTerroristConnection === 'true'
-      this.offenceService.setSessionOffence(session, nomsId, courtCaseReference, offence)
-    }
-    return errors
-  }
-
-  setTerrorRelated(
-    session: Partial<SessionData>,
-    nomsId: string,
-    courtCaseReference: string,
-    chargeUuid: string,
-    isTerrorRelated: boolean,
-  ) {
-    const offence = this.offenceService.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
-    offence.terrorRelated = isTerrorRelated
-    this.offenceService.setSessionOffence(session, nomsId, courtCaseReference, offence)
-  }
 
   setAggravatingOffenceIds(
     session: Partial<SessionData>,
@@ -135,15 +94,11 @@ export default class AggravatingFactorsService {
       return this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
     }
 
-    const anySelectedForm = {
-      anySelected: form.terroristConnection || form.foreignPower ? 'true' : '',
-    }
-
     const errors = validate(
-      anySelectedForm,
-      { anySelected: 'required' },
+      form,
+      { aggravatedFactors: 'required' },
       {
-        'required.anySelected': 'Select at least one aggravating factor applicable to the offence',
+        'required.aggravatedFactors': 'Select at least one aggravating factor applicable to the offence',
       },
     )
 
@@ -162,10 +117,10 @@ export default class AggravatingFactorsService {
     form: SelectWhichAggravatingFactorsForm,
   ) {
     const offence = this.offenceService.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
-    if (form.terroristConnection) offence.terrorRelated = true
-    else offence.terrorRelated = null
-    if (form.foreignPower) offence.foreignPowerRelated = true
-    else offence.foreignPowerRelated = null
+
+    offence.terrorRelated = form.aggravatedFactors?.includes('terrorRelated') ? true : null
+    offence.foreignPowerRelated = form.aggravatedFactors?.includes('foreignPowerRelated') ? true : null
+
     this.offenceService.setSessionOffence(session, nomsId, courtCaseReference, offence)
     this.markAggravatingOffenceProcessed(session, chargeUuid)
     return []

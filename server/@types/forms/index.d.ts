@@ -200,8 +200,7 @@ declare module 'forms' {
   }
 
   export interface SelectWhichAggravatingFactorsForm {
-    terroristConnection?: boolean
-    foreignPower?: boolean
+    aggravatedFactors?: string[]
   }
 
   export interface CorrectManyPeriodLengthsForm {

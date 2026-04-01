@@ -229,6 +229,19 @@
                                     <div class="govuk-grid-column-full govuk-!-margin-top-2">
                                         {% set offenceDetailsHtml %}
                                             {% for offence in courtCaseDetails.offences %}
+                                                {% set aggravatingFactors = [] %}
+
+                                                    {% if offence.terrorRelated %}
+                                                        {% set aggravatingFactors = aggravatingFactors.concat([
+                                                            "Offences aggravated by a terrorist connection"
+                                                        ]) %}
+                                                    {% endif %}
+
+                                                    {% if offence.foreignPowerRelated %}
+                                                        {% set aggravatingFactors = aggravatingFactors.concat([
+                                                            "Offences aggravated by foreign power condition being met"
+                                                        ]) %}
+                                                    {% endif %}
                                                 {{
                                                     offenceCard({
                                                         offenceCode: offence.offenceCode,
@@ -239,7 +252,7 @@
                                                         countNumber: offence.sentence.countNumber if offence.sentence,
                                                         lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
                                                         convictionDate: (offence.sentence.convictionDate | formatDate) if offence.sentence,
-                                                        terrorRelated: offence.terrorRelated,
+                                                        aggravatingFactors: aggravatingFactors,
                                                         isSentenced: offence.sentence,
                                                         periodLengths: offence.sentence.periodLengths if offence.sentence,
                                                         sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,

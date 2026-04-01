@@ -197,6 +197,19 @@
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Offences</h3>
             {% set offenceDetailsHtml %}
               {% for charge in hearing.charges %}
+                  {% set aggravatingFactors = [] %}
+
+                  {% if charge.terrorRelated %}
+                      {% set aggravatingFactors = aggravatingFactors.concat([
+                          "Offences aggravated by a terrorist connection"
+                      ]) %}
+                  {% endif %}
+
+                  {% if charge.foreignPowerRelated %}
+                      {% set aggravatingFactors = aggravatingFactors.concat([
+                          "Offences aggravated by foreign power condition being met"
+                      ]) %}
+                  {% endif %}
                   {{ offenceCard({
                       offenceCode: charge.offenceCode,
                       offenceName: offenceMap[charge.offenceCode],
@@ -206,7 +219,6 @@
                       countNumber: charge.sentence.chargeNumber,
                       lineNumber: charge.sentence.legacyData.nomisLineReference if charge.sentence and charge.sentence.legacyData,
                       convictionDate: charge.sentence.convictionDate | formatDate,
-                      terrorRelated: charge.terrorRelated,
                       isSentenced: charge.sentence,
                       periodLengths: charge.sentence.periodLengths | periodLengthsToSentenceLengths,
                       sentenceServeType: charge.sentence.sentenceServeType,
@@ -215,7 +227,8 @@
                       fineAmount: charge.sentence.fineAmount.fineAmount,
                       detailsClasses: 'govuk-!-padding-4',
                       mergedFromCase: charge.mergedFromCase,
-                      courtDetails: courtMap
+                      courtDetails: courtMap,
+                      aggravatingFactors: aggravatingFactors
                   }) }}
               {% endfor %}
             {% endset %}

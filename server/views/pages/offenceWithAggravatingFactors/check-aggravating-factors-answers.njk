@@ -17,7 +17,10 @@
         </h1>
 
         {{ govukInsetText({
-                        text: "There are 2 sentences with aggravating factors."
+         attributes: {
+                        "data-qa": "aggravatedFactorsInsetText"
+                    },
+                        text: "There are " + offences.length + " sentences with aggravating factors."
             }) }}
 
         {{ govukButton({
@@ -25,15 +28,24 @@
             classes: "govuk-button--link",
             href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/select-offence-with-aggravated-factors?fromCheckAnswers=true",
             attributes: {
-                "data-qa": "selectAnotherOffence"
+                "data-qa": "selectAnotherAggravatingFactor"
             }
         }) }}
 {% for offence in offences %}
     {% set offenceId = 'offences.' + offence.index %}
-    {% set aggravatingFactors = [
-        offence.terrorRelated,
-        offence.foreignPowerRelated
-    ] %}
+    {% set aggravatingFactors = [] %}
+
+    {% if offence.terrorRelated %}
+        {% set aggravatingFactors = aggravatingFactors.concat([
+            "Offences aggravated by a terrorist connection"
+        ]) %}
+    {% endif %}
+
+    {% if offence.foreignPowerRelated %}
+        {% set aggravatingFactors = aggravatingFactors.concat([
+            "Offences aggravated by foreign power condition being met"
+        ]) %}
+    {% endif %}
  {{ offenceCard({
          offenceCode: offence.offenceCode,
          offenceName: offenceMap[offence.offenceCode],
@@ -70,8 +82,8 @@
                 <form method="post" autocomplete="off">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                     {{ govukRadios({
-                        id: "finishedAddingOffences",
-                        name: "finishedAddingOffences",
+                        id: "finishedAddingAggravatingFactors",
+                        name: "finishedAddingAggravatingFactors",
                         fieldset: {
                             legend: {
                                 text: "Have you finished adding aggravating factors?",
@@ -102,7 +114,7 @@
                                 class="govuk-button"
                                 data-module="govuk-button"
                                 data-qa="finishAddingButton"
-                                formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-check-aggravating-factors-answers">
+                                formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/submit-check-aggravating-factors-answers">
                             Continue
                         </button>
                         {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}

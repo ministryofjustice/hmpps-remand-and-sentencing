@@ -231,7 +231,7 @@ export default class SentencingTaskListModel extends TaskListModel {
         this.appearanceReference,
       )
     }
-    if (courtAppearance.offenceAggravatedFactorsAccepted) {
+    if (courtAppearance.aggravatingFactorsAccepted) {
       href = AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
         this.nomsId,
         this.addOrEditCourtCase,
@@ -244,15 +244,23 @@ export default class SentencingTaskListModel extends TaskListModel {
   }
 
   private getAggravatingFactorsStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
+    if (courtAppearance.aggravatingFactorsAccepted === false) {
+      return {
+        tag: {
+          text: 'Incomplete',
+          classes: 'govuk-tag--blue',
+        },
+      }
+    }
+    if (courtAppearance.aggravatingFactorsAccepted) {
+      return {
+        text: 'Completed',
+      }
+    }
     if (courtAppearance.offenceSentenceAccepted !== true) {
       return {
         text: 'Cannot start yet',
         classes: 'govuk-task-list__status--cannot-start-yet',
-      }
-    }
-    if (courtAppearance.offenceAggravatedFactorsAccepted) {
-      return {
-        text: 'Completed',
       }
     }
     return {

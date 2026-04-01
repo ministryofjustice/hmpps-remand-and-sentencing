@@ -17,6 +17,8 @@ export default class AggravatingFactorsSelectOffenceWithAggravatedFactorsPage ex
   // Returns all first-line elements (for mapping/order assertions)
   allAggravatedOffenceFirstLines = (): PageElement => cy.get('[data-qa^="aggravatedOffenceFirstLine-"]')
 
+  aggravatedFactorsOptions = (): PageElement => cy.get('[data-qa="aggravatedFactorsOptions"]')
+
   // Extracts numeric Count values from the rendered list (filters out non-count items)
   getAggravatedOffenceCounts = (): Cypress.Chainable<number[]> =>
     this.allAggravatedOffenceFirstLines().then($els => {
@@ -33,4 +35,11 @@ export default class AggravatingFactorsSelectOffenceWithAggravatedFactorsPage ex
 
       return counts
     })
+
+  // Returns all checkbox elements for offences
+  aggravatedOffenceCheckboxes = (): PageElement => cy.get('[data-qa^="aggravatedOffenceCheckbox-"]')
+
+  // Assert there are exactly `expected` checkbox options
+  assertAggravatedOffenceCheckboxesCount = (expected: number): Cypress.Chainable<JQuery<HTMLElement>> =>
+    this.aggravatedOffenceCheckboxes().should('have.length', expected)
 }

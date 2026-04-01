@@ -61,7 +61,8 @@
                 text: "Select all that apply"
             },
             errorMessage: errors | findError('aggravatedOffenceUuids'),
-            items: offenceItems
+            items: offenceItems,
+            attributes: { 'data-qa': 'aggravatedFactorsOptions' }
         }) }}
 
         <div class="govuk-button-group">

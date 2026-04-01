@@ -116,4 +116,23 @@ context('Court Case Cancel Court Case Page', () => {
         'You have not finished editing the information for the court case at Southampton Magistrate Court on 15/12/2023. Any information you have entered will be lost.',
       )
   })
+
+  it('keeps same content on error in repeat journey', () => {
+    cy.visit('/person/A1234AB/edit-court-case/0/add-court-appearance/0/received-custodial-sentence')
+    receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.cancelButton().click()
+    let courtCaseCancelCourtCasePage = Page.verifyOnPageTitle(
+      CourtCaseCancelCourtCasePage,
+      'Are you sure you want to cancel adding a hearing?',
+    )
+    courtCaseCancelCourtCasePage.continueButton().click()
+    courtCaseCancelCourtCasePage = Page.verifyOnPageTitle(
+      CourtCaseCancelCourtCasePage,
+      'Are you sure you want to cancel adding a hearing?',
+    )
+    courtCaseCancelCourtCasePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Select Yes if you would like to cancel adding the hearing.')
+  })
 })

@@ -151,7 +151,7 @@ export default function routes(services: Services): Router {
   )
 
   router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:appearanceReference/submit-cancel-court-case',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/confirm-cancel-court-case',
     courtCaseRoutes.submitCancelCourtCase,
   )
 

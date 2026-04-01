@@ -25,7 +25,7 @@
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
 
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ appearanceReference }}/submit-cancel-court-case?isHearing={{ isHearing }}&returnUrl={{ backLink }}" autocomplete="off">
+            <form method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <h1 class="govuk-heading-l">
                   {{ model.getHeader() }}

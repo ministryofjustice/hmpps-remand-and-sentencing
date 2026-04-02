@@ -8,16 +8,8 @@ export default class AggravatingFactorsSelectOffenceWithAggravatedFactorsPage ex
   // Returns the checkbox input element for the given index (0-based)
   aggravatedOffenceCheckbox = (index: number): PageElement => cy.get(`[data-qa=aggravatedOffenceCheckbox-${index}]`)
 
-  // Returns the first line container (which contains the Count or the offence code) for the given index
-  aggravatedOffenceFirstLine = (index: number): PageElement => cy.get(`[data-qa=aggravatedOffenceFirstLine-${index}]`)
-
-  // Returns the Count element for the given index (if present)
-  aggravatedOffenceCount = (index: number): PageElement => cy.get(`[data-qa=aggravatedOffenceCount-${index}]`)
-
   // Returns all first-line elements (for mapping/order assertions)
   allAggravatedOffenceFirstLines = (): PageElement => cy.get('[data-qa^="aggravatedOffenceFirstLine-"]')
-
-  aggravatedFactorsOptions = (): PageElement => cy.get('[data-qa="aggravatedFactorsOptions"]')
 
   // Extracts numeric Count values from the rendered list (filters out non-count items)
   getAggravatedOffenceCounts = (): Cypress.Chainable<number[]> =>

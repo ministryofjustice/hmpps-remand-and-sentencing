@@ -151,6 +151,8 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       chargeUuid,
     } = req.params
+    const isEditing = req.query.isEditing === 'true'
+    const returnTo = (req.query.returnTo as string) || undefined
     const offenceHint = await this.getOffenceHint(
       this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid),
       req.user.username,
@@ -179,6 +181,27 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       )
     }
 
+    // If a specific return target was provided, prefer that for the back link
+    if (returnTo === 'editOffence') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/load-edit-offence`
+    } else if (returnTo === 'checkAnswers') {
+      backLink = AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    } else if (isEditing) {
+      backLink = AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    }
+
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     const { terrorRelated, foreignPowerRelated } = offence
 
@@ -194,6 +217,8 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       selectWhichAggravatingFactorsForm,
       terrorRelated,
       foreignPowerRelated,
+      isEditing,
+      returnTo,
       errors: req.flash('errors') || [],
     })
   }
@@ -208,6 +233,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       chargeUuid,
     } = req.params
     const isEditing = req.query.isEditing === 'true'
+    const returnTo = (req.query.returnTo as string) || undefined
     const selected = normaliseToArray(req.body.aggravatedFactors)
 
     const selectWhichAggravatingFactorsForm = trimForm<SelectWhichAggravatingFactorsForm>({
@@ -226,22 +252,56 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('selectWhichAggravatingFactorsForm', { ...selectWhichAggravatingFactorsForm })
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/${chargeUuid}/select-which-aggravating-factors-apply?hasErrors=true`,
+      // build redirect preserving hasErrors plus returnTo and isEditing if present
+      let redirectUrl = AggravatingFactorsJourneyUrls.selectWhichAggravatingFactorsApply(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+        'true',
       )
+      if (returnTo) {
+        redirectUrl += `&returnTo=${returnTo}`
+      }
+      if (isEditing) {
+        redirectUrl += `&isEditing=true`
+      }
+      return res.redirect(redirectUrl)
     }
 
     const nextChargeUuid = this.aggravatingFactorsService.getNextUnprocessedAggravatingOffenceId(
       req.session,
       chargeUuid,
     )
-    if (nextChargeUuid) {
+
+    if (!nextChargeUuid || isEditing) {
+      if (returnTo === 'editOffence') {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
+        )
+      }
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/${nextChargeUuid}/select-which-aggravating-factors-apply`,
+        AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
+
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/check-aggravating-factors-answers`,
+      AggravatingFactorsJourneyUrls.selectWhichAggravatingFactorsApply(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        nextChargeUuid,
+      ),
     )
   }
 
@@ -301,7 +361,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       aggravatingFactorsFinishedAddingForm.finishedAddingAggravatingFactors === 'true'
 
     if (finishedAddingAggravatingFactors) {
-      this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+      await this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
       this.aggravatingFactorsService.clearAggravatingFactors(req.session)
     }
 
@@ -313,6 +373,68 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     )
     return res.redirect(
       JourneyUrls.taskList(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
+    )
+  }
+
+  public getDeleteAggravatingFactor: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      chargeUuid,
+    } = req.params
+
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+
+    const cancelLink = AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
+
+    return res.render('pages/offenceWithAggravatingFactors/delete-aggravating-factor', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      chargeUuid,
+      terrorRelated: offence?.terrorRelated,
+      foreignPowerRelated: offence?.foreignPowerRelated,
+      cancelLink,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitDeleteAggravatingFactor: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      chargeUuid,
+    } = req.params
+
+    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    if (offence) {
+      offence.terrorRelated = null
+      offence.foreignPowerRelated = null
+      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
+    }
+
+    return res.redirect(
+      AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
         nomsId,
         addOrEditCourtCase,
         courtCaseReference,

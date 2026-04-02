@@ -22,4 +22,8 @@ export default class OffenceEditOffencePage extends Page {
   editSummaryList = (): PageElement => cy.get('[data-qa=edit-summary-list]')
 
   updateOutcomeCta = (): PageElement => cy.get('[data-qa=update-outcome-cta]')
+
+  // Add aggravating factors link in the offence details summary (when no factors present)
+  addAggravatingFactorsLink = (chargeUuid: string): PageElement =>
+    cy.get(`a[data-qa="add-aggravating-factors-${chargeUuid}"]`)
 }

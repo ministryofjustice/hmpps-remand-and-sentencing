@@ -933,6 +933,16 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/:chargeUuid/delete-aggravating-factor',
+    aggravatingFactorsRoutes.getDeleteAggravatingFactor,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/:chargeUuid/submit-delete-aggravating-factor',
+    aggravatingFactorsRoutes.submitDeleteAggravatingFactor,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/check-aggravating-factors-answers',
     aggravatingFactorsRoutes.getCheckAggravatingFactorsAnswers,
   )

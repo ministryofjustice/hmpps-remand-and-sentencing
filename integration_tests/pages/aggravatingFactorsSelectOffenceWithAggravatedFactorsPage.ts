@@ -9,23 +9,29 @@ export default class AggravatingFactorsSelectOffenceWithAggravatedFactorsPage ex
   aggravatedOffenceCheckbox = (index: number): PageElement => cy.get(`[data-qa=aggravatedOffenceCheckbox-${index}]`)
 
   // Returns all first-line elements (for mapping/order assertions)
-  allAggravatedOffenceFirstLines = (): PageElement => cy.get('[data-qa^="aggravatedOffenceFirstLine-"]')
-
-  // Extracts numeric Count values from the rendered list (filters out non-count items)
+  // Extracts numeric Count values from the rendered list by inspecting the
+  // rendered checkbox item. This is robust to whether the template renders a
+  // `aggravatedOffenceCount-<i>` div or an `aggravatedOffenceFirstLine-<i>` div.
   getAggravatedOffenceCounts = (): Cypress.Chainable<number[]> =>
-    this.allAggravatedOffenceFirstLines().then($els => {
-      const counts: number[] = Array.from($els)
-        .map(el => {
-          const countEl = el.querySelector('[data-qa^="aggravatedOffenceCount-"]')
-          if (countEl) {
-            const m = countEl.textContent.trim().match(/Count\s+(\d+)/)
-            return m ? parseInt(m[1], 10) : null
-          }
-          return null
-        })
-        .filter((c): c is number => c !== null)
+    this.aggravatedOffenceCheckboxes().then($checkboxes => {
+      const counts: number[] = Array.from($checkboxes).map(cb => {
+        // The GOV.UK macro renders the input inside a label; find the closest
+        // ancestor that contains our data-qa markers and look for a count div.
+        const container = (cb as HTMLElement).closest('label') || (cb as HTMLElement).parentElement
+        if (!container) return null
 
-      return counts
+        const countEl = container.querySelector('[data-qa^="aggravatedOffenceCount-"]')
+        if (countEl) {
+          const m = countEl.textContent?.trim().match(/Count\s+(\d+)/)
+          return m ? parseInt(m[1], 10) : null
+        }
+
+        // Fallback: sometimes the first-line element contains the offence
+        // description (no explicit Count div). In that case we treat it as
+        // having no numeric count and filter it out.
+        return null
+      })
+      return counts.filter((c): c is number => c !== null)
     })
 
   // Returns all checkbox elements for offences

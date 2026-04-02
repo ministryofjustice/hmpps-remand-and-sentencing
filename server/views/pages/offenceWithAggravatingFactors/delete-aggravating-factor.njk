@@ -1,0 +1,45 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% set pageTitle = applicationName + " - Delete aggravating factors" %}
+
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/{{ chargeUuid }}/submit-delete-aggravating-factor" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                {% call govukFieldset({
+                        legend: {
+                            text: "Are you sure you want to delete the aggravating factors for this offence?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                }) %}
+
+                    <ul class="govuk-list govuk-list--bullet">
+                        {% if terrorRelated %}
+                            <li>Offence aggravated by a terrorist connection</li>
+                        {% endif %}
+                        {% if foreignPowerRelated %}
+                            <li>Offence aggravated by foreign power condition being met</li>
+                        {% endif %}
+                    </ul>
+
+                    <div class="govuk-button-group">
+                        {{ govukButton({
+                            text: "Delete",
+                            classes: "govuk-button--warning",
+                            attributes: { 'data-qa': 'delete-aggravating-button' }
+                        }) }}
+                        <a class="govuk-link govuk-link--no-visited-state" href="{{ cancelLink }}">Cancel and go back</a>
+                    </div>
+
+                {% endcall %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

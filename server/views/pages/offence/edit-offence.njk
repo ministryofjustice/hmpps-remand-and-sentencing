@@ -253,6 +253,40 @@ offenceDateRow,
     }
   })) %}
 
+  {# Build the aggravating factors summary row here so it can be inserted immediately after 'Consecutive to' #}
+  {% set aggravatingFactors = [] %}
+  {% if offence.terrorRelated %}
+    {% set aggravatingFactors = aggravatingFactors.concat([
+      "Offences aggravated by a terrorist connection"
+    ]) %}
+  {% endif %}
+
+  {% if offence.foreignPowerRelated %}
+    {% set aggravatingFactors = aggravatingFactors.concat([
+      "Offences aggravated by foreign power condition being met"
+    ]) %}
+  {% endif %}
+
+  {% if aggravatingFactors and aggravatingFactors.length > 0 %}
+    {% set aggHtml = '' %}
+    {% for factor in aggravatingFactors %}
+      {% set aggHtml = aggHtml + factor %}
+      {% if not loop.last %}
+        {% set aggHtml = aggHtml + '<br>' %}
+      {% endif %}
+    {% endfor %}
+    {% set aggravatingFactorsRow = {
+      key: { text: "Aggravating factors" },
+      value: { html: aggHtml }
+    } %}
+  {% else %}
+    {% set addLink = '<a class="govuk-link" href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/aggravating-factors/' + chargeUuid + '/select-which-aggravating-factors-apply?returnTo=editOffence" data-qa="add-aggravating-factors-' + chargeUuid + '">Add aggravating factors</a>' %}
+    {% set aggravatingFactorsRow = {
+      key: { text: "Aggravating factors" },
+      value: { html: addLink }
+    } %}
+  {% endif %}
+
   {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
     {% set consecutiveToEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
     {% set consecutiveToValue = {
@@ -277,9 +311,15 @@ offenceDateRow,
           }
         }] if consecutiveToDetails else []
       }
-    })) %}
+    }).concat([aggravatingFactorsRow])) %}
+  {% endif %}
+
+  {% if not (offence.sentence and offence.sentence.sentenceServeType == 'CONSECUTIVE') %}
+    {% set summaryRows = (summaryRows.concat([aggravatingFactorsRow])) %}
   {% endif %}
 {% endif %}
+
+
 
 {% set pageTitle = applicationName + " - Edit an offence" %}
 {% block pageContent %}

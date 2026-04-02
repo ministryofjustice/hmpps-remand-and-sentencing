@@ -12,4 +12,7 @@ export default class AggravatingFactorsCheckAnswersPage extends Page {
   insetText = (): PageElement => cy.get('[data-qa="aggravatedFactorsInsetText"]')
 
   selectAnotherAggravatingFactor = (): PageElement => cy.get('[data-qa="selectAnotherAggravatingFactor"]')
+
+  editAggravatingFactorLink = (chargeUuid: string): PageElement =>
+    cy.get(`[data-qa="edit-aggravating-factor-link-${chargeUuid}"]`)
 }

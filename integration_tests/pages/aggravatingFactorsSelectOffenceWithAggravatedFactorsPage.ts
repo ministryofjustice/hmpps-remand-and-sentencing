@@ -8,24 +8,20 @@ export default class AggravatingFactorsSelectOffenceWithAggravatedFactorsPage ex
   // Returns the checkbox input element for the given index (0-based)
   aggravatedOffenceCheckbox = (index: number): PageElement => cy.get(`[data-qa=aggravatedOffenceCheckbox-${index}]`)
 
-  // Returns all first-line elements (for mapping/order assertions)
-  allAggravatedOffenceFirstLines = (): PageElement => cy.get('[data-qa^="aggravatedOffenceFirstLine-"]')
-
-  // Extracts numeric Count values from the rendered list (filters out non-count items)
   getAggravatedOffenceCounts = (): Cypress.Chainable<number[]> =>
-    this.allAggravatedOffenceFirstLines().then($els => {
-      const counts: number[] = Array.from($els)
-        .map(el => {
-          const countEl = el.querySelector('[data-qa^="aggravatedOffenceCount-"]')
-          if (countEl) {
-            const m = countEl.textContent.trim().match(/Count\s+(\d+)/)
-            return m ? parseInt(m[1], 10) : null
-          }
-          return null
-        })
-        .filter((c): c is number => c !== null)
+    this.aggravatedOffenceCheckboxes().then($checkboxes => {
+      const counts: number[] = Array.from($checkboxes).map(cb => {
+        const container = (cb as HTMLElement).closest('label') || (cb as HTMLElement).parentElement
+        if (!container) return null
 
-      return counts
+        const countEl = container.querySelector('[data-qa^="aggravatedOffenceCount-"]')
+        if (countEl) {
+          const m = countEl.textContent?.trim().match(/Count\s+(\d+)/)
+          return m ? parseInt(m[1], 10) : null
+        }
+        return null
+      })
+      return counts.filter((c): c is number => c !== null)
     })
 
   // Returns all checkbox elements for offences

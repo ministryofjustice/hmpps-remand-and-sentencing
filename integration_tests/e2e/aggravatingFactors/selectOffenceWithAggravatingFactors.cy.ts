@@ -4,11 +4,11 @@ import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
-import SelectOffenceWithAggravatedFactorsPage from '../../pages/selectOffenceWithAggravatedFactorsPage'
-import SelectWhichAggravatedFactorsApplyPage from '../../pages/selectWhichAggravatingFactorsApplyPage'
+import AggravatingFactorsSelectOffenceWithAggravatedFactorsPage from '../../pages/aggravatingFactorsSelectOffenceWithAggravatedFactorsPage'
+import AggravatingFactorsSelectWhichAggravatedFactorsApplyPage from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
 
 context('Select offence with aggravating factors Page', () => {
-  let selectOffenceWithAggravatingFactorsPage: SelectOffenceWithAggravatedFactorsPage
+  let selectOffenceWithAggravatingFactorsPage: AggravatingFactorsSelectOffenceWithAggravatedFactorsPage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})
@@ -84,7 +84,7 @@ context('Select offence with aggravating factors Page', () => {
     cy.visit(
       '/person/A1234AB/add-court-case/0/add-court-appearance/0/aggravating-factors/select-offence-with-aggravated-factors',
     )
-    selectOffenceWithAggravatingFactorsPage = new SelectOffenceWithAggravatedFactorsPage()
+    selectOffenceWithAggravatingFactorsPage = new AggravatingFactorsSelectOffenceWithAggravatedFactorsPage()
   })
 
   it('page should load up with offences sorted by count number', () => {
@@ -105,6 +105,6 @@ context('Select offence with aggravating factors Page', () => {
   it('goes to next page once at least one of the checkbox is selected', () => {
     selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(0).click()
     selectOffenceWithAggravatingFactorsPage.continueButton().click()
-    Page.verifyOnPage(SelectWhichAggravatedFactorsApplyPage)
+    Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
   })
 })

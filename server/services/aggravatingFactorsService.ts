@@ -1,5 +1,9 @@
 import { SessionData } from 'express-session'
-import type { OffenceWithAggravatingFactorsForm, SelectWhichAggravatingFactorsForm } from 'forms'
+import type {
+  AggravatingFactorsFinishedAddingForm,
+  OffenceWithAggravatingFactorsForm,
+  SelectWhichAggravatingFactorsForm,
+} from 'forms'
 import validate from '../validation/validation'
 import OffenceService from './offenceService'
 
@@ -35,6 +39,11 @@ export default class AggravatingFactorsService {
 
   anyAggravatingOffencesProcessed(session: Partial<SessionData>) {
     return this.getAggravatingOffenceQueue(session).some(e => e.processed)
+  }
+
+  clearAggravatingFactors(session: Partial<SessionData>) {
+    // eslint-disable-next-line no-param-reassign
+    delete session.aggravatingChargeUuids
   }
 
   getNextUnprocessedAggravatingOffenceId(session: Partial<SessionData>, chargeUuid: string | null): string | undefined {
@@ -120,5 +129,21 @@ export default class AggravatingFactorsService {
     this.offenceService.setSessionOffence(session, nomsId, courtCaseReference, offence)
     this.markAggravatingOffenceProcessed(session, chargeUuid)
     return []
+  }
+
+  checkFinishingAggravatingFactors(aggravatingFactorsFinishedAddingForm: AggravatingFactorsFinishedAddingForm): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    return validate(
+      aggravatingFactorsFinishedAddingForm,
+      {
+        finishedAddingAggravatingFactors: 'required',
+      },
+      {
+        'required.finishedAddingAggravatingFactors': `Select if you have finished adding the aggravating factors`,
+      },
+    )
   }
 }

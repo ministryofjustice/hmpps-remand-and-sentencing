@@ -4,12 +4,13 @@ import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
-import AggravatingFactorsSelectOffenceWithAggravatedFactorsPage from '../../pages/aggravatingFactorsSelectOffenceWithAggravatedFactorsPage'
 import SelectWhichAggravatingFactorsApplyPage from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
 import AggravatingFactorsCheckAnswersPage from '../../pages/aggravatingFactorsCheckAnswersPage'
+import AggravatingFactorsSelectOffenceWithAggravatedFactorsPage from '../../pages/aggravatingFactorsSelectOffenceWithAggravatedFactorsPage'
+import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 
-context('Select which aggravating factors apply Page', () => {
-  let selectWhichAggravatingFactorsApplyPage: SelectWhichAggravatingFactorsApplyPage
+context('Check aggravating factors answers Page', () => {
+  let checkAnswersPage: AggravatingFactorsCheckAnswersPage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})
@@ -73,7 +74,8 @@ context('Select which aggravating factors apply Page', () => {
     courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
     let offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 0 offence')
-    cy.createSentencedOffence('A1234AB', '0', '0', '0')
+    // ensure the base offence has a count of 1 so the UI shows "Count 1"
+    cy.createSentencedOffence('A1234AB', '0', '0', '0', '1')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1', '2')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3')
     offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offence')
@@ -86,30 +88,42 @@ context('Select which aggravating factors apply Page', () => {
     selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(0).click()
     selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(1).click()
     selectOffenceWithAggravatingFactorsPage.continueButton().click()
-    selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-  })
-
-  it('page should show error if none of the checkbox is selected', () => {
-    selectWhichAggravatingFactorsApplyPage.continueButton().click()
-    selectWhichAggravatingFactorsApplyPage
-      .errorSummary()
-      .trimTextContent()
-      .should('equal', 'There is a problem Select at least one aggravating factor applicable to the offence')
-  })
-
-  it('once a aggravating factor is selected should move on to the next offence', () => {
-    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
-    selectWhichAggravatingFactorsApplyPage.continueButton().click()
-    Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-  })
-
-  it('once all aggravating factors are processed should move on to the check answers page', () => {
+    const selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
     selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
     selectWhichAggravatingFactorsApplyPage.foreignPowerRelatedCheckbox().click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
     selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
-    Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
+    checkAnswersPage = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
+  })
+
+  it('page should show error if clicked on continue without selecting option', () => {
+    checkAnswersPage.finishAddingButton().click()
+    checkAnswersPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem Select if you have finished adding the aggravating factors')
+  })
+
+  it('should show offence with aggravated factors count correctly', () => {
+    checkAnswersPage.insetText().should('contain', 'There are 2 sentences with aggravating factors.')
+  })
+
+  it('should go to tasklist page once radio option is chosen', () => {
+    checkAnswersPage.finishedAddingRadio().click()
+    checkAnswersPage.finishAddingButton().click()
+    Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
+  })
+
+  it('should direct to choose aggravating factor page on button press and show correct number of options', () => {
+    checkAnswersPage.selectAnotherAggravatingFactor().click()
+    const selectOffenceWithAggravatingFactorsPage = new AggravatingFactorsSelectOffenceWithAggravatedFactorsPage()
+
+    // There should only be one unprocessed offence option available
+    selectOffenceWithAggravatingFactorsPage.assertAggravatedOffenceCheckboxesCount(1)
+
+    // checkbox for the single option exists (index 0)
+    selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(0).should('exist')
   })
 })

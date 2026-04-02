@@ -1413,6 +1413,23 @@ export default class OffenceService {
     return allOffences
   }
 
+  setSessionOffences(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, offences: Offence[]) {
+    const prefix = `${nomsId}-${courtCaseReference}-`
+
+    if (session.offences) {
+      Object.keys(session.offences).forEach(key => {
+        if (key.startsWith(prefix)) {
+          // eslint-disable-next-line no-param-reassign
+          delete session.offences[key]
+        }
+      })
+    }
+
+    offences.forEach(offence => {
+      this.setSessionOffence(session, nomsId, courtCaseReference, offence)
+    })
+  }
+
   setTerrorRelated(
     session: Partial<SessionData>,
     nomsId: string,

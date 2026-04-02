@@ -934,7 +934,13 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/check-aggravating-factors-answers',
-    aggravatingFactorsRoutes.getCheckAggravateFactorsAnswers,
+    aggravatingFactorsRoutes.getCheckAggravatingFactorsAnswers,
   )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/submit-check-aggravating-factors-answers',
+    aggravatingFactorsRoutes.submitCheckAggravatingFactorsAnswers,
+  )
+
   return router
 }

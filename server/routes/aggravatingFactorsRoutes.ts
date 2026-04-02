@@ -277,13 +277,6 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     )
 
     if (!nextChargeUuid || isEditing) {
-      // If we were asked to return to the edit offence screen, go straight
-      // to the edit-offence page. Previously we redirected to the
-      // load-edit-offence route which clears session.offences and copies
-      // the court appearance offences back in; that overwrote the
-      // changes we just stored on the session (eg. terrorRelated/foreignPowerRelated).
-      // Redirecting directly to the edit page preserves the updated
-      // session.offences so the newly selected aggravating factors are shown.
       if (returnTo === 'editOffence') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,

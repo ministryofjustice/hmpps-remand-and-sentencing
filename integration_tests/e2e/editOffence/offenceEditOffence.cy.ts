@@ -22,7 +22,7 @@ import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import SentencingCorrectManyPeriodLengthPage from '../../pages/sentencingCorrectManyPeriodLengthPage'
 import SentencingCorrectManyPeriodLengthInterruptPage from '../../pages/sentencingCorrectManyPeriodLengthInterruptPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import AggravatingFactorsSelectWhichAggravatedFactorsApplyPage from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
+// import AggravatingFactorsSelectWhichAggravatedFactorsApplyPage from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
 
 context('Add Offence Edit offence Page', () => {
   let offenceEditOffencePage: OffenceEditOffencePage
@@ -456,34 +456,34 @@ context('Add Offence Edit offence Page', () => {
       })
     })
 
-  //   it('can add aggravating factors from edit page and return to edit page', () => {
-  //     // Click the Add aggravating factors link on the edit offence page
-  //     offenceEditOffencePage.addAggravatingFactorsLink(chargeUuid).click()
-  //
-  //     // Should land on the select-which-aggravating-factors page
-  //     const selectPage = Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
-  //
-  //     // Submitting without selecting anything should keep us on the same page (validation)
-  //     selectPage.continueButton().click()
-  //     Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
-  //
-  //     // Select a factor and continue - should return to the edit offence page
-  //     selectPage.terrorRelatedCheckbox().click()
-  //     selectPage.continueButton().click()
-  //
-  //     offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-  //     offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
-  //       'Count number': 'Count 1',
-  //       Offence: 'PS90037 An offence description',
-  //       'Committed on': '12/05/2023',
-  //       Outcome: 'Imprisonment',
-  //       'Conviction date': '13/05/2023',
-  //       'Sentence type': 'SDS (Standard Determinate Sentence)',
-  //       'Sentence length': '4 years 5 months 0 weeks 0 days',
-  //       'Consecutive or concurrent': 'Forthwith',
-  //       'Aggravating factors': 'Offences aggravated by a terrorist connection',
-  //     })
-  //   })
+    //   it('can add aggravating factors from edit page and return to edit page', () => {
+    //     // Click the Add aggravating factors link on the edit offence page
+    //     offenceEditOffencePage.addAggravatingFactorsLink(chargeUuid).click()
+    //
+    //     // Should land on the select-which-aggravating-factors page
+    //     const selectPage = Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
+    //
+    //     // Submitting without selecting anything should keep us on the same page (validation)
+    //     selectPage.continueButton().click()
+    //     Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
+    //
+    //     // Select a factor and continue - should return to the edit offence page
+    //     selectPage.terrorRelatedCheckbox().click()
+    //     selectPage.continueButton().click()
+    //
+    //     offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+    //     offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+    //       'Count number': 'Count 1',
+    //       Offence: 'PS90037 An offence description',
+    //       'Committed on': '12/05/2023',
+    //       Outcome: 'Imprisonment',
+    //       'Conviction date': '13/05/2023',
+    //       'Sentence type': 'SDS (Standard Determinate Sentence)',
+    //       'Sentence length': '4 years 5 months 0 weeks 0 days',
+    //       'Consecutive or concurrent': 'Forthwith',
+    //       'Aggravating factors': 'Offences aggravated by a terrorist connection',
+    //     })
+    //   })
   })
 
   context('edit remand', () => {

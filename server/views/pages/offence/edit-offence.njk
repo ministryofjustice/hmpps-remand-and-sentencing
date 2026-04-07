@@ -1,112 +1,99 @@
 {% extends "../../partials/hearingDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-  {% if addAggravatingFactors %}
-    {% set aggravatingFactors = [] %}
-    {% if offence.terrorRelated %}
-      {% set aggravatingFactors = aggravatingFactors.concat([
-        "Offences aggravated by a terrorist connection"
-      ]) %}
-    {% endif %}
 
-    {% if offence.foreignPowerRelated %}
-      {% set aggravatingFactors = aggravatingFactors.concat([
-        "Offences aggravated by foreign power condition being met"
-      ]) %}
-    {% endif %}
+{% set offenceDateHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-date?submitToEditOffence=true" %}
 
-    {% if aggravatingFactors and aggravatingFactors.length > 0 %}
-      {% set aggHtml = '' %}
-      {% for factor in aggravatingFactors %}
-        {% set aggHtml = aggHtml + factor %}
-        {% if not loop.last %}
-          {% set aggHtml = aggHtml + '<br>' %}
-        {% endif %}
-      {% endfor %}
-      {% set aggravatingFactorsEditHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/" + chargeUuid + "/select-which-aggravating-factors-apply?returnTo=editOffence" %}
-      {% set aggravatingFactorsRow = {
-        key: { text: "Aggravating factors" },
-        value: { html: aggHtml },
-        actions: {
-          items: [{
-            href: aggravatingFactorsEditHref,
-            text: "Edit",
-            visuallyHiddenText: "aggravating factors",
-            classes: "govuk-link--no-visited-state",
-            attributes: {
-              'data-qa': 'edit-aggravating-factors-' + chargeUuid
-            }
-          }]
-        }
-      } %}
+{% if offence.offenceStartDate %}
+  {% set offenceDateRow = {
+  key: {
+    text: "Committed on"
+  },
+  value: {
+    text: offence.offenceStartDate | formatDate + (" to " + offence.offenceEndDate | formatDate if offence.offenceEndDate else '')
+  },
+  actions: {
+    items: [{
+      href: offenceDateHref,
+      text: "Edit",
+      visuallyHiddenText: "committed on",
+      classes: "govuk-link--no-visited-state",
+      attributes: {
+        'data-qa': 'edit-offence-date-' + chargeUuid
+      }
+    }]
+  }
+}%}
+{% else %}
+{% set offenceDateRow = {
+      key: { text: "Committed on" },
+      value: {
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + offenceDateHref + '" data-qa="edit-offence-date-cta">Enter offence date</a>'
+      }
+    }%}
+{% endif %}
 
-    {% else %}
-      {% set aggravatingFactorsEditHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/" + chargeUuid + "/select-which-aggravating-factors-apply?returnTo=editOffence" %}
-      {% set addLink = '<a class="govuk-link govuk-link--no-visited-state" href="' + aggravatingFactorsEditHref + '" data-qa="add-aggravating-factors-' + chargeUuid + '">Add aggravating factors</a>' %}
-      {% set aggravatingFactorsRow = {
-        key: { text: "Aggravating factors" },
-        value: { html: addLink },
-        actions: {
-          items: [{
-            href: aggravatingFactorsEditHref,
-            text: "Edit",
-            visuallyHiddenText: "aggravating factors",
-            classes: "govuk-link--no-visited-state",
-            attributes: {
-              'data-qa': 'edit-aggravating-factors-' + chargeUuid
-            }
-          }]
-        }
-      } %}
 
-    {% endif %}
-  {% endif %}
+{% set summaryRows=[{
+  key: {
+    text: "Offence"
+  },
+  value: {
+    text: offence.offenceCode + " " + offenceMap[offence.offenceCode]
+  },
+  actions: {
+    items: [{
+      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-code?submitToEditOffence=true",
+      text: "Edit",
+      visuallyHiddenText: "offence code",
+      classes: "govuk-link--no-visited-state",
+      attributes: {
+        'data-qa': 'edit-offence-code-' + chargeUuid
+      }
+    }]
+  }
+},
+offenceDateRow,
+{
+  key: {
+    text: "Outcome"
+  },
+  value: {
+    html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/update-offence-outcome?submitToEditOffence=true&backTo=editOffence" class="govuk-link govuk-link--no-visited-state" data-qa="update-outcome-cta">Update outcome</a>'
+  } if showOutcomeCta else {
+    text: outcome | outcomeValueOrLegacy(offence.legacyData)
+  },
+  actions: {
+    items: [] if showOutcomeCta else [{
+      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-outcome?submitToEditOffence=true",
+      text: "Edit",
+      visuallyHiddenText: "outcome",
+      classes: "govuk-link--no-visited-state",
+      attributes: {
+        'data-qa': 'edit-offence-outcome-' + chargeUuid
+      }
+    }]
+  }
+}] %}
 
-  {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
-    {% set consecutiveToEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
-    {% set consecutiveToValue = {
-      html: '<a href="' + consecutiveToEditLink + '" class="govuk-link govuk-link--no-visited-state" data-qa="edit-consecutive-to-' + chargeUuid + '">Enter details</a>'
+{% if offence.sentence %}
+  {% set countNumberHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/count-number?submitToEditOffence=true" %}
+  {% if offence.sentence.countNumber and offence.sentence.countNumber !== '-1' %}
+    {% set countNumberRow = {
+      key: { text: "Count number" },
+      value: { text: "Count " + offence.sentence.countNumber },
+      actions: {
+        items: [{
+          href: countNumberHref,
+          text: "Edit",
+          visuallyHiddenText: "count number",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+                    'data-qa': 'edit-count-number-' + chargeUuid
+                  }
+        }]
+      }
     } %}
-    {% if consecutiveToDetails %}
-      {% set consecutiveToValue = {
-        text: consecutiveToDetails | consecutiveToDetailsToDescription | removeTo
-      } %}
-    {% endif %}
-
-    {% if addAggravatingFactors %}
-      {% set summaryRows = (summaryRows.concat({
-        key: { text: "Consecutive to" },
-        value: consecutiveToValue,
-        actions: {
-          items: [{
-            href: consecutiveToEditLink,
-            text: "Edit",
-            visuallyHiddenText: "consecutive to",
-            classes: "govuk-link--no-visited-state",
-            attributes: {
-              'data-qa': 'edit-consecutive-to-' + chargeUuid
-            }
-          }] if consecutiveToDetails else []
-        }
-      }).concat([aggravatingFactorsRow])) %}
-    {% else %}
-      {% set summaryRows = (summaryRows.concat({
-        key: { text: "Consecutive to" },
-        value: consecutiveToValue,
-        actions: {
-          items: [{
-            href: consecutiveToEditLink,
-            text: "Edit",
-            visuallyHiddenText: "consecutive to",
-            classes: "govuk-link--no-visited-state",
-            attributes: {
-              'data-qa': 'edit-consecutive-to-' + chargeUuid
-            }
-          }] if consecutiveToDetails else []
-        }
-      })) %}
-    {% endif %}
-  {% endif %}
   {% else %}
     {% set countNumberRow = {
       key: { text: "Count number" },
@@ -266,96 +253,69 @@
     }
   })) %}
 
-  {% if addAggravatingFactors %}
-    {% set aggravatingFactors = [] %}
-    {% if offence.terrorRelated %}
-      {% set aggravatingFactors = aggravatingFactors.concat([
-        "Offences aggravated by a terrorist connection"
-      ]) %}
-    {% endif %}
+  {# Build the aggravating factors summary row here so it can be inserted immediately after 'Consecutive to' #}
+  {% set aggravatingFactors = [] %}
+  {% if offence.terrorRelated %}
+    {% set aggravatingFactors = aggravatingFactors.concat([
+      "Offences aggravated by a terrorist connection"
+    ]) %}
+  {% endif %}
 
-    {% if offence.foreignPowerRelated %}
-      {% set aggravatingFactors = aggravatingFactors.concat([
-        "Offences aggravated by foreign power condition being met"
-      ]) %}
-    {% endif %}
+  {% if offence.foreignPowerRelated %}
+    {% set aggravatingFactors = aggravatingFactors.concat([
+      "Offences aggravated by foreign power condition being met"
+    ]) %}
+  {% endif %}
 
-    {% if aggravatingFactors and aggravatingFactors.length > 0 %}
-      {% set aggHtml = '' %}
-      {% for factor in aggravatingFactors %}
-        {% set aggHtml = aggHtml + factor %}
-        {% if not loop.last %}
-          {% set aggHtml = aggHtml + '<br>' %}
-        {% endif %}
-      {% endfor %}
-      {% set aggravatingFactorsEditHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/" + chargeUuid + "/select-which-aggravating-factors-apply?returnTo=editOffence" %}
-      {% set aggravatingFactorsRow = {
-        key: { text: "Aggravating factors" },
-        value: { html: aggHtml },
-        actions: {
-          items: [{
-            href: aggravatingFactorsEditHref,
-            text: "Edit",
-            visuallyHiddenText: "aggravating factors",
-            classes: "govuk-link--no-visited-state",
-            attributes: {
-              'data-qa': 'edit-aggravating-factors-' + chargeUuid
-            }
-          }]
-        }
-      } %}
-
-    {% else %}
-      {% set aggravatingFactorsEditHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/" + chargeUuid + "/select-which-aggravating-factors-apply?returnTo=editOffence" %}
-      {% set addLink = '<a class="govuk-link govuk-link--no-visited-state" href="' + aggravatingFactorsEditHref + '" data-qa="add-aggravating-factors-' + chargeUuid + '">Add aggravating factors</a>' %}
-      {% set aggravatingFactorsRow = {
-        key: { text: "Aggravating factors" },
-        value: { html: addLink },
-        actions: {
-          items: [{
-            href: aggravatingFactorsEditHref,
-            text: "Edit",
-            visuallyHiddenText: "aggravating factors",
-            classes: "govuk-link--no-visited-state",
-            attributes: {
-              'data-qa': 'edit-aggravating-factors-' + chargeUuid
-            }
-          }]
-        }
-      } %}
-
-    {% endif %}
-
-    {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
-      {% set consecutiveToEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
-      {% set consecutiveToValue = {
-        html: '<a href="' + consecutiveToEditLink + '" class="govuk-link govuk-link--no-visited-state" data-qa="edit-consecutive-to-' + chargeUuid + '">Enter details</a>'
-      } %}
-      {% if consecutiveToDetails %}
-        {% set consecutiveToValue = {
-          text: consecutiveToDetails | consecutiveToDetailsToDescription | removeTo
-        } %}
+  {% if aggravatingFactors and aggravatingFactors.length > 0 %}
+    {% set aggHtml = '' %}
+    {% for factor in aggravatingFactors %}
+      {% set aggHtml = aggHtml + factor %}
+      {% if not loop.last %}
+        {% set aggHtml = aggHtml + '<br>' %}
       {% endif %}
-      {% set summaryRows = (summaryRows.concat({
-        key: { text: "Consecutive to" },
-        value: consecutiveToValue,
-        actions: {
-          items: [{
-            href: consecutiveToEditLink,
-            text: "Edit",
-            visuallyHiddenText: "consecutive to",
-            classes: "govuk-link--no-visited-state",
-            attributes: {
-              'data-qa': 'edit-consecutive-to-' + chargeUuid
-            }
-          }] if consecutiveToDetails else []
-        }
-      }).concat([aggravatingFactorsRow])) %}
-    {% endif %}
+    {% endfor %}
+    {% set aggravatingFactorsRow = {
+      key: { text: "Aggravating factors" },
+      value: { html: aggHtml }
+    } %}
+  {% else %}
+    {% set addLink = '<a class="govuk-link" href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/aggravating-factors/' + chargeUuid + '/select-which-aggravating-factors-apply?returnTo=editOffence" data-qa="add-aggravating-factors-' + chargeUuid + '">Add aggravating factors</a>' %}
+    {% set aggravatingFactorsRow = {
+      key: { text: "Aggravating factors" },
+      value: { html: addLink }
+    } %}
+  {% endif %}
 
-    {% if not (offence.sentence and offence.sentence.sentenceServeType == 'CONSECUTIVE') %}
-      {% set summaryRows = (summaryRows.concat([aggravatingFactorsRow])) %}
+  {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
+    {% set consecutiveToEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
+    {% set consecutiveToValue = {
+      html: '<a href="' + consecutiveToEditLink + '" class="govuk-link govuk-link--no-visited-state" data-qa="edit-consecutive-to-' + chargeUuid + '">Enter details</a>'
+    } %}
+    {% if consecutiveToDetails %}
+      {% set consecutiveToValue = {
+        text: consecutiveToDetails | consecutiveToDetailsToDescription | removeTo
+      } %}
     {% endif %}
+    {% set summaryRows = (summaryRows.concat({
+      key: { text: "Consecutive to" },
+      value: consecutiveToValue,
+      actions: {
+        items: [{
+          href: consecutiveToEditLink,
+          text: "Edit",
+          visuallyHiddenText: "consecutive to",
+          classes: "govuk-link--no-visited-state",
+          attributes: {
+            'data-qa': 'edit-consecutive-to-' + chargeUuid
+          }
+        }] if consecutiveToDetails else []
+      }
+    }).concat([aggravatingFactorsRow])) %}
+  {% endif %}
+
+  {% if not (offence.sentence and offence.sentence.sentenceServeType == 'CONSECUTIVE') %}
+    {% set summaryRows = (summaryRows.concat([aggravatingFactorsRow])) %}
   {% endif %}
 {% endif %}
 

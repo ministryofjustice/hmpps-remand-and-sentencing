@@ -252,7 +252,9 @@
                                                         countNumber: offence.sentence.countNumber if offence.sentence,
                                                         lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
                                                         convictionDate: (offence.sentence.convictionDate | formatDate) if offence.sentence,
+                                                        {% if addAggravatingFactors %}
                                                         aggravatingFactors: aggravatingFactors,
+                                                        {% endif %}
                                                         isSentenced: offence.sentence,
                                                         periodLengths: offence.sentence.periodLengths if offence.sentence,
                                                         sentenceServeType: offence.sentence.sentenceServeType if offence.sentence,

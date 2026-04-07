@@ -258,7 +258,9 @@
               fineAmount: offence.sentence.fineAmount,
               mergedFromCase: offence.mergedFromCase,
               courtDetails: courtMap,
+              {% if addAggravatingFactors %}
               aggravatingFactors: aggravatingFactors,
+              {% endif %}
               consecutiveConcurrentLink: {
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: 'Select consecutive or current',

@@ -311,11 +311,7 @@ offenceDateRow,
           }
         }] if consecutiveToDetails else []
       }
-    }).concat([aggravatingFactorsRow])) %}
-  {% endif %}
-
-  {% if not (offence.sentence and offence.sentence.sentenceServeType == 'CONSECUTIVE') %}
-    {% set summaryRows = (summaryRows.concat([aggravatingFactorsRow])) %}
+    })) %}
   {% endif %}
 {% endif %}
 

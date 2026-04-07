@@ -229,16 +229,18 @@
           {% set offenceId = 'offences.' + loop.index0 %}
           {% set aggravatingFactors = [] %}
 
-              {% if offence.terrorRelated %}
-                  {% set aggravatingFactors = aggravatingFactors.concat([
-                      "Offences aggravated by a terrorist connection"
-                  ]) %}
-              {% endif %}
+          {% if addAggravatingFactors %}
+                  {% if offence.terrorRelated %}
+                      {% set aggravatingFactors = aggravatingFactors.concat([
+                          "Offences aggravated by a terrorist connection"
+                      ]) %}
+                  {% endif %}
 
-              {% if offence.foreignPowerRelated %}
-                  {% set aggravatingFactors = aggravatingFactors.concat([
-                      "Offences aggravated by foreign power condition being met"
-                  ]) %}
+                  {% if offence.foreignPowerRelated %}
+                      {% set aggravatingFactors = aggravatingFactors.concat([
+                          "Offences aggravated by foreign power condition being met"
+                      ]) %}
+                  {% endif %}
               {% endif %}
           {{
             offenceCard({
@@ -258,9 +260,7 @@
               fineAmount: offence.sentence.fineAmount,
               mergedFromCase: offence.mergedFromCase,
               courtDetails: courtMap,
-              {% if addAggravatingFactors %}
               aggravatingFactors: aggravatingFactors,
-              {% endif %}
               consecutiveConcurrentLink: {
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: 'Select consecutive or current',

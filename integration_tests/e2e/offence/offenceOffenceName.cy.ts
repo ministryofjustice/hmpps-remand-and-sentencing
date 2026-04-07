@@ -7,6 +7,7 @@ import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirm
 import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
 import OffenceIsOffenceAggravatedPage from '../../pages/offenceIsOffenceAggravatedPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import config from '../../../server/config'
 
 context('Add Offence Offence Name Page', () => {
   let offenceOffenceNamePage: OffenceOffenceNamePage
@@ -104,7 +105,11 @@ context('Add Offence Offence Name Page', () => {
         .type('OF61003 Solicit to commit murder - Offences Against the Person Act 1861')
       offenceOffenceNamePage.continueButton().click()
 
-      Page.verifyOnPage(OffenceIsOffenceAggravatedPage)
+      if (!config.featureToggles.addAggravatingFactors) {
+        Page.verifyOnPage(OffenceIsOffenceAggravatedPage)
+      } else {
+        Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+      }
     })
   })
 })

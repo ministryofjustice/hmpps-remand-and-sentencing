@@ -29,7 +29,7 @@ declare module 'models' {
     appearanceInformationAccepted?: boolean
     warrantInformationAccepted?: boolean
     offenceSentenceAccepted?: boolean
-    offenceAggravatedFactorsAccepted?: boolean
+    aggravatingFactorsAccepted?: boolean
     nextCourtAppearanceAccepted?: boolean
     overallConvictionDate?: Date
     overallConvictionDateAppliedAll?: string
@@ -47,6 +47,7 @@ declare module 'models' {
     chargeUuid: string
     sentence?: Sentence
     terrorRelated?: boolean
+    foreignPowerRelated?: boolean
     legacyData?: Record<string, never>
     updatedOutcome?: boolean
     mergedFromCase?: PagedMergedFromCase

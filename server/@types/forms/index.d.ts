@@ -119,6 +119,9 @@ declare module 'forms' {
     countNumber?: string
     hasCountNumber?: string
   }
+  export interface AggravatingFactorsFinishedAddingForm {
+    finishedAddingAggravatingFactors?: string
+  }
 
   export interface OffenceAlternativePeriodLengthForm {
     'firstSentenceLength-value'?: string
@@ -193,6 +196,14 @@ declare module 'forms' {
 
   export interface UploadedDocumentForm {
     _csrf?: string
+  }
+
+  export interface OffenceWithAggravatingFactorsForm {
+    aggravatedOffenceUuids?: string[]
+  }
+
+  export interface SelectWhichAggravatingFactorsForm {
+    aggravatedFactors?: string[]
   }
 
   export interface CorrectManyPeriodLengthsForm {

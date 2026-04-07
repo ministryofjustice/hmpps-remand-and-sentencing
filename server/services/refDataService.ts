@@ -118,6 +118,33 @@ export default class RefDataService {
     return this.remandAndSentencingApiClient.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
   }
 
+  async getPrimaryNonCustodialChargeOutcomes(
+    appearanceOutcomeUuid: string,
+    username: string,
+  ): Promise<{
+    primaryOutcomes: OffenceOutcome[]
+    nonCustodialOutcomes: OffenceOutcome[]
+    allOutcomes: OffenceOutcome[]
+  }> {
+    const [appearanceOutcome, chargeOutcomes] = await Promise.all([
+      this.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username),
+      this.getAllChargeOutcomes(username),
+    ])
+    let outcomeTypes = ['REMAND', 'NON_CUSTODIAL']
+    if (appearanceOutcome.outcomeType === 'NON_CUSTODIAL') {
+      outcomeTypes = ['NON_CUSTODIAL']
+    } else if (appearanceOutcome.outcomeType === 'SENTENCING') {
+      outcomeTypes = ['SENTENCING', 'NON_CUSTODIAL']
+    }
+    const allOutcomes = chargeOutcomes
+      .filter(caseOutcome => outcomeTypes.includes(caseOutcome.outcomeType))
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+
+    const primaryOutcomes = allOutcomes.filter(o => o.outcomeType !== 'NON_CUSTODIAL')
+    const nonCustodialOutcomes = allOutcomes.filter(o => o.outcomeType === 'NON_CUSTODIAL')
+    return { primaryOutcomes, nonCustodialOutcomes, allOutcomes }
+  }
+
   async getSentenceTypes(
     age: number,
     convictionDate: Dayjs,

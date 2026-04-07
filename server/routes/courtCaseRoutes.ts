@@ -68,6 +68,9 @@ import AuditService, { Page } from '../services/auditService'
 import { COURT_APPEARANCE_TYPE_UUID, VIDEO_LINK_APPEARANCE_TYPE_UUID } from '../resources/courtAppearanceTypes'
 import PrisonerService from '../services/prisonerService'
 import NextCourtAppearanceJourneyUrls from './data/NextCourtAppearanceJourneyUrls'
+import AddJourneyCancelDetailsModel from './data/AddJourneyCancelDetailsModel'
+import RepeatJourneyCancelDetailsModel from './data/RepeatJourneyCancelDetailsModel'
+import EditJourneyCancelDetailsModel from './data/EditJourneyCancelDetailsModel'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -667,42 +670,56 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getCancelCourtCase: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const { returnUrl, isHearing } = req.query
+    const { returnUrl } = req.query
     const courtCode = this.courtAppearanceService.getCourtCode(req.session, nomsId, appearanceReference)
     const warrantDate = this.courtAppearanceService.getWarrantDate(req.session, nomsId, appearanceReference)
     const courtDetails =
       courtCode !== undefined ? await this.courtRegisterService.findCourtById(courtCode, req.user.username) : null
-    const description = `You have not finished ${addOrEditCourtAppearance === 'add-court-appearance' ? 'adding' : 'editing'} the information${courtCode && warrantDate !== undefined ? ` for the court case at ${courtDetails.courtName} on ${dayjs(warrantDate).format(config.dateFormat)}.` : '.'} Any information you have entered will be lost.`
+
+    let model = new AddJourneyCancelDetailsModel(courtDetails, warrantDate)
+    if (this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      model = new RepeatJourneyCancelDetailsModel(courtDetails, warrantDate)
+    } else if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      model = new EditJourneyCancelDetailsModel(courtDetails, warrantDate)
+    }
     const backLink = (returnUrl as string) || `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`
-    const header = `Are you sure you want to cancel ${addOrEditCourtAppearance === 'add-court-appearance' ? 'adding a' : 'editing the'} court case?`
-    const positiveRadioText = `Yes, cancel ${addOrEditCourtAppearance === 'add-court-appearance' ? 'adding a' : 'editing the'} court case`
     return res.render('pages/courtAppearance/cancel-court-case', {
       nomsId,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      description,
       courtDetails,
       backLink,
-      isHearing,
-      header,
-      positiveRadioText,
+      model,
       errors: req.flash('errors') || [],
     })
   }
 
   public submitCancelCourtCase: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { returnUrl } = req.query as { returnUrl: string }
     const cancelCourtCaseForm = trimForm<CancelCourtCaseForm>(req.body)
-    const { returnUrl, isHearing } = req.query
 
-    const errors = await this.remandAndSentencingService.cancelCourtCase(cancelCourtCaseForm)
+    const errors = this.remandAndSentencingService.cancelCourtCase(
+      cancelCourtCaseForm,
+      this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+    )
 
     if (errors.length > 0) {
       req.flash('errors', errors)
-      const errorUrl = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/confirm-cancel-court-case?hasErrors=true&isHearing=${isHearing}&returnUrl=${returnUrl}`
-      return res.redirect(errorUrl)
+      return res.redirect(
+        JourneyUrls.cancelCourtCase(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          returnUrl,
+          true,
+        ),
+      )
     }
 
     if (cancelCourtCaseForm.cancelCourtCase === 'false') {

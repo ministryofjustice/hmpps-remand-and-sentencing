@@ -121,6 +121,18 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/check-answers`
   }
 
+  static cancelCourtCase = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    returnUrl: string,
+    hasErrors?: boolean,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/confirm-cancel-court-case?returnUrl=${returnUrl}${hasErrors ? '&hasErrors=true' : ''}`
+  }
+
   static taskList = (
     nomsId: string,
     addOrEditCourtCase: string,

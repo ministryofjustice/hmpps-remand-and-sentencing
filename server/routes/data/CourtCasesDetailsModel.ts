@@ -87,7 +87,8 @@ export default class CourtCasesDetailsModel {
       }
       this.nextAppearance = [
         courtMap[pagedCourtCase.latestCourtAppearance.nextCourtAppearance.courtCode],
-        pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceTypeDescription,
+        pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceSubtypeDescription ??
+          pagedCourtCase.latestCourtAppearance.nextCourtAppearance.appearanceTypeDescription,
         appearanceDateFormatted,
       ]
     } else {

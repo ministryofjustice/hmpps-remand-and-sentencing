@@ -70,9 +70,9 @@ context('Check Next Appearance Answers page', () => {
       .summaryList()
       .getSummaryList()
       .should('deep.equal', {
-        'Next appearance date': `${futureDate.format('DD/MM/YYYY')} 09:30`,
-        'Next appearance location': 'Southampton Magistrate Court',
-        'Next appearance type': 'Court appearance',
+        Date: `${futureDate.format('DD/MM/YYYY')} 09:30`,
+        Location: 'Southampton Magistrate Court',
+        'Appearance type': 'Court appearance',
       })
   })
 
@@ -104,7 +104,7 @@ context('Check Next Appearance Answers page', () => {
     courtCaseNextAppearanceSetPage.continueButton().click()
     courtCaseNextAppearanceAnswersPage = Page.verifyOnPage(CourtCaseCheckNextAppearanceAnswersPage)
     courtCaseNextAppearanceAnswersPage.summaryList().getSummaryList().should('deep.equal', {
-      'Next court date set': 'Date to be fixed',
+      'Next appearance set': 'Date to be fixed',
     })
   })
 })

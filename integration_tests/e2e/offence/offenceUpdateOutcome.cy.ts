@@ -58,6 +58,7 @@ context('Update Offence Outcome Page', () => {
             label: 'Remanded in custody',
             checked: false,
           },
+          { isDivider: true, label: 'or' },
           {
             label: 'Lie on file',
             checked: false,

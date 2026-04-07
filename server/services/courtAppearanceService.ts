@@ -685,6 +685,13 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
+  setAggravatingFactors(session: Partial<SessionData>, nomsId: string, completed: boolean, appearanceUuid: string) {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    courtAppearance.aggravatingFactorsAccepted = completed
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[nomsId] = courtAppearance
+  }
+
   setNextCourtAppearanceAcceptedTrue(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.nextCourtAppearanceAccepted = true

@@ -9,7 +9,7 @@
 {% set checkAnswerRows = [
     {
         key: {
-            text: "Next appearance type"
+            text: "Appearance type"
         },
         value: {
             text: nextAppearanceType
@@ -19,7 +19,7 @@
                 {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-type?submitToCheckAnswers=true",
                     text: "Edit",
-                    visuallyHiddenText: "next appearance type"
+                    visuallyHiddenText: "appearance type"
                 }
             ]
         }
@@ -48,7 +48,7 @@
 {% set checkAnswerRows = checkAnswerRows.concat([
     {
         key: {
-            text: "Next appearance date"
+            text: "Date"
         },
         value: {
             text: courtAppearance.nextAppearanceDate | formatDateTime(courtAppearance.nextAppearanceTimeSet)
@@ -58,14 +58,14 @@
                 {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-date?submitToCheckAnswers=true",
                     text: "Edit",
-                    visuallyHiddenText: "next appearance date"
+                    visuallyHiddenText: "date"
                 }
             ]
         }
     },
     {
         key: {
-            text: "Next appearance location"
+            text: "Location"
         },
         value: {
             text: nextAppearanceCourtName
@@ -85,7 +85,7 @@
     {% set checkAnswerRows = [
         {
             key: {
-                text: "Next court date set"
+                text: "Next appearance set"
         },
             value: {
                 text: "Date to be fixed"
@@ -95,7 +95,7 @@
                     {
                         href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" +courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/next-appearance-select?submitToCheckAnswers=true",
                         text: "Edit",
-                        visuallyHiddenText: "next court date set"
+                        visuallyHiddenText: "next appearance set"
                     }
                 ]
         }

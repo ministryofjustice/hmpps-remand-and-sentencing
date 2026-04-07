@@ -1,0 +1,126 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+
+{% set pageTitle = applicationName + " - Check aggravating factors answers" %}
+
+    {% block pageContent %}
+        {% include "../../partials/aggravatingOffenceFactorsCaption.njk" %}
+        <h1 class="govuk-heading-l">
+            Check your answers
+        </h1>
+
+        {{ govukInsetText({
+         attributes: {
+                        "data-qa": "aggravatedFactorsInsetText"
+                    },
+                        text: "There are " + offences.length + " sentences with aggravating factors."
+            }) }}
+
+        {{ govukButton({
+            text: "Select another offence" ,
+            classes: "govuk-button--link",
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/select-offence-with-aggravated-factors?fromCheckAnswers=true",
+            attributes: {
+                "data-qa": "selectAnotherAggravatingFactor"
+            }
+        }) }}
+{% for offence in offences %}
+    {% set offenceId = 'offences.' + offence.index %}
+    {% set aggravatingFactors = [] %}
+
+    {% if offence.terrorRelated %}
+        {% set aggravatingFactors = aggravatingFactors.concat([
+            "Offences aggravated by a terrorist connection"
+        ]) %}
+    {% endif %}
+
+    {% if offence.foreignPowerRelated %}
+        {% set aggravatingFactors = aggravatingFactors.concat([
+            "Offences aggravated by foreign power condition being met"
+        ]) %}
+    {% endif %}
+ {{ offenceCard({
+         offenceCode: offence.offenceCode,
+         offenceName: offenceMap[offence.offenceCode],
+         offenceStartDate: offence.offenceStartDate | formatDate,
+         countNumber: offence.sentence.countNumber,
+         aggravatingFactors: aggravatingFactors,
+         actions: {
+             items: [
+                  {
+                      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/aggravating-factors/" + offence.chargeUuid + "/select-which-aggravating-factors-apply?isEditing=true&returnTo=checkAnswers",
+                     text: "Edit",
+                     visuallyHiddenText: "edit aggravating factor",
+                     attributes: {
+                         'data-qa': 'edit-aggravating-factor-link-' + offence.chargeUuid
+                     }
+                 },
+                 {
+                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/aggravating-factors/" + offence.chargeUuid + "/delete-aggravating-factor",
+                     text: "Delete",
+                     visuallyHiddenText: "delete aggravating factor"
+                 }
+             ]
+         },
+         id: offenceId,
+         errorMessage: errors | findErrorsBeginningWith(offenceId)
+     }) }}
+{% else %}
+    {{ govukInsetText({
+                text: "No aggravating factors have been added."
+    }) }}
+{% endfor %}
+        {% if offences.length > 0 %}
+            <div class="govuk-button-group govuk-!-margin-top-8">
+                <form method="post" autocomplete="off">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    {{ govukRadios({
+                        id: "finishedAddingAggravatingFactors",
+                        name: "finishedAddingAggravatingFactors",
+                        fieldset: {
+                            legend: {
+                                text: "Have you finished adding aggravating factors?",
+                                classes: "govuk-fieldset__legend--m"
+                            }
+                        },
+                        errorMessage: errors | findError('finishedAddingOffences'),
+                        items: [
+                            {
+                                value: "true",
+                                text: "Yes, I've finished",
+                                attributes: {
+                                "data-qa": "finishAddingRadio"
+                            }
+                            },
+                            {
+                                value: "false",
+                                text: "No, I'll come back to it later",
+                                attributes: {
+                                "data-qa": "notFinishedRadio"
+                            }
+                            }
+                        ]
+                    }) }}
+
+                    <div class="govuk-button-group">
+                        <button type="submit"
+                                class="govuk-button"
+                                data-module="govuk-button"
+                                data-qa="finishAddingButton"
+                                formaction="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/submit-check-aggravating-factors-answers">
+                            Continue
+                        </button>
+                        {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+
+    {% endblock %}

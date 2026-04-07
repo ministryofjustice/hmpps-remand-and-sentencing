@@ -25,31 +25,31 @@
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
 
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ appearanceReference }}/submit-cancel-court-case?isHearing={{ isHearing }}&returnUrl={{ backLink }}" autocomplete="off">
+            <form method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <h1 class="govuk-heading-l">
-                  {{header}}
+                  {{ model.getHeader() }}
                 </h1>
 
-                    <div class="govuk-body" data-qa="cancel-court-case-description"> {{description }} </div>
+                    <div class="govuk-body" data-qa="cancel-court-case-description">{{ model.getDescription() }}</div>
 
                     {{ govukRadios({
                                         name: "cancelCourtCase",
                                         fieldset: {
                                             legend: {
-                                            text: header,
+                                            text: model.getHeader(),
                                                 classes: "govuk-fieldset__legend--s"
                                             }
                                         },
-                                        errorMessage:  errors | findError('deleteHearing'),
+                                        errorMessage:  errors | findError('cancelCourtCase'),
                                         items: [
                                             {
                                                 value: "true",
-                                                text: positiveRadioText
+                                                text: model.getPositiveRadioText()
                                             },
                                             {
                                                 value: "false",
-                                                text: "No, go back to the court case"
+                                                text: model.getNegativeRadioText()
                                             }
                                         ]
                                     }) }}

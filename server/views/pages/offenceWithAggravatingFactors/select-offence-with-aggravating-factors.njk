@@ -1,0 +1,76 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - sentence offences with aggravated factors" %}
+
+{% block pageContent %}
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/submit-select-offence-with-aggravated-factors" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        {% include "../../partials/aggravatingOffenceFactorsCaption.njk" %}
+
+        {% set offenceItems = [] %}
+        {% for offence in offences %}
+            {% set labelHtml %}
+                {% if offence.sentence and offence.sentence.countNumber and offence.sentence.countNumber !== '-1' %}
+                    <div data-qa="aggravatedOffenceCount-{{ loop.index0 }}">
+                        Count {{ offence.sentence.countNumber }}
+                    </div>
+                    <div>
+                        {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}
+                    </div>
+                {% else %}
+                    <div data-qa="aggravatedOffenceFirstLine-{{ loop.index0 }}">
+                        {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}
+                    </div>
+                {% endif %}
+            {% endset %}
+
+            {% set hintHtml %}
+                {% if offence.offenceStartDate %}
+                    Committed on {{ offence.offenceStartDate | formatDate }}
+                    {{ ' to ' + (offence.offenceEndDate | formatDate) if offence.offenceEndDate }}
+                {% endif %}
+            {% endset %}
+
+            {% set offenceItems = (offenceItems.push({
+                value: offence.chargeUuid,
+                html: labelHtml,
+                hint: {
+                    html: hintHtml
+                } if offence.offenceStartDate,
+                checked: selectedOffenceUuids and offence.chargeUuid in selectedOffenceUuids,
+                attributes: {
+                    "data-qa": "aggravatedOffenceCheckbox-" + loop.index0
+                }
+            }), offenceItems) %}
+        {% endfor %}
+
+        {{ govukCheckboxes({
+            name: "aggravatedOffenceUuids",
+            fieldset: {
+                legend: {
+                    text: "Select the offences with aggravating factors",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            },
+            hint: {
+                text: "Select all that apply"
+            },
+            errorMessage: errors | findError('aggravatedOffenceUuids'),
+            items: offenceItems,
+            attributes: { 'data-qa': 'aggravatedFactorsOptions' }
+        }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: { 'data-qa': 'continue-button' }
+            }) }}
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+{% endblock %}

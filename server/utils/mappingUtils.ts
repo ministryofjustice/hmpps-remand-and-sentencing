@@ -93,6 +93,7 @@ export const offenceToCreateCharge = (offence: Offence, prisonId: string, appear
     prisonId,
     createChargeOrder: offence.createChargeOrder,
     ...(offence.terrorRelated !== undefined && { terrorRelated: offence.terrorRelated }),
+    ...(offence.foreignPowerRelated !== undefined && { foreignPowerRelated: offence.foreignPowerRelated }),
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
     ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),
     ...(sentence && { sentence }),

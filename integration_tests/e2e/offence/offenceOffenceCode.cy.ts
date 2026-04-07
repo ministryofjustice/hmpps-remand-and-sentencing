@@ -6,6 +6,7 @@ import OffenceOffenceDatePage from '../../pages/offenceOffenceDatePage'
 import OffenceOffenceCodeConfirmPage from '../../pages/offenceOffenceCodeConfirmPage'
 import OffenceIsOffenceAggravatedPage from '../../pages/offenceIsOffenceAggravatedPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import config from '../../../server/config'
 
 context('Add Offence Offence Code Page', () => {
   let offenceOffenceCodePage: OffenceOffenceCodePage
@@ -99,7 +100,11 @@ context('Add Offence Offence Code Page', () => {
       offenceOffenceCodePage.input().type('OF61003')
       offenceOffenceCodePage.continueButton().click()
 
-      Page.verifyOnPage(OffenceIsOffenceAggravatedPage)
+      if (!config.featureToggles.addAggravatingFactors) {
+        Page.verifyOnPage(OffenceIsOffenceAggravatedPage)
+      } else {
+        Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+      }
     })
   })
 })

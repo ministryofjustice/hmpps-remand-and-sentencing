@@ -199,13 +199,13 @@
               {% for charge in hearing.charges %}
                   {% set aggravatingFactors = [] %}
                   {% if addAggravatingFactors %}
-                          {% if offence.terrorRelated %}
+                          {% if charge.terrorRelated %}
                               {% set aggravatingFactors = aggravatingFactors.concat([
                                   "Offences aggravated by a terrorist connection"
                               ]) %}
                           {% endif %}
 
-                          {% if offence.foreignPowerRelated %}
+                          {% if charge.foreignPowerRelated %}
                               {% set aggravatingFactors = aggravatingFactors.concat([
                                   "Offences aggravated by foreign power condition being met"
                               ]) %}

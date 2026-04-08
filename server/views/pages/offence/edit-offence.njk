@@ -268,13 +268,15 @@ offenceDateRow,
   {% endif %}
 {% if addAggravatingFactors %}
   {% if aggravatingFactors and aggravatingFactors.length > 0 %}
-    {% set aggHtml = '' %}
-    {% for factor in aggravatingFactors %}
-      {% set aggHtml = aggHtml + factor %}
-      {% if not loop.last %}
-        {% set aggHtml = aggHtml + '<br>' %}
-      {% endif %}
-    {% endfor %}
+    {% set aggHtml %}
+         <ul class="govuk-list">
+            {% for factor in aggravatingFactors %}
+                <li>
+                    {{ factor }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endset %}
     {% set aggravatingFactorsRow = {
       key: { text: "Aggravating factors" },
       value: { html: aggHtml },
@@ -322,10 +324,10 @@ offenceDateRow,
           }
         }] if consecutiveToDetails else []
       }
-    }).concat([aggravatingFactorsRow])) %}
+    })) %}
       {% endif %}
 
-      {% if not (offence.sentence and offence.sentence.sentenceServeType == 'CONSECUTIVE') %}
+      {% if addAggravatingFactors%}
         {% set summaryRows = (summaryRows.concat([aggravatingFactorsRow])) %}
   {% endif %}
 {% endif %}

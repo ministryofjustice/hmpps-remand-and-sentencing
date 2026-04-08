@@ -252,6 +252,7 @@
               countNumber: offence.sentence.countNumber,
               lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
               convictionDate: offence.sentence.convictionDate | formatDate,
+              aggravatingFactors: aggravatingFactors,
               isSentenced: offence.sentence,
               periodLengths: offence.sentence.periodLengths,
               sentenceServeType: offence.sentence.sentenceServeType,
@@ -260,7 +261,6 @@
               fineAmount: offence.sentence.fineAmount,
               mergedFromCase: offence.mergedFromCase,
               courtDetails: courtMap,
-              aggravatingFactors: aggravatingFactors,
               consecutiveConcurrentLink: {
                 href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
                 text: 'Select consecutive or current',

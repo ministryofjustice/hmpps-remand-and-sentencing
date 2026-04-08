@@ -180,6 +180,26 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
         ),
       )
     }
+    const { outcomeAutoApplied } = await this.autoSetOutcome(
+      req,
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      chargeUuid,
+    )
+    if (outcomeAutoApplied) {
+      return this.saveSessionOffenceInAppearance(
+        req,
+        res,
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+      )
+    }
+
     return res.redirect(
       ReplicateOffenceJourneyUrls.replicateOffenceOutcome(
         nomsId,

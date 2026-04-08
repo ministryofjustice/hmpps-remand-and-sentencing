@@ -253,53 +253,6 @@ offenceDateRow,
     }
   })) %}
 
-  {# Build the aggravating factors summary row here so it can be inserted immediately after 'Consecutive to' #}
-  {% set aggravatingFactors = [] %}
-  {% if offence.terrorRelated %}
-    {% set aggravatingFactors = aggravatingFactors.concat([
-      "Offences aggravated by a terrorist connection"
-    ]) %}
-  {% endif %}
-
-  {% if offence.foreignPowerRelated %}
-    {% set aggravatingFactors = aggravatingFactors.concat([
-      "Offences aggravated by foreign power condition being met"
-    ]) %}
-  {% endif %}
-{% if addAggravatingFactors %}
-  {% if aggravatingFactors and aggravatingFactors.length > 0 %}
-    {% set aggHtml %}
-         <ul class="govuk-list">
-            {% for factor in aggravatingFactors %}
-                <li>
-                    {{ factor }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endset %}
-    {% set aggravatingFactorsRow = {
-      key: { text: "Aggravating factors" },
-      value: { html: aggHtml },
-      actions: {
-        items: [{
-          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/" + chargeUuid + "/select-which-aggravating-factors-apply?returnTo=editOffence",
-          text: "Edit",
-          visuallyHiddenText: "aggravating factors",
-          classes: "govuk-link--no-visited-state",
-          attributes: {
-            'data-qa': 'edit-aggravating-factors-' + chargeUuid
-          }
-        }]
-      }
-    } %}
-  {% else %}
-    {% set addLink = '<a class="govuk-link" href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/aggravating-factors/' + chargeUuid + '/select-which-aggravating-factors-apply?returnTo=editOffence" data-qa="add-aggravating-factors-' + chargeUuid + '">Add aggravating factors</a>' %}
-    {% set aggravatingFactorsRow = {
-      key: { text: "Aggravating factors" },
-      value: { html: addLink }
-    } %}
-  {% endif %}
-{% endif %}
   {% if offence.sentence.sentenceServeType == 'CONSECUTIVE' %}
     {% set consecutiveToEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + chargeUuid + "/sentence-consecutive-to?submitToEditOffence=true" %}
     {% set consecutiveToValue = {
@@ -325,6 +278,53 @@ offenceDateRow,
         }] if consecutiveToDetails else []
       }
     })) %}
+  {% endif %}
+
+      {% set aggravatingFactors = [] %}
+        {% if offence.terrorRelated %}
+          {% set aggravatingFactors = aggravatingFactors.concat([
+            "Offences aggravated by a terrorist connection"
+          ]) %}
+        {% endif %}
+
+        {% if offence.foreignPowerRelated %}
+          {% set aggravatingFactors = aggravatingFactors.concat([
+            "Offences aggravated by foreign power condition being met"
+          ]) %}
+        {% endif %}
+      {% if addAggravatingFactors %}
+        {% if aggravatingFactors and aggravatingFactors.length > 0 %}
+          {% set aggHtml %}
+               <ul class="govuk-list">
+                  {% for factor in aggravatingFactors %}
+                      <li>
+                          {{ factor }}
+                      </li>
+                  {% endfor %}
+              </ul>
+          {% endset %}
+          {% set aggravatingFactorsRow = {
+            key: { text: "Aggravating factors" },
+            value: { html: aggHtml },
+            actions: {
+              items: [{
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/" + chargeUuid + "/select-which-aggravating-factors-apply?returnTo=editOffence",
+                text: "Edit",
+                visuallyHiddenText: "aggravating factors",
+                classes: "govuk-link--no-visited-state",
+                attributes: {
+                  'data-qa': 'edit-aggravating-factors-' + chargeUuid
+                }
+              }]
+            }
+          } %}
+        {% else %}
+          {% set addLink = '<a class="govuk-link" href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/aggravating-factors/' + chargeUuid + '/select-which-aggravating-factors-apply?returnTo=editOffence" data-qa="add-aggravating-factors-' + chargeUuid + '">Add aggravating factors</a>' %}
+          {% set aggravatingFactorsRow = {
+            key: { text: "Aggravating factors" },
+            value: { html: addLink }
+          } %}
+        {% endif %}
       {% endif %}
 
       {% if addAggravatingFactors%}

@@ -198,18 +198,19 @@
             {% set offenceDetailsHtml %}
               {% for charge in hearing.charges %}
                   {% set aggravatingFactors = [] %}
+                  {% if addAggravatingFactors %}
+                          {% if offence.terrorRelated %}
+                              {% set aggravatingFactors = aggravatingFactors.concat([
+                                  "Offences aggravated by a terrorist connection"
+                              ]) %}
+                          {% endif %}
 
-                  {% if charge.terrorRelated %}
-                      {% set aggravatingFactors = aggravatingFactors.concat([
-                          "Offences aggravated by a terrorist connection"
-                      ]) %}
-                  {% endif %}
-
-                  {% if charge.foreignPowerRelated %}
-                      {% set aggravatingFactors = aggravatingFactors.concat([
-                          "Offences aggravated by foreign power condition being met"
-                      ]) %}
-                  {% endif %}
+                          {% if offence.foreignPowerRelated %}
+                              {% set aggravatingFactors = aggravatingFactors.concat([
+                                  "Offences aggravated by foreign power condition being met"
+                              ]) %}
+                          {% endif %}
+                      {% endif %}
                   {{ offenceCard({
                       offenceCode: charge.offenceCode,
                       offenceName: offenceMap[charge.offenceCode],

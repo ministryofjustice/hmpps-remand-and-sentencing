@@ -197,7 +197,7 @@ context('Sentencing appearance details Page', () => {
         'Licence period': '2 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Consecutive',
         'Consecutive to': 'Count 1',
-        // 'Aggravating factors': 'Add aggravating factors',
+        'Aggravating factors': 'Add aggravating factors',
       })
       offenceEditOffencePage.continueButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
@@ -611,7 +611,7 @@ context('Sentencing appearance details Page', () => {
         'Sentence length': '5 years 0 months 0 weeks 0 days',
         'Section 86 of 2000 act': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
-        // 'Aggravating factors': 'Add aggravating factors',
+        'Aggravating factors': 'Add aggravating factors',
       })
       offenceEditOffencePage.continueButton().click()
       Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
@@ -695,7 +695,7 @@ context('Sentencing appearance details Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
-        // 'Aggravating factors': 'Add aggravating factors',
+        'Aggravating factors': 'Add aggravating factors',
       })
     })
 

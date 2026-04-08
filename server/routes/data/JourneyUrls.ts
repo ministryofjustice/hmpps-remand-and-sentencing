@@ -81,6 +81,17 @@ export default class JourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/overall-case-outcome`
   }
 
+  static overallCaseOutcomeAppliedAll = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    hasErrors?: boolean,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/case-outcome-applied-all${hasErrors ? '?hasErrors=true' : ''}`
+  }
+
   static sentencingOverallCaseOutcome = (
     nomsId: string,
     addOrEditCourtCase: string,

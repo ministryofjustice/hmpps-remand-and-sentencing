@@ -523,7 +523,7 @@ export default class CourtAppearanceService {
         caseOutcomeAppliedAll: 'required',
       },
       {
-        'required.caseOutcomeAppliedAll': 'Select ‘Yes’ if this outcome applies to all offences on the warrant.',
+        'required.caseOutcomeAppliedAll': 'You must select if the outcome is the same for all offences.',
       },
     )
     if (errors.length === 0) {

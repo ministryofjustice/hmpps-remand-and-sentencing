@@ -16,6 +16,7 @@ import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import CannotChangeSentenceOutcomePage from '../../pages/cannotChangeSentenceOutcomePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import ErrorPage from '../../pages/error'
+import config from '../../../server/config'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -186,7 +187,7 @@ context('Sentencing appearance details Page', () => {
       offencePeriodLengthPage.yearsInput().type('2')
       offencePeriodLengthPage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
+      const expectedSummary: Record<string, string> = {
         'Count number': 'Count 3',
         Offence: 'PS90037 An offence description',
         Outcome: 'Remanded in custody',
@@ -197,8 +198,11 @@ context('Sentencing appearance details Page', () => {
         'Licence period': '2 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Consecutive',
         'Consecutive to': 'Count 1',
-        'Aggravating factors': 'Add aggravating factors',
-      })
+      }
+      if (config.featureToggles.addAggravatingFactors) {
+        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
+      }
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
       offenceEditOffencePage.continueButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage.confirmButton().click()
@@ -601,7 +605,7 @@ context('Sentencing appearance details Page', () => {
         .click()
       offencePeriodLengthPage.yearsInput().clear().type('5')
       offencePeriodLengthPage.continueButton().click()
-      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
+      const expectedSummary: Record<string, string> = {
         'Count number': 'Count 1',
         Offence: 'PS90037 An offence description',
         Outcome: 'A Nomis description',
@@ -611,8 +615,11 @@ context('Sentencing appearance details Page', () => {
         'Sentence length': '5 years 0 months 0 weeks 0 days',
         'Section 86 of 2000 act': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
-        'Aggravating factors': 'Add aggravating factors',
-      })
+      }
+      if (config.featureToggles.addAggravatingFactors) {
+        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
+      }
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
       offenceEditOffencePage.continueButton().click()
       Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     })
@@ -686,7 +693,7 @@ context('Sentencing appearance details Page', () => {
       offenceSentenceServeTypePage.radioLabelSelector('CONCURRENT').click()
       offenceSentenceServeTypePage.continueButton().click()
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
+      const expectedSummary: Record<string, string> = {
         'Count number': 'Count 2',
         Offence: 'PS90037 An offence description',
         Outcome: 'Imprisonment',
@@ -695,8 +702,11 @@ context('Sentencing appearance details Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
-        'Aggravating factors': 'Add aggravating factors',
-      })
+      }
+      if (config.featureToggles.addAggravatingFactors) {
+        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
+      }
+      offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
     it('should show error if sentence type is tried to add while offence date is not available', () => {

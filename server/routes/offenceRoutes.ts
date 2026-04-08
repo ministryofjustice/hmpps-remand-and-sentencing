@@ -1181,15 +1181,16 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
     )
 
-    if (submitToEditOffence) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
-      )
-    }
     if (outcomeAutoApplied) {
       if (outcome.outcomeType === 'SENTENCING') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
+        )
+      }
+
+      if (submitToEditOffence) {
+        return res.redirect(
+          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
         )
       }
       return this.saveSessionOffenceInAppearance(
@@ -1201,6 +1202,11 @@ export default class OffenceRoutes extends BaseRoutes {
         addOrEditCourtAppearance,
         appearanceReference,
         chargeUuid,
+      )
+    }
+    if (submitToEditOffence) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     return res.redirect(

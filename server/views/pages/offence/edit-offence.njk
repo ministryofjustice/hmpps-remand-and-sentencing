@@ -279,7 +279,7 @@ offenceDateRow,
       }
     })) %}
   {% endif %}
-
+{% if addAggravatingFactors %}
       {% set aggravatingFactors = [] %}
         {% if offence.terrorRelated %}
           {% set aggravatingFactors = aggravatingFactors.concat([
@@ -292,7 +292,7 @@ offenceDateRow,
             "Offences aggravated by foreign power condition being met"
           ]) %}
         {% endif %}
-      {% if addAggravatingFactors %}
+
         {% if aggravatingFactors and aggravatingFactors.length > 0 %}
           {% set aggHtml %}
                <ul class="govuk-list">
@@ -325,9 +325,7 @@ offenceDateRow,
             value: { html: addLink }
           } %}
         {% endif %}
-      {% endif %}
 
-      {% if addAggravatingFactors%}
         {% set summaryRows = (summaryRows.concat([aggravatingFactorsRow])) %}
   {% endif %}
 {% endif %}

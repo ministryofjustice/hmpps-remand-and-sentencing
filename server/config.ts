@@ -180,7 +180,6 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
-    replicateOffence: get('FEATURES_REPLICATE_OFFENCE_ENABLED', false, requiredInProduction) === 'true',
     nextAppearanceSubtype: get('FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED', false, requiredInProduction) === 'true',
     addAggravatingFactors: get('FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED', false, requiredInProduction) === 'true',
     nonSentencingOutcomeAppliedAll:

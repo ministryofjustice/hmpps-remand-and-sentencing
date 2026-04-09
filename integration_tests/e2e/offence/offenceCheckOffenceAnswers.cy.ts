@@ -9,6 +9,7 @@ import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOut
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 import IsOffenceDateSamePage from '../../pages/IsOffenceDateSamePage'
 import ReplicateOffenceOutcomePage from '../../pages/replicateOffenceOutcomePage'
+import CourtCaseOverallCaseOutcomeAppliedAllPage from '../../pages/courtCaseOverallCaseOutcomeAppliedAllPage'
 
 context('Check Offence Answers Page', () => {
   let offenceCheckOffenceAnswersPage: OffenceCheckOffenceAnswersPage
@@ -95,6 +96,27 @@ context('Check Offence Answers Page', () => {
       const replicateOffenceOutcomePage = Page.verifyOnPage(ReplicateOffenceOutcomePage)
       replicateOffenceOutcomePage.radioLabelContains('Remanded in custody').click()
       replicateOffenceOutcomePage.continueButton().click()
+      offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+        OffenceCheckOffenceAnswersPage,
+        'You have added 2 offence',
+      )
+    })
+
+    it('selecting yes on outcome applied all auto sets the outcome on multiple counts', () => {
+      cy.createOffence('A1234AB', '0', '0', '0')
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/case-outcome-applied-all')
+      const courtCaseOverallCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseOverallCaseOutcomeAppliedAllPage)
+      courtCaseOverallCaseOutcomeAppliedAllPage.radioLabelSelector('true').click()
+      courtCaseOverallCaseOutcomeAppliedAllPage.continueButton().click()
+      cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
+      offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+        OffenceCheckOffenceAnswersPage,
+        'You have added 1 offence',
+      )
+      offenceCheckOffenceAnswersPage.addMultipleCountsLink('0').click()
+      const isOffenceDateSamePage = Page.verifyOnPageTitle(IsOffenceDateSamePage, '15/07/2023')
+      isOffenceDateSamePage.radioLabelSelector('true').click()
+      isOffenceDateSamePage.continueButton().click()
       offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
         OffenceCheckOffenceAnswersPage,
         'You have added 2 offence',

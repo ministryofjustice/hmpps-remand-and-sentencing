@@ -65,7 +65,6 @@ describe('GET Check offence answers page', () => {
   })
 
   it('should render add multiple counts link in offence card on new non sentencing journey', async () => {
-    config.featureToggles.replicateOffence = true
     app = appWithAllRoutes({})
     setup()
     const res = await request(app)

@@ -65,7 +65,6 @@ describe('GET Review offence answers page', () => {
   })
 
   it('should render add multiple counts link in offence card after updating outcome', async () => {
-    config.featureToggles.replicateOffence = true
     app = appWithAllRoutes({})
     setup()
     const res = await request(app)

@@ -1173,39 +1173,20 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
     )
     const { submitToEditOffence } = req.query
-    const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(
-      req.session,
+    const { outcomeAutoApplied, outcome } = await this.autoSetOutcome(
+      req,
       nomsId,
+      courtCaseReference,
       appearanceReference,
+      chargeUuid,
     )
-    if (caseOutcomeAppliedAll === 'true') {
-      const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
-        req.session,
-        nomsId,
-        appearanceReference,
-        chargeUuid,
-      )
-      const { outcome } = await this.offenceService.setOffenceOutcome(
-        req.session,
-        nomsId,
-        courtCaseReference,
-        {
-          offenceOutcome: this.courtAppearanceService.getRelatedOffenceOutcomeUuid(
-            req.session,
-            nomsId,
-            appearanceReference,
-          ),
-        },
-        sentenceUuidsInChain,
-        req.user.username,
-        chargeUuid,
-      )
 
-      if (submitToEditOffence) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
-        )
-      }
+    if (submitToEditOffence) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
+      )
+    }
+    if (outcomeAutoApplied) {
       if (outcome.outcomeType === 'SENTENCING') {
         return res.redirect(
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/count-number`,
@@ -1220,11 +1201,6 @@ export default class OffenceRoutes extends BaseRoutes {
         addOrEditCourtAppearance,
         appearanceReference,
         chargeUuid,
-      )
-    }
-    if (submitToEditOffence) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
       )
     }
     return res.redirect(

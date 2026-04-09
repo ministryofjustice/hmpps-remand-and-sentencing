@@ -40,7 +40,10 @@ context('Is Offence Date Same Page', () => {
     overallOutcomePage.continueButton().click()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
     cy.createOffence('A1234AB', '0', '0', '0')
-    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
+    const offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
+      OffenceCheckOffenceAnswersPage,
+      'You have added 1 offence',
+    )
     offenceCheckOffenceAnswersPage.addMultipleCountsLink('0').click()
     isOffenceDateSamePage = Page.verifyOnPageTitle(IsOffenceDateSamePage, '15/07/2023')
   })

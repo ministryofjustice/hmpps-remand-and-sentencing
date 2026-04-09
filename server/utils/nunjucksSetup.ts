@@ -63,7 +63,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.adjustmentServiceUrl = config.adjustmentService.ui_url
   app.locals.bookSecureMoveServiceUrl = config.bookASecureMoveService.ui_url
   app.locals.bookVideoLinkServiceUrl = config.bookAVideoLinkService.ui_url
-  app.locals.replicateOffenceEnabled = config.featureToggles.replicateOffence
   app.locals.addAggravatingFactors = config.featureToggles.addAggravatingFactors
 
   if (config.environmentName === 'LOCAL') {

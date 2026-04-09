@@ -8,6 +8,7 @@ import ManageOffencesService from '../services/manageOffencesService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import {
   MergedFromCase,
+  OffenceOutcome,
   SentenceConsecutiveToDetailsResponse,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import {
@@ -370,5 +371,47 @@ export default abstract class BaseRoutes {
       }
     }
     return hint
+  }
+
+  protected async autoSetOutcome(
+    req,
+    nomsId,
+    courtCaseReference,
+    appearanceReference,
+    chargeUuid,
+  ): Promise<{
+    outcomeAutoApplied: boolean
+    outcome?: OffenceOutcome
+  }> {
+    const caseOutcomeAppliedAll = this.courtAppearanceService.getCaseOutcomeAppliedAll(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    if (caseOutcomeAppliedAll === 'true') {
+      const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
+        req.session,
+        nomsId,
+        appearanceReference,
+        chargeUuid,
+      )
+      const { outcome } = await this.offenceService.setOffenceOutcome(
+        req.session,
+        nomsId,
+        courtCaseReference,
+        {
+          offenceOutcome: this.courtAppearanceService.getRelatedOffenceOutcomeUuid(
+            req.session,
+            nomsId,
+            appearanceReference,
+          ),
+        },
+        sentenceUuidsInChain,
+        req.user.username,
+        chargeUuid,
+      )
+      return { outcomeAutoApplied: true, outcome }
+    }
+    return { outcomeAutoApplied: false }
   }
 }

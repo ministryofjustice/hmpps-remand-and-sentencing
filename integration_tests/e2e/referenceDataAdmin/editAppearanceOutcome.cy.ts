@@ -17,6 +17,7 @@ context('Edit appearance outcome page', () => {
 
   it('displays errors from API correctly', () => {
     cy.task('stubBadRequestUpdateAppearanceOutcome')
+    editAppearanceOutcomePage.radioSelector('false').should('be.checked')
     editAppearanceOutcomePage.outcomeNameInput().clear().type('Outcome name')
     editAppearanceOutcomePage.nomisCodeInput().clear().type('1234')
     editAppearanceOutcomePage.displayOrderInput().clear().type('50')

@@ -67,6 +67,10 @@ context('Update Offence Outcome Page', () => {
             label: 'Replaced with Another Offence',
             checked: false,
           },
+          {
+            label: 'Dismissed',
+            checked: false,
+          },
         ])
     })
 

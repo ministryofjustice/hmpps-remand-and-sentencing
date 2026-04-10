@@ -43,6 +43,10 @@ context('Add Offence Outcome Page', () => {
           label: 'Replaced with Another Offence',
           checked: false,
         },
+        {
+          label: 'Dismissed',
+          checked: false,
+        },
       ])
   }
 
@@ -90,6 +94,7 @@ context('Add Offence Outcome Page', () => {
             { isDivider: true, label: 'or' }, // Divider (from custom logic)
             { label: 'Lie on file', checked: false }, // Radio 2
             { label: 'Replaced with Another Offence', checked: false }, // Radio 3
+            { label: 'Dismissed', checked: false }, // Radio 3
           ])
       })
 
@@ -137,6 +142,10 @@ context('Add Offence Outcome Page', () => {
               label: 'Replaced with Another Offence',
               checked: false,
             },
+            {
+              label: 'Dismissed',
+              checked: false,
+            },
           ])
       })
     })
@@ -166,6 +175,7 @@ context('Add Offence Outcome Page', () => {
             // Divider (from custom logic)
             { label: 'Lie on file', checked: false },
             { label: 'Replaced with Another Offence', checked: false }, // Radio 2// Radio 3
+            { label: 'Dismissed', checked: false }, // Radio 2// Radio 3
           ])
       })
     })
@@ -215,6 +225,10 @@ context('Add Offence Outcome Page', () => {
           },
           {
             label: 'Replaced with Another Offence',
+            checked: false,
+          },
+          {
+            label: 'Dismissed',
             checked: false,
           },
         ]))

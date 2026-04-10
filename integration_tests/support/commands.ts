@@ -277,6 +277,42 @@ Cypress.Commands.add(
 )
 
 Cypress.Commands.add(
+  'createDismissedOffence',
+  (personId: string, courtCaseReference: string, appearanceReference: string, offenceReference: string) => {
+    cy.visit(
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/received-custodial-sentence`,
+    )
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('false').click()
+    receivedCustodialSentencePage.continueButton().click()
+
+    cy.visit(
+      `/person/${personId}/add-court-case/${courtCaseReference}/add-court-appearance/${appearanceReference}/offences/${offenceReference}/add-another-offence`,
+    )
+    const offenceOffenceDatePage = Page.verifyOnPageTitle(OffenceOffenceDatePage, 'Enter the offence date')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').type('15')
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.monthDateInput('offenceStartDate').type('7')
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').clear()
+    offenceOffenceDatePage.yearDateInput('offenceStartDate').type('2000')
+    offenceOffenceDatePage.continueButton().click()
+    const offenceOffenceCodePage = Page.verifyOnPage(OffenceOffenceCodePage)
+    offenceOffenceCodePage.input().clear()
+    offenceOffenceCodePage.input().type('PS90037')
+    offenceOffenceCodePage.continueButton().click()
+    const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
+    offenceOffenceCodeConfirmPage.continueButton().click()
+    const offenceOffenceOutcomePage = Page.verifyOnPageTitle(
+      OffenceOffenceOutcomePage,
+      'Select the outcome for this offence',
+    )
+    offenceOffenceOutcomePage.radioLabelContains('Dismissed').click()
+    offenceOffenceOutcomePage.continueButton().click()
+  },
+)
+
+Cypress.Commands.add(
   'createSentencedOffence',
   (
     personId: string,

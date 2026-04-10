@@ -56,11 +56,11 @@ import {
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 import RefDataService from '../services/refDataService'
-import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
+import { REPLACEMENT_OUTCOME_UUID } from '../utils/constants'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -2058,7 +2058,8 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const [custodialOffences, nonCustodialOffences] = offences.reduce(
       ([custodialList, nonCustodialList], offence, index) => {
-        return outcomeMap[offence.outcomeUuid].outcomeType === 'SENTENCING'
+        const outcome = offence.outcomeUuid ? outcomeMap[offence.outcomeUuid] : undefined
+        return outcome?.outcomeType === 'SENTENCING'
           ? [[...custodialList, { ...offence, index }], nonCustodialList]
           : [custodialList, [...nonCustodialList, { ...offence, index }]]
       },

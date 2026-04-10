@@ -29,10 +29,8 @@ context('Select offence with aggravating factors Page', () => {
         outcomeType: 'REMAND',
       },
     ])
-    cy.task('stubGetChargeOutcomeById', {})
     cy.signIn()
     cy.task('stubGetSentenceTypeById', {})
-    cy.task('stubGetAllChargeOutcomes')
     cy.task('stubGetChargeOutcomeById', {
       outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
       outcomeName: 'Imprisonment',
@@ -43,6 +41,11 @@ context('Select offence with aggravating factors Page', () => {
         outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
         outcomeName: 'Imprisonment',
         outcomeType: 'SENTENCING',
+      },
+      {
+        outcomeUuid: 'e4c69c8a-9320-4126-9101-5674191ff37e',
+        outcomeName: 'Dismissed',
+        outcomeType: 'NON_SENTENCING',
       },
     ])
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
@@ -75,9 +78,10 @@ context('Select offence with aggravating factors Page', () => {
     cy.createSentencedOffence('A1234AB', '0', '0', '0')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1', '2')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3')
+    cy.createDismissedOffence('A1234AB', '0', '0', '4')
     const offenceCheckOffenceAnswersPage = Page.verifyOnPageTitle(
       OffenceCheckOffenceAnswersPage,
-      'You have added 3 offence',
+      'You have added 4 offence',
     )
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
@@ -92,6 +96,10 @@ context('Select offence with aggravating factors Page', () => {
       const sorted = [1, 2, 3]
       expect(counts).to.deep.equal(sorted)
     })
+  })
+
+  it('only offence with non dismissed outcome should show up', () => {
+    selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckboxes().should('have.length', 3)
   })
 
   it('page should show error if none of the offence is selected', () => {

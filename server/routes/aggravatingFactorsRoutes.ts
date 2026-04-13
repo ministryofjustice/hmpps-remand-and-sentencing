@@ -169,7 +169,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    const queue = this.aggravatingFactorsService.getAggravatingOffenceQueue(req.session) as { chargeUuid: string }[]
+    const queue = this.aggravatingFactorsService.getAggravatingOffenceQueue(req.session)
     const currentIndex = queue.findIndex(e => e.chargeUuid === chargeUuid)
     if (currentIndex > 0) {
       const previousChargeUuid = queue[currentIndex - 1]?.chargeUuid

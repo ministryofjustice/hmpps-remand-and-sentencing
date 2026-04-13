@@ -50,12 +50,16 @@ export default class RefDataService {
   }
 
   async getChargeOutcomeMap(outcomeIds: string[], username: string): Promise<{ [key: string]: OffenceOutcome }> {
+    console.log("The outcome ids to look for ",outcomeIds)
     const outcomeIdsToSearch = outcomeIds.filter(outcomeId => outcomeId)
     if (!outcomeIdsToSearch.length) return {}
 
     const allActiveOutcomes = await this.getAllChargeOutcomes(username)
+    console.log("all active outcomes ",allActiveOutcomes)
+
     const allExistInCache = outcomeIdsToSearch.every(id => allActiveOutcomes.some(active => active.outcomeUuid === id))
 
+    console.log("all exist in cache ",allExistInCache)
     if (allExistInCache) {
       const outcomeList = allActiveOutcomes.filter(o => outcomeIdsToSearch.includes(o.outcomeUuid))
       return Object.fromEntries(outcomeList.map(outcome => [outcome.outcomeUuid, outcome]))
@@ -63,6 +67,7 @@ export default class RefDataService {
 
     // Fetch from API if not all are present in cache (e.g. if outcome is inactive)
     const outcomes = await this.remandAndSentencingApiClient.getChargeOutcomesByIds(outcomeIdsToSearch, username)
+    console.log("outcomes from api ",outcomes)
     return Object.fromEntries(outcomes.map(outcome => [outcome.outcomeUuid, outcome]))
   }
 

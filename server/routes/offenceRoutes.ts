@@ -2037,7 +2037,9 @@ export default class OffenceRoutes extends BaseRoutes {
           .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
       ),
     )
+    console.log("all offences in courtAppearance",courtAppearance.offences)
     const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
+    console.log("outcomeIds",outcomeIds)
     const courtIds = Array.from(
       new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
     )
@@ -2058,8 +2060,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     const [custodialOffences, nonCustodialOffences] = offences.reduce(
       ([custodialList, nonCustodialList], offence, index) => {
-        const outcome = offence.outcomeUuid ? outcomeMap[offence.outcomeUuid] : undefined
-        return outcome?.outcomeType === 'SENTENCING'
+        return outcomeMap[offence.outcomeUuid].outcomeType === 'SENTENCING'
           ? [[...custodialList, { ...offence, index }], nonCustodialList]
           : [custodialList, [...nonCustodialList, { ...offence, index }]]
       },
@@ -2665,6 +2666,7 @@ export default class OffenceRoutes extends BaseRoutes {
     )
     const offenceCodes = Array.from(new Set(offences.map(offence => offence.offenceCode)))
     const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
+    const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
 
     const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
@@ -2830,8 +2832,10 @@ export default class OffenceRoutes extends BaseRoutes {
           const outcome = outcomeMap[offence.outcomeUuid]
 
           if (outcome.outcomeType === 'SENTENCING') {
+          if (outcome.outcomeType === 'SENTENCING') {
             return [unchangedList, [...custodialList, { ...offence, index }], nonCustodialList]
           }
+          if (outcome.outcomeType === 'NON_CUSTODIAL') {
           if (outcome.outcomeType === 'NON_CUSTODIAL') {
             return [unchangedList, custodialList, [...nonCustodialList, { ...offence, index }]]
           }

@@ -2433,7 +2433,6 @@ export default class OffenceRoutes extends BaseRoutes {
           ),
         )
       }
-      const appearance = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
       const hasManyPeriodLengthsSameType = this.groupPeriodLengthsByType(offence).find(
         periodLength => periodLength.lengths.length > 1,
       )

@@ -40,7 +40,10 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     )
 
     this.offenceService.setSessionOffences(req.session, nomsId, courtCaseReference, courtAppearance.offences)
-    const allOffences = this.offenceService.getAllOffences(req.session, nomsId, courtCaseReference)
+
+    const allOffences = this.offenceService
+      .getAllOffences(req.session, nomsId, courtCaseReference)
+      .filter(offence => offence.sentence)
 
     const orderedOffences = orderOffences(allOffences)
 

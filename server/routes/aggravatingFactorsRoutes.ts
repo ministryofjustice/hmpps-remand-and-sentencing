@@ -16,7 +16,6 @@ import trimForm, { normaliseToArray } from '../utils/trim'
 import JourneyUrls from './data/JourneyUrls'
 import AggravatingFactorsJourneyUrls from './data/AggravatingFactorsJourneyUrls'
 import AggravatingFactorsService from '../services/aggravatingFactorsService'
-import { DISMISSED_OUTCOME_UUID } from '../utils/constants'
 
 export default class AggravatingFactorsRoutes extends BaseRoutes {
   constructor(
@@ -41,9 +40,10 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     )
 
     this.offenceService.setSessionOffences(req.session, nomsId, courtCaseReference, courtAppearance.offences)
+
     const allOffences = this.offenceService
       .getAllOffences(req.session, nomsId, courtCaseReference)
-      .filter(offence => offence.outcomeUuid !== DISMISSED_OUTCOME_UUID)
+      .filter(offence => offence.sentence != null)
 
     const orderedOffences = orderOffences(allOffences)
 

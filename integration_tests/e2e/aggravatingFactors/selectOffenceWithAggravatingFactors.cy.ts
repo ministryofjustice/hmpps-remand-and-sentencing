@@ -98,7 +98,7 @@ context('Select offence with aggravating factors Page', () => {
     })
   })
 
-  it.only('only offence with sentence should show up', () => {
+  it('only offence with sentence should show up', () => {
     selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckboxes().should('have.length', 3)
   })
 

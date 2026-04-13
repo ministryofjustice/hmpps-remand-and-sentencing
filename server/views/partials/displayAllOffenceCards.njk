@@ -6,6 +6,20 @@
     {% set multipleCountLinkHtml %}
         <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{appearanceReference }}/offences/{{offence.chargeUuid }}/load-replicate-offence" data-qa="add-multiple-count-link-{{offence.index}}">Add multiple counts</a>
     {% endset %}
+    {% set aggravatingFactors = [] %}
+                      {% if addAggravatingFactors %}
+                              {% if offence.terrorRelated %}
+                                  {% set aggravatingFactors = aggravatingFactors.concat([
+                                      "Offences aggravated by a terrorist connection"
+                                  ]) %}
+                              {% endif %}
+
+                              {% if offence.foreignPowerRelated %}
+                                  {% set aggravatingFactors = aggravatingFactors.concat([
+                                      "Offences aggravated by foreign power condition being met"
+                                  ]) %}
+                              {% endif %}
+                          {% endif %}
     {{ offenceCard({
         offenceCode: offence.offenceCode,
         offenceName: offenceMap[offence.offenceCode],
@@ -15,7 +29,7 @@
         countNumber: offence.sentence.countNumber,
         lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
         convictionDate: offence.sentence.convictionDate | formatDate,
-        terrorRelated: offence.terrorRelated,
+        aggravatingFactors: aggravatingFactors,
         isSentenced: offence.sentence,
         periodLengths: offence.sentence.periodLengths,
         sentenceServeType: offence.sentence.sentenceServeType,

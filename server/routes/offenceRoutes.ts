@@ -2404,11 +2404,39 @@ export default class OffenceRoutes extends BaseRoutes {
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+      const cantEditErrors = this.courtAppearanceService.checkAppearanceCanEditOffences(
+        req.session,
+        nomsId,
+        appearanceReference,
+      )
+      if (cantEditErrors.length) {
+        req.flash('errors', cantEditErrors)
+        if (warrantType === 'SENTENCING') {
+          return res.redirect(
+            JourneyUrls.sentencingHearing(
+              nomsId,
+              addOrEditCourtCase,
+              courtCaseReference,
+              addOrEditCourtAppearance,
+              appearanceReference,
+            ),
+          )
+        }
+        return res.redirect(
+          JourneyUrls.nonSentencingHearing(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          ),
+        )
+      }
       const hasManyPeriodLengthsSameType = this.groupPeriodLengthsByType(offence).find(
         periodLength => periodLength.lengths.length > 1,
       )
       if (hasManyPeriodLengthsSameType) {
-        const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
         if (warrantType === 'SENTENCING') {
           return res.redirect(
             `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/correct-many-period-length-interrupt`,

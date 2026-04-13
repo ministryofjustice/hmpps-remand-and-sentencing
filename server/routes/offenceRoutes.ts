@@ -60,7 +60,7 @@ import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
-import { REPLACEMENT_OUTCOME_UUID } from '../utils/constants'
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -2037,9 +2037,7 @@ export default class OffenceRoutes extends BaseRoutes {
           .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
       ),
     )
-    console.log("all offences in courtAppearance",courtAppearance.offences)
     const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
-    console.log("outcomeIds",outcomeIds)
     const courtIds = Array.from(
       new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
     )
@@ -2666,7 +2664,6 @@ export default class OffenceRoutes extends BaseRoutes {
     )
     const offenceCodes = Array.from(new Set(offences.map(offence => offence.offenceCode)))
     const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
-    const outcomeIds = Array.from(new Set(offences.map(offence => offence.outcomeUuid)))
 
     const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
@@ -2832,10 +2829,8 @@ export default class OffenceRoutes extends BaseRoutes {
           const outcome = outcomeMap[offence.outcomeUuid]
 
           if (outcome.outcomeType === 'SENTENCING') {
-          if (outcome.outcomeType === 'SENTENCING') {
             return [unchangedList, [...custodialList, { ...offence, index }], nonCustodialList]
           }
-          if (outcome.outcomeType === 'NON_CUSTODIAL') {
           if (outcome.outcomeType === 'NON_CUSTODIAL') {
             return [unchangedList, custodialList, [...nonCustodialList, { ...offence, index }]]
           }

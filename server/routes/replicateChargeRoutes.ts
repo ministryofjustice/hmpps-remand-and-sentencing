@@ -228,9 +228,13 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
         offenceOutcome: offence.outcomeUuid,
       }
     }
-    const outcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId, appearanceReference)
+    const { appearanceOutcomeUuid, warrantType } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     const [primaryNonCustodialOutcomes, offenceHint] = await Promise.all([
-      this.refDataService.getPrimaryNonCustodialChargeOutcomes(outcomeUuid, req.user.username),
+      this.refDataService.getPrimaryNonCustodialChargeOutcomes(appearanceOutcomeUuid, warrantType, req.user.username),
       this.getOffenceHint(offence, req.user.username),
     ])
     const backLink = ReplicateOffenceJourneyUrls.isOffenceDateSame(

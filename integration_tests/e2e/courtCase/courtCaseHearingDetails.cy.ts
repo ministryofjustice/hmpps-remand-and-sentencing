@@ -374,21 +374,6 @@ context('Court Case Hearing details Page', () => {
     it('can edit offence outcome and return back to details page', () => {
       cy.task('stubGetOffenceByCode', {})
       cy.task('stubGetAllChargeOutcomes')
-      courtCaseHearingDetailsPage
-        .editFieldLink(
-          'A1234AB',
-          '83517113-5c14-4628-9133-1e3cb12e31fa',
-          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          'overall-case-outcome?backTo=nonSentencingCourtAppearance',
-        )
-        .click()
-      const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
-        CourtCaseOverallCaseOutcomePage,
-        'Edit the overall case outcome',
-      )
-      courtCaseOverallCaseOutcomePage.legendParagraph().should('contain', 'A Nomis description')
-      courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
-      courtCaseOverallCaseOutcomePage.continueButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage
         .editOffenceLink(

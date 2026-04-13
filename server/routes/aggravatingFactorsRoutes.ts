@@ -169,19 +169,20 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    if (this.aggravatingFactorsService.anyAggravatingOffencesProcessed(req.session)) {
-      const lastProcessedChargeUuid = this.aggravatingFactorsService.getLastProcessedAggravatingOffenceId(
-        req.session,
-        chargeUuid,
-      )
-      backLink = AggravatingFactorsJourneyUrls.selectWhichAggravatingFactorsApply(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-        lastProcessedChargeUuid,
-      )
+    const queue = this.aggravatingFactorsService.getAggravatingOffenceQueue(req.session)
+    const currentIndex = queue.findIndex(e => e.chargeUuid === chargeUuid)
+    if (currentIndex > 0) {
+      const previousChargeUuid = queue[currentIndex - 1]?.chargeUuid
+      if (previousChargeUuid) {
+        backLink = AggravatingFactorsJourneyUrls.selectWhichAggravatingFactorsApply(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          previousChargeUuid,
+        )
+      }
     }
 
     // If a specific return target was provided, prefer that for the back link

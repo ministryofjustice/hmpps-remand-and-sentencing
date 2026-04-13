@@ -33,12 +33,8 @@ export default class AggravatingFactorsService {
     return errors
   }
 
-  getAggravatingOffenceQueue(session: Partial<SessionData>) {
+  getAggravatingOffenceQueue(session: Partial<SessionData>): { chargeUuid: string }[] {
     return session.aggravatingChargeUuids || []
-  }
-
-  anyAggravatingOffencesProcessed(session: Partial<SessionData>) {
-    return this.getAggravatingOffenceQueue(session).some(e => e.processed)
   }
 
   clearAggravatingFactors(session: Partial<SessionData>) {
@@ -59,24 +55,6 @@ export default class AggravatingFactorsService {
 
     const nextEntry = queue[currentIndex + 1]
     return nextEntry?.chargeUuid
-  }
-
-  getLastProcessedAggravatingOffenceId(session: Partial<SessionData>, chargeUuid: string): string | null {
-    const queue = this.getAggravatingOffenceQueue(session)
-
-    // Find the index of the current item
-    const currentIndex = queue.findIndex(e => e.chargeUuid === chargeUuid)
-    if (currentIndex === -1) return null // chargeUuid not found
-
-    // Look backwards from the element before the given chargeUuid
-    // eslint-disable-next-line no-plusplus
-    for (let i = currentIndex - 1; i >= 0; i--) {
-      if (queue[i].processed) {
-        return queue[i].chargeUuid
-      }
-    }
-
-    return null
   }
 
   // Mark a specific offence as processed by uuid

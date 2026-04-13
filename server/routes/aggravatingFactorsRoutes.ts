@@ -40,7 +40,10 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     )
 
     this.offenceService.setSessionOffences(req.session, nomsId, courtCaseReference, courtAppearance.offences)
-    const allOffences = this.offenceService.getAllOffences(req.session, nomsId, courtCaseReference)
+
+    const allOffences = this.offenceService
+      .getAllOffences(req.session, nomsId, courtCaseReference)
+      .filter(offence => offence.sentence)
 
     const orderedOffences = orderOffences(allOffences)
 
@@ -166,19 +169,20 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    if (this.aggravatingFactorsService.anyAggravatingOffencesProcessed(req.session)) {
-      const lastProcessedChargeUuid = this.aggravatingFactorsService.getLastProcessedAggravatingOffenceId(
-        req.session,
-        chargeUuid,
-      )
-      backLink = AggravatingFactorsJourneyUrls.selectWhichAggravatingFactorsApply(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-        lastProcessedChargeUuid,
-      )
+    const queue = this.aggravatingFactorsService.getAggravatingOffenceQueue(req.session)
+    const currentIndex = queue.findIndex(e => e.chargeUuid === chargeUuid)
+    if (currentIndex > 0) {
+      const previousChargeUuid = queue[currentIndex - 1]?.chargeUuid
+      if (previousChargeUuid) {
+        backLink = AggravatingFactorsJourneyUrls.selectWhichAggravatingFactorsApply(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          previousChargeUuid,
+        )
+      }
     }
 
     // If a specific return target was provided, prefer that for the back link

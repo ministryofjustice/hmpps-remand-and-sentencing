@@ -179,5 +179,26 @@ describe('courtAppearanceService', () => {
         href: '#warrantDate',
       })
     })
+
+    it('cannot edit an offence when court appearance has no outcome', () => {
+      const nomsId = 'P123'
+      const courtAppearance = {
+        appearanceUuid: '1234567',
+        warrantType: 'NON_SENTENCING',
+        offences: [],
+      } as CourtAppearance
+
+      const session = {
+        courtAppearances: {
+          [nomsId]: courtAppearance,
+        },
+      } as unknown as Partial<SessionData>
+      const errors = service.checkAppearanceCanEditOffences(session, nomsId, '1')
+      expect(errors.length).toBe(1)
+      expect(errors[0]).toStrictEqual({
+        text: 'You must enter an overall case outcome before editing an offence',
+        href: '#appearanceOutcomeUuid',
+      })
+    })
   })
 })

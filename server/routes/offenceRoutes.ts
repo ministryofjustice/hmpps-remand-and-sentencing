@@ -346,6 +346,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const [primaryNonCustodialOutcomes, offenceHint] = await Promise.all([
       this.refDataService.getPrimaryNonCustodialChargeOutcomes(
         courtAppearance.appearanceOutcomeUuid,
+        courtAppearance.warrantType,
         req.user.username,
       ),
       this.getOffenceHint(offence, req.user.username),
@@ -479,7 +480,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const warrantType: string = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const outcomeUuid = this.courtAppearanceService.getAppearanceOutcomeUuid(req.session, nomsId, appearanceReference)
     const [primaryNonCustodialOutcomes, offenceHint] = await Promise.all([
-      this.refDataService.getPrimaryNonCustodialChargeOutcomes(outcomeUuid, req.user.username),
+      this.refDataService.getPrimaryNonCustodialChargeOutcomes(outcomeUuid, warrantType, req.user.username),
       this.getOffenceHint(offence, req.user.username),
     ])
 

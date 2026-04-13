@@ -56,11 +56,11 @@ import {
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
 import RefDataService from '../services/refDataService'
+import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
-import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(

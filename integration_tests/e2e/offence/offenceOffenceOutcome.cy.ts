@@ -90,7 +90,6 @@ context('Add Offence Outcome Page', () => {
             { isDivider: true, label: 'or' }, // Divider (from custom logic)
             { label: 'Lie on file', checked: false }, // Radio 2
             { label: 'Replaced with Another Offence', checked: false }, // Radio 3
-            { label: 'Dismissed', checked: false }, // Radio 3
           ])
       })
 

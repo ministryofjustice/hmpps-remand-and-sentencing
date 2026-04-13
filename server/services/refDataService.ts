@@ -54,7 +54,6 @@ export default class RefDataService {
     if (!outcomeIdsToSearch.length) return {}
 
     const allActiveOutcomes = await this.getAllChargeOutcomes(username)
-
     const allExistInCache = outcomeIdsToSearch.every(id => allActiveOutcomes.some(active => active.outcomeUuid === id))
 
     if (allExistInCache) {

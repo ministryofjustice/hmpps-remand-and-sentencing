@@ -116,16 +116,16 @@ context('Add Offence Offence Date Page', () => {
       .should('equal', 'There is a problem The offence end date must be after the offence start date')
   })
 
-  it('Offence dates must be before the warrant date', () => {
+  it('Offence dates must be before or on the warrant date', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('08')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('09')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2025')
     offenceOffenceDatePage.continueButton().click()
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence start date must be before the warrant date')
+      .should('equal', 'There is a problem The offence start date must be on or before the warrant date')
 
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
@@ -150,7 +150,7 @@ context('Add Offence Offence Date Page', () => {
     Page.verifyOnPageTitle(OffenceOffenceCodePage, 'Enter the offence code')
   })
 
-  it('Offence dates must be before the overall conviction date', () => {
+  it('Offence dates must be on or before the overall conviction date', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-conviction-date')
     const courtCaseOverallConvictionDatePage = Page.verifyOnPage(CourtCaseOverallConvictionDatePage)
     courtCaseOverallConvictionDatePage.radioLabelSelector('true').click()
@@ -160,14 +160,14 @@ context('Add Offence Offence Date Page', () => {
     courtCaseOverallConvictionDatePage.continueButton().click()
 
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/offence-date')
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('07')
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('08')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2025')
     offenceOffenceDatePage.continueButton().click()
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence start date must be before the conviction date')
+      .should('equal', 'There is a problem The offence start date must be on or before the conviction date')
 
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('05')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')

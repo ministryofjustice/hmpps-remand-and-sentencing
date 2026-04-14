@@ -90,9 +90,9 @@ export default class OffenceService {
         offenceOffenceDateForm['offenceStartDate-month'],
         offenceOffenceDateForm['offenceStartDate-day'],
       )
-      isValidOffenceStartDateRule = `|isValidDate:${startDateString}|isPastDate:${startDateString}|isWithinLast100Years:${startDateString}|isBeforeWarrantDate:${warrantDateString},${startDateString}`
+      isValidOffenceStartDateRule = `|isValidDate:${startDateString}|isPastDate:${startDateString}|isWithinLast100Years:${startDateString}|isSameOrBeforeWarrantDate:${warrantDateString},${startDateString}`
       if (convictionDateString) {
-        isValidOffenceStartDateRule += `|isBeforeConvictionDate:${convictionDateString},${startDateString}`
+        isValidOffenceStartDateRule += `|isSameOrBeforeConvictionDate:${convictionDateString},${startDateString}`
       }
     }
 
@@ -134,8 +134,10 @@ export default class OffenceService {
         'isValidDate.offenceStartDate-day': 'This date does not exist.',
         'isPastDate.offenceStartDate-day': 'The offence start date must be a date from the past',
         'isWithinLast100Years.offenceStartDate-day': 'All dates must be within the last 100 years from today’s date',
-        'isBeforeWarrantDate.offenceStartDate-day': 'The offence start date must be before the warrant date',
-        'isBeforeConvictionDate.offenceStartDate-day': 'The offence start date must be before the conviction date',
+        'isSameOrBeforeWarrantDate.offenceStartDate-day':
+          'The offence start date must be on or before the warrant date',
+        'isSameOrBeforeConvictionDate.offenceStartDate-day':
+          'The offence start date must be on or before the conviction date',
         'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
         'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
         'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',

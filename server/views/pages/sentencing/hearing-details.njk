@@ -159,21 +159,6 @@
       <span data-qa="custodialOffences">
         {% for offence in custodialOffences %}
           {% set offenceId = 'offences.' + offence.index %}
-          {% set aggravatingFactors = [] %}
-
-                    {% if addAggravatingFactors %}
-                            {% if offence.terrorRelated %}
-                                {% set aggravatingFactors = aggravatingFactors.concat([
-                                    "Offences aggravated by a terrorist connection"
-                                ]) %}
-                            {% endif %}
-
-                            {% if offence.foreignPowerRelated %}
-                                {% set aggravatingFactors = aggravatingFactors.concat([
-                                    "Offences aggravated by foreign power condition being met"
-                                ]) %}
-                            {% endif %}
-                        {% endif %}
           {{
             offenceCard({
               offenceCode: offence.offenceCode,
@@ -184,7 +169,7 @@
               countNumber: offence.sentence.countNumber,
               lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
               convictionDate: offence.sentence.convictionDate | formatDate,
-              aggravatingFactors: aggravatingFactors,
+              aggravatingFactors: offence | getAggravatingFactors if addAggravatingFactors else [],
               isSentenced: offence.sentence,
               periodLengths: offence.sentence.periodLengths,
               sentenceServeType: offence.sentence.sentenceServeType,
@@ -236,7 +221,6 @@
             countNumber: offence.sentence.countNumber,
             lineNumber: offence.sentence.legacyData.nomisLineReference if offence.sentence and offence.sentence.legacyData,
             convictionDate: offence.sentence.convictionDate | formatDate,
-            terrorRelated: offence.terrorRelated,
             isSentenced: offence.sentence,
             periodLengths: offence.sentence.periodLengths,
             sentenceServeType: offence.sentence.sentenceServeType,

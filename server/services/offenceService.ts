@@ -410,8 +410,6 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
       outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
-        delete offence.terrorRelated
-        delete offence.foreignPowerRelated
         const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
           sentenceUuidsInChain,
           username,
@@ -419,6 +417,8 @@ export default class OffenceService {
         if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
           return { errors, outcome, hasSentencesAfter: hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance }
         }
+        delete offence.terrorRelated
+        delete offence.foreignPowerRelated
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome

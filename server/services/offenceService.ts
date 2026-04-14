@@ -417,6 +417,8 @@ export default class OffenceService {
         if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
           return { errors, outcome, hasSentencesAfter: hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance }
         }
+        delete offence.terrorRelated
+        delete offence.foreignPowerRelated
         delete offence.sentence
       }
       offence.outcomeUuid = offenceOutcomeForm.offenceOutcome

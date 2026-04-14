@@ -197,20 +197,6 @@
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Offences</h3>
             {% set offenceDetailsHtml %}
               {% for charge in hearing.charges %}
-                  {% set aggravatingFactors = [] %}
-                  {% if addAggravatingFactors %}
-                          {% if charge.terrorRelated %}
-                              {% set aggravatingFactors = aggravatingFactors.concat([
-                                  "Offences aggravated by a terrorist connection"
-                              ]) %}
-                          {% endif %}
-
-                          {% if charge.foreignPowerRelated %}
-                              {% set aggravatingFactors = aggravatingFactors.concat([
-                                  "Offences aggravated by foreign power condition being met"
-                              ]) %}
-                          {% endif %}
-                      {% endif %}
                   {{ offenceCard({
                       offenceCode: charge.offenceCode,
                       offenceName: offenceMap[charge.offenceCode],
@@ -229,7 +215,7 @@
                       detailsClasses: 'govuk-!-padding-4',
                       mergedFromCase: charge.mergedFromCase,
                       courtDetails: courtMap,
-                      aggravatingFactors: aggravatingFactors
+                      aggravatingFactors: charge | getAggravatingFactors if addAggravatingFactors else []
                   }) }}
               {% endfor %}
             {% endset %}

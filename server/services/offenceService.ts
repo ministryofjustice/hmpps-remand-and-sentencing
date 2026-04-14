@@ -137,7 +137,7 @@ export default class OffenceService {
         'isSameOrBeforeWarrantDate.offenceStartDate-day':
           'The offence start date must be on or before the warrant date',
         'isSameOrBeforeConvictionDate.offenceStartDate-day':
-          'The offence start date must on or be before the conviction date',
+          'The offence start date must be on or before the conviction date',
         'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
         'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
         'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',

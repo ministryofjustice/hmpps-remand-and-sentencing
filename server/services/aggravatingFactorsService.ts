@@ -72,8 +72,9 @@ export default class AggravatingFactorsService {
     form: SelectWhichAggravatingFactorsForm,
     chargeUuid: string,
     isEditing: boolean,
+    isEditJourney: boolean,
   ) {
-    if (isEditing) {
+    if (isEditJourney || isEditing) {
       return this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
     }
 

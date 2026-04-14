@@ -263,4 +263,20 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     const cleaned = str.trim().replace(/^to\s+/i, '')
     return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
   })
+
+  njkEnv.addFilter('getAggravatingFactors', (offence: Offence) => {
+    // If offence is null or undefined, return an empty list immediately
+    if (!offence) {
+      return []
+    }
+
+    const factors: string[] = []
+    if (offence.terrorRelated) {
+      factors.push('Offences aggravated by a terrorist connection')
+    }
+    if (offence.foreignPowerRelated) {
+      factors.push('Offences aggravated by foreign power condition being met')
+    }
+    return factors
+  })
 }

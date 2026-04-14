@@ -410,6 +410,8 @@ export default class OffenceService {
       const offence = this.getOffence(session.offences, id)
       outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
       if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
+        delete offence.terrorRelated
+        delete offence.foreignPowerRelated
         const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
           sentenceUuidsInChain,
           username,

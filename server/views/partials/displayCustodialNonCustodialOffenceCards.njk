@@ -6,20 +6,6 @@
 <span data-qa="custodialOffences">
     {% for offence in custodialOffences %}
         {% set offenceId = 'offences.' + offence.index %}
-        {% set aggravatingFactors = [] %}
-                          {% if addAggravatingFactors %}
-                                  {% if offence.terrorRelated %}
-                                      {% set aggravatingFactors = aggravatingFactors.concat([
-                                          "Offences aggravated by a terrorist connection"
-                                      ]) %}
-                                  {% endif %}
-
-                                  {% if offence.foreignPowerRelated %}
-                                      {% set aggravatingFactors = aggravatingFactors.concat([
-                                          "Offences aggravated by foreign power condition being met"
-                                      ]) %}
-                                  {% endif %}
-                              {% endif %}
         {{ offenceCard({
             offenceCode: offence.offenceCode,
             offenceName: offenceMap[offence.offenceCode],

@@ -19,7 +19,7 @@ export default class SentenceTypeAdminRoutesHandler {
         .map(sentenceTypeDetails => {
           return {
             ...sentenceTypeDetails,
-            sentenceTypeUuid: sentenceTypeDetails.sentenceTypeUuid.slice(0, 7),
+            shortSentenceTypeUuid: sentenceTypeDetails.sentenceTypeUuid.slice(0, 7),
             minAgeInclusive: sentenceTypeDetails.minAgeInclusive ?? 0,
             maxAgeExclusive: sentenceTypeDetails.maxAgeExclusive ?? 999,
             minDateInclusive: this.formatDateElse(sentenceTypeDetails.minDateInclusive, '01/01/0001'),
@@ -60,25 +60,7 @@ export default class SentenceTypeAdminRoutesHandler {
 
   submitAdd = async (req: Request, res: Response) => {
     const createSentenceType = trimForm<CreateSentenceType>(req.body)
-    const createSentenceTypeRequest = {
-      ...createSentenceType,
-      ...(createSentenceType.minDateInclusive
-        ? { minDateInclusive: dayjs(createSentenceType.minDateInclusive, 'D/M/YYYY').format('YYYY-MM-DD') }
-        : {}),
-      ...(createSentenceType.maxDateExclusive
-        ? { maxDateExclusive: dayjs(createSentenceType.maxDateExclusive, 'D/M/YYYY').format('YYYY-MM-DD') }
-        : {}),
-      ...(createSentenceType.minOffenceDateInclusive
-        ? {
-            minOffenceDateInclusive: dayjs(createSentenceType.minOffenceDateInclusive, 'D/M/YYYY').format('YYYY-MM-DD'),
-          }
-        : {}),
-      ...(createSentenceType.maxOffenceDateExclusive
-        ? {
-            maxOffenceDateExclusive: dayjs(createSentenceType.maxOffenceDateExclusive, 'D/M/YYYY').format('YYYY-MM-DD'),
-          }
-        : {}),
-    }
+    const createSentenceTypeRequest = this.formatCreateSentenceTypeDates(createSentenceType, 'D/M/YYYY', 'YYYY-MM-DD')
     try {
       await this.refDataService.createSentenceType(createSentenceTypeRequest, req.user.username)
       req.flash('successMessage', 'sentence type successfully created')
@@ -99,6 +81,94 @@ export default class SentenceTypeAdminRoutesHandler {
         }
       }
       throw e
+    }
+  }
+
+  edit = async (req: Request, res: Response) => {
+    const { sentenceTypeUuid } = req.params as { sentenceTypeUuid: string }
+    const existingSentenceType = await this.refDataService.getSentenceTypeDetailsById(
+      sentenceTypeUuid,
+      req.user.username,
+    )
+    const updateSentenceType = (req.flash('updateSentenceType')[0] ||
+      this.formatCreateSentenceTypeDates(existingSentenceType, 'YYYY-MM-DD', 'D/M/YYYY')) as CreateSentenceType
+    const statuses: CreateSentenceType['status'][] = ['ACTIVE', 'INACTIVE']
+    const classifications: CreateSentenceType['classification'][] = [
+      'BOTUS',
+      'CIVIL',
+      'DTO',
+      'EXTENDED',
+      'FINE',
+      'INDETERMINATE',
+      'LEGACY',
+      'LEGACY_RECALL',
+      'NON_CUSTODIAL',
+      'SOPC',
+      'STANDARD',
+      'UNKNOWN',
+    ]
+    return res.render('pages/referenceData/sentenceType/edit', {
+      statuses,
+      classifications,
+      updateSentenceType,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  submitEdit = async (req: Request, res: Response) => {
+    const { sentenceTypeUuid } = req.params as { sentenceTypeUuid: string }
+    const updateSentenceType = trimForm<CreateSentenceType>(req.body)
+    const updateSentenceTypeRequest = this.formatCreateSentenceTypeDates(updateSentenceType, 'D/M/YYYY', 'YYYY-MM-DD')
+    try {
+      await this.refDataService.updateSentenceType(sentenceTypeUuid, updateSentenceTypeRequest, req.user.username)
+      req.flash('successMessage', 'sentence type successfully updated')
+      return res.redirect('/admin/sentence-type')
+    } catch (e) {
+      if (e instanceof SanitisedError) {
+        const sanitisedError = e as SanitisedError
+        if (sanitisedError.responseStatus === 400) {
+          const fieldErrors = e.data as FieldErrorErrorResponse
+          req.flash(
+            'errors',
+            fieldErrors.fieldErrors?.map(fieldError => {
+              return { href: `#${fieldError.field}`, text: fieldError.message ?? '' }
+            }) ?? [],
+          )
+          req.flash('updateSentenceType', { ...updateSentenceType })
+          return res.redirect(`/admin/sentence-type/edit/${sentenceTypeUuid}`)
+        }
+      }
+      throw e
+    }
+  }
+
+  private formatCreateSentenceTypeDates(
+    createSentenceType: CreateSentenceType,
+    fromDateFormat: string,
+    toDateFormat: string,
+  ): CreateSentenceType {
+    return {
+      ...createSentenceType,
+      ...(createSentenceType.minDateInclusive
+        ? { minDateInclusive: dayjs(createSentenceType.minDateInclusive, fromDateFormat).format(toDateFormat) }
+        : {}),
+      ...(createSentenceType.maxDateExclusive
+        ? { maxDateExclusive: dayjs(createSentenceType.maxDateExclusive, fromDateFormat).format(toDateFormat) }
+        : {}),
+      ...(createSentenceType.minOffenceDateInclusive
+        ? {
+            minOffenceDateInclusive: dayjs(createSentenceType.minOffenceDateInclusive, fromDateFormat).format(
+              toDateFormat,
+            ),
+          }
+        : {}),
+      ...(createSentenceType.maxOffenceDateExclusive
+        ? {
+            maxOffenceDateExclusive: dayjs(createSentenceType.maxOffenceDateExclusive, fromDateFormat).format(
+              toDateFormat,
+            ),
+          }
+        : {}),
     }
   }
 

@@ -627,4 +627,27 @@ export default class RemandAndSentencingApiClient extends RestClient {
       asSystem(username),
     )
   }
+
+  async getSentenceTypeDetailsById(sentenceTypeUuid: string, username: string): Promise<SentenceTypeDetails> {
+    return this.get(
+      {
+        path: `/sentence-type/${sentenceTypeUuid}/details`,
+      },
+      asSystem(username),
+    )
+  }
+
+  async updateSentenceType(
+    sentenceTypeUuid: string,
+    updateSentenceType: CreateSentenceType,
+    username: string,
+  ): Promise<SentenceTypeDetails> {
+    return this.put(
+      {
+        path: `/sentence-type/${sentenceTypeUuid}`,
+        data: updateSentenceType,
+      },
+      asSystem(username),
+    )
+  }
 }

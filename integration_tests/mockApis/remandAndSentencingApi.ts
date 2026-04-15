@@ -1,5 +1,4 @@
 import { SuperAgentRequest } from 'superagent'
-import { response } from 'express'
 import { stubFor, verifyRequest } from './wiremock'
 import REPLACEMENT_OUTCOME_UUID from '../../server/utils/constants'
 

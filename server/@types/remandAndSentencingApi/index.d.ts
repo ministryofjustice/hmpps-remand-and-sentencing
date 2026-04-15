@@ -4,6 +4,30 @@
  */
 
 export interface paths {
+  '/sentence-type/{sentenceTypeUuid}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Sentence type by UUID
+     * @description This endpoint will retrieve sentence type by UUID
+     */
+    get: operations['getSentenceTypeByUuid']
+    /**
+     * Update sentence type
+     * @description This endpoint will update an existing sentence type and migrate any sentence data over that needs to be mapped to the newly updated sentence type
+     */
+    put: operations['updateSentenceType']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/recall/{recallUuid}': {
     parameters: {
       query?: never
@@ -1080,26 +1104,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/sentence-type/{sentenceTypeUuid}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get Sentence type by UUID
-     * @description This endpoint will retrieve sentence type by UUID
-     */
-    get: operations['getSentenceTypeByUuid']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/sentence-type/{sentenceTypeUuid}/is-still-valid': {
     parameters: {
       query?: never
@@ -1895,6 +1899,97 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    CreateSentenceType: {
+      /** Format: uuid */
+      sentenceTypeUuid?: string
+      description: string
+      /** Format: int32 */
+      minAgeInclusive?: number
+      /** Format: int32 */
+      maxAgeExclusive?: number
+      /** Format: date */
+      minDateInclusive?: string
+      /** Format: date */
+      maxDateExclusive?: string
+      /** Format: date */
+      minOffenceDateInclusive?: string
+      /** Format: date */
+      maxOffenceDateExclusive?: string
+      /** @enum {string} */
+      classification:
+        | 'STANDARD'
+        | 'EXTENDED'
+        | 'SOPC'
+        | 'INDETERMINATE'
+        | 'BOTUS'
+        | 'CIVIL'
+        | 'DTO'
+        | 'FINE'
+        | 'LEGACY'
+        | 'NON_CUSTODIAL'
+        | 'LEGACY_RECALL'
+        | 'UNKNOWN'
+      hintText?: string
+      nomisCjaCode: string
+      nomisSentenceCalcType: string
+      /** Format: int32 */
+      displayOrder: number
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE'
+      isRecallable: boolean
+    }
+    FieldError: {
+      field: string
+      message?: string
+    }
+    FieldErrorErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
+      fieldErrors?: components['schemas']['FieldError'][]
+    }
+    SentenceTypeDetails: {
+      /** Format: uuid */
+      sentenceTypeUuid: string
+      description: string
+      /** Format: int32 */
+      minAgeInclusive?: number
+      /** Format: int32 */
+      maxAgeExclusive?: number
+      /** Format: date */
+      minDateInclusive?: string
+      /** Format: date */
+      maxDateExclusive?: string
+      /** Format: date */
+      minOffenceDateInclusive?: string
+      /** Format: date */
+      maxOffenceDateExclusive?: string
+      /** @enum {string} */
+      classification:
+        | 'STANDARD'
+        | 'EXTENDED'
+        | 'SOPC'
+        | 'INDETERMINATE'
+        | 'BOTUS'
+        | 'CIVIL'
+        | 'DTO'
+        | 'FINE'
+        | 'LEGACY'
+        | 'NON_CUSTODIAL'
+        | 'LEGACY_RECALL'
+        | 'UNKNOWN'
+      hintText?: string
+      nomisCjaCode: string
+      nomisSentenceCalcType: string
+      /** Format: int32 */
+      displayOrder: number
+      /** @enum {string} */
+      status: 'ACTIVE' | 'INACTIVE'
+      isRecallable: boolean
+    }
     CreateRecall: {
       prisonerId: string
       /** Format: date */
@@ -2050,7 +2145,7 @@ export interface components {
       outcomeDescription?: string
       /** Format: date-time */
       nextEventDateTime?: string
-      /** @example 12:56:56.695028712 */
+      /** @example 13:43:52.286304981 */
       appearanceTime?: string
       outcomeDispositionCode?: string
       outcomeConvictionFlag?: boolean
@@ -2187,7 +2282,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:56:56.695028712 */
+      /** @example 13:43:52.286304981 */
       appearanceTime?: string
       courtCode: string
       /** Format: uuid */
@@ -2266,19 +2361,6 @@ export interface components {
       /** @enum {string} */
       status: 'ACTIVE' | 'INACTIVE'
     }
-    FieldError: {
-      field: string
-      message?: string
-    }
-    FieldErrorErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-      fieldErrors?: components['schemas']['FieldError'][]
-    }
     ChargeOutcome: {
       /** Format: uuid */
       outcomeUuid: string
@@ -2346,84 +2428,6 @@ export interface components {
       sentenceUuid: string
       /** Format: uuid */
       consecutiveToSentenceUuid?: string
-    }
-    CreateSentenceType: {
-      /** Format: uuid */
-      sentenceTypeUuid?: string
-      description: string
-      /** Format: int32 */
-      minAgeInclusive?: number
-      /** Format: int32 */
-      maxAgeExclusive?: number
-      /** Format: date */
-      minDateInclusive?: string
-      /** Format: date */
-      maxDateExclusive?: string
-      /** Format: date */
-      minOffenceDateInclusive?: string
-      /** Format: date */
-      maxOffenceDateExclusive?: string
-      /** @enum {string} */
-      classification:
-        | 'STANDARD'
-        | 'EXTENDED'
-        | 'SOPC'
-        | 'INDETERMINATE'
-        | 'BOTUS'
-        | 'CIVIL'
-        | 'DTO'
-        | 'FINE'
-        | 'LEGACY'
-        | 'NON_CUSTODIAL'
-        | 'LEGACY_RECALL'
-        | 'UNKNOWN'
-      hintText?: string
-      nomisCjaCode: string
-      nomisSentenceCalcType: string
-      /** Format: int32 */
-      displayOrder: number
-      /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
-      isRecallable: boolean
-    }
-    SentenceTypeDetails: {
-      /** Format: uuid */
-      sentenceTypeUuid: string
-      description: string
-      /** Format: int32 */
-      minAgeInclusive?: number
-      /** Format: int32 */
-      maxAgeExclusive?: number
-      /** Format: date */
-      minDateInclusive?: string
-      /** Format: date */
-      maxDateExclusive?: string
-      /** Format: date */
-      minOffenceDateInclusive?: string
-      /** Format: date */
-      maxOffenceDateExclusive?: string
-      /** @enum {string} */
-      classification:
-        | 'STANDARD'
-        | 'EXTENDED'
-        | 'SOPC'
-        | 'INDETERMINATE'
-        | 'BOTUS'
-        | 'CIVIL'
-        | 'DTO'
-        | 'FINE'
-        | 'LEGACY'
-        | 'NON_CUSTODIAL'
-        | 'LEGACY_RECALL'
-        | 'UNKNOWN'
-      hintText?: string
-      nomisCjaCode: string
-      nomisSentenceCalcType: string
-      /** Format: int32 */
-      displayOrder: number
-      /** @enum {string} */
-      status: 'ACTIVE' | 'INACTIVE'
-      isRecallable: boolean
     }
     IsRecallPossibleRequest: {
       sentenceIds: string[]
@@ -3186,7 +3190,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:56:56.695028712 */
+      /** @example 13:43:52.286304981 */
       appearanceTime?: string
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3474,7 +3478,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 12:56:56.695028712 */
+      /** @example 13:43:52.286304981 */
       appearanceTime: string
       nomisOutcomeCode?: string
       legacyData?: components['schemas']['CourtAppearanceLegacyData']
@@ -3497,7 +3501,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:56:56.695028712 */
+      /** @example 13:43:52.286304981 */
       appearanceTime?: string
       courtId: string
     }
@@ -3552,7 +3556,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 12:56:56.695028712 */
+      /** @example 13:43:52.286304981 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance']
@@ -3563,7 +3567,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:56:56.695028712 */
+      /** @example 13:43:52.286304981 */
       appearanceTime?: string
       courtId: string
     }
@@ -3681,10 +3685,10 @@ export interface components {
       offset?: number
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
-      pageSize?: number
+      pageNumber?: number
       paged?: boolean
       /** Format: int32 */
-      pageNumber?: number
+      pageSize?: number
       unpaged?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -3787,7 +3791,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 12:56:56.695028712 */
+      /** @example 13:43:52.286304981 */
       appearanceTime?: string
       courtCode?: string
       appearanceTypeDescription: string
@@ -3896,6 +3900,108 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  getSentenceTypeByUuid: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        sentenceTypeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns sentence */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType']
+        }
+      }
+      /** @description Not found if no sentence type at uuid */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceType']
+        }
+      }
+    }
+  }
+  updateSentenceType: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        sentenceTypeUuid: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateSentenceType']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceTypeDetails']
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FieldErrorErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceTypeDetails']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentenceTypeDetails']
+        }
+      }
+    }
+  }
   getRecall: {
     parameters: {
       query?: never
@@ -6840,55 +6946,6 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['SentenceConsecutiveToDetailsResponse']
-        }
-      }
-    }
-  }
-  getSentenceTypeByUuid: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        sentenceTypeUuid: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Returns sentence */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['SentenceType']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['SentenceType']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['SentenceType']
-        }
-      }
-      /** @description Not found if no sentence type at uuid */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['SentenceType']
         }
       }
     }

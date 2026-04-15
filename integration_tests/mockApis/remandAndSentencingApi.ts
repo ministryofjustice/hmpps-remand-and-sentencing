@@ -1,4 +1,5 @@
 import { SuperAgentRequest } from 'superagent'
+import { response } from 'express'
 import { stubFor, verifyRequest } from './wiremock'
 import REPLACEMENT_OUTCOME_UUID from '../../server/utils/constants'
 
@@ -3890,6 +3891,123 @@ export default {
         jsonBody: {
           suppliedBookingCount: 0,
           otherBookingCount: 0,
+        },
+      },
+    })
+  },
+
+  stubGetSentenceTypeDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/sentence-type/467e2fa8-fce1-41a4-8110-b378c727eed3/details',
+      },
+      response: {
+        jsonBody: {
+          sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+          description: 'SDS (Standard Determinate Sentence)',
+          minAgeInclusive: 18,
+          maxAgeExclusive: null,
+          minDateInclusive: null,
+          maxDateExclusive: '2020-12-01',
+          minOffenceDateInclusive: null,
+          maxOffenceDateExclusive: null,
+          classification: 'STANDARD',
+          hintText: null,
+          nomisCjaCode: '2003',
+          nomisSentenceCalcType: 'ADIMP',
+          displayOrder: 10,
+          status: 'ACTIVE',
+          isRecallable: true,
+        },
+      },
+    })
+  },
+
+  stubGetAllSentenceTypes: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/sentence-type/all',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [
+          {
+            sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+            description: 'SDS (Standard Determinate Sentence)',
+            minAgeInclusive: 18,
+            maxAgeExclusive: null,
+            minDateInclusive: null,
+            maxDateExclusive: '2020-12-01',
+            minOffenceDateInclusive: null,
+            maxOffenceDateExclusive: null,
+            classification: 'STANDARD',
+            hintText: null,
+            nomisCjaCode: '2003',
+            nomisSentenceCalcType: 'ADIMP',
+            displayOrder: 10,
+            status: 'ACTIVE',
+            isRecallable: true,
+          },
+          {
+            sentenceTypeUuid: 'bc929dc9-019c-4acc-8fd9-9f9682ebbd72',
+            description: 'EDS (Extended Determinate Sentence)',
+            minAgeInclusive: 21,
+            maxAgeExclusive: null,
+            minDateInclusive: '2020-12-01',
+            maxDateExclusive: null,
+            minOffenceDateInclusive: null,
+            maxOffenceDateExclusive: null,
+            classification: 'EXTENDED',
+            hintText: null,
+            nomisCjaCode: '2020',
+            nomisSentenceCalcType: 'EDS21',
+            displayOrder: 20,
+            status: 'ACTIVE',
+            isRecallable: true,
+          },
+          {
+            sentenceTypeUuid: 'c71ceefe-932b-4a69-b87c-7c1294e37cf7',
+            description: 'Imprisonment in Default of Fine',
+            minAgeInclusive: null,
+            maxAgeExclusive: null,
+            minDateInclusive: '2020-12-01',
+            maxDateExclusive: null,
+            minOffenceDateInclusive: null,
+            maxOffenceDateExclusive: null,
+            classification: 'FINE',
+            hintText: null,
+            nomisCjaCode: '2020',
+            nomisSentenceCalcType: 'A/FINE',
+            displayOrder: 110,
+            status: 'ACTIVE',
+            isRecallable: false,
+          },
+        ],
+      },
+    })
+  },
+
+  stubBadRequestUpdateSentenceType: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: '/remand-and-sentencing-api/sentence-type/467e2fa8-fce1-41a4-8110-b378c727eed3',
+      },
+      response: {
+        status: 400,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status: 400,
+          userMessage: 'Failed validation',
+          fieldErrors: [
+            {
+              field: 'nomisCjaCode',
+              message: 'CJA code and Sentence Calc Type combination is already mapped',
+            },
+          ],
         },
       },
     })

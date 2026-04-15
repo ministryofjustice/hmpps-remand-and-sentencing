@@ -226,4 +226,16 @@ export default class RefDataService {
   async createSentenceType(createSentenceType: CreateSentenceType, username: string): Promise<SentenceTypeDetails> {
     return this.remandAndSentencingApiClient.createSentenceType(createSentenceType, username)
   }
+
+  async getSentenceTypeDetailsById(sentenceTypeUuid: string, username: string): Promise<SentenceTypeDetails> {
+    return this.remandAndSentencingApiClient.getSentenceTypeDetailsById(sentenceTypeUuid, username)
+  }
+
+  async updateSentenceType(
+    sentenceTypeUuid: string,
+    updateSentenceType: CreateSentenceType,
+    username: string,
+  ): Promise<SentenceTypeDetails> {
+    return this.remandAndSentencingApiClient.updateSentenceType(sentenceTypeUuid, updateSentenceType, username)
+  }
 }

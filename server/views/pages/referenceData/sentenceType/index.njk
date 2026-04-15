@@ -6,9 +6,12 @@
 {% set tableRows = [] %}
 
 {% for sentenceType in sentenceTypes %}
+    {% set editHtml %}
+        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/sentenceType/edit/{{ sentenceType.sentenceTypeUuid }}" data-qa="edit-link-{{ sentenceType.sentenceTypeUuid }}">Edit</a>
+    {% endset %}
     {% set tableRows = tableRows.concat([
         [ {
-            text: sentenceType.sentenceTypeUuid
+            text: sentenceType.shortSentenceTypeUuid
         },
         {
             text: sentenceType.description
@@ -39,6 +42,8 @@
         },
         {
             text: sentenceType.isRecallable
+        }, {
+            html: editHtml
         }]]) %}
 {% endfor %}
 
@@ -141,6 +146,9 @@
                         },
                         {
                         text: "Can Recall"
+                        },
+                        {
+                        text: "Edit"
                         }
                     ],
                     rows: tableRows

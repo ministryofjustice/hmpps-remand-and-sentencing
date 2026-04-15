@@ -384,6 +384,12 @@ context('Court Case Hearing details Page', () => {
         )
         .click()
       let offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.hearingDetailsSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'C894623',
+        'Court name': 'Southampton Magistrate Court',
+        'Hearing date': '15/12/2023',
+        'Overall case outcome': 'A Nomis description',
+      })
       offenceEditOffencePage.editFieldLink('9b622879-8191-4a7f-9fe8-71b680417220', 'offence-outcome').click()
       const offenceOutcomePage = Page.verifyOnPageTitle(
         OffenceOffenceOutcomePage,

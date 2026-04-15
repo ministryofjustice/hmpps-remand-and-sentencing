@@ -40,11 +40,13 @@ export default function setupCurrentCourtAppearance(
         res.locals.courtAppearanceCourtName = courtAppearance.courtCode
       }
     }
-
-    res.locals.overallCaseOutcome = courtAppearance.appearanceOutcomeUuid
-      ? (await refDataService.getAppearanceOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username))
-          .outcomeName
-      : 'Not entered'
+    let overallCaseOutcome: string = courtAppearance.legacyData?.outcomeDescription ?? 'Not entered'
+    if (courtAppearance.appearanceOutcomeUuid) {
+      overallCaseOutcome = (
+        await refDataService.getAppearanceOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, req.user.username)
+      ).outcomeName
+    }
+    res.locals.overallCaseOutcome = overallCaseOutcome
     res.locals.showHearingDetails = true
     next()
   }

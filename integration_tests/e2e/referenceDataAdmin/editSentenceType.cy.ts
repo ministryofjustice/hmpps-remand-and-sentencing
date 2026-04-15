@@ -2,7 +2,7 @@ import Page from '../../pages/page'
 import EditSentenceTypePage from '../../pages/EditSentenceTypePage'
 import AdminSentenceTypePage from '../../pages/AdminSentenceTypePage'
 
-context('Edit appearance outcome page', () => {
+context('Edit sentence type page', () => {
   let editSentenceTypePage: EditSentenceTypePage
   beforeEach(() => {
     cy.task('happyPathStubs')

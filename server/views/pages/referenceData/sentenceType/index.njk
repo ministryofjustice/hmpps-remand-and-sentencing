@@ -7,7 +7,7 @@
 
 {% for sentenceType in sentenceTypes %}
     {% set editHtml %}
-        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/sentenceType/edit/{{ sentenceType.sentenceTypeUuid }}" data-qa="edit-link-{{ sentenceType.sentenceTypeUuid }}">Edit</a>
+        <a class="govuk-link govuk-link--no-visited-state" href ="/admin/sentence-type/edit/{{ sentenceType.sentenceTypeUuid }}" data-qa="edit-link-{{ sentenceType.sentenceTypeUuid }}">Edit</a>
     {% endset %}
     {% set tableRows = tableRows.concat([
         [ {

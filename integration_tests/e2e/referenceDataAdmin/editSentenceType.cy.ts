@@ -7,6 +7,7 @@ context('Edit appearance outcome page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetAllSentenceTypes')
+    cy.task('stubGetSentenceTypeDetails')
     cy.signIn()
     cy.visit('/admin/sentence-type')
     const adminSentenceTypePage = Page.verifyOnPage(AdminSentenceTypePage)
@@ -16,7 +17,7 @@ context('Edit appearance outcome page', () => {
 
   it('displays errors from API correctly', () => {
     cy.task('stubBadRequestUpdateSentenceType')
-    editSentenceTypePage.radioSelector('false').should('be.checked')
+    editSentenceTypePage.radioSelector('true').should('be.checked')
     editSentenceTypePage.descriptionInput().clear().type('Sentence type name')
     editSentenceTypePage.nomisCjaCodeInput().clear().type('1234')
     editSentenceTypePage.displayOrderInput().clear().type('50')

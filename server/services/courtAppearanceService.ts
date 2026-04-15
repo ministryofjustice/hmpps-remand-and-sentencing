@@ -1394,6 +1394,28 @@ export default class CourtAppearanceService {
     })
   }
 
+  checkAppearanceCanEditOffences(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    const errors = validate(
+      courtAppearance,
+      {
+        appearanceOutcomeUuid: 'required_without:legacyData.nomisOutcomeCode',
+      },
+      {
+        'required_without.appearanceOutcomeUuid': 'You must enter an overall case outcome before editing an offence',
+      },
+    )
+    return errors
+  }
+
   checkAllOffencesHaveUpdatedOutcomes(
     session: Partial<SessionData>,
     nomsId: string,

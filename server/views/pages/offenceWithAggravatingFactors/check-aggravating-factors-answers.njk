@@ -33,25 +33,12 @@
         }) }}
 {% for offence in offences %}
     {% set offenceId = 'offences.' + offence.index %}
-    {% set aggravatingFactors = [] %}
-
-    {% if offence.terrorRelated %}
-        {% set aggravatingFactors = aggravatingFactors.concat([
-            "Offences aggravated by a terrorist connection"
-        ]) %}
-    {% endif %}
-
-    {% if offence.foreignPowerRelated %}
-        {% set aggravatingFactors = aggravatingFactors.concat([
-            "Offences aggravated by foreign power condition being met"
-        ]) %}
-    {% endif %}
  {{ offenceCard({
          offenceCode: offence.offenceCode,
          offenceName: offenceMap[offence.offenceCode],
          offenceStartDate: offence.offenceStartDate | formatDate,
          countNumber: offence.sentence.countNumber,
-         aggravatingFactors: aggravatingFactors,
+         aggravatingFactors: offence | getAggravatingFactors if addAggravatingFactors else [],
          actions: {
              items: [
                   {

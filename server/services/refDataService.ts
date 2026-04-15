@@ -120,14 +120,29 @@ export default class RefDataService {
 
   async getPrimaryNonCustodialChargeOutcomes(
     appearanceOutcomeUuid: string,
+    warrantType: string,
     username: string,
   ): Promise<{
     primaryOutcomes: OffenceOutcome[]
     nonCustodialOutcomes: OffenceOutcome[]
     allOutcomes: OffenceOutcome[]
   }> {
+    const appearanceOutcomePromise: Promise<AppearanceOutcome> = appearanceOutcomeUuid
+      ? this.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username)
+      : Promise.resolve({
+          outcomeUuid: '-1',
+          outcomeName: 'no outcome',
+          displayOrder: -1,
+          dispositionCode: 'UNKNOWN',
+          isSubList: false,
+          nomisCode: '-1',
+          outcomeType: 'UNKNOWN',
+          relatedChargeOutcomeUuid: '-1',
+          warrantType: 'UNKNOWN',
+          status: 'INACTIVE',
+        })
     const [appearanceOutcome, chargeOutcomes] = await Promise.all([
-      this.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, username),
+      appearanceOutcomePromise,
       this.getAllChargeOutcomes(username),
     ])
     let outcomeTypes = ['REMAND', 'NON_CUSTODIAL']
@@ -135,6 +150,8 @@ export default class RefDataService {
       outcomeTypes = ['NON_CUSTODIAL']
     } else if (appearanceOutcome.outcomeType === 'SENTENCING') {
       outcomeTypes = ['SENTENCING', 'NON_CUSTODIAL']
+    } else if (warrantType === 'SENTENCING') {
+      outcomeTypes = ['SENTENCING']
     }
     const allOutcomes = chargeOutcomes
       .filter(caseOutcome => outcomeTypes.includes(caseOutcome.outcomeType))

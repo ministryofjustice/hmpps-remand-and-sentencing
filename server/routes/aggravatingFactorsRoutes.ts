@@ -251,6 +251,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       selectWhichAggravatingFactorsForm,
       chargeUuid,
       isEditing,
+      this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     )
 
     if (errors.length > 0) {

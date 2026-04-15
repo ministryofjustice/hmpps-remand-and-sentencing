@@ -6,10 +6,22 @@ import type {
 } from 'forms'
 import { SessionData } from 'express-session'
 import dayjs from 'dayjs'
+import objectSupport from 'dayjs/plugin/objectSupport'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import OffenceService from './offenceService'
 import ManageOffencesService from './manageOffencesService'
 import RemandAndSentencingService from './remandAndSentencingService'
 import RefDataService from './refDataService'
+
+dayjs.extend(isSameOrBefore)
+dayjs.extend(customParseFormat)
+dayjs.extend(objectSupport)
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.tz.setDefault('Europe/London')
 
 jest.mock('./manageOffencesService')
 jest.mock('./refDataService')

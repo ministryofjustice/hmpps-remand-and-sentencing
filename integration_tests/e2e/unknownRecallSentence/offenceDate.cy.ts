@@ -117,15 +117,15 @@ context('Unknown recall sentence offence date', () => {
       .should('equal', 'There is a problem The offence end date must be after the offence start date')
   })
 
-  it('Offence dates must be before the warrant date', () => {
-    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('08')
+  it('Offence dates must be on or before the warrant date', () => {
+    offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('09')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2025')
     offenceOffenceDatePage.continueButton().click()
     offenceOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence start date must be before the warrant date')
+      .should('equal', 'There is a problem The offence start date must be on or before the warrant date')
 
     offenceOffenceDatePage.dayDateInput('offenceStartDate').clear().type('07')
     offenceOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')

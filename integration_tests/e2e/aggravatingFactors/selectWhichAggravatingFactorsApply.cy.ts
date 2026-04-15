@@ -112,4 +112,25 @@ context('Select which aggravating factors apply Page', () => {
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
   })
+
+  it('page should not show error during edit mode', () => {
+    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.continueButton().click()
+    Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
+    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.continueButton().click()
+    const aggravatingFactorsCheckAnswersPage = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
+    cy.get('[data-qa^="edit-aggravating-factor-link-"]').each($el => {
+      const href = $el.attr('href')
+      const match = href.match(/aggravating-factors\/([a-f0-9-]+)\//)
+      if (match) {
+        const chargeUuid = match[1]
+        aggravatingFactorsCheckAnswersPage.editAggravatingFactorLink(chargeUuid).click()
+        selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
+        selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+        selectWhichAggravatingFactorsApplyPage.continueButton().click()
+      }
+    })
+    Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
+  })
 })

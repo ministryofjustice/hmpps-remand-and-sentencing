@@ -39,7 +39,8 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    this.offenceService.setSessionOffences(req.session, nomsId, courtCaseReference, courtAppearance.offences)
+    if (this.aggravatingFactorsService.getAggravatingOffenceQueue(req.session).length === 0)
+      this.offenceService.setSessionOffences(req.session, nomsId, courtCaseReference, courtAppearance.offences)
 
     const allOffences = this.offenceService
       .getAllOffences(req.session, nomsId, courtCaseReference)
@@ -69,16 +70,29 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       .map(entry => entry.chargeUuid)
 
     const offences = fromCheckAnswers
-      ? orderedOffences.filter(offence => !selectedChargeUuids.includes(offence.chargeUuid))
-      : orderedOffences
+      ? orderedOffences.filter(
+          offence =>
+            !selectedChargeUuids.includes(offence.chargeUuid) && !offence.terrorRelated && !offence.foreignPowerRelated,
+        )
+      : orderedOffences.filter(offence => !offence.terrorRelated && !offence.foreignPowerRelated)
 
-    const backLink = JourneyUrls.taskList(
+    let backLink = JourneyUrls.taskList(
       nomsId,
       addOrEditCourtCase,
       courtCaseReference,
       addOrEditCourtAppearance,
       appearanceReference,
     )
+
+    if (fromCheckAnswers) {
+      backLink = AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    }
 
     return res.render('pages/offenceWithAggravatingFactors/select-offence-with-aggravating-factors', {
       nomsId,
@@ -287,6 +301,9 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
         )
       }
+
+      this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+      this.aggravatingFactorsService.clearAggravatingFactors(req.session)
       return res.redirect(
         AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
           nomsId,
@@ -317,17 +334,17 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    const offences = orderOffences(
-      this.offenceService
-        .getAllOffences(req.session, nomsId, courtCaseReference)
-        .filter(offence => offence.terrorRelated === true || offence.foreignPowerRelated === true),
+
+    const allOffencesInAppearance = courtAppearance.offences
+    const orderedOffences = orderOffences(
+      allOffencesInAppearance.filter(offence => offence.terrorRelated === true || offence.foreignPowerRelated === true),
     )
 
     const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
 
     const offenceCodes = Array.from(
       new Set(
-        offences
+        orderedOffences
           .map(offence => offence.offenceCode)
           .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
       ),
@@ -339,14 +356,19 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
     )
 
+    const unprocessedOffenceExists = allOffencesInAppearance.some(
+      offence => !offence.terrorRelated && !offence.foreignPowerRelated,
+    )
+
     return res.render('pages/offenceWithAggravatingFactors/check-aggravating-factors-answers', {
       nomsId,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offences,
+      offences: orderedOffences,
       offenceMap,
+      unprocessedOffenceExists,
       errors: req.flash('errors') || [],
     })
   }
@@ -364,11 +386,6 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
 
     const finishedAddingAggravatingFactors =
       aggravatingFactorsFinishedAddingForm.finishedAddingAggravatingFactors === 'true'
-
-    if (finishedAddingAggravatingFactors) {
-      await this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
-      this.aggravatingFactorsService.clearAggravatingFactors(req.session)
-    }
 
     this.courtAppearanceService.setAggravatingFactors(
       req.session,
@@ -436,7 +453,11 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       offence.terrorRelated = null
       offence.foreignPowerRelated = null
       this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
+      this.aggravatingFactorsService.removeChargeUUidFromQueue(req.session, chargeUuid)
     }
+
+    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+    this.aggravatingFactorsService.clearAggravatingFactors(req.session)
 
     return res.redirect(
       AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(

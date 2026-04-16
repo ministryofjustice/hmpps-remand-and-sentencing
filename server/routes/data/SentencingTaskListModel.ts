@@ -231,7 +231,10 @@ export default class SentencingTaskListModel extends TaskListModel {
         this.appearanceReference,
       )
     }
-    if (courtAppearance.aggravatingFactorsAccepted) {
+    if (
+      courtAppearance.aggravatingFactorsAccepted ||
+      courtAppearance.offences.some(offence => offence.terrorRelated || offence.foreignPowerRelated)
+    ) {
       href = AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
         this.nomsId,
         this.addOrEditCourtCase,

@@ -30,8 +30,8 @@ export default class AggravatingFactorsJourneyUrls {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
     chargeUuid: string,
-    hasErrors?: string,
     fromCheckAnswers?: string,
+    hasErrors?: string,
   ) => {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/${chargeUuid}/select-which-aggravating-factors-apply${this.getQueryParameters(hasErrors, fromCheckAnswers)}`
   }

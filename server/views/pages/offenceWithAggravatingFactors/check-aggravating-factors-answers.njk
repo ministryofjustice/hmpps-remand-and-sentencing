@@ -20,7 +20,7 @@
          attributes: {
                         "data-qa": "aggravatedFactorsInsetText"
                     },
-                        text: "There are " + offences.length + " sentences with aggravating factors."
+                        text: aggravatedFactorsText
             }) }}
 
         {% if unprocessedOffenceExists %}
@@ -74,6 +74,7 @@
                 text: "No aggravating factors have been added."
     }) }}
 {% endfor %}
+        {% if offences.length > 0 %}
             <div class="govuk-button-group govuk-!-margin-top-8">
                 <form method="post" autocomplete="off">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -117,5 +118,6 @@
                     </div>
                 </form>
             </div>
+        {% endif %}
 
     {% endblock %}

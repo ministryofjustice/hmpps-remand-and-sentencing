@@ -67,6 +67,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
 
     const selectedChargeUuids = this.aggravatingFactorsService
       .getAggravatingOffenceQueue(req.session)
+      .filter(entry => entry.processed)
       .map(entry => entry.chargeUuid)
 
     const offences = fromCheckAnswers
@@ -103,6 +104,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       aggravatingOffenceFactorForm,
       offences,
       offenceMap,
+      fromCheckAnswers,
       selectedOffenceUuids: selectedChargeUuids,
       backLink,
       errors: req.flash('errors') || [],
@@ -111,6 +113,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
 
   public submitSelectOffenceWithAggravatedFactors: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const fromCheckAnswers = req.query.fromCheckAnswers === 'true'
     const normalised = normaliseToArray(req.body.aggravatedOffenceUuids ?? req.body.aggravatedOffenceUuids)
     const offenceWithAggravatingFactorsForm = trimForm<OffenceWithAggravatingFactorsForm>({
       aggravatedOffenceUuids: normalised,
@@ -144,6 +147,8 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
           chargeUuid,
+          undefined,
+          fromCheckAnswers ? 'true' : undefined,
         ),
       )
     }
@@ -170,10 +175,9 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     } = req.params
     const isEditing = req.query.isEditing === 'true'
     const returnTo = (req.query.returnTo as string) || undefined
-    const offenceHint = await this.getOffenceHint(
-      this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid),
-      req.user.username,
-    )
+
+    const fromCheckAnswers: string | undefined = req.query.fromCheckAnswers === 'true' && 'true'
+
     const selectWhichAggravatingFactorsForm = req.flash('selectWhichAggravatingFactorsForm')[0] || {}
     let backLink = AggravatingFactorsJourneyUrls.selectOffenceWithAggravatingFactors(
       nomsId,
@@ -181,6 +185,8 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       courtCaseReference,
       addOrEditCourtAppearance,
       appearanceReference,
+      undefined,
+      fromCheckAnswers,
     )
 
     const queue = this.aggravatingFactorsService.getAggravatingOffenceQueue(req.session)
@@ -195,6 +201,8 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
           previousChargeUuid,
+          undefined,
+          fromCheckAnswers,
         )
       }
     }
@@ -217,11 +225,24 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
         courtCaseReference,
         addOrEditCourtAppearance,
         appearanceReference,
+        undefined,
+        fromCheckAnswers,
       )
     }
 
+    if (isEditing) {
+      const offenceToEdit = this.courtAppearanceService
+        .getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+        .offences.find(o => o.chargeUuid === chargeUuid)
+      if (offenceToEdit) {
+        this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offenceToEdit)
+      }
+    }
+
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-    const { terrorRelated, foreignPowerRelated } = offence
+    const offenceHint = await this.getOffenceHint(offence, req.user.username)
+
+    const { terrorRelated, foreignPowerRelated } = offence || {}
 
     return res.render('pages/offenceWithAggravatingFactors/select-which-aggravating-factors-apply', {
       nomsId,
@@ -360,6 +381,16 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       offence => !offence.terrorRelated && !offence.foreignPowerRelated,
     )
 
+    const orderedOffencesCount = orderedOffences.length
+
+    const aggravatedFactorsText =
+      // eslint-disable-next-line no-nested-ternary
+      orderedOffencesCount === 0
+        ? 'There are no sentences with aggravating factors.'
+        : orderedOffencesCount === 1
+          ? 'There is 1 sentence with aggravating factors.'
+          : `There are ${orderedOffencesCount} sentences with aggravating factors.`
+
     return res.render('pages/offenceWithAggravatingFactors/check-aggravating-factors-answers', {
       nomsId,
       courtCaseReference,
@@ -369,6 +400,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       offences: orderedOffences,
       offenceMap,
       unprocessedOffenceExists,
+      aggravatedFactorsText,
       errors: req.flash('errors') || [],
     })
   }

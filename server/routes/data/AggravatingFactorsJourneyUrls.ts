@@ -1,8 +1,4 @@
 export default class AggravatingFactorsJourneyUrls {
-  private static withErrors(hasErrors?: string) {
-    return hasErrors === 'true' ? '?hasErrors=true' : ''
-  }
-
   static checkAggravatingFactorsAnswers = (
     nomsId: string,
     addOrEditCourtCase: string,
@@ -10,8 +6,9 @@ export default class AggravatingFactorsJourneyUrls {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
     hasErrors?: string,
+    fromCheckAnswers?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/check-aggravating-factors-answers${this.withErrors(hasErrors)}`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/check-aggravating-factors-answers${this.getQueryParameters(hasErrors, fromCheckAnswers)}`
   }
 
   static selectOffenceWithAggravatingFactors = (
@@ -21,8 +18,9 @@ export default class AggravatingFactorsJourneyUrls {
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
     hasErrors?: string,
+    fromCheckAnswers?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/select-offence-with-aggravated-factors${this.withErrors(hasErrors)}`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/select-offence-with-aggravated-factors${this.getQueryParameters(hasErrors, fromCheckAnswers)}`
   }
 
   static selectWhichAggravatingFactorsApply = (
@@ -33,7 +31,19 @@ export default class AggravatingFactorsJourneyUrls {
     courtAppearanceUuid: string,
     chargeUuid: string,
     hasErrors?: string,
+    fromCheckAnswers?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/${chargeUuid}/select-which-aggravating-factors-apply${this.withErrors(hasErrors)}`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/aggravating-factors/${chargeUuid}/select-which-aggravating-factors-apply${this.getQueryParameters(hasErrors, fromCheckAnswers)}`
+  }
+
+  private static getQueryParameters(hasErrors?: string, fromCheckAnswers?: string): string {
+    const queryParameters = []
+    if (hasErrors) {
+      queryParameters.push('hasErrors=true')
+    }
+    if (fromCheckAnswers) {
+      queryParameters.push('fromCheckAnswers=true')
+    }
+    return queryParameters.length ? `?${queryParameters.join('&')}` : ''
   }
 }

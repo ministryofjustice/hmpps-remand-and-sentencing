@@ -247,7 +247,11 @@ export default class SentencingTaskListModel extends TaskListModel {
   }
 
   private getAggravatingFactorsStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
-    if (courtAppearance.aggravatingFactorsAccepted === false) {
+    if (
+      courtAppearance.aggravatingFactorsAccepted === false ||
+      (!courtAppearance.aggravatingFactorsAccepted &&
+        courtAppearance.offences.some(offence => offence.terrorRelated || offence.foreignPowerRelated))
+    ) {
       return {
         tag: {
           text: 'Incomplete',

@@ -184,5 +184,7 @@ export default {
     addAggravatingFactors: get('FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED', false, requiredInProduction) === 'true',
     nonSentencingOutcomeAppliedAll:
       get('FEATURES_NON_SENTENCING_OUTCOME_APPLIED_ALL_ENABLED', false, requiredInProduction) === 'true',
+    chargeOutcomeSentenceType:
+      get('FEATURES_CHARGE_OUTCOME_SENTENCE_TYPE_ENABLED', false, requiredInProduction) === 'true',
   },
 }

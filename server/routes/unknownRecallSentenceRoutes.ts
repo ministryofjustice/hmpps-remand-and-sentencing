@@ -222,8 +222,18 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
     const offenceDate = dayjs(offence?.offenceEndDate ?? offence?.offenceStartDate)
+    let chargeOutcomeUuid
+    if (config.featureToggles.chargeOutcomeSentenceType) {
+      chargeOutcomeUuid = offence?.outcomeUuid
+    }
     const sentenceTypes = (
-      await this.refDataService.getSentenceTypes(ageAtConviction, convictionDate, offenceDate, req.user.username)
+      await this.refDataService.getSentenceTypes(
+        ageAtConviction,
+        convictionDate,
+        offenceDate,
+        chargeOutcomeUuid,
+        req.user.username,
+      )
     ).sort((a, b) => a.displayOrder - b.displayOrder)
 
     let backLink = UnknownRecallSentenceJourneyUrls.convictionDate(nomsId, appearanceReference, chargeUuid)

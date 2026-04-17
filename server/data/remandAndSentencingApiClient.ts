@@ -141,6 +141,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     age: number,
     convictionDate: string,
     offenceDate: string,
+    chargeOutcomeUuid: string,
     username: string,
   ): Promise<SentenceType[]> {
     return (await this.get(
@@ -151,6 +152,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
           convictionDate,
           statuses: 'ACTIVE',
           offenceDate,
+          ...(chargeOutcomeUuid ? { chargeOutcomeUuid } : {}),
         },
       },
       asSystem(username),

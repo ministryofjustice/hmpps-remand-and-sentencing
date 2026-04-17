@@ -20,17 +20,27 @@
          attributes: {
                         "data-qa": "aggravatedFactorsInsetText"
                     },
-                        text: "There are " + offences.length + " sentences with aggravating factors."
+                        text: aggravatedFactorsText
             }) }}
 
-        {{ govukButton({
-            text: "Select another offence" ,
-            classes: "govuk-button--link",
-            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/select-offence-with-aggravated-factors?fromCheckAnswers=true",
-            attributes: {
-                "data-qa": "selectAnotherAggravatingFactor"
-            }
-        }) }}
+        {% if unprocessedOffenceExists %}
+              {{ govukButton({
+                  text: "Select another offence" ,
+                  classes: "govuk-button--link",
+                  href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/aggravating-factors/select-offence-with-aggravated-factors?fromCheckAnswers=true",
+                  attributes: {
+                      "data-qa": "selectAnotherAggravatingFactor"
+                  }
+              }) }}
+        {% else %}
+             {{ govukButton({
+                 text: "Select another offence",
+                 disabled: true,
+                 attributes: {
+                     "data-qa": "selectAnotherAggravatingFactor"
+                 }
+             }) }}
+        {% endif %}
 {% for offence in offences %}
     {% set offenceId = 'offences.' + offence.index %}
  {{ offenceCard({

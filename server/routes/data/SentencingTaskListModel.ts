@@ -231,7 +231,10 @@ export default class SentencingTaskListModel extends TaskListModel {
         this.appearanceReference,
       )
     }
-    if (courtAppearance.aggravatingFactorsAccepted) {
+    if (
+      courtAppearance.aggravatingFactorsAccepted ||
+      courtAppearance.offences.some(offence => offence.terrorRelated || offence.foreignPowerRelated)
+    ) {
       href = AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
         this.nomsId,
         this.addOrEditCourtCase,
@@ -244,7 +247,11 @@ export default class SentencingTaskListModel extends TaskListModel {
   }
 
   private getAggravatingFactorsStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
-    if (courtAppearance.aggravatingFactorsAccepted === false) {
+    if (
+      courtAppearance.aggravatingFactorsAccepted === false ||
+      (!courtAppearance.aggravatingFactorsAccepted &&
+        courtAppearance.offences.some(offence => offence.terrorRelated || offence.foreignPowerRelated))
+    ) {
       return {
         tag: {
           text: 'Incomplete',

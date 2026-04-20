@@ -240,7 +240,13 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     if (submitToCheckAnswers) {
       backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
     }
-
+    const errors = req.flash('errors') || []
+    if (!sentenceTypes.length) {
+      errors.push({
+        href: '#sentenceType',
+        text: 'There are no eligible sentence types to display for the selected outcome based on the offender and offence details.  Check the details entered and try again.',
+      })
+    }
     const offenceHint = await this.getOffenceDescriptionHint(offence, req.user.username)
     return res.render('pages/offence/sentence-type', {
       nomsId,
@@ -249,7 +255,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       offenceSentenceTypeForm,
       sentenceTypes,
       offenceHint,
-      errors: req.flash('errors') || [],
+      errors,
       backLink,
       displaySelect: true,
       hideOffences: true,

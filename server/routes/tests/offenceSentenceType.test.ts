@@ -66,7 +66,7 @@ describe('GET Offence Sentence Type', () => {
     const errorSummary = $('.govuk-error-summary').text()
     expect(errorSummary).toContain('There is a problem')
     expect(errorSummary).toContain(
-      'There are no eligible sentence types based on offence outcome selected. Check the details entered and try again.',
+      'There are no eligible sentence types based on the offence outcome selected. Check the details entered and try again.',
     )
   })
 })

@@ -140,7 +140,7 @@ context('Check aggravating factors answers Page', () => {
         .first()
         .then($el => {
           const href = $el.attr('href')
-          const match = href.match(/aggravating-factors\/([a-f0-9-]+)\//)
+          const match = href?.match(/aggravating-factors\/([a-f0-9-]+)\//)
           if (match) {
             const chargeUuid = match[1]
             const aggravatingFactorsCheckOffenceAnswersPage = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
@@ -164,7 +164,7 @@ context('Check aggravating factors answers Page', () => {
         .first()
         .then($el => {
           const href = $el.attr('href')
-          const match = href.match(/aggravating-factors\/([a-f0-9-]+)\//)
+          const match = href?.match(/aggravating-factors\/([a-f0-9-]+)\//)
           if (match) {
             const chargeUuid = match[1]
             const aggravatingFactorsCheckOffenceAnswersPage = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)

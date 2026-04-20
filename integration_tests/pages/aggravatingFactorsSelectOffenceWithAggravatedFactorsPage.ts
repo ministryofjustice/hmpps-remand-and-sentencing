@@ -10,7 +10,7 @@ export default class AggravatingFactorsSelectOffenceWithAggravatedFactorsPage ex
 
   getAggravatedOffenceCounts = (): Cypress.Chainable<number[]> =>
     this.aggravatedOffenceCheckboxes().then($checkboxes => {
-      const counts: number[] = Array.from($checkboxes).map(cb => {
+      const counts: (number | null)[] = Array.from($checkboxes).map(cb => {
         const container = (cb as HTMLElement).closest('label') || (cb as HTMLElement).parentElement
         if (!container) return null
 

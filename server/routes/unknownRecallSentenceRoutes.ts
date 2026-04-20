@@ -222,15 +222,31 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
     const offenceDate = dayjs(offence?.offenceEndDate ?? offence?.offenceStartDate)
+    let chargeOutcomeUuid
+    if (config.featureToggles.chargeOutcomeSentenceType) {
+      chargeOutcomeUuid = offence?.outcomeUuid
+    }
     const sentenceTypes = (
-      await this.refDataService.getSentenceTypes(ageAtConviction, convictionDate, offenceDate, req.user.username)
+      await this.refDataService.getSentenceTypes(
+        ageAtConviction,
+        convictionDate,
+        offenceDate,
+        chargeOutcomeUuid,
+        req.user.username,
+      )
     ).sort((a, b) => a.displayOrder - b.displayOrder)
 
     let backLink = UnknownRecallSentenceJourneyUrls.convictionDate(nomsId, appearanceReference, chargeUuid)
     if (submitToCheckAnswers) {
       backLink = UnknownRecallSentenceJourneyUrls.checkAnswers(nomsId, appearanceReference, chargeUuid)
     }
-
+    const errors = req.flash('errors') || []
+    if (!sentenceTypes.length) {
+      errors.push({
+        href: '#sentenceType',
+        text: 'There are no eligible sentence types to display for the selected outcome based on the offender and offence details.  Check the details entered and try again.',
+      })
+    }
     const offenceHint = await this.getOffenceDescriptionHint(offence, req.user.username)
     return res.render('pages/offence/sentence-type', {
       nomsId,
@@ -239,7 +255,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       offenceSentenceTypeForm,
       sentenceTypes,
       offenceHint,
-      errors: req.flash('errors') || [],
+      errors,
       backLink,
       displaySelect: true,
       hideOffences: true,

@@ -3,8 +3,13 @@ import AggravatingFactorsSelectOffenceWithAggravatedFactorsPage from '../../page
 import SelectWhichAggravatingFactorsApplyPage from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
 import AggravatingFactorsCheckAnswersPage from '../../pages/aggravatingFactorsCheckAnswersPage'
 import AggravatingFactorsDeleteAggravatingFactorPage from '../../pages/aggravatingFactorsDeleteAggravatingFactorPage'
+import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
+import CourtCaseWarrantDatePage from '../../pages/courtCaseWarrantDatePage'
+import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
+import OffenceCheckOffenceAnswersPage from '../../pages/offenceCheckOffenceAnswersPage'
 
-context.skip('Delete aggravating factor', () => {
+context('Delete aggravating factor', () => {
   let selectWhichAggravatingFactorsApplyPage: SelectWhichAggravatingFactorsApplyPage
   beforeEach(() => {
     cy.task('happyPathStubs')
@@ -47,16 +52,38 @@ context.skip('Delete aggravating factor', () => {
     cy.task('stubGetCourtsByIds')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
     cy.task('stubHasLoopInChain')
-    // use same flow as the selectWhich test to arrive at the check answers page
-    cy.task('stubGetCourtsByIds')
-    const selectOffenceWithAggravatingFactorsPage = new AggravatingFactorsSelectOffenceWithAggravatedFactorsPage()
-    // create offences and mark some as aggravated
-    cy.createSentencedOffence('A1234AB', '0', '0', '0')
+    const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
+    receivedCustodialSentencePage.radioLabelSelector('true').click()
+    receivedCustodialSentencePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/warrant-date')
+    const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
+    courtCaseWarrantDatePage.dayDateInput('warrantDate').type('14')
+    courtCaseWarrantDatePage.monthDateInput('warrantDate').type('5')
+    courtCaseWarrantDatePage.yearDateInput('warrantDate').type('2023')
+    courtCaseWarrantDatePage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/overall-case-outcome')
+    const overallOutcomePage = Page.verifyOnPageTitle(
+      CourtCaseOverallCaseOutcomePage,
+      'Select the overall case outcome',
+    )
+    overallOutcomePage.radioLabelContains('Imprisonment').click()
+    overallOutcomePage.continueButton().click()
+    const courtCaseCaseOutcomeAppliedAllPage = Page.verifyOnPage(CourtCaseCaseOutcomeAppliedAllPageSentencing)
+    courtCaseCaseOutcomeAppliedAllPage.bodyText().trimTextContent().should('equal', 'Imprisonment')
+    courtCaseCaseOutcomeAppliedAllPage.radioLabelSelector('false').click()
+    courtCaseCaseOutcomeAppliedAllPage.continueButton().click()
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/check-offence-answers')
+    // ensure the base offence has a count of 1 so the UI shows "Count 1"
+    cy.createSentencedOffence('A1234AB', '0', '0', '0', '1')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '1', '2')
     cy.createSentencedOffenceConsecutiveTo('A1234AB', '0', '0', '2', '3')
+    const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 3 offence')
+    offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
+    offenceCheckOffenceAnswersPage.finishAddingButton().click()
     cy.visit(
       '/person/A1234AB/add-court-case/0/add-court-appearance/0/aggravating-factors/select-offence-with-aggravated-factors',
     )
+    const selectOffenceWithAggravatingFactorsPage = new AggravatingFactorsSelectOffenceWithAggravatedFactorsPage()
     selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(0).click()
     selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(1).click()
     selectOffenceWithAggravatingFactorsPage.continueButton().click()

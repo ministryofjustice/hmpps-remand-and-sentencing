@@ -33,8 +33,14 @@ export default class AggravatingFactorsService {
     return errors
   }
 
-  getAggravatingOffenceQueue(session: Partial<SessionData>): { chargeUuid: string }[] {
+  getAggravatingOffenceQueue(session: Partial<SessionData>) {
     return session.aggravatingChargeUuids || []
+  }
+
+  removeChargeUUidFromQueue(session: Partial<SessionData>, chargeUuid: string) {
+    if (!session.aggravatingChargeUuids) return
+    const idx = session.aggravatingChargeUuids.findIndex(e => e.chargeUuid === chargeUuid)
+    if (idx !== -1) session.aggravatingChargeUuids.splice(idx, 1)
   }
 
   clearAggravatingFactors(session: Partial<SessionData>) {

@@ -1230,8 +1230,19 @@ export default class OffenceRoutes extends BaseRoutes {
     const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
     const offenceDate = dayjs(offence?.offenceEndDate ?? offence?.offenceStartDate)
+    let chargeOutcomeUuid
+    if (config.featureToggles.chargeOutcomeSentenceType) {
+      chargeOutcomeUuid = offence?.outcomeUuid
+    }
+
     const sentenceTypes = (
-      await this.refDataService.getSentenceTypes(ageAtConviction, convictionDate, offenceDate, req.user.username)
+      await this.refDataService.getSentenceTypes(
+        ageAtConviction,
+        convictionDate,
+        offenceDate,
+        chargeOutcomeUuid,
+        req.user.username,
+      )
     ).sort((a, b) => a.displayOrder - b.displayOrder)
     let legacySentenceType
     if (
@@ -1269,6 +1280,13 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     }
     const offenceHint = await this.getOffenceHint(offence, req.user.username)
+    const errors = req.flash('errors') || []
+    if (!sentenceTypes.length) {
+      errors.push({
+        href: '#sentenceType',
+        text: 'There are no eligible sentence types to display for the selected outcome based on the offender and offence details.  Check the details entered and try again.',
+      })
+    }
     return res.render('pages/offence/sentence-type', {
       nomsId,
       courtCaseReference,
@@ -1282,7 +1300,7 @@ export default class OffenceRoutes extends BaseRoutes {
       submitToEditOffence,
       offenceHint,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      errors: req.flash('errors') || [],
+      errors,
       backLink,
       submitQuery,
       displaySelect: res.locals.isAddCourtAppearance,

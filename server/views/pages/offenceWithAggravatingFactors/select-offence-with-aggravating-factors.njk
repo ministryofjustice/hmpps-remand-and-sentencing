@@ -6,7 +6,7 @@
 {% set pageTitle = applicationName + " - sentence offences with aggravated factors" %}
 
 {% block pageContent %}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/submit-select-offence-with-aggravated-factors" autocomplete="off">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/submit-select-offence-with-aggravated-factors?fromCheckAnswers=true" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         {% include "../../partials/aggravatingOffenceFactorsCaption.njk" %}

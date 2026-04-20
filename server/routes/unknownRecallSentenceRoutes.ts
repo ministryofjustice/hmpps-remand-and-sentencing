@@ -244,7 +244,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     if (!sentenceTypes.length) {
       errors.push({
         href: '#sentenceType',
-        text: 'There are no eligible sentence types based on offence outcome selected. Check the details entered and try again.',
+        text: 'There are no eligible sentence types based on the offence outcome selected. Check the details entered and try again.',
       })
     }
     const offenceHint = await this.getOffenceDescriptionHint(offence, req.user.username)

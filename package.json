@@ -38,7 +38,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1029.0",
+    "@aws-sdk/client-sqs": "^3.1030.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.1",
     "@microsoft/applicationinsights-web": "^3.4.1",
     "@ministryofjustice/frontend": "^9.0.0",
@@ -67,14 +67,14 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
-    "redis": "^5.11.0",
+    "redis": "^5.12.1",
     "superagent": "^10.3.0",
     "validatorjs": "^3.22.1"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.4",
     "@ministryofjustice/hmpps-precommit-hooks": "^2.0.2",
     "@tsconfig/node24": "^24.0.4",
     "@types/bunyan": "^1.8.11",
@@ -92,10 +92,10 @@
     "@types/passport-oauth2": "^1.8.0",
     "@types/superagent": "^8.1.9",
     "@types/supertest": "^7.2.0",
-    "@typescript-eslint/parser": "8.58.1",
+    "@typescript-eslint/parser": "8.58.2",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
-    "axe-core": "^4.11.2",
+    "axe-core": "^4.11.3",
     "cheerio": "^1.2.0",
     "cypress": "^15.13.1",
     "cypress-axe": "^1.7.0",

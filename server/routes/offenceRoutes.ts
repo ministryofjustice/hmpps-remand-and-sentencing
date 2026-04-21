@@ -1280,6 +1280,13 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     }
     const offenceHint = await this.getOffenceHint(offence, req.user.username)
+    const errors = req.flash('errors') || []
+    if (!sentenceTypes.length) {
+      errors.push({
+        href: '#sentenceType',
+        text: 'There are no eligible sentence types based on the offence outcome selected. Check the details entered and try again.',
+      })
+    }
     return res.render('pages/offence/sentence-type', {
       nomsId,
       courtCaseReference,
@@ -1293,7 +1300,7 @@ export default class OffenceRoutes extends BaseRoutes {
       submitToEditOffence,
       offenceHint,
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      errors: req.flash('errors') || [],
+      errors,
       backLink,
       submitQuery,
       displaySelect: res.locals.isAddCourtAppearance,

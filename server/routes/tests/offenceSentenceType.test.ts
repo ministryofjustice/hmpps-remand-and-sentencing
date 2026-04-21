@@ -47,4 +47,26 @@ describe('GET Offence Sentence Type', () => {
         expect(continueButton).toContain('Continue')
       })
   })
+
+  it('should render error when no sentence types returned', async () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({ appearanceUuid: '1' })
+    defaultServices.offenceService.getSessionOffence.mockReturnValue({
+      chargeUuid: '1',
+      offenceStartDate: dayjs({ date: 10, month: 5, year: 2023 }).toDate(),
+      sentence: {
+        sentenceUuid: '2',
+        convictionDate: dayjs({ date: 12, month: 5, year: 2023 }).toDate(),
+      },
+    })
+    defaultServices.refDataService.getSentenceTypes.mockResolvedValue([])
+    const res = await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/offences/0/sentence-type')
+      .expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const errorSummary = $('.govuk-error-summary').text()
+    expect(errorSummary).toContain('There is a problem')
+    expect(errorSummary).toContain(
+      'There are no eligible sentence types based on the offence outcome selected. Check the details entered and try again.',
+    )
+  })
 })

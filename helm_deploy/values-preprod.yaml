@@ -17,7 +17,6 @@ generic-service:
     ENVIRONMENT_NAME: PRE-PRODUCTION
     DIGITAL_PRISON_SERVICES_URL: "https://digital-preprod.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components-preprod.hmpps.service.justice.gov.uk"
-    COMMON_COMPONENTS_ENABLED: 'true'
     REMAND_AND_SENTENCING_API_URL: "https://remand-and-sentencing-api-preprod.hmpps.service.justice.gov.uk"
     DOCUMENT_MANAGEMENT_API_URL: "https://document-api-preprod.hmpps.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-preprod.prison.service.justice.gov.uk"
@@ -31,7 +30,7 @@ generic-service:
     FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED: 'true'
     FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED: 'false'
     FEATURES_NON_SENTENCING_OUTCOME_APPLIED_ALL_ENABLED: 'true'
-    FEATURES_CHARGE_OUTCOME_SENTENCE_TYPE_ENABLED: 'false'
+    FEATURES_CHARGE_OUTCOME_SENTENCE_TYPE_ENABLED: 'true'
 
   allowlist:
     penetration-test-ip-1: 54.37.241.156/30

@@ -1284,7 +1284,7 @@ export default class OffenceRoutes extends BaseRoutes {
     if (!sentenceTypes.length) {
       errors.push({
         href: '#sentenceType',
-        text: 'There are no eligible sentence types to display for the selected outcome based on the offender and offence details.  Check the details entered and try again.',
+        text: 'There are no eligible sentence types based on the offence outcome selected. Check the details entered and try again.',
       })
     }
     return res.render('pages/offence/sentence-type', {

@@ -10,4 +10,6 @@ export default class EditSentenceTypePage extends Page {
   nomisCjaCodeInput = (): PageElement => cy.get('#nomisCjaCode')
 
   displayOrderInput = (): PageElement => cy.get('#displayOrder')
+
+  maxDateExclusiveInput = (): PageElement => cy.get('#maxDateExclusive')
 }

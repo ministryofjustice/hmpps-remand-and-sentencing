@@ -109,7 +109,6 @@ export default {
         deadline: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000)),
       },
       agent: new AgentConfig(Number(get('COMPONENT_API_TIMEOUT_SECONDS', 10000))),
-      enabled: get('COMMON_COMPONENTS_ENABLED', 'false') === 'true',
     },
     remandAndSentencingApi: {
       url: get('REMAND_AND_SENTENCING_API_URL', 'http://127.0.0.1:8080', requiredInProduction),

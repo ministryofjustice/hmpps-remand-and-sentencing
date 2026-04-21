@@ -18,6 +18,7 @@ context('Edit sentence type page', () => {
   it('displays errors from API correctly', () => {
     cy.task('stubBadRequestUpdateSentenceType')
     editSentenceTypePage.radioSelector('true').should('be.checked')
+    editSentenceTypePage.maxDateExclusiveInput().should('have.value', '1/12/2020')
     editSentenceTypePage.descriptionInput().clear().type('Sentence type name')
     editSentenceTypePage.nomisCjaCodeInput().clear().type('1234')
     editSentenceTypePage.displayOrderInput().clear().type('50')

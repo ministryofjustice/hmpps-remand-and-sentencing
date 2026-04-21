@@ -48,7 +48,7 @@ These credentials are configured using the following env variables:
 
 In order to ensure consistency across services, DPS services import shared front-end components using the [frontend-components service](https://github.com/ministryofjustice/hmpps-micro-frontend-components).
 
-The header and footer components have been incorporated into this application but can be switched off by setting the `COMMON_COMPONENTS_ENABLED` environment variable to `'false'`
+The header and footer components have been incorporated into this application
 
 Fallback html must be included for all imported components for instances when the api call fails. These should be kept within the calling project, but should remain consistent with the designs detailed [here](https://github.com/ministryofjustice/hmpps-micro-frontend-components/blob/main/readme/incorporating.md#fallbacks-services-with-prison-and-external-users).
 

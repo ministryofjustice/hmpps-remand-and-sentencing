@@ -4015,4 +4015,39 @@ export default {
       },
     })
   },
+
+  stubGetSentenceTypeChargeOutcomes: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/sentence-type/charge-outcome/all',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          chargeOutcomes: [
+            {
+              outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+              outcomeName: 'Remanded in custody',
+              nomisCode: '3452',
+              outcomeType: 'REMAND',
+              displayOrder: 10,
+              dispositionCode: 'INTERIM',
+              status: 'ACTIVE',
+            },
+            {
+              outcomeUuid: '66032e17-977a-40f9-b634-1bc2b45e874d',
+              outcomeName: 'Lie on file',
+              nomisCode: '7863',
+              outcomeType: 'NON_CUSTODIAL',
+              displayOrder: 20,
+              dispositionCode: 'INTERIM',
+              status: 'ACTIVE',
+            },
+          ],
+        },
+      },
+    })
+  },
 }

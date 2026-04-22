@@ -6,4 +6,6 @@ export default class AdminSentenceTypePage extends Page {
   }
 
   editLink = (outcomeUuid: string): PageElement => cy.get(`[data-qa="edit-link-${outcomeUuid}"]`)
+
+  searchLink = (): PageElement => cy.get('[data-qa="search-link"]')
 }

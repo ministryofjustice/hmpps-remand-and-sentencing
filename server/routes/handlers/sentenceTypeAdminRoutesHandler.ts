@@ -1,13 +1,16 @@
 import type { Request, Response } from 'express'
 import dayjs from 'dayjs'
 import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
+import type { SentenceTypeSearchForm } from 'forms'
 import RefDataService from '../../services/refDataService'
 import config from '../../config'
 import {
   CreateSentenceType,
   FieldErrorErrorResponse,
+  SentenceType,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import trimForm from '../../utils/trim'
+import validate from '../../validation/validation'
 
 export default class SentenceTypeAdminRoutesHandler {
   constructor(private readonly refDataService: RefDataService) {}
@@ -140,6 +143,60 @@ export default class SentenceTypeAdminRoutesHandler {
       }
       throw e
     }
+  }
+
+  search = async (req: Request, res: Response) => {
+    const searchParameters = trimForm<SentenceTypeSearchForm>(req.query)
+    let sentenceTypesPromise: Promise<SentenceType[]> = Promise.resolve([])
+    const errors = []
+    if (searchParameters.searchSubmitted) {
+      errors.push(...this.validateSearchParameters(searchParameters))
+      if (!errors.length) {
+        const age = parseInt(searchParameters.ageAtConviction, 10)
+        const convictionDate = dayjs(searchParameters.convictionDate, 'D/M/YYYY')
+        const offenceDate = dayjs(searchParameters.offenceDate, 'D/M/YYYY')
+        sentenceTypesPromise = this.refDataService.getSentenceTypes(
+          age,
+          convictionDate,
+          offenceDate,
+          searchParameters.chargeOutcomeUuid,
+          req.user.username,
+        )
+      }
+    }
+
+    const [sentenceTypes, chargeOutcomes] = await Promise.all([
+      sentenceTypesPromise,
+      this.refDataService.getAllSentenceTypeChargeOutcomes(req.user.username),
+    ])
+    return res.render('pages/referenceData/sentenceType/search', {
+      searchParameters,
+      sentenceTypes: sentenceTypes.sort((a, b) => a.displayOrder - b.displayOrder),
+      chargeOutcomes: chargeOutcomes.chargeOutcomes,
+      errors,
+    })
+  }
+
+  private validateSearchParameters(searchParameters: SentenceTypeSearchForm): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      searchParameters,
+      {
+        convictionDate: 'required',
+        offenceDate: 'required',
+        ageAtConviction: 'required|minWholeNumber:0',
+      },
+      {
+        'required.convictionDate': 'You must select a conviction date',
+        'required.offenceDate': 'You must select an offence date',
+        'required.ageAtConviction': 'You must supply an age at conviction',
+        'minWholeNumber.ageAtConviction': 'The number must be a whole number, or 0',
+      },
+    )
+    return errors
   }
 
   private formatCreateSentenceTypeDates(

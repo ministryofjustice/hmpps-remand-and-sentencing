@@ -36,6 +36,7 @@ import {
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
   SentenceType,
+  SentenceTypeChargeOutcomes,
   SentenceTypeDetails,
   SentenceTypeIsValid,
   UploadedDocument,
@@ -648,6 +649,15 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: `/sentence-type/${sentenceTypeUuid}`,
         data: updateSentenceType,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getAllSentenceTypeChargeOutcomes(username: string): Promise<SentenceTypeChargeOutcomes> {
+    return this.get(
+      {
+        path: '/sentence-type/charge-outcome/all',
       },
       asSystem(username),
     )

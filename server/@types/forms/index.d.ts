@@ -235,4 +235,12 @@ declare module 'forms' {
     'offenceEndDate-year'?: string
     offenceDateIsSame?: string
   }
+
+  export interface SentenceTypeSearchForm {
+    convictionDate?: string
+    offenceDate?: string
+    ageAtConviction?: string
+    chargeOutcomeUuid?: string
+    searchSubmitted?: string
+  }
 }

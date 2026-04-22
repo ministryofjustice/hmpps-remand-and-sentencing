@@ -1,0 +1,149 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{%- from "moj/components/date-picker/macro.njk" import mojDatePicker -%}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set chargeOutcomeItems = [{
+        value: "",
+        text: "Select charge outcome",
+        selected: not searchParameters.chargeOutcomeUuid
+    }] %}
+
+{% for chargeOutcome in chargeOutcomes %}
+    {% set chargeOutcomeItems = chargeOutcomeItems.concat({
+        value: chargeOutcome.outcomeUuid,
+        text: chargeOutcome.outcomeName,
+        selected: chargeOutcome.outcomeUuid === searchParameters.chargeOutcomeUuid
+    })%}
+{% endfor %}
+
+{% set tableRows = [] %}
+{% for sentenceType in sentenceTypes %}
+    {% set tableRows = tableRows.concat([
+        [ {
+            text: sentenceType.sentenceTypeUuid
+        },
+        {
+            text: sentenceType.description
+        },
+        {
+            text: sentenceType.classification
+        },
+        {
+            text: sentenceType.hintText
+        }]]) %}
+{% endfor %}
+
+{% block content %}
+    {% if errors | length %}
+        <div class="govuk-grid-row govuk-!-margin-top-4">
+            {{ govukErrorSummary({
+                titleText: "There is a problem",
+                errorList: errors
+            }) }}
+        </div>
+    {% endif %}
+    <div class="govuk-grid-row govuk-!-margin-top-8">
+        <h1 class="govuk-heading-l">Search Sentence Type</h1>
+        <form>
+            <input type="hidden" name="searchSubmitted" value="true">
+            {% call govukFieldset({
+                classes: 'search-box'
+            }) %}
+            <div class="govuk-grid-row govuk-!-margin-top-2">
+                <div class="govuk-grid-column-full">
+                    <h2 class="govuk-heading-m">Filters</h2>
+                </div>
+            </div>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-quarter">
+                    {{ mojDatePicker({
+                        id: "convictionDate",
+                        name: "convictionDate",
+                        label: {
+                            text: "Conviction date"
+                        },
+                        value: searchParameters.convictionDate,
+                        errorMessage: errors | findError('convictionDate')
+                    }) }}
+                </div>
+                <div class="govuk-grid-column-one-quarter">
+                    {{ mojDatePicker({
+                        id: "offenceDate",
+                        name: "offenceDate",
+                        label: {
+                            text: "Offence date"
+                        },
+                        value: searchParameters.offenceDate,
+                        errorMessage: errors | findError('offenceDate')
+                    }) }}
+                </div>
+                <div class="govuk-grid-column-one-quarter">
+                    {{ govukInput({
+                        id: "ageAtConviction",
+                        name: "ageAtConviction",
+                        label: {
+                            text: "Age at conviction"
+                        },
+                        inputmode: "numeric",
+                        spellcheck: false,
+                        value: searchParameters.ageAtConviction,
+                        errorMessage: errors | findError('ageAtConviction')
+                    }) }}
+                </div>
+                <div class="govuk-grid-column-one-quarter">
+                    {{ govukSelect({
+                        id: "chargeOutcomeUuid",
+                        name: "chargeOutcomeUuid",
+                        label: {
+                            text: "Charge outcome"
+                        },
+                        items: chargeOutcomeItems,
+                        errorMessage: errors | findError('chargeOutcomeUuid')
+                    }) }}
+                </div>
+            </div>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    {{ govukButton({
+                        text: "Search",
+                        attributes: {
+                            'data-qa': 'search-button'
+                        }
+                    }) }}
+                </div>
+            </div>
+            {% endcall %}
+        </form>
+        <div class="govuk-grid-row govuk-!-margin-top-8">
+            <div class="govuk-grid-column-full">
+            {{
+                govukTable({
+                    caption: "Sentence Types",
+                    captionClasses: "govuk-table__caption--m",
+                    head: [
+                        {
+                            text: "UUID"
+                        },
+                        {
+                            text: "Description"
+                        },
+                        {
+                            text: "Classification"
+                        },
+                        {
+                            text: "Hint text"
+                        }
+                    ],
+                    rows: tableRows
+                })
+            }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

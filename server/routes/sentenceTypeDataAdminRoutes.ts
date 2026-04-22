@@ -12,5 +12,7 @@ export default function sentenceTypeDataAdminRoutes(services: Services): Router 
 
   router.get('/edit/:sentenceTypeUuid', routes.edit)
   router.post('/edit/:sentenceTypeUuid', routes.submitEdit)
+
+  router.get('/search', routes.search)
   return router
 }

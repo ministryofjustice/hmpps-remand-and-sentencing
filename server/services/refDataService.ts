@@ -9,6 +9,7 @@ import {
   CreateSentenceType,
   OffenceOutcome,
   SentenceType,
+  SentenceTypeChargeOutcomes,
   SentenceTypeDetails,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingApiClient from '../data/remandAndSentencingApiClient'
@@ -239,5 +240,9 @@ export default class RefDataService {
     username: string,
   ): Promise<SentenceTypeDetails> {
     return this.remandAndSentencingApiClient.updateSentenceType(sentenceTypeUuid, updateSentenceType, username)
+  }
+
+  async getAllSentenceTypeChargeOutcomes(username: string): Promise<SentenceTypeChargeOutcomes> {
+    return this.remandAndSentencingApiClient.getAllSentenceTypeChargeOutcomes(username)
   }
 }

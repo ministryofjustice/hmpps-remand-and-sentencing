@@ -209,29 +209,36 @@ export default class SentenceTypeAdminRoutesHandler {
     fromDateFormat: string,
     toDateFormat: string,
   ): CreateSentenceType {
+    const mapped = this.stripEmptyStringToNull(createSentenceType)
     return {
-      ...createSentenceType,
-      ...(createSentenceType.minDateInclusive
-        ? { minDateInclusive: dayjs(createSentenceType.minDateInclusive, fromDateFormat).format(toDateFormat) }
+      ...mapped,
+      ...(mapped.minDateInclusive
+        ? { minDateInclusive: dayjs(mapped.minDateInclusive, fromDateFormat).format(toDateFormat) }
         : {}),
-      ...(createSentenceType.maxDateExclusive
-        ? { maxDateExclusive: dayjs(createSentenceType.maxDateExclusive, fromDateFormat).format(toDateFormat) }
+      ...(mapped.maxDateExclusive
+        ? { maxDateExclusive: dayjs(mapped.maxDateExclusive, fromDateFormat).format(toDateFormat) }
         : {}),
-      ...(createSentenceType.minOffenceDateInclusive
+      ...(mapped.minOffenceDateInclusive
         ? {
-            minOffenceDateInclusive: dayjs(createSentenceType.minOffenceDateInclusive, fromDateFormat).format(
-              toDateFormat,
-            ),
+            minOffenceDateInclusive: dayjs(mapped.minOffenceDateInclusive, fromDateFormat).format(toDateFormat),
           }
         : {}),
-      ...(createSentenceType.maxOffenceDateExclusive
+      ...(mapped.maxOffenceDateExclusive
         ? {
-            maxOffenceDateExclusive: dayjs(createSentenceType.maxOffenceDateExclusive, fromDateFormat).format(
-              toDateFormat,
-            ),
+            maxOffenceDateExclusive: dayjs(mapped.maxOffenceDateExclusive, fromDateFormat).format(toDateFormat),
           }
         : {}),
     }
+  }
+
+  private stripEmptyStringToNull(createSentenceType: CreateSentenceType): CreateSentenceType {
+    return Object.keys(createSentenceType).reduce((acc, key) => {
+      const value = createSentenceType[key]
+      if (typeof value !== 'string' || value !== '') {
+        acc[key] = value
+      }
+      return acc
+    }, {} as CreateSentenceType)
   }
 
   private formatDateElse(date: string, fallback: string): string {

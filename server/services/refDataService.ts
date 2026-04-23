@@ -169,7 +169,7 @@ export default class RefDataService {
     offenceDate: Dayjs,
     chargeOutcomeUuid: string,
     username: string,
-  ): Promise<SentenceType[]> {
+  ): Promise<SentenceTypeDetails[]> {
     return this.remandAndSentencingApiClient.searchSentenceTypes(
       age,
       convictionDate.format('YYYY-MM-DD'),

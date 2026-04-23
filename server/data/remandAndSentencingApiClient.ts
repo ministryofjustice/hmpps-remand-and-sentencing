@@ -144,8 +144,8 @@ export default class RemandAndSentencingApiClient extends RestClient {
     offenceDate: string,
     chargeOutcomeUuid: string,
     username: string,
-  ): Promise<SentenceType[]> {
-    return (await this.get(
+  ): Promise<SentenceTypeDetails[]> {
+    return this.get(
       {
         path: `/sentence-type/search`,
         query: {
@@ -157,7 +157,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<SentenceType[]>
+    )
   }
 
   async getSentenceTypeById(sentenceTypeId: string, username: string): Promise<SentenceType> {

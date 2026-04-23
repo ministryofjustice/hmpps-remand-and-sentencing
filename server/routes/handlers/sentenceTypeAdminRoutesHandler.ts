@@ -232,15 +232,13 @@ export default class SentenceTypeAdminRoutesHandler {
   }
 
   private stripEmptyStringToNull(createSentenceType: CreateSentenceType): CreateSentenceType {
-    let mapped: CreateSentenceType
-    Object.keys(createSentenceType).forEach(key => {
-      const keyWithType = key as keyof typeof createSentenceType
-      const value = createSentenceType[keyWithType]
-      if (typeof value === 'string' && value === '') {
-        mapped = { ...mapped, [keyWithType]: null }
+    return Object.keys(createSentenceType).reduce((acc, key) => {
+      const value = createSentenceType[key]
+      if (typeof value !== 'string' || value !== '') {
+        acc[key] = value
       }
-    })
-    return mapped
+      return acc
+    }, {} as CreateSentenceType)
   }
 
   private formatDateElse(date: string, fallback: string): string {

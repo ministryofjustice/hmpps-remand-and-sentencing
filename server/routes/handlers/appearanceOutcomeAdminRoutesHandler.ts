@@ -6,6 +6,7 @@ import {
   FieldErrorErrorResponse,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import trimForm from '../../utils/trim'
+import ReferenceDataJourneyUrls from '../data/ReferenceDataJourneyUrls'
 
 export default class AppearanceOutcomeAdminRoutesHandler {
   constructor(private readonly refDataService: RefDataService) {}
@@ -22,6 +23,7 @@ export default class AppearanceOutcomeAdminRoutesHandler {
       appearanceOutcomes,
       chargeOutcomeNames,
       successMessage: req.flash('successMessage')[0],
+      backLink: ReferenceDataJourneyUrls.home(),
     })
   }
 
@@ -44,6 +46,7 @@ export default class AppearanceOutcomeAdminRoutesHandler {
       sortedChargeOutcomes,
       createAppearanceOutcome,
       errors: req.flash('errors') || [],
+      backLink: ReferenceDataJourneyUrls.viewAppearanceOutcomes(),
     })
   }
 
@@ -53,7 +56,7 @@ export default class AppearanceOutcomeAdminRoutesHandler {
       await this.refDataService.createAppearanceOutcome(createAppearanceOutcome, req.user.username)
       await this.refDataService.clearAppearanceOutcomeCache()
       req.flash('successMessage', 'appearance outcome successfully created')
-      return res.redirect('/admin/appearance-outcomes')
+      return res.redirect(ReferenceDataJourneyUrls.viewAppearanceOutcomes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError
@@ -98,6 +101,7 @@ export default class AppearanceOutcomeAdminRoutesHandler {
       sortedChargeOutcomes,
       updateAppearanceOutcome,
       errors: req.flash('errors') || [],
+      backLink: ReferenceDataJourneyUrls.viewAppearanceOutcomes(),
     })
   }
 
@@ -112,7 +116,7 @@ export default class AppearanceOutcomeAdminRoutesHandler {
       )
       await this.refDataService.clearAppearanceOutcomeCache()
       req.flash('successMessage', 'appearance outcome successfully updated')
-      return res.redirect('/admin/appearance-outcomes')
+      return res.redirect(ReferenceDataJourneyUrls.viewAppearanceOutcomes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError

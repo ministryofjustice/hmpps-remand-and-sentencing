@@ -6,6 +6,7 @@ import type {
   FieldErrorErrorResponse,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import trimForm from '../../utils/trim'
+import ReferenceDataJourneyUrls from '../data/ReferenceDataJourneyUrls'
 
 export default class ChargeOutcomeAdminRoutesHandler {
   constructor(private readonly refDataService: RefDataService) {}
@@ -15,6 +16,7 @@ export default class ChargeOutcomeAdminRoutesHandler {
     return res.render('pages/referenceData/chargeOutcome/index', {
       chargeOutcomes,
       successMessage: req.flash('successMessage')[0],
+      backLink: ReferenceDataJourneyUrls.home(),
     })
   }
 
@@ -30,6 +32,7 @@ export default class ChargeOutcomeAdminRoutesHandler {
       statuses,
       createChargeOutcome,
       errors: req.flash('errors') || [],
+      backLink: ReferenceDataJourneyUrls.viewChargeOutcomes(),
     })
   }
 
@@ -39,7 +42,7 @@ export default class ChargeOutcomeAdminRoutesHandler {
       await this.refDataService.createChargeOutcome(createChargeOutcome, req.user.username)
       await this.refDataService.clearChargeOutcomeCache()
       req.flash('successMessage', 'charge outcome successfully created')
-      return res.redirect('/admin/charge-outcomes')
+      return res.redirect(ReferenceDataJourneyUrls.viewChargeOutcomes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError
@@ -75,6 +78,7 @@ export default class ChargeOutcomeAdminRoutesHandler {
       statuses,
       updateChargeOutcome,
       errors: req.flash('errors') || [],
+      backLink: ReferenceDataJourneyUrls.viewChargeOutcomes(),
     })
   }
 
@@ -85,7 +89,7 @@ export default class ChargeOutcomeAdminRoutesHandler {
       await this.refDataService.updateChargeOutcome(chargeOutcomeUuid, updateChargeOutcome, req.user.username)
       await this.refDataService.clearChargeOutcomeCache()
       req.flash('successMessage', 'charge outcome successfully updated')
-      return res.redirect('/admin/charge-outcomes')
+      return res.redirect(ReferenceDataJourneyUrls.viewChargeOutcomes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError

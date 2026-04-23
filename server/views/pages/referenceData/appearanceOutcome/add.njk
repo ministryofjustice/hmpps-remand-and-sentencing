@@ -1,4 +1,4 @@
-{% extends "../../../partials/layout.njk" %}
+{% extends "../../../partials/referenceDataBackLinkLayout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -203,12 +203,15 @@
                     ]
                 }) }}
 
-                {{ govukButton({
-                    text: "Save and continue",
-                    attributes: {
-                        'data-qa': 'continue-button'
-                    }
-                }) }}
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Save and continue",
+                        attributes: {
+                            'data-qa': 'continue-button'
+                        }
+                    }) }}
+                    <a class="govuk-link" href="{{ backLink }}">Cancel</a>
+                </div>
 
             </form>
         </div>

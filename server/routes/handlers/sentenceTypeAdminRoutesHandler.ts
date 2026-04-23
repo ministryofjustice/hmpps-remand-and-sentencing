@@ -11,6 +11,7 @@ import {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import trimForm from '../../utils/trim'
 import validate from '../../validation/validation'
+import ReferenceDataJourneyUrls from '../data/ReferenceDataJourneyUrls'
 
 export default class SentenceTypeAdminRoutesHandler {
   constructor(private readonly refDataService: RefDataService) {}
@@ -33,6 +34,7 @@ export default class SentenceTypeAdminRoutesHandler {
         })
         .sort((a, b) => a.description.localeCompare(b.description)),
       successMessage: req.flash('successMessage')[0],
+      backLink: ReferenceDataJourneyUrls.home(),
     })
   }
 
@@ -58,6 +60,7 @@ export default class SentenceTypeAdminRoutesHandler {
       classifications,
       createSentenceType,
       errors: req.flash('errors') || [],
+      backLink: ReferenceDataJourneyUrls.viewSentenceTypes(),
     })
   }
 
@@ -67,7 +70,7 @@ export default class SentenceTypeAdminRoutesHandler {
     try {
       await this.refDataService.createSentenceType(createSentenceTypeRequest, req.user.username)
       req.flash('successMessage', 'sentence type successfully created')
-      return res.redirect('/admin/sentence-type')
+      return res.redirect(ReferenceDataJourneyUrls.viewSentenceTypes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError
@@ -115,6 +118,7 @@ export default class SentenceTypeAdminRoutesHandler {
       classifications,
       updateSentenceType,
       errors: req.flash('errors') || [],
+      backLink: ReferenceDataJourneyUrls.viewSentenceTypes(),
     })
   }
 
@@ -125,7 +129,7 @@ export default class SentenceTypeAdminRoutesHandler {
     try {
       await this.refDataService.updateSentenceType(sentenceTypeUuid, updateSentenceTypeRequest, req.user.username)
       req.flash('successMessage', 'sentence type successfully updated')
-      return res.redirect('/admin/sentence-type')
+      return res.redirect(ReferenceDataJourneyUrls.viewSentenceTypes())
     } catch (e) {
       if (e instanceof SanitisedError) {
         const sanitisedError = e as SanitisedError
@@ -174,6 +178,7 @@ export default class SentenceTypeAdminRoutesHandler {
       sentenceTypes: sentenceTypes.sort((a, b) => a.displayOrder - b.displayOrder),
       chargeOutcomes: chargeOutcomes.chargeOutcomes,
       errors,
+      backLink: ReferenceDataJourneyUrls.viewSentenceTypes(),
     })
   }
 

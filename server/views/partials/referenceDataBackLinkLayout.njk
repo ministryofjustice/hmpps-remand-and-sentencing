@@ -1,0 +1,16 @@
+{% extends "./layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block beforeContent %}
+        <div class="govuk-grid-row" role="navigation">
+            {% if backLink.length %}
+                <div class="govuk-grid-column-one-half">
+                    {{ govukBackLink({
+                        text: "Back",
+                        href: backLink,
+                        attributes: {  'data-qa': 'back-link' }
+                    }) }}
+                </div>
+            {% endif %}
+        </div>
+{% endblock %}

@@ -31,6 +31,10 @@ describe('GET Offence Sentence Type', () => {
         description: 'A sentence type',
         classification: 'STANDARD',
         displayOrder: 10,
+        nomisCjaCode: '2020',
+        nomisSentenceCalcType: 'IMP',
+        status: 'ACTIVE',
+        isRecallable: true,
       },
     ])
     return request(app)

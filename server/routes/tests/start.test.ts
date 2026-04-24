@@ -65,6 +65,7 @@ const setupCourtCase = () => {
         mergedFromCases: [],
         allAppearancesHaveRecall: false,
         firstDayInCustodyWarrantType: 'NON_SENTENCING',
+        canAppeal: false,
       },
     ],
     number: 0,

@@ -16,6 +16,7 @@ import appearanceOutcomeDataAdminRoutes from './appearanceOutcomeDataAdminRoutes
 import sentenceTypeDataAdminRoutes from './sentenceTypeDataAdminRoutes'
 import ReplicateChargeRoutes from './replicateChargeRoutes'
 import AggravatingFactorsRoutes from './aggravatingFactorsRoutes'
+import AppealsRoutes from './appealsRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -112,6 +113,14 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.auditService,
     services.aggravatingFactorsService,
+  )
+
+  const appealsRoutes = new AppealsRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
   )
 
   router.get('/', async (req, res, next) => {
@@ -960,6 +969,16 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/aggravating-factors/submit-check-aggravating-factors-answers',
     aggravatingFactorsRoutes.submitCheckAggravatingFactorsAnswers,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/new-journey',
+    appealsRoutes.newJourney,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/task-list',
+    appealsRoutes.taskList,
   )
 
   return router

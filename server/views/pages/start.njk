@@ -297,15 +297,24 @@
                         }) %}
                         {% endif %}
 
-                        {% if courtCaseDetails.warrantType !== 'SENTENCING' %}
-                        {% set _ = actions.push({
-                            href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/new-journey",
-                            text: "Add hearing",
-                            visuallyHiddenText: "Add hearing",
+                        {% if courtCaseDetails.canAppeal %}
+                            {% set _ = actions.push({
+                            href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/appeals/new-journey",
+                            text: "Add appeal",
+                            visuallyHiddenText: "Add appeal",
                             attributes: {
-                            'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
+                            'data-qa': 'add-appeals-link-' + courtCaseDetails.courtCaseUuid
                             }
                         }) %}
+                        {% elif courtCaseDetails.warrantType !== 'SENTENCING' %}
+                            {% set _ = actions.push({
+                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/new-journey",
+                                text: "Add hearing",
+                                visuallyHiddenText: "Add hearing",
+                                attributes: {
+                                'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
+                                }
+                            }) %}
                         {% endif %}
                         {{
                             govukSummaryList({

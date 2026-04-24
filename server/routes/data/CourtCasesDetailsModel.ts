@@ -56,6 +56,8 @@ export default class CourtCasesDetailsModel {
 
   newAppearanceUuid: string
 
+  canAppeal: boolean
+
   constructor(pagedCourtCase: PagedCourtCase, courtMap: { [key: string]: string }) {
     let titleValue = courtMap[pagedCourtCase.latestCourtAppearance?.courtCode]
     if (pagedCourtCase.latestCourtAppearance?.caseReference) {
@@ -117,5 +119,6 @@ export default class CourtCasesDetailsModel {
     this.mergedToCase = pagedCourtCase.mergedToCase
     this.newAppearanceUuid =
       pagedCourtCase.latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid ?? crypto.randomUUID()
+    this.canAppeal = pagedCourtCase.canAppeal && config.featureToggles.appeals
   }
 }

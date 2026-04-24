@@ -2186,7 +2186,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 11:55:59.274495364 */
+      /** @example 13:38:20.574572 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2323,7 +2323,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:55:59.274495364 */
+      /** @example 13:38:20.574572 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -3234,7 +3234,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:55:59.274495364 */
+      /** @example 13:38:20.574572 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3522,7 +3522,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 11:55:59.274495364 */
+      /** @example 13:38:20.574572 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -3545,7 +3545,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:55:59.274495364 */
+      /** @example 13:38:20.574572 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -3600,7 +3600,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 11:55:59.274495364 */
+      /** @example 13:38:20.574572 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -3611,7 +3611,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:55:59.274495364 */
+      /** @example 13:38:20.574572 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -3726,15 +3726,15 @@ export interface components {
       sort?: string[]
     }
     PageableObject: {
-      /** Format: int64 */
-      offset?: number
-      sort?: components['schemas']['SortObject']
       unpaged?: boolean
-      /** Format: int32 */
-      pageSize?: number
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      paged?: boolean
+      /** Format: int32 */
+      pageSize?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int64 */
+      offset?: number
     }
     PagedAppearancePeriodLength: {
       /** Format: uuid */
@@ -3797,6 +3797,7 @@ export interface components {
       allAppearancesHaveRecall: boolean
       mergedToCase?: components['schemas']['PagedMergedToCase'] | null
       firstDayInCustodyWarrantType: string
+      canAppeal: boolean
     }
     PagedLatestCourtAppearance: {
       /** Format: uuid */
@@ -3836,7 +3837,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 11:55:59.274495364 */
+      /** @example 13:38:20.574572 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -3909,25 +3910,25 @@ export interface components {
       total?: number
       /** Format: int64 */
       prisonerCourtCaseTotal: number
-      last?: boolean
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      last?: boolean
+      sort?: components['schemas']['SortObject']
+      first?: boolean
+      /** Format: int32 */
+      numberOfElements?: number
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
-      first?: boolean
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
       empty?: boolean
     }
     SortObject: {
-      empty?: boolean
-      sorted?: boolean
       unsorted?: boolean
+      sorted?: boolean
+      empty?: boolean
     }
     DeleteRecallResponse: {
       /** Format: uuid */
@@ -7142,7 +7143,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SentenceType'][]
+          'application/json': components['schemas']['SentenceTypeDetails'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -7151,7 +7152,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SentenceType'][]
+          'application/json': components['schemas']['SentenceTypeDetails'][]
         }
       }
       /** @description Forbidden, requires an appropriate role */
@@ -7160,7 +7161,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SentenceType'][]
+          'application/json': components['schemas']['SentenceTypeDetails'][]
         }
       }
     }

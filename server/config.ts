@@ -185,5 +185,6 @@ export default {
       get('FEATURES_NON_SENTENCING_OUTCOME_APPLIED_ALL_ENABLED', false, requiredInProduction) === 'true',
     chargeOutcomeSentenceType:
       get('FEATURES_CHARGE_OUTCOME_SENTENCE_TYPE_ENABLED', false, requiredInProduction) === 'true',
+    appeals: get('FEATURES_APPEALS_ENABLED', false, requiredInProduction) === 'true',
   },
 }

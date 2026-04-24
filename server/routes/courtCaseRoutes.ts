@@ -651,6 +651,28 @@ export default class CourtCaseRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${appearanceReference}/confirm-delete?hasErrors=true`,
       )
     }
+
+    const auditDetails = {
+      courtCaseUuids: [courtCaseReference],
+      courtAppearanceUuids: [appearance.appearanceUuid],
+      chargesUuids: appearance.charges?.map(charge => charge.chargeUuid),
+      sentenceUuids: (appearance.charges ?? []).flatMap(charge =>
+        charge.sentence?.sentenceUuid ? [charge.sentence.sentenceUuid] : [],
+      ),
+      periodLengthUuids: (appearance.charges ?? [])
+        .flatMap(charge => charge.sentence?.periodLengths?.map(periodLength => periodLength.periodLengthUuid) ?? [])
+        .concat(appearance.overallSentenceLength?.periodLengthUuid)
+        .filter(uuid => uuid),
+    }
+
+    await this.auditService.logDeleteHearing({
+      who: username,
+      correlationId: req.id,
+      subjectType: 'PRISONER_ID',
+      subjectId: nomsId,
+      details: auditDetails,
+    })
+
     const lastAppearance = courtCaseDetails.appearances.length === 0
     const caseReference = courtCaseDetails.latestAppearance?.courtCaseReference ?? ''
 

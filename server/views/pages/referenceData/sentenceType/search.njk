@@ -134,34 +134,39 @@
             {% endcall %}
         </form>
         <div class="govuk-grid-row govuk-!-margin-top-8">
-            <div class="govuk-grid-column-full">
-            {{
-                govukTable({
-                    caption: "Sentence Types",
-                    captionClasses: "govuk-table__caption--m",
-                    head: [
-                        {
-                            text: "UUID"
-                        },
-                        {
-                            text: "Description"
-                        },
-                        {
-                            text: "Classification"
-                        },
-                        {
-                            text: "Hint text"
-                        },
-                        {
-                            text: "NOMIS CJA Code"
-                        },
-                        {
-                            text: "NOMIS Sentence Calc Type"
-                        }
-                    ],
-                    rows: tableRows
-                })
-            }}
+            <div class="govuk-grid-column-full" data-qa="content">
+            {% if tableRows.length %}
+                {{
+                    govukTable({
+                        caption: "Sentence Types",
+                        captionClasses: "govuk-table__caption--m",
+                        head: [
+                            {
+                                text: "UUID"
+                            },
+                            {
+                                text: "Description"
+                            },
+                            {
+                                text: "Classification"
+                            },
+                            {
+                                text: "Hint text"
+                            },
+                            {
+                                text: "NOMIS CJA Code"
+                            },
+                            {
+                                text: "NOMIS Sentence Calc Type"
+                            }
+                        ],
+                        rows: tableRows
+                    })
+                }}
+            {% elif searchParameters.searchSubmitted %}
+                <h3 class="govuk-heading-s">There are no matching sentence types</h3>
+                <p class="govuk-body">Check the search criteria entered and try again.</p>
+            {% endif %}
             </div>
         </div>
     </div>

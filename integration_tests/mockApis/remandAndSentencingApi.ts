@@ -4062,4 +4062,18 @@ export default {
       },
     })
   },
+
+  stubEmptySearchSentenceTypes: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/sentence-type/search',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [],
+      },
+    })
+  },
 }

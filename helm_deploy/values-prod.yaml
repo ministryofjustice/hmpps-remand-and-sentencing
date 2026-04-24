@@ -25,7 +25,7 @@ generic-service:
     BOOK_SECURE_MOVE_UI_URL: "https://bookasecuremove.service.justice.gov.uk"
     BOOK_VIDEO_LINK_UI_URL: "https://book-a-video-link.prison.service.justice.gov.uk"
     FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED: 'true'
-    FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED: 'false'
+    FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED: 'true'
     FEATURES_NON_SENTENCING_OUTCOME_APPLIED_ALL_ENABLED: 'true'
     FEATURES_CHARGE_OUTCOME_SENTENCE_TYPE_ENABLED: 'true'
 

@@ -24,6 +24,7 @@ export default class AppealsRoutes extends BaseRoutes {
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     const courtAppearanceUuid = appearanceReference
+    this.courtAppearanceService.initialiseAppeals(req.session, nomsId, courtAppearanceUuid)
     return res.redirect(
       AppealsJourneyUrls.taskList(
         nomsId,
@@ -42,6 +43,14 @@ export default class AppealsRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
+    let caseReferenceSet = !!courtAppearance.caseReferenceNumber
+    if (!caseReferenceSet) {
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        req.user.username,
+        courtCaseReference,
+      )
+      caseReferenceSet = !!latestCourtAppearance.courtCaseReference
+    }
     return res.render('pages/appeals/task-list', {
       model: new AppealsTaskListModel(
         nomsId,
@@ -50,7 +59,7 @@ export default class AppealsRoutes extends BaseRoutes {
         courtCaseReference,
         appearanceReference,
         courtAppearance,
-        false,
+        caseReferenceSet,
       ),
     })
   }

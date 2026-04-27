@@ -8,6 +8,9 @@ context('Appeals journey', () => {
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtsByIds')
+    cy.task('stubGetLatestCourtAppearance', {
+      courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
+    })
     cy.signIn()
     cy.visit('/person/A1234AB')
   })

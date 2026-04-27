@@ -1,5 +1,7 @@
 import type { CourtAppearance, TaskListItemStatus } from 'models'
 import TaskListModel from './TaskListModel'
+import AppealsJourneyUrls from './AppealsJourneyUrls'
+import JourneyUrls from './JourneyUrls'
 
 export default class AppealsTaskListModel extends TaskListModel {
   constructor(
@@ -31,30 +33,58 @@ export default class AppealsTaskListModel extends TaskListModel {
     return 'Add hearing information'
   }
 
-  allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+  allAppearanceInformationFilledOut(_courtAppearance: CourtAppearance): boolean {
     return false
   }
 
-  anyAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+  anyAppearanceInformationFilledOut(_courtAppearance: CourtAppearance): boolean {
     return false
   }
 
-  getOffenceSentenceTitleText(courtAppearance: CourtAppearance): string {
+  getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
+    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+      return AppealsJourneyUrls.checkHearingAnswers(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
+    }
+    if (!caseReferenceSet) {
+      return JourneyUrls.reference(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
+    }
+    return JourneyUrls.selectReference(
+      this.nomsId,
+      this.addOrEditCourtCase,
+      this.courtCaseReference,
+      this.addOrEditCourtAppearance,
+      this.appearanceReference,
+    )
+  }
+
+  getOffenceSentenceTitleText(_courtAppearance: CourtAppearance): string {
     return 'Record appeal'
   }
 
-  getOffenceSentenceHref(courtAppearance: CourtAppearance): string | undefined {
+  getOffenceSentenceHref(_courtAppearance: CourtAppearance): string | undefined {
     return undefined
   }
 
-  getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
+  getOffenceSentenceStatus(_courtAppearance: CourtAppearance): TaskListItemStatus {
     return {
       text: 'Cannot start yet',
       classes: 'govuk-task-list__status--cannot-start-yet',
     }
   }
 
-  getCourtDocumentsHref(courtAppearance: CourtAppearance): string {
+  getCourtDocumentsHref(_courtAppearance: CourtAppearance): string {
     return undefined
   }
 }

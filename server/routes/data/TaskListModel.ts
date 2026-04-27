@@ -129,7 +129,7 @@ export default abstract class TaskListModel {
 
   abstract getOffenceSentenceTitleText(courtAppearance: CourtAppearance): string
 
-  abstract getOffenceSentenceHref(courtAppearance: CourtAppearance): string
+  abstract getOffenceSentenceHref(courtAppearance: CourtAppearance): string | undefined
 
   abstract getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus
 

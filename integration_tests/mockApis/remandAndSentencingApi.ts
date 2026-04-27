@@ -359,6 +359,7 @@ export default {
                   },
                 ],
               },
+              canAppeal: true,
             },
             {
               prisonerId: 'A1234AB',

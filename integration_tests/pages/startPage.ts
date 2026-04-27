@@ -49,4 +49,7 @@ export default class StartPage extends Page {
   notificationBannerHeading = (): PageElement => cy.get('[data-qa=notification-banner-heading]')
 
   notificationBannerContent = (): PageElement => cy.get('[data-qa=notification-banner-content]')
+
+  addAppealsLink = (courtCaseReference: string): PageElement =>
+    cy.get(`[data-qa=add-appeals-link-${courtCaseReference}]`)
 }

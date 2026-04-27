@@ -6,6 +6,7 @@ import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import BaseRoutes from './baseRoutes'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
+import AppealsTaskListModel from './data/AppealsTaskListModel'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -35,6 +36,22 @@ export default class AppealsRoutes extends BaseRoutes {
   }
 
   public taskList: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/appeals/task-list')
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    return res.render('pages/appeals/task-list', {
+      model: new AppealsTaskListModel(
+        nomsId,
+        addOrEditCourtCase,
+        addOrEditCourtAppearance,
+        courtCaseReference,
+        appearanceReference,
+        courtAppearance,
+        false,
+      ),
+    })
   }
 }

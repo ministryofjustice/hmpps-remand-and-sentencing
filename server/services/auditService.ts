@@ -62,4 +62,12 @@ export default class AuditService {
     }
     await this.hmppsAuditClient.sendMessage(event)
   }
+
+  async logDeleteHearing(eventDetails: AuditEventDetails) {
+    const event: AuditEvent = {
+      ...eventDetails,
+      what: 'DELETE_HEARING',
+    }
+    await this.hmppsAuditClient.sendMessage(event)
+  }
 }

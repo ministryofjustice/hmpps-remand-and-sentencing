@@ -653,7 +653,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
 
-    const lastAppearance = courtCaseDetails.appearances.length === 0
+    const lastAppearance = courtCaseDetails.appearances.length === 1
 
     const auditDetails = {
       courtCaseUuids: [courtCaseReference],

@@ -12,6 +12,8 @@
     "start:dev": "node esbuild/esbuild --watch",
     "start-feature": " node $NODE_DEBUG_OPTION --env-file=feature.env dist/server.js | bunyan -o short",
     "start-feature:dev": "node esbuild/esbuild --watch --env feature.env",
+    "start-feature-all-on": "node $NODE_DEBUG_OPTION --env-file=feature-all-on.env dist/server.js | bunyan -o short",
+    "start-feature-all-on:dev": "node esbuild/esbuild --watch --env feature-all-on.env",
     "lint": "eslint . --cache --max-warnings 0",
     "lint-fix": "eslint . --cache --max-warnings 0 --fix",
     "typecheck": "tsc && tsc -p integration_tests",

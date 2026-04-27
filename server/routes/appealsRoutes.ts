@@ -6,6 +6,7 @@ import OffenceService from '../services/offenceService'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import BaseRoutes from './baseRoutes'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
+import AppealsTaskListModel from './data/AppealsTaskListModel'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -23,6 +24,7 @@ export default class AppealsRoutes extends BaseRoutes {
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     const courtAppearanceUuid = appearanceReference
+    this.courtAppearanceService.initialiseAppeals(req.session, nomsId, courtAppearanceUuid)
     return res.redirect(
       AppealsJourneyUrls.taskList(
         nomsId,
@@ -35,6 +37,30 @@ export default class AppealsRoutes extends BaseRoutes {
   }
 
   public taskList: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/appeals/task-list')
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    let caseReferenceSet = !!courtAppearance.caseReferenceNumber
+    if (!caseReferenceSet) {
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        req.user.username,
+        courtCaseReference,
+      )
+      caseReferenceSet = !!latestCourtAppearance.courtCaseReference
+    }
+    return res.render('pages/appeals/task-list', {
+      model: new AppealsTaskListModel(
+        nomsId,
+        addOrEditCourtCase,
+        addOrEditCourtAppearance,
+        courtCaseReference,
+        appearanceReference,
+        courtAppearance,
+        caseReferenceSet,
+      ),
+    })
   }
 }

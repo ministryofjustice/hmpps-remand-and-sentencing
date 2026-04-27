@@ -83,7 +83,7 @@ For local running, start a wiremock instance by:
 
 `docker compose -f docker-compose-test.yml up -d`
 
-Then run the server in test mode by:
+Then run the server in test mode (with all feature toggles switched off) by:
 
 `npm run start-feature` (or `npm run start-feature:dev` to run with auto-restart on changes)
 
@@ -94,6 +94,10 @@ And then either, run tests in headless mode with:
 Or run tests with the cypress UI:
 
 `npm run int-test-ui`
+
+If all feature toggles are required to be on run the command:
+
+`npm run start-feature-all-on` (or `npm run start-feature-all-on:dev` to run with auto-restart on changes)
 
 ## Change log
 

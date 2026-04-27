@@ -19,7 +19,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-            folder: [aggravatingFactors, courtCase, documents, editOffence, offence, other, sentence, unknownRecallSentence, referenceDataAdmin]
+            folder: [aggravatingFactors, courtCase, documents, editOffence, offence, other, sentence, unknownRecallSentence, referenceDataAdmin, allFeaturesOn]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Use Node.js ${{ inputs.node_version_file }}
@@ -47,9 +47,21 @@ jobs:
       - name: Prepare and run integration tests
         id: integration-tests
         shell: bash
+        if: ${{ matrix.folder != 'allFeaturesOn' }}
         run: |
           nohup java -jar wiremock.jar --port 9091 &
           nohup npm run start-feature &
+          sleep 5
+          npm run int-test -- --spec 'integration_tests/e2e/${{ matrix.folder }}/**/*.cy.{js,jsx,ts,tsx}'
+        # continue-on-error: true
+        # replacing the above with if: always()
+      - name: Prepare and run all features on integration tests
+        id: all-features-on-integration-tests
+        shell: bash
+        if: ${{ matrix.folder == 'allFeaturesOn' }}
+        run: |
+          nohup java -jar wiremock.jar --port 9091 &
+          nohup npm run start-feature-all-on &
           sleep 5
           npm run int-test -- --spec 'integration_tests/e2e/${{ matrix.folder }}/**/*.cy.{js,jsx,ts,tsx}'
         # continue-on-error: true
@@ -79,7 +91,7 @@ jobs:
           list-suites: 'failed'
           list-tests: 'failed'
       - name: fail the action if the tests failed
-        if: ${{ steps.integration-tests.outcome == 'failure' }}
+        if: ${{ steps.integration-tests.outcome == 'failure' || steps.all-features-on-integration-tests.outcome == 'failure' }}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |

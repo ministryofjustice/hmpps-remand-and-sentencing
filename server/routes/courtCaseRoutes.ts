@@ -653,6 +653,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
 
+    const lastAppearance = courtCaseDetails.appearances.length === 0
+
     const auditDetails = {
       courtCaseUuids: [courtCaseReference],
       courtAppearanceUuids: [appearance.appearanceUuid],
@@ -666,15 +668,16 @@ export default class CourtCaseRoutes extends BaseRoutes {
         .filter(uuid => uuid),
     }
 
-    await this.auditService.logDeleteHearing({
-      who: username,
-      correlationId: req.id,
-      subjectType: 'PRISONER_ID',
-      subjectId: nomsId,
-      details: auditDetails,
-    })
-
-    const lastAppearance = courtCaseDetails.appearances.length === 0
+    await this.auditService.logDeleteHearing(
+      {
+        who: username,
+        correlationId: req.id,
+        subjectType: 'PRISONER_ID',
+        subjectId: nomsId,
+        details: auditDetails,
+      },
+      lastAppearance,
+    )
     const caseReference = courtCaseDetails.latestAppearance?.courtCaseReference ?? ''
 
     if (deleteHearingForm.deleteHearing === 'false') {

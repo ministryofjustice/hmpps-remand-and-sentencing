@@ -657,7 +657,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       return res.redirect(UnknownRecallSentenceJourneyUrls.landingPage(nomsId, sentenceUuids))
     }
 
-    return res.redirect(`${config.recordRecallsService.ui_url}/person/${nomsId}?unknownprerecalljourneycomplete=true`)
+    return res.redirect(`${config.recordRecallsService.ui_url}/person/${nomsId}?unknownPreRecallJourney=true`)
   }
 
   public cancelCharge: RequestHandler = async (req, res): Promise<void> => {

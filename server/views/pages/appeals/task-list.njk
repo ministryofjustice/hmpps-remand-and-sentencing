@@ -1,0 +1,43 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - task list page" %}
+{% block content %}
+    {{ super() }}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">
+                {{ model.pageHeading }}
+            </h1>
+            <h2 class="govuk-heading-m">
+                Enter information from the appeal order
+            </h2>
+            <p class="govuk-body">You must enter the information exactly as it is written on the warrant.</p>
+            {{ govukTaskList({
+                classes: "govuk-!-margin-top-7",
+                items: model.items
+            }) }}
+            <h2 class="govuk-heading-m">
+                {{ model.finishHeading }}
+            </h2>
+            <p class="govuk-body">Once you have finished adding all the information, select ‘Finish and save’. You will
+                not be able to return to this page, but can edit the details in the Court cases tab.</p>
+            <div class="govuk-button-group">
+                <form method="post" autocomplete="off">
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    {{ govukButton({
+                        text: "Finish and save",
+                        disabled: model.isAllMandatoryItemsComplete() === false,
+                        preventDoubleClick: true,
+                        attributes: {
+                            "data-qa": "continue-button"
+                        }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl, false) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

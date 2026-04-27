@@ -71,6 +71,7 @@ import NextCourtAppearanceJourneyUrls from './data/NextCourtAppearanceJourneyUrl
 import AddJourneyCancelDetailsModel from './data/AddJourneyCancelDetailsModel'
 import RepeatJourneyCancelDetailsModel from './data/RepeatJourneyCancelDetailsModel'
 import EditJourneyCancelDetailsModel from './data/EditJourneyCancelDetailsModel'
+import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -825,6 +826,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
         addOrEditCourtAppearance,
         appearanceReference,
       )
+    } else if (warrantType === 'APPEAL') {
+      backLink = AppealsJourneyUrls.taskList(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
     }
 
     return res.render('pages/courtAppearance/reference', {
@@ -914,6 +923,31 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ).referenceNumberSelect,
       }
     }
+    const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+    let backLink = JourneyUrls.taskList(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
+    if (submitToCheckAnswers) {
+      backLink = JourneyUrls.checkAppearanceAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    } else if (warrantType === 'APPEAL') {
+      backLink = AppealsJourneyUrls.taskList(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    }
     return res.render('pages/courtAppearance/select-reference', {
       nomsId,
       submitToCheckAnswers,
@@ -924,21 +958,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       referenceForm,
       errors: req.flash('errors') || [],
-      backLink: submitToCheckAnswers
-        ? JourneyUrls.checkAppearanceAnswers(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
-          )
-        : JourneyUrls.taskList(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
-          ),
+      backLink,
     })
   }
 

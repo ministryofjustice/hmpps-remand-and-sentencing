@@ -106,14 +106,15 @@ context('Court Case Delete Hearing Page', () => {
           'This is the only hearing in this court case. Deleting this hearing will also delete the court case.',
         )
 
-      cy.task('stubGetCourtCaseWithNoAppearances')
       cy.task('stubEmptySearchCourtCases', {})
 
       deleteAppearancePage.radioLabelSelector('true').click()
       deleteAppearancePage.continueButton().click()
       const startPage = Page.verifyOnPage(StartPage)
       startPage.notificationBannerHeading().should('contain.text', 'This court case has been deleted')
-      startPage.notificationBannerContent().should('contain.text', 'Court case at Accrington Youth Court on 15/12/2023')
+      startPage
+        .notificationBannerContent()
+        .should('contain.text', 'Court case C894623 at Accrington Youth Court on 15/12/2023')
     })
   })
 })

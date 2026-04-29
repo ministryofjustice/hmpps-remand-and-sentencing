@@ -15,6 +15,7 @@ import type {
   CourtCaseSelectCourtNameForm,
   CourtCaseSelectReferenceForm,
   CourtCaseWarrantDateForm,
+  CriminalOfficeReferenceForm,
   DeleteDocumentForm,
   OffenceFinishedAddingForm,
   ReceivedCustodialSentenceForm,
@@ -1470,5 +1471,34 @@ export default class CourtAppearanceService {
     courtAppearance.warrantType = 'APPEAL'
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
+  }
+
+  setCriminalOfficeReference(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    criminalOfficeReferenceForm: CriminalOfficeReferenceForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      criminalOfficeReferenceForm,
+      {
+        referenceNumber: ['required', 'regex:/^[A-Za-z0-9\\/\\.\\- ]+$/'],
+      },
+      {
+        'required.referenceNumber': 'You must enter the Criminal Appeal Office reference',
+        'regex.referenceNumber': `html:<span aria-hidden='true' class="govuk-error-message">You can only use spaces, letters, numbers and symbols '/', '.' and '-' when entering a Criminal Appeal Office reference</span><span class="govuk-visually-hidden">You can only use spaces, letters, numbers, hyphens, forward slashes and full stops when entering a criminal appeal office reference.</span>`,
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      courtAppearance.criminalAppealOfficeReference = criminalOfficeReferenceForm.referenceNumber
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
   }
 }

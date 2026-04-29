@@ -981,5 +981,20 @@ export default function routes(services: Services): Router {
     appealsRoutes.taskList,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/criminal-office-reference',
+    appealsRoutes.getCriminalOfficeReference,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/criminal-office-reference',
+    appealsRoutes.submitCriminalOfficeReference,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/appeal-date',
+    appealsRoutes.getAppealDate,
+  )
+
   return router
 }

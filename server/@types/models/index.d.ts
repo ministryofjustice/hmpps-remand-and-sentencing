@@ -37,6 +37,7 @@ declare module 'models' {
     hasOverallSentenceLength?: string
     uploadedDocuments?: UploadedDocument[]
     documentUploadAccepted?: boolean
+    criminalAppealOfficeReference?: string
   }
 
   export interface Offence {

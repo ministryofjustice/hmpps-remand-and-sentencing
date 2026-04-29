@@ -904,6 +904,17 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
       )
     }
+    if (warrantType === 'APPEAL') {
+      return res.redirect(
+        AppealsJourneyUrls.criminalOfficeReference(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`,
     )
@@ -990,6 +1001,18 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (submitToCheckAnswers) {
         return res.redirect(
           JourneyUrls.checkAppearanceAnswers(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          ),
+        )
+      }
+      const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+      if (warrantType === 'APPEAL') {
+        return res.redirect(
+          AppealsJourneyUrls.criminalOfficeReference(
             nomsId,
             addOrEditCourtCase,
             courtCaseReference,

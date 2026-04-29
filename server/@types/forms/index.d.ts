@@ -243,4 +243,8 @@ declare module 'forms' {
     chargeOutcomeUuid?: string
     searchSubmitted?: string
   }
+
+  export interface CriminalOfficeReferenceForm {
+    referenceNumber?: string
+  }
 }

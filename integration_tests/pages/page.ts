@@ -22,7 +22,6 @@ export default abstract class Page {
 
     if (!this.skipAxe()) {
       cy.injectAxe()
-
       // ✅ run axe manually (no assertion, just logging)
       cy.window({ log: false }).then(win => {
         return win.axe.run().then(results => {

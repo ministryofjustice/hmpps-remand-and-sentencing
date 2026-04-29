@@ -1,0 +1,35 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Add a Criminal Appeal Office reference number" %}
+
+{% block pageContent %}
+    {{ super() }}
+            <form method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                  {% include "../../partials/hearingCaption.njk" %}
+                {{ govukInput({
+                    label: {
+                        text: "Enter the Criminal Appeal Office reference number",
+                        classes: "govuk-label--l",
+                        isPageHeading: true
+                    },
+                    id: "referenceNumber",
+                    name: "referenceNumber",
+                    errorMessage: errors | findError('referenceNumber'),
+                    classes: 'govuk-input--width-10',
+                    value: courtCaseReferenceForm.referenceNumber
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
+            </form>
+{% endblock %}

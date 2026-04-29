@@ -1,4 +1,6 @@
+import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
+import CriminalOfficeReferencePage from '../../pages/CriminalOfficeReferencePage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
 
@@ -35,5 +37,12 @@ context('Appeals journey', () => {
           status: 'Cannot start yet',
         },
       ])
+    courtCaseTaskListPage.hearingInformationLink().click()
+    const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
+    courtCaseSelectReferencePage.radioLabelSelector('true').click()
+    courtCaseSelectReferencePage.continueButton().click()
+    const criminalOfficeReferencePage = Page.verifyOnPage(CriminalOfficeReferencePage)
+    criminalOfficeReferencePage.input().type('A12345')
+    criminalOfficeReferencePage.continueButton().click()
   })
 })

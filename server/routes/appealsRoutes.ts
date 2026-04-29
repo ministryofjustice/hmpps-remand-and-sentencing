@@ -55,6 +55,11 @@ export default class AppealsRoutes extends BaseRoutes {
       caseReferenceSet = !!latestCourtAppearance.courtCaseReference
     }
     return res.render('pages/appeals/task-list', {
+      nomsId,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      courtCaseReference,
+      appearanceReference,
       model: new AppealsTaskListModel(
         nomsId,
         addOrEditCourtCase,

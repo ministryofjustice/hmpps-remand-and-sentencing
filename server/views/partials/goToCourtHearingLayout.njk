@@ -22,7 +22,11 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-!-margin-top-8">
-                <a href="/person/{{ nomsId }}/{{addOrEditCourtCase}}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{ appearanceReference }}/task-list"
+                {% set backToCourtHearingHref = "/person/" +  nomsId + "/" + addOrEditCourtCase +"/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/task-list"%}
+                {% if courtAppearance and courtAppearance.warrantType === 'APPEAL' %}
+                    {% set backToCourtHearingHref = "/person/" +  nomsId + "/" + addOrEditCourtCase +"/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/task-list"%}
+                {% endif %}
+                <a href="{{ backToCourtHearingHref }}"
                    class="govuk-link govuk-body-m"
                    data-qa="return-to-appearance-link">
                   Go back to court hearing

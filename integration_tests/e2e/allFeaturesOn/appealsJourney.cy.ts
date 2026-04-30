@@ -1,3 +1,4 @@
+import AppealCourtNamePage from '../../pages/AppealCourtNamePage'
 import AppealDatePage from '../../pages/AppealDatePage'
 import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
@@ -54,5 +55,10 @@ context('Appeals journey', () => {
     appealDatePage.monthDateInput('appealDate').type('5')
     appealDatePage.yearDateInput('appealDate').type('2023')
     appealDatePage.continueButton().click()
+    const appealCourtNamePage = Page.verifyOnPage(AppealCourtNamePage)
+    appealCourtNamePage.autoCompleteInput().type('cou')
+    appealCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
+    appealCourtNamePage.firstAutoCompleteOption().click()
+    appealCourtNamePage.continueButton().click()
   })
 })

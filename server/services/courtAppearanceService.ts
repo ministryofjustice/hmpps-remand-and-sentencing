@@ -1,5 +1,6 @@
 import type { CourtAppearance, Offence, SentenceLength, UploadedDocument } from 'models'
 import type {
+  AppealCourtNameForm,
   AppealDateForm,
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
@@ -1571,6 +1572,30 @@ export default class CourtAppearanceService {
         // eslint-disable-next-line no-param-reassign
         session.courtAppearances[nomsId] = courtAppearance
       }
+    }
+    return errors
+  }
+
+  setAppealCourtName(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    appealCourtNameForm: AppealCourtNameForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      appealCourtNameForm,
+      { courtCode: 'required' },
+      { 'required.courtCode': 'You must enter the court that heard the appeal' },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      courtAppearance.courtCode = appealCourtNameForm.courtCode
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
     }
     return errors
   }

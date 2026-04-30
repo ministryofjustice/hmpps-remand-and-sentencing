@@ -45,6 +45,18 @@ export default class AppealsJourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/appeal-court${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
+  static overallCaseOutcome = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    hasErrors?: string,
+    submitToCheckAnswers?: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/overall-case-outcome${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  }
+
   static checkHearingAnswers = (
     nomsId: string,
     addOrEditCourtCase: string,

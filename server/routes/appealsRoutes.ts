@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import type { CriminalOfficeReferenceForm } from 'forms'
+import type { AppealDateForm, CriminalOfficeReferenceForm } from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -121,6 +121,7 @@ export default class AppealsRoutes extends BaseRoutes {
       courtCaseReference,
       addOrEditCourtAppearance,
       appearanceReference,
+      criminalOfficeReferenceForm,
       errors: req.flash('errors') || [],
       backLink,
       showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
@@ -129,7 +130,7 @@ export default class AppealsRoutes extends BaseRoutes {
 
   public submitCriminalOfficeReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
     const criminalOfficeReferenceForm = trimForm<CriminalOfficeReferenceForm>(req.body)
     const errors = this.courtAppearanceService.setCriminalOfficeReference(
       req.session,
@@ -147,7 +148,8 @@ export default class AppealsRoutes extends BaseRoutes {
           courtCaseReference,
           addOrEditCourtAppearance,
           appearanceReference,
-          true,
+          'true',
+          submitToCheckAnswers,
         ),
       )
     }
@@ -162,7 +164,6 @@ export default class AppealsRoutes extends BaseRoutes {
         ),
       )
     }
-    const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       return res.redirect(
         AppealsJourneyUrls.checkHearingAnswers(
@@ -186,6 +187,120 @@ export default class AppealsRoutes extends BaseRoutes {
   }
 
   public getAppealDate: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/appeals/appeal-date')
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query
+    const appealDateForm = (req.flash('appealDateForm')[0] || {}) as AppealDateForm
+    let appealDateDay: number | string = appealDateForm['appealDate-day']
+    let appealDateMonth: number | string = appealDateForm['appealDate-month']
+    let appealDateYear: number | string = appealDateForm['appealDate-year']
+    const warrantDateValue = this.courtAppearanceService.getWarrantDate(req.session, nomsId, appearanceReference)
+    if (warrantDateValue && Object.keys(appealDateForm).length === 0) {
+      const appealDate = new Date(warrantDateValue)
+      appealDateDay = appealDate.getDate()
+      appealDateMonth = appealDate.getMonth() + 1
+      appealDateYear = appealDate.getFullYear()
+    }
+    let backLink = AppealsJourneyUrls.criminalOfficeReference(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      backLink = AppealsJourneyUrls.hearingDetails(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    } else if (submitToCheckAnswers) {
+      backLink = AppealsJourneyUrls.checkHearingAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    }
+    return res.render('pages/appeals/appeal-date', {
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      appealDateDay,
+      appealDateMonth,
+      appealDateYear,
+      errors: req.flash('errors') || [],
+      backLink,
+      showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+    })
+  }
+
+  public submitAppealDate: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
+    const appealDateForm = trimForm<AppealDateForm>(req.body)
+    const { username } = res.locals.user
+    const errors = await this.courtAppearanceService.setAppealDate(
+      req.session,
+      nomsId,
+      appearanceReference,
+      appealDateForm,
+      courtCaseReference,
+      username,
+    )
+    if (errors.length) {
+      req.flash('errors', errors)
+      req.flash('appealDateForm', { ...appealDateForm })
+      return res.redirect(
+        AppealsJourneyUrls.appealDate(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          'true',
+          submitToCheckAnswers,
+        ),
+      )
+    }
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      return res.redirect(
+        AppealsJourneyUrls.hearingDetails(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
+    if (submitToCheckAnswers) {
+      return res.redirect(
+        AppealsJourneyUrls.checkHearingAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
+      )
+    }
+    return res.redirect(
+      AppealsJourneyUrls.appealCourt(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
+    )
+  }
+
+  public getAppealCourt: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/appeals/appeal-court')
   }
 }

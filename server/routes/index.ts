@@ -996,5 +996,15 @@ export default function routes(services: Services): Router {
     appealsRoutes.getAppealDate,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/appeal-date',
+    appealsRoutes.submitAppealDate,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/appeal-court',
+    appealsRoutes.getAppealCourt,
+  )
+
   return router
 }

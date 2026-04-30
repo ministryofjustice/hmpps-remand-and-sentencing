@@ -15,9 +15,10 @@ export default class AppealsJourneyUrls {
     courtCaseUuid: string,
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
-    hasErrors?: boolean,
+    hasErrors?: string,
+    submitToCheckAnswers?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/criminal-office-reference${hasErrors ? '?hasErrors=true' : ''}`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/criminal-office-reference${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
   static appealDate = (
@@ -26,9 +27,22 @@ export default class AppealsJourneyUrls {
     courtCaseUuid: string,
     addOrEditCourtAppearance: string,
     courtAppearanceUuid: string,
-    hasErrors?: boolean,
+    hasErrors?: string,
+    submitToCheckAnswers?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/appeal-date${hasErrors ? '?hasErrors=true' : ''}`
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/appeal-date${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  }
+
+  static appealCourt = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    hasErrors?: string,
+    submitToCheckAnswers?: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/appeal-court${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
   static checkHearingAnswers = (
@@ -49,5 +63,16 @@ export default class AppealsJourneyUrls {
     courtAppearanceUuid: string,
   ) => {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/hearing-details`
+  }
+
+  private static getQueryParameters(hasErrors?: string, submitToCheckAnswers?: string): string {
+    const queryParameters = []
+    if (hasErrors) {
+      queryParameters.push('hasErrors=true')
+    }
+    if (submitToCheckAnswers) {
+      queryParameters.push('submitToCheckAnswers=true')
+    }
+    return queryParameters.length ? `?${queryParameters.join('&')}` : ''
   }
 }

@@ -3431,10 +3431,12 @@ export default {
     courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     offenceDate = '2000-01-01',
     latestRemandAppearanceDate = '2000-01-01',
+    latestSentenceAppearanceDate = null,
   }: {
     courtCaseUuid?: string
     offenceDate?: string
     latestRemandAppearanceDate?: string
+    latestSentenceAppearanceDate?: string | null
   }) {
     return stubFor({
       request: {
@@ -3447,6 +3449,7 @@ export default {
         jsonBody: {
           offenceDate,
           latestRemandAppearanceDate,
+          latestSentenceAppearanceDate,
         },
       },
     })

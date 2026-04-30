@@ -247,4 +247,10 @@ declare module 'forms' {
   export interface CriminalOfficeReferenceForm {
     referenceNumber?: string
   }
+
+  export interface AppealDateForm {
+    'appealDate-day'?: string
+    'appealDate-month'?: string
+    'appealDate-year'?: string
+  }
 }

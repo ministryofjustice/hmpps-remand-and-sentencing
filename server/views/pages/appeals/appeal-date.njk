@@ -1,0 +1,55 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Enter appeal date" %}
+
+{% block pageContent %}
+    {{ super() }}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          {% include "../../partials/hearingCaption.njk" %}
+        {{ govukDateInput({
+            id: "appeal-date",
+            namePrefix: "appealDate",
+            errorMessage: errors | findErrorsBeginningWith('appealDate'),
+            fieldset: {
+                legend: {
+                    text: "Enter the date of the appeal hearing",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            },
+            items: [
+                {
+                    id: 'appealDate-day',
+                    classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('appealDate-day') else ''),
+                    name:"day",
+                    value: appealDateDay
+                },
+                {
+                    id: 'appealDate-month',
+                    classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('appealDate-month') else ''),
+                    name:"month",
+                    value: appealDateMonth
+                },
+                {
+                    id: 'appealDate-year',
+                    classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('appealDate-year') else ''),
+                    name:"year",
+                    value: appealDateYear
+                }
+            ]
+        }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+            </div>
+    </form>
+{% endblock %}

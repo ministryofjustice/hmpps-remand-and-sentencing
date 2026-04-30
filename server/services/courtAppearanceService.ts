@@ -1,5 +1,6 @@
 import type { CourtAppearance, Offence, SentenceLength, UploadedDocument } from 'models'
 import type {
+  AppealDateForm,
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
@@ -1498,6 +1499,78 @@ export default class CourtAppearanceService {
       courtAppearance.criminalAppealOfficeReference = criminalOfficeReferenceForm.referenceNumber
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  async setAppealDate(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    appealDateForm: AppealDateForm,
+    courtCaseUuid: string,
+    username: string,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    let isValidWarrantDateRule = ''
+    if (appealDateForm['appealDate-day'] && appealDateForm['appealDate-month'] && appealDateForm['appealDate-year']) {
+      const appealDateString = toDateString(
+        appealDateForm['appealDate-year'],
+        appealDateForm['appealDate-month'],
+        appealDateForm['appealDate-day'],
+      )
+      isValidWarrantDateRule = `|isValidDate:${appealDateString}|isPastOrCurrentDate:${appealDateString}|isWithinLast100Years:${appealDateString}`
+    }
+    const errors = validate(
+      appealDateForm,
+      {
+        'appealDate-day': `required${isValidWarrantDateRule}`,
+        'appealDate-month': `required`,
+        'appealDate-year': `required`,
+      },
+      {
+        'required.appealDate-year': 'Appeal hearing date must include year',
+        'required.appealDate-month': 'Appeal hearing date must include month',
+        'required.appealDate-day': 'Appeal hearing date must include day',
+        'isValidDate.appealDate-day': 'This date does not exist.',
+        'isPastOrCurrentDate.appealDate-day': `The appeal hearing date cannot be a date in the future`,
+        'isWithinLast100Years.appealDate-day': 'All dates must be within the last 100 years from today’s date',
+      },
+    )
+
+    if (errors.length === 0) {
+      const appealDate = dayjs({
+        year: appealDateForm['appealDate-year'],
+        month: parseInt(appealDateForm['appealDate-month'], 10) - 1,
+        day: appealDateForm['appealDate-day'],
+      })
+      let latestSentencingAppearanceDate = null
+      const courtCaseValidationDates = await this.remandAndSentencingService.getValidationDatesForCourtCase(
+        courtCaseUuid,
+        username,
+        appearanceUuid,
+      )
+      if (courtCaseValidationDates.latestSentenceAppearanceDate) {
+        latestSentencingAppearanceDate = dayjs(courtCaseValidationDates.latestSentenceAppearanceDate)
+        if (appealDate.isBefore(latestSentencingAppearanceDate)) {
+          errors.push({
+            text: 'The appeal hearing date must be after the sentencing warrant date in the court case',
+            href: '#appealDate',
+          })
+        }
+      }
+
+      if (errors.length === 0) {
+        const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+        courtAppearance.warrantDate = appealDate.toDate()
+        // eslint-disable-next-line no-param-reassign
+        session.courtAppearances[nomsId] = courtAppearance
+      }
     }
     return errors
   }

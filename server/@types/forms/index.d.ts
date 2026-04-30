@@ -253,4 +253,9 @@ declare module 'forms' {
     'appealDate-month'?: string
     'appealDate-year'?: string
   }
+
+  export interface AppealCourtNameForm {
+    courtName?: string
+    courtCode?: string
+  }
 }

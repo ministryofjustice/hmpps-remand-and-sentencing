@@ -1,5 +1,10 @@
 import { RequestHandler } from 'express'
-import type { AppealCourtNameForm, AppealDateForm, CriminalOfficeReferenceForm } from 'forms'
+import type {
+  AppealCourtNameForm,
+  AppealDateForm,
+  AppealOverallCaseOutcomeForm,
+  CriminalOfficeReferenceForm,
+} from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -12,6 +17,8 @@ import JourneyUrls from './data/JourneyUrls'
 import trimForm from '../utils/trim'
 import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
+import RefDataService from '../services/refDataService'
+import { outcomeValueOrLegacy } from '../utils/utils'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -21,6 +28,7 @@ export default class AppealsRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
     private readonly courtRegisterService: CourtRegisterService,
+    private readonly refDataService: RefDataService,
   ) {
     super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
   }
@@ -156,29 +164,14 @@ export default class AppealsRoutes extends BaseRoutes {
         ),
       )
     }
-    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      return res.redirect(
-        AppealsJourneyUrls.hearingDetails(
-          nomsId,
-          addOrEditCourtCase,
-          courtCaseReference,
-          addOrEditCourtAppearance,
-          appearanceReference,
-        ),
-      )
-    }
-    if (submitToCheckAnswers) {
-      return res.redirect(
-        AppealsJourneyUrls.checkHearingAnswers(
-          nomsId,
-          addOrEditCourtCase,
-          courtCaseReference,
-          addOrEditCourtAppearance,
-          appearanceReference,
-        ),
-      )
-    }
-    return res.redirect(
+    return this.submitRedirect(
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      submitToCheckAnswers,
       AppealsJourneyUrls.appealDate(
         nomsId,
         addOrEditCourtCase,
@@ -270,29 +263,14 @@ export default class AppealsRoutes extends BaseRoutes {
         ),
       )
     }
-    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
-      return res.redirect(
-        AppealsJourneyUrls.hearingDetails(
-          nomsId,
-          addOrEditCourtCase,
-          courtCaseReference,
-          addOrEditCourtAppearance,
-          appearanceReference,
-        ),
-      )
-    }
-    if (submitToCheckAnswers) {
-      return res.redirect(
-        AppealsJourneyUrls.checkHearingAnswers(
-          nomsId,
-          addOrEditCourtCase,
-          courtCaseReference,
-          addOrEditCourtAppearance,
-          appearanceReference,
-        ),
-      )
-    }
-    return res.redirect(
+    return this.submitRedirect(
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      submitToCheckAnswers,
       AppealsJourneyUrls.appealCourt(
         nomsId,
         addOrEditCourtCase,
@@ -382,6 +360,147 @@ export default class AppealsRoutes extends BaseRoutes {
         ),
       )
     }
+    return this.submitRedirect(
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      submitToCheckAnswers,
+      AppealsJourneyUrls.overallCaseOutcome(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
+    )
+  }
+
+  public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query
+    let overallCaseOutcomeForm = (req.flash('overallCaseOutcomeForm')[0] || {}) as AppealOverallCaseOutcomeForm
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    if (Object.keys(overallCaseOutcomeForm).length === 0) {
+      overallCaseOutcomeForm = {
+        overallCaseOutcome: `${courtAppearance.appearanceOutcomeUuid}`,
+      }
+    }
+    const { appearanceOutcomeUuid } = courtAppearance
+    const caseOutcomes = await this.refDataService.getAllAppearanceOutcomes(req.user.username)
+    const outcomes = caseOutcomes
+      .filter(caseOutcome => caseOutcome.outcomeType === 'APPEAL')
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+    let legacyCaseOutcome
+    if (appearanceOutcomeUuid && !outcomes.map(outcome => outcome.outcomeUuid).includes(appearanceOutcomeUuid)) {
+      const outcome = await this.refDataService.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
+      legacyCaseOutcome = outcome.outcomeName
+    } else if (!appearanceOutcomeUuid && !res.locals.isAddCourtAppearance) {
+      legacyCaseOutcome = outcomeValueOrLegacy(undefined, courtAppearance.legacyData)
+    }
+    let backLink = AppealsJourneyUrls.appealCourt(
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+    )
+    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+      backLink = AppealsJourneyUrls.hearingDetails(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    } else if (submitToCheckAnswers) {
+      backLink = AppealsJourneyUrls.checkHearingAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      )
+    }
+    return res.render('pages/appeals/overall-case-outcome', {
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      overallCaseOutcomeForm,
+      legacyCaseOutcome,
+      outcomes,
+      errors: req.flash('errors') || [],
+      backLink,
+      showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+    })
+  }
+
+  public submitOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
+    const overallCaseOutcomeForm = trimForm<AppealOverallCaseOutcomeForm>(req.body)
+    const errors = this.courtAppearanceService.setAppealAppearanceOutcome(
+      req.session,
+      nomsId,
+      appearanceReference,
+      overallCaseOutcomeForm,
+    )
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('overallCaseOutcomeForm', { ...overallCaseOutcomeForm })
+      return res.redirect(
+        AppealsJourneyUrls.overallCaseOutcome(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          'true',
+          submitToCheckAnswers,
+        ),
+      )
+    }
+    return this.submitRedirect(
+      res,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      submitToCheckAnswers,
+      AppealsJourneyUrls.checkHearingAnswers(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
+    )
+  }
+
+  public getCheckHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/appeals/check-hearing-answers')
+  }
+
+  private submitRedirect(
+    res,
+    nomsId,
+    addOrEditCourtCase,
+    courtCaseReference,
+    addOrEditCourtAppearance,
+    appearanceReference,
+    submitToCheckAnswers,
+    fallbackUrl,
+  ) {
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         AppealsJourneyUrls.hearingDetails(
@@ -404,18 +523,6 @@ export default class AppealsRoutes extends BaseRoutes {
         ),
       )
     }
-    return res.redirect(
-      AppealsJourneyUrls.overallCaseOutcome(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-      ),
-    )
-  }
-
-  public getOverallCaseOutcome: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/appeals/overall-case-outcome')
+    return res.redirect(fallbackUrl)
   }
 }

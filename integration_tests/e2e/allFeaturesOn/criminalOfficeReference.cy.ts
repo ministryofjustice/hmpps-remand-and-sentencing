@@ -15,7 +15,7 @@ context('Criminal Office Reference page', () => {
     criminalOfficeReferencePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem You must enter the Criminal Appeal Office reference')
+      .should('equal', 'There is a problem You must enter the Criminal Appeal Office reference number')
   })
 
   it('submitting illegal characters results in an error', () => {
@@ -26,7 +26,7 @@ context('Criminal Office Reference page', () => {
       .trimTextContent()
       .should(
         'equal',
-        "There is a problem You can only use spaces, letters, numbers and symbols '/', '.' and '-' when entering a Criminal Appeal Office referenceYou can only use spaces, letters, numbers, hyphens, forward slashes and full stops when entering a criminal appeal office reference.",
+        "There is a problem You can only use spaces, letters, numbers and symbols '/', '.' and '-' when entering a Criminal Appeal Office reference numberYou can only use spaces, letters, numbers, hyphens, forward slashes and full stops when entering a criminal appeal office reference number.",
       )
   })
 })

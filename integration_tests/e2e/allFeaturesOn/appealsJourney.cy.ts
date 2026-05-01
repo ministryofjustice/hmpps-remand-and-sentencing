@@ -1,5 +1,6 @@
 import AppealCourtNamePage from '../../pages/AppealCourtNamePage'
 import AppealDatePage from '../../pages/AppealDatePage'
+import AppealOverallCaseOutcomePage from '../../pages/AppealOverallCaseOutcomePage'
 import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CriminalOfficeReferencePage from '../../pages/CriminalOfficeReferencePage'
@@ -60,5 +61,8 @@ context('Appeals journey', () => {
     appealCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     appealCourtNamePage.firstAutoCompleteOption().click()
     appealCourtNamePage.continueButton().click()
+    const appealOverallCaseOutcomePage = Page.verifyOnPage(AppealOverallCaseOutcomePage)
+    appealOverallCaseOutcomePage.radioLabelContains('Sentence varied').click()
+    appealOverallCaseOutcomePage.continueButton().click()
   })
 })

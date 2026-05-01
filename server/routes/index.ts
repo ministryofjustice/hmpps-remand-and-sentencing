@@ -122,6 +122,7 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.auditService,
     services.courtRegisterService,
+    services.refDataService,
   )
 
   router.get('/', async (req, res, next) => {
@@ -1015,6 +1016,16 @@ export default function routes(services: Services): Router {
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/overall-case-outcome',
     appealsRoutes.getOverallCaseOutcome,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/overall-case-outcome',
+    appealsRoutes.submitOverallCaseOutcome,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/check-hearing-answers',
+    appealsRoutes.getCheckHearingAnswers,
   )
 
   return router

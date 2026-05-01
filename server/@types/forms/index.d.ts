@@ -258,4 +258,8 @@ declare module 'forms' {
     courtName?: string
     courtCode?: string
   }
+
+  export interface AppealOverallCaseOutcomeForm {
+    overallCaseOutcome?: string
+  }
 }

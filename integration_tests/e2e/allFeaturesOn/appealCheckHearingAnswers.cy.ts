@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import AppealCheckHearingAnswersPage from '../../pages/AppealCheckHearingAnswersPage'
 import AppealCourtNamePage from '../../pages/AppealCourtNamePage'
 import AppealDatePage from '../../pages/AppealDatePage'
@@ -125,7 +124,7 @@ context('Appeal check hearing answers page', () => {
   })
 
   it('can edit court name and return back', () => {
-    cy.task('stubGetCourtById', { courtId: 'STHHPM', courtName: 'Southampton Magistrate Court'})
+    cy.task('stubGetCourtById', { courtId: 'STHHPM', courtName: 'Southampton Magistrate Court' })
     appealCheckHearingAnswersPage.editCourtNameLink().click()
     const appealCourtNamePage = Page.verifyOnPage(AppealCourtNamePage)
     appealCourtNamePage.autoCompleteInput().type('cou')

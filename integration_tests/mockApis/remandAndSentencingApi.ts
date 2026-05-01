@@ -2809,6 +2809,18 @@ export default {
             warrantType: 'SENTENCING',
             isSubList: false,
           },
+          {
+            outcomeUuid: 'cd8c02aa-0599-4eb3-9e73-c88836258be2',
+            outcomeName: 'Sentence varied',
+            nomisCode: '6677',
+            outcomeType: 'APPEAL',
+            displayOrder: 20,
+            relatedChargeOutcomeUuid: '34549557-b2f9-4c24-b850-5b70f096bd09',
+            dispositionCode: 'FINAL',
+            status: 'ACTIVE',
+            warrantType: 'APPEAL',
+            isSubList: false,
+          },
         ],
       },
     })

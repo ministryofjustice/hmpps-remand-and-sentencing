@@ -2,6 +2,7 @@ import type { CourtAppearance, Offence, SentenceLength, UploadedDocument } from 
 import type {
   AppealCourtNameForm,
   AppealDateForm,
+  AppealOverallCaseOutcomeForm,
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
@@ -1491,8 +1492,8 @@ export default class CourtAppearanceService {
         referenceNumber: ['required', 'regex:/^[A-Za-z0-9\\/\\.\\- ]+$/'],
       },
       {
-        'required.referenceNumber': 'You must enter the Criminal Appeal Office reference',
-        'regex.referenceNumber': `html:<span aria-hidden='true' class="govuk-error-message">You can only use spaces, letters, numbers and symbols '/', '.' and '-' when entering a Criminal Appeal Office reference</span><span class="govuk-visually-hidden">You can only use spaces, letters, numbers, hyphens, forward slashes and full stops when entering a criminal appeal office reference.</span>`,
+        'required.referenceNumber': 'You must enter the Criminal Appeal Office reference number',
+        'regex.referenceNumber': `html:<span aria-hidden='true' class="govuk-error-message">You can only use spaces, letters, numbers and symbols '/', '.' and '-' when entering a Criminal Appeal Office reference number</span><span class="govuk-visually-hidden">You can only use spaces, letters, numbers, hyphens, forward slashes and full stops when entering a criminal appeal office reference number.</span>`,
       },
     )
     if (errors.length === 0) {
@@ -1594,6 +1595,34 @@ export default class CourtAppearanceService {
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
       courtAppearance.courtCode = appealCourtNameForm.courtCode
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  setAppealAppearanceOutcome(
+    session: Partial<SessionData>,
+    nomsId: string,
+    appearanceUuid: string,
+    overallCaseOutcomeForm: AppealOverallCaseOutcomeForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      overallCaseOutcomeForm,
+      {
+        overallCaseOutcome: 'required',
+      },
+      {
+        'required.overallCaseOutcome': 'You must select the overall case outcome',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      courtAppearance.appearanceOutcomeUuid = overallCaseOutcomeForm.overallCaseOutcome
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }

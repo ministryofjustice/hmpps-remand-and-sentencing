@@ -1,3 +1,4 @@
+import AppealCheckHearingAnswersPage from '../../pages/AppealCheckHearingAnswersPage'
 import AppealCourtNamePage from '../../pages/AppealCourtNamePage'
 import AppealDatePage from '../../pages/AppealDatePage'
 import AppealOverallCaseOutcomePage from '../../pages/AppealOverallCaseOutcomePage'
@@ -26,7 +27,7 @@ context('Appeals journey', () => {
   it('fill in appeals journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppealsLink('261911e2-6346-42e0-b025-a806048f4d04').click()
-    const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -64,5 +65,32 @@ context('Appeals journey', () => {
     const appealOverallCaseOutcomePage = Page.verifyOnPage(AppealOverallCaseOutcomePage)
     appealOverallCaseOutcomePage.radioLabelContains('Sentence varied').click()
     appealOverallCaseOutcomePage.continueButton().click()
+    const appealCheckHearingAnswersPage = Page.verifyOnPage(AppealCheckHearingAnswersPage)
+    appealCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference number': 'C894623',
+      'Criminal Appeal Office reference number': 'A12345',
+      'Date of appeal hearing': '13/05/2023',
+      'Court name': 'Accrington Youth Court',
+      'Overall case outcome': 'Sentence varied',
+    })
+    appealCheckHearingAnswersPage.confirmAndContinueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Record appeal',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
   })
 })

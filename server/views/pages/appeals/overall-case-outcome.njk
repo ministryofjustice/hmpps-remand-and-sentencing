@@ -1,4 +1,4 @@
-{% extends "../../partials/goToCourtCaseHearingDetailsLayout.njk" %}
+{% extends "../../partials/hearingDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
@@ -13,17 +13,17 @@
 {% endset %}
 
 {% set radiosData = {
-                    id: "overallCaseOutcome",
-                    errorMessage: errors | findError('overallCaseOutcome'),
-                    name: "overallCaseOutcome",
-                    fieldset: {
-                        legend: {
-                            html: fieldSetHtml,
-                            classes: "govuk-fieldset__legend--l"
-                        }
-                    },
-                    items: []
-    } %}
+    id: "overallCaseOutcome",
+    errorMessage: errors | findError('overallCaseOutcome'),
+    name: "overallCaseOutcome",
+    fieldset: {
+        legend: {
+            html: fieldSetHtml,
+            classes: "govuk-fieldset__legend--l"
+        }
+    },
+    items: []
+} %}
 
 {% for caseOutcome in outcomes %}
     {%- set caseOutcomeRow = {
@@ -42,12 +42,12 @@
 
         {{ govukRadios(radiosData) }}
 
-<div class="govuk-button-group">
+        <div class="govuk-button-group">
             {{ govukButton({
                 text: "Continue",
                 attributes: {  'data-qa': 'continue-button' }
             }) }}
             {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
-</div>
+        </div>
     </form>
 {% endblock %}

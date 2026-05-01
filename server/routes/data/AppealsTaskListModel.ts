@@ -33,12 +33,22 @@ export default class AppealsTaskListModel extends TaskListModel {
     return 'Add hearing information'
   }
 
-  allAppearanceInformationFilledOut(_courtAppearance: CourtAppearance): boolean {
-    return false
+  allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+    return (
+      courtAppearance.warrantDate &&
+      courtAppearance.courtCode &&
+      courtAppearance.appearanceOutcomeUuid &&
+      courtAppearance.appearanceInformationAccepted
+    )
   }
 
-  anyAppearanceInformationFilledOut(_courtAppearance: CourtAppearance): boolean {
-    return false
+  anyAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
+    return (
+      courtAppearance.warrantDate !== undefined ||
+      courtAppearance.courtCode !== undefined ||
+      courtAppearance.appearanceOutcomeUuid !== undefined ||
+      courtAppearance.appearanceInformationAccepted
+    )
   }
 
   getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
@@ -73,18 +83,53 @@ export default class AppealsTaskListModel extends TaskListModel {
     return 'Record appeal'
   }
 
-  getOffenceSentenceHref(_courtAppearance: CourtAppearance): string | undefined {
-    return undefined
+  getOffenceSentenceHref(courtAppearance: CourtAppearance): string | undefined {
+    let href
+    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+      href = AppealsJourneyUrls.recordAppeal(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
+    }
+    return href
   }
 
-  getOffenceSentenceStatus(_courtAppearance: CourtAppearance): TaskListItemStatus {
+  getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
+    const appearanceInfoComplete = this.allAppearanceInformationFilledOut(courtAppearance)
+    if (courtAppearance.offenceSentenceAccepted) {
+      return {
+        text: 'Completed',
+      }
+    }
+    if (appearanceInfoComplete) {
+      return {
+        tag: {
+          text: 'Incomplete',
+          classes: 'govuk-tag--blue',
+        },
+      }
+    }
+
     return {
       text: 'Cannot start yet',
       classes: 'govuk-task-list__status--cannot-start-yet',
     }
   }
 
-  getCourtDocumentsHref(_courtAppearance: CourtAppearance): string {
-    return undefined
+  getCourtDocumentsHref(courtAppearance: CourtAppearance): string {
+    let href
+    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+      href = AppealsJourneyUrls.uploadCourtDocuments(
+        this.nomsId,
+        this.addOrEditCourtCase,
+        this.courtCaseReference,
+        this.addOrEditCourtAppearance,
+        this.appearanceReference,
+      )
+    }
+    return href
   }
 }

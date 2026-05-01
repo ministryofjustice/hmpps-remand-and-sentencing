@@ -1,0 +1,133 @@
+{% extends "../../partials/goToCourtHearingLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Check appeal hearing answers" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% include "../../partials/hearingCaption.njk" %}
+            <h1 class="govuk-heading-l">Check your answers</h1>
+
+            {{ govukSummaryList({
+                rows: [
+                    {
+                        key: {
+                            text: "Case reference number"
+                        },
+                        value: {
+                            text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered'
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "case reference",
+                                    attributes: {
+                                        'data-qa': 'edit-case-reference-link'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Criminal Appeal Office reference number"
+                        },
+                        value: {
+                            text: courtAppearance.criminalAppealOfficeReference
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/criminal-office-reference?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "criminal Appeal Office reference number",
+                                    attributes: {
+                                        'data-qa': 'edit-criminal-appeal-reference-link'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Date of appeal hearing"
+                        },
+                        value: {
+                            text: courtAppearance.warrantDate | formatDate
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/appeal-date?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "date of appeal hearing",
+                                    attributes: {
+                                        'data-qa': 'edit-appeal-date-link'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Court name"
+                        },
+                        value: {
+                            text: courtName
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/appeal-court?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "court name",
+                                    attributes: {
+                                        'data-qa': 'edit-court-name-link'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Overall case outcome"
+                        },
+                        value: {
+                            text: overallCaseOutcome
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/overall-case-outcome?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "overall case outcome",
+                                    attributes: {
+                                        'data-qa': 'edit-overall-case-outcome-link'
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }) }}
+
+            <form method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Confirm and continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{ super() }}
+{% endblock %}

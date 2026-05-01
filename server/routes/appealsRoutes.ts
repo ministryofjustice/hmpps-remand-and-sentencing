@@ -488,7 +488,41 @@ export default class AppealsRoutes extends BaseRoutes {
   }
 
   public getCheckHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/appeals/check-hearing-answers')
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { username } = req.user
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const [courtDetails, appearanceOutcome] = await Promise.all([
+      this.courtRegisterService.findCourtById(courtAppearance.courtCode, username),
+      this.refDataService.getAppearanceOutcomeByUuid(courtAppearance.appearanceOutcomeUuid, username),
+    ])
+
+    return res.render('pages/appeals/check-hearing-answers', {
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      courtName: courtDetails.courtName,
+      overallCaseOutcome: appearanceOutcome.outcomeName,
+    })
+  }
+
+  public submitCheckHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    this.courtAppearanceService.setAppearanceInformationAcceptedTrue(req.session, nomsId, appearanceReference)
+    return res.redirect(
+      AppealsJourneyUrls.taskList(
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+      ),
+    )
   }
 
   private submitRedirect(

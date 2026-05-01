@@ -67,6 +67,26 @@ export default class AppealsJourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/check-hearing-answers`
   }
 
+  static recordAppeal = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/record-appeal`
+  }
+
+  static uploadCourtDocuments = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/upload-court-documents`
+  }
+
   static hearingDetails = (
     nomsId: string,
     addOrEditCourtCase: string,

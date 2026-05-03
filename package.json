@@ -40,7 +40,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1037.0",
+    "@aws-sdk/client-sqs": "^3.1038.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.1",
     "@microsoft/applicationinsights-web": "^3.4.1",
     "@ministryofjustice/frontend": "^9.0.0",
@@ -94,7 +94,7 @@
     "@types/passport-oauth2": "^1.8.0",
     "@types/superagent": "^8.1.9",
     "@types/supertest": "^7.2.0",
-    "@typescript-eslint/parser": "8.59.0",
+    "@typescript-eslint/parser": "8.59.1",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "axe-core": "^4.11.3",

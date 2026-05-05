@@ -14,6 +14,7 @@ context('Appeals journey', () => {
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtsByIds')
+    cy.task('stubGetCourtById', {})
     cy.task('stubGetLatestCourtAppearance', {
       courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
     })
@@ -73,7 +74,7 @@ context('Appeals journey', () => {
       'Court name': 'Accrington Youth Court',
       'Overall case outcome': 'Sentence varied',
     })
-    appealCheckHearingAnswersPage.confirmAndContinueButton().click()
+    appealCheckHearingAnswersPage.continueButton().click()
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
     courtCaseTaskListPage
       .taskList()

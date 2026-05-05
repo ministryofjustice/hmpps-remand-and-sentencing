@@ -104,7 +104,7 @@ export function addCustomDataToRequests(
     envelope.data.baseData.properties = {
       ...properties,
       ...(username && { username }),
-      ...(prisonId && { prisonId }),
+      ...(prisonId && { caseloadId: prisonId }),
     }
   }
   return true

@@ -1028,5 +1028,10 @@ export default function routes(services: Services): Router {
     appealsRoutes.getCheckHearingAnswers,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/check-hearing-answers',
+    appealsRoutes.submitCheckHearingAnswers,
+  )
+
   return router
 }

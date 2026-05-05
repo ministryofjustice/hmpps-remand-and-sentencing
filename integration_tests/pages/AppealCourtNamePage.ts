@@ -6,4 +6,6 @@ export default class AppealCourtNamePage extends Page {
   }
 
   firstAutoCompleteOption = (): PageElement => cy.get('#court-name__option--0')
+
+  secondAutoCompleteOption = (): PageElement => cy.get('#court-name__option--1')
 }

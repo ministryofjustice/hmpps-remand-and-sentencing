@@ -2821,6 +2821,18 @@ export default {
             warrantType: 'APPEAL',
             isSubList: false,
           },
+          {
+            outcomeUuid: '390b505b-f5ee-4e5c-94b2-04c20bcab3ca',
+            outcomeName: 'Sentence quashed',
+            nomisCode: '6677',
+            outcomeType: 'APPEAL',
+            displayOrder: 20,
+            relatedChargeOutcomeUuid: '34549557-b2f9-4c24-b850-5b70f096bd09',
+            dispositionCode: 'INTERIM',
+            status: 'ACTIVE',
+            warrantType: 'APPEAL',
+            isSubList: false,
+          },
         ],
       },
     })

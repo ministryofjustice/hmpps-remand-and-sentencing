@@ -811,13 +811,23 @@ export default class CourtCaseRoutes extends BaseRoutes {
         )
       }
     } else if (submitToCheckAnswers) {
-      backLink = JourneyUrls.checkAppearanceAnswers(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-      )
+      if (warrantType === 'APPEAL') {
+        backLink = AppealsJourneyUrls.checkHearingAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
+      } else {
+        backLink = JourneyUrls.checkAppearanceAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
+      }
     } else if (
       this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) &&
       referenceNumberSelect !== undefined
@@ -894,6 +904,17 @@ export default class CourtCaseRoutes extends BaseRoutes {
     }
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
+      if (warrantType === 'APPEAL') {
+        return res.redirect(
+          AppealsJourneyUrls.checkHearingAnswers(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          ),
+        )
+      }
       return res.redirect(
         JourneyUrls.checkAppearanceAnswers(
           nomsId,

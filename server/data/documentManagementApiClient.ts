@@ -22,6 +22,7 @@ export default class DocumentManagementApiClient extends RestClient {
         fileToUpload: file,
         metadata: {
           prisonerId,
+          source: 'RemandSentencingUser',
         },
         headers: {
           'Service-Name': 'Remand and Sentencing',

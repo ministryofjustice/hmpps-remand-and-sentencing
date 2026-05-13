@@ -544,24 +544,24 @@ export default class AppealsRoutes extends BaseRoutes {
       appearanceReference,
     )
     const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
-    const sentenceTypeIds = Array.from(
-      new Set(
+    const sentenceTypeIds = [
+      ...new Set(
         courtAppearance.offences
           .filter(offence => offence.sentence?.sentenceTypeId)
           .map(offence => offence.sentence?.sentenceTypeId),
       ),
-    )
-    const offenceCodes = Array.from(
-      new Set(
+    ]
+    const offenceCodes = [
+      ...new Set(
         courtAppearance.offences
           .map(offence => offence.offenceCode)
           .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
       ),
-    )
-    const outcomeIds = Array.from(new Set(courtAppearance.offences.map(offence => offence.outcomeUuid)))
-    const courtIds = Array.from(
-      new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
-    )
+    ]
+    const outcomeIds = [...new Set(courtAppearance.offences.map(offence => offence.outcomeUuid))]
+    const courtIds = [
+      ...new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
+    ]
     const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
       this.manageOffencesService.getOffenceMap(
         offenceCodes,

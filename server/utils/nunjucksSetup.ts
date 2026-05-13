@@ -18,9 +18,11 @@ import dayjs from 'dayjs'
 import fs from 'fs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import {
+  findErrorsBeginningWith,
   formatDate,
   formatDateTime,
   formatLengthsWithoutPeriodOrder,
+  getAggravatingFactors,
   initialiseName,
   outcomeValueOrLegacy,
   periodLengthValueOrLegacy,
@@ -264,19 +266,49 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
   })
 
-  njkEnv.addFilter('getAggravatingFactors', (offence: Offence) => {
-    // If offence is null or undefined, return an empty list immediately
-    if (!offence) {
-      return []
-    }
+  njkEnv.addFilter('getAggravatingFactors', getAggravatingFactors)
 
-    const factors: string[] = []
-    if (offence.terrorRelated) {
-      factors.push('Offences aggravated by a terrorist connection')
-    }
-    if (offence.foreignPowerRelated) {
-      factors.push('Offences aggravated by foreign power condition being met')
-    }
-    return factors
-  })
+  njkEnv.addFilter(
+    'offenceToOffenceCard',
+    (
+      offence: Offence,
+      offenceId: string,
+      offenceMap: { [offenceCode: string]: string },
+      outcomeMap: { [key: string]: OffenceOutcome },
+      consecutiveToSentenceMap: { [key: string]: ConsecutiveToDetails },
+      sentenceTypeMap: { [sentenceTypeUuid: string]: string },
+      courtMap: { [courtId: string]: string },
+      errors: {
+        href: string
+        text: string
+        html: string
+      }[],
+      extraFields?: Record<string, never>,
+    ) => {
+      return {
+        offenceCode: offence.offenceCode,
+        offenceName: offenceMap[offence.offenceCode],
+        offenceStartDate: formatDate(offence.offenceStartDate),
+        offenceEndDate: formatDate(offence.offenceEndDate),
+        outcome: outcomeValueOrLegacy(outcomeMap[offence.outcomeUuid]?.outcomeName, offence.legacyData),
+        countNumber: offence.sentence?.countNumber,
+        lineNumber: offence.sentence?.legacyData?.nomisLineReference,
+        convictionDate: formatDate(offence.sentence?.convictionDate),
+        aggravatingFactors: getAggravatingFactors(offence),
+        isSentenced: offence.sentence,
+        periodLengths: offence.sentence?.periodLengths,
+        sentenceServeType: offence.sentence?.sentenceServeType,
+        consecutiveTo: consecutiveToSentenceMap[offence.sentence?.consecutiveToSentenceUuid],
+        sentenceType: sentenceTypeValueOrLegacy(
+          sentenceTypeMap[offence.sentence?.sentenceTypeId],
+          offence.sentence?.legacyData,
+        ),
+        fineAmount: offence.sentence?.fineAmount,
+        courtDetails: courtMap,
+        id: offenceId,
+        errorMessages: findErrorsBeginningWith(errors, offenceId),
+        ...extraFields,
+      }
+    },
+  )
 }

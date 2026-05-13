@@ -4,7 +4,6 @@ import config from '../config'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import {
   Charge,
-  CourtAppearanceLegacyData,
   PeriodLengthLegacyData,
   SentenceConsecutiveToDetails,
   SentencesToChainToResponse,
@@ -82,7 +81,7 @@ export const allPeriodLengthTypesEntered = (sentence: Sentence): boolean => {
   return expectedPeriodLengthTypes.every(expectedType => enteredPeriodLengthTypes.includes(expectedType))
 }
 
-export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: CourtAppearanceLegacyData) => {
+export const outcomeValueOrLegacy = (outcomeValue: string, legacyData: Record<string, never>) => {
   if (outcomeValue) {
     return outcomeValue
   }
@@ -318,4 +317,40 @@ export function sentencesToChainToResponseToOffenceDescriptions(
         .map(sentence => [sentence.offenceCode, sentence.chargeLegacyData.offenceDescription]),
     ),
   )
+}
+
+export const getAggravatingFactors = (offence: Offence) => {
+  // If offence is null or undefined, return an empty list immediately
+  if (!offence) {
+    return []
+  }
+
+  const factors: string[] = []
+  if (offence.terrorRelated) {
+    factors.push('Offences aggravated by a terrorist connection')
+  }
+  if (offence.foreignPowerRelated) {
+    factors.push('Offences aggravated by foreign power condition being met')
+  }
+  return factors
+}
+
+export const findErrorsBeginningWith = (
+  array: {
+    href: string
+    text: string
+    html: string
+  }[],
+  beginsWith: string,
+) => {
+  const allMessages = array
+    .filter(error => error.href.startsWith(`#${beginsWith}`))
+    .map(error => error.text)
+    .join(', ')
+  if (allMessages) {
+    return {
+      text: allMessages,
+    }
+  }
+  return null
 }

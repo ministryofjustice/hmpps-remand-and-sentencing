@@ -4086,4 +4086,61 @@ export default {
       },
     })
   },
+
+  stubGetSentencedCharges: ({
+    courtCaseUuid = '261911e2-6346-42e0-b025-a806048f4d04',
+  }: {
+    courtCaseUuid: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/sentenced-charges`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          charges: [
+            {
+              offenceCode: 'PS90037',
+              offenceStartDate: '2025-05-20',
+              outcome: {
+                outcomeUuid: '63920fee-e43a-45ff-a92d-4679f1af2527',
+                outcomeName: 'Imprisonment',
+              },
+              legacyData: null,
+              createdAt: '2023-10-12T14:00:00Z',
+              sentence: {
+                sentenceUuid: 'f327bc1d-610f-41ee-b700-410c08a9cefa',
+                chargeNumber: '1',
+                sentenceServeType: 'FORTHWITH',
+                consecutiveToSentenceUuid: null,
+                convictionDate: '2023-10-12',
+                sentenceType: null,
+                legacyData: {
+                  sentenceCalcType: 'A',
+                  sentenceCategory: 'B',
+                  sentenceTypeDesc: 'A NOMIS Sentence Type',
+                },
+                fineAmount: null,
+                periodLengths: [
+                  {
+                    periodLengthUuid: '88d80943-fb33-4e48-a694-2e4a980261d9',
+                    years: 1,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                    legacyData: null,
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
 }

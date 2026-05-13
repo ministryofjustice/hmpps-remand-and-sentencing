@@ -27,4 +27,6 @@ export default class CourtCaseTaskListPage extends Page {
     cy.get('p:contains("To save a draft of the court case, you must first complete the appearance information.")')
 
   submitDraftButton = (): PageElement => cy.get('[data-qa=submitDraft]')
+
+  recordAppealLink = (): PageElement => cy.get('a:contains("Record appeal")')
 }

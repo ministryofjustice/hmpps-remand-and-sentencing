@@ -24,6 +24,7 @@ context('Appeal check hearing answers page', () => {
       courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
       latestSentenceAppearanceDate: '2000-01-01',
     })
+    cy.task('stubGetSentencedCharges', {})
     cy.signIn()
     cy.visit('/person/A1234AB')
     const startPage = Page.verifyOnPage(StartPage)

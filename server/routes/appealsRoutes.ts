@@ -18,7 +18,8 @@ import trimForm from '../utils/trim'
 import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import RefDataService from '../services/refDataService'
-import { outcomeValueOrLegacy } from '../utils/utils'
+import { offencesToOffenceDescriptions, orderOffences, outcomeValueOrLegacy, sortByDateDesc } from '../utils/utils'
+import { chargeToOffence } from '../utils/mappingUtils'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -38,7 +39,16 @@ export default class AppealsRoutes extends BaseRoutes {
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
     const courtAppearanceUuid = appearanceReference
-    this.courtAppearanceService.initialiseAppeals(req.session, nomsId, courtAppearanceUuid)
+    const sentencedCharges = await this.remandAndSentencingService.getSentencedCharges(
+      courtCaseReference,
+      req.user.username,
+    )
+    const sessionOffences = sentencedCharges.charges
+      .sort((a, b) => {
+        return sortByDateDesc(b.createdAt, a.createdAt)
+      })
+      .map((sentencedCharge, index) => chargeToOffence(sentencedCharge, index))
+    this.courtAppearanceService.initialiseAppeals(req.session, nomsId, courtAppearanceUuid, sessionOffences)
     return res.redirect(
       AppealsJourneyUrls.taskList(
         nomsId,
@@ -523,6 +533,97 @@ export default class AppealsRoutes extends BaseRoutes {
         appearanceReference,
       ),
     )
+  }
+
+  public getRecordAppeals: RequestHandler = async (req, res): Promise<void> => {
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const { username } = req.user
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
+    const sentenceTypeIds = [
+      ...new Set(
+        courtAppearance.offences
+          .filter(offence => offence.sentence?.sentenceTypeId)
+          .map(offence => offence.sentence?.sentenceTypeId),
+      ),
+    ]
+    const offenceCodes = [
+      ...new Set(
+        courtAppearance.offences
+          .map(offence => offence.offenceCode)
+          .concat(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode)),
+      ),
+    ]
+    const outcomeIds = [...new Set(courtAppearance.offences.map(offence => offence.outcomeUuid))]
+    const courtIds = [
+      ...new Set(consecutiveToSentenceDetails.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode)),
+    ]
+    const [offenceMap, sentenceTypeMap, outcomeMap, courtMap] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(
+        offenceCodes,
+        username,
+        offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
+      ),
+      this.refDataService.getSentenceTypeMap(sentenceTypeIds, username),
+      this.refDataService.getChargeOutcomeMap(outcomeIds, username),
+      this.courtRegisterService.getCourtMap(courtIds, username),
+    ])
+
+    const offences = orderOffences(
+      courtAppearance.offences.map((offence, index) => {
+        return { ...offence, index }
+      }),
+    )
+
+    const [appealedOffences, otherOffences] = offences.reduce(
+      ([appealedList, otherList], offence) => {
+        return outcomeMap[offence.outcomeUuid].outcomeType === 'APPEAL'
+          ? [[...appealedList, offence], otherList]
+          : [appealedList, [...otherList, offence]]
+      },
+      [[], []],
+    )
+    const allSentenceUuids = offences
+      .map(offence => offence.sentence?.sentenceUuid)
+      .filter(sentenceUuid => sentenceUuid)
+    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
+      allSentenceUuids,
+      consecutiveToSentenceDetails,
+      offenceMap,
+      courtMap,
+    )
+    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
+      req,
+      nomsId,
+      offenceMap,
+      appearanceReference,
+    )
+    return res.render('pages/appeals/record-appeal', {
+      nomsId,
+      courtCaseReference,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      offenceMap,
+      sentenceTypeMap,
+      outcomeMap,
+      otherOffences,
+      appealedOffences,
+      courtMap,
+      consecutiveToSentenceMap: {
+        ...consecutiveToSentenceDetailsMap,
+        ...sessionConsecutiveToSentenceDetailsMap,
+      },
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public getSelectOffenceAppealOutcome: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/appeals/select-offence-appeal-outcome')
   }
 
   private submitRedirect(

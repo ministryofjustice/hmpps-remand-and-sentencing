@@ -1033,5 +1033,15 @@ export default function routes(services: Services): Router {
     appealsRoutes.submitCheckHearingAnswers,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/record-appeal',
+    appealsRoutes.getRecordAppeals,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/select-appeal-outcome',
+    appealsRoutes.getSelectOffenceAppealOutcome,
+  )
+
   return router
 }

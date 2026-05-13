@@ -32,6 +32,7 @@ import {
   SearchCourtCasesPage,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
+  SentencedCharges,
   SentenceDetails,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   SentencesToChainToResponse,
@@ -658,6 +659,15 @@ export default class RemandAndSentencingApiClient extends RestClient {
     return this.get(
       {
         path: '/sentence-type/charge-outcome/all',
+      },
+      asSystem(username),
+    )
+  }
+
+  async getSentencedCharges(courtCaseUuid: string, username: string): Promise<SentencedCharges> {
+    return this.get(
+      {
+        path: `/court-case/${courtCaseUuid}/sentenced-charges`,
       },
       asSystem(username),
     )

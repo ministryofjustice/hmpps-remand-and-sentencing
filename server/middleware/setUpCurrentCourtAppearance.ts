@@ -25,6 +25,13 @@ export default function setupCurrentCourtAppearance(
       courtAppearance.warrantType === 'SENTENCING'
 
     res.locals.warrantOrHearing = courtAppearance.warrantType === 'SENTENCING' ? 'warrant' : 'hearing'
+    let hearingDetailsPanelDateKey = 'Hearing date'
+    if (courtAppearance.warrantType === 'SENTENCING') {
+      hearingDetailsPanelDateKey = 'Warrant date'
+    } else if (courtAppearance.warrantType === 'APPEAL') {
+      hearingDetailsPanelDateKey = 'Appeal date'
+    }
+    res.locals.hearingDetailsPanelDateKey = hearingDetailsPanelDateKey
     const offenceCodes = Array.from(new Set(courtAppearance.offences.map(offence => offence.offenceCode)))
     res.locals.offenceNameMap = await manageOffenceService.getOffenceMap(
       offenceCodes,

@@ -12,6 +12,32 @@
     </dl>
 {% endset %}
 
+{% set hearingDetailsRows = [
+    {
+        key: { text: "Case reference" },
+        value: { text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered' },
+        classes: "offences-summary-card-court-details-row"
+    },
+    {
+        key: { text: "Court name" },
+        value: { text: courtAppearanceCourtName },
+        classes: "offences-summary-card-court-details-row"
+    },
+    {
+        key: { text: hearingDetailsPanelDateKey },
+        value: { text: courtAppearance.warrantDate | formatDate},
+        classes: "offences-summary-card-court-details-row"
+    }
+]%}
+
+{% if not hideOutcome %}
+    {% set hearingDetailsRows = hearingDetailsRows.concat([{
+        key: { text: "Overall case outcome" },
+        value: { text: overallCaseOutcome },
+        classes: "offences-summary-card-court-details-row"
+    }])%}
+{% endif %}
+
 {% block hearingContent %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
@@ -23,28 +49,7 @@
                     <h2 class="govuk-heading-m govuk-!-margin-top-4">Hearing details</h2>
                     {{ govukSummaryList({
                         classes: "govuk-summary-list--no-border offences-summary-card-content",
-                        rows: [
-                            {
-                                key: { text: "Case reference" },
-                                value: { text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered' },
-                                classes: "offences-summary-card-court-details-row"
-                            },
-                            {
-                                key: { text: "Court name" },
-                                value: { text: courtAppearanceCourtName },
-                                classes: "offences-summary-card-court-details-row"
-                            },
-                            {
-                                key: { text: (warrantOrHearing | capitalize) + " date" },
-                                value: { text: courtAppearance.warrantDate | formatDate},
-                                classes: "offences-summary-card-court-details-row"
-                            },
-                            {
-                                key: { text: "Overall case outcome" },
-                                value: { text: overallCaseOutcome },
-                                classes: "offences-summary-card-court-details-row"
-                            }
-                        ],
+                        rows: hearingDetailsRows,
                         attributes: {
                             'data-qa': 'hearingDetails'
                         }

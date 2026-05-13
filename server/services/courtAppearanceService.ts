@@ -1469,9 +1469,10 @@ export default class CourtAppearanceService {
     return offenceDates.reduce((latest, current) => (current > latest ? current : latest))
   }
 
-  initialiseAppeals(session: Partial<SessionData>, nomsId: string, appearanceUuid: string) {
+  initialiseAppeals(session: Partial<SessionData>, nomsId: string, appearanceUuid: string, offences: Offence[]) {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     courtAppearance.warrantType = 'APPEAL'
+    courtAppearance.offences = offences
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
   }

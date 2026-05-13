@@ -23,6 +23,7 @@ import {
   SearchCourtCasesPage,
   SearchDocuments,
   SentenceConsecutiveToDetailsResponse,
+  SentencedCharges,
   SentenceDetails,
   SentenceDetailsForConsecValidation,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
@@ -361,5 +362,9 @@ export default class RemandAndSentencingService {
     username: string,
   ): Promise<PersonCourtCaseCount> {
     return this.remandAndSentencingApiClient.getBookingCourtCaseCount(prisonerId, bookingId, username)
+  }
+
+  async getSentencedCharges(courtCaseUuid: string, username: string): Promise<SentencedCharges> {
+    return this.remandAndSentencingApiClient.getSentencedCharges(courtCaseUuid, username)
   }
 }

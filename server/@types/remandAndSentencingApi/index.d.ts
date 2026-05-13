@@ -1634,6 +1634,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/court-case/{courtCaseUuid}/sentenced-charges': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve all sentenced charges
+     * @description This endpoint returns all active sentenced charges
+     */
+    get: operations['getSentencedCharges']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/court-case/{courtCaseUuid}/latest-offence-date': {
     parameters: {
       query?: never
@@ -2186,7 +2206,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 13:38:20.574572 */
+      /** @example 13:57:08.702252432 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2299,6 +2319,7 @@ export interface components {
       outcomeUuid?: string | null
       courtCode: string
       courtCaseReference?: string | null
+      criminalAppealOfficeReference?: string | null
       /** Format: date */
       appearanceDate: string
       warrantType: string
@@ -2323,7 +2344,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:38:20.574572 */
+      /** @example 13:57:08.702252432 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -3188,6 +3209,7 @@ export interface components {
       outcome?: components['schemas']['CourtAppearanceOutcome'] | null
       courtCode: string
       courtCaseReference?: string | null
+      criminalAppealOfficeReference?: string | null
       /** Format: date */
       appearanceDate: string
       warrantType: string
@@ -3234,7 +3256,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:38:20.574572 */
+      /** @example 13:57:08.702252432 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3522,7 +3544,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 13:38:20.574572 */
+      /** @example 13:57:08.702252432 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -3545,7 +3567,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:38:20.574572 */
+      /** @example 13:57:08.702252432 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -3600,7 +3622,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 13:38:20.574572 */
+      /** @example 13:57:08.702252432 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -3611,7 +3633,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:38:20.574572 */
+      /** @example 13:57:08.702252432 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -3708,6 +3730,9 @@ export interface components {
       /** Format: date */
       latestSentenceAppearanceDate?: string | null
     }
+    SentencedCharges: {
+      charges: components['schemas']['Charge'][]
+    }
     LatestOffenceDate: {
       /** Format: date */
       offenceDate?: string | null
@@ -3726,15 +3751,15 @@ export interface components {
       sort?: string[]
     }
     PageableObject: {
-      unpaged?: boolean
+      /** Format: int64 */
+      offset?: number
+      sort?: components['schemas']['SortObject']
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
       /** Format: int32 */
       pageSize?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int64 */
-      offset?: number
+      unpaged?: boolean
     }
     PagedAppearancePeriodLength: {
       /** Format: uuid */
@@ -3803,6 +3828,7 @@ export interface components {
       /** Format: uuid */
       appearanceUuid: string
       caseReference?: string | null
+      criminalAppealOfficeReference?: string | null
       courtCode: string
       /** Format: date */
       warrantDate: string
@@ -3837,7 +3863,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 13:38:20.574572 */
+      /** @example 13:57:08.702252432 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -3910,25 +3936,25 @@ export interface components {
       total?: number
       /** Format: int64 */
       prisonerCourtCaseTotal: number
+      last?: boolean
       /** Format: int64 */
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      last?: boolean
-      sort?: components['schemas']['SortObject']
-      first?: boolean
-      /** Format: int32 */
-      numberOfElements?: number
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
+      first?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
       empty?: boolean
     }
     SortObject: {
-      unsorted?: boolean
-      sorted?: boolean
       empty?: boolean
+      sorted?: boolean
+      unsorted?: boolean
     }
     DeleteRecallResponse: {
       /** Format: uuid */
@@ -8081,6 +8107,28 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['CourtCaseValidationDate']
+        }
+      }
+    }
+  }
+  getSentencedCharges: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        courtCaseUuid: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SentencedCharges']
         }
       }
     }

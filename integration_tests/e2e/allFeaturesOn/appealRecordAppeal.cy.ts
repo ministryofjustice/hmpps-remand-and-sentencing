@@ -9,7 +9,8 @@ import Page from '../../pages/page'
 import RecordAppealPage from '../../pages/RecordAppealPage'
 import StartPage from '../../pages/startPage'
 
-context('Appeals journey', () => {
+context('Record appeal', () => {
+  let recordAppealPage: RecordAppealPage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubSearchCourtCases', {})
@@ -34,8 +35,6 @@ context('Appeals journey', () => {
     ])
     cy.signIn()
     cy.visit('/person/A1234AB')
-  })
-  it('fill in appeals journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppealsLink('261911e2-6346-42e0-b025-a806048f4d04').click()
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
@@ -104,7 +103,10 @@ context('Appeals journey', () => {
         },
       ])
     courtCaseTaskListPage.recordAppealLink().click()
-    const recordAppealPage = Page.verifyOnPage(RecordAppealPage)
+    recordAppealPage = Page.verifyOnPage(RecordAppealPage)
+  })
+
+  it('display all offences without an appeal', () => {
     recordAppealPage
       .otherOffences()
       .getOffenceCards()
@@ -119,5 +121,11 @@ context('Appeals journey', () => {
           'Consecutive or concurrent': 'Forthwith',
         },
       ])
+  })
+
+  it('show no with appeal inset when first on page', () => {
+    recordAppealPage
+      .noWithAppealOutcomeInset()
+      .should('contain', 'There are no offences with an appeal outcome recorded')
   })
 })

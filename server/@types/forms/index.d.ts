@@ -262,4 +262,8 @@ declare module 'forms' {
   export interface AppealOverallCaseOutcomeForm {
     overallCaseOutcome?: string
   }
+
+  export interface AppealOffenceOutcomeForm {
+    offenceOutcome?: string
+  }
 }

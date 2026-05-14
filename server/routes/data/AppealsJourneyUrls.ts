@@ -77,6 +77,18 @@ export default class AppealsJourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/record-appeal`
   }
 
+  static selectOffenceAppealOutcome = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseUuid: string,
+    addOrEditCourtAppearance: string,
+    courtAppearanceUuid: string,
+    chargeUuid: string,
+    hasErrors?: string,
+  ) => {
+    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/offences/${chargeUuid}/select-appeal-outcome${this.getQueryParameters(hasErrors)}`
+  }
+
   static uploadCourtDocuments = (
     nomsId: string,
     addOrEditCourtCase: string,

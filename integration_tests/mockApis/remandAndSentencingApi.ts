@@ -2939,6 +2939,24 @@ export default {
             dispositionCode: 'FINAL',
             status: 'ACTIVE',
           },
+          {
+            outcomeUuid: '42a30fcd-51c0-4c18-95f9-e3a364eb9176',
+            outcomeName: 'Sentence varied',
+            nomisCode: '6677',
+            outcomeType: 'APPEAL',
+            displayOrder: 20,
+            dispositionCode: 'FINAL',
+            status: 'ACTIVE',
+          },
+          {
+            outcomeUuid: 'd50a4db1-47f8-4fbd-9f7f-be7a4f0eb267',
+            outcomeName: 'Sentence quashed',
+            nomisCode: '6677',
+            outcomeType: 'APPEAL',
+            displayOrder: 20,
+            dispositionCode: 'INTERIM',
+            status: 'ACTIVE',
+          },
         ],
       },
     })
@@ -4103,6 +4121,7 @@ export default {
         jsonBody: {
           charges: [
             {
+              chargeUuid: '6683ebbb-f6a6-4744-8603-371135c36913',
               offenceCode: 'PS90037',
               offenceStartDate: '2025-05-20',
               outcome: {

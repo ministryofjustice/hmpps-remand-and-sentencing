@@ -7,6 +7,7 @@ import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CriminalOfficeReferencePage from '../../pages/CriminalOfficeReferencePage'
 import Page from '../../pages/page'
 import RecordAppealPage from '../../pages/RecordAppealPage'
+import SelectOffenceAppealOutcomePage from '../../pages/SelectOffenceAppealOutcomePage'
 import StartPage from '../../pages/startPage'
 
 context('Appeals journey', () => {
@@ -32,6 +33,7 @@ context('Appeals journey', () => {
         outcomeType: 'SENTENCING',
       },
     ])
+    cy.task('stubGetOffenceByCode', {})
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -104,7 +106,7 @@ context('Appeals journey', () => {
         },
       ])
     courtCaseTaskListPage.recordAppealLink().click()
-    const recordAppealPage = Page.verifyOnPage(RecordAppealPage)
+    let recordAppealPage = Page.verifyOnPage(RecordAppealPage)
     recordAppealPage
       .otherOffences()
       .getOffenceCards()
@@ -117,6 +119,21 @@ context('Appeals journey', () => {
           'Sentence type': 'A NOMIS Sentence Type',
           'Sentence length': '1 years 0 months 0 weeks 0 days',
           'Consecutive or concurrent': 'Forthwith',
+        },
+      ])
+    recordAppealPage.recordOffenceAppealLink('6683ebbb-f6a6-4744-8603-371135c36913').click()
+    const selectOffenceAppealOutcomePage = Page.verifyOnPage(SelectOffenceAppealOutcomePage)
+    selectOffenceAppealOutcomePage.radioLabelContains('Sentence varied').click()
+    selectOffenceAppealOutcomePage.continueButton().click()
+    recordAppealPage = Page.verifyOnPage(RecordAppealPage)
+    recordAppealPage
+      .appealedOffences()
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '20/05/2025',
+          Outcome: 'Sentence varied',
         },
       ])
   })

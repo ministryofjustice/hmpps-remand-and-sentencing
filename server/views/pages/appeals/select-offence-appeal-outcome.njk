@@ -1,0 +1,51 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set hideOffences = true %}
+{% set hideOutcome = true %}
+{% set pageTitle = applicationName + " - Select appeal outcome" %}
+
+{% set radiosData = {
+    name: "offenceOutcome",
+    fieldset: {
+        legend: {
+            text: "Select the outcome of the appeal for this offence",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+        }
+    },
+    hint: offenceHint,
+    items: []
+} %}
+
+{% for offenceOutcome in appealOutcomes %}
+    {% set offenceOutcomeRow = {
+        value: offenceOutcome.outcomeUuid,
+        text: offenceOutcome.outcomeName,
+        checked: offenceOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
+    } %}
+    {{ radiosData.items.push(offenceOutcomeRow) }}
+{% endfor %}
+
+{% block pageContent %}
+    <form method="post" autocomplete="off">
+
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        <span class="govuk-caption-l" data-qa="record-appeal-caption">
+            Record appeal
+        </span>
+
+        {{ govukRadios(radiosData) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+{% endblock %}

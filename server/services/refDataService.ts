@@ -151,6 +151,8 @@ export default class RefDataService {
       outcomeTypes = ['NON_CUSTODIAL']
     } else if (appearanceOutcome.outcomeType === 'SENTENCING') {
       outcomeTypes = ['SENTENCING', 'NON_CUSTODIAL']
+    } else if (appearanceOutcome.outcomeType === 'APPEAL') {
+      outcomeTypes = ['APPEAL']
     } else if (warrantType === 'SENTENCING') {
       outcomeTypes = ['SENTENCING']
     }

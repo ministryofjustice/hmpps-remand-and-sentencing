@@ -121,4 +121,13 @@ declare module 'models' {
       [key: string]: string
     }
   }
+
+  export interface UrlParameters {
+    nomsId: string
+    addOrEditCourtCase: string
+    courtCaseReference: string
+    addOrEditCourtAppearance: string
+    appearanceReference: string
+    chargeUuid: string
+  }
 }

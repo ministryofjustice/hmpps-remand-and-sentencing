@@ -1,7 +1,8 @@
-import type { CourtAppearance, Offence, SentenceLength, UploadedDocument } from 'models'
+import type { CourtAppearance, Offence, SentenceLength, UploadedDocument, UrlParameters } from 'models'
 import type {
   AppealCourtNameForm,
   AppealDateForm,
+  AppealOffenceOutcomeForm,
   AppealOverallCaseOutcomeForm,
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
@@ -1626,6 +1627,36 @@ export default class CourtAppearanceService {
       courtAppearance.appearanceOutcomeUuid = overallCaseOutcomeForm.overallCaseOutcome
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  setOffenceAppealOutcome(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    appealOffenceOutcomeForm: AppealOffenceOutcomeForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      appealOffenceOutcomeForm,
+      {
+        offenceOutcome: 'required',
+      },
+      {
+        'required.offenceOutcome': 'You must select an appeal outcome for this offence',
+      },
+    )
+    if (errors.length === 0) {
+      const { nomsId, chargeUuid, appearanceReference } = urlParameters
+      const offence = this.getOffence(session, nomsId, chargeUuid, appearanceReference)
+      offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
+      delete offence.sentence
+      delete offence.terrorRelated
+      delete offence.foreignPowerRelated
+      this.addOffence(session, nomsId, chargeUuid, offence, appearanceReference)
     }
     return errors
   }

@@ -10,7 +10,8 @@ import RecordAppealPage from '../../pages/RecordAppealPage'
 import SelectOffenceAppealOutcomePage from '../../pages/SelectOffenceAppealOutcomePage'
 import StartPage from '../../pages/startPage'
 
-context('Appeals journey', () => {
+context('Appeals select offence appeal outcome page', () => {
+  let selectOffenceAppealOutcomePage: SelectOffenceAppealOutcomePage
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubSearchCourtCases', {})
@@ -36,8 +37,6 @@ context('Appeals journey', () => {
     cy.task('stubGetOffenceByCode', {})
     cy.signIn()
     cy.visit('/person/A1234AB')
-  })
-  it('fill in appeals journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addAppealsLink('261911e2-6346-42e0-b025-a806048f4d04').click()
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
@@ -106,7 +105,7 @@ context('Appeals journey', () => {
         },
       ])
     courtCaseTaskListPage.recordAppealLink().click()
-    let recordAppealPage = Page.verifyOnPage(RecordAppealPage)
+    const recordAppealPage = Page.verifyOnPage(RecordAppealPage)
     recordAppealPage
       .otherOffences()
       .getOffenceCards()
@@ -122,19 +121,14 @@ context('Appeals journey', () => {
         },
       ])
     recordAppealPage.recordOffenceAppealLink('6683ebbb-f6a6-4744-8603-371135c36913').click()
-    const selectOffenceAppealOutcomePage = Page.verifyOnPage(SelectOffenceAppealOutcomePage)
-    selectOffenceAppealOutcomePage.radioLabelContains('Sentence varied').click()
+    selectOffenceAppealOutcomePage = Page.verifyOnPage(SelectOffenceAppealOutcomePage)
+  })
+
+  it('submitting without selecting anything results in an error', () => {
     selectOffenceAppealOutcomePage.continueButton().click()
-    recordAppealPage = Page.verifyOnPage(RecordAppealPage)
-    recordAppealPage
-      .appealedOffences()
-      .getOffenceCards()
-      .should('deep.equal', [
-        {
-          offenceCardHeader: 'PS90037 An offence description',
-          'Committed on': '20/05/2025',
-          Outcome: 'Sentence varied',
-        },
-      ])
+    selectOffenceAppealOutcomePage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must select an appeal outcome for this offence')
   })
 })

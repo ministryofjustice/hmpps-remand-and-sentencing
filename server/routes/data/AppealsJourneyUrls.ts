@@ -1,3 +1,5 @@
+import type { UrlParameters } from 'models'
+
 export default class AppealsJourneyUrls {
   static taskList = (
     nomsId: string,
@@ -75,6 +77,10 @@ export default class AppealsJourneyUrls {
     courtAppearanceUuid: string,
   ) => {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/record-appeal`
+  }
+
+  static selectOffenceAppealOutcome = (urlParameters: UrlParameters, hasErrors?: string) => {
+    return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/appeals/offences/${urlParameters.chargeUuid}/select-appeal-outcome${this.getQueryParameters(hasErrors)}`
   }
 
   static uploadCourtDocuments = (

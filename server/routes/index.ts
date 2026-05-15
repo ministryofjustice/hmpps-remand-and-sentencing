@@ -1043,5 +1043,10 @@ export default function routes(services: Services): Router {
     appealsRoutes.getSelectOffenceAppealOutcome,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/select-appeal-outcome',
+    appealsRoutes.subtmitSelectOffenceAppealOutcome,
+  )
+
   return router
 }

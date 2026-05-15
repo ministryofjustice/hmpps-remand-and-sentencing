@@ -10,6 +10,102 @@ See [here](https://github.com/ministryofjustice/hmpps-typescript-lib/blob/main/p
 See PR [#1205](https://github.com/ministryofjustice/hmpps-remand-and-sentencing/pull/1205)
 
 
+**May 12th 2026** - Add codeql scan for typescript
+
+Adding an action for codeql security scanning of the application source code
+
+See PR [#742](https://github.com/ministryofjustice/hmpps-template-typescript/pull/742) and [#743](https://github.com/ministryofjustice/hmpps-template-typescript/pull/743)
+
+**May 11th 2026** - Build docker image on PR branches
+
+Moving to automatically build docker images on PR branches to more quickly identify issues which would result in broken deployments.
+
+See PR [#738](https://github.com/ministryofjustice/hmpps-template-typescript/pull/738)
+
+**April 23rd 2026** - Improve type safety
+
+Update type definitions in the codebase so that they are compatible with strict mode if enabled in [tsconfig.json](/tsconfig.json).
+
+See PR [#718](https://github.com/ministryofjustice/hmpps-template-typescript/pull/718)
+
+**April 22nd 2026** - Remove npm from final image using new alpine-runtime image.
+
+Consolidate to a 2-stage Docker build with an `alpine-runtime` final stage, removing npm from the shipped image, reducing attack surface, and limiting the number of vulnerabilities found by scanning tools.
+
+See PR [#693](https://github.com/ministryofjustice/hmpps-template-typescript/pull/693)
+
+**April 21st 2026** - Use .npmrc during docker build
+
+Ensure repo `.npmrc` is present when building docker image to inherit security settings.
+
+See PR [#719](https://github.com/ministryofjustice/hmpps-template-typescript/pull/719)
+
+**April 14th 2026** - Move to Typescript v6.
+
+See PR [#715](https://github.com/ministryofjustice/hmpps-template-typescript/pull/715)
+
+**April 13th 2026** - Fix renovate config for stability days.
+
+Ensure renovate config matches npmrc config for stability days
+
+See PR [#711](https://github.com/ministryofjustice/hmpps-template-typescript/pull/711)
+
+**March 30th 2026** - `.npmrc` security improvements.
+
+Adding new support for:
+
+* [disabling git dependencies](https://docs.npmjs.com/cli/v11/commands/npm-install#allow-git)
+  * These can allow malicious actors to alias common executables with nefarious versions
+* [Set a minimum release age of dependencies](https://docs.npmjs.com/cli/v11/commands/npm-install#min-release-age)
+  * To reduce risk of incorporating maliciously published packages
+
+To override min-release-age for manual audit fixes, might need to do: `npm audit fix --min-release-age=null`
+
+See PR [#706](https://github.com/ministryofjustice/hmpps-template-typescript/pull/706)
+
+**February 26th 2026** - Run lint, tests and type checking on package-lock changes.
+
+There was an issue where precommit hooks weren't firing for package-lock changes.
+
+See PR [#679](https://github.com/ministryofjustice/hmpps-template-typescript/pull/679)
+
+**February 5th 2026** - Move over to use new version of pre-commit library.
+
+The new version of the library moves away from pre-commit to [prek](https://prek.j178.dev/cli/), which is a rust port of [pre-commit](https://pre-commit.com/).
+
+See pre-commit library README for more details of how to use [here](https://github.com/ministryofjustice/hmpps-typescript-lib/tree/main/packages/precommit-hooks).
+
+See PR [#648](https://github.com/ministryofjustice/hmpps-template-typescript/pull/648)
+
+
+**February 4th 2026** - Fix issue with running allowed scripts silently failing .
+
+This fixes an issue where allowed scripts were not running on the docker image:
+
+```
+An error occurred: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/app/.allowed-scripts.mjs' imported from /app/node_modules/@ministryofjustice/hmpps-npm-script-allowlist/dist/index.cjs.js
+```
+
+This was because the allowlist config file wasn't being copied onto the docker image and this was silently failing
+
+See PR [#665](https://github.com/ministryofjustice/hmpps-template-typescript/pull/665)
+
+**January 6th 2026** - Fix asset build bug.
+
+This fixes an issue where every second asset build would result in this error:
+
+```
+ℹ  Typecheck started…
+[ESBuild] ✘ [ERROR] Invalid option from onStart() callback in plugin "clean": "0" [plugin clean]
+[ESBuild]
+[ESBuild]     node_modules/esbuild/lib/main.js:259:12:
+[ESBuild]       259 │       throw new Error(`Invalid option ${where}: ${quote(key)}`);
+```
+
+deleteSync would return an array which esbuild baulks at. It would succeed the second time as the files were already deleted.
+
+See PR [#648](https://github.com/ministryofjustice/hmpps-template-typescript/pull/648)
+
 **December 12th 2025** - Updating shared linting library to 1.0.2.
 
 Updating: `@ministryofjustice/eslint-config-hmpps@1.0.1` -> `@ministryofjustice/eslint-config-hmpps@1.0.2`
@@ -18,9 +114,9 @@ This has an improvement which means `.allowed-scripts.mjs` no longer needs to be
 
 See PR [#643](https://github.com/ministryofjustice/hmpps-template-typescript/pull/643)
 
-**December 4th 2025** - Remove mocha-junit-reporter and reporter-config.json.
+**December 4th 2025** - Move to use shared HMPPS typescript base image
 
-Replaced the custom Node.js base image setup with the standardized `hmpps-node:24-alpine` base image from GitHub Container Registry `hmpps-base-container-images`. This simplifies maintenance and ensures consistency across projects. 
+Replaced the custom Node.js base image setup with the standardized `hmpps-node:24-alpine` base image from GitHub Container Registry `hmpps-base-container-images`. This simplifies maintenance and ensures consistency across projects.
 
 See PR [#638](https://github.com/ministryofjustice/hmpps-template-typescript/pull/638)
 
@@ -42,8 +138,8 @@ See PR [#635](https://github.com/ministryofjustice/hmpps-template-typescript/pul
 Adding script allowlist library to provide some level of protection against supply chain attacks.
 
 Developers and build agents will need to run `npm run setup` rather than `npm install` or `npm ci` as otherwise, necessary `postinstall` scripts may not be run.
- 
-See [here](https://github.com/ministryofjustice/hmpps-typescript-lib/blob/main/packages/npm-script-allowlist/README.md) for more information. 
+
+See [here](https://github.com/ministryofjustice/hmpps-typescript-lib/blob/main/packages/npm-script-allowlist/README.md) for more information.
 
 See PR [#632](https://github.com/ministryofjustice/hmpps-template-typescript/pull/632)
 

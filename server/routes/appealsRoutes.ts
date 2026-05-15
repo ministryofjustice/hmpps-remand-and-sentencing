@@ -6,6 +6,7 @@ import type {
   AppealOverallCaseOutcomeForm,
   CriminalOfficeReferenceForm,
 } from 'forms'
+import type { UrlParameters } from 'models'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -624,21 +625,19 @@ export default class AppealsRoutes extends BaseRoutes {
   }
 
   public getSelectOffenceAppealOutcome: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      chargeUuid,
-    } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const { username } = req.user
     const { appearanceOutcomeUuid, warrantType } = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
-      nomsId,
-      appearanceReference,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
     )
-    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    const offence = this.courtAppearanceService.getOffence(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.chargeUuid,
+      urlParameters.appearanceReference,
+    )
     let appealOffenceOutcomeForm = (req.flash('appealOffenceOutcomeForm')[0] || {}) as AppealOffenceOutcomeForm
     if (Object.keys(appealOffenceOutcomeForm).length === 0) {
       appealOffenceOutcomeForm = {
@@ -651,28 +650,24 @@ export default class AppealsRoutes extends BaseRoutes {
     ])
     const appealOutcomes = primaryNonCustodialChargeOutcomes.allOutcomes
     let backLink = AppealsJourneyUrls.recordAppeal(
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      addOrEditCourtAppearance,
-      appearanceReference,
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
     )
-    if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+    if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
       backLink = AppealsJourneyUrls.hearingDetails(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
+        urlParameters.nomsId,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
       )
     }
 
     return res.render('pages/appeals/select-offence-appeal-outcome', {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
+      ...urlParameters,
       appealOffenceOutcomeForm,
       offenceHint,
       appealOutcomes,
@@ -681,44 +676,25 @@ export default class AppealsRoutes extends BaseRoutes {
   }
 
   public subtmitSelectOffenceAppealOutcome: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      chargeUuid,
-    } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const appealOffenceOutcomeForm = trimForm<AppealOffenceOutcomeForm>(req.body)
     const errors = this.courtAppearanceService.setOffenceAppealOutcome(
       req.session,
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
+      urlParameters,
       appealOffenceOutcomeForm,
     )
     if (errors.length > 0) {
       req.flash('errors', errors)
       req.flash('appealOffenceOutcomeForm', { ...appealOffenceOutcomeForm })
-      return res.redirect(
-        AppealsJourneyUrls.selectOffenceAppealOutcome(
-          nomsId,
-          addOrEditCourtCase,
-          courtCaseReference,
-          addOrEditCourtAppearance,
-          appearanceReference,
-          chargeUuid,
-          'true',
-        ),
-      )
+      return res.redirect(AppealsJourneyUrls.selectOffenceAppealOutcome(urlParameters, 'true'))
     }
     return res.redirect(
       AppealsJourneyUrls.recordAppeal(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
+        urlParameters.nomsId,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
       ),
     )
   }

@@ -1,4 +1,4 @@
-import type { CourtAppearance, Offence, SentenceLength, UploadedDocument } from 'models'
+import type { CourtAppearance, Offence, SentenceLength, UploadedDocument, UrlParameters } from 'models'
 import type {
   AppealCourtNameForm,
   AppealDateForm,
@@ -1633,9 +1633,7 @@ export default class CourtAppearanceService {
 
   setOffenceAppealOutcome(
     session: Partial<SessionData>,
-    nomsId: string,
-    appearanceUuid: string,
-    chargeUuid: string,
+    urlParameters: UrlParameters,
     appealOffenceOutcomeForm: AppealOffenceOutcomeForm,
   ): {
     text?: string
@@ -1652,12 +1650,13 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const offence = this.getOffence(session, nomsId, chargeUuid, appearanceUuid)
+      const { nomsId, chargeUuid, appearanceReference } = urlParameters
+      const offence = this.getOffence(session, nomsId, chargeUuid, appearanceReference)
       offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
       delete offence.sentence
       delete offence.terrorRelated
       delete offence.foreignPowerRelated
-      this.addOffence(session, nomsId, chargeUuid, offence, appearanceUuid)
+      this.addOffence(session, nomsId, chargeUuid, offence, appearanceReference)
     }
     return errors
   }

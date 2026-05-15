@@ -1,3 +1,5 @@
+import type { UrlParameters } from 'models'
+
 export default class AppealsJourneyUrls {
   static taskList = (
     nomsId: string,
@@ -77,16 +79,8 @@ export default class AppealsJourneyUrls {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/record-appeal`
   }
 
-  static selectOffenceAppealOutcome = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-    chargeUuid: string,
-    hasErrors?: string,
-  ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/offences/${chargeUuid}/select-appeal-outcome${this.getQueryParameters(hasErrors)}`
+  static selectOffenceAppealOutcome = (urlParameters: UrlParameters, hasErrors?: string) => {
+    return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/appeals/offences/${urlParameters.chargeUuid}/select-appeal-outcome${this.getQueryParameters(hasErrors)}`
   }
 
   static uploadCourtDocuments = (

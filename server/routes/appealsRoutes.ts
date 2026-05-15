@@ -672,6 +672,7 @@ export default class AppealsRoutes extends BaseRoutes {
       offenceHint,
       appealOutcomes,
       backLink,
+      errors: req.flash('errors') || [],
     })
   }
 

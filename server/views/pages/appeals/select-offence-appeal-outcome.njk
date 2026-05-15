@@ -9,6 +9,7 @@
 
 {% set radiosData = {
     name: "offenceOutcome",
+    errorMessage: errors | findError('offenceOutcome'),
     fieldset: {
         legend: {
             text: "Select the outcome of the appeal for this offence",
@@ -31,7 +32,7 @@
 
 {% block pageContent %}
     <form method="post" autocomplete="off">
-
+        {{ super() }}
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         <span class="govuk-caption-l" data-qa="record-appeal-caption">

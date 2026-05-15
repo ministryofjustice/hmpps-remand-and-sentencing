@@ -33,7 +33,7 @@ export default function setUpCurrentUser(userService: UserService) {
       res.locals.user.authSource = authSource
 
       if (res.locals.user.authSource === 'nomis') {
-        res.locals.user.staffId = parseInt(userId, 10) || undefined
+        res.locals.user.staffId = userId !== undefined ? parseInt(userId, 10) : undefined
         res.locals.user.hasInactiveBookingsAccess = userRoles.includes('INACTIVE_BOOKINGS')
         res.locals.user.hasRecallsAccess = userRoles.includes('RECALL_MAINTAINER')
         res.locals.user.hasBookASecureMoveAccess = userRoles.includes('PECS_PRISON')

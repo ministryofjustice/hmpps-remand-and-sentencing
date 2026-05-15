@@ -1,106 +1,52 @@
 import type { UrlParameters } from 'models'
 
 export default class AppealsJourneyUrls {
-  static taskList = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-  ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/task-list`
+  static taskList = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/task-list`
   }
 
   static criminalOfficeReference = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
+    urlParameters: UrlParameters,
     hasErrors?: string,
     submitToCheckAnswers?: string,
   ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/criminal-office-reference${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+    return `${this.basePath(urlParameters)}/criminal-office-reference${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
-  static appealDate = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-    hasErrors?: string,
-    submitToCheckAnswers?: string,
-  ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/appeal-date${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  static appealDate = (urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string) => {
+    return `${this.basePath(urlParameters)}/appeal-date${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
-  static appealCourt = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-    hasErrors?: string,
-    submitToCheckAnswers?: string,
-  ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/appeal-court${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  static appealCourt = (urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string) => {
+    return `${this.basePath(urlParameters)}/appeal-court${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
-  static overallCaseOutcome = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-    hasErrors?: string,
-    submitToCheckAnswers?: string,
-  ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/overall-case-outcome${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  static overallCaseOutcome = (urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string) => {
+    return `${this.basePath(urlParameters)}/overall-case-outcome${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
-  static checkHearingAnswers = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-  ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/check-hearing-answers`
+  static checkHearingAnswers = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/check-hearing-answers`
   }
 
-  static recordAppeal = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-  ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/record-appeal`
+  static recordAppeal = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/record-appeal`
   }
 
   static selectOffenceAppealOutcome = (urlParameters: UrlParameters, hasErrors?: string) => {
-    return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/appeals/offences/${urlParameters.chargeUuid}/select-appeal-outcome${this.getQueryParameters(hasErrors)}`
+    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/select-appeal-outcome${this.getQueryParameters(hasErrors)}`
   }
 
-  static uploadCourtDocuments = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-  ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/upload-court-documents`
+  static uploadCourtDocuments = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/upload-court-documents`
   }
 
-  static hearingDetails = (
-    nomsId: string,
-    addOrEditCourtCase: string,
-    courtCaseUuid: string,
-    addOrEditCourtAppearance: string,
-    courtAppearanceUuid: string,
-  ) => {
-    return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/appeals/hearing-details`
+  static hearingDetails = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/hearing-details`
+  }
+
+  private static basePath(urlParameters: UrlParameters): string {
+    return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/appeals`
   }
 
   private static getQueryParameters(hasErrors?: string, submitToCheckAnswers?: string): string {

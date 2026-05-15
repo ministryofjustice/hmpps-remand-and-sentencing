@@ -19,7 +19,7 @@ import type {
   ReceivedCustodialSentenceForm,
   UploadedDocumentForm,
 } from 'forms'
-import type { CourtCase, UploadedDocument } from 'models'
+import type { CourtCase, UploadedDocument, UrlParameters } from 'models'
 import dayjs from 'dayjs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import fs from 'fs'
@@ -774,6 +774,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const { submitToCheckAnswers } = req.query
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     let courtCaseReferenceForm = (req.flash('courtCaseReferenceForm')[0] || {}) as CourtCaseReferenceForm
@@ -812,13 +813,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
     } else if (submitToCheckAnswers) {
       if (warrantType === 'APPEAL') {
-        backLink = AppealsJourneyUrls.checkHearingAnswers(
-          nomsId,
-          addOrEditCourtCase,
-          courtCaseReference,
-          addOrEditCourtAppearance,
-          appearanceReference,
-        )
+        backLink = AppealsJourneyUrls.checkHearingAnswers(urlParameters)
       } else {
         backLink = JourneyUrls.checkAppearanceAnswers(
           nomsId,
@@ -840,13 +835,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         appearanceReference,
       )
     } else if (warrantType === 'APPEAL') {
-      backLink = AppealsJourneyUrls.taskList(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-      )
+      backLink = AppealsJourneyUrls.taskList(urlParameters)
     }
 
     return res.render('pages/courtAppearance/reference', {
@@ -865,6 +854,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public submitReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const courtCaseReferenceForm = trimForm<CourtCaseReferenceForm>(req.body)
     const errors = this.courtAppearanceService.setCaseReferenceNumber(
       req.session,
@@ -905,15 +895,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { submitToCheckAnswers } = req.query
     if (submitToCheckAnswers) {
       if (warrantType === 'APPEAL') {
-        return res.redirect(
-          AppealsJourneyUrls.checkHearingAnswers(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
-          ),
-        )
+        return res.redirect(AppealsJourneyUrls.checkHearingAnswers(urlParameters))
       }
       return res.redirect(
         JourneyUrls.checkAppearanceAnswers(
@@ -926,15 +908,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
     if (warrantType === 'APPEAL') {
-      return res.redirect(
-        AppealsJourneyUrls.criminalOfficeReference(
-          nomsId,
-          addOrEditCourtCase,
-          courtCaseReference,
-          addOrEditCourtAppearance,
-          appearanceReference,
-        ),
-      )
+      return res.redirect(AppealsJourneyUrls.criminalOfficeReference(urlParameters))
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`,
@@ -943,6 +917,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getSelectReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const { submitToCheckAnswers } = req.query
     const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
       req.user.username,
@@ -975,13 +950,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         appearanceReference,
       )
     } else if (warrantType === 'APPEAL') {
-      backLink = AppealsJourneyUrls.taskList(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-      )
+      backLink = AppealsJourneyUrls.taskList(urlParameters)
     }
     return res.render('pages/courtAppearance/select-reference', {
       nomsId,
@@ -999,6 +968,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public submitSelectReference: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const { submitToCheckAnswers } = req.query
     const submitToCheckAnswersQuery = submitToCheckAnswers ? `?submitToCheckAnswers=${submitToCheckAnswers}` : ''
     const referenceForm = trimForm<CourtCaseSelectReferenceForm>(req.body)
@@ -1032,15 +1002,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       }
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
       if (warrantType === 'APPEAL') {
-        return res.redirect(
-          AppealsJourneyUrls.criminalOfficeReference(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
-          ),
-        )
+        return res.redirect(AppealsJourneyUrls.criminalOfficeReference(urlParameters))
       }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`,

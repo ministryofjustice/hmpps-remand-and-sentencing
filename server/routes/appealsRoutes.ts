@@ -23,6 +23,7 @@ import logger from '../../logger'
 import RefDataService from '../services/refDataService'
 import { offencesToOffenceDescriptions, orderOffences, outcomeValueOrLegacy, sortByDateDesc } from '../utils/utils'
 import { chargeToOffence } from '../utils/mappingUtils'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -31,10 +32,18 @@ export default class AppealsRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public newJourney: RequestHandler = async (req, res): Promise<void> => {
@@ -498,6 +507,31 @@ export default class AppealsRoutes extends BaseRoutes {
       return res.redirect(AppealsJourneyUrls.selectOffenceAppealOutcome(urlParameters, 'true'))
     }
     return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
+  }
+
+  public getUploadAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return res.render('pages/appeals/upload-appeal-order', {
+      ...urlParameters,
+      backLink: AppealsJourneyUrls.taskList(urlParameters),
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitUploadAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.uploadTemporaryDocument(
+      req,
+      res,
+      urlParameters,
+      'APPEAL_ORDER',
+      AppealsJourneyUrls.uploadAppealsOrder(urlParameters, 'true'),
+      AppealsJourneyUrls.viewAppealsOrder(urlParameters),
+    )
+  }
+
+  public getViewAppealOrder: RequestHandler = async (req, res) => {
+    return res.render('pages/appeals/view-appeal-order')
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

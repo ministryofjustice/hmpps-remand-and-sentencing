@@ -13,6 +13,7 @@ import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
 import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../config'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -21,10 +22,18 @@ export default class RemandRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {

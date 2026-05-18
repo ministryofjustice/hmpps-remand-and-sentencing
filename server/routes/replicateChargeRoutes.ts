@@ -9,6 +9,7 @@ import ReplicateOffenceJourneyUrls from './data/ReplicateOffenceJourneyUrls'
 import JourneyUrls from './data/JourneyUrls'
 import trimForm from '../utils/trim'
 import RefDataService from '../services/refDataService'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class ReplicateChargeRoutes extends BaseRoutes {
   constructor(
@@ -17,9 +18,17 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
     courtAppearanceService: CourtAppearanceService,
     remandAndSentencingService: RemandAndSentencingService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public loadReplicateOffence = async (req, res): Promise<void> => {

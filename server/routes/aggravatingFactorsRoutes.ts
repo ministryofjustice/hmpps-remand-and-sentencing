@@ -16,6 +16,7 @@ import trimForm, { normaliseToArray } from '../utils/trim'
 import JourneyUrls from './data/JourneyUrls'
 import AggravatingFactorsJourneyUrls from './data/AggravatingFactorsJourneyUrls'
 import AggravatingFactorsService from '../services/aggravatingFactorsService'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class AggravatingFactorsRoutes extends BaseRoutes {
   constructor(
@@ -24,9 +25,17 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly aggravatingFactorsService: AggravatingFactorsService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public getSelectOffenceWithAggravatedFactors: RequestHandler = async (req, res): Promise<void> => {

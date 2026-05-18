@@ -80,13 +80,20 @@ export default class CourtCaseRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
-    private readonly documentManagementService: DocumentManagementService,
+    documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
     private readonly refDataService: RefDataService,
     private readonly prisonerService: PrisonerService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public start: RequestHandler = async (req, res): Promise<void> => {
@@ -2948,75 +2955,33 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       documentType,
     } = req.params
-    const { username } = res.locals.user as PrisonUser
-    const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
-    const uploadedFile = (req.files as Express.Multer.File[])?.[0]
+    const urlParameters = req.params as unknown as UrlParameters
+    const documentTypeName = this.getDocumentType(documentType)
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
-
-    try {
-      if (!uploadedFile) {
-        req.flash('errors', [{ text: 'Select a document to upload.', href: '#document-upload' }])
-        req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents?hasErrors=true`,
-        )
-      }
-
-      const documentTypeName = this.getDocumentType(documentType)
-      const documentUuid = await this.documentManagementService.uploadDocument(
-        nomsId,
-        uploadedFile,
-        username,
-        documentTypeName,
-      )
-
-      const uploadedDocument: UploadedDocument = {
-        documentUUID: documentUuid,
-        documentType: documentTypeName,
-        fileName: uploadedFile.originalname,
-      }
-      await this.remandAndSentencingService.createUploadDocument(uploadedDocument, username)
-      this.courtAppearanceService.addUploadedDocument(req.session, nomsId, uploadedDocument, appearanceReference)
-
-      return res.redirect(
-        warrantType === 'SENTENCING'
-          ? JourneyUrls.sentencingUploadCourtDocuments(
-              nomsId,
-              addOrEditCourtCase,
-              courtCaseReference,
-              addOrEditCourtAppearance,
-              appearanceReference,
-            )
-          : JourneyUrls.uploadCourtDocuments(
-              nomsId,
-              addOrEditCourtCase,
-              courtCaseReference,
-              addOrEditCourtAppearance,
-              appearanceReference,
-            ),
-      )
-    } catch (error) {
-      logger.error(`Error uploading document: ${error.message}`)
-
-      req.flash('errors', [{ text: this.getErrorMessage(error.message), href: '#document-upload' }])
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents?hasErrors=true`,
-      )
-    } finally {
-      if (req.file && req.file.path) {
-        fs.unlink(req.file.path, err => {
-          if (err) logger.error('Error deleting temp file:', err)
-        })
-      }
-    }
-  }
-
-  getErrorMessage(errorMessage: string): string {
-    const match = Object.keys(CourtCaseRoutes.errorMessages).find(key => errorMessage.includes(key))
-    if (match) {
-      return CourtCaseRoutes.errorMessages[match]
-    }
-    return 'The selected file could not be uploaded - try again.'
+    const redirectSuccessToPath =
+      warrantType === 'SENTENCING'
+        ? JourneyUrls.sentencingUploadCourtDocuments(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          )
+        : JourneyUrls.uploadCourtDocuments(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          )
+    return this.uploadTemporaryDocument(
+      req,
+      res,
+      urlParameters,
+      documentTypeName,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/${documentType}/upload-documents?hasErrors=true`,
+      redirectSuccessToPath,
+    )
   }
 
   public downloadUploadedDocument: RequestHandler = async (req, res): Promise<void> => {
@@ -3306,10 +3271,5 @@ export default class CourtCaseRoutes extends BaseRoutes {
       default:
         return 'HMCTS_WARRANT'
     }
-  }
-
-  private static readonly errorMessages: Record<string, string> = {
-    'Payload Too Large': 'The selected document must be smaller than 50MB.',
-    'virus scan': 'The selected file contains a virus',
   }
 }

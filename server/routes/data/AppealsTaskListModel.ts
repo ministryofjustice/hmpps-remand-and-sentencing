@@ -1,19 +1,20 @@
-import type { CourtAppearance, TaskListItemStatus } from 'models'
+import type { CourtAppearance, TaskListItemStatus, UrlParameters } from 'models'
 import TaskListModel from './TaskListModel'
 import AppealsJourneyUrls from './AppealsJourneyUrls'
 import JourneyUrls from './JourneyUrls'
 
 export default class AppealsTaskListModel extends TaskListModel {
-  constructor(
-    nomsId: string,
-    addOrEditCourtCase: string,
-    addOrEditCourtAppearance: string,
-    courtCaseReference: string,
-    appearanceReference: string,
-    courtAppearance: CourtAppearance,
-    caseReferenceSet: boolean,
-  ) {
-    super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)
+  urlParameters: UrlParameters
+
+  constructor(urlParameters: UrlParameters, courtAppearance: CourtAppearance, caseReferenceSet: boolean) {
+    super(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.courtCaseReference,
+      urlParameters.appearanceReference,
+    )
+    this.urlParameters = urlParameters
     this.items = [
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getOffenceSentencesItem(courtAppearance),
@@ -53,13 +54,7 @@ export default class AppealsTaskListModel extends TaskListModel {
 
   getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      return AppealsJourneyUrls.checkHearingAnswers(
-        this.nomsId,
-        this.addOrEditCourtCase,
-        this.courtCaseReference,
-        this.addOrEditCourtAppearance,
-        this.appearanceReference,
-      )
+      return AppealsJourneyUrls.checkHearingAnswers(this.urlParameters)
     }
     if (!caseReferenceSet) {
       return JourneyUrls.reference(
@@ -86,13 +81,7 @@ export default class AppealsTaskListModel extends TaskListModel {
   getOffenceSentenceHref(courtAppearance: CourtAppearance): string | undefined {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      href = AppealsJourneyUrls.recordAppeal(
-        this.nomsId,
-        this.addOrEditCourtCase,
-        this.courtCaseReference,
-        this.addOrEditCourtAppearance,
-        this.appearanceReference,
-      )
+      href = AppealsJourneyUrls.recordAppeal(this.urlParameters)
     }
     return href
   }
@@ -122,13 +111,7 @@ export default class AppealsTaskListModel extends TaskListModel {
   getCourtDocumentsHref(courtAppearance: CourtAppearance): string {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      href = AppealsJourneyUrls.uploadCourtDocuments(
-        this.nomsId,
-        this.addOrEditCourtCase,
-        this.courtCaseReference,
-        this.addOrEditCourtAppearance,
-        this.appearanceReference,
-      )
+      href = AppealsJourneyUrls.uploadCourtDocuments(this.urlParameters)
     }
     return href
   }

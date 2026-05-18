@@ -1480,8 +1480,7 @@ export default class CourtAppearanceService {
 
   setCriminalOfficeReference(
     session: Partial<SessionData>,
-    nomsId: string,
-    appearanceUuid: string,
+    urlParameters: UrlParameters,
     criminalOfficeReferenceForm: CriminalOfficeReferenceForm,
   ): {
     text?: string
@@ -1499,20 +1498,18 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
       courtAppearance.criminalAppealOfficeReference = criminalOfficeReferenceForm.referenceNumber
       // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
+      session.courtAppearances[urlParameters.nomsId] = courtAppearance
     }
     return errors
   }
 
   async setAppealDate(
     session: Partial<SessionData>,
-    nomsId: string,
-    appearanceUuid: string,
+    urlParameters: UrlParameters,
     appealDateForm: AppealDateForm,
-    courtCaseUuid: string,
     username: string,
   ): Promise<
     {
@@ -1555,9 +1552,9 @@ export default class CourtAppearanceService {
       })
       let latestSentencingAppearanceDate = null
       const courtCaseValidationDates = await this.remandAndSentencingService.getValidationDatesForCourtCase(
-        courtCaseUuid,
+        urlParameters.courtCaseReference,
         username,
-        appearanceUuid,
+        urlParameters.appearanceReference,
       )
       if (courtCaseValidationDates.latestSentenceAppearanceDate) {
         latestSentencingAppearanceDate = dayjs(courtCaseValidationDates.latestSentenceAppearanceDate)
@@ -1570,10 +1567,14 @@ export default class CourtAppearanceService {
       }
 
       if (errors.length === 0) {
-        const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+        const courtAppearance = this.getCourtAppearance(
+          session,
+          urlParameters.nomsId,
+          urlParameters.appearanceReference,
+        )
         courtAppearance.warrantDate = appealDate.toDate()
         // eslint-disable-next-line no-param-reassign
-        session.courtAppearances[nomsId] = courtAppearance
+        session.courtAppearances[urlParameters.nomsId] = courtAppearance
       }
     }
     return errors
@@ -1581,8 +1582,7 @@ export default class CourtAppearanceService {
 
   setAppealCourtName(
     session: Partial<SessionData>,
-    nomsId: string,
-    appearanceUuid: string,
+    urlParameter: UrlParameters,
     appealCourtNameForm: AppealCourtNameForm,
   ): {
     text?: string
@@ -1595,18 +1595,17 @@ export default class CourtAppearanceService {
       { 'required.courtCode': 'You must enter the court that heard the appeal' },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
       courtAppearance.courtCode = appealCourtNameForm.courtCode
       // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
+      session.courtAppearances[urlParameter.nomsId] = courtAppearance
     }
     return errors
   }
 
   setAppealAppearanceOutcome(
     session: Partial<SessionData>,
-    nomsId: string,
-    appearanceUuid: string,
+    urlParameters: UrlParameters,
     overallCaseOutcomeForm: AppealOverallCaseOutcomeForm,
   ): {
     text?: string
@@ -1623,10 +1622,10 @@ export default class CourtAppearanceService {
       },
     )
     if (errors.length === 0) {
-      const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
       courtAppearance.appearanceOutcomeUuid = overallCaseOutcomeForm.overallCaseOutcome
       // eslint-disable-next-line no-param-reassign
-      session.courtAppearances[nomsId] = courtAppearance
+      session.courtAppearances[urlParameters.nomsId] = courtAppearance
     }
     return errors
   }

@@ -8,7 +8,7 @@
 {% set pageTitle = applicationName + " - Upload appeal order" %}
 
 {% block pageContent %}
-    <form method="post" autocomplete="off">
+    <form method="post" enctype="multipart/form-data" autocomplete="off">
         {{ super() }}
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 

@@ -17,12 +17,10 @@ import type {
   DeleteDocumentForm,
   DeleteHearingForm,
   ReceivedCustodialSentenceForm,
-  UploadedDocumentForm,
 } from 'forms'
-import type { CourtCase, UploadedDocument, UrlParameters } from 'models'
+import type { CourtCase, UrlParameters } from 'models'
 import dayjs from 'dayjs'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
-import fs from 'fs'
 import { Readable } from 'stream'
 import { firstNameSpaceLastName } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import trimForm from '../utils/trim'

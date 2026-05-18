@@ -136,5 +136,25 @@ context('Appeals journey', () => {
           Outcome: 'Sentence varied',
         },
       ])
+    recordAppealPage.radioLabelContains(`Yes, I've finished`).click()
+    recordAppealPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Record appeal',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
   })
 })

@@ -1038,6 +1038,11 @@ export default function routes(services: Services): Router {
     appealsRoutes.getRecordAppeals,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/record-appeal',
+    appealsRoutes.submitRecordAppeals,
+  )
+
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/select-appeal-outcome',
     appealsRoutes.getSelectOffenceAppealOutcome,

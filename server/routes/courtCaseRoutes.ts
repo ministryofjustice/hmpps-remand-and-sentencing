@@ -103,24 +103,37 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let bookingId = ''
     let bookingCourtCaseCount
     let bookingDetails
+    let bookingCourtCasePreviousPeriodsCount = 0
     let disableIncludeCasesFromPreviousPeriodsOfCustody = false
     const filterErrors = []
     const validatedSearchParameters = this.validateAndGetCourtCaseSearchParameters(appearanceDateFrom, appearanceDateTo)
     const { searchAppearanceDateFrom, searchAppearanceDateTo } = validatedSearchParameters
     filterErrors.push(...validatedSearchParameters.filterErrors)
-    if (!includeCasesFromPreviousPeriodsOfCustodyValue && res.locals.prisoner.bookingId) {
-      const [bookingCourtCaseCountResponse, bookingDetailsResponse] = await Promise.all([
+
+    let allBookingsCaseCount: { suppliedBookingCount: number; otherBookingCount: number }
+    if (res.locals.prisoner.bookingId) {
+      const [bookingCourtCaseCountResponse, allBookingsCaseCountResponse, bookingDetailsResponse] = await Promise.all([
         this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, res.locals.prisoner.bookingId, username),
-        this.prisonerService.getBookingDetails(res.locals.prisoner.bookingId, username),
+        this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, '', username),
+        !includeCasesFromPreviousPeriodsOfCustodyValue
+          ? this.prisonerService.getBookingDetails(res.locals.prisoner.bookingId, username)
+          : Promise.resolve(),
       ])
       bookingCourtCaseCount = bookingCourtCaseCountResponse
-      bookingDetails = bookingDetailsResponse
-      if (!bookingDetails.activeFlag) {
-        includeCasesFromPreviousPeriodsOfCustodyValue = 'true'
-        disableIncludeCasesFromPreviousPeriodsOfCustody = true
-      } else {
-        bookingId = res.locals.prisoner.bookingId
+      allBookingsCaseCount = allBookingsCaseCountResponse
+      if (!includeCasesFromPreviousPeriodsOfCustodyValue) {
+        bookingDetails = bookingDetailsResponse
+        if (!bookingDetails.activeFlag) {
+          includeCasesFromPreviousPeriodsOfCustodyValue = 'true'
+          disableIncludeCasesFromPreviousPeriodsOfCustody = true
+        } else {
+          bookingId = res.locals.prisoner.bookingId
+        }
       }
+      bookingCourtCasePreviousPeriodsCount =
+        allBookingsCaseCount.suppliedBookingCount +
+        allBookingsCaseCount.otherBookingCount -
+        bookingCourtCaseCount.suppliedBookingCount
     }
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
 
@@ -256,6 +269,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       bookingCourtCaseCount,
       bookingDetails,
       disableIncludeCasesFromPreviousPeriodsOfCustody,
+      bookingCourtCasePreviousPeriodsCount,
     })
   }
 

@@ -70,6 +70,7 @@ export default defineConfig({
             }),
             prisonApi.stubGetBookingById(),
             remandAndSentencingApi.stubGetBookingCourtCaseCount(),
+            remandAndSentencingApi.stubGetBookingCourtCaseCountAllBookings(),
           ])
         },
 

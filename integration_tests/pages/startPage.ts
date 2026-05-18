@@ -52,4 +52,10 @@ export default class StartPage extends Page {
 
   addAppealsLink = (courtCaseReference: string): PageElement =>
     cy.get(`[data-qa=add-appeals-link-${courtCaseReference}]`)
+
+  includeCasesFromPreviousPeriodsLabel = (count: number): PageElement => {
+    return cy
+      .get('.govuk-label.govuk-checkboxes__label')
+      .contains(`Include cases from previous periods of custody (${count})`)
+  }
 }

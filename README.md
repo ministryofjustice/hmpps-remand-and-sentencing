@@ -70,7 +70,7 @@ Fallback html must be included for all imported components for instances when th
 
 ### Run linter
 
-- `npm run lint` runs `eslint`.
+- `npm run lint` runs `eslint` (``npm run lint-fix`` to auto-fix issues).
 - `npm run typecheck` runs the TypeScript compiler `tsc`.
 
 ### Run unit tests
@@ -94,6 +94,8 @@ And then either, run tests in headless mode with:
 Or run tests with the cypress UI:
 
 `npm run int-test-ui`
+
+> Tip: Ensure a recent `npm run build` is run before running the integration tests in headless or UI mode to ensure latest changes are targeted in dist
 
 If all feature toggles are required to be on run the command:
 

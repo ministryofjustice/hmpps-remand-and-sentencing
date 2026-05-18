@@ -21,6 +21,7 @@ import type {
   CourtCaseWarrantDateForm,
   CriminalOfficeReferenceForm,
   DeleteDocumentForm,
+  FinishedRecordingAppealsForm,
   OffenceFinishedAddingForm,
   ReceivedCustodialSentenceForm,
   SentenceLengthForm,
@@ -1652,10 +1653,46 @@ export default class CourtAppearanceService {
       const { nomsId, chargeUuid, appearanceReference } = urlParameters
       const offence = this.getOffence(session, nomsId, chargeUuid, appearanceReference)
       offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
+      offence.updatedOutcome = true
       delete offence.sentence
       delete offence.terrorRelated
       delete offence.foreignPowerRelated
       this.addOffence(session, nomsId, chargeUuid, offence, appearanceReference)
+    }
+    return errors
+  }
+
+  finishRecordingAppeals(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    finishedRecordingAppealsForm: FinishedRecordingAppealsForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const { nomsId, appearanceReference } = urlParameters
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceReference)
+    const errors = validate(
+      finishedRecordingAppealsForm,
+      {
+        finishedRecordAppeal: 'required',
+      },
+      {
+        'required.finishedRecordAppeal':
+          'You must confirm that you have finished recording appeal outcomes before you can continue.',
+      },
+    )
+    if (!courtAppearance.offences.some(offence => offence.updatedOutcome)) {
+      errors.push({
+        text: 'You must record at least one appeal outcome before you can continue.',
+        href: '#withoutAppealHeading',
+      })
+    }
+    if (errors.length === 0) {
+      courtAppearance.offenceSentenceAccepted = finishedRecordingAppealsForm.finishedRecordAppeal === 'true'
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[nomsId] = courtAppearance
     }
     return errors
   }

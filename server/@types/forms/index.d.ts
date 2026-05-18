@@ -266,4 +266,8 @@ declare module 'forms' {
   export interface AppealOffenceOutcomeForm {
     offenceOutcome?: string
   }
+
+  export interface FinishedRecordingAppealsForm {
+    finishedRecordAppeal?: string
+  }
 }

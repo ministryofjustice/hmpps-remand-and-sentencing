@@ -29,8 +29,8 @@ export default class AppealsJourneyUrls {
     return `${this.basePath(urlParameters)}/check-hearing-answers`
   }
 
-  static recordAppeal = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/record-appeal`
+  static recordAppeal = (urlParameters: UrlParameters, hasErrors?: string) => {
+    return `${this.basePath(urlParameters)}/record-appeal${this.getQueryParameters(hasErrors)}`
   }
 
   static selectOffenceAppealOutcome = (urlParameters: UrlParameters, hasErrors?: string) => {

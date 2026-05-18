@@ -128,4 +128,24 @@ context('Record appeal', () => {
       .noWithAppealOutcomeInset()
       .should('contain', 'There are no offences with an appeal outcome recorded')
   })
+
+  it('submitting without selecting anything results in an error', () => {
+    recordAppealPage.continueButton().click()
+    recordAppealPage
+      .errorSummary()
+      .trimTextContent()
+      .should(
+        'equal',
+        'There is a problem You must confirm that you have finished recording appeal outcomes before you can continue. You must record at least one appeal outcome before you can continue.',
+      )
+  })
+
+  it('not recording any appeal outcomes results in an error', () => {
+    recordAppealPage.radioLabelContains(`Yes, I've finished`).click()
+    recordAppealPage.continueButton().click()
+    recordAppealPage
+      .errorSummary()
+      .trimTextContent()
+      .should('equal', 'There is a problem You must record at least one appeal outcome before you can continue.')
+  })
 })

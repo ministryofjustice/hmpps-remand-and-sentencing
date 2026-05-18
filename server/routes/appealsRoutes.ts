@@ -5,6 +5,7 @@ import type {
   AppealOffenceOutcomeForm,
   AppealOverallCaseOutcomeForm,
   CriminalOfficeReferenceForm,
+  FinishedRecordingAppealsForm,
 } from 'forms'
 import type { UrlParameters } from 'models'
 import AuditService from '../services/auditService'
@@ -425,6 +426,22 @@ export default class AppealsRoutes extends BaseRoutes {
       },
       errors: req.flash('errors') || [],
     })
+  }
+
+  public submitRecordAppeals: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const finishedRecordingAppealsForm = trimForm<FinishedRecordingAppealsForm>(req.body)
+    const errors = this.courtAppearanceService.finishRecordingAppeals(
+      req.session,
+      urlParameters,
+      finishedRecordingAppealsForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('finishedRecordingAppealsForm', { ...finishedRecordingAppealsForm })
+      return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters, 'true'))
+    }
+    return res.redirect(AppealsJourneyUrls.taskList(urlParameters))
   }
 
   public getSelectOffenceAppealOutcome: RequestHandler = async (req, res): Promise<void> => {

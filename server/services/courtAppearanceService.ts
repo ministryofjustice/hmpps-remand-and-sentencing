@@ -1205,7 +1205,6 @@ export default class CourtAppearanceService {
     )
     if (deleteDocumentForm.deleteDocument === 'true') {
       try {
-        await this.documentManagementService.deleteDocument(documentId, username)
         const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
         if (courtAppearance.uploadedDocuments) {
           courtAppearance.uploadedDocuments = courtAppearance.uploadedDocuments.filter(

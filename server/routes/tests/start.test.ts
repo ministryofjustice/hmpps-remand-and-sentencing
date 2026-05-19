@@ -143,6 +143,9 @@ describe('GET Start', () => {
     expect(actionsList.length).toEqual(1)
     const newJourneyLinks = $('a[href*="new-journey"]')
     expect(newJourneyLinks.length).toEqual(2)
+    expect($('label.govuk-checkboxes__label').text().trim()).toContain(
+      'Include cases from previous periods of custody (1)',
+    )
   })
 
   it('should render error when appearance from date is invalid', async () => {

@@ -95,6 +95,11 @@ context('Start Page', () => {
     Page.verifyOnPage(StartPage)
   })
 
+  it('displays include previous periods checkbox label with count filter with total', () => {
+    startPage.filterSortSummary().click()
+    startPage.includeCasesFromPreviousPeriodsLabel(1)
+  })
+
   it('displays sentence court case summary', () => {
     startPage.courtCaseSummaryList('261911e2-6346-42e0-b025-a806048f4d04').getSummaryList().should('deep.equal', {
       'Case references': 'XX1234, YY1234',

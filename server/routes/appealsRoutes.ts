@@ -24,6 +24,7 @@ import RefDataService from '../services/refDataService'
 import { offencesToOffenceDescriptions, orderOffences, outcomeValueOrLegacy, sortByDateDesc } from '../utils/utils'
 import { chargeToOffence } from '../utils/mappingUtils'
 import DocumentManagementService from '../services/documentManagementService'
+import documentTypes from '../resources/documentTypes'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -526,12 +527,48 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters,
       'APPEAL_ORDER',
       AppealsJourneyUrls.uploadAppealsOrder(urlParameters, 'true'),
-      AppealsJourneyUrls.viewAppealsOrder(urlParameters),
+      AppealsJourneyUrls.viewAppealsOrder(urlParameters, 'true'),
     )
   }
 
   public getViewAppealOrder: RequestHandler = async (req, res) => {
-    return res.render('pages/appeals/view-appeal-order')
+    const urlParameters = req.params as unknown as UrlParameters
+    const { backToUpload } = req.query
+    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const expectedDocumentTypes = documentTypes.APPEAL
+    const documentRows = expectedDocumentTypes.map(expectedType => {
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
+      return { ...expectedType, ...uploadedDocument }
+    })
+    let backLink = AppealsJourneyUrls.taskList(urlParameters)
+    if (backToUpload) {
+      backLink = AppealsJourneyUrls.uploadAppealsOrder(urlParameters)
+    } else if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+    }
+    return res.render('pages/appeals/view-appeal-order', {
+      ...urlParameters,
+      documentRows,
+      backLink,
+    })
+  }
+
+  public confirmViewAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    this.courtAppearanceService.setDocumentUploadedTrue(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    return res.redirect(
+      this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
+        ? AppealsJourneyUrls.hearingDetails(urlParameters)
+        : AppealsJourneyUrls.taskList(urlParameters),
+    )
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

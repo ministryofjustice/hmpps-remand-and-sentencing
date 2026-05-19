@@ -1076,5 +1076,10 @@ export default function routes(services: Services): Router {
     appealsRoutes.getViewAppealOrder,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/confirm-view-appeal-order',
+    appealsRoutes.confirmViewAppealOrder,
+  )
+
   return router
 }

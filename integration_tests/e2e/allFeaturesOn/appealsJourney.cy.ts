@@ -9,6 +9,8 @@ import Page from '../../pages/page'
 import RecordAppealPage from '../../pages/RecordAppealPage'
 import SelectOffenceAppealOutcomePage from '../../pages/SelectOffenceAppealOutcomePage'
 import StartPage from '../../pages/startPage'
+import UploadAppealOrderPage from '../../pages/UploadAppealOrderPage'
+import ViewAppealOrderPage from '../../pages/ViewAppealOrderPage'
 
 context('Appeals journey', () => {
   beforeEach(() => {
@@ -34,6 +36,10 @@ context('Appeals journey', () => {
       },
     ])
     cy.task('stubGetOffenceByCode', {})
+    cy.task('stubUploadTempDocument', {
+      type: 'APPEAL_ORDER',
+    })
+    cy.task('stubUploadDocument')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -154,6 +160,30 @@ context('Appeals journey', () => {
         {
           name: 'Upload court documents',
           status: 'Optional',
+        },
+      ])
+    courtCaseTaskListPage.uploadCourtDocumentsLink().click()
+    const uploadAppealOrderPage = Page.verifyOnPage(UploadAppealOrderPage)
+    uploadAppealOrderPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
+    uploadAppealOrderPage.continueButton().click()
+    const viewAppealOrderPage = Page.verifyOnPage(ViewAppealOrderPage)
+    viewAppealOrderPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Record appeal',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Completed',
         },
       ])
   })

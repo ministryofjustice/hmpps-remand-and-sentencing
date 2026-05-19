@@ -46,7 +46,7 @@
     "@ministryofjustice/frontend": "^9.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.2",
     "@ministryofjustice/hmpps-court-cases-release-dates-design": "5.0.3",
-    "@ministryofjustice/hmpps-monitoring": "^1.1.0",
+    "@ministryofjustice/hmpps-monitoring": "^2.1.0",
     "@ministryofjustice/hmpps-rest-client": "^1.2.1",
     "accessible-autocomplete": "3.0.1",
     "applicationinsights": "^2.9.8",

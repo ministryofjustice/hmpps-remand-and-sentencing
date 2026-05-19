@@ -991,6 +991,11 @@ export default function routes(services: Services): Router {
     appealsRoutes.taskList,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/task-list',
+    appealsRoutes.submitTaskList,
+  )
+
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/criminal-office-reference',
     appealsRoutes.getCriminalOfficeReference,
@@ -1089,6 +1094,11 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/:documentUuid/delete-document',
     appealsRoutes.submitDeleteDocument,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/confirmation',
+    appealsRoutes.getConfirmation,
   )
 
   return router

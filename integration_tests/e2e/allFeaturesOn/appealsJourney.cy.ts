@@ -40,6 +40,7 @@ context('Appeals journey', () => {
       type: 'APPEAL_ORDER',
     })
     cy.task('stubUploadDocument')
+    cy.task('stubCreateAppealHearing')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -166,6 +167,7 @@ context('Appeals journey', () => {
     const uploadAppealOrderPage = Page.verifyOnPage(UploadAppealOrderPage)
     uploadAppealOrderPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
     uploadAppealOrderPage.continueButton().click()
+    cy.location('pathname').should('include', '/view-appeal-order')
     const viewAppealOrderPage = Page.verifyOnPage(ViewAppealOrderPage)
     viewAppealOrderPage.continueButton().click()
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
@@ -186,5 +188,7 @@ context('Appeals journey', () => {
           status: 'Completed',
         },
       ])
+    courtCaseTaskListPage.continueButton().click()
+    cy.task('verifyCreateAppealHearingRequest').should('equal', 1)
   })
 })

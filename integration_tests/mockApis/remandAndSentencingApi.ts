@@ -4162,4 +4162,59 @@ export default {
       },
     })
   },
+
+  stubCreateAppealHearing: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/([a-zA-Z0-9-]*)',
+        bodyPatterns: [
+          {
+            equalToJson: `{"courtCaseUuid": "261911e2-6346-42e0-b025-a806048f4d04", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "cd8c02aa-0599-4eb3-9e73-c88836258be2", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-13", "charges": [{"appearanceUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2025-05-20", "outcomeUuid": "42a30fcd-51c0-4c18-95f9-e3a364eb9176", "prisonId": "MDI", "createChargeOrder": 0, "chargeUuid": "6683ebbb-f6a6-4744-8603-371135c36913"}], "warrantType": "APPEAL", "documents": [{"documentUUID": "\${json-unit.any-string}", "documentType": "APPEAL_ORDER", "fileName": "testfile.doc"}], "prisonId": "MDI"}`,
+          },
+        ],
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
+        },
+      },
+    })
+  },
+
+  verifyCreateAppealHearingRequest: (): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/court-appearance/([a-zA-Z0-9-]*)',
+      method: 'PUT',
+      body: {
+        courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
+        // eslint-disable-next-line no-template-curly-in-string
+        appearanceUuid: '${json-unit.any-string}',
+        outcomeUuid: 'cd8c02aa-0599-4eb3-9e73-c88836258be2',
+        courtCode: 'ACCRYC',
+        courtCaseReference: 'C894623',
+        appearanceDate: '2023-05-13',
+        charges: [
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            appearanceUuid: '${json-unit.any-string}',
+            offenceCode: 'PS90037',
+            offenceStartDate: '2025-05-20',
+            outcomeUuid: '42a30fcd-51c0-4c18-95f9-e3a364eb9176',
+            prisonId: 'MDI',
+            createChargeOrder: 0,
+            chargeUuid: '6683ebbb-f6a6-4744-8603-371135c36913',
+          },
+        ],
+        warrantType: 'APPEAL',
+        documents: [
+          // eslint-disable-next-line no-template-curly-in-string
+          { documentUUID: '${json-unit.any-string}', documentType: 'APPEAL_ORDER', fileName: 'testfile.doc' },
+        ],
+        prisonId: 'MDI',
+      },
+    })
+  },
 }

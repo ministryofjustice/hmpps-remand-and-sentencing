@@ -92,6 +92,48 @@ export default class AppealsRoutes extends BaseRoutes {
     })
   }
 
+  public submitTaskList: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = res.locals.user
+    const { prisonId } = res.locals.prisoner
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const courtAppearanceWithoutSentences = {
+      ...courtAppearance,
+      offences: courtAppearance.offences.map(offence => {
+        const { sentence: _, ...offenceWithoutSentence } = offence
+        return offenceWithoutSentence
+      }),
+    }
+    const courtAppearanceResponse = await this.remandAndSentencingService.createCourtAppearance(
+      username,
+      urlParameters.courtCaseReference,
+      urlParameters.appearanceReference,
+      courtAppearanceWithoutSentences,
+      prisonId,
+    )
+    const auditDetails = {
+      courtCaseUuids: [urlParameters.courtCaseReference],
+      courtAppearanceUuids: [courtAppearanceResponse.appearanceUuid],
+      chargesUuids: courtAppearance.offences?.map(offence => offence.chargeUuid),
+      sentenceUuids: [],
+      periodLengthUuids: [],
+      documentUuids: (courtAppearance.uploadedDocuments ?? []).map(document => document.documentUUID),
+    }
+    await this.auditService.logCreateHearing({
+      who: username,
+      subjectId: urlParameters.nomsId,
+      subjectType: 'PRISONER_ID',
+      correlationId: req.id,
+      details: auditDetails,
+    })
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, urlParameters.nomsId)
+    return res.redirect(AppealsJourneyUrls.confirmation(urlParameters))
+  }
+
   public getCriminalOfficeReference: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { submitToCheckAnswers } = req.query
@@ -608,6 +650,10 @@ export default class AppealsRoutes extends BaseRoutes {
       return res.redirect(AppealsJourneyUrls.deleteDocument(urlParameters, 'true'))
     }
     return res.redirect(AppealsJourneyUrls.uploadAppealsOrder(urlParameters))
+  }
+
+  public getConfirmation: RequestHandler = async (req, res) => {
+    return res.render('pages/appeals/confirmation')
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

@@ -1,0 +1,40 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set hideOffences = true %}
+{% set hideOutcome = true %}
+{% set pageTitle = applicationName + " - Upload appeal order" %}
+
+{% block pageContent %}
+    <form method="post" enctype="multipart/form-data" autocomplete="off">
+        {{ super() }}
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        {{ govukFileUpload({
+            id: "document-upload",
+            name: "documentUpload",
+            errorMessage: errors | findError('document-upload'),
+            label: {
+                text: "Upload the appeal order",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+            },
+            hint: {
+                text: "You can upload .pdf, .jpg, .png, .doc or .docx files."
+            },
+            attributes: {
+                accept: "image/*,.pdf, .doc,.docx"
+            }
+        }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+{% endblock %}

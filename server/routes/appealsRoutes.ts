@@ -23,6 +23,8 @@ import logger from '../../logger'
 import RefDataService from '../services/refDataService'
 import { offencesToOffenceDescriptions, orderOffences, outcomeValueOrLegacy, sortByDateDesc } from '../utils/utils'
 import { chargeToOffence } from '../utils/mappingUtils'
+import DocumentManagementService from '../services/documentManagementService'
+import documentTypes from '../resources/documentTypes'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -31,10 +33,18 @@ export default class AppealsRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public newJourney: RequestHandler = async (req, res): Promise<void> => {
@@ -498,6 +508,67 @@ export default class AppealsRoutes extends BaseRoutes {
       return res.redirect(AppealsJourneyUrls.selectOffenceAppealOutcome(urlParameters, 'true'))
     }
     return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
+  }
+
+  public getUploadAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return res.render('pages/appeals/upload-appeal-order', {
+      ...urlParameters,
+      backLink: AppealsJourneyUrls.taskList(urlParameters),
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitUploadAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.uploadTemporaryDocument(
+      req,
+      res,
+      urlParameters,
+      'APPEAL_ORDER',
+      AppealsJourneyUrls.uploadAppealsOrder(urlParameters, 'true'),
+      AppealsJourneyUrls.viewAppealsOrder(urlParameters, 'true'),
+    )
+  }
+
+  public getViewAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { backToUpload } = req.query
+    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const expectedDocumentTypes = documentTypes.APPEAL
+    const documentRows = expectedDocumentTypes.map(expectedType => {
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
+      return { ...expectedType, ...uploadedDocument }
+    })
+    let backLink = AppealsJourneyUrls.taskList(urlParameters)
+    if (backToUpload) {
+      backLink = AppealsJourneyUrls.uploadAppealsOrder(urlParameters)
+    } else if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+    }
+    return res.render('pages/appeals/view-appeal-order', {
+      ...urlParameters,
+      documentRows,
+      backLink,
+    })
+  }
+
+  public confirmViewAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    this.courtAppearanceService.setDocumentUploadedTrue(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    return res.redirect(
+      this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
+        ? AppealsJourneyUrls.hearingDetails(urlParameters)
+        : AppealsJourneyUrls.taskList(urlParameters),
+    )
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

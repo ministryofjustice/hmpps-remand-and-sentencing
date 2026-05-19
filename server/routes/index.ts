@@ -51,6 +51,7 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.remandAndSentencingService,
     services.auditService,
+    services.documentManagementService,
     services.calculateReleaseDatesService,
     services.courtRegisterService,
     services.refDataService,
@@ -62,6 +63,7 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.manageOffencesService,
     services.auditService,
+    services.documentManagementService,
     services.refDataService,
   )
 
@@ -71,6 +73,7 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.manageOffencesService,
     services.auditService,
+    services.documentManagementService,
     services.courtRegisterService,
     services.calculateReleaseDatesService,
     services.refDataService,
@@ -82,6 +85,7 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.manageOffencesService,
     services.auditService,
+    services.documentManagementService,
     services.courtRegisterService,
     services.refDataService,
   )
@@ -92,6 +96,7 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.manageOffencesService,
     services.auditService,
+    services.documentManagementService,
     services.courtRegisterService,
     services.refDataService,
     services.unknownRecallSentenceService,
@@ -103,6 +108,7 @@ export default function routes(services: Services): Router {
     services.courtAppearanceService,
     services.remandAndSentencingService,
     services.auditService,
+    services.documentManagementService,
     services.refDataService,
   )
 
@@ -112,6 +118,7 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.manageOffencesService,
     services.auditService,
+    services.documentManagementService,
     services.aggravatingFactorsService,
   )
 
@@ -121,6 +128,7 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.manageOffencesService,
     services.auditService,
+    services.documentManagementService,
     services.courtRegisterService,
     services.refDataService,
   )
@@ -1051,6 +1059,26 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/select-appeal-outcome',
     appealsRoutes.subtmitSelectOffenceAppealOutcome,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/upload-appeal-order',
+    appealsRoutes.getUploadAppealOrder,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/upload-appeal-order',
+    appealsRoutes.submitUploadAppealOrder,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/view-appeal-order',
+    appealsRoutes.getViewAppealOrder,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/confirm-view-appeal-order',
+    appealsRoutes.confirmViewAppealOrder,
   )
 
   return router

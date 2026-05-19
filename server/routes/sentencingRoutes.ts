@@ -43,6 +43,7 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -51,11 +52,19 @@ export default class SentencingRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public getIsSentenceConsecutiveTo: RequestHandler = async (req, res): Promise<void> => {

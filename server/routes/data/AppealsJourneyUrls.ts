@@ -41,6 +41,14 @@ export default class AppealsJourneyUrls {
     return `${this.basePath(urlParameters)}/upload-court-documents`
   }
 
+  static uploadAppealsOrder = (urlParameters: UrlParameters, hasErrors?: string) => {
+    return `${this.basePath(urlParameters)}/upload-appeal-order${this.getQueryParameters(hasErrors)}`
+  }
+
+  static viewAppealsOrder = (urlParameters: UrlParameters, backToUpload?: string) => {
+    return `${this.basePath(urlParameters)}/view-appeal-order${backToUpload ? '?backToUpload=true' : ''}`
+  }
+
   static hearingDetails = (urlParameters: UrlParameters) => {
     return `${this.basePath(urlParameters)}/hearing-details`
   }

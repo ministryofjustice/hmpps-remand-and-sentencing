@@ -61,6 +61,7 @@ import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -69,11 +70,19 @@ export default class OffenceRoutes extends BaseRoutes {
     courtAppearanceService: CourtAppearanceService,
     remandAndSentencingService: RemandAndSentencingService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public validateSentenceTypeAccess: RequestHandler = async (req, res): Promise<void> => {

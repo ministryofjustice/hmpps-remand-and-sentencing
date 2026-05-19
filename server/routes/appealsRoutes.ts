@@ -5,6 +5,7 @@ import type {
   AppealOffenceOutcomeForm,
   AppealOverallCaseOutcomeForm,
   CriminalOfficeReferenceForm,
+  DeleteDocumentForm,
   FinishedRecordingAppealsForm,
 } from 'forms'
 import type { UrlParameters } from 'models'
@@ -569,6 +570,44 @@ export default class AppealsRoutes extends BaseRoutes {
         ? AppealsJourneyUrls.hearingDetails(urlParameters)
         : AppealsJourneyUrls.taskList(urlParameters),
     )
+  }
+
+  public getDeleteDocument: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const document = this.courtAppearanceService.getUploadedDocument(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.documentUuid,
+      urlParameters.appearanceReference,
+    )
+    const deleteDocumentForm = (req.flash('deleteDocumentForm')[0] || {}) as DeleteDocumentForm
+    return res.render('pages/appeals/delete-document', {
+      ...urlParameters,
+      document,
+      deleteDocumentForm,
+      errors: req.flash('errors') || [],
+      backLink: AppealsJourneyUrls.viewAppealsOrder(urlParameters),
+    })
+  }
+
+  public submitDeleteDocument: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = req.user
+    const deleteDocumentForm = trimForm<DeleteDocumentForm>(req.body)
+    const errors = await this.courtAppearanceService.removeUploadedDocument(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.documentUuid,
+      deleteDocumentForm,
+      username,
+      urlParameters.appearanceReference,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('deleteDocumentForm', { ...deleteDocumentForm })
+      return res.redirect(AppealsJourneyUrls.deleteDocument(urlParameters, 'true'))
+    }
+    return res.redirect(AppealsJourneyUrls.uploadAppealsOrder(urlParameters))
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

@@ -129,5 +129,6 @@ declare module 'models' {
     addOrEditCourtAppearance: string
     appearanceReference: string
     chargeUuid: string
+    documentUuid: string
   }
 }

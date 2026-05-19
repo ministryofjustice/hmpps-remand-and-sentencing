@@ -1081,5 +1081,15 @@ export default function routes(services: Services): Router {
     appealsRoutes.confirmViewAppealOrder,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/:documentUuid/delete-document',
+    appealsRoutes.getDeleteDocument,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/:documentUuid/delete-document',
+    appealsRoutes.submitDeleteDocument,
+  )
+
   return router
 }

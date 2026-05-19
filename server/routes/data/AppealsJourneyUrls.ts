@@ -53,6 +53,10 @@ export default class AppealsJourneyUrls {
     return `${this.basePath(urlParameters)}/${urlParameters.documentUuid}/delete-document${this.getQueryParameters(hasErrors)}`
   }
 
+  static confirmation = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/confirmation`
+  }
+
   static hearingDetails = (urlParameters: UrlParameters) => {
     return `${this.basePath(urlParameters)}/hearing-details`
   }

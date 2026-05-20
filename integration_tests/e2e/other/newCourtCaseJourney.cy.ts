@@ -19,7 +19,6 @@ import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearance
 import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
-import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConvictionDatePage'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
@@ -28,6 +27,7 @@ import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 import config from '../../../server/config'
+import CourtCaseAddHearingInformationPage from '../../pages/courtCaseAddHearingInformationPage'
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -77,6 +77,13 @@ context('New Court Case journey', () => {
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
+
+    const courtCaseAddHearingInformationPage = Page.verifyOnPageTitle(
+      CourtCaseAddHearingInformationPage,
+      'Is the outcome the same for all offences?',
+    )
+    courtCaseAddHearingInformationPage.radioLabelContains('Yes').click()
+    courtCaseAddHearingInformationPage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -170,10 +177,6 @@ context('New Court Case journey', () => {
 
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
-
-    const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Select the outcome for this offence')
-    offenceOutcomePage.radioLabelContains('Remanded in custody').click()
-    offenceOutcomePage.continueButton().click()
 
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()

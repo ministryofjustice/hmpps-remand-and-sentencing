@@ -181,8 +181,6 @@ export default {
   featureToggles: {
     nextAppearanceSubtype: get('FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED', false, requiredInProduction) === 'true',
     addAggravatingFactors: get('FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED', false, requiredInProduction) === 'true',
-    nonSentencingOutcomeAppliedAll:
-      get('FEATURES_NON_SENTENCING_OUTCOME_APPLIED_ALL_ENABLED', false, requiredInProduction) === 'true',
     appeals: get('FEATURES_APPEALS_ENABLED', false, requiredInProduction) === 'true',
   },
 }

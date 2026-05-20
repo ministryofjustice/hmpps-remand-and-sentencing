@@ -1750,10 +1750,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     }
 
-    if (
-      config.featureToggles.nonSentencingOutcomeAppliedAll &&
-      this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
-    ) {
+    if (this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       return res.redirect(
         JourneyUrls.overallCaseOutcomeAppliedAll(
           nomsId,

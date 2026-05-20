@@ -41,7 +41,7 @@ export default function setUpWebSession(): Router {
       req.session.offences = new Map<string, Offence>()
     }
     if (!req.session.courtAppearances) {
-      logger.info('initialising court appearances for session')
+      logger.debug('initialising court appearances for session')
       req.session.courtAppearances = new Map<string, CourtAppearance>()
     }
     if (!req.session.unknownRecallSentenceUuids) {

@@ -1,0 +1,47 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set pageTitle = applicationName + " - Appeal successfully saved" %}
+
+{% block subNavigation %}
+{% endblock %}
+
+{% block content %}
+
+    {% set titleHtml %}
+        <span class="govuk-!-font-size-36">
+            Appeal successfully saved
+        </span>
+    {% endset %}
+
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({
+                titleHtml: titleHtml,
+                classes: "govuk-!-margin-bottom-6"
+            }) }}
+
+            <div class="govuk-!-margin-top-6">
+                <h2 class="govuk-heading-l">What you must do next</h2>
+
+                <div class="govuk-body govuk-!-margin-top-6">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/view-court-case/{{ courtCaseReference }}/details" data-qa="reviewSentenceLink">
+                        Review the sentence information
+                    </a>
+                </div>
+
+                <div class="govuk-body govuk-!-margin-top-6">
+                    <span>You can go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
+                    <ul class="govuk-list govuk-!-margin-top-2">
+                        <li>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}">
+                                Court case information
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

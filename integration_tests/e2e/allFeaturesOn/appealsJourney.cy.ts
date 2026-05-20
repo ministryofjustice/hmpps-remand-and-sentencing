@@ -1,4 +1,5 @@
 import AppealCheckHearingAnswersPage from '../../pages/AppealCheckHearingAnswersPage'
+import AppealConfirmationPage from '../../pages/AppealConfirmationPage'
 import AppealCourtNamePage from '../../pages/AppealCourtNamePage'
 import AppealDatePage from '../../pages/AppealDatePage'
 import AppealOverallCaseOutcomePage from '../../pages/AppealOverallCaseOutcomePage'
@@ -190,5 +191,6 @@ context('Appeals journey', () => {
       ])
     courtCaseTaskListPage.continueButton().click()
     cy.task('verifyCreateAppealHearingRequest').should('equal', 1)
+    Page.verifyOnPage(AppealConfirmationPage)
   })
 })

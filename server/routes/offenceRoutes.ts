@@ -842,22 +842,10 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    if (
-      !config.featureToggles.addAggravatingFactors &&
-      offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))
-    ) {
-      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
-    }
     const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     if (this.showOffenceInactive(offence, sessionOffence)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/inactive-offence?backTo=CODE${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
-      )
-    }
-
-    if (!config.featureToggles.addAggravatingFactors && this.showOffenceAggravated(offence)) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
@@ -1048,18 +1036,6 @@ export default class OffenceRoutes extends BaseRoutes {
           `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/inactive-offence?backTo=NAME${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
         )
       }
-    }
-
-    if (!config.featureToggles.addAggravatingFactors && this.showOffenceAggravated(offence)) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-      )
-    }
-    if (
-      !config.featureToggles.addAggravatingFactors &&
-      offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))
-    ) {
-      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
     }
 
     if (submitToEditOffence) {

@@ -23,7 +23,6 @@ import SentencingCorrectManyPeriodLengthPage from '../../pages/sentencingCorrect
 import SentencingCorrectManyPeriodLengthInterruptPage from '../../pages/sentencingCorrectManyPeriodLengthInterruptPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import AggravatingFactorsSelectWhichAggravatedFactorsApplyPage from '../../pages/aggravatingFactorsSelectWhichAggravatingFactorsApplyPage'
-import config from '../../../server/config'
 
 context('Add Offence Edit offence Page', () => {
   let offenceEditOffencePage: OffenceEditOffencePage
@@ -209,9 +208,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -234,9 +231,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -257,9 +252,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -294,9 +287,7 @@ context('Add Offence Edit offence Page', () => {
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -325,9 +316,7 @@ context('Add Offence Edit offence Page', () => {
         'Consecutive or concurrent': 'Consecutive',
         'Consecutive to': 'Count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -372,9 +361,7 @@ context('Add Offence Edit offence Page', () => {
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -422,9 +409,7 @@ context('Add Offence Edit offence Page', () => {
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -456,9 +441,7 @@ context('Add Offence Edit offence Page', () => {
         'Term length': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
       offenceEditOffencePage.editFieldLink(chargeUuid, 'fine-amount').click()
       Page.verifyOnPage(OffenceFineAmountPage)
@@ -478,81 +461,78 @@ context('Add Offence Edit offence Page', () => {
         'Term length': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary1['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary1['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary1)
     })
 
-    if (config.featureToggles.addAggravatingFactors) {
-      it('can add aggravating factors from edit page and return to edit page', () => {
-        // Click the Add aggravating factors link on the edit offence page
-        offenceEditOffencePage.addAggravatingFactorsLink(chargeUuid).click()
+    it('can add aggravating factors from edit page and return to edit page', () => {
+      // Click the Add aggravating factors link on the edit offence page
+      offenceEditOffencePage.addAggravatingFactorsLink(chargeUuid).click()
 
-        // Should land on the select-which-aggravating-factors page
-        const selectPage = Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
+      // Should land on the select-which-aggravating-factors page
+      const selectPage = Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
 
-        // Submitting without selecting anything should keep us on the same page (validation)
-        selectPage.continueButton().click()
-        Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
+      // Submitting without selecting anything should keep us on the same page (validation)
+      selectPage.continueButton().click()
+      Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
 
-        // Select a factor and continue - should return to the edit offence page
-        selectPage.terrorRelatedCheckbox().click()
-        selectPage.continueButton().click()
+      // Select a factor and continue - should return to the edit offence page
+      selectPage.terrorRelatedCheckbox().click()
+      selectPage.continueButton().click()
 
-        offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-        const expectedSummary: Record<string, string> = {
-          'Count number': 'Count 1',
-          Offence: 'PS90037 An offence description',
-          'Committed on': '12/05/2023',
-          Outcome: 'Imprisonment',
-          'Conviction date': '13/05/2023',
-          'Sentence type': 'SDS (Standard Determinate Sentence)',
-          'Sentence length': '4 years 5 months 0 weeks 0 days',
-          'Consecutive or concurrent': 'Forthwith',
-          'Aggravating factors': 'Offences aggravated by a terrorist connection',
-        }
-        offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      const expectedSummary: Record<string, string> = {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        'Committed on': '12/05/2023',
+        Outcome: 'Imprisonment',
+        'Conviction date': '13/05/2023',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors': 'Offences aggravated by a terrorist connection',
+      }
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
+    })
+
+    it('can edit aggravating factors using action link and return to edit page', () => {
+      // First add an aggravating factor so the action link is rendered
+      offenceEditOffencePage.addAggravatingFactorsLink(chargeUuid).click()
+
+      // Land on the select page and choose a factor
+      const selectPage = Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
+      selectPage.terrorRelatedCheckbox().click()
+      selectPage.continueButton().click()
+
+      // Back on edit offence page with the factor present
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+
+      // Click the right-hand Edit action for aggravating factors
+      cy.get(`a[data-qa="edit-aggravating-factors-${chargeUuid}"]`).click()
+
+      // Should land back on the select page and the previously selected checkbox should be checked
+      const selectPage2 = Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
+      selectPage2.terrorRelatedCheckbox().should('not.be.checked')
+      selectPage2.foreignPowerRelatedCheckbox().should('not.be.checked')
+      selectPage2.terrorRelatedCheckbox().click()
+      selectPage2.foreignPowerRelatedCheckbox().click()
+
+      // Submit without changes and return to the edit offence page
+      selectPage2.continueButton().click()
+      offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
+        'Count number': 'Count 1',
+        Offence: 'PS90037 An offence description',
+        'Committed on': '12/05/2023',
+        Outcome: 'Imprisonment',
+        'Conviction date': '13/05/2023',
+        'Sentence type': 'SDS (Standard Determinate Sentence)',
+        'Sentence length': '4 years 5 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors':
+          'Offences aggravated by a terrorist connection Offences aggravated by foreign power condition being met',
       })
-
-      it('can edit aggravating factors using action link and return to edit page', () => {
-        // First add an aggravating factor so the action link is rendered
-        offenceEditOffencePage.addAggravatingFactorsLink(chargeUuid).click()
-
-        // Land on the select page and choose a factor
-        const selectPage = Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
-        selectPage.terrorRelatedCheckbox().click()
-        selectPage.continueButton().click()
-
-        // Back on edit offence page with the factor present
-        offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-
-        // Click the right-hand Edit action for aggravating factors
-        cy.get(`a[data-qa="edit-aggravating-factors-${chargeUuid}"]`).click()
-
-        // Should land back on the select page and the previously selected checkbox should be checked
-        const selectPage2 = Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
-        selectPage2.terrorRelatedCheckbox().should('be.checked')
-        selectPage2.foreignPowerRelatedCheckbox().should('not.be.checked')
-        selectPage2.terrorRelatedCheckbox().click()
-        selectPage2.foreignPowerRelatedCheckbox().click()
-
-        // Submit without changes and return to the edit offence page
-        selectPage2.continueButton().click()
-        offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
-        offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', {
-          'Count number': 'Count 1',
-          Offence: 'PS90037 An offence description',
-          'Committed on': '12/05/2023',
-          Outcome: 'Imprisonment',
-          'Conviction date': '13/05/2023',
-          'Sentence type': 'SDS (Standard Determinate Sentence)',
-          'Sentence length': '4 years 5 months 0 weeks 0 days',
-          'Consecutive or concurrent': 'Forthwith',
-          'Aggravating factors': 'Offences aggravated by foreign power condition being met',
-        })
-      })
-    }
+    })
   })
 
   context('edit remand', () => {
@@ -644,9 +624,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 0 months 0 weeks 0 days 4 years 0 months 0 weeks 0 days',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -671,9 +649,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 0 months 0 weeks 0 days',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
   })
@@ -798,9 +774,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 

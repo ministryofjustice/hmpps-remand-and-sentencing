@@ -28,7 +28,6 @@ generic-service:
     BOOK_SECURE_MOVE_UI_URL: "https://hmpps-book-secure-move-frontend-staging.apps.cloud-platform.service.justice.gov.uk"
     BOOK_VIDEO_LINK_UI_URL: "https://book-a-video-link-dev.prison.service.justice.gov.uk"
     FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED: 'true'
-    FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED: 'true'
     FEATURES_APPEALS_ENABLED: 'true'
 
   scheduledDowntime:

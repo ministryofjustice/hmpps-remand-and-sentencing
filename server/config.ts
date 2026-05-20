@@ -180,7 +180,6 @@ export default {
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
     nextAppearanceSubtype: get('FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED', false, requiredInProduction) === 'true',
-    addAggravatingFactors: get('FEATURES_ADD_AGGRAVATING_FACTORS_ENABLED', false, requiredInProduction) === 'true',
     appeals: get('FEATURES_APPEALS_ENABLED', false, requiredInProduction) === 'true',
   },
 }

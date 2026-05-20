@@ -16,7 +16,6 @@ import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import CannotChangeSentenceOutcomePage from '../../pages/cannotChangeSentenceOutcomePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import ErrorPage from '../../pages/error'
-import config from '../../../server/config'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -199,9 +198,7 @@ context('Sentencing appearance details Page', () => {
         'Consecutive or concurrent': 'Consecutive',
         'Consecutive to': 'Count 1',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
       offenceEditOffencePage.continueButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
@@ -616,9 +613,7 @@ context('Sentencing appearance details Page', () => {
         'Section 86 of 2000 act': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
       offenceEditOffencePage.continueButton().click()
       Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
@@ -703,9 +698,7 @@ context('Sentencing appearance details Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
       }
-      if (config.featureToggles.addAggravatingFactors) {
-        expectedSummary['Aggravating factors'] = 'Add aggravating factors'
-      }
+      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 

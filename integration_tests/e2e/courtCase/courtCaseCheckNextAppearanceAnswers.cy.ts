@@ -7,6 +7,7 @@ import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearance
 import Page from '../../pages/page'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseNextAppearanceSetPage from '../../pages/courtCaseNextAppearanceSetPage'
+import CourtCaseNextAppearanceSubtypePage from "../../pages/courtCaseNextAppearanceSubtypePage";
 
 context('Check Next Appearance Answers page', () => {
   let courtCaseNextAppearanceAnswersPage: CourtCaseCheckNextAppearanceAnswersPage
@@ -14,6 +15,7 @@ context('Check Next Appearance Answers page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetAppearanceTypeByUuid')
+    cy.task('stubGetAllAppearanceSubtypes')
     cy.task('stubGetCourtById', {})
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/court-name')
@@ -29,6 +31,10 @@ context('Check Next Appearance Answers page', () => {
     const courtCaseNextAppearanceTypePage = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
     courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
     courtCaseNextAppearanceTypePage.continueButton().click()
+
+    const courtCaseNextAppearanceSubtypePage = Page.verifyOnPage(CourtCaseNextAppearanceSubtypePage)
+    courtCaseNextAppearanceSubtypePage.radioLabelContains('Discharged to court').click()
+    courtCaseNextAppearanceSubtypePage.continueButton().click()
 
     const courtCaseNextAppearanceDatePage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
 
@@ -72,6 +78,7 @@ context('Check Next Appearance Answers page', () => {
       .should('deep.equal', {
         Date: `${futureDate.format('DD/MM/YYYY')} 09:30`,
         Location: 'Southampton Magistrate Court',
+        'Discharge type': 'Discharged to court',
         'Appearance type': 'Court appearance',
       })
   })

@@ -653,7 +653,8 @@ export default class AppealsRoutes extends BaseRoutes {
   }
 
   public getConfirmation: RequestHandler = async (req, res) => {
-    return res.render('pages/appeals/confirmation')
+    const urlParameters = req.params as unknown as UrlParameters
+    return res.render('pages/appeals/confirmation', urlParameters)
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

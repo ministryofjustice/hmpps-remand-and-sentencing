@@ -11,6 +11,7 @@ import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
+import CourtCaseOverallCaseOutcomeAppliedAllPage from '../../pages/courtCaseOverallCaseOutcomeAppliedAllPage'
 
 context('Court Case Warrant Date Page', () => {
   context('Add court case and add appearance journey', () => {
@@ -292,6 +293,10 @@ context('Court Case Warrant Date Page', () => {
       )
       courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
       courtCaseOverallCaseOutcomePage.continueButton().click()
+
+      const courtCaseAddHearingInformationPage = Page.verifyOnPage(CourtCaseOverallCaseOutcomeAppliedAllPage)
+      courtCaseAddHearingInformationPage.radioLabelContains('Yes').click()
+      courtCaseAddHearingInformationPage.continueButton().click()
 
       const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
       courtCaseTaskListPage.hearingInformationLink().click()

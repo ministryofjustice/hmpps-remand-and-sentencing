@@ -2,11 +2,14 @@ import dayjs from 'dayjs'
 import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearanceDatePage'
 import Page from '../../pages/page'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
+import CourtCaseNextAppearanceSubtypePage from '../../pages/courtCaseNextAppearanceSubtypePage'
 
 context('Next appearance date page', () => {
   let courtCaseNextAppearanceDatePage: CourtCaseNextAppearanceDatePage
   beforeEach(() => {
     cy.task('happyPathStubs')
+    cy.task('stubGetAllAppearanceSubtypes')
+    cy.task('stubGetAppearanceTypeByUuid')
     cy.signIn()
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-date')
     courtCaseNextAppearanceDatePage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
@@ -81,6 +84,11 @@ context('Next appearance date page', () => {
     verifyInsetTextForOption(
       '63e8fce0-033c-46ad-9edf-391b802d547a',
       'You will still need to book transport for this person, using the Book a secure move service.',
+      () => {
+        const courtCaseNextAppearanceSubtypePage = Page.verifyOnPage(CourtCaseNextAppearanceSubtypePage)
+        courtCaseNextAppearanceSubtypePage.radioLabelContains('Discharged to court').click()
+        courtCaseNextAppearanceSubtypePage.continueButton().click()
+      },
     )
   })
 
@@ -92,12 +100,16 @@ context('Next appearance date page', () => {
   })
 })
 
-function verifyInsetTextForOption(optionId, expectedText) {
+function verifyInsetTextForOption(optionId, expectedText, intermediateStep?: () => void) {
   cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-type')
 
   const page = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
   page.radioLabelSelector(optionId).click()
   page.continueButton().click()
+
+  if (intermediateStep) {
+    intermediateStep()
+  }
 
   const nextPage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
   nextPage.nextAppearanceDateInset().trimTextContent().should('equal', expectedText)

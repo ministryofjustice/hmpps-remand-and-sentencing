@@ -179,7 +179,6 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
-    nextAppearanceSubtype: get('FEATURES_NEXT_APPEARANCE_SUBTYPE_ENABLED', false, requiredInProduction) === 'true',
     appeals: get('FEATURES_APPEALS_ENABLED', false, requiredInProduction) === 'true',
   },
 }

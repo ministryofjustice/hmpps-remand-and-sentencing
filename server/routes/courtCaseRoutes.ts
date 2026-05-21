@@ -50,7 +50,6 @@ import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import {
-  CourtAppearanceSubtype,
   MergedFromCase,
   PageCourtCaseContent,
   SearchCourtCasesPage,
@@ -2146,29 +2145,27 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
       )
     }
-    if (config.featureToggles.nextAppearanceSubtype) {
-      const { nextAppearanceSubTypeUuid } = this.courtAppearanceService.getSessionCourtAppearance(
-        req.session,
-        nomsId,
-        appearanceReference,
+    const { nextAppearanceSubTypeUuid } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const allSubtypes = await this.refDataService.getAllAppearanceSubtypes(req.user.username)
+    if (
+      !nextAppearanceSubTypeUuid &&
+      allSubtypes.some(subtype => subtype.appearanceTypeUuid === nextAppearanceTypeForm.nextAppearanceType)
+    ) {
+      return res.redirect(
+        NextCourtAppearanceJourneyUrls.nextAppearanceSubtype(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          null,
+          submitToCheckAnswers,
+        ),
       )
-      const allSubtypes = await this.refDataService.getAllAppearanceSubtypes(req.user.username)
-      if (
-        !nextAppearanceSubTypeUuid &&
-        allSubtypes.some(subtype => subtype.appearanceTypeUuid === nextAppearanceTypeForm.nextAppearanceType)
-      ) {
-        return res.redirect(
-          NextCourtAppearanceJourneyUrls.nextAppearanceSubtype(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
-            null,
-            submitToCheckAnswers,
-          ),
-        )
-      }
     }
     if (submitToCheckAnswers) {
       return res.redirect(
@@ -2392,7 +2389,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         addOrEditCourtAppearance,
         appearanceReference,
       )
-    } else if (config.featureToggles.nextAppearanceSubtype && nextAppearanceSubTypeUuid) {
+    } else if (nextAppearanceSubTypeUuid) {
       backLink = NextCourtAppearanceJourneyUrls.nextAppearanceSubtype(
         nomsId,
         addOrEditCourtCase,
@@ -2735,9 +2732,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     let nextAppearanceType
     let nextAppearanceSubtype
     if (courtAppearance.nextAppearanceSelect) {
-      const subtypesPromise = config.featureToggles.nextAppearanceSubtype
-        ? this.refDataService.getAllAppearanceSubtypes(req.user.username)
-        : Promise.resolve([] as CourtAppearanceSubtype[])
+      const subtypesPromise = this.refDataService.getAllAppearanceSubtypes(req.user.username)
 
       const [court, appearanceType, subtypes] = await Promise.all([
         this.courtRegisterService.findCourtById(courtAppearance.nextAppearanceCourtCode, req.user.username),

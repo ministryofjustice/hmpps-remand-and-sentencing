@@ -26,8 +26,8 @@ import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
-import CourtCaseAddHearingInformationPage from '../../pages/courtCaseAddHearingInformationPage'
 import CourtCaseNextAppearanceSubtypePage from '../../pages/courtCaseNextAppearanceSubtypePage'
+import CourtCaseOverallCaseOutcomeAppliedAllPage from '../../pages/courtCaseOverallCaseOutcomeAppliedAllPage'
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -79,10 +79,7 @@ context('New Court Case journey', () => {
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
 
-    const courtCaseAddHearingInformationPage = Page.verifyOnPageTitle(
-      CourtCaseAddHearingInformationPage,
-      'Is the outcome the same for all offences?',
-    )
+    const courtCaseAddHearingInformationPage = Page.verifyOnPage(CourtCaseOverallCaseOutcomeAppliedAllPage)
     courtCaseAddHearingInformationPage.radioLabelContains('Yes').click()
     courtCaseAddHearingInformationPage.continueButton().click()
 

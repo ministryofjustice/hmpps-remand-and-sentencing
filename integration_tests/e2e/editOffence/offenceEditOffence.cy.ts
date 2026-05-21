@@ -207,8 +207,8 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -230,8 +230,8 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '6 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -251,8 +251,8 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -286,8 +286,8 @@ context('Add Offence Edit offence Page', () => {
         'Custodial term': '4 years 4 months 0 weeks 0 days',
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -315,8 +315,8 @@ context('Add Offence Edit offence Page', () => {
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Consecutive',
         'Consecutive to': 'Count 1 on case X34345 at Southampton Magistrate Court on 23/02/2023',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -360,8 +360,8 @@ context('Add Offence Edit offence Page', () => {
         'Custodial term': '4 years 4 months 0 weeks 0 days',
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -408,8 +408,8 @@ context('Add Offence Edit offence Page', () => {
         'Custodial term': '4 years 4 months 0 weeks 0 days',
         'Licence period': '2 years 2 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -440,8 +440,8 @@ context('Add Offence Edit offence Page', () => {
         'Fine Amount': '£500',
         'Term length': '5 years 0 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
       offenceEditOffencePage.editFieldLink(chargeUuid, 'fine-amount').click()
       Page.verifyOnPage(OffenceFineAmountPage)
@@ -623,8 +623,8 @@ context('Add Offence Edit offence Page', () => {
         Outcome: 'Imprisonment',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 0 months 0 weeks 0 days 4 years 0 months 0 weeks 0 days',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 
@@ -648,8 +648,8 @@ context('Add Offence Edit offence Page', () => {
         Outcome: 'Imprisonment',
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 0 months 0 weeks 0 days',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.editSummaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
   })
@@ -773,8 +773,8 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
+        'Aggravating factors': 'Add aggravating factors',
       }
-      expectedSummary['Aggravating factors'] = 'Add aggravating factors'
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })
 

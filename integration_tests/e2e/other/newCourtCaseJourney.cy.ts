@@ -27,6 +27,7 @@ import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
 import CourtCaseAddHearingInformationPage from '../../pages/courtCaseAddHearingInformationPage'
+import CourtCaseNextAppearanceSubtypePage from "../../pages/courtCaseNextAppearanceSubtypePage";
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -44,6 +45,7 @@ context('New Court Case journey', () => {
     cy.task('stubOverallSentenceLengthFail')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetAllAppearanceSubtypes')
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-12' })
     cy.signIn()
     cy.visit('/person/A1234AB')
@@ -213,6 +215,10 @@ context('New Court Case journey', () => {
     courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
     courtCaseNextAppearanceTypePage.continueButton().click()
 
+    const courtCaseNextAppearanceSubtypePage = Page.verifyOnPage(CourtCaseNextAppearanceSubtypePage)
+    courtCaseNextAppearanceSubtypePage.radioLabelContains('Discharged to court').click()
+    courtCaseNextAppearanceSubtypePage.continueButton().click()
+
     const courtCaseNextAppearanceDatePage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
 
     courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type(futureDate.date().toString())
@@ -231,6 +237,7 @@ context('New Court Case journey', () => {
       .should('deep.equal', {
         Date: futureDate.format('DD/MM/YYYY'),
         Location: 'Accrington Youth Court',
+        'Discharge type': "Discharged to court",
         'Appearance type': 'Court appearance',
       })
     courtCaseNextAppearanceAnswersPage.continueButton().click()

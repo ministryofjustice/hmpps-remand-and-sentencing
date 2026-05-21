@@ -935,7 +935,7 @@ export default {
           appearanceDate: nextAppearanceDate,
           courtCode: 'ACCRYC',
           appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
-          courtAppearanceSubtypeUuid: "3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73",
+          courtAppearanceSubtypeUuid: '3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73',
           prisonId: 'MDI',
         },
       },

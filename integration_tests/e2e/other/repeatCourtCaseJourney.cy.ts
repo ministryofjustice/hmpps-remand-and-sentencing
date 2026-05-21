@@ -28,7 +28,7 @@ import OffenceUpdateOffenceOutcomesPage from '../../pages/offenceUpdateOffenceOu
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
-import CourtCaseNextAppearanceSubtypePage from "../../pages/courtCaseNextAppearanceSubtypePage";
+import CourtCaseNextAppearanceSubtypePage from '../../pages/courtCaseNextAppearanceSubtypePage'
 
 context('Repeat Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')

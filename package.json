@@ -101,7 +101,7 @@
     "aws-sdk-client-mock": "^4.1.0",
     "axe-core": "^4.11.4",
     "cheerio": "^1.2.0",
-    "cypress": "^15.14.2",
+    "cypress": "^15.15.0",
     "cypress-axe": "^1.7.0",
     "del": "8.0.1",
     "esbuild": "^0.28.0",

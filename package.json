@@ -80,7 +80,7 @@
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
     "@ministryofjustice/frontend-types": "2.0.0",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.4",
-    "@ministryofjustice/hmpps-precommit-hooks": "^2.0.2",
+    "@ministryofjustice/hmpps-precommit-hooks": "^3.0.1",
     "@tsconfig/node24": "^24.0.4",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
@@ -101,7 +101,7 @@
     "aws-sdk-client-mock": "^4.1.0",
     "axe-core": "^4.11.4",
     "cheerio": "^1.2.0",
-    "cypress": "^15.14.2",
+    "cypress": "^15.15.0",
     "cypress-axe": "^1.7.0",
     "del": "8.0.1",
     "esbuild": "^0.28.0",
@@ -118,5 +118,13 @@
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.9",
     "typescript": "^5.9.3"
+  },
+  "//": "Overriding qs for cypress to fix moderate (CVE-2026-8723) without breaking cypress. Remove when cypress updates their dependency to a non-vulnerable version of qs.",
+  "overrides": {
+    "cypress": {
+      "@cypress/request": {
+        "qs": "^6.15.2"
+      }
+    }
   }
 }

@@ -119,12 +119,16 @@
     "ts-jest": "^29.4.9",
     "typescript": "^5.9.3"
   },
-  "//": "Overriding qs for cypress to fix moderate (CVE-2026-8723) without breaking cypress. Remove when cypress updates their dependency to a non-vulnerable version of qs.",
+  "//": [
+    "Overriding qs for cypress to fix moderate (CVE-2026-8723) without breaking cypress. Remove when cypress updates their dependency to a non-vulnerable version of qs.",
+    "Overriding tmp for cypress to fix high (CVE-2026-44705) without breaking cypress. Remove when cypress updates their dependency to a non-vulnerable version of tmp."
+  ],
   "overrides": {
     "cypress": {
       "@cypress/request": {
         "qs": "^6.15.2"
-      }
+      },
+      "tmp": "0.2.6"
     }
   }
 }

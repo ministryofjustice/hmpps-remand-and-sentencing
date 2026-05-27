@@ -215,7 +215,7 @@
                       detailsClasses: 'govuk-!-padding-4',
                       mergedFromCase: charge.mergedFromCase,
                       courtDetails: courtMap,
-                      aggravatingFactors: charge | getAggravatingFactors if addAggravatingFactors else []
+                      aggravatingFactors: charge | getAggravatingFactors
                   }) }}
               {% endfor %}
             {% endset %}

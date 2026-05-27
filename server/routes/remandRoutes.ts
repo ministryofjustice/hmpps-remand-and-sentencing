@@ -12,7 +12,6 @@ import RefDataService from '../services/refDataService'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
 import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import config from '../config'
 import DocumentManagementService from '../services/documentManagementService'
 
 export default class RemandRoutes extends BaseRoutes {
@@ -92,9 +91,7 @@ export default class RemandRoutes extends BaseRoutes {
           hasSubtypes: false,
         } as AppearanceType)
     const appearanceSubtypePromise =
-      config.featureToggles.nextAppearanceSubtype &&
-      hearing.nextAppearanceSubTypeUuid &&
-      hearing.nextAppearanceSubTypeUuid !== 'NONE'
+      hearing.nextAppearanceSubTypeUuid && hearing.nextAppearanceSubTypeUuid !== 'NONE'
         ? this.refDataService.getAppearanceSubtypeByUuid(hearing.nextAppearanceSubTypeUuid, req.user.username)
         : Promise.resolve({
             description: 'Not included',
@@ -150,10 +147,7 @@ export default class RemandRoutes extends BaseRoutes {
     )
 
     let appearanceSubtypeDescription
-    if (
-      config.featureToggles.nextAppearanceSubtype &&
-      (hearing.nextAppearanceSubTypeUuid || appearanceType.hasSubtypes)
-    ) {
+    if (hearing.nextAppearanceSubTypeUuid || appearanceType.hasSubtypes) {
       appearanceSubtypeDescription = appearanceSubtype.description
     }
 

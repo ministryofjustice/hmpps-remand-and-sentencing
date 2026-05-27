@@ -19,7 +19,6 @@ import CourtCaseNextAppearanceDatePage from '../../pages/courtCaseNextAppearance
 import CourtCaseNextAppearanceCourtSetPage from '../../pages/courtCaseNextAppearanceCourtSetPage'
 import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearanceTypePage'
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
-import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
 import CourtCaseOverallConvictionDatePage from '../../pages/courtCaseOverallConvictionDatePage'
 import SentencingWarrantInformationCheckAnswersPage from '../../pages/sentencingWarrantInformationCheckAnswersPage'
 import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
@@ -27,7 +26,8 @@ import OffenceSentenceTypePage from '../../pages/offenceSentenceTypePage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import SentenceIsSentenceConsecutiveToPage from '../../pages/sentenceIsSentenceConsecutiveToPage'
 import CourtCaseCaseOutcomeAppliedAllPageSentencing from '../../pages/courtCaseCaseOutcomeAppliedAllPageSentencing'
-import config from '../../../server/config'
+import CourtCaseNextAppearanceSubtypePage from '../../pages/courtCaseNextAppearanceSubtypePage'
+import CourtCaseOverallCaseOutcomeAppliedAllPage from '../../pages/courtCaseOverallCaseOutcomeAppliedAllPage'
 
 context('New Court Case journey', () => {
   const futureDate = dayjs().add(10, 'day')
@@ -45,6 +45,7 @@ context('New Court Case journey', () => {
     cy.task('stubOverallSentenceLengthFail')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetAllAppearanceOutcomes')
+    cy.task('stubGetAllAppearanceSubtypes')
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-12' })
     cy.signIn()
     cy.visit('/person/A1234AB')
@@ -77,6 +78,10 @@ context('New Court Case journey', () => {
     )
     courtCaseOverallCaseOutcomePage.radioLabelContains('Remanded in custody').click()
     courtCaseOverallCaseOutcomePage.continueButton().click()
+
+    const courtCaseAddHearingInformationPage = Page.verifyOnPage(CourtCaseOverallCaseOutcomeAppliedAllPage)
+    courtCaseAddHearingInformationPage.radioLabelContains('Yes').click()
+    courtCaseAddHearingInformationPage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
@@ -171,10 +176,6 @@ context('New Court Case journey', () => {
     const offenceOffenceCodeConfirmPage = Page.verifyOnPage(OffenceOffenceCodeConfirmPage)
     offenceOffenceCodeConfirmPage.continueButton().click()
 
-    const offenceOutcomePage = Page.verifyOnPageTitle(OffenceOffenceOutcomePage, 'Select the outcome for this offence')
-    offenceOutcomePage.radioLabelContains('Remanded in custody').click()
-    offenceOutcomePage.continueButton().click()
-
     const offenceCheckOffenceAnswersPage = new OffenceCheckOffenceAnswersPage('You have added 1 offence')
     offenceCheckOffenceAnswersPage.finishedAddingRadio().click()
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
@@ -211,6 +212,10 @@ context('New Court Case journey', () => {
     courtCaseNextAppearanceTypePage.radioLabelContains('Court appearance').click()
     courtCaseNextAppearanceTypePage.continueButton().click()
 
+    const courtCaseNextAppearanceSubtypePage = Page.verifyOnPage(CourtCaseNextAppearanceSubtypePage)
+    courtCaseNextAppearanceSubtypePage.radioLabelContains('Discharged to court').click()
+    courtCaseNextAppearanceSubtypePage.continueButton().click()
+
     const courtCaseNextAppearanceDatePage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
 
     courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type(futureDate.date().toString())
@@ -229,6 +234,7 @@ context('New Court Case journey', () => {
       .should('deep.equal', {
         Date: futureDate.format('DD/MM/YYYY'),
         Location: 'Accrington Youth Court',
+        'Discharge type': 'Discharged to court',
         'Appearance type': 'Court appearance',
       })
     courtCaseNextAppearanceAnswersPage.continueButton().click()
@@ -291,55 +297,31 @@ context('New Court Case journey', () => {
     receivedCustodialSentencePage.continueButton().click()
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
 
-    if (config.featureToggles.addAggravatingFactors) {
-      courtCaseTaskListPage
-        .taskList()
-        .getTaskList()
-        .should('deep.equal', [
-          {
-            name: 'Add hearing information',
-            status: 'Incomplete',
-          },
-          {
-            name: 'Add overall warrant information',
-            status: 'Cannot start yet',
-          },
-          {
-            name: 'Add offences',
-            status: 'Cannot start yet',
-          },
-          {
-            name: 'Add aggravating factors',
-            status: 'Cannot start yet',
-          },
-          {
-            name: 'Upload court documents',
-            status: 'Cannot start yet',
-          },
-        ])
-    } else {
-      courtCaseTaskListPage
-        .taskList()
-        .getTaskList()
-        .should('deep.equal', [
-          {
-            name: 'Add hearing information',
-            status: 'Incomplete',
-          },
-          {
-            name: 'Add overall warrant information',
-            status: 'Cannot start yet',
-          },
-          {
-            name: 'Add offences',
-            status: 'Cannot start yet',
-          },
-          {
-            name: 'Upload court documents',
-            status: 'Cannot start yet',
-          },
-        ])
-    }
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Add overall warrant information',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Add offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Add aggravating factors',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Cannot start yet',
+        },
+      ])
     courtCaseTaskListPage.hearingInformationLink().click()
 
     const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
@@ -367,55 +349,31 @@ context('New Court Case journey', () => {
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
 
-    if (config.featureToggles.addAggravatingFactors) {
-      courtCaseTaskListPage
-        .taskList()
-        .getTaskList()
-        .should('deep.equal', [
-          {
-            name: 'Add hearing information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add overall warrant information',
-            status: 'Incomplete',
-          },
-          {
-            name: 'Add offences',
-            status: 'Cannot start yet',
-          },
-          {
-            name: 'Add aggravating factors',
-            status: 'Cannot start yet',
-          },
-          {
-            name: 'Upload court documents',
-            status: 'Optional',
-          },
-        ])
-    } else {
-      courtCaseTaskListPage
-        .taskList()
-        .getTaskList()
-        .should('deep.equal', [
-          {
-            name: 'Add hearing information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add overall warrant information',
-            status: 'Incomplete',
-          },
-          {
-            name: 'Add offences',
-            status: 'Cannot start yet',
-          },
-          {
-            name: 'Upload court documents',
-            status: 'Optional',
-          },
-        ])
-    }
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add overall warrant information',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Add offences',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Add aggravating factors',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
     courtCaseTaskListPage.warrantInformationLink().click()
 
     const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
@@ -455,56 +413,31 @@ context('New Court Case journey', () => {
       'Is the outcome the same for all offences on the warrant?': 'Yes',
     })
     warrantInformationCheckAnswersPage.confirmAndContinueButton().click()
-    if (config.featureToggles.addAggravatingFactors) {
-      courtCaseTaskListPage
-        .taskList()
-        .getTaskList()
-        .should('deep.equal', [
-          {
-            name: 'Add hearing information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add overall warrant information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add offences',
-            status: 'Incomplete',
-          },
-          {
-            name: 'Add aggravating factors',
-            status: 'Cannot start yet',
-          },
-          {
-            name: 'Upload court documents',
-            status: 'Optional',
-          },
-        ])
-    } else {
-      courtCaseTaskListPage
-        .taskList()
-        .getTaskList()
-        .should('deep.equal', [
-          {
-            name: 'Add hearing information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add overall warrant information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add offences',
-            status: 'Incomplete',
-          },
-          {
-            name: 'Upload court documents',
-            status: 'Optional',
-          },
-        ])
-    }
-
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add overall warrant information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add offences',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Add aggravating factors',
+          status: 'Cannot start yet',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
     courtCaseTaskListPage.offencesLink().click()
 
     const offenceOffenceDatePage = Page.verifyOnPageTitle(
@@ -549,55 +482,31 @@ context('New Court Case journey', () => {
     offenceCheckOffenceAnswersPage.finishAddingButton().click()
 
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
-    if (config.featureToggles.addAggravatingFactors) {
-      courtCaseTaskListPage
-        .taskList()
-        .getTaskList()
-        .should('deep.equal', [
-          {
-            name: 'Add hearing information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add overall warrant information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add offences',
-            status: 'Completed',
-          },
-          {
-            name: 'Add aggravating factors',
-            status: 'Optional',
-          },
-          {
-            name: 'Upload court documents',
-            status: 'Optional',
-          },
-        ])
-    } else {
-      courtCaseTaskListPage
-        .taskList()
-        .getTaskList()
-        .should('deep.equal', [
-          {
-            name: 'Add hearing information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add overall warrant information',
-            status: 'Completed',
-          },
-          {
-            name: 'Add offences',
-            status: 'Completed',
-          },
-          {
-            name: 'Upload court documents',
-            status: 'Optional',
-          },
-        ])
-    }
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add overall warrant information',
+          status: 'Completed',
+        },
+        {
+          name: 'Add offences',
+          status: 'Completed',
+        },
+        {
+          name: 'Add aggravating factors',
+          status: 'Optional',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
 
     courtCaseTaskListPage.continueButton().click()
 

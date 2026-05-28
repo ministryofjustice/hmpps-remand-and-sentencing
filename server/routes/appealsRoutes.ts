@@ -5,6 +5,7 @@ import type {
   AppealOffenceOutcomeForm,
   AppealOverallCaseOutcomeForm,
   CriminalOfficeReferenceForm,
+  DeleteDocumentForm,
   FinishedRecordingAppealsForm,
 } from 'forms'
 import type { UrlParameters } from 'models'
@@ -23,6 +24,8 @@ import logger from '../../logger'
 import RefDataService from '../services/refDataService'
 import { offencesToOffenceDescriptions, orderOffences, outcomeValueOrLegacy, sortByDateDesc } from '../utils/utils'
 import { chargeToOffence } from '../utils/mappingUtils'
+import DocumentManagementService from '../services/documentManagementService'
+import documentTypes from '../resources/documentTypes'
 
 export default class AppealsRoutes extends BaseRoutes {
   constructor(
@@ -31,10 +34,18 @@ export default class AppealsRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public newJourney: RequestHandler = async (req, res): Promise<void> => {
@@ -79,6 +90,48 @@ export default class AppealsRoutes extends BaseRoutes {
       ...urlParameters,
       model: new AppealsTaskListModel(urlParameters, courtAppearance, caseReferenceSet),
     })
+  }
+
+  public submitTaskList: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = res.locals.user
+    const { prisonId } = res.locals.prisoner
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const courtAppearanceWithoutSentences = {
+      ...courtAppearance,
+      offences: courtAppearance.offences.map(offence => {
+        const { sentence: _, ...offenceWithoutSentence } = offence
+        return offenceWithoutSentence
+      }),
+    }
+    const courtAppearanceResponse = await this.remandAndSentencingService.createCourtAppearance(
+      username,
+      urlParameters.courtCaseReference,
+      urlParameters.appearanceReference,
+      courtAppearanceWithoutSentences,
+      prisonId,
+    )
+    const auditDetails = {
+      courtCaseUuids: [urlParameters.courtCaseReference],
+      courtAppearanceUuids: [courtAppearanceResponse.appearanceUuid],
+      chargesUuids: courtAppearance.offences?.map(offence => offence.chargeUuid),
+      sentenceUuids: [],
+      periodLengthUuids: [],
+      documentUuids: (courtAppearance.uploadedDocuments ?? []).map(document => document.documentUUID),
+    }
+    await this.auditService.logCreateHearing({
+      who: username,
+      subjectId: urlParameters.nomsId,
+      subjectType: 'PRISONER_ID',
+      correlationId: req.id,
+      details: auditDetails,
+    })
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, urlParameters.nomsId)
+    return res.redirect(AppealsJourneyUrls.confirmation(urlParameters))
   }
 
   public getCriminalOfficeReference: RequestHandler = async (req, res): Promise<void> => {
@@ -498,6 +551,110 @@ export default class AppealsRoutes extends BaseRoutes {
       return res.redirect(AppealsJourneyUrls.selectOffenceAppealOutcome(urlParameters, 'true'))
     }
     return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
+  }
+
+  public getUploadAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return res.render('pages/appeals/upload-appeal-order', {
+      ...urlParameters,
+      backLink: AppealsJourneyUrls.taskList(urlParameters),
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitUploadAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.uploadTemporaryDocument(
+      req,
+      res,
+      urlParameters,
+      'APPEAL_ORDER',
+      AppealsJourneyUrls.uploadAppealsOrder(urlParameters, 'true'),
+      AppealsJourneyUrls.viewAppealsOrder(urlParameters, 'true'),
+    )
+  }
+
+  public getViewAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { backToUpload } = req.query
+    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const expectedDocumentTypes = documentTypes.APPEAL
+    const documentRows = expectedDocumentTypes.map(expectedType => {
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
+      return { ...expectedType, ...uploadedDocument }
+    })
+    let backLink = AppealsJourneyUrls.taskList(urlParameters)
+    if (backToUpload) {
+      backLink = AppealsJourneyUrls.uploadAppealsOrder(urlParameters)
+    } else if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+    }
+    return res.render('pages/appeals/view-appeal-order', {
+      ...urlParameters,
+      documentRows,
+      backLink,
+    })
+  }
+
+  public confirmViewAppealOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    this.courtAppearanceService.setDocumentUploadedTrue(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    return res.redirect(
+      this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
+        ? AppealsJourneyUrls.hearingDetails(urlParameters)
+        : AppealsJourneyUrls.taskList(urlParameters),
+    )
+  }
+
+  public getDeleteDocument: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const document = this.courtAppearanceService.getUploadedDocument(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.documentUuid,
+      urlParameters.appearanceReference,
+    )
+    const deleteDocumentForm = (req.flash('deleteDocumentForm')[0] || {}) as DeleteDocumentForm
+    return res.render('pages/appeals/delete-document', {
+      ...urlParameters,
+      document,
+      deleteDocumentForm,
+      errors: req.flash('errors') || [],
+      backLink: AppealsJourneyUrls.viewAppealsOrder(urlParameters),
+    })
+  }
+
+  public submitDeleteDocument: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = req.user
+    const deleteDocumentForm = trimForm<DeleteDocumentForm>(req.body)
+    const errors = await this.courtAppearanceService.removeUploadedDocument(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.documentUuid,
+      deleteDocumentForm,
+      username,
+      urlParameters.appearanceReference,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('deleteDocumentForm', { ...deleteDocumentForm })
+      return res.redirect(AppealsJourneyUrls.deleteDocument(urlParameters, 'true'))
+    }
+    return res.redirect(AppealsJourneyUrls.uploadAppealsOrder(urlParameters))
+  }
+
+  public getConfirmation: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return res.render('pages/appeals/confirmation', urlParameters)
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

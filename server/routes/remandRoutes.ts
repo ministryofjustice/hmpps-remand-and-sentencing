@@ -12,7 +12,7 @@ import RefDataService from '../services/refDataService'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
 import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
-import config from '../config'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -21,10 +21,18 @@ export default class RemandRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {
@@ -83,9 +91,7 @@ export default class RemandRoutes extends BaseRoutes {
           hasSubtypes: false,
         } as AppearanceType)
     const appearanceSubtypePromise =
-      config.featureToggles.nextAppearanceSubtype &&
-      hearing.nextAppearanceSubTypeUuid &&
-      hearing.nextAppearanceSubTypeUuid !== 'NONE'
+      hearing.nextAppearanceSubTypeUuid && hearing.nextAppearanceSubTypeUuid !== 'NONE'
         ? this.refDataService.getAppearanceSubtypeByUuid(hearing.nextAppearanceSubTypeUuid, req.user.username)
         : Promise.resolve({
             description: 'Not included',
@@ -141,10 +147,7 @@ export default class RemandRoutes extends BaseRoutes {
     )
 
     let appearanceSubtypeDescription
-    if (
-      config.featureToggles.nextAppearanceSubtype &&
-      (hearing.nextAppearanceSubTypeUuid || appearanceType.hasSubtypes)
-    ) {
+    if (hearing.nextAppearanceSubTypeUuid || appearanceType.hasSubtypes) {
       appearanceSubtypeDescription = appearanceSubtype.description
     }
 

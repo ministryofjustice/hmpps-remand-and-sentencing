@@ -1,4 +1,5 @@
 import AppealCheckHearingAnswersPage from '../../pages/AppealCheckHearingAnswersPage'
+import AppealConfirmationPage from '../../pages/AppealConfirmationPage'
 import AppealCourtNamePage from '../../pages/AppealCourtNamePage'
 import AppealDatePage from '../../pages/AppealDatePage'
 import AppealOverallCaseOutcomePage from '../../pages/AppealOverallCaseOutcomePage'
@@ -9,6 +10,8 @@ import Page from '../../pages/page'
 import RecordAppealPage from '../../pages/RecordAppealPage'
 import SelectOffenceAppealOutcomePage from '../../pages/SelectOffenceAppealOutcomePage'
 import StartPage from '../../pages/startPage'
+import UploadAppealOrderPage from '../../pages/UploadAppealOrderPage'
+import ViewAppealOrderPage from '../../pages/ViewAppealOrderPage'
 
 context('Appeals journey', () => {
   beforeEach(() => {
@@ -34,6 +37,11 @@ context('Appeals journey', () => {
       },
     ])
     cy.task('stubGetOffenceByCode', {})
+    cy.task('stubUploadTempDocument', {
+      type: 'APPEAL_ORDER',
+    })
+    cy.task('stubUploadDocument')
+    cy.task('stubCreateAppealHearing')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -156,5 +164,33 @@ context('Appeals journey', () => {
           status: 'Optional',
         },
       ])
+    courtCaseTaskListPage.uploadCourtDocumentsLink().click()
+    const uploadAppealOrderPage = Page.verifyOnPage(UploadAppealOrderPage)
+    uploadAppealOrderPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
+    uploadAppealOrderPage.continueButton().click()
+    cy.location('pathname').should('include', '/view-appeal-order')
+    const viewAppealOrderPage = Page.verifyOnPage(ViewAppealOrderPage)
+    viewAppealOrderPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Record appeal',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Completed',
+        },
+      ])
+    courtCaseTaskListPage.continueButton().click()
+    cy.task('verifyCreateAppealHearingRequest').should('equal', 1)
+    Page.verifyOnPage(AppealConfirmationPage)
   })
 })

@@ -1,7 +1,9 @@
-import type { Offence } from 'models'
+import type { Offence, UrlParameters } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
+import fs from 'fs'
+import type { UploadedDocumentForm } from 'forms'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -10,6 +12,7 @@ import {
   MergedFromCase,
   OffenceOutcome,
   SentenceConsecutiveToDetailsResponse,
+  UploadedDocument,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import {
   offenceToConsecutiveToDetails,
@@ -23,6 +26,9 @@ import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
 import FullPageError from '../model/FullPageError'
+import trimForm from '../utils/trim'
+import DocumentManagementService from '../services/documentManagementService'
+import logger from '../../logger'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -35,18 +41,22 @@ export default abstract class BaseRoutes {
 
   auditService: AuditService
 
+  documentManagementService: DocumentManagementService
+
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
   ) {
     this.courtAppearanceService = courtAppearanceService
     this.offenceService = offenceService
     this.remandAndSentencingService = remandAndSentencingService
     this.manageOffencesService = manageOffencesService
     this.auditService = auditService
+    this.documentManagementService = documentManagementService
   }
 
   protected isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
@@ -413,5 +423,65 @@ export default abstract class BaseRoutes {
       return { outcomeAutoApplied: true, outcome }
     }
     return { outcomeAutoApplied: false }
+  }
+
+  protected async uploadTemporaryDocument(
+    req,
+    res,
+    urlParameters: UrlParameters,
+    documentTypeName: string,
+    redirectErrorsToPath: string,
+    redirectSuccessToPath: string,
+  ): Promise<void> {
+    const { username } = req.user
+    const { nomsId, appearanceReference } = urlParameters
+    const uploadedDocumentForm = trimForm<UploadedDocumentForm>(req.body)
+    const uploadedFile = (req.files as Express.Multer.File[])?.[0]
+    try {
+      if (!uploadedFile) {
+        req.flash('errors', [{ text: 'Select a document to upload.', href: '#document-upload' }])
+        req.flash('uploadedDocumentForm', { ...uploadedDocumentForm })
+        return res.redirect(redirectErrorsToPath)
+      }
+
+      const documentUuid = await this.documentManagementService.uploadDocument(
+        nomsId,
+        uploadedFile,
+        username,
+        documentTypeName,
+      )
+
+      const uploadedDocument: UploadedDocument = {
+        documentUUID: documentUuid,
+        documentType: documentTypeName,
+        fileName: uploadedFile.originalname,
+      }
+      await this.remandAndSentencingService.createUploadDocument(uploadedDocument, username)
+      this.courtAppearanceService.addUploadedDocument(req.session, nomsId, uploadedDocument, appearanceReference)
+    } catch (error) {
+      logger.error(`Error uploading document: ${error.message}`)
+      req.flash('errors', [{ text: this.getDocumentErrorMessage(error.message), href: '#document-upload' }])
+      return res.redirect(redirectErrorsToPath)
+    } finally {
+      if (req.file && req.file.path) {
+        fs.unlink(req.file.path, err => {
+          if (err) logger.error('Error deleting temp file:', err)
+        })
+      }
+    }
+    return res.redirect(redirectSuccessToPath)
+  }
+
+  private getDocumentErrorMessage(errorMessage: string): string {
+    const match = Object.keys(BaseRoutes.documentErrorMessages).find(key => errorMessage.includes(key))
+    if (match) {
+      return BaseRoutes.documentErrorMessages[match]
+    }
+    return 'The selected file could not be uploaded - try again.'
+  }
+
+  private static readonly documentErrorMessages: Record<string, string> = {
+    'Payload Too Large': 'The selected document must be smaller than 50MB.',
+    'virus scan': 'The selected file contains a virus',
   }
 }

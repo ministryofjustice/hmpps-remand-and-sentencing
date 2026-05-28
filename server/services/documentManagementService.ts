@@ -29,14 +29,6 @@ export default class DocumentManagementService {
     }
   }
 
-  async deleteDocument(documentId: string, username: string): Promise<void> {
-    try {
-      await this.documentManagementApiClient.deleteDocument(documentId, username)
-    } catch (error) {
-      throw new Error(`Failed to delete document: ${error.message}`)
-    }
-  }
-
   async downloadDocument(documentId: string, username: string): Promise<FileDownload> {
     return this.documentManagementApiClient.downloadDocument(documentId, username)
   }

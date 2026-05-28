@@ -61,6 +61,7 @@ import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -69,11 +70,19 @@ export default class OffenceRoutes extends BaseRoutes {
     courtAppearanceService: CourtAppearanceService,
     remandAndSentencingService: RemandAndSentencingService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public validateSentenceTypeAccess: RequestHandler = async (req, res): Promise<void> => {
@@ -833,22 +842,10 @@ export default class OffenceRoutes extends BaseRoutes {
       )
     }
 
-    if (
-      !config.featureToggles.addAggravatingFactors &&
-      offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))
-    ) {
-      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
-    }
     const sessionOffence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     if (this.showOffenceInactive(offence, sessionOffence)) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/inactive-offence?backTo=CODE${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
-      )
-    }
-
-    if (!config.featureToggles.addAggravatingFactors && this.showOffenceAggravated(offence)) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
       )
     }
 
@@ -1041,18 +1038,6 @@ export default class OffenceRoutes extends BaseRoutes {
       }
     }
 
-    if (!config.featureToggles.addAggravatingFactors && this.showOffenceAggravated(offence)) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-      )
-    }
-    if (
-      !config.featureToggles.addAggravatingFactors &&
-      offence.schedules.some(schedule => schedule.code === '19ZA' && [1, 2].includes(schedule.partNumber))
-    ) {
-      this.offenceService.setTerrorRelated(req.session, nomsId, courtCaseReference, chargeUuid, true)
-    }
-
     if (submitToEditOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`,
@@ -1230,10 +1215,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
     const offenceDate = dayjs(offence?.offenceEndDate ?? offence?.offenceStartDate)
-    let chargeOutcomeUuid
-    if (config.featureToggles.chargeOutcomeSentenceType) {
-      chargeOutcomeUuid = offence?.outcomeUuid
-    }
+    const chargeOutcomeUuid = offence?.outcomeUuid
 
     const sentenceTypes = (
       await this.refDataService.getSentenceTypes(

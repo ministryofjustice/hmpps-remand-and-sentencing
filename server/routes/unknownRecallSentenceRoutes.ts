@@ -31,6 +31,7 @@ import CourtRegisterService from '../services/courtRegisterService'
 import UnknownRecallSentenceService from '../services/unknownRecallSentenceService'
 import config from '../config'
 import AuditService from '../services/auditService'
+import DocumentManagementService from '../services/documentManagementService'
 
 export default class UnknownRecallSentenceRoutes extends BaseRoutes {
   constructor(
@@ -39,11 +40,19 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
+    documentManagementService: DocumentManagementService,
     private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
     private readonly unknownRecallSentenceService: UnknownRecallSentenceService,
   ) {
-    super(courtAppearanceService, offenceService, remandAndSentencingService, manageOffencesService, auditService)
+    super(
+      courtAppearanceService,
+      offenceService,
+      remandAndSentencingService,
+      manageOffencesService,
+      auditService,
+      documentManagementService,
+    )
   }
 
   public loadCharge: RequestHandler = async (req, res): Promise<void> => {
@@ -222,10 +231,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     const prisonerDateOfBirth = dayjs(res.locals.prisoner.dateOfBirth)
     const ageAtConviction = convictionDate.diff(prisonerDateOfBirth, 'years')
     const offenceDate = dayjs(offence?.offenceEndDate ?? offence?.offenceStartDate)
-    let chargeOutcomeUuid
-    if (config.featureToggles.chargeOutcomeSentenceType) {
-      chargeOutcomeUuid = offence?.outcomeUuid
-    }
+    const chargeOutcomeUuid = offence?.outcomeUuid
     const sentenceTypes = (
       await this.refDataService.getSentenceTypes(
         ageAtConviction,

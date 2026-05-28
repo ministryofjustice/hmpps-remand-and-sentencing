@@ -53,6 +53,13 @@ const expectedTypes = {
       uploadLinkSegment: 'community-order',
     },
   ],
+  APPEAL: [
+    {
+      type: 'APPEAL_ORDER',
+      name: 'Appeal order',
+      uploadLinkSegment: 'upload-appeal-order',
+    },
+  ],
 }
 
 export default expectedTypes

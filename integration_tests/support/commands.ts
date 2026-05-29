@@ -46,16 +46,16 @@ const getHearingCardDetails = subject => {
   const card = subject.get()[0]
 
   const hearings = [...card.querySelectorAll('[data-qa=hearing]')].map(hearing => {
-    const headers = [...hearing.querySelectorAll('h3')].map(e => e.textContent.replace(/\s/g, ' '))
+    const headers = [...hearing.querySelectorAll('h3')].map(e => e.textContent.replaceAll(/\s/g, ' '))
 
     const values = headers.map(field => {
       const value =
         field !== 'Offences'
           ? hearing
-              .querySelector(`[data-qa=${field.toLowerCase().replace(' ', '-')}]`)
+              .querySelector(`[data-qa=${field.toLowerCase().replaceAll(' ', '-')}]`)
               .textContent.replace(/\r?\n|\r|\n/g, '')
               .trim()
-          : getOffenceDetails(hearing.querySelector(`[data-qa=${field.toLowerCase().replace(' ', '-')}]`))
+          : getOffenceDetails(hearing.querySelector(`[data-qa=${field.toLowerCase().replaceAll(' ', '-')}]`))
 
       return {
         [field]: value,

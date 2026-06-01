@@ -556,6 +556,9 @@ export default class AppealsRoutes extends BaseRoutes {
       req.flash('appealOffenceOutcomeForm', { ...appealOffenceOutcomeForm })
       return res.redirect(AppealsJourneyUrls.selectOffenceAppealOutcome(urlParameters, 'true'))
     }
+    if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
+    }
     return res.redirect(AppealsJourneyUrls.recordAppeal(urlParameters))
   }
 

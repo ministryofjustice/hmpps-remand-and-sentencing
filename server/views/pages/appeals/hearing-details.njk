@@ -161,7 +161,7 @@
         {% for offence in appealedOffences %}
           {% set offenceId = 'offences.' + offence.index %}
           {% set updateOutcomeHtml %}
-            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
           {% endset %}
           {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
               actions: {
@@ -193,7 +193,7 @@
         {% set offenceId = 'offences.' + offence.index %}
 
         {% set updateOutcomeHtml %}
-          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
+          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
         {% endset %}
           {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
               actions: {

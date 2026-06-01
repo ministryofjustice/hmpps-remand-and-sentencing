@@ -60,4 +60,14 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     cy.get(
       `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/offences/${chargeUuid}/select-consecutive-concurrent"]`,
     )
+
+  updateOffenceOutcomeLink = (
+    personId: string,
+    courtCaseId: string,
+    appearanceReference: string,
+    chargeUuid: string,
+  ): PageElement =>
+    cy.get(
+      `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/appeals/offences/${chargeUuid}/select-appeal-outcome"]`,
+    )
 }

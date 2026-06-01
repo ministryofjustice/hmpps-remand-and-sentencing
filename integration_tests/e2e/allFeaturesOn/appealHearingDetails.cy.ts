@@ -1,5 +1,6 @@
 import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import Page from '../../pages/page'
+import SelectOffenceAppealOutcomePage from '../../pages/SelectOffenceAppealOutcomePage'
 
 context('Appeal appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -57,5 +58,35 @@ context('Appeal appearance details Page', () => {
       .withoutAppealRecordedInset()
       .trimTextContent()
       .should('equal', 'There are no offences without an appeal recorded.')
+  })
+
+  it('can update an offence outcome', () => {
+    courtCaseHearingDetailsPage
+      .updateOffenceOutcomeLink(
+        'A1234AB',
+        'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+        '94608b2e-c532-4cea-bae7-57bfff4566cb',
+        '9b622879-8191-4a7f-9fe8-71b680417220',
+      )
+      .click()
+    const selectOffenceAppealOutcomePage = Page.verifyOnPage(SelectOffenceAppealOutcomePage)
+    selectOffenceAppealOutcomePage.radioLabelContains('Sentence varied').click()
+    selectOffenceAppealOutcomePage.continueButton().click()
+    courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+    courtCaseHearingDetailsPage
+      .appealedOffences()
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': 'Not entered',
+          Outcome: 'Sentence varied',
+        },
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '15/12/2025',
+          Outcome: 'Sentence varied',
+        },
+      ])
   })
 })

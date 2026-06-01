@@ -25,7 +25,7 @@
     {% set offenceOutcomeRow = {
         value: offenceOutcome.outcomeUuid,
         text: offenceOutcome.outcomeName,
-        checked: offenceOutcome.outcomeUuid === offenceOutcomeForm.offenceOutcome
+        checked: offenceOutcome.outcomeUuid === appealOffenceOutcomeForm.offenceOutcome
     } %}
     {{ radiosData.items.push(offenceOutcomeRow) }}
 {% endfor %}

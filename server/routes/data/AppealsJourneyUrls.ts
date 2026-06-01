@@ -61,6 +61,10 @@ export default class AppealsJourneyUrls {
     return `${this.basePath(urlParameters)}/hearing-details`
   }
 
+  static cannotDeleteOffence = (urlParameters: UrlParameters) => {
+    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-offence`
+  }
+
   private static basePath(urlParameters: UrlParameters): string {
     return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/appeals`
   }

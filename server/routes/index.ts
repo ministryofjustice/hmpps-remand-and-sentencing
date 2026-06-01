@@ -52,8 +52,8 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.auditService,
     services.documentManagementService,
-    services.calculateReleaseDatesService,
     services.courtRegisterService,
+    services.calculateReleaseDatesService,
     services.refDataService,
   )
 
@@ -64,6 +64,7 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.auditService,
     services.documentManagementService,
+    services.courtRegisterService,
     services.refDataService,
   )
 
@@ -109,6 +110,7 @@ export default function routes(services: Services): Router {
     services.remandAndSentencingService,
     services.auditService,
     services.documentManagementService,
+    services.courtRegisterService,
     services.refDataService,
   )
 
@@ -119,6 +121,7 @@ export default function routes(services: Services): Router {
     services.manageOffencesService,
     services.auditService,
     services.documentManagementService,
+    services.courtRegisterService,
     services.aggravatingFactorsService,
   )
 
@@ -1109,6 +1112,16 @@ export default function routes(services: Services): Router {
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/hearing-details',
     appealsRoutes.getHearingDetails,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/check-delete-offence',
+    appealsRoutes.checkDeleteOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/cannot-delete-offence',
+    appealsRoutes.getCannotDeleteOffence,
   )
 
   return router

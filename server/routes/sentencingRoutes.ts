@@ -7,7 +7,7 @@ import type {
   SentenceIsSentenceConsecutiveToForm,
 } from 'forms'
 import dayjs from 'dayjs'
-import type { CourtAppearance } from 'models'
+import type { CourtAppearance, UrlParameters } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import OffenceService from '../services/offenceService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
@@ -53,7 +53,7 @@ export default class SentencingRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
-    private readonly courtRegisterService: CourtRegisterService,
+    courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
     private readonly refDataService: RefDataService,
   ) {
@@ -64,6 +64,7 @@ export default class SentencingRoutes extends BaseRoutes {
       manageOffencesService,
       auditService,
       documentManagementService,
+      courtRegisterService,
     )
   }
 
@@ -902,58 +903,19 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
-      req.session,
-      nomsId,
-      appearanceReference,
-      chargeUuid,
-    )
-    if (sentenceUuidsInChain.length) {
-      const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
-        sentenceUuidsInChain,
-        req.user.username,
-      )
-      if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/cannot-delete-offence`,
-        )
-      }
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/delete-offence`,
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.canDeleteOffence(
+      req,
+      res,
+      urlParameters,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/cannot-delete-offence`,
+      JourneyUrls.deleteOffence(urlParameters),
     )
   }
 
   public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const { username } = req.user
-    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
-      req.session,
-      nomsId,
-      appearanceReference,
-      chargeUuid,
-    )
-    const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
-    const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
-      sentenceUuidsInChain,
-      username,
-    )
-    const courtIds = Array.from(new Set(sentencesAfterDetails.appearances.map(appearance => appearance.courtCode)))
-    const [courtMap, offenceDetails] = await Promise.all([
-      this.courtRegisterService.getCourtMap(courtIds, username),
-      this.manageOffencesService.getOffenceByCode(
-        offence.offenceCode,
-        username,
-        offence.legacyData?.offenceDescription,
-      ),
-    ])
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const cannotDeleteInformation = await this.getCannotDeleteOffenceData(req, res)
     const backLink = JourneyUrls.sentencingHearing(
       nomsId,
       addOrEditCourtCase,
@@ -961,17 +923,15 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       appearanceReference,
     )
+
     return res.render('pages/sentencing/cannot-delete-offence', {
       nomsId,
       courtCaseReference,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offence,
-      offenceDetails,
-      courtMap,
       backLink,
-      sentencesAfterDetails,
+      ...cannotDeleteInformation,
     })
   }
 

@@ -167,7 +167,7 @@
               actions: {
                 items: [
                   {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + offence.chargeUuid + "/check-delete-offence",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/offences/" + offence.chargeUuid + "/check-delete-offence",
                     text: "Delete",
                     visuallyHiddenText: "delete offence",
                     classes: "govuk-link--no-visited-state"
@@ -188,7 +188,7 @@
         {% endfor %}
       </span>
 
-      <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences without an appeal outcomes</h3>
+      <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences without an appeal outcomes  ({{nonAppealedOffences | length }})</h3>
       {% for offence in nonAppealedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
 
@@ -199,7 +199,7 @@
               actions: {
                 items: [
                   {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + offence.chargeUuid + "/check-delete-offence",
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/offences/" + offence.chargeUuid + "/check-delete-offence",
                     text: "Delete",
                     visuallyHiddenText: "delete offence",
                     classes: "govuk-link--no-visited-state"

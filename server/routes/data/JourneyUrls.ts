@@ -276,6 +276,10 @@ export default class JourneyUrls {
   static courtCaseDetails = (urlParameters: UrlParameters) => {
     return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/details`
   }
+
+  static deleteOffence = (urlParameters: UrlParameters) => {
+    return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/offences/${urlParameters.chargeUuid}/delete-offence`
+  }
 }
 
 export const urlMapByName = {

@@ -12,6 +12,7 @@ import {
   MergedFromCase,
   OffenceOutcome,
   SentenceConsecutiveToDetailsResponse,
+  SentencesAfterOnOtherCourtAppearanceDetailsResponse,
   UploadedDocument,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import {
@@ -29,6 +30,8 @@ import FullPageError from '../model/FullPageError'
 import trimForm from '../utils/trim'
 import DocumentManagementService from '../services/documentManagementService'
 import logger from '../../logger'
+import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -43,6 +46,8 @@ export default abstract class BaseRoutes {
 
   documentManagementService: DocumentManagementService
 
+  courtRegisterService: CourtRegisterService
+
   constructor(
     courtAppearanceService: CourtAppearanceService,
     offenceService: OffenceService,
@@ -50,6 +55,7 @@ export default abstract class BaseRoutes {
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
+    courtRegisterService: CourtRegisterService,
   ) {
     this.courtAppearanceService = courtAppearanceService
     this.offenceService = offenceService
@@ -57,6 +63,7 @@ export default abstract class BaseRoutes {
     this.manageOffencesService = manageOffencesService
     this.auditService = auditService
     this.documentManagementService = documentManagementService
+    this.courtRegisterService = courtRegisterService
   }
 
   protected isAddJourney(addOrEditCourtCase: string, addOrEditCourtAppearance: string): boolean {
@@ -470,6 +477,75 @@ export default abstract class BaseRoutes {
       }
     }
     return res.redirect(redirectSuccessToPath)
+  }
+
+  protected async canDeleteOffence(
+    req,
+    res,
+    urlParameters: UrlParameters,
+    cannotDeletePath,
+    canDeletePath,
+  ): Promise<void> {
+    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+      urlParameters.chargeUuid,
+    )
+    if (sentenceUuidsInChain.length) {
+      const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
+        sentenceUuidsInChain,
+        req.user.username,
+      )
+      if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
+        return res.redirect(cannotDeletePath)
+      }
+    }
+    return res.redirect(canDeletePath)
+  }
+
+  protected async getCannotDeleteOffenceData(
+    req,
+    res,
+  ): Promise<{
+    offence: Offence
+    courtMap: { [key: string]: string }
+    offenceDetails: ApiOffence
+    sentencesAfterDetails: SentencesAfterOnOtherCourtAppearanceDetailsResponse
+  }> {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = req.user
+    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+      urlParameters.chargeUuid,
+    )
+    const offence = this.courtAppearanceService.getOffence(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.chargeUuid,
+      urlParameters.appearanceReference,
+    )
+    const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
+      sentenceUuidsInChain,
+      username,
+    )
+    const courtIds = Array.from(new Set(sentencesAfterDetails.appearances.map(appearance => appearance.courtCode)))
+    const [courtMap, offenceDetails] = await Promise.all([
+      this.courtRegisterService.getCourtMap(courtIds, username),
+      this.manageOffencesService.getOffenceByCode(
+        offence.offenceCode,
+        username,
+        offence.legacyData?.offenceDescription,
+      ),
+    ])
+    return {
+      offence,
+      courtMap,
+      offenceDetails,
+      sentencesAfterDetails,
+    }
   }
 
   private getDocumentErrorMessage(errorMessage: string): string {

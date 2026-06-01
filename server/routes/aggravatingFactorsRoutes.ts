@@ -17,6 +17,7 @@ import JourneyUrls from './data/JourneyUrls'
 import AggravatingFactorsJourneyUrls from './data/AggravatingFactorsJourneyUrls'
 import AggravatingFactorsService from '../services/aggravatingFactorsService'
 import DocumentManagementService from '../services/documentManagementService'
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default class AggravatingFactorsRoutes extends BaseRoutes {
   constructor(
@@ -26,6 +27,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
+    courtRegisterService: CourtRegisterService,
     private readonly aggravatingFactorsService: AggravatingFactorsService,
   ) {
     super(
@@ -35,6 +37,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       manageOffencesService,
       auditService,
       documentManagementService,
+      courtRegisterService,
     )
   }
 

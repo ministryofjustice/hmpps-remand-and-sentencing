@@ -41,7 +41,7 @@ export default class AppealsRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
-    private readonly courtRegisterService: CourtRegisterService,
+    courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
     super(
@@ -51,6 +51,7 @@ export default class AppealsRoutes extends BaseRoutes {
       manageOffencesService,
       auditService,
       documentManagementService,
+      courtRegisterService,
     )
   }
 
@@ -829,6 +830,28 @@ export default class AppealsRoutes extends BaseRoutes {
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
       errors: req.flash('errors') || [],
       backLink: JourneyUrls.courtCaseDetails(urlParameters),
+    })
+  }
+
+  public checkDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.canDeleteOffence(
+      req,
+      res,
+      urlParameters,
+      AppealsJourneyUrls.cannotDeleteOffence(urlParameters),
+      JourneyUrls.deleteOffence(urlParameters),
+    )
+  }
+
+  public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const cannotDeleteInformation = await this.getCannotDeleteOffenceData(req, res)
+    const backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+    return res.render('pages/appeals/cannot-delete-offence', {
+      ...urlParameters,
+      backLink,
+      ...cannotDeleteInformation,
     })
   }
 

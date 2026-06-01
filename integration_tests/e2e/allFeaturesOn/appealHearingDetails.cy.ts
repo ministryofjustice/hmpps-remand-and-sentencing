@@ -1,21 +1,5 @@
 import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
-import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
-import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import Page from '../../pages/page'
-import AppearanceUpdatedConfirmationPage from '../../pages/appearanceUpdatedConfirmationPage'
-import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
-import CourtCaseAlternativeSentenceLengthPage from '../../pages/courtCaseAlternativeSentenceLengthPage'
-import OffenceDeleteOffencePage from '../../pages/offenceDeleteOffencePage'
-import CannotDeleteSentencePage from '../../pages/cannotDeleteSentencePage'
-import SentencingDeleteSentenceInChainPage from '../../pages/sentencingDeleteSentenceInChainPage'
-import OffenceSentenceServeTypePage from '../../pages/offenceSentenceServeTypePage'
-import OffenceEditSentenceTypePage from '../../pages/offenceEditSentenceTypePage'
-import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
-import OffenceCountNumberPage from '../../pages/offenceCountNumberPage'
-import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
-import CannotChangeSentenceOutcomePage from '../../pages/cannotChangeSentenceOutcomePage'
-import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
-import ErrorPage from '../../pages/error'
 
 context('Appeal appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage

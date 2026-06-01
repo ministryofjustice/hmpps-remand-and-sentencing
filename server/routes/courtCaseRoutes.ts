@@ -818,6 +818,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         )
+      } else if (warrantType === 'APPEAL') {
+        backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
       } else {
         backLink = JourneyUrls.nonSentencingHearing(
           nomsId,

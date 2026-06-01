@@ -1,3 +1,5 @@
+import type { UrlParameters } from 'models'
+
 export default class JourneyUrls {
   static updateOffenceOutcome = (
     nomsId: string,
@@ -269,6 +271,10 @@ export default class JourneyUrls {
     courtAppearanceUuid: string,
   ) => {
     return `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseUuid}/${addOrEditCourtAppearance}/${courtAppearanceUuid}/sentencing/upload-court-documents`
+  }
+
+  static courtCaseDetails = (urlParameters: UrlParameters) => {
+    return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/details`
   }
 }
 

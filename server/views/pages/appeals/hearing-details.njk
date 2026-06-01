@@ -1,0 +1,244 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set pageTitle = applicationName + " - Hearing details" %}
+
+{% set caseReferenceHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference" %}
+
+{% if hearing.caseReferenceNumber %}
+  {% set caseReferenceRow = {
+    key: { text: "Case reference" },
+    value: { text: hearing.caseReferenceNumber },
+    actions: {
+      items: [{
+        href: caseReferenceHref,
+        text: "Edit",
+        visuallyHiddenText: "case reference",
+        classes: "govuk-link--no-visited-state"
+      }]
+    }
+  } %}
+{% else %}
+  {% set caseReferenceRow = {
+    key: { text: "Case reference" },
+    value: {
+      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + caseReferenceHref + '">Enter case reference</a>'
+    }
+  } %}
+{% endif %}
+
+{% set criminalOfficeReferenceHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/criminal-office-reference" %}
+
+{% if hearing.criminalAppealOfficeReference %}
+  {% set criminalOfficeReferenceRow = {
+    key: { text: "Criminal Appeal Office reference" },
+    value: { text: hearing.criminalAppealOfficeReference },
+    actions: {
+      items: [{
+        href: criminalOfficeReferenceHref,
+        text: "Edit",
+        visuallyHiddenText: "criminal appeal office reference",
+        classes: "govuk-link--no-visited-state"
+      }]
+    }
+  } %}
+{% else %}
+  {% set criminalOfficeReferenceRow = {
+    key: { text: "Criminal Appeal Office reference" },
+    value: {
+      html: '<a class="govuk-link govuk-link--no-visited-state" href="' + criminalOfficeReferenceHref + '">Enter criminal appeal office reference</a>'
+    }
+  } %}
+{% endif %}
+
+{% set hearingSummaryRows = [
+  caseReferenceRow,
+  criminalOfficeReferenceRow,
+  {
+    key: { text: "Hearing date" },
+    value: { text: hearing.warrantDate | formatDate },
+    actions: {
+      items: [{
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/appeal-date",
+        text: "Edit",
+        visuallyHiddenText: "hearing date",
+        classes: "govuk-link--no-visited-state"
+      }]
+    }
+  },
+  {
+    key: { text: "Location" },
+    value: { text: courtMap[hearing.courtCode] if courtMap[hearing.courtCode] else hearing.courtCode },
+    actions: {
+      items: [{
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/appeal-court",
+        text: "Edit",
+        visuallyHiddenText: "location",
+        classes: "govuk-link--no-visited-state"
+      }]
+    }
+  },
+  {
+    key: { text: "Overall case outcome" },
+    value: { text: overallCaseOutcome },
+    actions: {
+      items: [{
+        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/overall-case-outcome",
+        text: "Edit",
+        visuallyHiddenText: "overall case outcome",
+        classes: "govuk-link--no-visited-state"
+      }]
+    }
+  }
+] %}
+
+{% set documentSummaryRows = [] %}
+
+{% for document in documentsWithUiType %}
+  {% set documentRowHtml %}
+    <a class="govuk-link govuk-link--no-visited-state" target="_blank"
+       href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/download-document">
+      <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 16 20" width="20" height="16">
+        <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z"></path>
+      </svg>
+      {{ document.documentType }}
+    </a>
+  {% endset %}
+  {% set documentSummaryRows = documentSummaryRows.concat([{ key: { html: documentRowHtml } }]) %}
+{% else %}
+  {% set documentSummaryRows = documentSummaryRows.concat([{ key: { text: "No documents uploaded" } }]) %}
+{% endfor %}
+
+{% block content %}
+  {{ super() }}
+  <div class="govuk-grid-row govuk-!-margin-top-4">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Edit hearing</h1>
+
+      {% if mergedFromText %}
+        {{ govukInsetText({
+          text: mergedFromText,
+          classes: "govuk-!-margin-bottom-3",
+          attributes: { "data-qa": "mergedFromText" }
+        }) }}
+      {% endif %}
+
+      {% if hasSentenceAfterOnOtherCourtAppearance %}
+        {{ govukInsetText({
+          text: "One or more sentences on other cases are consecutive to a sentence on this case. If the consecutive status of a sentence is changed, check that any linked cases accurately reflect the correct warrant information.",
+          classes: "govuk-!-margin-bottom-3",
+          attributes: { "data-qa": "hasSentenceAfterOnOtherCourtAppearanceInset" }
+        }) }}
+      {% endif %}
+
+      {{ govukSummaryList({
+        card: { title: { text: "Hearing information" } },
+        rows: hearingSummaryRows,
+        attributes: { "data-qa": "hearingSummaryList" }
+      }) }}
+
+      {{ govukSummaryList({
+        card: {
+          title: { text: "Court documents" },
+          actions: {
+            items: [{
+              href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/view-appeal-order",
+              text: "Manage court documents",
+              classes: "govuk-link--no-visited-state"
+            }]
+          }
+        },
+        rows: documentSummaryRows,
+        attributes: { "data-qa": "documentsSummaryList" }
+      }) }}
+
+      <h2 class="govuk-heading-s govuk-!-margin-top-8">Offences with appeal records ({{appealedOffences | length }})</h3>
+      <span data-qa="appealedOffences">
+        {% for offence in appealedOffences %}
+          {% set offenceId = 'offences.' + offence.index %}
+          {% set updateOutcomeHtml %}
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
+          {% endset %}
+          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+              actions: {
+                items: [
+                  {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + offence.chargeUuid + "/check-delete-offence",
+                    text: "Delete",
+                    visuallyHiddenText: "delete offence",
+                    classes: "govuk-link--no-visited-state"
+                  }
+                ]
+              },
+              listItems: {
+                  classes: 'govuk-!-margin-top-4',
+                  items: [
+                      {
+                          html: updateOutcomeHtml
+                      }
+                  ]
+              }
+          })) }}
+        {% else %}
+          {{ govukInsetText({ text: "There are no offences with an appeal recorded." }) }}
+        {% endfor %}
+      </span>
+
+      <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences without an appeal outcomes</h3>
+      {% for offence in nonAppealedOffences %}
+        {% set offenceId = 'offences.' + offence.index %}
+
+        {% set updateOutcomeHtml %}
+          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
+        {% endset %}
+          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+              actions: {
+                items: [
+                  {
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/offences/" + offence.chargeUuid + "/check-delete-offence",
+                    text: "Delete",
+                    visuallyHiddenText: "delete offence",
+                    classes: "govuk-link--no-visited-state"
+                  }
+                ]
+              },
+              listItems: {
+                  classes: 'govuk-!-margin-top-4',
+                  items: [
+                      {
+                          html: updateOutcomeHtml
+                      }
+                  ]
+              }
+          })) }}
+      {% else %}
+        {{ govukInsetText({
+          text: "There are no offences without an appeal recorded.",
+          classes: "govuk-!-margin-top-2",
+          attributes: { "data-qa": "withoutAppealRecordedInset" }
+        }) }}
+      {% endfor %}
+
+      <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Confirm changes",
+            preventDoubleClick: true,
+            attributes: { "data-qa": "confirm-button" }
+          }) }}
+          {{ govukButton({
+              text: "Cancel changes",
+              classes: "govuk-button--secondary",
+              attributes: { 'data-qa': 'cancel-button' },
+              href: backLink
+          }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

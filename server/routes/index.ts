@@ -1101,5 +1101,15 @@ export default function routes(services: Services): Router {
     appealsRoutes.getConfirmation,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/load-hearing-details',
+    appealsRoutes.loadHearingDetails,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/hearing-details',
+    appealsRoutes.getHearingDetails,
+  )
+
   return router
 }

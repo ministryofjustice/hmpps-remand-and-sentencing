@@ -160,7 +160,9 @@
       <span data-qa="appealedOffences">
         {% for offence in appealedOffences %}
           {% set offenceId = 'offences.' + offence.index %}
-          {% set updateOutcomeHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/appeals/offences/" + offence.chargeUuid + "/select-appeal-outcome" %}
+          {% set updateOutcomeHtml %}
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
+          {% endset %}
           {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
               actions: {
                 items: [
@@ -176,7 +178,7 @@
                   classes: 'govuk-!-margin-top-4',
                   items: [
                       {
-                          html: '<a href="' + updateOutcomeHref + '" data-qa="record-appeal-link-' + offence.chargeUuid + '">Update outcome</a>'
+                          html: updateOutcomeHtml
                       }
                   ]
               }
@@ -189,7 +191,10 @@
       <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences without an appeal outcomes</h3>
       {% for offence in nonAppealedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
-        {% set updateOutcomeHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/appeals/offences/" + offence.chargeUuid + "/select-appeal-outcome" %}
+
+        {% set updateOutcomeHtml %}
+          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
+        {% endset %}
           {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
               actions: {
                 items: [
@@ -205,7 +210,7 @@
                   classes: 'govuk-!-margin-top-4',
                   items: [
                       {
-                          html: '<a href="' + updateOutcomeHref + '" data-qa="record-appeal-link-' + offence.chargeUuid + '">Update outcome</a>'
+                          html: updateOutcomeHtml
                       }
                   ]
               }

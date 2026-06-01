@@ -113,31 +113,29 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const validatedSearchParameters = this.validateAndGetCourtCaseSearchParameters(appearanceDateFrom, appearanceDateTo)
     const { searchAppearanceDateFrom, searchAppearanceDateTo } = validatedSearchParameters
     filterErrors.push(...validatedSearchParameters.filterErrors)
-
-    let allBookingsCaseCount: { suppliedBookingCount: number; otherBookingCount: number }
-    if (res.locals.prisoner.bookingId) {
-      const [bookingCourtCaseCountResponse, allBookingsCaseCountResponse, bookingDetailsResponse] = await Promise.all([
-        this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, res.locals.prisoner.bookingId, username),
-        this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, '', username),
-        !includeCasesFromPreviousPeriodsOfCustodyValue
-          ? this.prisonerService.getBookingDetails(res.locals.prisoner.bookingId, username)
-          : Promise.resolve(),
-      ])
-      bookingCourtCaseCount = bookingCourtCaseCountResponse
-      allBookingsCaseCount = allBookingsCaseCountResponse
+    const currentPrisonerBookingId = res.locals.prisoner.bookingId
+    if (currentPrisonerBookingId) {
       if (!includeCasesFromPreviousPeriodsOfCustodyValue) {
+        const [bookingCourtCaseCountResponse, bookingDetailsResponse] = await Promise.all([
+          this.remandAndSentencingService.getBookingCourtCaseCount(nomsId, currentPrisonerBookingId, username),
+          this.prisonerService.getBookingDetails(currentPrisonerBookingId, username),
+        ])
+        bookingCourtCaseCount = bookingCourtCaseCountResponse
         bookingDetails = bookingDetailsResponse
         if (!bookingDetails.activeFlag) {
           includeCasesFromPreviousPeriodsOfCustodyValue = 'true'
           disableIncludeCasesFromPreviousPeriodsOfCustody = true
         } else {
-          bookingId = res.locals.prisoner.bookingId
+          bookingId = currentPrisonerBookingId
         }
+      } else {
+        bookingCourtCaseCount = await this.remandAndSentencingService.getBookingCourtCaseCount(
+          nomsId,
+          currentPrisonerBookingId,
+          username,
+        )
       }
-      bookingCourtCasePreviousPeriodsCount =
-        allBookingsCaseCount.suppliedBookingCount +
-        allBookingsCaseCount.otherBookingCount -
-        bookingCourtCaseCount.suppliedBookingCount
+      bookingCourtCasePreviousPeriodsCount = bookingCourtCaseCount?.otherBookingCount ?? 0
     }
     const pageNumber = parseInt(getAsStringOrDefault(req.query.pageNumber, '1'), 10) - 1
 

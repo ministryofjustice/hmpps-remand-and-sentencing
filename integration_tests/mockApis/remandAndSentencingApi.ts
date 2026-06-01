@@ -3915,28 +3915,6 @@ export default {
     })
   },
 
-  stubGetBookingCourtCaseCountAllBookings: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPath: '/remand-and-sentencing-api/person/A1234AB/booking-court-case-count',
-        queryParameters: {
-          bookingId: {
-            equalTo: '',
-          },
-        },
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          suppliedBookingCount: 2,
-          otherBookingCount: 0,
-        },
-      },
-    })
-  },
-
   stubGetEmptyBookingCourtCaseCount: (): SuperAgentRequest => {
     return stubFor({
       request: {

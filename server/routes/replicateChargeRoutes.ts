@@ -10,6 +10,7 @@ import JourneyUrls from './data/JourneyUrls'
 import trimForm from '../utils/trim'
 import RefDataService from '../services/refDataService'
 import DocumentManagementService from '../services/documentManagementService'
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default class ReplicateChargeRoutes extends BaseRoutes {
   constructor(
@@ -19,6 +20,7 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
+    courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
     super(
@@ -28,6 +30,7 @@ export default class ReplicateChargeRoutes extends BaseRoutes {
       manageOffencesService,
       auditService,
       documentManagementService,
+      courtRegisterService,
     )
   }
 

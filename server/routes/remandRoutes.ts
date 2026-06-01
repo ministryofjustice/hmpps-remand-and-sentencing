@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express'
+import type { UrlParameters } from 'models'
 import OffenceService from '../services/offenceService'
 import BaseRoutes from './baseRoutes'
 import CourtAppearanceService from '../services/courtAppearanceService'
@@ -22,7 +23,7 @@ export default class RemandRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
-    private readonly courtRegisterService: CourtRegisterService,
+    courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
     super(
@@ -32,6 +33,7 @@ export default class RemandRoutes extends BaseRoutes {
       manageOffencesService,
       auditService,
       documentManagementService,
+      courtRegisterService,
     )
   }
 
@@ -210,63 +212,19 @@ export default class RemandRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
-      req.session,
-      nomsId,
-      appearanceReference,
-      chargeUuid,
-    )
-    if (sentenceUuidsInChain.length) {
-      const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
-        sentenceUuidsInChain,
-        req.user.username,
-      )
-      if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
-        return res.redirect(
-          `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/offences/${chargeUuid}/cannot-delete-offence`,
-        )
-      }
-    }
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/delete-offence`,
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.canDeleteOffence(
+      req,
+      res,
+      urlParameters,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/offences/${chargeUuid}/cannot-delete-offence`,
+      JourneyUrls.deleteOffence(urlParameters),
     )
   }
 
   public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const { username } = req.user
-    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
-      req.session,
-      nomsId,
-      appearanceReference,
-      chargeUuid,
-    )
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-    const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
-    const sentencesAfterDetails = await this.remandAndSentencingService.getSentencesAfterOnOtherCourtAppearanceDetails(
-      sentenceUuidsInChain,
-      username,
-    )
-    const courtIds = Array.from(new Set(sentencesAfterDetails.appearances.map(appearance => appearance.courtCode)))
-    const [courtMap, offenceDetails] = await Promise.all([
-      this.courtRegisterService.getCourtMap(courtIds, username),
-      this.manageOffencesService.getOffenceByCode(
-        offence.offenceCode,
-        username,
-        offence.legacyData?.offenceDescription,
-      ),
-    ])
+    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const cannotDeleteInformation = await this.getCannotDeleteOffenceData(req, res)
     const backLink = JourneyUrls.nonSentencingHearing(
       nomsId,
       addOrEditCourtCase,
@@ -280,11 +238,8 @@ export default class RemandRoutes extends BaseRoutes {
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
-      offence,
-      offenceDetails,
-      courtMap,
       backLink,
-      sentencesAfterDetails,
+      ...cannotDeleteInformation,
     })
   }
 }

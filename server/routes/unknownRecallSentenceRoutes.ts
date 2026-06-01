@@ -41,7 +41,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
-    private readonly courtRegisterService: CourtRegisterService,
+    courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
     private readonly unknownRecallSentenceService: UnknownRecallSentenceService,
   ) {
@@ -52,6 +52,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
       manageOffencesService,
       auditService,
       documentManagementService,
+      courtRegisterService,
     )
   }
 

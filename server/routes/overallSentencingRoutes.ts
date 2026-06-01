@@ -21,6 +21,7 @@ import ManageOffencesService from '../services/manageOffencesService'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import AuditService from '../services/auditService'
 import DocumentManagementService from '../services/documentManagementService'
+import CourtRegisterService from '../services/courtRegisterService'
 
 export default class OverallSentencingRoutes extends BaseRoutes {
   constructor(
@@ -30,6 +31,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
+    courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
     super(
@@ -39,6 +41,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       manageOffencesService,
       auditService,
       documentManagementService,
+      courtRegisterService,
     )
   }
 

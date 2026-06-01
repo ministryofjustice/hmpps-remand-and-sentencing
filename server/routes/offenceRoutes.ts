@@ -17,7 +17,7 @@ import type {
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
 } from 'forms'
-import type { Offence } from 'models'
+import type { Offence, UrlParameters } from 'models'
 import dayjs from 'dayjs'
 import {
   ConsecutiveToDetails,
@@ -62,6 +62,7 @@ import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
 import DocumentManagementService from '../services/documentManagementService'
+import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -71,8 +72,8 @@ export default class OffenceRoutes extends BaseRoutes {
     remandAndSentencingService: RemandAndSentencingService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
+    courtRegisterService: CourtRegisterService,
     private readonly calculateReleaseDatesService: CalculateReleaseDatesService,
-    private readonly courtRegisterService: CourtRegisterService,
     private readonly refDataService: RefDataService,
   ) {
     super(
@@ -82,6 +83,7 @@ export default class OffenceRoutes extends BaseRoutes {
       manageOffencesService,
       auditService,
       documentManagementService,
+      courtRegisterService,
     )
   }
 
@@ -2219,6 +2221,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
@@ -2304,6 +2307,8 @@ export default class OffenceRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         )
+      } else if (courtAppearance.warrantType === 'APPEAL') {
+        cancelLink = AppealsJourneyUrls.hearingDetails(urlParameters)
       } else {
         cancelLink = JourneyUrls.nonSentencingHearing(
           nomsId,
@@ -2344,7 +2349,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-
+    const urlParameters = req.params as unknown as UrlParameters
     const sentenceIsInChain = this.courtAppearanceService.sentenceIsInChain(
       req.session,
       nomsId,
@@ -2371,6 +2376,10 @@ export default class OffenceRoutes extends BaseRoutes {
           ),
         )
       }
+      if (warrantType === 'APPEAL') {
+        return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
+      }
+
       return res.redirect(
         JourneyUrls.nonSentencingHearing(
           nomsId,

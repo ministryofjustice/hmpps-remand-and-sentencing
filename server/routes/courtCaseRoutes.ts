@@ -78,7 +78,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     manageOffencesService: ManageOffencesService,
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
-    private readonly courtRegisterService: CourtRegisterService,
+    courtRegisterService: CourtRegisterService,
     private readonly courtCasesReleaseDatesService: CourtCasesReleaseDatesService,
     private readonly refDataService: RefDataService,
     private readonly prisonerService: PrisonerService,
@@ -90,6 +90,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       manageOffencesService,
       auditService,
       documentManagementService,
+      courtRegisterService,
     )
   }
 
@@ -899,6 +900,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
             appearanceReference,
           ),
         )
+      }
+      if (warrantType === 'APPEAL') {
+        return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
       }
       return res.redirect(
         JourneyUrls.nonSentencingHearing(

@@ -58,7 +58,7 @@
 {% endfor %}
 
 {% block pageContent %}
-    <h1 class="govuk-heading-l">Upload the appeal order</h1>
+    <h1 class="govuk-heading-l">{% if isEditJourney %}Manage court documents {% else %} Upload the appeal order{% endif %}</h1>
     <p class="govuk-hint">
         The file type must be a .PDF, JPG, .PNG, .DOC or .DOCX.
       </p>

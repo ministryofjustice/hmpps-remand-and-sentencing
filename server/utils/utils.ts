@@ -141,6 +141,8 @@ export function getUiDocumentType(documentType: string, warrantType: string): st
       return 'Indictment Document'
     case 'PRISON_COURT_REGISTER':
       return 'Prison Court Register'
+    case 'APPEAL_ORDER':
+      return 'Appeal order'
     default:
       return 'Court Document'
   }

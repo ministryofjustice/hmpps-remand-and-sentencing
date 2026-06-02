@@ -88,12 +88,12 @@ export const offenceToCreateCharge = (offence: Offence, prisonId: string, appear
   return {
     appearanceUuid,
     offenceCode: offence.offenceCode,
-    offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD'),
     outcomeUuid: offence.outcomeUuid,
     prisonId,
     createChargeOrder: offence.createChargeOrder,
     ...(offence.terrorRelated !== undefined && { terrorRelated: offence.terrorRelated }),
     ...(offence.foreignPowerRelated !== undefined && { foreignPowerRelated: offence.foreignPowerRelated }),
+    ...(offence.offenceStartDate && { offenceStartDate: dayjs(offence.offenceStartDate).format('YYYY-MM-DD') }),
     ...(offence.offenceEndDate && { offenceEndDate: dayjs(offence.offenceEndDate).format('YYYY-MM-DD') }),
     ...(offence.chargeUuid && { chargeUuid: offence.chargeUuid }),
     ...(sentence && { sentence }),
@@ -123,10 +123,13 @@ export const courtAppearanceToCreateCourtAppearance = (
     ...(nextCourtAppearance && { nextCourtAppearance }),
     ...(courtAppearance.overallSentenceLength && {
       overallSentenceLength: sentenceLengthToCreatePeriodLength(courtAppearance.overallSentenceLength, prisonId),
-      ...(courtAppearance.overallConvictionDate && {
-        overallConvictionDate: dayjs(courtAppearance.overallConvictionDate).format('YYYY-MM-DD'),
-      }),
-      ...(courtAppearance.legacyData && { legacyData: { ...courtAppearance.legacyData } }),
+    }),
+    ...(courtAppearance.overallConvictionDate && {
+      overallConvictionDate: dayjs(courtAppearance.overallConvictionDate).format('YYYY-MM-DD'),
+    }),
+    ...(courtAppearance.legacyData && { legacyData: { ...courtAppearance.legacyData } }),
+    ...(courtAppearance.criminalAppealOfficeReference && {
+      criminalAppealOfficeReference: courtAppearance.criminalAppealOfficeReference,
     }),
   } as CreateCourtAppearance
 }

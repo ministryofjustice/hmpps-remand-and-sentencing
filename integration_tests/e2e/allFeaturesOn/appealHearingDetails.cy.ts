@@ -1,3 +1,4 @@
+import HearingUpdatedConfirmationPage from '../../pages/HearingUpdatedConfirmationPage'
 import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import OffenceDeleteOffencePage from '../../pages/offenceDeleteOffencePage'
 import Page from '../../pages/page'
@@ -115,5 +116,26 @@ context('Appeal appearance details Page', () => {
           Outcome: 'Sentence varied',
         },
       ])
+  })
+
+  it('can submit changes to API', () => {
+    cy.task('stubUpdateAppealCourtAppearance')
+    cy.task('stubGetLatestCourtAppearanceWithAppeal', {})
+    cy.task('stubGetCourtById', {})
+    courtCaseHearingDetailsPage
+      .updateOffenceOutcomeLink(
+        'A1234AB',
+        'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+        '94608b2e-c532-4cea-bae7-57bfff4566cb',
+        '9b622879-8191-4a7f-9fe8-71b680417220',
+      )
+      .click()
+    const selectOffenceAppealOutcomePage = Page.verifyOnPage(SelectOffenceAppealOutcomePage)
+    selectOffenceAppealOutcomePage.radioLabelContains('Sentence varied').click()
+    selectOffenceAppealOutcomePage.continueButton().click()
+    courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+    courtCaseHearingDetailsPage.confirmButton().click()
+    Page.verifyOnPage(HearingUpdatedConfirmationPage)
+    cy.task('verifyUpdateAppealCourtAppearanceRequest').should('equal', 1)
   })
 })

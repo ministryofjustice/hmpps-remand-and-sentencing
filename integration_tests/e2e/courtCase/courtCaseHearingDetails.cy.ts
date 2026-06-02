@@ -1,4 +1,4 @@
-import AppearanceUpdatedConfirmationPage from '../../pages/appearanceUpdatedConfirmationPage'
+import HearingUpdatedConfirmationPage from '../../pages/HearingUpdatedConfirmationPage'
 import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
@@ -193,7 +193,7 @@ context('Court Case Hearing details Page', () => {
       courtCaseReferencePage.continueButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage.confirmButton().click()
-      Page.verifyOnPage(AppearanceUpdatedConfirmationPage)
+      Page.verifyOnPage(HearingUpdatedConfirmationPage)
       cy.task('verifyUpdateCourtAppearanceRequest').should('equal', 1)
     })
 

@@ -60,6 +60,7 @@ context('Appeal appearance details Page', () => {
       .withoutAppealRecordedInset()
       .trimTextContent()
       .should('equal', 'There are no offences without an appeal recorded.')
+    courtCaseHearingDetailsPage.notificationBannerContent().should('not.exist')
   })
 
   it('can update an offence outcome', () => {

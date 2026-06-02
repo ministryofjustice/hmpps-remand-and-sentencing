@@ -1107,14 +1107,17 @@ export default class CourtAppearanceService {
     return 0
   }
 
-  deleteOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string) {
+  deleteOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string): Offence {
     const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
     const index = courtAppearance.offences.findIndex(o => o.chargeUuid === chargeUuid)
+    let offence: Offence
     if (index !== -1) {
+      offence = courtAppearance.offences[index]
       courtAppearance.offences.splice(index, 1)
     }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance
+    return offence
   }
 
   getOffence(session: Partial<SessionData>, nomsId: string, chargeUuid: string, appearanceUuid: string): Offence {

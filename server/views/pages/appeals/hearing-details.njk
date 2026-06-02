@@ -3,6 +3,7 @@
 {% from "hmpps/components/court-cases-release-dates/offence-card/macro.njk" import offenceCard %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% set pageTitle = applicationName + " - Hearing details" %}
 
@@ -117,6 +118,20 @@
   {{ super() }}
   <div class="govuk-grid-row govuk-!-margin-top-4">
     <div class="govuk-grid-column-two-thirds">
+      {% if deleteOffenceDetails %}
+          {% set notificationHtml %}
+            <h3 class="govuk-notification-banner__heading" data-qa="notification-banner-heading">
+              This offence has been deleted.
+            </h3>
+            <p class="govuk-body" data-qa="notification-banner-content">{{ deleteOffenceDetails }}</p>
+            <p class="govuk-body">You will still need to confirm changes when you have finished editing.</p>
+          {% endset %}
+
+          {{ govukNotificationBanner({
+            html: notificationHtml,
+            type: "success"
+          }) }}
+      {% endif %}
       <h1 class="govuk-heading-l">Edit hearing</h1>
 
       {% if mergedFromText %}

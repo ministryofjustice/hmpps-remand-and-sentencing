@@ -2362,9 +2362,21 @@ export default class OffenceRoutes extends BaseRoutes {
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/delete-sentence-in-chain`,
       )
     }
-    this.courtAppearanceService.deleteOffence(req.session, nomsId, chargeUuid, appearanceReference)
+    const deletedOffence = this.courtAppearanceService.deleteOffence(
+      req.session,
+      nomsId,
+      chargeUuid,
+      appearanceReference,
+    )
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+
+      const offenceDetails = await this.manageOffencesService.getOffenceByCode(
+        deletedOffence.offenceCode,
+        req.user.username,
+        deletedOffence.legacyData?.offenceDescription,
+      )
+      req.flash('deleteOffenceDetails', `${offenceDetails.code} ${offenceDetails.description}`)
       if (warrantType === 'SENTENCING') {
         return res.redirect(
           JourneyUrls.sentencingHearing(

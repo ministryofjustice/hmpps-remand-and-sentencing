@@ -94,6 +94,7 @@ context('Appeal appearance details Page', () => {
   })
 
   it('can delete an offence from hearing', () => {
+    cy.task('stubGetOffenceByCode', {})
     courtCaseHearingDetailsPage
       .deleteOffenceLink(
         'A1234AB',
@@ -116,6 +117,10 @@ context('Appeal appearance details Page', () => {
           Outcome: 'Sentence varied',
         },
       ])
+    courtCaseHearingDetailsPage
+      .notificationBannerContent()
+      .trimTextContent()
+      .should('equal', 'PS90037 An offence description')
   })
 
   it('can submit changes to API', () => {

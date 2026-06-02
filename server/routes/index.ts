@@ -1114,6 +1114,11 @@ export default function routes(services: Services): Router {
     appealsRoutes.getHearingDetails,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/hearing-details',
+    appealsRoutes.submitHearingDetails,
+  )
+
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/check-delete-offence',
     appealsRoutes.checkDeleteOffence,

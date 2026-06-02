@@ -2,7 +2,7 @@ import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import Page from '../../pages/page'
-import AppearanceUpdatedConfirmationPage from '../../pages/appearanceUpdatedConfirmationPage'
+import HearingUpdatedConfirmationPage from '../../pages/HearingUpdatedConfirmationPage'
 import CourtCaseOverallSentenceLengthPage from '../../pages/courtCaseOverallSentenceLengthPage'
 import CourtCaseAlternativeSentenceLengthPage from '../../pages/courtCaseAlternativeSentenceLengthPage'
 import OffenceDeleteOffencePage from '../../pages/offenceDeleteOffencePage'
@@ -203,7 +203,7 @@ context('Sentencing appearance details Page', () => {
       offenceEditOffencePage.continueButton().click()
       courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage.confirmButton().click()
-      Page.verifyOnPage(AppearanceUpdatedConfirmationPage)
+      Page.verifyOnPage(HearingUpdatedConfirmationPage)
       cy.task('verifyUpdateSentenceCourtAppearanceRequest').should('equal', 1)
     })
 

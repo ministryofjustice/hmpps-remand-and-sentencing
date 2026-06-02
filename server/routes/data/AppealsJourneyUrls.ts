@@ -57,8 +57,8 @@ export default class AppealsJourneyUrls {
     return `${this.basePath(urlParameters)}/confirmation`
   }
 
-  static hearingDetails = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/hearing-details`
+  static hearingDetails = (urlParameters: UrlParameters, hasErrors?: string) => {
+    return `${this.basePath(urlParameters)}/hearing-details${this.getQueryParameters(hasErrors)}`
   }
 
   static cannotDeleteOffence = (urlParameters: UrlParameters) => {

@@ -4390,4 +4390,127 @@ export default {
       },
     })
   },
+
+  stubUpdateAppealCourtAppearance: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPattern: '/remand-and-sentencing-api/court-appearance/94608b2e-c532-4cea-bae7-57bfff4566cb',
+        bodyPatterns: [
+          {
+            equalToJson:
+              '{"courtCaseUuid": "fa078b3d-7c29-4f61-8120-b40b16ed9633", "appearanceUuid": "94608b2e-c532-4cea-bae7-57bfff4566cb", "outcomeUuid": "cd8c02aa-0599-4eb3-9e73-c88836258be2", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-12-15", "charges": [{"appearanceUuid": "94608b2e-c532-4cea-bae7-57bfff4566cb", "offenceCode": "PS90037", "outcomeUuid": "42a30fcd-51c0-4c18-95f9-e3a364eb9176", "prisonId": "MDI", "createChargeOrder": 0, "chargeUuid": "9b622879-8191-4a7f-9fe8-71b680417220"}, {"appearanceUuid": "94608b2e-c532-4cea-bae7-57bfff4566cb", "offenceCode": "PS90037", "outcomeUuid": "42a30fcd-51c0-4c18-95f9-e3a364eb9176", "prisonId": "MDI", "createChargeOrder": 1, "offenceStartDate": "2025-12-15", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f"}], "warrantType": "APPEAL", "documents": [], "prisonId": "MDI", "criminalAppealOfficeReference": "G35461"}',
+          },
+        ],
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
+        },
+      },
+    })
+  },
+
+  verifyUpdateAppealCourtAppearanceRequest: (): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/court-appearance/94608b2e-c532-4cea-bae7-57bfff4566cb',
+      method: 'PUT',
+      body: {
+        courtCaseUuid: 'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+        appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+        outcomeUuid: 'cd8c02aa-0599-4eb3-9e73-c88836258be2',
+        courtCode: 'ACCRYC',
+        courtCaseReference: 'C894623',
+        appearanceDate: '2023-12-15',
+        charges: [
+          {
+            appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+            offenceCode: 'PS90037',
+            outcomeUuid: '42a30fcd-51c0-4c18-95f9-e3a364eb9176',
+            prisonId: 'MDI',
+            createChargeOrder: 0,
+            chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+          },
+          {
+            appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+            offenceCode: 'PS90037',
+            outcomeUuid: '42a30fcd-51c0-4c18-95f9-e3a364eb9176',
+            prisonId: 'MDI',
+            createChargeOrder: 1,
+            offenceStartDate: '2025-12-15',
+            chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+          },
+        ],
+        warrantType: 'APPEAL',
+        documents: [],
+        prisonId: 'MDI',
+        criminalAppealOfficeReference: 'G35461',
+      },
+    })
+  },
+
+  stubGetLatestCourtAppearanceWithAppeal: ({
+    courtCaseUuid = 'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+  }: {
+    courtCaseUuid: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/latest-appearance`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+          outcome: {
+            outcomeUuid: 'cd8c02aa-0599-4eb3-9e73-c88836258be2',
+            outcomeName: 'Sentence varied',
+            nomisCode: '6677',
+            outcomeType: 'APPEAL',
+            displayOrder: 20,
+          },
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C894623',
+          criminalAppealOfficeReference: 'G35461',
+          appearanceDate: '2023-12-15',
+          warrantType: 'APPEAL',
+          nextCourtAppearance: null,
+          documents: [],
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2025-12-15',
+              outcome: {
+                outcomeUuid: '42a30fcd-51c0-4c18-95f9-e3a364eb9176',
+                outcomeName: 'Sentence varied',
+                nomisCode: '6677',
+                outcomeType: 'APPEAL',
+                displayOrder: 20,
+                dispositionCode: 'FINAL',
+                status: 'ACTIVE',
+              },
+            },
+            {
+              chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+              offenceCode: 'PS90037',
+              outcome: {
+                outcomeUuid: 'd50a4db1-47f8-4fbd-9f7f-be7a4f0eb267',
+                outcomeName: 'Sentence quashed',
+                nomisCode: '6677',
+                outcomeType: 'APPEAL',
+                displayOrder: 20,
+                dispositionCode: 'INTERIM',
+                status: 'ACTIVE',
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
 }

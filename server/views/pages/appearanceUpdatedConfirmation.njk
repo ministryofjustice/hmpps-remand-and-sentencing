@@ -1,7 +1,7 @@
 {% extends "../partials/prisonerBannerLayout.njk" %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 
-{% set pageTitle = applicationName + " - Appearance details successfully updated" %}
+{% set pageTitle = applicationName + " - Hearing details successfully updated" %}
 
 {% block subNavigation %}
 {% endblock %}
@@ -11,7 +11,7 @@
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
             {{ govukPanel({
-              titleHtml: '<span class="govuk-!-font-size-36">Appearance details have been updated</span>',
+              titleHtml: '<span class="govuk-!-font-size-36">Hearing details have been updated</span>',
               classes: "govuk-!-margin-bottom-6"
             }) }}
             <div class="govuk-!-margin-top-6">
@@ -23,13 +23,11 @@
                     <span>You can also go back to {{ prisoner | firstNameSpaceLastName | pluraliseName }}:</span>
                     <ul class="govuk-list govuk-!-margin-top-2">
                         <li><a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}">Court case information</a></li>
-                        <li><a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ nomsId }}">Prisoner
-                                profile</a></li>
+                        <li><a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}/prisoner/{{ nomsId }}">Prisoner profile</a></li>
                     </ul>
                 </div>
                 <div class="govuk-!-margin-top-6">
-                    <p class="govuk-body">Or, go to the <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}"> DPS
-                            homepage</a>.</p>
+                    <p class="govuk-body">Or, go to the <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}"> DPS homepage</a>.</p>
                 </div>
             </div>
         </div>

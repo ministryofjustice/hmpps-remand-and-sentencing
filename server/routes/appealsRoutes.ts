@@ -833,6 +833,28 @@ export default class AppealsRoutes extends BaseRoutes {
     })
   }
 
+  public submitHearingDetails: RequestHandler = async (req, res, next): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const errors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters, 'true'))
+    }
+    return this.updateCourtAppearance(
+      req,
+      res,
+      next,
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.appearanceReference,
+    )
+  }
+
   public checkDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     return this.canDeleteOffence(

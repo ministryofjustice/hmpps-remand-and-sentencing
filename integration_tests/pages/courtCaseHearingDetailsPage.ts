@@ -70,4 +70,6 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     cy.get(
       `a[href="/person/${personId}/edit-court-case/${courtCaseId}/edit-court-appearance/${appearanceReference}/appeals/offences/${chargeUuid}/select-appeal-outcome"]`,
     )
+
+  notificationBannerContent = (): PageElement => cy.get('[data-qa="notification-banner-content"]')
 }

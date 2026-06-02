@@ -829,7 +829,7 @@ export default class AppealsRoutes extends BaseRoutes {
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
       errors: req.flash('errors') || [],
-      deleteOffenceDetails: req.flash('deleteOffenceDetails'),
+      deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],
       backLink: JourneyUrls.courtCaseDetails(urlParameters),
     })
   }

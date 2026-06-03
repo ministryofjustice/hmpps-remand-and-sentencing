@@ -420,6 +420,78 @@ export default {
             },
             {
               prisonerId: 'PRI123',
+              courtCaseUuid: 'c0f90a3c-f1c5-4e2e-9360-2a9d7bd33dda',
+              courtCaseStatus: 'ACTIVE',
+              legacyData: {
+                caseReferences: [
+                  {
+                    offenderCaseReference: 'NOMIS123',
+                    updatedDate: '2025-06-05T07:23:16.79636',
+                  },
+                ],
+              },
+              appearanceCount: 1,
+              caseReferences: ['NOMIS123'],
+              firstDayInCustody: '2025-06-05',
+              firstDayInCustodyWarrantType: 'NON_SENTENCING',
+              overallSentenceLength: null,
+              latestCourtAppearance: {
+                caseReference: 'NOMIS123',
+                courtCode: 'ACCRYC',
+                warrantDate: '2025-06-05',
+                warrantType: 'NON_SENTENCING',
+                outcome: 'Outcome Description',
+                convictionDate: null,
+                legacyData: {
+                  postedDate: '2025-06-05',
+                  nomisOutcomeCode: '1',
+                  outcomeDescription: 'Outcome Description',
+                  nextEventDateTime: '2025-06-15T07:23:16.796353',
+                  appearanceTime: '07:23:16',
+                  outcomeDispositionCode: 'I',
+                  outcomeConvictionFlag: false,
+                },
+                nextCourtAppearance: null,
+                charges: [
+                  {
+                    offenceCode: 'PS90037',
+                    offenceStartDate: '2025-06-05',
+                    offenceEndDate: null,
+                    outcome: null,
+                    legacyData: {
+                      postedDate: '2025-06-05',
+                      nomisOutcomeCode: '1',
+                      outcomeDescription: 'Outcome Description',
+                      outcomeDispositionCode: 'I',
+                      outcomeConvictionFlag: false,
+                    },
+                    sentence: null,
+                    mergedFromCase: {
+                      caseReference: 'NOMIS123',
+                      courtCode: 'ACCRYC',
+                      warrantDate: '2025-06-05',
+                      mergedFromDate: '2019-06-05',
+                    },
+                  },
+                ],
+              },
+              mergedFromCases: [
+                {
+                  caseReference: 'NOMIS123',
+                  courtCode: 'ACCRYC',
+                  warrantDate: '2025-06-05',
+                  mergedFromDate: '2019-06-05',
+                },
+              ],
+              mergedToCase: {
+                caseReference: 'NOMIS897',
+                courtCode: 'ACCRYC',
+                warrantDate: '2025-06-26',
+                mergedToDate: '2024-02-25',
+              },
+            },
+            {
+              prisonerId: 'PRI123',
               courtCaseUuid: 'fa078b3d-7c29-4f61-8120-b40b16ed9633',
               courtCaseStatus: 'ACTIVE',
               legacyData: {
@@ -471,67 +543,6 @@ export default {
               mergedToCase: null,
               allAppearancesHaveRecall: false,
               canAppeal: true,
-            },
-            {
-              prisonerId: 'A1234AB',
-              courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-              courtCaseStatus: 'ACTIVE',
-              appearanceCount: 2,
-              caseReferences: ['C894623', 'F23325', 'J39596'],
-              firstDayInCustody: '2022-10-15',
-              firstDayInCustodyWarrantType: 'NON_SENTENCING',
-              latestCourtAppearance: {
-                caseReference: 'C894623',
-                courtCode: 'ACCRYC',
-                warrantDate: '2023-12-15',
-                warrantType: 'NON_SENTENCING',
-                outcome: 'Remanded in custody',
-                nextCourtAppearance: {
-                  appearanceDate: '2024-12-15',
-                  appearanceTime: '10:30:00.000000000',
-                  courtCode: 'BCC',
-                  appearanceTypeDescription: 'Court appearance',
-                  futureSkeletonAppearanceUuid: '5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
-                },
-                charges: [
-                  {
-                    offenceCode: 'PS90037',
-                    offenceStartDate: '2023-12-15',
-                    createdAt: '2025-07-10T14:30:00.000Z',
-                    outcome: {
-                      outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
-                      outcomeName: 'Remanded in custody',
-                    },
-                  },
-                  {
-                    offenceCode: 'PS11111',
-                    createdAt: '2025-07-10T14:31:00.000Z',
-                    outcome: {
-                      outcomeUuid: '92e69bb5-9769-478b-9ee6-77c91808d9af',
-                      outcomeName: 'Commit to Crown Court for trial in custody',
-                    },
-                    legacyData: {
-                      offenceDescription: 'A legacy offence description',
-                    },
-                  },
-                ],
-              },
-              legacyData: {
-                caseReferences: [
-                  {
-                    offenderCaseReference: 'C894623',
-                    updatedDate: '2023-12-15T10:15:30',
-                  },
-                  {
-                    offenderCaseReference: 'F23325',
-                    updatedDate: '2022-10-15T10:15:30',
-                  },
-                  {
-                    offenderCaseReference: 'J39596',
-                    updatedDate: '2021-10-15T10:15:30',
-                  },
-                ],
-              },
             },
           ],
           number: 0,

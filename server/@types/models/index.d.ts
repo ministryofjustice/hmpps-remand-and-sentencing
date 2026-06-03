@@ -128,7 +128,7 @@ declare module 'models' {
     courtCaseReference: string
     addOrEditCourtAppearance: string
     appearanceReference: string
-    chargeUuid: string
-    documentUuid: string
+    chargeUuid?: string
+    documentUuid?: string
   }
 }

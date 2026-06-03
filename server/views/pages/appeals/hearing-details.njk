@@ -175,28 +175,41 @@
       <span data-qa="appealedOffences">
         {% for offence in appealedOffences %}
           {% set offenceId = 'offences.' + offence.index %}
-          {% set updateOutcomeHtml %}
-            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
-          {% endset %}
-          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
-              actions: {
-                items: [
+          {% set actionItems = [
                   {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/offences/" + offence.chargeUuid + "/check-delete-offence",
                     text: "Delete",
                     visuallyHiddenText: "delete offence",
                     classes: "govuk-link--no-visited-state"
                   }
-                ]
-              },
-              listItems: {
+                ]%}
+          {% set listItems = undefined %}
+          {% if offence.sentence %}
+            {% set actionItems = [{
+                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
+                    text: "Edit",
+                    visuallyHiddenText: "edit offence",
+                    classes: "govuk-link--no-visited-state"
+                  }].concat(actionItems) %}
+          {% else %}
+            {% set updateOutcomeHtml %}
+              <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
+            {% endset %}
+            {% set listItems = {
                   classes: 'govuk-!-margin-top-4',
                   items: [
                       {
                           html: updateOutcomeHtml
                       }
                   ]
-              }
+              } %}
+          {% endif %}
+
+          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+              actions: {
+                items: actionItems
+              },
+              listItems: listItems
           })) }}
         {% else %}
           {{ govukInsetText({ text: "There are no offences with an appeal recorded." }) }}
@@ -206,30 +219,42 @@
       <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences without an appeal outcomes  ({{nonAppealedOffences | length }})</h3>
       {% for offence in nonAppealedOffences %}
         {% set offenceId = 'offences.' + offence.index %}
-
-        {% set updateOutcomeHtml %}
-          <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
-        {% endset %}
-          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
-              actions: {
-                items: [
+        {% set actionItems = [
                   {
                     href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/offences/" + offence.chargeUuid + "/check-delete-offence",
                     text: "Delete",
                     visuallyHiddenText: "delete offence",
                     classes: "govuk-link--no-visited-state"
                   }
+                ] %}
+        {% set listItems = undefined %}
+        {% if offence.sentence %}
+          {% set actionItems = [{
+                  href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
+                  text: "Edit",
+                  visuallyHiddenText: "edit offence",
+                  classes: "govuk-link--no-visited-state"
+                }].concat(actionItems) %}
+        {% else %}
+          {% set updateOutcomeHtml %}
+            <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{courtCaseReference}}/{{addOrEditCourtAppearance}}/{{appearanceReference}}/appeals/offences/{{offence.chargeUuid}}/select-appeal-outcome" data-qa="record-appeal-link-{{offence.chargeUuid}}">Update outcome</a>
+          {% endset %}
+          {% set listItems = {
+                classes: 'govuk-!-margin-top-4',
+                items: [
+                    {
+                        html: updateOutcomeHtml
+                    }
                 ]
-              },
-              listItems: {
-                  classes: 'govuk-!-margin-top-4',
-                  items: [
-                      {
-                          html: updateOutcomeHtml
-                      }
-                  ]
-              }
-          })) }}
+            } %}
+        {% endif %}
+
+        {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+            actions: {
+              items: actionItems
+            },
+            listItems: listItems
+        })) }}
       {% else %}
         {{ govukInsetText({
           text: "There are no offences without an appeal recorded.",

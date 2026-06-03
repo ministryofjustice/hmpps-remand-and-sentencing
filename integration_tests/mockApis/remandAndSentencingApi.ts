@@ -4514,4 +4514,83 @@ export default {
       },
     })
   },
+
+  stubGetLegacyAppealAppearanceDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-appearance/94608b2e-c532-4cea-bae7-57bfff4566cb',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+          outcome: {
+            outcomeUuid: 'cd8c02aa-0599-4eb3-9e73-c88836258be2',
+            outcomeName: 'Sentence varied',
+            nomisCode: '6677',
+            outcomeType: 'APPEAL',
+            displayOrder: 20,
+          },
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C894623',
+          criminalAppealOfficeReference: 'G35461',
+          appearanceDate: '2023-12-15',
+          warrantType: 'APPEAL',
+          nextCourtAppearance: null,
+          documents: [],
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-06-15',
+              outcome: {
+                outcomeUuid: '42a30fcd-51c0-4c18-95f9-e3a364eb9176',
+                outcomeName: 'Sentence varied',
+                nomisCode: '6677',
+                outcomeType: 'APPEAL',
+                displayOrder: 20,
+                dispositionCode: 'FINAL',
+                status: 'ACTIVE',
+              },
+              sentence: {
+                sentenceUuid: '5499443b-becd-4733-bdea-f8f2f33e9b56',
+                periodLengths: [
+                  {
+                    years: 4,
+                    periodOrder: 'years',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                ],
+                sentenceServeType: 'CONCURRENT',
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
+                legacyData: {
+                  nomisLineReference: '1',
+                },
+              },
+            },
+            {
+              chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-06-15',
+              outcome: {
+                outcomeUuid: 'd50a4db1-47f8-4fbd-9f7f-be7a4f0eb267',
+                outcomeName: 'Sentence quashed',
+                nomisCode: '6677',
+                outcomeType: 'APPEAL',
+                displayOrder: 20,
+                dispositionCode: 'INTERIM',
+                status: 'ACTIVE',
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
 }

@@ -39,6 +39,7 @@ import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSenten
 import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import RefDataService from './refDataService'
+import { SENTENCE_VARIED_OUTCOME_UUID } from '../utils/constants'
 
 export default class OffenceService {
   constructor(
@@ -409,7 +410,11 @@ export default class OffenceService {
       const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
       const offence = this.getOffence(session.offences, id)
       outcome = await this.refDataService.getChargeOutcomeById(offenceOutcomeForm.offenceOutcome, username)
-      if (outcome.outcomeType !== 'SENTENCING' && offence.sentence) {
+      if (
+        outcome.outcomeType !== 'SENTENCING' &&
+        offence.sentence &&
+        offenceOutcomeForm.offenceOutcome !== SENTENCE_VARIED_OUTCOME_UUID
+      ) {
         const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
           sentenceUuidsInChain,
           username,

@@ -2653,6 +2653,17 @@ export default class OffenceRoutes extends BaseRoutes {
           ),
         )
       }
+      if (warrantType === 'APPEAL') {
+        return res.redirect(
+          AppealsJourneyUrls.hearingDetails({
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          }),
+        )
+      }
       return res.redirect(
         JourneyUrls.nonSentencingHearing(
           nomsId,

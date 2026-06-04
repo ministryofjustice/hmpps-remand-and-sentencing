@@ -358,7 +358,7 @@ context('Check Offence Answers Page', () => {
             Outcome: 'Imprisonment',
             'Sentence length': '4 years 5 months 0 weeks 0 days',
             'Sentence type': 'SDS (Standard Determinate Sentence)',
-            'Consecutive or concurrent': 'Select consecutive or current',
+            'Consecutive or concurrent': 'Select consecutive or concurrent',
           },
         ])
       offenceCheckOffenceAnswersPage.finishedAddingRadio().click()

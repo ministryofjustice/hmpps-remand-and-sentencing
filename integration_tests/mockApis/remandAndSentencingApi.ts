@@ -4629,6 +4629,40 @@ export default {
               },
             },
             {
+              chargeUuid: 'ba557056-9f57-4d7b-a19d-99e02428065e',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2023-06-20',
+              outcome: {
+                outcomeUuid: '42a30fcd-51c0-4c18-95f9-e3a364eb9176',
+                outcomeName: 'Sentence varied',
+                nomisCode: '6677',
+                outcomeType: 'APPEAL',
+                displayOrder: 20,
+                dispositionCode: 'FINAL',
+                status: 'ACTIVE',
+              },
+              sentence: {
+                sentenceUuid: '775cd689-565c-4540-b573-4eb555c5ec60',
+                periodLengths: [
+                  {
+                    years: 1,
+                    periodOrder: 'years',
+                    periodLengthType: 'SENTENCE_LENGTH',
+                  },
+                ],
+                sentenceServeType: 'CONSECUTIVE',
+                consecutiveToSentenceUuid: '5499443b-becd-4733-bdea-f8f2f33e9b56',
+                sentenceType: {
+                  sentenceTypeUuid: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  description: 'SDS (Standard Determinate Sentence)',
+                  classification: 'STANDARD',
+                },
+                legacyData: {
+                  nomisLineReference: '2',
+                },
+              },
+            },
+            {
               chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
               offenceCode: 'PS90037',
               offenceStartDate: '2023-06-15',

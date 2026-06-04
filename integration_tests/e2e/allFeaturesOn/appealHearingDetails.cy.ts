@@ -5,6 +5,7 @@ import Page from '../../pages/page'
 import SelectOffenceAppealOutcomePage from '../../pages/SelectOffenceAppealOutcomePage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
+import SentencingDeleteSentenceInChainPage from '../../pages/sentencingDeleteSentenceInChainPage'
 
 context('Appeal appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -167,6 +168,7 @@ context('Appeal appearance details Page', () => {
         sentenceUuids: '([a-z0-9-]*,)*[a-z0-9-]*',
         hasSentenceAfterOnOtherCourtAppearance: false,
       })
+      cy.task('stubGetCourtById', {})
       cy.signIn()
       cy.visit(
         '/person/A1234AB/edit-court-case/fa078b3d-7c29-4f61-8120-b40b16ed9633/edit-court-appearance/94608b2e-c532-4cea-bae7-57bfff4566cb/appeals/hearing-details',
@@ -186,6 +188,14 @@ context('Appeal appearance details Page', () => {
             'Sentence type': 'SDS (Standard Determinate Sentence)',
             'Sentence length': '4 years 0 months 0 weeks 0 days',
             'Consecutive or concurrent': 'Concurrent',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '20/06/2023',
+            Outcome: 'Sentence varied',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Sentence length': '1 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Consecutive to PS90037 - An offence description committed on 15/06/2023',
           },
           {
             offenceCardHeader: 'PS90037 An offence description',
@@ -226,6 +236,14 @@ context('Appeal appearance details Page', () => {
         .should('deep.equal', [
           {
             offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '20/06/2023',
+            Outcome: 'Sentence varied',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Sentence length': '1 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Select consecutive or concurrent',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
             'Committed on': '15/06/2023',
             Outcome: 'Sentence quashed',
           },
@@ -247,6 +265,45 @@ context('Appeal appearance details Page', () => {
           '/appeals',
         )
         .should('not.exist')
+    })
+
+    it('can delete an offence sentences after on same case', () => {
+      cy.task('stubGetOffenceByCode', {})
+      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
+        sentenceUuids: '5499443b-becd-4733-bdea-f8f2f33e9b56,775cd689-565c-4540-b573-4eb555c5ec60',
+      })
+      courtCaseHearingDetailsPage
+        .deleteOffenceLink(
+          'A1234AB',
+          'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+          '94608b2e-c532-4cea-bae7-57bfff4566cb',
+          'appeals',
+          '71bb9f7e-971c-4c34-9a33-43478baee74f',
+        )
+        .click()
+      const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
+      offenceDeleteOffencePage.deleteButton().click()
+      const sentencingDeleteSentenceInChainPage = Page.verifyOnPage(SentencingDeleteSentenceInChainPage)
+      sentencingDeleteSentenceInChainPage.continueButton().click()
+      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+      courtCaseHearingDetailsPage
+        .appealedOffences()
+        .getOffenceCards()
+        .should('deep.equal', [
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '20/06/2023',
+            Outcome: 'Sentence varied',
+            'Sentence type': 'SDS (Standard Determinate Sentence)',
+            'Sentence length': '1 years 0 months 0 weeks 0 days',
+            'Consecutive or concurrent': 'Select consecutive or concurrent',
+          },
+          {
+            offenceCardHeader: 'PS90037 An offence description',
+            'Committed on': '15/06/2023',
+            Outcome: 'Sentence quashed',
+          },
+        ])
     })
   })
 })

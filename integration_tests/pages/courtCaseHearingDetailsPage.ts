@@ -22,11 +22,10 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     courtCaseReference: string,
     appearanceReference: string,
     page: string,
-    sentencing: boolean = false,
+    journeyPath: string = '',
   ): PageElement => {
-    const sentencingPath = sentencing ? '/sentencing' : ''
     return cy.get(
-      `a[href="/person/${personId}/edit-court-case/${courtCaseReference}/edit-court-appearance/${appearanceReference}${sentencingPath}/${page}"]`,
+      `a[href="/person/${personId}/edit-court-case/${courtCaseReference}/edit-court-appearance/${appearanceReference}${journeyPath}/${page}"]`,
     )
   }
 

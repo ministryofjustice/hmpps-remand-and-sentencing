@@ -93,7 +93,7 @@ context('Sentencing delete sentence in chain Page', () => {
           Outcome: 'Imprisonment',
           'Sentence type': 'SDS (Standard Determinate Sentence)',
           'Sentence length': '4 years 5 months 0 weeks 0 days',
-          'Consecutive or concurrent': 'Select consecutive or current',
+          'Consecutive or concurrent': 'Select consecutive or concurrent',
         },
       ])
     cy.get('[data-qa^="edit-offence-link-"]')

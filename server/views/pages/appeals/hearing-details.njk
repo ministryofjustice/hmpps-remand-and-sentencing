@@ -206,6 +206,11 @@
           {% endif %}
 
           {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+              consecutiveConcurrentLink: {
+                href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
+                text: "Select consecutive or concurrent",
+                classes: "govuk-link--no-visited-state"
+              } if offence.sentence,
               actions: {
                 items: actionItems
               },
@@ -250,6 +255,11 @@
         {% endif %}
 
         {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+            consecutiveConcurrentLink: {
+              href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
+              text: "Select consecutive or concurrent",
+              classes: "govuk-link--no-visited-state"
+            } if offence.sentence,
             actions: {
               items: actionItems
             },

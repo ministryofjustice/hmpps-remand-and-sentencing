@@ -44,6 +44,7 @@ import config from '../config'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import DocumentManagementService from '../services/documentManagementService'
+import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -805,6 +806,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const { submitToEditOffence } = req.query
     const offence = this.courtAppearanceService.getOffence(req.session, nomsId, chargeUuid, appearanceReference)
     const offenceDetails = await this.manageOffencesService.getOffenceByCode(
@@ -824,6 +826,8 @@ export default class SentencingRoutes extends BaseRoutes {
           addOrEditCourtAppearance,
           appearanceReference,
         )
+      } else if (warrantType === 'APPEAL') {
+        goBackLink = AppealsJourneyUrls.hearingDetails(urlParameters)
       } else {
         goBackLink = JourneyUrls.nonSentencingHearing(
           nomsId,
@@ -858,6 +862,7 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     this.courtAppearanceService.deleteSentenceInChain(req.session, nomsId, chargeUuid, appearanceReference)
 
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
@@ -872,6 +877,9 @@ export default class SentencingRoutes extends BaseRoutes {
             appearanceReference,
           ),
         )
+      }
+      if (warrantType === 'APPEAL') {
+        return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
       }
       return res.redirect(
         JourneyUrls.nonSentencingHearing(

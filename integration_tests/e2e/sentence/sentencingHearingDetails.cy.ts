@@ -310,7 +310,7 @@ context('Sentencing appearance details Page', () => {
             Outcome: 'Imprisonment',
             'Sentence type': 'A Nomis sentence type',
             'Sentence length': '1 years 2 months 0 weeks 0 days',
-            'Consecutive or concurrent': 'Select consecutive or current',
+            'Consecutive or concurrent': 'Select consecutive or concurrent',
           },
           {
             offenceCardHeader: 'PS90037 An offence description',

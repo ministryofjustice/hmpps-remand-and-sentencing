@@ -1752,6 +1752,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const { submitToEditOffence, invalidatedFrom } = req.query
     const forthwithAlreadySelected = this.courtAppearanceService.isForthwithAlreadySelected(
       req.session,
@@ -1773,13 +1774,28 @@ export default class OffenceRoutes extends BaseRoutes {
     const submitQuery = this.queryParametersToString(submitToEditOffence, invalidatedFrom)
     let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type`
     if (invalidatedFrom) {
-      backLink = JourneyUrls.checkOffenceAnswers(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-      )
+      if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
+        const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
+        if (warrantType === 'SENTENCING') {
+          backLink = JourneyUrls.sentencingHearing(
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          )
+        } else {
+          backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+        }
+      } else {
+        backLink = JourneyUrls.checkOffenceAnswers(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        )
+      }
     } else if (submitToEditOffence) {
       backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/edit-offence?submitToEditOffence=true`
     } else if (sentence?.sentenceTypeClassification === 'FINE') {

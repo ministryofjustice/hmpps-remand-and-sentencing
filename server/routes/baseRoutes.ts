@@ -32,6 +32,7 @@ import DocumentManagementService from '../services/documentManagementService'
 import logger from '../../logger'
 import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import CourtRegisterService from '../services/courtRegisterService'
+import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 
 export default abstract class BaseRoutes {
   courtAppearanceService: CourtAppearanceService
@@ -137,6 +138,17 @@ export default abstract class BaseRoutes {
             addOrEditCourtAppearance,
             appearanceReference,
           ),
+        )
+      }
+      if (warrantType === 'APPEAL') {
+        return res.redirect(
+          AppealsJourneyUrls.hearingDetails({
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          }),
         )
       }
       return res.redirect(

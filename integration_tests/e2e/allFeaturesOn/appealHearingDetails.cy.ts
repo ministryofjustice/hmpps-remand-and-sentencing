@@ -236,5 +236,17 @@ context('Appeal appearance details Page', () => {
           },
         ])
     })
+
+    it('does not show edit appeal date link when sentence on hearing', () => {
+      courtCaseHearingDetailsPage
+        .editFieldLink(
+          'A1234AB',
+          'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+          '94608b2e-c532-4cea-bae7-57bfff4566cb',
+          'appeal-date',
+          '/appeals',
+        )
+        .should('not.exist')
+    })
   })
 })

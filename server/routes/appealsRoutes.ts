@@ -809,6 +809,8 @@ export default class AppealsRoutes extends BaseRoutes {
       courtMap,
     )
 
+    const showEditHearingDate = !hearing.offences?.some(offence => offence.sentence)
+
     return res.render('pages/appeals/hearing-details', {
       ...urlParameters,
       hearing,
@@ -830,6 +832,7 @@ export default class AppealsRoutes extends BaseRoutes {
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
       errors: req.flash('errors') || [],
       deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],
+      showEditHearingDate,
       backLink: JourneyUrls.courtCaseDetails(urlParameters),
     })
   }

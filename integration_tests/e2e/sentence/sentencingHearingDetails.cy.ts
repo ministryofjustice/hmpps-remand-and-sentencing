@@ -235,7 +235,8 @@ context('Sentencing appearance details Page', () => {
           'A1234AB',
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          'sentencing/overall-sentence-length',
+          'overall-sentence-length',
+          '/sentencing',
         )
         .click()
       const courtCaseOverallSentenceLengthPage = Page.verifyOnPage(CourtCaseOverallSentenceLengthPage)
@@ -635,7 +636,7 @@ context('Sentencing appearance details Page', () => {
           '83517113-5c14-4628-9133-1e3cb12e31fa',
           '3f20856f-fa17-493b-89c7-205970c749b8',
           'overall-case-outcome?backTo=sentencingCourtAppearance',
-          true,
+          '/sentencing',
         )
         .click()
       const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(

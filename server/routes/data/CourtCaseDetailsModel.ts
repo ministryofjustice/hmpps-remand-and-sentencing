@@ -36,6 +36,8 @@ export default class CourtCaseDetailsModel {
 
   showAppealRow: boolean
 
+  showEditLink: boolean
+
   constructor(pageCourtCaseContent: PageCourtCaseContent, courtMap: { [key: string]: string }) {
     this.courtCaseUuid = pageCourtCaseContent.courtCaseUuid
     this.latestCaseReference = pageCourtCaseContent.latestAppearance?.courtCaseReference
@@ -83,6 +85,7 @@ export default class CourtCaseDetailsModel {
       ? CourtCaseDetailsModel.buildMergedToInsetText(this.mergedToCaseDetails, courtMap)
       : undefined
     this.showAppealRow = config.featureToggles.appeals
+    this.showEditLink = pageCourtCaseContent.status !== 'MERGED'
   }
 
   private static buildMergedToInsetText(merged: MergedToCaseDetails, courtMap: { [key: string]: string }): string {

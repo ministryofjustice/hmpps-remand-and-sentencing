@@ -522,7 +522,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
     courtCaseDetails.appearances = courtCaseDetails.appearances.map(appearance => ({
       ...appearance,
-      canDelete: appearance.charges.every(charge => !charge.sentence),
+      canDelete: appearance.charges.every(charge => !charge.sentence) && courtCaseDetails.status !== 'MERGED',
       mergedFromCases: this.offenceGetMergedFromText(
         appearance.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
         courtMap,

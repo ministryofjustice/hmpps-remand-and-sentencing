@@ -421,7 +421,7 @@ export default {
             {
               prisonerId: 'PRI123',
               courtCaseUuid: 'c0f90a3c-f1c5-4e2e-9360-2a9d7bd33dda',
-              courtCaseStatus: 'ACTIVE',
+              courtCaseStatus: 'MERGED',
               legacyData: {
                 caseReferences: [
                   {

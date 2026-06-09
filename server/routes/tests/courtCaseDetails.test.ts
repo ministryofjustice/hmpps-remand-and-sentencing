@@ -401,7 +401,7 @@ describe('GET tests for NOMIS tag', () => {
     expect(nomisTag.length).toBe(0)
   })
 
-  it('should not display edit links when case status is MERGED', async () => {
+  it('should not display links when case status is MERGED', async () => {
     const courtCase = createCourtCase('NOMIS', 'MERGED')
     defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
 
@@ -409,5 +409,7 @@ describe('GET tests for NOMIS tag', () => {
     const $ = cheerio.load(res.text)
     const editLinks = $('a:contains("Edit")')
     expect(editLinks.length).toBe(0)
+    const deleteLinks = $('a:contains("Delete")')
+    expect(deleteLinks.length).toBe(0)
   })
 })

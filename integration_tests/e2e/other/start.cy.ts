@@ -213,6 +213,7 @@ context('Start Page', () => {
     startPage
       .mergedToCaseInset('c0f90a3c-f1c5-4e2e-9360-2a9d7bd33dda')
       .should('contain.text', 'This court case was merged on 25/02/2024 with NOMIS897 at Accrington Youth Court')
+    startPage.addAppearanceLink('c0f90a3c-f1c5-4e2e-9360-2a9d7bd33dda').should('not.exist')
   })
 
   it('display person not found page when prisoner number does not exist', () => {

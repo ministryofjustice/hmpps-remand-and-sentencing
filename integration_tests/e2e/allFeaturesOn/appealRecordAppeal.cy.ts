@@ -136,7 +136,7 @@ context('Record appeal', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem You must confirm that you have finished recording appeal outcomes before you can continue',
+        'There is a problem You must confirm that you have finished recording appeal outcomes before you can continue.',
       )
   })
 

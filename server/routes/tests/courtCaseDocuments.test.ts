@@ -22,6 +22,7 @@ describe('GET Court case documents', () => {
           text: 'Overview',
           thingsToDo: {
             count: 0,
+            things: [],
           },
         },
         courtCases: {
@@ -29,8 +30,13 @@ describe('GET Court case documents', () => {
           text: 'Court cases',
           thingsToDo: {
             count: 0,
+            things: [],
           },
         },
+      },
+      maintenanceAlert: {
+        enabled: false,
+        message: 'placeholder',
       },
     })
     defaultServices.remandAndSentencingService.getPrisonerDocuments.mockResolvedValue({

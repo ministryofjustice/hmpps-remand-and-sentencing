@@ -58,4 +58,6 @@ export default class StartPage extends Page {
       .get('.govuk-label.govuk-checkboxes__label')
       .contains(`Include cases from previous periods of custody (${count})`)
   }
+
+  outageBanner = (): PageElement => cy.get('.moj-outage-banner')
 }

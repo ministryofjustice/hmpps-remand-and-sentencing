@@ -99,6 +99,7 @@ const setupCourtCase = () => {
         text: 'Overview',
         thingsToDo: {
           count: 0,
+          things: [],
         },
       },
       courtCases: {
@@ -106,8 +107,13 @@ const setupCourtCase = () => {
         text: 'Court cases',
         thingsToDo: {
           count: 0,
+          things: [],
         },
       },
+    },
+    maintenanceAlert: {
+      enabled: false,
+      message: 'placeholder',
     },
   })
   defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({

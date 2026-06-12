@@ -33,7 +33,7 @@
     "generate-prisoner-search-api-types": "openapi-typescript https://prisoner-search-dev.prison.service.justice.gov.uk/v3/api-docs > ./server/@types/prisonerSearchApi/index.d.ts",
     "generate-token-verification-api-types": "openapi-typescript https://token-verification-api-dev.prison.service.justice.gov.uk/v3/api-docs > ./server/@types/tokenVerificationApi/index.d.ts",
     "generate-calculate-release-dates-api-types": "openapi-typescript https://calculate-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/calculateReleaseDatesApi/index.d.ts",
-    "generate-court-cases-release-dates-api-types": "openapi-typescript https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > server/@types/courtCasesReleaseDatesApi/index.d.ts"
+    "generate-court-cases-release-dates-api-types": "openapi-typescript https://court-cases-release-dates-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > server/@types/courtCasesReleaseDatesApi/index.d.ts && eslint . --cache --max-warnings 0 --fix \"./server/@types/courtCasesReleaseDatesApi/index.d.ts\""
   },
   "engines": {
     "node": "^24",
@@ -45,7 +45,7 @@
     "@microsoft/applicationinsights-web": "^3.4.1",
     "@ministryofjustice/frontend": "^9.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^2.0.0",
-    "@ministryofjustice/hmpps-court-cases-release-dates-design": "5.0.3",
+    "@ministryofjustice/hmpps-court-cases-release-dates-design": "5.1.0",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
     "@ministryofjustice/hmpps-rest-client": "^2.1.0",
     "accessible-autocomplete": "3.0.1",

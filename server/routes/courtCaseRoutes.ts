@@ -273,6 +273,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       bookingDetails,
       disableIncludeCasesFromPreviousPeriodsOfCustody,
       bookingCourtCasePreviousPeriodsCount,
+      displayMaintenanceAlert: true,
     })
   }
 

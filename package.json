@@ -117,7 +117,7 @@
     "openapi-typescript": "^7.13.0",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.9",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "//": [
     "Overriding qs for cypress to fix moderate (CVE-2026-8723) without breaking cypress. Remove when cypress updates their dependency to a non-vulnerable version of qs.",

@@ -124,6 +124,7 @@ export interface components {
       href: string
       text: string
       thingsToDo: components['schemas']['ThingsToDo']
+      maintenanceAlert: components['schemas']['MaintenanceAlert']
     }
     CcrdServiceDefinitions: {
       services: {

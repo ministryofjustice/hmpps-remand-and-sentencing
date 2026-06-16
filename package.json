@@ -44,7 +44,7 @@
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.1",
     "@microsoft/applicationinsights-web": "^3.4.1",
     "@ministryofjustice/frontend": "^9.0.0",
-    "@ministryofjustice/hmpps-auth-clients": "^2.0.0",
+    "@ministryofjustice/hmpps-auth-clients": "^3.0.0",
     "@ministryofjustice/hmpps-court-cases-release-dates-design": "5.2.0",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
     "@ministryofjustice/hmpps-rest-client": "^2.1.0",
@@ -71,7 +71,7 @@
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "picomatch": "4.0.4",
-    "redis": "^5.12.1",
+    "redis": "^6.0.0",
     "superagent": "^10.3.0",
     "validatorjs": "^3.22.1"
   },

@@ -101,6 +101,10 @@ const setupCourtCase = () => {
           count: 0,
           things: [],
         },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
+        },
       },
       courtCases: {
         href: 'http://localhost:3007/person/AB1234AB',
@@ -108,6 +112,10 @@ const setupCourtCase = () => {
         thingsToDo: {
           count: 0,
           things: [],
+        },
+        maintenanceAlert: {
+          enabled: false,
+          message: 'placeholder',
         },
       },
     },

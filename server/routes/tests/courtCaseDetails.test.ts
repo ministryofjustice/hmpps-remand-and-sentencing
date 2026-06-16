@@ -14,7 +14,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-const createCourtCase = (source: string | undefined): PageCourtCaseContent => {
+const createCourtCase = (source: string | undefined, status: string = 'ACTIVE'): PageCourtCaseContent => {
   const appearance = {
     appearanceUuid: '1',
     appearanceDate: '2025-07-25',
@@ -35,7 +35,7 @@ const createCourtCase = (source: string | undefined): PageCourtCaseContent => {
   return {
     courtCaseUuid: '1',
     prisonerId: 'A1234AB',
-    status: 'ACTIVE',
+    status,
     latestAppearance: appearance,
     appearances: [appearance],
   } as PageCourtCaseContent
@@ -399,5 +399,17 @@ describe('GET tests for NOMIS tag', () => {
     // Expect no tag with the specific text to be present
     const nomisTag = $('.govuk-tag').filter((i, el) => $(el).text().trim() === 'From NOMIS')
     expect(nomisTag.length).toBe(0)
+  })
+
+  it('should not display links when case status is MERGED', async () => {
+    const courtCase = createCourtCase('NOMIS', 'MERGED')
+    defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
+
+    const res = await request(app).get(path).expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+    const editLinks = $('a:contains("Edit")')
+    expect(editLinks.length).toBe(0)
+    const deleteLinks = $('a:contains("Delete")')
+    expect(deleteLinks.length).toBe(0)
   })
 })

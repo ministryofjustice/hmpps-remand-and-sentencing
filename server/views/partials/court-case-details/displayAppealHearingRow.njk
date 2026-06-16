@@ -10,12 +10,14 @@
         <div class="govuk-grid-column-one-quarter">
             <ul class="offence-card-actions-list" data-qa="hearingActionList-{{hearing.appearanceUuid}}">
                 {% if not hearing.hasAnyRecalls%}
+                  {% if courtCaseDetails.showEditLink %}
                     <li class="offence-card-action-link">
                         <a class="govuk-link--no-visited-state"
                            href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/edit-court-appearance/{{ hearing.appearanceUuid }}/appeals/load-hearing-details">
                             Edit
                         </a>
                     </li>
+                    {% endif %}
                     {% if hearing.canDelete %}
                       <li class="offence-card-action-link">
                         <a href="/person/{{ nomsId }}/edit-court-case/{{ courtCaseDetails.courtCaseUuid }}/{{ hearing.appearanceUuid }}/confirm-delete"

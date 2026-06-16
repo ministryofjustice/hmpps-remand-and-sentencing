@@ -1685,7 +1685,10 @@ export default class CourtAppearanceService {
           'You must confirm that you have finished recording appeal outcomes before you can continue.',
       },
     )
-    if (!courtAppearance.offences.some(offence => offence.updatedOutcome)) {
+    if (
+      finishedRecordingAppealsForm.finishedRecordAppeal === 'true' &&
+      !courtAppearance.offences.some(offence => offence.updatedOutcome)
+    ) {
       errors.push({
         text: 'You must record at least one appeal outcome before you can continue.',
         href: '#withoutAppealHeading',

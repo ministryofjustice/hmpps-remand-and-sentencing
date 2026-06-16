@@ -51,16 +51,16 @@
             ]
           }) }}
 
-        {% if not loop.last %}
-          <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-4">
-        {% endif %}
-
         {% else %}
           <div class="govuk-form-group {% if loop.first %}govuk-!-margin-top-8{% else %}govuk-!-margin-top-6{% endif %} govuk-body">
             <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ documentRow.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">
               Upload {{ documentRow.name | lower }}
             </a>
           </div>
+        {% endif %}
+
+        {% if not loop.last %}
+          <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-4">
         {% endif %}
       {% endfor %}
 

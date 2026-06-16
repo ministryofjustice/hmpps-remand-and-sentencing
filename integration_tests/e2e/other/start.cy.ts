@@ -221,4 +221,10 @@ context('Start Page', () => {
     cy.visit('/person/A1234AB', { failOnStatusCode: false })
     Page.verifyOnPage(PersonNotFoundPage)
   })
+
+  it('display maintenance outage when CCARD API returns it as enabled', () => {
+    cy.task('stubGetServiceDefinitionsMaintenanceEnabled')
+    cy.visit('/person/A1234AB')
+    startPage.outageBanner().should('contain.text', 'There is due to be an outage in the future')
+  })
 })

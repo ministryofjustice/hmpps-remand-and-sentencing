@@ -3,9 +3,15 @@
 {% from "hmpps/components/mini-profile/macro.njk" import miniProfile %}
 {% from "hmpps/components/court-cases-release-dates/sub-navigation/macro.njk" import subNavigation %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "hmpps/components/outage-banner/macro.njk" import outageBanner %}
 
 {% block beforeContent %}
     <aside role="complementary">
+        {% if displayMaintenanceAlert and serviceDefinitions.maintenanceAlert.enabled %}
+            <div class="govuk-!-margin-top-7">
+                {{ outageBanner({ text: serviceDefinitions.maintenanceAlert.message}) }}
+            </div>
+        {% endif %}
         {% block banner %}
             {% set person = {
                 firstName: prisoner.firstName,

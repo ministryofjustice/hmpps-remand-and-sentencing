@@ -8,6 +8,7 @@ import {
   SentenceConsecutiveToDetails,
   SentencesToChainToResponse,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { getDocumentTypeNameMap } from '../resources/documentTypes'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0]!.toUpperCase() + word.toLowerCase().slice(1) : word
@@ -132,20 +133,8 @@ export const extractKeyValue = (object, value: string) => {
 }
 
 export function getUiDocumentType(documentType: string, warrantType: string): string {
-  switch (documentType) {
-    case 'HMCTS_WARRANT':
-      return warrantType === 'SENTENCING' ? 'Sentencing Warrant' : 'Remand Warrant'
-    case 'TRIAL_RECORD_SHEET':
-      return 'Trial Record Sheet'
-    case 'INDICTMENT':
-      return 'Indictment Document'
-    case 'PRISON_COURT_REGISTER':
-      return 'Prison Court Register'
-    case 'APPEAL_ORDER':
-      return 'Appeal order'
-    default:
-      return 'Court Document'
-  }
+  const documentTypeMap = getDocumentTypeNameMap()
+  return documentTypeMap[`${warrantType}_${documentType}`] ?? documentTypeMap[documentType] ?? 'Court Document'
 }
 
 enum OffenceGroup {

@@ -63,3 +63,16 @@ const expectedTypes = {
 }
 
 export default expectedTypes
+
+export function getDocumentTypeNameMap(): { [key: string]: string } {
+  return Object.fromEntries(
+    Object.keys(expectedTypes).flatMap(warrantType => {
+      return expectedTypes[warrantType].flatMap(documentType => {
+        return [
+          [`${warrantType}_${documentType.type}`, documentType.name],
+          [documentType.type, documentType.name],
+        ]
+      })
+    }),
+  )
+}

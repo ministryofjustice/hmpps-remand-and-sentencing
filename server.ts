@@ -1,5 +1,5 @@
 // Require app insights before anything else to allow for instrumentation of bunyan and express
-import 'applicationinsights'
+import './server/utils/azureAppInsights'
 import dayjs from 'dayjs'
 import objectSupport from 'dayjs/plugin/objectSupport'
 import utc from 'dayjs/plugin/utc'

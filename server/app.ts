@@ -4,7 +4,6 @@ import multer from 'multer' // Import multer
 
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
-import { appInsightsMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 
 import setUpAuthentication from './middleware/setUpAuthentication'
@@ -23,6 +22,7 @@ import populateCurrentPrisoner from './middleware/populateCurrentPrisoner'
 import setupCurrentCourtAppearance from './middleware/setUpCurrentCourtAppearance'
 import setupCurrentCourtCase from './middleware/setUpCurrentCourtCase'
 import setupCurrentOffence from './middleware/setupCurrentOffence'
+import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
 
 const upload = multer({ dest: 'uploads/' })
 
@@ -33,7 +33,6 @@ export default function createApp(services: Services): express.Application {
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
-  app.use(appInsightsMiddleware())
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
@@ -67,7 +66,7 @@ export default function createApp(services: Services): express.Application {
     setupCurrentOffence(services.offenceService),
   )
   app.get(/(.*)/, getFrontendComponents(services))
-
+  app.use(addUsernameAndCaseloadToTelemetry())
   // --- Main application routes ---
   app.use(routes(services))
 

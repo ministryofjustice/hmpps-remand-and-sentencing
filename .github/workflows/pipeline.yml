@@ -72,6 +72,7 @@ jobs:
       environment: ${{ matrix.environments }}
   build:
     name: Build docker image from hmpps-github-actions
+    if: needs.check_publish.outputs.enabled == 'true'
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2 # WORKFLOW_VERSION
     needs:
       - node_integration_tests

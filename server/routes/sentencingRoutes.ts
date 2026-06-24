@@ -290,6 +290,9 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceTypePromise,
       hasSentenceAfterOnOtherCourtAppearancePromise,
     ])
+
+
+
     const [custodialOffences, nonCustodialOffences] = offences
       .map((offence, index) => ({ ...offence, index })) // Add an index to each offence
       .reduce(
@@ -305,6 +308,7 @@ export default class SentencingRoutes extends BaseRoutes {
         },
         [[], []] as [typeof offences, typeof offences],
       )
+
     const allSentenceUuids = hearing.offences
       .map(offence => offence.sentence?.sentenceUuid)
       .filter(sentenceUuid => sentenceUuid)
@@ -333,6 +337,8 @@ export default class SentencingRoutes extends BaseRoutes {
       hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
       courtMap,
     )
+
+    console.log('custodialOffences', custodialOffences)
 
     return res.render('pages/sentencing/hearing-details', {
       nomsId,

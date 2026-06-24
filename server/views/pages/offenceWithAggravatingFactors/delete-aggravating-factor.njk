@@ -19,14 +19,34 @@
                         }
                 }) %}
 
-                    <ul class="govuk-list govuk-list--bullet">
-                        {% if terrorRelated %}
-                            <li>Offence aggravated by a terrorist connection</li>
-                        {% endif %}
-                        {% if foreignPowerRelated %}
-                            <li>Offence aggravated by foreign power condition being met</li>
-                        {% endif %}
-                    </ul>
+                    {#
+                      TEMPORARY COMPATIBILITY LOGIC
+                      -----------------------------------------
+                      We currently support:
+                      - legacy booleans (terrorRelated, foreignPowerRelated)
+                      - new aggravatingFactors join table
+
+                      This page uses the shared getAggravatingFactors util to:
+                      ✅ merge both sources
+                      ✅ avoid duplication
+                      ✅ ensure consistency across UI
+
+                      TODO:
+                      - Remove boolean handling once migration is complete
+                      - Rely solely on offence.aggravatingFactors
+                    #}
+
+                    {% set factors = offence | getAggravatingFactors %}
+
+                    {% if factors.length > 0 %}
+                      <ul class="govuk-list govuk-list--bullet">
+                        {% for factor in factors %}
+                          <li>{{ factor }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      <p class="govuk-body">No aggravating factors to delete.</p>
+                    {% endif %}
 
                     <div class="govuk-button-group">
                         {{ govukButton({

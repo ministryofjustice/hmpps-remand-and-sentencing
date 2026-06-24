@@ -2501,6 +2501,8 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+
+    console.log('aggravating factors in getEditOffence', offence.aggravatingFactors)
     const courtCodes = []
     const offenceCodes = [offence.offenceCode]
     let sentenceConsecutiveToDetails: SentenceConsecutiveToDetails | undefined

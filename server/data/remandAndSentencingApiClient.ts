@@ -1,6 +1,7 @@
 import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import {
+  AggravatingFactor,
   AllSentenceTypes,
   AppearanceOutcome,
   AppearanceType,
@@ -94,6 +95,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     createCourtAppearance: CreateCourtAppearance,
     username: string,
   ): Promise<CreateCourtAppearanceResponse> {
+    console.log(`putCourtAppearance: ${JSON.stringify(createCourtAppearance)}`)
     return (await this.put(
       {
         data: createCourtAppearance,
@@ -671,5 +673,17 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )
+  }
+
+  async getAllAggravatingFactors(username: string, statuses: string = 'ACTIVE'): Promise<AggravatingFactor[]> {
+    return (await this.get(
+      {
+        path: `/aggravating-factors/status`,
+        query: {
+          statuses,
+        },
+      },
+      asSystem(username),
+    )) as unknown as Promise<AggravatingFactor[]>
   }
 }

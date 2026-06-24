@@ -449,6 +449,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const { username } = res.locals.user
     const courtCaseDetails = await this.remandAndSentencingService.getCourtCaseDetails(courtCaseReference, username)
 
+    console.log(courtCaseDetails.appearances[0].charges[0])
+
     const consecutiveToUuids = courtCaseDetails.appearances
       .flatMap(appearance => appearance.charges.map(charge => charge.sentence?.consecutiveToSentenceUuid))
       .filter(sentenceUuid => sentenceUuid)

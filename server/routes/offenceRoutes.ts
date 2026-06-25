@@ -332,6 +332,7 @@ export default class OffenceRoutes extends BaseRoutes {
       (Object.keys(offence).length === 1 && Object.keys(offence).includes('chargeUuid')) ||
       offence.chargeUuid !== chargeUuid
     ) {
+      this.offenceService.clearAllOffences(req.session, nomsId, courtCaseReference)
       const existingOffence = this.courtAppearanceService.getOffence(
         req.session,
         nomsId,

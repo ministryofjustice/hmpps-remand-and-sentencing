@@ -47,11 +47,13 @@ describe('GET Select court name ', () => {
             outcomeType: 'NON_SENTENCING',
             status: 'ACTIVE',
           },
+          aggravatingFactors: [],
           createdAt: '2025-03-11T14:30:00.000Z',
         },
       ],
       documents: [],
       source: 'DPS',
+      deleteStatus: 'SUPPORTED',
     })
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',

@@ -49,8 +49,6 @@ context('Select which aggravating factors apply Page', () => {
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
     cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
     cy.task('stubGetCourtsByIds')
-
-    // ✅ NEW: stub aggravating factors list
     cy.task('stubGetAllAggravatingFactors')
 
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')

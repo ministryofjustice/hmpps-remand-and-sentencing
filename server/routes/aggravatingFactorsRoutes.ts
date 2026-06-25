@@ -466,7 +466,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       )
     }
 
-    // ✅ Filter using correct unified logic
+    // Filter using correct unified logic
     const orderedOffences = orderOffences(allOffencesInAppearance.filter(hasAggravatingFactors))
 
     const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
@@ -483,7 +483,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       offencesToOffenceDescriptions(courtAppearance.offences, consecutiveToSentenceDetails.sentences),
     )
 
-    // ✅ Use SAME logic to determine "unprocessed"
+    // Use SAME logic to determine "unprocessed"
     const unprocessedOffenceExists = allOffencesInAppearance.some(o => !hasAggravatingFactors(o))
 
     const orderedOffencesCount = orderedOffences.length

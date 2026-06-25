@@ -325,8 +325,6 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     const selectedSet = new Set<string>(selected)
     selected = Array.from(selectedSet)
 
-    console.log('selected', selected)
-
     const selectWhichAggravatingFactorsForm = trimForm<SelectWhichAggravatingFactorsForm>({
       aggravatedFactors: selected,
     } as unknown as Record<string, unknown>)
@@ -469,23 +467,13 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     }
 
     // ✅ Filter using correct unified logic
-    const orderedOffences = orderOffences(
-      allOffencesInAppearance.filter(hasAggravatingFactors),
-    )
+    const orderedOffences = orderOffences(allOffencesInAppearance.filter(hasAggravatingFactors))
 
-    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(
-      req,
-      nomsId,
-      appearanceReference,
-    )
+    const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
 
     const offenceCodes = Array.from(
       new Set(
-        orderedOffences
-          .map(o => o.offenceCode)
-          .concat(
-            consecutiveToSentenceDetails.sentences.map(s => s.offenceCode),
-          ),
+        orderedOffences.map(o => o.offenceCode).concat(consecutiveToSentenceDetails.sentences.map(s => s.offenceCode)),
       ),
     )
 

@@ -5,7 +5,7 @@ export default class AggravatingFactorsSelectWhichAggravatedFactorsApplyPage ext
     super('Select which aggravating factors apply')
   }
 
-  terrorRelatedCheckbox = (): PageElement => cy.get(`[data-qa=terrorRelatedCheckbox]`)
-
-  foreignPowerRelatedCheckbox = (): PageElement => cy.get(`[data-qa=foreignPowerRelatedCheckbox]`)
+  checkboxByValue(value: string) {
+    return cy.get(`input[name="aggravatedFactors"][value="${value}"]`)
+  }
 }

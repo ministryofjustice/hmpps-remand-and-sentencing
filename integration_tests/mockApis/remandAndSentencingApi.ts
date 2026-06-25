@@ -2937,6 +2937,45 @@ export default {
     })
   },
 
+  stubGetAllAggravatingFactors: (customResponseBody?: unknown): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/aggravating-factors/status',
+        queryParameters: {
+          statuses: {
+            or: [
+              {
+                equalTo: 'ACTIVE',
+              },
+              {
+                equalTo: 'ACTIVE,INACTIVE',
+              },
+            ],
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: (customResponseBody as object[]) ?? [
+          {
+            code: 'OAFPC',
+            title: 'Offence aggravated by foreign power condition being met',
+            description: 'Offence aggravated by foreign power condition being met',
+            displayOrder: 20,
+          },
+          {
+            code: 'RA',
+            title: 'Racially Aggravated Offence',
+            description: 'Racially Aggravated Offence',
+            displayOrder: 30,
+          },
+        ],
+      },
+    })
+  },
+
   stubGetAllChargeOutcomes: (customResponseBody?): SuperAgentRequest => {
     return stubFor({
       request: {

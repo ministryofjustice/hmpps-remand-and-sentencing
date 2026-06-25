@@ -95,7 +95,6 @@ export default class RemandAndSentencingApiClient extends RestClient {
     createCourtAppearance: CreateCourtAppearance,
     username: string,
   ): Promise<CreateCourtAppearanceResponse> {
-    console.log(`putCourtAppearance: ${JSON.stringify(createCourtAppearance)}`)
     return (await this.put(
       {
         data: createCourtAppearance,

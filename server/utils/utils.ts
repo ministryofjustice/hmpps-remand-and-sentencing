@@ -332,7 +332,7 @@ export const getAggravatingFactors = (offence: Offence) => {
   const factors: string[] = []
   const seenCodes = new Set<string>()
 
-  // ✅ 1. Use join table as primary source
+  // 1. Use join table as primary source
   if (offence.aggravatingFactors?.length) {
     offence.aggravatingFactors.forEach(f => {
       if (f?.code && !seenCodes.has(f.code)) {
@@ -342,7 +342,7 @@ export const getAggravatingFactors = (offence: Offence) => {
     })
   }
 
-  // ✅ 2. Backfill from booleans if missing (no duplication)
+  // 2. Backfill from booleans if missing (no duplication)
   if (offence.terrorRelated && !seenCodes.has('OATC')) {
     seenCodes.add('OATC')
     factors.push('Offence aggravated by a terrorist connection')
@@ -352,8 +352,6 @@ export const getAggravatingFactors = (offence: Offence) => {
     seenCodes.add('OAFPC')
     factors.push('Offence aggravated by foreign power condition being met')
   }
-
-  console.log("factors are", factors)
 
   return factors
 }

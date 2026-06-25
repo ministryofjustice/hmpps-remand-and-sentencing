@@ -240,7 +240,7 @@ export const pagedChargeToOffence = (pagedCharge: PagedCharge, createChargeOrder
     outcomeUuid: pagedCharge.outcome?.outcomeUuid,
     terrorRelated: pagedCharge.terrorRelated,
     foreignPowerRelated: pagedCharge.foreignPowerRelated,
-    // aggravatingFactors: pagedCharge.aggravatingFactors,
+    aggravatingFactors: pagedCharge.aggravatingFactors,
     createChargeOrder,
     ...(pagedCharge.offenceStartDate && { offenceStartDate: dayjs(pagedCharge.offenceStartDate).toDate() }),
     ...(pagedCharge.offenceEndDate && { offenceEndDate: dayjs(pagedCharge.offenceEndDate).toDate() }),

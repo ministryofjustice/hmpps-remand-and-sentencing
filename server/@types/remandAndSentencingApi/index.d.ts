@@ -672,6 +672,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/next-court-appearance-admin/link-latest-court-appearances': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['linkLatestCourtAppearances']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/legacy/sentence': {
     parameters: {
       query?: never
@@ -1690,6 +1706,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/hmcts-court-data/{courtHearingId}/appearance': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieve court case details
+     * @description This endpoint will retrieve court case details
+     */
+    get: operations['getCourtAppearanceFromHmctsHearingId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/court-case/{prisonerId}/recallable-court-cases': {
     parameters: {
       query?: never
@@ -2341,7 +2377,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 10:05:42.524777573 */
+      /** @example 10:06:34.953806724 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2413,6 +2449,13 @@ export interface components {
       /** Format: uuid */
       courtAppearanceUuid?: string | null
     }
+    AggravatingFactor: {
+      code: string
+      title: string
+      description?: string | null
+      /** Format: int32 */
+      displayOrder: number
+    }
     CreateCharge: {
       /** Format: uuid */
       appearanceUuid?: string | null
@@ -2435,6 +2478,7 @@ export interface components {
       replacingChargeUuid?: string | null
       /** Format: int32 */
       createChargeOrder?: number | null
+      aggravatingFactors?: components['schemas']['AggravatingFactor'][]
     }
     CreateCourtAppearance: {
       courtCaseUuid?: string | null
@@ -2469,7 +2513,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:05:42.524777573 */
+      /** @example 10:06:34.953806724 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -3387,13 +3431,6 @@ export interface components {
     SentencesToChainToResponse: {
       appearances: components['schemas']['AppearanceToChainTo'][]
     }
-    AggravatingFactor: {
-      code: string
-      title: string
-      description?: string | null
-      /** Format: int32 */
-      displayOrder: number
-    }
     AppearanceType: {
       /** Format: uuid */
       appearanceTypeUuid: string
@@ -3475,7 +3512,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:05:42.524777573 */
+      /** @example 10:06:34.953806724 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3763,7 +3800,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:05:42.524777573 */
+      /** @example 10:06:34.953806724 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -3786,7 +3823,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:05:42.524777573 */
+      /** @example 10:06:34.953806724 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -3841,7 +3878,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:05:42.524777573 */
+      /** @example 10:06:34.953806724 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -3852,7 +3889,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:05:42.524777573 */
+      /** @example 10:06:34.953806724 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -3975,10 +4012,10 @@ export interface components {
       offset?: number
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
-      pageSize?: number
-      /** Format: int32 */
       pageNumber?: number
       paged?: boolean
+      /** Format: int32 */
+      pageSize?: number
       unpaged?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -4013,6 +4050,7 @@ export interface components {
       offenceEndDate?: string | null
       terrorRelated?: boolean | null
       foreignPowerRelated?: boolean | null
+      aggravatingFactors?: components['schemas']['AggravatingFactor'][] | null
       outcome?: components['schemas']['PagedChargeOutcome'] | null
       legacyData?: components['schemas']['ChargeLegacyData'] | null
       sentence?: components['schemas']['PagedSentence'] | null
@@ -4083,7 +4121,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:05:42.524777573 */
+      /** @example 10:06:34.953806724 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -6306,6 +6344,24 @@ export interface operations {
       }
     }
   }
+  linkLatestCourtAppearances: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Accepted */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   create_1: {
     parameters: {
       query?: never
@@ -8471,6 +8527,55 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ImmigrationDetention']
+        }
+      }
+    }
+  }
+  getCourtAppearanceFromHmctsHearingId: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        courtHearingId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returns court case details */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
+        }
+      }
+      /** @description Not found if no court case at uuid */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CourtAppearance']
         }
       }
     }

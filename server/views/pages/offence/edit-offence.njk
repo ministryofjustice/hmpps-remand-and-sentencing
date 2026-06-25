@@ -298,7 +298,7 @@ offenceDateRow,
   {% set aggravatingFactorsList = [] %}
   {% set seenCodes = [] %}
 
-  {# ✅ 1. Add from join table first (source of truth) #}
+  {# 1. Add from join table first (source of truth) #}
   {% if offence.aggravatingFactors %}
     {% for factor in offence.aggravatingFactors %}
       {% if factor.code not in seenCodes %}
@@ -308,7 +308,7 @@ offenceDateRow,
     {% endfor %}
   {% endif %}
 
-  {# ✅ 2. Backfill from booleans if missing (temporary safety) #}
+  {# 2. Backfill from booleans if missing (temporary safety) #}
   {% if offence.terrorRelated and 'OATC' not in seenCodes %}
     {% set aggravatingFactorsList = aggravatingFactorsList.concat([
       "Offence aggravated by a terrorist connection"
@@ -321,7 +321,7 @@ offenceDateRow,
     ]) %}
   {% endif %}
 
-  {# ✅ 3. Render #}
+  {# 3. Render #}
   {% if aggravatingFactorsList.length > 0 %}
     {% set aggHtml %}
       <ul class="govuk-list">

@@ -297,7 +297,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       chargeUuid,
       backLink,
       selectWhichAggravatingFactorsForm,
-      selectedFactors, // ✅ unified source of truth
+      selectedFactors,
       aggravatingFactorsOptions,
       isEditing,
       returnTo,
@@ -318,10 +318,10 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     const isEditing = req.query.isEditing === 'true'
     const returnTo = (req.query.returnTo as string) || undefined
 
-    // ✅ Always normalise input to array
+    // Always normalise input to array
     let selected = normaliseToArray(req.body.aggravatedFactors)
 
-    // ✅ Deduplicate using Set
+    // Deduplicate using Set
     const selectedSet = new Set<string>(selected)
     selected = Array.from(selectedSet)
 
@@ -384,11 +384,11 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
        * - Remove special handling for OATC / OAFPC
        */
 
-      // ✅ Derive booleans
+      // Derive booleans
       offence.terrorRelated = selectedSet.has('OATC')
       offence.foreignPowerRelated = selectedSet.has('OAFPC')
 
-      // ✅ Store ALL selected codes in list (INCLUDING OATC / OAFPC)
+      // Store ALL selected codes in list (INCLUDING OATC / OAFPC)
       offence.aggravatingFactors = (aggravatingFactorsOptions || []).filter(opt => selectedSet.has(opt.code))
 
       this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
@@ -440,7 +440,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    // ✅ Ensure always an array (avoids TS/runtime issues)
+    // Ensure always an array (avoids TS/runtime issues)
     const allOffencesInAppearance = courtAppearance.offences || []
 
     /**

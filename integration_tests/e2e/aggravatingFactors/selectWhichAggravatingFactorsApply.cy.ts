@@ -50,7 +50,7 @@ context('Select which aggravating factors apply Page', () => {
     cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
     cy.task('stubGetCourtsByIds')
 
-// ✅ NEW: stub aggravating factors list
+    // ✅ NEW: stub aggravating factors list
     cy.task('stubGetAllAggravatingFactors')
 
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
@@ -139,9 +139,7 @@ context('Select which aggravating factors apply Page', () => {
   })
 
   it('should allow selecting a non-boolean aggravating factor', () => {
-    selectWhichAggravatingFactorsApplyPage
-      .checkboxByValue('RA')
-      .click()
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('RA').click()
 
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)

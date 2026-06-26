@@ -139,3 +139,5 @@ export type CourtAppearanceSubtype = components['schemas']['CourtAppearanceSubty
 export type SentenceTypeChargeOutcomes = components['schemas']['SentenceTypeChargeOutcomes']
 
 export type SentencedCharges = components['schemas']['SentencedCharges']
+
+export type AggravatingFactor = components['schemas']['AggravatingFactor']

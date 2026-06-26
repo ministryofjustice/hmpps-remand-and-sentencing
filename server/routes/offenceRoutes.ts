@@ -2502,6 +2502,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { submitToEditOffence } = req.query
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+
     const courtCodes = []
     const offenceCodes = [offence.offenceCode]
     let sentenceConsecutiveToDetails: SentenceConsecutiveToDetails | undefined

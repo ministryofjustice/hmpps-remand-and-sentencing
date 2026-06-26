@@ -1,18 +1,11 @@
 {% extends "../../partials/hearingDetailsLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
-{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
-{% from "govuk/components/hint/macro.njk" import govukHint %}
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-
-
 
 {% set pageTitle = applicationName + " - sentence offences with aggravated factors" %}
 
 {% block pageContent %}
-  {# build an explicit suffix for the query param rather than inline ternary to improve readability #}
-  {# Build query string suffix from isEditing and optional returnTo parameter #}
   {% set params = [] %}
   {% if isEditing %}
     {% set params = params.concat(['isEditing=true']) %}
@@ -29,51 +22,80 @@
   <form method="post"
         action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/{{chargeUuid}}/submit-select-which-aggravating-factors-apply{{ editSuffix }}"
         autocomplete="off">
+
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
     {% include "../../partials/aggravatingOffenceFactorsCaption.njk" %}
 
-    <div class="govuk-form-group {%- if errorMessage %} govuk-form-group--error{% endif %}">
-      {% if selectWhichAggravatingFactorsForm and selectWhichAggravatingFactorsForm.aggravatedFactors is defined %}
-        {% set selectedFactors = selectWhichAggravatingFactorsForm.aggravatedFactors %}
-      {% else %}
-        {# Start with an empty array and add known defaults if set. Using literal arrays is clearer than relying on concat #}
-        {% set selectedFactors = [] %}
-        {% if terrorRelated %}
-          {% set selectedFactors = selectedFactors + ['terrorRelated'] %}
-        {% endif %}
-        {% if foreignPowerRelated %}
-          {% set selectedFactors = selectedFactors + ['foreignPowerRelated'] %}
-        {% endif %}
-      {% endif %}
+    {#
+      Use form values if returning from validation,
+      otherwise use selectedFactors passed from route
+    #}
+    {% set selected = selectWhichAggravatingFactorsForm.aggravatedFactors
+      if selectWhichAggravatingFactorsForm and selectWhichAggravatingFactorsForm.aggravatedFactors is defined
+      else selectedFactors
+    %}
 
-      {{ govukCheckboxes({
-        name: 'aggravatedFactors',
-        fieldset: {
-          legend: {
-            text: "Select which aggravating factors apply",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        hint: offenceHint,
-        items: [
-          {
-            id: 'aggravating-factor-terror-related',
-            value: "terrorRelated",
-            text: "Offence aggravated by a terrorist connection",
-            checked: selectedFactors.includes('terrorRelated'),
-            attributes: { "data-qa": "terrorRelatedCheckbox" }
-          },
-          {
-            id: 'aggravating-factor-foreign-power',
-            value: "foreignPowerRelated",
-            text: "Offence aggravated by foreign power condition being met",
-            checked: selectedFactors.includes('foreignPowerRelated'),
-            attributes: { "data-qa": "foreignPowerRelatedCheckbox" }
-          }
-        ]
-      }) }}
-    </div>
+    {# Ensure selected is always an array #}
+    {% if selected and not selected.push %}
+      {% set selected = [selected] %}
+    {% endif %}
+
+    {#
+      TEMPORARY: Include legacy boolean-backed options.
+      These map to codes OATC and OAFPC.
+
+      TODO:
+      Remove these once:
+      - migration script moves boolean data into join table
+      - backend no longer uses terrorRelated / foreignPowerRelated
+    #}
+    {% set items = [
+      {
+        id: 'aggravating-factor-terror-related',
+        value: 'OATC',
+        text: 'Offence aggravated by a terrorist connection',
+        checked: selected.includes('OATC'),
+        attributes: { 'data-qa': 'terrorRelatedCheckbox' }
+      },
+      {
+        id: 'aggravating-factor-foreign-power',
+        value: 'OAFPC',
+        text: 'Offence aggravated by foreign power condition being met',
+        checked: selected.includes('OAFPC'),
+        attributes: { 'data-qa': 'foreignPowerRelatedCheckbox' }
+      }
+    ] %}
+
+    {% if aggravatingFactorsOptions %}
+      {% for opt in aggravatingFactorsOptions %}
+        {# Avoid duplication with legacy boolean-backed codes #}
+        {% if opt.code != 'OATC' and opt.code != 'OAFPC' %}
+          {% set items = items.concat([
+            {
+              id: 'aggravating-factor-' + opt.code,
+              value: opt.code,
+              text: opt.title,
+              checked: selected.includes(opt.code),
+              attributes: { 'data-qa': 'aggravatingFactor-' + opt.code }
+            }
+          ]) %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {{ govukCheckboxes({
+      name: 'aggravatedFactors',
+      fieldset: {
+        legend: {
+          text: "Select which aggravating factors apply",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--l"
+        }
+      },
+      hint: offenceHint,
+      items: items
+    }) }}
 
     <div class="govuk-button-group">
       {{ govukButton({
@@ -82,5 +104,6 @@
       }) }}
       {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
     </div>
+
   </form>
 {% endblock %}

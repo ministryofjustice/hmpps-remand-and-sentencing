@@ -3,7 +3,6 @@ import { Dayjs } from 'dayjs'
 import type { CancelCourtCaseForm, DeleteHearingForm } from 'forms'
 import validate from '../validation/validation'
 import {
-  AggravatingFactor,
   ConsecutiveChainValidationRequest,
   CourtCaseCountNumbers,
   CourtCaseValidationDate,

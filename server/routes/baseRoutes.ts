@@ -1,4 +1,4 @@
-import type { Offence, UrlParameters } from 'models'
+import type { CourtAppearance, Offence, UrlParameters } from 'models'
 import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
 import dayjs from 'dayjs'
 import { SessionData } from 'express-session'
@@ -558,6 +558,25 @@ export default abstract class BaseRoutes {
       offenceDetails,
       sentencesAfterDetails,
     }
+  }
+
+  protected async getCaseReferenceSet(
+    courtAppearance: CourtAppearance,
+    username: string,
+    urlParameters: UrlParameters,
+  ): Promise<boolean> {
+    let caseReferenceSet = !!courtAppearance.referenceNumberSelect
+    if (
+      !this.isAddJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance) &&
+      !caseReferenceSet
+    ) {
+      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
+        username,
+        urlParameters.courtCaseReference,
+      )
+      caseReferenceSet = !!latestCourtAppearance.courtCaseReference
+    }
+    return caseReferenceSet
   }
 
   private getDocumentErrorMessage(errorMessage: string): string {

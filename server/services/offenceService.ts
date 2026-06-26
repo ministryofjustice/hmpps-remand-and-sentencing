@@ -1443,16 +1443,19 @@ export default class OffenceService {
     offence: Offence,
     selectedCodes: string[],
     aggravatingFactorsOptions: AggravatingFactor[],
-  ): Offence {
+    nomsId: string,
+    session: Partial<SessionData>,
+    courtCaseReference: string,
+  ) {
     const selectedSet = new Set(selectedCodes)
 
-    return {
+    const updatedOffence = {
       ...offence,
-
       terrorRelated: selectedSet.has('OATC'),
       foreignPowerRelated: selectedSet.has('OAFPC'),
-
       aggravatingFactors: (aggravatingFactorsOptions || []).filter(opt => selectedSet.has(opt.code)),
     }
+
+    this.setSessionOffence(session, nomsId, courtCaseReference, updatedOffence)
   }
 }

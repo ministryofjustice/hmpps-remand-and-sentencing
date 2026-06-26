@@ -361,11 +361,15 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
 
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
-    if (offence) {
-      this.offenceService.updateOffenceAggravatingFactors(offence, selected, aggravatingFactorsOptions)
-
-      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
-    }
+    if (offence)
+      this.offenceService.updateOffenceAggravatingFactors(
+        offence,
+        selected,
+        aggravatingFactorsOptions,
+        nomsId,
+        req.session,
+        courtCaseReference,
+      )
 
     const nextChargeUuid = this.aggravatingFactorsService.getNextUnprocessedAggravatingOffenceId(
       req.session,

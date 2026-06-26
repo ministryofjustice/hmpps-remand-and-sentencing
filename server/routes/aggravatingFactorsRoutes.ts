@@ -20,6 +20,7 @@ import AggravatingFactorsJourneyUrls from './data/AggravatingFactorsJourneyUrls'
 import AggravatingFactorsService from '../services/aggravatingFactorsService'
 import DocumentManagementService from '../services/documentManagementService'
 import CourtRegisterService from '../services/courtRegisterService'
+import RefDataService from '../services/refDataService'
 
 export default class AggravatingFactorsRoutes extends BaseRoutes {
   constructor(
@@ -31,6 +32,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     documentManagementService: DocumentManagementService,
     courtRegisterService: CourtRegisterService,
     private readonly aggravatingFactorsService: AggravatingFactorsService,
+    private readonly refDataService: RefDataService,
   ) {
     super(
       courtAppearanceService,
@@ -259,7 +261,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
 
     const { terrorRelated, foreignPowerRelated, aggravatingFactors } = offence || {}
 
-    const aggravatingFactorsOptions = await this.remandAndSentencingService.getAllAggravatingFactors(req.user.username)
+    const aggravatingFactorsOptions = await this.refDataService.getAllAggravatingFactors(req.user.username)
 
     /**
      * TEMPORARY COMPATIBILITY LOGIC
@@ -318,12 +320,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     const isEditing = req.query.isEditing === 'true'
     const returnTo = (req.query.returnTo as string) || undefined
 
-    // Always normalise input to array
-    let selected = normaliseToArray(req.body.aggravatedFactors)
-
-    // Deduplicate using Set
-    const selectedSet = new Set<string>(selected)
-    selected = Array.from(selectedSet)
+    const selected = Array.from(new Set(normaliseToArray(req.body.aggravatedFactors)))
 
     const selectWhichAggravatingFactorsForm = trimForm<SelectWhichAggravatingFactorsForm>({
       aggravatedFactors: selected,
@@ -360,36 +357,12 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       return res.redirect(redirectUrl)
     }
 
-    const aggravatingFactorsOptions = await this.remandAndSentencingService.getAllAggravatingFactors(req.user.username)
+    const aggravatingFactorsOptions = await this.refDataService.getAllAggravatingFactors(req.user.username)
 
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
 
     if (offence) {
-      /**
-       * TEMPORARY COMPATIBILITY LOGIC
-       * -----------------------------------------
-       * We currently support:
-       *  - legacy booleans (terrorRelated, foreignPowerRelated)
-       *  - new aggravatingFactors join table
-       *
-       * IMPORTANT:
-       * - OATC and OAFPC must be stored in BOTH:
-       *    1. boolean fields (for legacy support)
-       *    2. aggravatingFactors list (for new model)
-       *
-       * This ensures smooth migration when booleans are removed.
-       *
-       * TODO:
-       * - Remove booleans once migration script is complete
-       * - Remove special handling for OATC / OAFPC
-       */
-
-      // Derive booleans
-      offence.terrorRelated = selectedSet.has('OATC')
-      offence.foreignPowerRelated = selectedSet.has('OAFPC')
-
-      // Store ALL selected codes in list (INCLUDING OATC / OAFPC)
-      offence.aggravatingFactors = (aggravatingFactorsOptions || []).filter(opt => selectedSet.has(opt.code))
+      this.offenceService.updateOffenceAggravatingFactors(offence, selected, aggravatingFactorsOptions)
 
       this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
     }
@@ -408,6 +381,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
 
       this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
       this.aggravatingFactorsService.clearAggravatingFactors(req.session)
+
       return res.redirect(
         AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
           nomsId,

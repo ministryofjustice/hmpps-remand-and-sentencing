@@ -675,7 +675,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
   }
 
   async getAllAggravatingFactors(username: string, statuses: string = 'ACTIVE'): Promise<AggravatingFactor[]> {
-    return (await this.get(
+    return this.get(
       {
         path: `/aggravating-factors/status`,
         query: {
@@ -683,6 +683,6 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<AggravatingFactor[]>
+    )
   }
 }

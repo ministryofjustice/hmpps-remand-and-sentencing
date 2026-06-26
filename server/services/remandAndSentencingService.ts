@@ -368,8 +368,4 @@ export default class RemandAndSentencingService {
   async getSentencedCharges(courtCaseUuid: string, username: string): Promise<SentencedCharges> {
     return this.remandAndSentencingApiClient.getSentencedCharges(courtCaseUuid, username)
   }
-
-  async getAllAggravatingFactors(username: string): Promise<AggravatingFactor[]> {
-    return this.remandAndSentencingApiClient.getAllAggravatingFactors(username)
-  }
 }

@@ -35,7 +35,7 @@ import ManageOffencesService from './manageOffencesService'
 import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import type { Offence as ApiOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
-import { OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { AggravatingFactor, OffenceOutcome } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import RemandAndSentencingService from './remandAndSentencingService'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import RefDataService from './refDataService'
@@ -1439,17 +1439,20 @@ export default class OffenceService {
     })
   }
 
-  setTerrorRelated(
-    session: Partial<SessionData>,
-    nomsId: string,
-    courtCaseReference: string,
-    chargeUuid: string,
-    isTerrorRelated: boolean,
-  ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getOffence(session.offences, id)
-    offence.terrorRelated = isTerrorRelated
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
+  updateOffenceAggravatingFactors(
+    offence: Offence,
+    selectedCodes: string[],
+    aggravatingFactorsOptions: AggravatingFactor[],
+  ): Offence {
+    const selectedSet = new Set(selectedCodes)
+
+    return {
+      ...offence,
+
+      terrorRelated: selectedSet.has('OATC'),
+      foreignPowerRelated: selectedSet.has('OAFPC'),
+
+      aggravatingFactors: (aggravatingFactorsOptions || []).filter(opt => selectedSet.has(opt.code)),
+    }
   }
 }

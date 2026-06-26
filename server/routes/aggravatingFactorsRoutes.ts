@@ -326,14 +326,16 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       aggravatedFactors: selected,
     } as unknown as Record<string, unknown>)
 
-    const errors = this.aggravatingFactorsService.setAggravatingFactors(
+    const errors = await this.aggravatingFactorsService.setAggravatingFactors(
       req.session,
       nomsId,
       courtCaseReference,
       selectWhichAggravatingFactorsForm,
       chargeUuid,
       isEditing,
+      selected,
       this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      req.user.username,
     )
 
     if (errors.length > 0) {
@@ -356,20 +358,6 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
 
       return res.redirect(redirectUrl)
     }
-
-    const aggravatingFactorsOptions = await this.refDataService.getAllAggravatingFactors(req.user.username)
-
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-
-    if (offence)
-      this.offenceService.updateOffenceAggravatingFactors(
-        offence,
-        selected,
-        aggravatingFactorsOptions,
-        nomsId,
-        req.session,
-        courtCaseReference,
-      )
 
     const nextChargeUuid = this.aggravatingFactorsService.getNextUnprocessedAggravatingOffenceId(
       req.session,

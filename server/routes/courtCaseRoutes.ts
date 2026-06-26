@@ -1523,20 +1523,14 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public getTaskList: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
+    const urlParameters = req.params as unknown as UrlParameters
     const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
     const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
       req.session,
       nomsId,
       appearanceReference,
     )
-    let caseReferenceSet = !!courtAppearance.caseReferenceNumber
-    if (!res.locals.isAddCourtCase && !caseReferenceSet) {
-      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-        req.user.username,
-        courtCaseReference,
-      )
-      caseReferenceSet = !!latestCourtAppearance.courtCaseReference
-    }
+    const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
     let appearanceOutcome
     if (warrantType !== 'SENTENCING' && courtAppearance.appearanceOutcomeUuid) {
       appearanceOutcome = await this.refDataService.getAppearanceOutcomeByUuid(

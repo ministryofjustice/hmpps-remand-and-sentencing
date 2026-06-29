@@ -47,6 +47,7 @@ context('Delete aggravating factor', () => {
         outcomeType: 'SENTENCING',
       },
     ])
+    cy.task('stubGetAllAggravatingFactors')
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
     cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
     cy.task('stubGetCourtsByIds')
@@ -89,9 +90,9 @@ context('Delete aggravating factor', () => {
     selectOffenceWithAggravatingFactorsPage.continueButton().click()
     selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
     // select at least one factor for the first offence and continue until check answers
-    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
-    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
   })

@@ -6,9 +6,13 @@ import type {
 } from 'forms'
 import validate from '../validation/validation'
 import OffenceService from './offenceService'
+import RefDataService from './refDataService'
 
 export default class AggravatingFactorsService {
-  constructor(private readonly offenceService: OffenceService) {}
+  constructor(
+    private readonly offenceService: OffenceService,
+    private readonly refDataService: RefDataService,
+  ) {}
 
   setAggravatingOffenceIds(
     session: Partial<SessionData>,
@@ -71,17 +75,26 @@ export default class AggravatingFactorsService {
     if (idx !== -1) session.aggravatingChargeUuids[idx].processed = true
   }
 
-  setAggravatingFactors(
+  async setAggravatingFactors(
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     form: SelectWhichAggravatingFactorsForm,
     chargeUuid: string,
     isEditing: boolean,
+    selected: string[],
     isEditJourney: boolean,
+    username: string,
   ) {
     if (isEditJourney || isEditing) {
-      return this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
+      return this.updateOffenceWithAggravatingFactors(
+        session,
+        nomsId,
+        courtCaseReference,
+        chargeUuid,
+        selected,
+        username,
+      )
     }
 
     const errors = validate(
@@ -93,23 +106,34 @@ export default class AggravatingFactorsService {
     )
 
     if (errors.length === 0) {
-      this.updateOffenceWithAggravatingFactors(session, nomsId, courtCaseReference, chargeUuid, form)
+      await this.updateOffenceWithAggravatingFactors(
+        session,
+        nomsId,
+        courtCaseReference,
+        chargeUuid,
+        selected,
+        username,
+      )
     }
 
     return errors
   }
 
-  private updateOffenceWithAggravatingFactors(
+  private async updateOffenceWithAggravatingFactors(
     session: Partial<SessionData>,
     nomsId: string,
     courtCaseReference: string,
     chargeUuid: string,
-    form: SelectWhichAggravatingFactorsForm,
+    selected: string[],
+    username: string,
   ) {
     const offence = this.offenceService.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
 
-    offence.terrorRelated = form.aggravatedFactors?.includes('terrorRelated') ? true : null
-    offence.foreignPowerRelated = form.aggravatedFactors?.includes('foreignPowerRelated') ? true : null
+    offence.terrorRelated = selected.includes('OATC') ? true : null
+    offence.foreignPowerRelated = selected.includes('OAFPC') ? true : null
+
+    const aggravatingFactorsOptions = await this.refDataService.getAllAggravatingFactors(username)
+    offence.aggravatingFactors = (aggravatingFactorsOptions || []).filter(opt => selected.includes(opt.code))
 
     this.offenceService.setSessionOffence(session, nomsId, courtCaseReference, offence)
     this.markAggravatingOffenceProcessed(session, chargeUuid)

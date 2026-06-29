@@ -49,6 +49,8 @@ context('Select which aggravating factors apply Page', () => {
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
     cy.task('stubGetSentencesToChainTo', { beforeOrOnAppearanceDate: '2023-05-14' })
     cy.task('stubGetCourtsByIds')
+    cy.task('stubGetAllAggravatingFactors')
+
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
     cy.task('stubHasLoopInChain')
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
@@ -98,26 +100,26 @@ context('Select which aggravating factors apply Page', () => {
   })
 
   it('once a aggravating factor is selected should move on to the next offence', () => {
-    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
   })
 
   it('once all aggravating factors are processed should move on to the check answers page', () => {
-    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
-    selectWhichAggravatingFactorsApplyPage.foreignPowerRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('OAFPC').click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
   })
 
   it('page should not show error during edit mode', () => {
-    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-    selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
     selectWhichAggravatingFactorsApplyPage.continueButton().click()
     const aggravatingFactorsCheckAnswersPage = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
     cy.get('[data-qa^="edit-aggravating-factor-link-"]').each($el => {
@@ -127,10 +129,17 @@ context('Select which aggravating factors apply Page', () => {
         const chargeUuid = match[1]
         aggravatingFactorsCheckAnswersPage.editAggravatingFactorLink(chargeUuid).click()
         selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-        selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+        selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
         selectWhichAggravatingFactorsApplyPage.continueButton().click()
       }
     })
     Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
+  })
+
+  it('should allow selecting a non-boolean aggravating factor', () => {
+    selectWhichAggravatingFactorsApplyPage.checkboxByValue('RA').click()
+
+    selectWhichAggravatingFactorsApplyPage.continueButton().click()
+    Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
   })
 })

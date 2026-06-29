@@ -279,28 +279,56 @@ offenceDateRow,
       }
     })) %}
   {% endif %}
-  {% set aggravatingFactors = [] %}
-  {% if offence.terrorRelated %}
-    {% set aggravatingFactors = aggravatingFactors.concat([
-      "Offences aggravated by a terrorist connection"
+  {#
+    TEMPORARY COMPATIBILITY LOGIC
+    -----------------------------------------
+    We currently support:
+    - legacy booleans (terrorRelated, foreignPowerRelated)
+    - new aggravatingFactors join table
+
+    IMPORTANT:
+    - OATC / OAFPC may exist in both places
+    - We must NOT duplicate them in UI
+
+    TODO:
+    - Remove boolean handling after migration completes
+    - Render only from offence.aggravatingFactors
+  #}
+
+  {% set aggravatingFactorsList = [] %}
+  {% set seenCodes = [] %}
+
+  {# 1. Add from join table first (source of truth) #}
+  {% if offence.aggravatingFactors %}
+    {% for factor in offence.aggravatingFactors %}
+      {% if factor.code not in seenCodes %}
+        {% set seenCodes = seenCodes.concat([factor.code]) %}
+        {% set aggravatingFactorsList = aggravatingFactorsList.concat([factor.description or factor.title]) %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  {# 2. Backfill from booleans if missing (temporary safety) #}
+  {% if offence.terrorRelated and 'OATC' not in seenCodes %}
+    {% set aggravatingFactorsList = aggravatingFactorsList.concat([
+      "Offence aggravated by a terrorist connection"
     ]) %}
   {% endif %}
 
-  {% if offence.foreignPowerRelated %}
-    {% set aggravatingFactors = aggravatingFactors.concat([
-      "Offences aggravated by foreign power condition being met"
+  {% if offence.foreignPowerRelated and 'OAFPC' not in seenCodes %}
+    {% set aggravatingFactorsList = aggravatingFactorsList.concat([
+      "Offence aggravated by foreign power condition being met"
     ]) %}
   {% endif %}
 
-  {% if aggravatingFactors and aggravatingFactors.length > 0 %}
+  {# 3. Render #}
+  {% if aggravatingFactorsList.length > 0 %}
     {% set aggHtml %}
-         <ul class="govuk-list">
-            {% for factor in aggravatingFactors %}
-                <li>
-                    {{ factor }}
-                </li>
-            {% endfor %}
-        </ul>
+      <ul class="govuk-list">
+        {% for factor in aggravatingFactorsList %}
+          <li>{{ factor }}</li>
+        {% endfor %}
+      </ul>
     {% endset %}
     {% set aggravatingFactorsRow = {
       key: { text: "Aggravating factors" },

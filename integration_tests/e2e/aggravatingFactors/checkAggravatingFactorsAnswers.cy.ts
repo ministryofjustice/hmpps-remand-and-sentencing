@@ -52,6 +52,7 @@ context('Check aggravating factors answers Page', () => {
     cy.task('stubGetCourtsByIds')
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
     cy.task('stubHasLoopInChain')
+    cy.task('stubGetAllAggravatingFactors')
     const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
     receivedCustodialSentencePage.radioLabelSelector('true').click()
     receivedCustodialSentencePage.continueButton().click()
@@ -90,11 +91,11 @@ context('Check aggravating factors answers Page', () => {
       selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(1).click()
       selectOffenceWithAggravatingFactorsPage.continueButton().click()
       const selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-      selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
-      selectWhichAggravatingFactorsApplyPage.foreignPowerRelatedCheckbox().click()
+      selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
+      selectWhichAggravatingFactorsApplyPage.checkboxByValue('OAFPC').click()
       selectWhichAggravatingFactorsApplyPage.continueButton().click()
       Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-      selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+      selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
       selectWhichAggravatingFactorsApplyPage.continueButton().click()
       checkAnswersPage = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
     })
@@ -127,8 +128,8 @@ context('Check aggravating factors answers Page', () => {
       // Edit the first aggravated offence and assert the previously selected values are checked
       cy.get('[data-qa^="edit-aggravating-factor-link-"]').eq(0).click()
       const selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-      selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().should('be.checked')
-      selectWhichAggravatingFactorsApplyPage.foreignPowerRelatedCheckbox().should('be.checked')
+      selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').should('be.checked')
+      selectWhichAggravatingFactorsApplyPage.checkboxByValue('OAFPC').should('be.checked')
       // continue back to the check answers page
       selectWhichAggravatingFactorsApplyPage.continueButton().click()
       Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
@@ -148,11 +149,11 @@ context('Check aggravating factors answers Page', () => {
             const selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
 
             // sanity: first offence should have both checked initially (as per setup)
-            selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().should('be.checked')
-            selectWhichAggravatingFactorsApplyPage.foreignPowerRelatedCheckbox().should('be.checked')
+            selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').should('be.checked')
+            selectWhichAggravatingFactorsApplyPage.checkboxByValue('OAFPC').should('be.checked')
 
             // change: uncheck terror related, keep foreign power checked
-            selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
+            selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
             selectWhichAggravatingFactorsApplyPage.continueButton().click()
 
             // Back on check answers page — verify the change persisted by re-opening the first edit link
@@ -172,8 +173,8 @@ context('Check aggravating factors answers Page', () => {
             const selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
 
             // sanity: first offence should have both checked initially (as per setup)
-            selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().should('not.be.checked')
-            selectWhichAggravatingFactorsApplyPage.foreignPowerRelatedCheckbox().should('be.checked')
+            selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').should('not.be.checked')
+            selectWhichAggravatingFactorsApplyPage.checkboxByValue('OAFPC').should('be.checked')
           }
         })
     })
@@ -185,8 +186,8 @@ context('Check aggravating factors answers Page', () => {
       selectOffenceWithAggravatingFactorsPage.aggravatedOffenceCheckbox(0).click()
       selectOffenceWithAggravatingFactorsPage.continueButton().click()
       const selectWhichAggravatingFactorsApplyPage = Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-      selectWhichAggravatingFactorsApplyPage.terrorRelatedCheckbox().click()
-      selectWhichAggravatingFactorsApplyPage.foreignPowerRelatedCheckbox().click()
+      selectWhichAggravatingFactorsApplyPage.checkboxByValue('OATC').click()
+      selectWhichAggravatingFactorsApplyPage.checkboxByValue('OAFPC').click()
       selectWhichAggravatingFactorsApplyPage.continueButton().click()
       checkAnswersPage = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
       checkAnswersPage.selectAnotherAggravatingFactor().click()

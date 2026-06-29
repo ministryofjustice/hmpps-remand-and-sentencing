@@ -1,5 +1,6 @@
 import { Dayjs } from 'dayjs'
 import {
+  AggravatingFactor,
   AllSentenceTypes,
   AppearanceOutcome,
   AppearanceType,
@@ -246,5 +247,9 @@ export default class RefDataService {
 
   async getAllSentenceTypeChargeOutcomes(username: string): Promise<SentenceTypeChargeOutcomes> {
     return this.remandAndSentencingApiClient.getAllSentenceTypeChargeOutcomes(username)
+  }
+
+  async getAllAggravatingFactors(username: string): Promise<AggravatingFactor[]> {
+    return this.remandAndSentencingApiClient.getAllAggravatingFactors(username)
   }
 }

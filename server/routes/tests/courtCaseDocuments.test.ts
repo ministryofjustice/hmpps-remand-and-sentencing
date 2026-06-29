@@ -77,6 +77,7 @@ describe('GET Court case documents', () => {
               },
             ],
             source: 'DPS',
+            deleteStatus: 'SUPPORTED',
           },
           appearanceDocumentsByType: {
             HMCTS_WARRANT: [

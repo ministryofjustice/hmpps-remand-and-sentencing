@@ -1438,18 +1438,4 @@ export default class OffenceService {
       this.setSessionOffence(session, nomsId, courtCaseReference, offence)
     })
   }
-
-  setTerrorRelated(
-    session: Partial<SessionData>,
-    nomsId: string,
-    courtCaseReference: string,
-    chargeUuid: string,
-    isTerrorRelated: boolean,
-  ) {
-    const id = this.getOffenceId(nomsId, courtCaseReference, chargeUuid)
-    const offence = this.getOffence(session.offences, id)
-    offence.terrorRelated = isTerrorRelated
-    // eslint-disable-next-line no-param-reassign
-    session.offences[id] = offence
-  }
 }

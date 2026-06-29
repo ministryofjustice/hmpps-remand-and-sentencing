@@ -124,6 +124,7 @@ export default function routes(services: Services): Router {
     services.documentManagementService,
     services.courtRegisterService,
     services.aggravatingFactorsService,
+    services.refDataService,
   )
 
   const appealsRoutes = new AppealsRoutes(

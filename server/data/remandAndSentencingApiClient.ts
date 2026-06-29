@@ -1,6 +1,7 @@
 import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import {
+  AggravatingFactor,
   AllSentenceTypes,
   AppearanceOutcome,
   AppearanceType,
@@ -677,6 +678,18 @@ export default class RemandAndSentencingApiClient extends RestClient {
     return this.get(
       {
         path: `/hmcts-court-data/${hmctsHearingId}/appearance`,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getAllAggravatingFactors(username: string, statuses: string = 'ACTIVE'): Promise<AggravatingFactor[]> {
+    return this.get(
+      {
+        path: `/aggravating-factors/status`,
+        query: {
+          statuses,
+        },
       },
       asSystem(username),
     )

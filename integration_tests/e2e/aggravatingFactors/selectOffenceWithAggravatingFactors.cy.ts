@@ -57,6 +57,7 @@ context('Select offence with aggravating factors Page', () => {
       cy.task('stubGetCourtsByIds')
       cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/received-custodial-sentence')
       cy.task('stubHasLoopInChain')
+      cy.task('stubGetAllAggravatingFactors')
       const receivedCustodialSentencePage = Page.verifyOnPage(ReceivedCustodialSentencePage)
       receivedCustodialSentencePage.radioLabelSelector('true').click()
       receivedCustodialSentencePage.continueButton().click()

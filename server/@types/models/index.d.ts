@@ -47,6 +47,7 @@ declare module 'models' {
     outcomeUuid?: string
     chargeUuid: string
     sentence?: Sentence
+    aggravatingFactors?: AggravatingFactor[]
     terrorRelated?: boolean
     foreignPowerRelated?: boolean
     legacyData?: Record<string, never>

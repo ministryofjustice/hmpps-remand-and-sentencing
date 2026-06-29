@@ -45,7 +45,7 @@ export const services = () => {
   const courtCasesReleaseDatesService = new CourtCasesReleaseDatesService(data.courtCasesReleaseDatesApiClient)
   const offenceService = new OffenceService(manageOffencesService, remandAndSentencingService, refDataService)
   const unknownRecallSentenceService = new UnknownRecallSentenceService()
-  const aggravatingFactorsService = new AggravatingFactorsService(offenceService)
+  const aggravatingFactorsService = new AggravatingFactorsService(offenceService, refDataService)
 
   return {
     applicationInfo: data.applicationInfo,

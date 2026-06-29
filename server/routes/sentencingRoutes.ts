@@ -290,6 +290,7 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceTypePromise,
       hasSentenceAfterOnOtherCourtAppearancePromise,
     ])
+
     const [custodialOffences, nonCustodialOffences] = offences
       .map((offence, index) => ({ ...offence, index })) // Add an index to each offence
       .reduce(
@@ -305,6 +306,7 @@ export default class SentencingRoutes extends BaseRoutes {
         },
         [[], []] as [typeof offences, typeof offences],
       )
+
     const allSentenceUuids = hearing.offences
       .map(offence => offence.sentence?.sentenceUuid)
       .filter(sentenceUuid => sentenceUuid)

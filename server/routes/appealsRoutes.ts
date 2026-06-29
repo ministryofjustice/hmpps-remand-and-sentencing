@@ -85,14 +85,7 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters.nomsId,
       urlParameters.appearanceReference,
     )
-    let caseReferenceSet = !!courtAppearance.caseReferenceNumber
-    if (!caseReferenceSet) {
-      const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
-        req.user.username,
-        urlParameters.courtCaseReference,
-      )
-      caseReferenceSet = !!latestCourtAppearance.courtCaseReference
-    }
+    const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
     return res.render('pages/appeals/task-list', {
       ...urlParameters,
       model: new AppealsTaskListModel(urlParameters, courtAppearance, caseReferenceSet),

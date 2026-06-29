@@ -672,4 +672,13 @@ export default class RemandAndSentencingApiClient extends RestClient {
       asSystem(username),
     )
   }
+
+  async getHmctsCourtData(hmctsHearingId: string, username: string): Promise<PageCourtCaseAppearance> {
+    return this.get(
+      {
+        path: `/hmcts-court-data/${hmctsHearingId}/appearance`,
+      },
+      asSystem(username),
+    )
+  }
 }

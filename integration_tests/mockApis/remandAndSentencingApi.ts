@@ -49,6 +49,32 @@ export default {
     })
   },
 
+  stubCreateCourtCaseWithDocuments: ({
+    nextAppearanceDate = '',
+  }: {
+    nextAppearanceDate: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPattern:
+          '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
+        bodyPatterns: [
+          {
+            equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"courtCaseUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-12-15", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextAppearanceDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI", "courtAppearanceSubtypeUuid": "3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73"}, "charges": [{"chargeUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "createChargeOrder": 0}], "warrantType": "NON_SENTENCING", "documents": [{"documentUUID" : "doc-uuid-1", "fileName" :  "court-document.pdf", "uploadedAt" : "\${json-unit.any-string}", "uploadedBy" : "\${json-unit.any-string}"}]}]}`,
+          },
+        ],
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
+        },
+      },
+    })
+  },
+
   stubSearchCourtCases: ({ sortBy = 'STATUS_APPEARANCE_DATE_DESC' }: { sortBy: string }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -4677,6 +4703,38 @@ export default {
               },
             },
           ],
+        },
+      },
+    })
+  },
+
+  stubHmctsCourtData: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/hmcts-court-data/abf395c2-8e3c-419c-bd9c-71d544e5d811/appearance',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
+          outcome: null,
+          courtCode: null,
+          courtCaseReference: 'C894623',
+          criminalAppealOfficeReference: null,
+          appearanceDate: '2023-12-15',
+          warrantType: 'NON_SENTENCING',
+          nextCourtAppearance: null,
+          documents: [
+            {
+              documentUUID: 'doc-uuid-1',
+              fileName: 'court-document.pdf',
+              uploadedAt: '2024-06-01T10:00:00Z',
+              uploadedBy: 'user1',
+            },
+          ],
+          charges: [],
         },
       },
     })

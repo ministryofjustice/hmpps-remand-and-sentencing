@@ -131,5 +131,6 @@ declare module 'models' {
     appearanceReference: string
     chargeUuid?: string
     documentUuid?: string
+    hmctsHearingId?: string
   }
 }

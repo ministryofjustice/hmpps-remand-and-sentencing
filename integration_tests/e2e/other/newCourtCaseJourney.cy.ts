@@ -34,8 +34,7 @@ context('New Court Case journey', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})
-    cy.task('stubCreateCourtCase', { nextAppearanceDate: futureDate.format('YYYY-MM-DD') })
-    cy.task('stubCreateSentenceCourtCase')
+    cy.task('stubCreateCourtCase')
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubUploadWarrant')
@@ -263,7 +262,10 @@ context('New Court Case journey', () => {
       ])
     courtCaseTaskListPage.continueButton().click()
 
-    cy.task('verifyCreateCourtCaseRequest', { nextAppearanceDate: futureDate.format('YYYY-MM-DD') }).should('equal', 1)
+    cy.task('verifyCreateNonSentenceCourtCaseRequest', { nextAppearanceDate: futureDate.format('YYYY-MM-DD') }).should(
+      'equal',
+      1,
+    )
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 

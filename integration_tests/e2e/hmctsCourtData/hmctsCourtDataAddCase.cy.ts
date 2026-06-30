@@ -26,25 +26,21 @@ context('New Court Case from hmcts data journey', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.task('stubGetOffenceByCode', {})
-    cy.task('stubCreateSentenceCourtCase')
+    cy.task('stubCreateCourtCase')
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
-    // cy.task('stubUploadWarrant')
     cy.task('stubGetCourtById', {})
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetAllChargeOutcomes')
-    // cy.task('stubOverallSentenceLengthFail')
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetAllAppearanceSubtypes')
-    // cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-05-12' })
     cy.task('stubHmctsCourtData')
-    cy.task('stubCreateCourtCaseWithDocuments', { nextAppearanceDate: futureDate.format('YYYY-MM-DD') })
+    cy.task('stubCreateCourtCase')
     cy.signIn()
     cy.visit(`/person/A1234AB/review-new-documents/${remandWarrantHearingId}/landing`)
   })
 
-  // TODO ask Carlo about approach in this test with subbing create court case and also the verify.
   it('fill in remand journey from hmcts court data', () => {
     cy.task('stubGetChargeOutcomesByIds', [
       {
@@ -253,6 +249,9 @@ context('New Court Case from hmcts data journey', () => {
       ])
     courtCaseTaskListPage.continueButton().click()
 
+    cy.task('verifyNonSentenceCreateCourtCaseRequestFromHmctsData', {
+      nextAppearanceDate: futureDate.format('YYYY-MM-DD'),
+    }).should('equal', 1)
     Page.verifyOnPageTitle(CourtCaseConfirmationPage, 'Court case')
   })
 })

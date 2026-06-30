@@ -3,67 +3,12 @@ import { stubFor, verifyRequest } from './wiremock'
 import REPLACEMENT_OUTCOME_UUID from '../../server/utils/constants'
 
 export default {
-  stubCreateCourtCase: ({ nextAppearanceDate = '' }: { nextAppearanceDate: string }): SuperAgentRequest => {
+  stubCreateCourtCase: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'PUT',
         urlPattern:
           '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
-        bodyPatterns: [
-          {
-            equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"courtCaseUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "T12345678", "appearanceDate": "2023-05-13", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextAppearanceDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI", "courtAppearanceSubtypeUuid": "3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73"}, "charges": [{"chargeUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "createChargeOrder": 0}], "warrantType": "NON_SENTENCING"}]}`,
-          },
-        ],
-      },
-      response: {
-        status: 201,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
-        },
-      },
-    })
-  },
-
-  stubCreateSentenceCourtCase: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'PUT',
-        urlPattern:
-          '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
-        bodyPatterns: [
-          {
-            equalToJson:
-              // eslint-disable-next-line no-template-curly-in-string
-              '{ "prisonerId" : "A1234AB", "appearances" : [ { "courtCaseUuid": "${json-unit.any-string}", "appearanceUuid": "${json-unit.any-string}", "outcomeUuid" : "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode" : "ACCRYC", "courtCaseReference" : "T12345678", "appearanceDate" : "2023-05-12", "charges" : [ { "chargeUuid": "${json-unit.any-string}", "appearanceUuid": "${json-unit.any-string}", "offenceCode" : "PS90037", "offenceStartDate" : "2023-05-10", "outcomeUuid" : "f17328cf-ceaa-43c2-930a-26cf74480e18", "prisonId" : "MDI", "createChargeOrder": 0, "sentence" : { "sentenceUuid": "${json-unit.any-string}", "chargeNumber" : "1", "periodLengths" : [ { "periodLengthUuid": "${json-unit.any-string}", "days" : 4, "weeks" : 3, "months" : 2, "years" : 1, "periodOrder" : "years,months,weeks,days", "type" : "SENTENCE_LENGTH", "prisonId" : "MDI" } ], "sentenceServeType" : "FORTHWITH", "sentenceTypeId" : "467e2fa8-fce1-41a4-8110-b378c727eed3", "prisonId" : "MDI", "convictionDate" : "2023-05-12" } } ], "warrantType" : "SENTENCING", "prisonId" : "MDI", "overallSentenceLength" : { "periodLengthUuid": "${json-unit.any-string}", "days" : 2, "weeks" : 3, "months" : 5, "years" : 4, "periodOrder" : "years,months,weeks,days", "type" : "OVERALL_SENTENCE_LENGTH", "prisonId" : "MDI" }, "overallConvictionDate" : "2023-05-12" } ], "prisonId" : "MDI" }',
-          },
-        ],
-      },
-      response: {
-        status: 201,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
-        },
-      },
-    })
-  },
-
-  stubCreateCourtCaseWithDocuments: ({
-    nextAppearanceDate = '',
-  }: {
-    nextAppearanceDate: string
-  }): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'PUT',
-        urlPattern:
-          '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
-        bodyPatterns: [
-          {
-            equalToJson: `{"prisonerId": "A1234AB", "prisonId": "MDI", "appearances": [{"courtCaseUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-12-15", "prisonId": "MDI", "nextCourtAppearance": {"appearanceDate": "${nextAppearanceDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "prisonId": "MDI", "courtAppearanceSubtypeUuid": "3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73"}, "charges": [{"chargeUuid": "\${json-unit.any-string}", "appearanceUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "createChargeOrder": 0}], "warrantType": "NON_SENTENCING", "documents": [{"documentUUID" : "doc-uuid-1", "fileName" :  "court-document.pdf", "uploadedAt" : "\${json-unit.any-string}", "uploadedBy" : "\${json-unit.any-string}"}]}]}`,
-          },
-        ],
       },
       response: {
         status: 201,
@@ -834,7 +779,11 @@ export default {
     })
   },
 
-  verifyCreateCourtCaseRequest: ({ nextAppearanceDate = '' }: { nextAppearanceDate: string }): Promise<number> => {
+  verifyCreateNonSentenceCourtCaseRequest: ({
+    nextAppearanceDate = '',
+  }: {
+    nextAppearanceDate: string
+  }): Promise<number> => {
     return verifyRequest({
       requestUrlPattern:
         '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
@@ -946,6 +895,64 @@ export default {
               prisonId: 'MDI',
             },
             overallConvictionDate: '2023-05-12',
+          },
+        ],
+        prisonId: 'MDI',
+      },
+    })
+  },
+
+  verifyNonSentenceCreateCourtCaseRequestFromHmctsData: ({
+    nextAppearanceDate = '',
+  }: {
+    nextAppearanceDate: string
+  }): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern:
+        '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
+      method: 'PUT',
+      body: {
+        prisonerId: 'A1234AB',
+        appearances: [
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            courtCaseUuid: '${json-unit.any-string}',
+            // eslint-disable-next-line no-template-curly-in-string
+            appearanceUuid: '${json-unit.any-string}',
+            outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
+            courtCode: 'ACCRYC',
+            courtCaseReference: 'C894623',
+            appearanceDate: '2023-12-15',
+            charges: [
+              {
+                // eslint-disable-next-line no-template-curly-in-string
+                chargeUuid: '${json-unit.any-string}',
+                // eslint-disable-next-line no-template-curly-in-string
+                appearanceUuid: '${json-unit.any-string}',
+                offenceCode: 'PS90037',
+                outcomeUuid: '85ffc6bf-6a2c-4f2b-8db8-5b466b602537',
+                prisonId: 'MDI',
+                createChargeOrder: 0,
+                offenceStartDate: '2023-05-10',
+              },
+            ],
+            warrantType: 'NON_SENTENCING',
+            documents: [
+              {
+                documentUUID: 'doc-uuid-1',
+                fileName: 'court-document.pdf',
+                uploadedAt: '2024-06-01T10:00:00Z',
+                uploadedBy: 'user1',
+              },
+            ],
+            prisonId: 'MDI',
+            nextCourtAppearance: {
+              appearanceDate: nextAppearanceDate,
+              courtCode: 'ACCRYC',
+              appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
+              prisonId: 'MDI',
+              courtAppearanceSubtypeUuid: '3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73',
+            },
           },
         ],
         prisonId: 'MDI',

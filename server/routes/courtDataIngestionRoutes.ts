@@ -35,11 +35,6 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
   public landing: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { hmctsHearingId, nomsId } = urlParameters
-    /*
-http://localhost:3000/person/A8433EC/f303e0d4-a330-410a-9fdd-b2c2ddba5781/landing
-Hearing ID: f303e0d4-a330-410a-9fdd-b2c2ddba5781
-PErson ID: A8433EC
-*/
     const appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, req.user.username)
     return res.render('pages/courtDataIngestion/start', {
       appearance,

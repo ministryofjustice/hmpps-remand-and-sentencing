@@ -17,6 +17,7 @@ import sentenceTypeDataAdminRoutes from './sentenceTypeDataAdminRoutes'
 import ReplicateChargeRoutes from './replicateChargeRoutes'
 import AggravatingFactorsRoutes from './aggravatingFactorsRoutes'
 import AppealsRoutes from './appealsRoutes'
+import CourtDataIngestionRoutes from './courtDataIngestionRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -135,6 +136,16 @@ export default function routes(services: Services): Router {
     services.documentManagementService,
     services.courtRegisterService,
     services.refDataService,
+  )
+
+  const courtDataIngestionRoutes = new CourtDataIngestionRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
+    services.documentManagementService,
+    services.courtRegisterService,
   )
 
   router.get('/', async (req, res, next) => {
@@ -1129,6 +1140,9 @@ export default function routes(services: Services): Router {
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/cannot-delete-offence',
     appealsRoutes.getCannotDeleteOffence,
   )
+
+  router.get('/person/:nomsId/review-new-documents/:hmctsHearingId/landing', courtDataIngestionRoutes.landing)
+  router.get('/person/:nomsId/review-new-documents/:hmctsHearingId/start', courtDataIngestionRoutes.start)
 
   return router
 }

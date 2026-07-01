@@ -367,4 +367,8 @@ export default class RemandAndSentencingService {
   async getSentencedCharges(courtCaseUuid: string, username: string): Promise<SentencedCharges> {
     return this.remandAndSentencingApiClient.getSentencedCharges(courtCaseUuid, username)
   }
+
+  async getHmctsCourtData(hmctsHearingId: string, username: string): Promise<PageCourtCaseAppearance> {
+    return this.remandAndSentencingApiClient.getHmctsCourtData(hmctsHearingId, username)
+  }
 }

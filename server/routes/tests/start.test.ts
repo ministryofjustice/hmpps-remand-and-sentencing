@@ -66,6 +66,7 @@ const setupCourtCase = () => {
         allAppearancesHaveRecall: false,
         firstDayInCustodyWarrantType: 'NON_SENTENCING',
         canAppeal: false,
+        canBreach: false,
       },
     ],
     number: 0,

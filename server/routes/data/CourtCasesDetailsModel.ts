@@ -58,6 +58,10 @@ export default class CourtCasesDetailsModel {
 
   canAppeal: boolean
 
+  canBreach: boolean
+
+  canAddHearing: boolean
+
   constructor(pagedCourtCase: PagedCourtCase, courtMap: { [key: string]: string }) {
     let titleValue = courtMap[pagedCourtCase.latestCourtAppearance?.courtCode]
     if (pagedCourtCase.latestCourtAppearance?.caseReference) {
@@ -119,6 +123,10 @@ export default class CourtCasesDetailsModel {
     this.mergedToCase = pagedCourtCase.mergedToCase
     this.newAppearanceUuid =
       pagedCourtCase.latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid ?? crypto.randomUUID()
-    this.canAppeal = pagedCourtCase.canAppeal && config.featureToggles.appeals
+    this.canAppeal = pagedCourtCase.canAppeal && config.featureToggles.appeals && this.overallCaseStatus !== 'MERGED'
+    this.canBreach =
+      pagedCourtCase.canBreach && config.featureToggles.breachSupervision && this.overallCaseStatus !== 'MERGED'
+    this.canAddHearing =
+      !this.canAppeal && !this.canBreach && this.warrantType !== 'SENTENCING' && this.overallCaseStatus !== 'MERGED'
   }
 }

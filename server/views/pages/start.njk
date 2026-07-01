@@ -300,9 +300,18 @@
                             visuallyHiddenText: "Recalled"
                         }) %}
                         {% endif %}
-                        {% if courtCaseDetails.overallCaseStatus !== "MERGED" %}
-                            {% if courtCaseDetails.canAppeal %}
-                                {% set _ = actions.push({
+                        {% if courtCaseDetails.canBreach %}
+                            {% set _ = actions.push({
+                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/breach/new-journey",
+                                text: "Add breach",
+                                visuallyHiddenText: "Add breach",
+                                attributes: {
+                                        'data-qa': 'add-breach-link-' + courtCaseDetails.courtCaseUuid
+                                    }
+                            }) %}
+                        {% endif %}
+                        {% if courtCaseDetails.canAppeal %}
+                            {% set _ = actions.push({
                                 href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/appeals/new-journey",
                                 text: "Add appeal",
                                 visuallyHiddenText: "Add appeal",
@@ -310,16 +319,16 @@
                                 'data-qa': 'add-appeals-link-' + courtCaseDetails.courtCaseUuid
                                 }
                             }) %}
-                            {% elif courtCaseDetails.warrantType !== 'SENTENCING' %}
-                                {% set _ = actions.push({
-                                    href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/new-journey",
-                                    text: "Add hearing",
-                                    visuallyHiddenText: "Add hearing",
-                                    attributes: {
-                                    'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
-                                    }
-                                }) %}
-                            {% endif %}
+                        {% endif %}
+                        {% if courtCaseDetails.canAddHearing %}
+                            {% set _ = actions.push({
+                                href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/new-journey",
+                                text: "Add hearing",
+                                visuallyHiddenText: "Add hearing",
+                                attributes: {
+                                'data-qa': 'add-appearance-link-' + courtCaseDetails.courtCaseUuid
+                                }
+                            }) %}
                         {% endif %}
                         {{
                             govukSummaryList({

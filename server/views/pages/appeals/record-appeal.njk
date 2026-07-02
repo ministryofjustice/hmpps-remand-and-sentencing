@@ -48,7 +48,17 @@
         <span data-qa="appealedOffences">
             {% for offence in appealedOffences %}
                 {% set offenceId = 'offences.' + offence.index %}
-                {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors)) }}
+                {% set recordAppealHref = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference +"/appeals/offences/" + offence.chargeUuid + "/select-appeal-outcome" %}
+                {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
+                    listItems: {
+                        classes: 'govuk-!-margin-top-4',
+                        items: [
+                            {
+                                html: '<a href="' + recordAppealHref + '" data-qa="update-outcome-link-' + offence.chargeUuid + '">Update outcome</a>'
+                            }
+                        ]
+                    }
+                })) }}
             {% else %}
                 {{ govukInsetText({
                             text: "There are no offences with an appeal outcome recorded",

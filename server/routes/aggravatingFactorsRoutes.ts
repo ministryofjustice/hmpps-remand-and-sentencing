@@ -86,12 +86,13 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       .filter(entry => entry.processed)
       .map(entry => entry.chargeUuid)
 
+    const hasAggravatingFactors = (offence: Offence) => (offence.aggravatingFactors?.length ?? 0) > 0
+
     const offences = fromCheckAnswers
       ? orderedOffences.filter(
-          offence =>
-            !selectedChargeUuids.includes(offence.chargeUuid) && !offence.terrorRelated && !offence.foreignPowerRelated,
+          offence => !selectedChargeUuids.includes(offence.chargeUuid) && !hasAggravatingFactors(offence),
         )
-      : orderedOffences.filter(offence => !offence.terrorRelated && !offence.foreignPowerRelated)
+      : orderedOffences.filter(offence => !hasAggravatingFactors(offence))
 
     let backLink = JourneyUrls.taskList(
       nomsId,
@@ -256,38 +257,9 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     }
 
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-
     const offenceHint = await this.getOffenceHint(offence, req.user.username)
-
-    const { terrorRelated, foreignPowerRelated, aggravatingFactors } = offence || {}
-
     const aggravatingFactorsOptions = await this.refDataService.getAllAggravatingFactors(req.user.username)
-
-    /**
-     * TEMPORARY COMPATIBILITY LOGIC
-     * -----------------------------------------
-     * We currently support BOTH:
-     *  - legacy booleans (terrorRelated, foreignPowerRelated)
-     *  - new aggravatingFactors join table
-     *
-     * These booleans will be removed after:
-     *  - migration script moves existing data into join table
-     *  - API fully supports list-based AFs
-     *
-     * TODO: Remove this mapping and rely ONLY on aggravatingFactors list
-     */
-    const selectedCodesSet = new Set<string>()
-
-    if (terrorRelated) selectedCodesSet.add('OATC')
-    if (foreignPowerRelated) selectedCodesSet.add('OAFPC')
-
-    if (aggravatingFactors?.length) {
-      aggravatingFactors.forEach(f => {
-        if (f?.code) selectedCodesSet.add(f.code)
-      })
-    }
-
-    const selectedFactors = Array.from(selectedCodesSet)
+    const selectedFactors = offence?.aggravatingFactors?.map(f => f.code) || []
 
     return res.render('pages/offenceWithAggravatingFactors/select-which-aggravating-factors-apply', {
       nomsId,
@@ -409,31 +381,8 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     // Ensure always an array (avoids TS/runtime issues)
     const allOffencesInAppearance = courtAppearance.offences || []
 
-    /**
-     * TEMPORARY COMPATIBILITY LOGIC
-     * -----------------------------------------
-     * We currently support:
-     *  - legacy booleans (terrorRelated, foreignPowerRelated)
-     *  - new aggravatingFactors join table
-     *
-     * An offence has aggravating factors if:
-     *  - either boolean is true OR
-     *  - aggravatingFactors array is non-empty
-     *
-     * TODO:
-     * - Remove boolean checks after migration completes
-     * - Use only aggravatingFactors.length > 0
-     */
-    const hasAggravatingFactors = (o: Offence) => {
-      return (
-        o.terrorRelated === true ||
-        o.foreignPowerRelated === true ||
-        (o.aggravatingFactors && o.aggravatingFactors.length > 0)
-      )
-    }
-
     // Filter using correct unified logic
-    const orderedOffences = orderOffences(allOffencesInAppearance.filter(hasAggravatingFactors))
+    const orderedOffences = orderOffences(allOffencesInAppearance.filter(o => (o.aggravatingFactors?.length ?? 0) > 0))
 
     const consecutiveToSentenceDetails = await this.getConsecutiveToFromApi(req, nomsId, appearanceReference)
 
@@ -450,7 +399,7 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
     )
 
     // Use SAME logic to determine "unprocessed"
-    const unprocessedOffenceExists = allOffencesInAppearance.some(o => !hasAggravatingFactors(o))
+    const unprocessedOffenceExists = allOffencesInAppearance.some(o => (o.aggravatingFactors?.length ?? 0) === 0)
 
     const orderedOffencesCount = orderedOffences.length
 
@@ -537,8 +486,6 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       chargeUuid,
       offence,
-      terrorRelated: offence?.terrorRelated,
-      foreignPowerRelated: offence?.foreignPowerRelated,
       cancelLink,
       errors: req.flash('errors') || [],
     })
@@ -556,9 +503,10 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
 
     const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     if (offence) {
-      offence.terrorRelated = null
-      offence.foreignPowerRelated = null
-      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, offence)
+      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, {
+        ...offence,
+        aggravatingFactors: [],
+      })
     }
 
     this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)

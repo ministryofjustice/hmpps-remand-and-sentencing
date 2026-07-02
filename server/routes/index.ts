@@ -465,16 +465,6 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/is-offence-aggravated',
-    offenceRoutes.getIsOffenceAggravated,
-  )
-
-  router.post(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-is-offence-aggravated',
-    offenceRoutes.submitIsOffenceAggravated,
-  )
-
-  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/confirm-offence-code',
     offenceRoutes.getConfirmOffenceCode,
   )

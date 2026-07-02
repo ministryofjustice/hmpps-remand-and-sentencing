@@ -7,6 +7,7 @@ import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import CriminalOfficeReferencePage from '../../pages/CriminalOfficeReferencePage'
 import Page from '../../pages/page'
 import RecordAppealPage from '../../pages/RecordAppealPage'
+import SelectOffenceAppealOutcomePage from '../../pages/SelectOffenceAppealOutcomePage'
 import StartPage from '../../pages/startPage'
 
 context('Record appeal', () => {
@@ -147,5 +148,39 @@ context('Record appeal', () => {
       .errorSummary()
       .trimTextContent()
       .should('equal', 'There is a problem You must record at least one appeal outcome before you can continue.')
+  })
+
+  it('can update appeal outcome after recording appeal', () => {
+    recordAppealPage.recordOffenceAppealLink('6683ebbb-f6a6-4744-8603-371135c36913').click()
+    let selectOffenceAppealOutcomePage = Page.verifyOnPage(SelectOffenceAppealOutcomePage)
+    selectOffenceAppealOutcomePage.radioLabelContains('Sentence varied').click()
+    selectOffenceAppealOutcomePage.continueButton().click()
+    recordAppealPage = Page.verifyOnPage(RecordAppealPage)
+    recordAppealPage
+      .appealedOffences()
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '20/05/2025',
+          Outcome: 'Sentence varied',
+        },
+      ])
+    recordAppealPage.updateAppealOutcomeLink('6683ebbb-f6a6-4744-8603-371135c36913').click()
+    selectOffenceAppealOutcomePage = Page.verifyOnPage(SelectOffenceAppealOutcomePage)
+    selectOffenceAppealOutcomePage.radioSelector('42a30fcd-51c0-4c18-95f9-e3a364eb9176').should('be.checked') // Sentence varied
+    selectOffenceAppealOutcomePage.radioLabelContains('Sentence quashed').click()
+    selectOffenceAppealOutcomePage.continueButton().click()
+    recordAppealPage = Page.verifyOnPage(RecordAppealPage)
+    recordAppealPage
+      .appealedOffences()
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '20/05/2025',
+          Outcome: 'Sentence quashed',
+        },
+      ])
   })
 })

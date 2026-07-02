@@ -18,6 +18,7 @@ import ReplicateChargeRoutes from './replicateChargeRoutes'
 import AggravatingFactorsRoutes from './aggravatingFactorsRoutes'
 import AppealsRoutes from './appealsRoutes'
 import CourtDataIngestionRoutes from './courtDataIngestionRoutes'
+import BreachRoutes from './breachRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -139,6 +140,16 @@ export default function routes(services: Services): Router {
   )
 
   const courtDataIngestionRoutes = new CourtDataIngestionRoutes(
+    services.courtAppearanceService,
+    services.offenceService,
+    services.remandAndSentencingService,
+    services.manageOffencesService,
+    services.auditService,
+    services.documentManagementService,
+    services.courtRegisterService,
+  )
+
+  const breachRoutes = new BreachRoutes(
     services.courtAppearanceService,
     services.offenceService,
     services.remandAndSentencingService,
@@ -1133,6 +1144,16 @@ export default function routes(services: Services): Router {
 
   router.get('/person/:nomsId/review-new-documents/:hmctsHearingId/landing', courtDataIngestionRoutes.landing)
   router.get('/person/:nomsId/review-new-documents/:hmctsHearingId/start', courtDataIngestionRoutes.start)
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/new-journey',
+    breachRoutes.newJourney,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/breach-type',
+    breachRoutes.getBreachType,
+  )
 
   return router
 }

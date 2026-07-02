@@ -10,6 +10,7 @@ import JourneyUrls from './data/JourneyUrls'
 import CourtRegisterService from '../services/courtRegisterService'
 import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import DocumentManagementService from '../services/documentManagementService'
+import documentTypes from '../resources/documentTypes'
 
 export default class CourtDataIngestionRoutes extends BaseRoutes {
   constructor(
@@ -36,7 +37,15 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     const { hmctsHearingId, nomsId } = urlParameters
     const appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, req.user.username)
-    return res.render('pages/courtDataIngestion/start', {
+    appearance.documents = appearance.documents.map(it => {
+      return {
+        ...it,
+        documentTypeDescription:
+          documentTypes[appearance.warrantType].find(documentType => it.documentType === documentType.type)?.name ||
+          'Unknown document type',
+      }
+    })
+    return res.render('pages/courtDataIngestion/landing', {
       appearance,
       hmctsHearingId,
       nomsId,

@@ -33,8 +33,6 @@ import {
   getAsStringOrDefault,
   outcomeValueOrLegacy,
   sortByDateDesc,
-  getUiDocumentType,
-  formatDate,
   orderOffences,
   consecutiveToSentenceDetailsToOffenceDescriptions,
   convertToTitleCase,
@@ -50,7 +48,6 @@ import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import {
-  MergedFromCase,
   PageCourtCaseContent,
   SearchCourtCasesPage,
   SearchDocuments,
@@ -520,21 +517,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
         return [consecutiveToDetails.sentenceUuid, consecutiveToDetailsEntry]
       }),
     )
-
-    courtCaseDetails.appearances = courtCaseDetails.appearances.map(appearance => ({
-      ...appearance,
-      canDelete: appearance.charges.every(charge => !charge.sentence) && courtCaseDetails.status !== 'MERGED',
-      mergedFromCases: this.offenceGetMergedFromText(
-        appearance.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
-        courtMap,
-      ),
-      documentsWithUiType: Array.isArray(appearance.documents)
-        ? appearance.documents.map(document => ({
-            ...document,
-            documentType: getUiDocumentType(document.documentType, appearance.warrantType),
-          }))
-        : [],
-    }))
     const successMessage = req.flash('success')[0]
     const auditDetails = this.getCourtCaseAuditUuids(courtCaseDetails, consecutiveToSentenceDetails)
     await this.auditService.logPageView(Page.COURT_CASE, {
@@ -598,24 +580,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       ),
     )
     return { courtCaseUuids, courtAppearanceUuids, chargeUuids, sentenceUuids, periodLengthUuids, documentUuids: [] }
-  }
-
-  private offenceGetMergedFromText(mergedFromCases: MergedFromCase[], courtMap: { [key: string]: string }): string[] {
-    if (!mergedFromCases || mergedFromCases.length === 0) return []
-    const parts = new Set<string>()
-    for (const mergedFromCase of mergedFromCases) {
-      const mergedFromDate = formatDate(mergedFromCase.mergedFromDate)
-      if (mergedFromCase.caseReference) {
-        parts.add(`Offences from ${mergedFromCase.caseReference} were merged with this appearance on ${mergedFromDate}`)
-      } else {
-        const courtName = courtMap[mergedFromCase.courtCode!]
-        const latestAppearance = formatDate(mergedFromCase.warrantDate)
-        parts.add(
-          `Offences from the case at ${courtName} on ${latestAppearance} were merged with this appearance on ${mergedFromDate}`,
-        )
-      }
-    }
-    return Array.from(parts)
   }
 
   public getDeleteAppearanceConfirmation: RequestHandler = async (req, res): Promise<void> => {

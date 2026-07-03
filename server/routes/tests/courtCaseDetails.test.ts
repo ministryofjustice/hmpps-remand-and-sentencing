@@ -14,7 +14,11 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-const createCourtCase = (source: string | undefined, status: string = 'ACTIVE'): PageCourtCaseContent => {
+const createCourtCase = (
+  source: string | undefined,
+  status: string = 'ACTIVE',
+  deleteStatus: 'SUPPORTED' | 'NOT_SUPPORTED' = 'SUPPORTED',
+): PageCourtCaseContent => {
   const appearance = {
     appearanceUuid: '1',
     appearanceDate: '2025-07-25',
@@ -31,6 +35,7 @@ const createCourtCase = (source: string | undefined, status: string = 'ACTIVE'):
       },
     ],
     source,
+    deleteStatus,
   }
   return {
     courtCaseUuid: '1',
@@ -402,7 +407,7 @@ describe('GET tests for NOMIS tag', () => {
   })
 
   it('should not display links when case status is MERGED', async () => {
-    const courtCase = createCourtCase('NOMIS', 'MERGED')
+    const courtCase = createCourtCase('NOMIS', 'MERGED', 'NOT_SUPPORTED')
     defaultServices.remandAndSentencingService.getCourtCaseDetails.mockResolvedValue(courtCase)
 
     const res = await request(app).get(path).expect('Content-Type', /html/)

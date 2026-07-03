@@ -1,13 +1,14 @@
 import dayjs from 'dayjs'
 import { formatLengths } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/utils/utils'
 import {
+  MergedFromCase,
   MergedToCaseDetails,
   PageCourtCaseAppearance,
   PageCourtCaseContent,
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
-import { orderCharges, sortByDateDesc } from '../../utils/utils'
+import { formatDate, getUiDocumentType, orderCharges, sortByDateDesc } from '../../utils/utils'
 
 export default class CourtCaseDetailsModel {
   courtCaseUuid: string
@@ -75,7 +76,22 @@ export default class CourtCaseDetailsModel {
       .map(hearing => {
         const sortedCharges = orderCharges(hearing.charges)
         const hasAnyRecalls = hearing.charges.some(charge => charge.sentence?.hasRecall)
-        return { ...hearing, charges: sortedCharges, hasAnyRecalls }
+        return {
+          ...hearing,
+          charges: sortedCharges,
+          hasAnyRecalls,
+          canDelete: hearing.deleteStatus === 'SUPPORTED',
+          mergedFromCases: this.offenceGetMergedFromText(
+            hearing.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
+            courtMap,
+          ),
+          documentsWithUiType: Array.isArray(hearing.documents)
+            ? hearing.documents.map(document => ({
+                ...document,
+                documentType: getUiDocumentType(document.documentType, hearing.warrantType),
+              }))
+            : [],
+        }
       })
       .sort((a, b) => sortByDateDesc(a.appearanceDate, b.appearanceDate))
 
@@ -96,5 +112,23 @@ export default class CourtCaseDetailsModel {
     }
     const latestAppearanceDate = merged.warrantDate ? dayjs(merged.warrantDate).format(config.dateFormat) : ''
     return `Offences from this court case were merged on ${mergedDate} with the case at ${courtName} on ${latestAppearanceDate}`
+  }
+
+  private offenceGetMergedFromText(mergedFromCases: MergedFromCase[], courtMap: { [key: string]: string }): string[] {
+    if (!mergedFromCases || mergedFromCases.length === 0) return []
+    const parts = new Set<string>()
+    for (const mergedFromCase of mergedFromCases) {
+      const mergedFromDate = formatDate(mergedFromCase.mergedFromDate)
+      if (mergedFromCase.caseReference) {
+        parts.add(`Offences from ${mergedFromCase.caseReference} were merged with this appearance on ${mergedFromDate}`)
+      } else {
+        const courtName = courtMap[mergedFromCase.courtCode!]
+        const latestAppearance = formatDate(mergedFromCase.warrantDate)
+        parts.add(
+          `Offences from the case at ${courtName} on ${latestAppearance} were merged with this appearance on ${mergedFromDate}`,
+        )
+      }
+    }
+    return Array.from(parts)
   }
 }

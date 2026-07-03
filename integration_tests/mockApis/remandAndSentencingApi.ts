@@ -646,6 +646,7 @@ export default {
               },
             },
           ],
+          deleteStatus: 'SUPPORTED',
         },
       },
     })
@@ -719,6 +720,7 @@ export default {
               },
             },
           ],
+          deleteStatus: 'SUPPORTED',
         },
       },
     })
@@ -774,6 +776,7 @@ export default {
               },
             },
           ],
+          deleteStatus: 'SUPPORTED',
         },
       },
     })
@@ -2180,6 +2183,7 @@ export default {
                 },
               },
             ],
+            deleteStatus: 'SUPPORTED',
           },
           appearances: [
             {
@@ -2225,6 +2229,7 @@ export default {
                   },
                 },
               ],
+              deleteStatus: 'SUPPORTED',
             },
             {
               appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
@@ -2275,6 +2280,7 @@ export default {
                   },
                 },
               ],
+              deleteStatus: 'SUPPORTED',
             },
           ],
         },
@@ -2343,6 +2349,7 @@ export default {
                 },
               },
             ],
+            deleteStatus: 'SUPPORTED',
           },
           appearances: [
             {
@@ -2394,6 +2401,7 @@ export default {
                   },
                 },
               ],
+              deleteStatus: 'SUPPORTED',
             },
           ],
         },
@@ -2496,6 +2504,7 @@ export default {
                 },
               },
             ],
+            deleteStatus: 'NOT_SUPPORTED',
           },
           appearances: [
             {
@@ -2647,6 +2656,7 @@ export default {
                   },
                 },
               ],
+              deleteStatus: 'NOT_SUPPORTED',
             },
             {
               appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
@@ -2677,6 +2687,7 @@ export default {
                   },
                 },
               ],
+              deleteStatus: 'SUPPORTED',
               legacyData: {
                 eventId: '1',
                 caseId: '1',
@@ -4405,6 +4416,7 @@ export default {
                 },
               },
             ],
+            deleteStatus: 'SUPPORTED',
           },
           appearances: [
             {
@@ -4452,6 +4464,7 @@ export default {
                   },
                 },
               ],
+              deleteStatus: 'SUPPORTED',
             },
           ],
         },
@@ -4513,6 +4526,7 @@ export default {
               },
             },
           ],
+          deleteStatus: 'SUPPORTED',
         },
       },
     })

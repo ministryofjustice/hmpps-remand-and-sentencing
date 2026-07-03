@@ -33,8 +33,6 @@ import {
   getAsStringOrDefault,
   outcomeValueOrLegacy,
   sortByDateDesc,
-  getUiDocumentType,
-  formatDate,
   orderOffences,
   consecutiveToSentenceDetailsToOffenceDescriptions,
   convertToTitleCase,
@@ -50,7 +48,6 @@ import BaseRoutes from './baseRoutes'
 import OffenceService from '../services/offenceService'
 import CourtRegisterService from '../services/courtRegisterService'
 import {
-  MergedFromCase,
   PageCourtCaseContent,
   SearchCourtCasesPage,
   SearchDocuments,

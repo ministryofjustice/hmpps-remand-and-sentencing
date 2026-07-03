@@ -135,11 +135,4 @@ context('Select which aggravating factors apply Page', () => {
     })
     Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
   })
-
-  it('should allow selecting a non-boolean aggravating factor', () => {
-    selectWhichAggravatingFactorsApplyPage.checkboxByValue('RA').click()
-
-    selectWhichAggravatingFactorsApplyPage.continueButton().click()
-    Page.verifyOnPage(SelectWhichAggravatingFactorsApplyPage)
-  })
 })

@@ -41,46 +41,21 @@
       {% set selected = [selected] %}
     {% endif %}
 
-    {#
-      TEMPORARY: Include legacy boolean-backed options.
-      These map to codes OATC and OAFPC.
-
-      TODO:
-      Remove these once:
-      - migration script moves boolean data into join table
-      - backend no longer uses terrorRelated / foreignPowerRelated
-    #}
-    {% set items = [
-      {
-        id: 'aggravating-factor-terror-related',
-        value: 'OATC',
-        text: 'Offence aggravated by a terrorist connection',
-        checked: selected.includes('OATC'),
-        attributes: { 'data-qa': 'terrorRelatedCheckbox' }
-      },
-      {
-        id: 'aggravating-factor-foreign-power',
-        value: 'OAFPC',
-        text: 'Offence aggravated by foreign power condition being met',
-        checked: selected.includes('OAFPC'),
-        attributes: { 'data-qa': 'foreignPowerRelatedCheckbox' }
-      }
-    ] %}
+    {% set items = [] %}
 
     {% if aggravatingFactorsOptions %}
       {% for opt in aggravatingFactorsOptions %}
-        {# Avoid duplication with legacy boolean-backed codes #}
-        {% if opt.code != 'OATC' and opt.code != 'OAFPC' %}
-          {% set items = items.concat([
-            {
-              id: 'aggravating-factor-' + opt.code,
-              value: opt.code,
-              text: opt.title,
-              checked: selected.includes(opt.code),
-              attributes: { 'data-qa': 'aggravatingFactor-' + opt.code }
+        {% set items = items.concat([
+          {
+            id: 'aggravating-factor-' + opt.code,
+            value: opt.code,
+            text: opt.title,
+            checked: selected.includes(opt.code),
+            attributes: {
+              'data-qa': 'aggravatingFactor-' + opt.code
             }
-          ]) %}
-        {% endif %}
+          }
+        ]) %}
       {% endfor %}
     {% endif %}
 
@@ -94,6 +69,7 @@
         }
       },
       hint: offenceHint,
+      errorMessage: errors | findError('aggravatedFactors'),
       items: items
     }) }}
 

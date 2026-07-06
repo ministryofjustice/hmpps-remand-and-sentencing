@@ -48,8 +48,6 @@ declare module 'models' {
     chargeUuid: string
     sentence?: Sentence
     aggravatingFactors?: AggravatingFactor[]
-    terrorRelated?: boolean
-    foreignPowerRelated?: boolean
     legacyData?: Record<string, never>
     updatedOutcome?: boolean
     mergedFromCase?: PagedMergedFromCase

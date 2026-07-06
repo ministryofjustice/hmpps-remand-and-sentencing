@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express'
 import type {
-  IsOffenceAggravatedByTerroristConnectionForm,
   OffenceAlternativePeriodLengthForm,
   OffenceConfirmOffenceForm,
   OffenceConvictionDateForm,
@@ -866,98 +865,6 @@ export default class OffenceRoutes extends BaseRoutes {
     return false
   }
 
-  getIsOffenceAggravated: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const { submitToEditOffence } = req.query as { submitToEditOffence: string }
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
-    let isOffenceAggravatedByTerroristConnectionForm = (req.flash('isOffenceAggravatedByTerroristConnectionForm')[0] ||
-      {}) as IsOffenceAggravatedByTerroristConnectionForm
-    if (Object.keys(isOffenceAggravatedByTerroristConnectionForm).length === 0) {
-      isOffenceAggravatedByTerroristConnectionForm = {
-        isOffenceAggravatedByTerroristConnection: offence.terrorRelated?.toString(),
-      }
-    }
-    const apiOffence = await this.manageOffencesService.getOffenceByCode(
-      offence.offenceCode,
-      req.user.username,
-      offence.legacyData?.offenceDescription,
-    )
-
-    let backLink = OffenceJourneyUrls.offenceCode(
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      addOrEditCourtAppearance,
-      appearanceReference,
-      chargeUuid,
-      submitToEditOffence,
-    )
-    if (this.showOffenceInactive(apiOffence, offence)) {
-      backLink = OffenceJourneyUrls.inactiveOffence(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-        chargeUuid,
-        submitToEditOffence,
-      )
-    }
-    return res.render('pages/offence/is-offence-aggravated', {
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      appearanceReference,
-      addOrEditCourtCase,
-      errors: req.flash('errors') || [],
-      addOrEditCourtAppearance,
-      submitToEditOffence,
-      isOffenceAggravatedByTerroristConnectionForm,
-      backLink,
-    })
-  }
-
-  submitIsOffenceAggravated: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    const { submitToEditOffence } = req.query
-    const isOffenceAggravatedByTerroristConnectionForm = trimForm<IsOffenceAggravatedByTerroristConnectionForm>(
-      req.body,
-    )
-    const errors = this.offenceService.setIsOffenceAggravated(
-      req.session,
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      isOffenceAggravatedByTerroristConnectionForm,
-    )
-
-    if (errors.length > 0) {
-      req.flash('errors', errors)
-      req.flash('isOffenceAggravatedByTerroristConnectionForm', { ...isOffenceAggravatedByTerroristConnectionForm })
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated?hasErrors=true${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
-      )
-    }
-
-    return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/confirm-offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`,
-    )
-  }
-
   public getOffenceName: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
@@ -1067,7 +974,7 @@ export default class OffenceRoutes extends BaseRoutes {
       '',
     )
 
-    let continueLink = OffenceJourneyUrls.confirmOffenceCode(
+    const continueLink = OffenceJourneyUrls.confirmOffenceCode(
       nomsId,
       addOrEditCourtCase,
       courtCaseReference,
@@ -1076,18 +983,6 @@ export default class OffenceRoutes extends BaseRoutes {
       chargeUuid,
       submitToEditOffence,
     )
-
-    if (this.showOffenceAggravated(offence)) {
-      continueLink = OffenceJourneyUrls.isOffenceAggravated(
-        nomsId,
-        addOrEditCourtCase,
-        courtCaseReference,
-        addOrEditCourtAppearance,
-        appearanceReference,
-        chargeUuid,
-        submitToEditOffence,
-      )
-    }
 
     return res.render('pages/offence/inactive-offence', {
       nomsId,
@@ -1125,10 +1020,7 @@ export default class OffenceRoutes extends BaseRoutes {
       sessionOffence.legacyData?.offenceDescription,
     )
 
-    let backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
-    if (this.showOffenceAggravated(offence)) {
-      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/is-offence-aggravated${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
-    }
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/offence-code${submitToEditOffence ? '?submitToEditOffence=true' : ''}`
 
     return res.render('pages/offence/confirm-offence', {
       nomsId,
@@ -2018,10 +1910,6 @@ export default class OffenceRoutes extends BaseRoutes {
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/sentence-type`,
     )
-  }
-
-  private showOffenceAggravated(offence: APIOffence) {
-    return offence.schedules?.some(schedule => schedule.code === '19ZA' && schedule.partNumber === 3)
   }
 
   private periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom): string {

@@ -1657,8 +1657,7 @@ export default class CourtAppearanceService {
       offence.outcomeUuid = appealOffenceOutcomeForm.offenceOutcome
       offence.updatedOutcome = true
       delete offence.sentence
-      delete offence.terrorRelated
-      delete offence.foreignPowerRelated
+      delete offence.aggravatingFactors
       this.addOffence(session, nomsId, chargeUuid, offence, appearanceReference)
     }
     return errors

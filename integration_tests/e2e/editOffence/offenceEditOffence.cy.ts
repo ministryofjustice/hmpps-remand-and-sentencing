@@ -478,7 +478,7 @@ context('Add Offence Edit offence Page', () => {
       Page.verifyOnPage(AggravatingFactorsSelectWhichAggravatedFactorsApplyPage)
 
       // Select a factor and continue - should return to the edit offence page
-      selectPage.checkboxByValue('OATC').click()
+      selectPage.checkboxByValue('OAFPC').click()
       selectPage.continueButton().click()
 
       offenceEditOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
@@ -491,7 +491,7 @@ context('Add Offence Edit offence Page', () => {
         'Sentence type': 'SDS (Standard Determinate Sentence)',
         'Sentence length': '4 years 5 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Forthwith',
-        'Aggravating factors': 'Offence aggravated by a terrorist connection',
+        'Aggravating factors': 'Offence aggravated by foreign power condition being met',
       }
       offenceEditOffencePage.summaryList().getSummaryList().should('deep.equal', expectedSummary)
     })

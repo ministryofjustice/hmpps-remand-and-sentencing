@@ -41,12 +41,6 @@ export default class AggravatingFactorsService {
     return session.aggravatingChargeUuids || []
   }
 
-  removeChargeUUidFromQueue(session: Partial<SessionData>, chargeUuid: string) {
-    if (!session.aggravatingChargeUuids) return
-    const idx = session.aggravatingChargeUuids.findIndex(e => e.chargeUuid === chargeUuid)
-    if (idx !== -1) session.aggravatingChargeUuids.splice(idx, 1)
-  }
-
   clearAggravatingFactors(session: Partial<SessionData>) {
     // eslint-disable-next-line no-param-reassign
     delete session.aggravatingChargeUuids
@@ -129,13 +123,13 @@ export default class AggravatingFactorsService {
   ) {
     const offence = this.offenceService.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
 
-    offence.terrorRelated = selected.includes('OATC') ? true : null
-    offence.foreignPowerRelated = selected.includes('OAFPC') ? true : null
-
     const aggravatingFactorsOptions = await this.refDataService.getAllAggravatingFactors(username)
-    offence.aggravatingFactors = (aggravatingFactorsOptions || []).filter(opt => selected.includes(opt.code))
 
-    this.offenceService.setSessionOffence(session, nomsId, courtCaseReference, offence)
+    this.offenceService.setSessionOffence(session, nomsId, courtCaseReference, {
+      ...offence,
+      aggravatingFactors: (aggravatingFactorsOptions || []).filter(opt => selected.includes(opt.code)),
+    })
+
     this.markAggravatingOffenceProcessed(session, chargeUuid)
     return []
   }

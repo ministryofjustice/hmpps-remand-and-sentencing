@@ -310,51 +310,8 @@ export function sentencesToChainToResponseToOffenceDescriptions(
   )
 }
 
-export const getAggravatingFactors = (offence: Offence) => {
-  if (!offence) return []
-
-  /**
-   * TEMPORARY COMPATIBILITY LOGIC
-   * -----------------------------------------
-   * We currently support:
-   *  - legacy booleans (terrorRelated, foreignPowerRelated)
-   *  - new aggravatingFactors join table
-   *
-   * IMPORTANT:
-   * - OATC / OAFPC may exist in BOTH sources
-   * - We must NOT duplicate them in the returned list
-   *
-   * TODO:
-   * - Remove boolean handling once migration is complete
-   * - Use ONLY offence.aggravatingFactors
-   */
-
-  const factors: string[] = []
-  const seenCodes = new Set<string>()
-
-  // 1. Use join table as primary source
-  if (offence.aggravatingFactors?.length) {
-    offence.aggravatingFactors.forEach(f => {
-      if (f?.code && !seenCodes.has(f.code)) {
-        seenCodes.add(f.code)
-        if (f.title) factors.push(f.title)
-      }
-    })
-  }
-
-  // 2. Backfill from booleans if missing (no duplication)
-  if (offence.terrorRelated && !seenCodes.has('OATC')) {
-    seenCodes.add('OATC')
-    factors.push('Offence aggravated by a terrorist connection')
-  }
-
-  if (offence.foreignPowerRelated && !seenCodes.has('OAFPC')) {
-    seenCodes.add('OAFPC')
-    factors.push('Offence aggravated by foreign power condition being met')
-  }
-
-  return factors
-}
+export const getAggravatingFactors = (offence: Offence): string[] =>
+  offence?.aggravatingFactors?.map(f => f.title) || []
 
 export const findErrorsBeginningWith = (
   array: {

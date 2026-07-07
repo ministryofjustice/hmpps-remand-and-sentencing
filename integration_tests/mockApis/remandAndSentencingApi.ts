@@ -331,6 +331,7 @@ export default {
                 ],
               },
               canAppeal: true,
+              canBreach: true,
             },
             {
               prisonerId: 'A1234AB',

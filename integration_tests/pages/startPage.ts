@@ -60,4 +60,6 @@ export default class StartPage extends Page {
   }
 
   outageBanner = (): PageElement => cy.get('.moj-outage-banner')
+
+  addBreachLink = (courtCaseReference: string): PageElement => cy.get(`[data-qa=add-breach-link-${courtCaseReference}]`)
 }

@@ -1155,5 +1155,15 @@ export default function routes(services: Services): Router {
     breachRoutes.getBreachType,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/breach-type',
+    breachRoutes.submitBreachType,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/task-list',
+    breachRoutes.getTaskList,
+  )
+
   return router
 }

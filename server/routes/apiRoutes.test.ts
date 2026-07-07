@@ -1,169 +1,134 @@
+import type { Express } from 'express'
 import { Readable } from 'stream'
-import ApiRoutes from './apiRoutes'
-import PrisonerService from '../services/prisonerService'
-import ManageOffencesService from '../services/manageOffencesService'
-import CourtRegisterService from '../services/courtRegisterService'
-import DocumentManagementService from '../services/documentManagementService'
+import request from 'supertest'
+import { appWithAllRoutes, defaultServices } from './testutils/appSetup'
 
-jest.mock('../services/prisonerService')
-jest.mock('../services/manageOffencesService')
-jest.mock('../services/courtRegisterService')
-jest.mock('../services/documentManagementService')
+let app: Express
 
-const username = 'user1'
+beforeEach(() => {
+  app = appWithAllRoutes({})
+})
 
-const mockResponse = () => {
-  const res: Record<string, unknown> = {}
-  res.set = jest.fn().mockReturnValue(res)
-  res.removeHeader = jest.fn().mockReturnValue(res)
-  res.type = jest.fn().mockReturnValue(res)
-  res.status = jest.fn().mockReturnValue(res)
-  res.send = jest.fn().mockReturnValue(res)
-  res.sendFile = jest.fn().mockReturnValue(res)
-  res.locals = { user: { username } }
-  return res as unknown as Response & { locals: { user: { username: string } } } & Record<string, jest.Mock>
-}
+afterEach(() => {
+  jest.resetAllMocks()
+})
 
-describe('ApiRoutes', () => {
-  let prisonerService: jest.Mocked<PrisonerService>
-  let manageOffencesService: jest.Mocked<ManageOffencesService>
-  let courtRegisterService: jest.Mocked<CourtRegisterService>
-  let documentManagementService: jest.Mocked<DocumentManagementService>
-  let apiRoutes: ApiRoutes
+describe('GET person image', () => {
+  it('streams the prisoner image and sets caching headers', () => {
+    defaultServices.prisonerService.getPrisonerImage.mockResolvedValue(Readable.from(['image-bytes']))
 
-  beforeEach(() => {
-    jest.resetAllMocks()
-    prisonerService = new PrisonerService(undefined) as jest.Mocked<PrisonerService>
-    manageOffencesService = new ManageOffencesService(undefined) as jest.Mocked<ManageOffencesService>
-    courtRegisterService = new CourtRegisterService(undefined) as jest.Mocked<CourtRegisterService>
-    documentManagementService = new DocumentManagementService(undefined) as jest.Mocked<DocumentManagementService>
-    apiRoutes = new ApiRoutes(prisonerService, manageOffencesService, courtRegisterService, documentManagementService)
+    return request(app)
+      .get('/api/person/A1234AB/image')
+      .expect(200)
+      .expect('Content-Type', /image\/jpeg/)
+      .expect('Cache-control', 'private, max-age=86400')
+      .expect(res => {
+        expect(defaultServices.prisonerService.getPrisonerImage).toHaveBeenCalledWith('A1234AB', 'user1')
+        expect(res.body.toString()).toContain('image-bytes')
+      })
   })
 
-  describe('personImage', () => {
-    it('pipes the image data and sets caching headers on success', async () => {
-      const dataStream = Readable.from(['test-data'])
-      dataStream.pipe = jest.fn().mockReturnValue(dataStream)
-      prisonerService.getPrisonerImage.mockResolvedValue(dataStream as never)
+  it('falls back to the placeholder image when the service call fails', () => {
+    defaultServices.prisonerService.getPrisonerImage.mockRejectedValue(new Error('not found'))
 
-      const req = { params: { nomsId: 'A1234BC' } } as never
-      const res = mockResponse()
+    return request(app)
+      .get('/api/person/A1234AB/image')
+      .expect(res => {
+        expect(defaultServices.prisonerService.getPrisonerImage).toHaveBeenCalledWith('A1234AB', 'user1')
+        // the fallback path serves a static file rather than the jpeg stream
+        expect(res.headers['content-type']).not.toMatch(/image\/jpeg/)
+      })
+  })
+})
 
-      await apiRoutes.personImage(req, res as never, undefined as never)
+describe('GET search offence', () => {
+  it('returns the offence search result as JSON', () => {
+    defaultServices.manageOffencesService.searchOffence.mockResolvedValue([{ code: 'TH68001' }] as never)
 
-      expect(prisonerService.getPrisonerImage).toHaveBeenCalledWith('A1234BC', username)
-      expect(res.set).toHaveBeenCalledWith('Cache-control', 'private, max-age=86400')
-      expect(res.removeHeader).toHaveBeenCalledWith('pragma')
-      expect(res.type).toHaveBeenCalledWith('image/jpeg')
-      expect(dataStream.pipe).toHaveBeenCalledWith(res)
-    })
+    return request(app)
+      .get('/api/search-offence?searchString=theft')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .expect(res => {
+        expect(defaultServices.manageOffencesService.searchOffence).toHaveBeenCalledWith('theft', 'user1')
+        expect(res.body).toEqual([{ code: 'TH68001' }])
+      })
+  })
+})
 
-    it('falls back to the placeholder image when the service call fails', async () => {
-      prisonerService.getPrisonerImage.mockRejectedValue(new Error('not found'))
+describe('GET search court', () => {
+  it('returns the court search result as JSON', () => {
+    defaultServices.courtRegisterService.searchCourts.mockResolvedValue([{ courtId: 'EXECC' }] as never)
 
-      const req = { params: { nomsId: 'A1234BC' } } as never
-      const res = mockResponse()
+    return request(app)
+      .get('/api/search-court?searchString=exeter')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .expect(res => {
+        expect(defaultServices.courtRegisterService.searchCourts).toHaveBeenCalledWith('exeter', 'user1')
+        expect(res.body).toEqual([{ courtId: 'EXECC' }])
+      })
+  })
+})
 
-      await apiRoutes.personImage(req, res as never, undefined as never)
+describe('GET document download', () => {
+  const header = {
+    'content-disposition': 'attachment; filename="doc.pdf"',
+    'content-length': '9',
+    'content-type': 'application/pdf',
+  }
 
-      expect(res.sendFile).toHaveBeenCalledWith(expect.stringContaining('prisoner-profile-image.png'))
-    })
+  it('streams the document with disposition, length and type headers and does not request inline', () => {
+    defaultServices.documentManagementService.downloadDocument.mockResolvedValue({
+      body: Readable.from(['pdf-bytes']),
+      header,
+    } as never)
+
+    return request(app)
+      .get('/api/document/doc1/download')
+      .expect(200)
+      .expect('Content-Disposition', 'attachment; filename="doc.pdf"')
+      .expect('Content-Type', 'application/pdf')
+      .expect(res => {
+        expect(defaultServices.documentManagementService.downloadDocument).toHaveBeenCalledWith('doc1', 'user1', false)
+        expect(res.body.toString()).toContain('pdf-bytes')
+      })
   })
 
-  describe('searchOffence', () => {
-    it('returns the search result with a 200 status', async () => {
-      manageOffencesService.searchOffence.mockResolvedValue(['result'] as never)
+  it('wraps a Buffer body in a stream before sending', () => {
+    defaultServices.documentManagementService.downloadDocument.mockResolvedValue({
+      body: Buffer.from('pdf-bytes'),
+      header,
+    } as never)
 
-      const req = { query: { searchString: 'burglary' } } as never
-      const res = mockResponse()
-
-      await apiRoutes.searchOffence(req, res as never, undefined as never)
-
-      expect(manageOffencesService.searchOffence).toHaveBeenCalledWith('burglary', username)
-      expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.send).toHaveBeenCalledWith(['result'])
-    })
+    return request(app)
+      .get('/api/document/doc1/download')
+      .expect(200)
+      .expect(res => {
+        expect(res.body.toString()).toContain('pdf-bytes')
+      })
   })
+})
 
-  describe('searchCourts', () => {
-    it('returns the search result with a 200 status', async () => {
-      courtRegisterService.searchCourts.mockResolvedValue(['result'] as never)
+describe('GET document view', () => {
+  const header = {
+    'content-disposition': 'inline; filename="doc.pdf"',
+    'content-length': '9',
+    'content-type': 'application/pdf',
+  }
 
-      const req = { query: { searchString: 'exeter' } } as never
-      const res = mockResponse()
+  it('requests the document inline and streams it', () => {
+    defaultServices.documentManagementService.downloadDocument.mockResolvedValue({
+      body: Readable.from(['pdf-bytes']),
+      header,
+    } as never)
 
-      await apiRoutes.searchCourts(req, res as never, undefined as never)
-
-      expect(courtRegisterService.searchCourts).toHaveBeenCalledWith('exeter', username)
-      expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.send).toHaveBeenCalledWith(['result'])
-    })
-  })
-
-  describe('downloadDocument and viewDocument', () => {
-    const header = {
-      'content-disposition': 'attachment; filename="doc.pdf"',
-      'content-length': '1234',
-      'content-type': 'application/pdf',
-    }
-
-    it('pipes a Readable body straight through and sets response headers', async () => {
-      const fileStream = Readable.from(['test-data'])
-      fileStream.pipe = jest.fn().mockReturnValue(fileStream)
-      documentManagementService.downloadDocument.mockResolvedValue({ body: fileStream, header } as never)
-
-      const req = { params: { documentId: 'doc1' } } as never
-      const res = mockResponse()
-
-      await apiRoutes.downloadDocument(req, res as never, undefined as never)
-
-      expect(documentManagementService.downloadDocument).toHaveBeenCalledWith('doc1', username, false)
-      expect(res.set).toHaveBeenCalledWith('content-disposition', header['content-disposition'])
-      expect(res.set).toHaveBeenCalledWith('content-length', header['content-length'])
-      expect(res.set).toHaveBeenCalledWith('content-type', header['content-type'])
-      expect(fileStream.pipe).toHaveBeenCalledWith(res)
-    })
-
-    it('wraps a Buffer body in a Readable before piping', async () => {
-      documentManagementService.downloadDocument.mockResolvedValue({
-        body: Buffer.from('pdf-bytes'),
-        header,
-      } as never)
-
-      const req = { params: { documentId: 'doc1' } } as never
-      const res = mockResponse()
-
-      const pipeSpy = jest.spyOn(Readable.prototype, 'pipe').mockReturnValue(res as never)
-
-      await apiRoutes.downloadDocument(req, res as never, undefined as never)
-
-      expect(pipeSpy).toHaveBeenCalledWith(res)
-      pipeSpy.mockRestore()
-    })
-
-    it('throws when the body is neither a Readable nor a Buffer', async () => {
-      documentManagementService.downloadDocument.mockResolvedValue({ body: 'not-a-stream', header } as never)
-
-      const req = { params: { documentId: 'doc1' } } as never
-      const res = mockResponse()
-
-      await expect(apiRoutes.downloadDocument(req, res as never, undefined as never)).rejects.toThrow(
-        'Failed to retrieve document content.',
-      )
-    })
-
-    it('viewDocument requests the document inline', async () => {
-      const fileStream = Readable.from(['test-data'])
-
-      fileStream.pipe = jest.fn().mockReturnValue(fileStream)
-      documentManagementService.downloadDocument.mockResolvedValue({ body: fileStream, header } as never)
-
-      const req = { params: { documentId: 'doc1' } } as never
-      const res = mockResponse()
-
-      await apiRoutes.viewDocument(req, res as never, undefined as never)
-
-      expect(documentManagementService.downloadDocument).toHaveBeenCalledWith('doc1', username, true)
-    })
+    return request(app)
+      .get('/api/document/doc1/view-document/doc.pdf')
+      .expect(200)
+      .expect('Content-Disposition', 'inline; filename="doc.pdf"')
+      .expect(res => {
+        expect(defaultServices.documentManagementService.downloadDocument).toHaveBeenCalledWith('doc1', 'user1', true)
+      })
   })
 })

@@ -29,7 +29,7 @@ export default class DocumentManagementService {
     }
   }
 
-  async downloadDocument(documentId: string, username: string): Promise<FileDownload> {
-    return this.documentManagementApiClient.downloadDocument(documentId, username)
+  async downloadDocument(documentId: string, username: string, inline = false): Promise<FileDownload> {
+    return this.documentManagementApiClient.downloadDocument(documentId, username, inline)
   }
 }

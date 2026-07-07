@@ -274,4 +274,10 @@ declare module 'forms' {
   export interface BreachTypeForm {
     breachType?: string
   }
+
+  export interface BreachDateForm {
+    'breachDate-day'?: string
+    'breachDate-month'?: string
+    'breachDate-year'?: string
+  }
 }

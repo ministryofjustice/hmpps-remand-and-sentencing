@@ -9,8 +9,12 @@ export default class BreachJourneyUrls {
     return `${this.basePath(urlParameters)}/task-list`
   }
 
-  static hearingDate(urlParameters: UrlParameters, hasErrors?: string): string {
-    return `${this.basePath(urlParameters)}/hearing-date${this.getQueryParameters(hasErrors)}`
+  static hearingDate(urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string): string {
+    return `${this.basePath(urlParameters)}/hearing-date${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  }
+
+  static breachCourt(urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string): string {
+    return `${this.basePath(urlParameters)}/breach-court${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
   static checkHearingAnswers = (urlParameters: UrlParameters) => {

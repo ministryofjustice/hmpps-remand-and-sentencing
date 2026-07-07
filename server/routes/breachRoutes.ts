@@ -1,6 +1,6 @@
 import type { UrlParameters } from 'models'
 import { RequestHandler } from 'express'
-import type { BreachTypeForm } from 'forms'
+import type { BreachDateForm, BreachTypeForm } from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'
@@ -90,6 +90,79 @@ export default class BreachRoutes extends BaseRoutes {
   }
 
   public getHearingDate: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/breach/hearing-date')
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToCheckAnswers } = req.query
+    const breachDateForm = (req.flash('breachDateForm')[0] || {}) as BreachDateForm
+    let breachDateDay: number | string = breachDateForm['breachDate-day']
+    let breachDateMonth: number | string = breachDateForm['breachDate-month']
+    let breachDateYear: number | string = breachDateForm['breachDate-year']
+    const { warrantDate, referenceNumberSelect } = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    if (warrantDate && Object.keys(breachDateForm).length === 0) {
+      const breachDate = new Date(warrantDate)
+      breachDateDay = breachDate.getDate()
+      breachDateMonth = breachDate.getMonth() + 1
+      breachDateYear = breachDate.getFullYear()
+    }
+    let backLink = JourneyUrls.reference(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
+    if (submitToCheckAnswers) {
+      backLink = BreachJourneyUrls.checkHearingAnswers(urlParameters)
+    } else if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      backLink = BreachJourneyUrls.hearingDetails(urlParameters)
+    } else if (referenceNumberSelect !== undefined) {
+      backLink = JourneyUrls.selectReference(
+        urlParameters.nomsId,
+        urlParameters.addOrEditCourtCase,
+        urlParameters.courtCaseReference,
+        urlParameters.addOrEditCourtAppearance,
+        urlParameters.appearanceReference,
+      )
+    }
+    return res.render('pages/breach/hearing-date', {
+      ...urlParameters,
+      breachDateDay,
+      breachDateMonth,
+      breachDateYear,
+      errors: req.flash('errors') || [],
+      backLink,
+      showHearingDetails: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance),
+    })
+  }
+
+  public submitHearingDate: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
+    const breachDateForm = trimForm<BreachDateForm>(req.body)
+    const { username } = res.locals.user
+    const errors = await this.courtAppearanceService.setBreachDate(req.session, urlParameters, breachDateForm, username)
+    if (errors.length) {
+      req.flash('errors', errors)
+      req.flash('breachDateForm', { ...breachDateForm })
+      return res.redirect(BreachJourneyUrls.hearingDate(urlParameters, 'true', submitToCheckAnswers))
+    }
+    return this.submitRedirect(res, urlParameters, submitToCheckAnswers, BreachJourneyUrls.breachCourt(urlParameters))
+  }
+
+  public getBreachCourt: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/breach/breach-court')
+  }
+
+  private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {
+    if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters))
+    }
+    if (submitToCheckAnswers) {
+      return res.redirect(BreachJourneyUrls.checkHearingAnswers(urlParameters))
+    }
+    return res.redirect(fallbackUrl)
   }
 }

@@ -1,0 +1,27 @@
+{% extends "../../partials/backLinkLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Record breach of supervision requirement" %}
+
+{% block content %}
+    {{ super() }}
+    <h1 class="govuk-heading-l">
+        Record a breach of supervision requirement
+    </h1>
+    <p class="govuk-body">DPS currently supports recording a <span class="govuk-!-font-weight-bold">breach of supervision requirements (Section 104)</span> only</p>
+    <p class="govuk-body">If you need to record a <span class="govuk-!-font-weight-bold">new imprisonable offence committed during supervision (Section 105)</span> continue to use NOMIS</p>
+    <p class="govuk-body">Do you want to continue?</p>
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="breachType" value="BREACH_OF_SUPERVISION_REQUIREMENTS">
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+            </div>
+    </form>
+{% endblock %}

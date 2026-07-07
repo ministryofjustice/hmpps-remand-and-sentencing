@@ -270,4 +270,8 @@ declare module 'forms' {
   export interface FinishedRecordingAppealsForm {
     finishedRecordAppeal?: string
   }
+
+  export interface BreachTypeForm {
+    breachType?: string
+  }
 }

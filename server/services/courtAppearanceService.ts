@@ -4,6 +4,7 @@ import type {
   AppealDateForm,
   AppealOffenceOutcomeForm,
   AppealOverallCaseOutcomeForm,
+  BreachTypeForm,
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
   CourtCaseCourtNameForm,
@@ -1697,6 +1698,33 @@ export default class CourtAppearanceService {
       courtAppearance.offenceSentenceAccepted = finishedRecordingAppealsForm.finishedRecordAppeal === 'true'
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  setBreachType(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    breachTypeForm: BreachTypeForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      breachTypeForm,
+      {
+        breachType: 'required',
+      },
+      {
+        'required.breachType': 'You must select the breach type',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
+      courtAppearance.warrantType = breachTypeForm.breachType
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[urlParameters.nomsId] = courtAppearance
     }
     return errors
   }

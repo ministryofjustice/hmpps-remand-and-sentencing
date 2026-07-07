@@ -65,11 +65,11 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     this.offenceService.clearAllOffences(req.session, nomsId, newCourtCaseId)
-    this.courtAppearanceService.setSessionCourtAppearance(
-      req.session,
-      nomsId,
-      pageCourtCaseAppearanceToCourtAppearance(appearance),
-    )
+    const sessionAppearance = pageCourtCaseAppearanceToCourtAppearance(appearance)
+    delete sessionAppearance.nextAppearanceSelect
+    delete sessionAppearance.nextAppearanceTimeSet
+    delete sessionAppearance.nextCourtAppearanceAccepted
+    this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, sessionAppearance)
     const addOrEditCourtCase = 'add-court-case'
     const addOrEditCourtAppearance = 'add-court-appearance'
 

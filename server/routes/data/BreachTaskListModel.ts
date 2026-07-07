@@ -73,7 +73,7 @@ export default class BreachTaskListModel extends TaskListModel {
     )
   }
 
-  getOffenceSentenceTitleText(courtAppearance: CourtAppearance): string {
+  getOffenceSentenceTitleText(_courtAppearance: CourtAppearance): string {
     return 'Add offences'
   }
 

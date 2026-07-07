@@ -191,6 +191,8 @@ context('New Court Case from hmcts data journey', () => {
     courtCaseTaskListPage.nextCourtAppearanceLink().click()
 
     const courtCaseNextAppearanceSetPage = Page.verifyOnPage(CourtCaseNextAppearanceSetPage)
+    courtCaseNextAppearanceSetPage.radioLabelSelector('true').should('not.be.checked')
+    courtCaseNextAppearanceSetPage.radioLabelSelector('false').should('not.be.checked')
     courtCaseNextAppearanceSetPage.radioLabelSelector('true').click()
     courtCaseNextAppearanceSetPage.continueButton().click()
 

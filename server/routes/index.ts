@@ -1180,5 +1180,15 @@ export default function routes(services: Services): Router {
     breachRoutes.getBreachCourt,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/breach-court',
+    breachRoutes.submitBreachCourt,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/check-hearing-answers',
+    breachRoutes.getCheckHearingAnswers,
+  )
+
   return router
 }

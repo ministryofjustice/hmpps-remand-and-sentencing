@@ -280,4 +280,9 @@ declare module 'forms' {
     'breachDate-month'?: string
     'breachDate-year'?: string
   }
+
+  export interface BreachCourtNameForm {
+    courtName?: string
+    courtCode?: string
+  }
 }

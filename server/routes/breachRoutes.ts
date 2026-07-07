@@ -1,6 +1,6 @@
 import type { UrlParameters } from 'models'
 import { RequestHandler } from 'express'
-import type { BreachDateForm, BreachTypeForm } from 'forms'
+import type { BreachCourtNameForm, BreachDateForm, BreachTypeForm } from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'
@@ -13,6 +13,7 @@ import BreachJourneyUrls from './data/BreachJourneyUrls'
 import JourneyUrls from './data/JourneyUrls'
 import trimForm from '../utils/trim'
 import BreachTaskListModel from './data/BreachTaskListModel'
+import logger from '../../logger'
 
 export default class BreachRoutes extends BaseRoutes {
   constructor(
@@ -153,7 +154,61 @@ export default class BreachRoutes extends BaseRoutes {
   }
 
   public getBreachCourt: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/breach/breach-court')
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToCheckAnswers } = req.query
+    let breachCourtNameForm = (req.flash('courtNameForm')[0] || {}) as BreachCourtNameForm
+    if (Object.keys(breachCourtNameForm).length === 0) {
+      breachCourtNameForm = {
+        courtCode: this.courtAppearanceService.getCourtCode(
+          req.session,
+          urlParameters.nomsId,
+          urlParameters.appearanceReference,
+        ),
+      }
+    }
+    if (breachCourtNameForm.courtCode && breachCourtNameForm.courtName === undefined) {
+      try {
+        const court = await this.courtRegisterService.findCourtById(breachCourtNameForm.courtCode, req.user.username)
+        breachCourtNameForm.courtName = court.courtName
+      } catch (e) {
+        logger.error(e)
+      }
+    }
+    let backLink = BreachJourneyUrls.hearingDate(urlParameters)
+    if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      backLink = BreachJourneyUrls.hearingDetails(urlParameters)
+    } else if (submitToCheckAnswers) {
+      backLink = BreachJourneyUrls.checkHearingAnswers(urlParameters)
+    }
+    return res.render('pages/breach/breach-court', {
+      ...urlParameters,
+      breachCourtNameForm,
+      errors: req.flash('errors') || [],
+      backLink,
+      showHearingDetails: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance),
+    })
+  }
+
+  public submitBreachCourt: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
+    const breachCourtNameForm = trimForm<BreachCourtNameForm>(req.body)
+    const errors = this.courtAppearanceService.setBreachCourtName(req.session, urlParameters, breachCourtNameForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('breachCourtNameForm', { ...breachCourtNameForm })
+      return res.redirect(BreachJourneyUrls.breachCourt(urlParameters, 'true', submitToCheckAnswers))
+    }
+    return this.submitRedirect(
+      res,
+      urlParameters,
+      submitToCheckAnswers,
+      BreachJourneyUrls.checkHearingAnswers(urlParameters),
+    )
+  }
+
+  public getCheckHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/breach/check-hearing-answers')
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

@@ -66,6 +66,7 @@ import AddJourneyCancelDetailsModel from './data/AddJourneyCancelDetailsModel'
 import RepeatJourneyCancelDetailsModel from './data/RepeatJourneyCancelDetailsModel'
 import EditJourneyCancelDetailsModel from './data/EditJourneyCancelDetailsModel'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
+import BreachJourneyUrls from './data/BreachJourneyUrls'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -786,6 +787,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
         )
       } else if (warrantType === 'APPEAL') {
         backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+      } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+        backLink = BreachJourneyUrls.hearingDetails(urlParameters)
       } else {
         backLink = JourneyUrls.nonSentencingHearing(
           nomsId,
@@ -798,6 +801,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
     } else if (submitToCheckAnswers) {
       if (warrantType === 'APPEAL') {
         backLink = AppealsJourneyUrls.checkHearingAnswers(urlParameters)
+      } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+        backLink = BreachJourneyUrls.checkHearingAnswers(urlParameters)
       } else {
         backLink = JourneyUrls.checkAppearanceAnswers(
           nomsId,
@@ -820,6 +825,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     } else if (warrantType === 'APPEAL') {
       backLink = AppealsJourneyUrls.taskList(urlParameters)
+    } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      backLink = BreachJourneyUrls.taskList(urlParameters)
     }
 
     return res.render('pages/courtAppearance/reference', {
@@ -869,6 +876,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
       }
+      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+        return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters))
+      }
       return res.redirect(
         JourneyUrls.nonSentencingHearing(
           nomsId,
@@ -884,6 +894,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.checkHearingAnswers(urlParameters))
       }
+      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+        return res.redirect(BreachJourneyUrls.checkHearingAnswers(urlParameters))
+      }
       return res.redirect(
         JourneyUrls.checkAppearanceAnswers(
           nomsId,
@@ -896,6 +909,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
     }
     if (warrantType === 'APPEAL') {
       return res.redirect(AppealsJourneyUrls.criminalOfficeReference(urlParameters))
+    }
+    if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      return res.redirect(BreachJourneyUrls.hearingDate(urlParameters))
     }
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`,
@@ -938,6 +954,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     } else if (warrantType === 'APPEAL') {
       backLink = AppealsJourneyUrls.taskList(urlParameters)
+    } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      backLink = BreachJourneyUrls.taskList(urlParameters)
     }
     return res.render('pages/courtAppearance/select-reference', {
       nomsId,
@@ -990,6 +1008,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
       const warrantType = this.courtAppearanceService.getWarrantType(req.session, nomsId, appearanceReference)
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.criminalOfficeReference(urlParameters))
+      }
+      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+        return res.redirect(BreachJourneyUrls.hearingDate(urlParameters))
       }
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/warrant-date`,

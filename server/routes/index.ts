@@ -1165,5 +1165,10 @@ export default function routes(services: Services): Router {
     breachRoutes.getTaskList,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/hearing-date',
+    breachRoutes.getHearingDate,
+  )
+
   return router
 }

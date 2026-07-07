@@ -14,6 +14,6 @@ context('Breach journey', () => {
   it('fill in breach of supervision requirements journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addBreachLink('261911e2-6346-42e0-b025-a806048f4d04').click()
-    const breachTypePage = Page.verifyOnPage(BreachTypePage)
+    Page.verifyOnPage(BreachTypePage)
   })
 })

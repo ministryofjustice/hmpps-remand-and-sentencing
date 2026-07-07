@@ -11,6 +11,8 @@ import RemandAndSentencingService from '../services/remandAndSentencingService'
 import BaseRoutes from './baseRoutes'
 import BreachJourneyUrls from './data/BreachJourneyUrls'
 import JourneyUrls from './data/JourneyUrls'
+import trimForm from '../utils/trim'
+import BreachTaskListModel from './data/BreachTaskListModel'
 
 export default class BreachRoutes extends BaseRoutes {
   constructor(
@@ -63,7 +65,7 @@ export default class BreachRoutes extends BaseRoutes {
 
   public submitBreachType: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
-    const breachTypeForm = (req.flash('breachTypeForm')[0] || {}) as BreachTypeForm
+    const breachTypeForm = trimForm<BreachTypeForm>(req.body)
     const errors = this.courtAppearanceService.setBreachType(req.session, urlParameters, breachTypeForm)
     if (errors.length > 0) {
       req.flash('errors', errors)
@@ -74,6 +76,20 @@ export default class BreachRoutes extends BaseRoutes {
   }
 
   public getTaskList: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/breach/task-list')
+    const urlParameters = req.params as unknown as UrlParameters
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
+    return res.render('pages/breach/task-list', {
+      ...urlParameters,
+      model: new BreachTaskListModel(urlParameters, courtAppearance, caseReferenceSet),
+    })
+  }
+
+  public getHearingDate: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/breach/hearing-date')
   }
 }

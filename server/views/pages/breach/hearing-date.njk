@@ -1,0 +1,55 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Enter breach date" %}
+
+{% block pageContent %}
+    {{ super() }}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          {% include "../../partials/hearingCaption.njk" %}
+        {{ govukDateInput({
+            id: "breach-date",
+            namePrefix: "breachDate",
+            errorMessage: errors | findErrorsBeginningWith('breachDate'),
+            fieldset: {
+                legend: {
+                    text: "Enter the date of the hearing",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            },
+            items: [
+                {
+                    id: 'breachDate-day',
+                    classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('breachDate-day') else ''),
+                    name:"day",
+                    value: breachDateDay
+                },
+                {
+                    id: 'breachDate-month',
+                    classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('breachDate-month') else ''),
+                    name:"month",
+                    value: breachDateMonth
+                },
+                {
+                    id: 'breachDate-year',
+                    classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('breachDate-year') else ''),
+                    name:"year",
+                    value: breachDateYear
+                }
+            ]
+        }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+            </div>
+    </form>
+{% endblock %}

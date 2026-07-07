@@ -1,3 +1,4 @@
+import BreachDatePage from '../../pages/BreachDatePage'
 import BreachTypePage from '../../pages/BreachTypePage'
 import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
@@ -12,6 +13,10 @@ context('Breach journey', () => {
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetLatestCourtAppearance', {
       courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
+    })
+    cy.task('stubGetCourtCaseValidationDates', {
+      courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
+      latestSentenceAppearanceDate: '2000-01-01',
     })
     cy.signIn()
     cy.visit('/person/A1234AB')
@@ -39,5 +44,10 @@ context('Breach journey', () => {
     const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
     courtCaseSelectReferencePage.radioLabelSelector('true').click()
     courtCaseSelectReferencePage.continueButton().click()
+    const breachDatePage = Page.verifyOnPage(BreachDatePage)
+    breachDatePage.dayDateInput('breachDate').type('13')
+    breachDatePage.monthDateInput('breachDate').type('5')
+    breachDatePage.yearDateInput('breachDate').type('2023')
+    breachDatePage.continueButton().click()
   })
 })

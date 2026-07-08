@@ -170,6 +170,7 @@ export default function routes(services: Services): Router {
   router.get('/api/search-court', apiRoutes.searchCourts)
 
   router.get('/api/document/:documentId/download', apiRoutes.downloadDocument)
+  router.get('/api/document/:documentId/view-document/:documentName', apiRoutes.viewDocument)
 
   router.get('/person/:nomsId/documents', courtCaseRoutes.documents)
 

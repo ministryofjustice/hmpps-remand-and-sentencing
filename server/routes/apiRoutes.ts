@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express'
+import { Request, Response, RequestHandler } from 'express'
 import path from 'path'
 import { Readable } from 'stream'
 import PrisonerService from '../services/prisonerService'
@@ -43,24 +43,38 @@ export default class ApiRoutes {
     res.status(200).send(result)
   }
 
-  public downloadDocument: RequestHandler = async (req, res): Promise<void> => {
+  private streamDocument = async (req: Request, res: Response, inline: boolean): Promise<void> => {
     const { documentId } = req.params
-    return this.documentManagementService.downloadDocument(documentId, res.locals.user.username).then(response => {
-      let fileStream: Readable | undefined
-      if (response.body instanceof Readable) {
-        fileStream = response.body
-      } else if (Buffer.isBuffer(response.body)) {
-        fileStream = new Readable()
-        fileStream.push(response.body)
-        fileStream.push(null)
-      } else {
-        logger.error(`Document management service returned unexpected type for documentId: ${documentId}`)
-        throw new Error('Failed to retrieve document content.')
-      }
-      res.set('content-disposition', response.header['content-disposition'])
-      res.set('content-length', response.header['content-length'])
-      res.set('content-type', response.header['content-type'])
-      fileStream.pipe(res)
-    })
+
+    return this.documentManagementService
+      .downloadDocument(documentId, res.locals.user.username, inline)
+      .then(response => {
+        let fileStream: Readable | undefined
+
+        if (response.body instanceof Readable) {
+          fileStream = response.body
+        } else if (Buffer.isBuffer(response.body)) {
+          fileStream = new Readable()
+          fileStream.push(response.body)
+          fileStream.push(null)
+        } else {
+          logger.error(`Document management service returned unexpected type for documentId: ${documentId}`)
+          throw new Error('Failed to retrieve document content.')
+        }
+
+        res.set('content-disposition', response.header['content-disposition'])
+        res.set('content-length', response.header['content-length'])
+        res.set('content-type', response.header['content-type'])
+
+        fileStream.pipe(res)
+      })
+  }
+
+  public downloadDocument: RequestHandler = async (req, res): Promise<void> => {
+    return this.streamDocument(req, res, false)
+  }
+
+  public viewDocument: RequestHandler = async (req, res): Promise<void> => {
+    return this.streamDocument(req, res, true)
   }
 }

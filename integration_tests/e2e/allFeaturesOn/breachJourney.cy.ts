@@ -1,3 +1,4 @@
+import BreachCheckHearingAnswersPage from '../../pages/BreachCheckHearingAnswersPage'
 import BreachCourtNamePage from '../../pages/BreachCourtNamePage'
 import BreachDatePage from '../../pages/BreachDatePage'
 import BreachTypePage from '../../pages/BreachTypePage'
@@ -12,6 +13,7 @@ context('Breach journey', () => {
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtsByIds')
+    cy.task('stubGetCourtById', {})
     cy.task('stubGetLatestCourtAppearance', {
       courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
     })
@@ -27,7 +29,7 @@ context('Breach journey', () => {
     startPage.addBreachLink('261911e2-6346-42e0-b025-a806048f4d04').click()
     const breachTypePage = Page.verifyOnPage(BreachTypePage)
     breachTypePage.continueButton().click()
-    const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -55,5 +57,26 @@ context('Breach journey', () => {
     breachCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     breachCourtNamePage.firstAutoCompleteOption().click()
     breachCourtNamePage.continueButton().click()
+    const breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
+    breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference number': 'C894623',
+      'Hearing date': '13/05/2023',
+      'Court name': 'Accrington Youth Court',
+    })
+    breachCheckHearingAnswersPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
   })
 })

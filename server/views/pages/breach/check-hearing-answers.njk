@@ -1,0 +1,93 @@
+{% extends "../../partials/goToCourtHearingLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Check breach hearing answers" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% include "../../partials/hearingCaption.njk" %}
+            <h1 class="govuk-heading-l">Check your answers</h1>
+
+            {{ govukSummaryList({
+                rows: [
+                    {
+                        key: {
+                            text: "Case reference number"
+                        },
+                        value: {
+                            text: courtAppearance.caseReferenceNumber if courtAppearance.caseReferenceNumber else 'Not entered'
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/reference?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "case reference",
+                                    attributes: {
+                                        'data-qa': 'edit-case-reference-link'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Hearing date"
+                        },
+                        value: {
+                            text: courtAppearance.warrantDate | formatDate
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/hearing-date?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "hearing date",
+                                    attributes: {
+                                        'data-qa': 'edit-breach-date-link'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Court name"
+                        },
+                        value: {
+                            text: courtName
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/breach-court?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "court name",
+                                    attributes: {
+                                        'data-qa': 'edit-court-name-link'
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }) }}
+
+            <form method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Confirm and continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{ super() }}
+{% endblock %}

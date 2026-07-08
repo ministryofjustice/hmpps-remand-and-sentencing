@@ -14,8 +14,14 @@
 
     <div class="govuk-!-padding-bottom-3">
     {% for document in appearance.documents %}
-        <a href="/api/document/{{document.documentUUID}}/download">{{document.fileName}}</a>
-        <p class="govuk-body">{{document.documentTypeDescription}}</p>
+      <a class="govuk-link govuk-link--no-visited-state prisoner-doc-link"
+         target="_blank"
+         rel="noreferrer noopener"
+         href="/api/document/{{document.documentUUID}}/view-document/{{ (document.fileName) | urlencode }}">
+        {{ document.fileName }}
+        <span class="govuk-visually-hidden">(opens in new tab)</span>
+      </a>
+       <p class="govuk-body">{{document.documentTypeDescription}}</p>
         <hr />
     {% endfor %}
     </div>

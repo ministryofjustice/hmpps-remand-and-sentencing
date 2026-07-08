@@ -53,10 +53,11 @@ export default class DocumentManagementApiClient extends RestClient {
     }
   }
 
-  async downloadDocument(documentId: string, username: string): Promise<FileDownload> {
+  async downloadDocument(documentId: string, username: string, inline = false): Promise<FileDownload> {
     return this.get(
       {
         path: `/documents/${documentId}/file`,
+        query: inline ? { inline: true } : undefined,
         headers: {
           'Service-Name': 'Remand and Sentencing',
           Username: username,

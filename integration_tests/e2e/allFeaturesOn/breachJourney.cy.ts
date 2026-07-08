@@ -1,3 +1,4 @@
+import BreachCourtNamePage from '../../pages/BreachCourtNamePage'
 import BreachDatePage from '../../pages/BreachDatePage'
 import BreachTypePage from '../../pages/BreachTypePage'
 import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
@@ -49,5 +50,10 @@ context('Breach journey', () => {
     breachDatePage.monthDateInput('breachDate').type('5')
     breachDatePage.yearDateInput('breachDate').type('2023')
     breachDatePage.continueButton().click()
+    const breachCourtNamePage = Page.verifyOnPage(BreachCourtNamePage)
+    breachCourtNamePage.autoCompleteInput().type('cou')
+    breachCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
+    breachCourtNamePage.firstAutoCompleteOption().click()
+    breachCourtNamePage.continueButton().click()
   })
 })

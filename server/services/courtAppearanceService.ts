@@ -4,6 +4,7 @@ import type {
   AppealDateForm,
   AppealOffenceOutcomeForm,
   AppealOverallCaseOutcomeForm,
+  BreachCourtNameForm,
   BreachDateForm,
   BreachTypeForm,
   CourtCaseAlternativeSentenceLengthForm,
@@ -1800,6 +1801,29 @@ export default class CourtAppearanceService {
         // eslint-disable-next-line no-param-reassign
         session.courtAppearances[urlParameters.nomsId] = courtAppearance
       }
+    }
+    return errors
+  }
+
+  setBreachCourtName(
+    session: Partial<SessionData>,
+    urlParameter: UrlParameters,
+    breachCourtNameForm: BreachCourtNameForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      breachCourtNameForm,
+      { courtCode: 'required' },
+      { 'required.courtCode': 'You must enter the court that heard the breach' },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+      courtAppearance.courtCode = breachCourtNameForm.courtCode
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[urlParameter.nomsId] = courtAppearance
     }
     return errors
   }

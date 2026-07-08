@@ -37,9 +37,7 @@ describe('GET review new documents landing', () => {
         expect(firstLink.length).toBe(1)
         expect(firstLink.text()).toContain('aRemandWarrant.pdf')
 
-        // HMCTS_WARRANT under a NON_SENTENCING warrant maps to the friendly name
         expect(res.text).toContain('Remand warrant')
-        // a document type not in the resource falls back
         expect(res.text).toContain('Unknown document type')
 
         const continueButton = $('[data-qa=hmcts-court-data-continue]')

@@ -34,19 +34,13 @@ export default class BreachTaskListModel extends TaskListModel {
   }
 
   allAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
-    return (
-      courtAppearance.warrantDate &&
-      courtAppearance.courtCode &&
-      courtAppearance.appearanceOutcomeUuid &&
-      courtAppearance.appearanceInformationAccepted
-    )
+    return courtAppearance.warrantDate && courtAppearance.courtCode && courtAppearance.appearanceInformationAccepted
   }
 
   anyAppearanceInformationFilledOut(courtAppearance: CourtAppearance): boolean {
     return (
       courtAppearance.warrantDate !== undefined ||
       courtAppearance.courtCode !== undefined ||
-      courtAppearance.appearanceOutcomeUuid !== undefined ||
       courtAppearance.appearanceInformationAccepted
     )
   }

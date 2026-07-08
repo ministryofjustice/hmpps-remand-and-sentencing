@@ -208,7 +208,29 @@ export default class BreachRoutes extends BaseRoutes {
   }
 
   public getCheckHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/breach/check-hearing-answers')
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = res.locals.user
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const courtDetails = await this.courtRegisterService.findCourtById(courtAppearance.courtCode, username)
+
+    return res.render('pages/breach/check-hearing-answers', {
+      ...urlParameters,
+      courtName: courtDetails.courtName,
+    })
+  }
+
+  public submitCheckHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    this.courtAppearanceService.setAppearanceInformationAcceptedTrue(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    return res.redirect(BreachJourneyUrls.taskList(urlParameters))
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

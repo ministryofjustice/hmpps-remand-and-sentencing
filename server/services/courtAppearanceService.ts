@@ -4,6 +4,7 @@ import type {
   AppealDateForm,
   AppealOffenceOutcomeForm,
   AppealOverallCaseOutcomeForm,
+  BreachDateForm,
   BreachTypeForm,
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
@@ -1725,6 +1726,80 @@ export default class CourtAppearanceService {
       courtAppearance.warrantType = breachTypeForm.breachType
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameters.nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  async setBreachDate(
+    session: Partial<SessionData>,
+    urlParameters: UrlParameters,
+    breachDateForm: BreachDateForm,
+    username: string,
+  ): Promise<
+    {
+      text?: string
+      html?: string
+      href: string
+    }[]
+  > {
+    let isValidWarrantDateRule = ''
+    if (breachDateForm['breachDate-day'] && breachDateForm['breachDate-month'] && breachDateForm['breachDate-year']) {
+      const breachDateString = toDateString(
+        breachDateForm['breachDate-year'],
+        breachDateForm['breachDate-month'],
+        breachDateForm['breachDate-day'],
+      )
+      isValidWarrantDateRule = `|isValidDate:${breachDateString}|isPastOrCurrentDate:${breachDateString}|isWithinLast100Years:${breachDateString}`
+    }
+    const errors = validate(
+      breachDateForm,
+      {
+        'breachDate-day': `required${isValidWarrantDateRule}`,
+        'breachDate-month': `required`,
+        'breachDate-year': `required`,
+      },
+      {
+        'required.breachDate-year': 'Hearing date must include year',
+        'required.breachDate-month': 'Hearing date must include month',
+        'required.breachDate-day': 'Hearing date must include day',
+        'isValidDate.breachDate-day': 'This date does not exist.',
+        'isPastOrCurrentDate.breachDate-day': `The hearing date cannot be a date in the future`,
+        'isWithinLast100Years.breachDate-day': 'All dates must be within the last 100 years from today’s date',
+      },
+    )
+
+    if (errors.length === 0) {
+      const breachDate = dayjs({
+        year: breachDateForm['breachDate-year'],
+        month: parseInt(breachDateForm['breachDate-month'], 10) - 1,
+        day: breachDateForm['breachDate-day'],
+      })
+      let latestSentencingAppearanceDate = null
+      const courtCaseValidationDates = await this.remandAndSentencingService.getValidationDatesForCourtCase(
+        urlParameters.courtCaseReference,
+        username,
+        urlParameters.appearanceReference,
+      )
+      if (courtCaseValidationDates.latestSentenceAppearanceDate) {
+        latestSentencingAppearanceDate = dayjs(courtCaseValidationDates.latestSentenceAppearanceDate)
+        if (breachDate.isBefore(latestSentencingAppearanceDate)) {
+          errors.push({
+            text: 'The hearing date must be after the sentencing warrant date in the court case',
+            href: '#breachDate',
+          })
+        }
+      }
+
+      if (errors.length === 0) {
+        const courtAppearance = this.getCourtAppearance(
+          session,
+          urlParameters.nomsId,
+          urlParameters.appearanceReference,
+        )
+        courtAppearance.warrantDate = breachDate.toDate()
+        // eslint-disable-next-line no-param-reassign
+        session.courtAppearances[urlParameters.nomsId] = courtAppearance
+      }
     }
     return errors
   }

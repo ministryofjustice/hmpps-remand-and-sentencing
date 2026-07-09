@@ -237,7 +237,11 @@ export default class RemandAndSentencingService {
   }
 
   async createUploadDocument(uploadedDocument: UploadedDocument, username: string): Promise<void> {
-    return this.remandAndSentencingApiClient.createUploadedDocument([uploadedDocument], username)
+    return this.createUploadDocuments([uploadedDocument], username)
+  }
+
+  async createUploadDocuments(uploadedDocuments: UploadedDocument[], username: string): Promise<void> {
+    return this.remandAndSentencingApiClient.createUploadedDocument(uploadedDocuments, username)
   }
 
   async getLatestOffenceDateForCourtCase(

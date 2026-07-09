@@ -38,6 +38,7 @@ declare module 'models' {
     uploadedDocuments?: UploadedDocument[]
     documentUploadAccepted?: boolean
     criminalAppealOfficeReference?: string
+    hasCommonPlatformDocuments?: boolean
   }
 
   export interface Offence {

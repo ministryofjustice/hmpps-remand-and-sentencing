@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import type { UrlParameters } from 'models'
+import type { CourtAppearance, UrlParameters } from 'models'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
@@ -65,10 +65,13 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     this.offenceService.clearAllOffences(req.session, nomsId, newCourtCaseId)
-    const sessionAppearance = pageCourtCaseAppearanceToCourtAppearance(appearance)
-    delete sessionAppearance.nextAppearanceSelect
-    delete sessionAppearance.nextAppearanceTimeSet
-    delete sessionAppearance.nextCourtAppearanceAccepted
+    const sessionAppearance = {
+      ...pageCourtCaseAppearanceToCourtAppearance(appearance),
+      nextAppearanceSelect: undefined,
+      nextAppearanceTimeSet: undefined,
+      nextCourtAppearanceAccepted: undefined,
+      hasCommonPlatformDocuments: true,
+    } as CourtAppearance
     this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, sessionAppearance)
     const addOrEditCourtCase = 'add-court-case'
     const addOrEditCourtAppearance = 'add-court-appearance'

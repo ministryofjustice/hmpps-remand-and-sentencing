@@ -4800,4 +4800,21 @@ export default {
       },
     })
   },
+
+  verifyCreateDocumentForCommonPlatformDocuments: ({ documentId = '' }: { documentId: string }): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/uploaded-documents',
+      method: 'POST',
+      body: {
+        documents: [
+          {
+            documentUUID: documentId,
+            fileName: 'court-document.pdf',
+            uploadedAt: '2024-06-01T10:00:00Z',
+            uploadedBy: 'user1',
+          },
+        ],
+      },
+    })
+  },
 }

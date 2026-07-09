@@ -37,6 +37,7 @@ context('New Court Case from hmcts data journey', () => {
     cy.task('stubGetAllAppearanceSubtypes')
     cy.task('stubHmctsCourtData')
     cy.task('stubCreateCourtCase')
+    cy.task('stubUploadDocument')
     cy.signIn()
     cy.visit(`/person/A1234AB/review-new-documents/${remandWarrantHearingId}/landing`)
   })
@@ -227,6 +228,11 @@ context('New Court Case from hmcts data journey', () => {
       })
     courtCaseNextAppearanceAnswersPage.continueButton().click()
 
+    // Verify uploaded document has not been created yet.
+    cy.task('verifyCreateDocumentForCommonPlatformDocuments', {
+      documentId: 'doc-uuid-1',
+    }).should('equal', 0)
+
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage
       .taskList()
@@ -251,6 +257,10 @@ context('New Court Case from hmcts data journey', () => {
       ])
     courtCaseTaskListPage.continueButton().click()
 
+    // Verify uploaded document has been created when court case is submitted.
+    cy.task('verifyCreateDocumentForCommonPlatformDocuments', {
+      documentId: 'doc-uuid-1',
+    }).should('equal', 1)
     cy.task('verifyNonSentenceCreateCourtCaseRequestFromHmctsData', {
       nextAppearanceDate: futureDate.format('YYYY-MM-DD'),
     }).should('equal', 1)

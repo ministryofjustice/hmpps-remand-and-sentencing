@@ -233,6 +233,31 @@ export default class BreachRoutes extends BaseRoutes {
     return res.redirect(BreachJourneyUrls.taskList(urlParameters))
   }
 
+  public getUploadBreachOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return res.render('pages/breach/upload-breach-order', {
+      ...urlParameters,
+      backLink: BreachJourneyUrls.taskList(urlParameters),
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitUploadBreachOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.uploadTemporaryDocument(
+      req,
+      res,
+      urlParameters,
+      'BREACH_ORDER',
+      BreachJourneyUrls.uploadBreachOrder(urlParameters, 'true'),
+      BreachJourneyUrls.viewBreachOrder(urlParameters, 'true'),
+    )
+  }
+
+  public getViewBreachOrder: RequestHandler = async (req, res) => {
+    return res.render('pages/breach/view-breach-order')
+  }
+
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {
     if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
       return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters))

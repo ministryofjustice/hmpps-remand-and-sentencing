@@ -105,8 +105,8 @@ export default class BreachTaskListModel extends TaskListModel {
     let href
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
       href = courtAppearance.uploadedDocuments?.length
-        ? BreachJourneyUrls.viewBreachHearingDocuments(this.urlParameters)
-        : BreachJourneyUrls.uploadBreachHearingDocument(this.urlParameters)
+        ? BreachJourneyUrls.viewBreachOrder(this.urlParameters)
+        : BreachJourneyUrls.uploadBreachOrder(this.urlParameters)
     }
     return href
   }

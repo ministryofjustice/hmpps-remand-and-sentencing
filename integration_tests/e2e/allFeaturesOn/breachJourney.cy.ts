@@ -6,6 +6,8 @@ import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePa
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
+import UploadBreachOrderPage from '../../pages/UploadBreachOrderPage'
+import ViewBreachOrderPage from '../../pages/ViewBreachOrderPage'
 
 context('Breach journey', () => {
   beforeEach(() => {
@@ -21,6 +23,10 @@ context('Breach journey', () => {
       courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
       latestSentenceAppearanceDate: '2000-01-01',
     })
+    cy.task('stubUploadTempDocument', {
+      type: 'BREACH_ORDER',
+    })
+    cy.task('stubUploadDocument')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -76,6 +82,30 @@ context('Breach journey', () => {
         {
           name: 'Upload court documents',
           status: 'Optional',
+        },
+      ])
+    courtCaseTaskListPage.uploadCourtDocumentsLink().click()
+    const uploadBreachOrderPage = Page.verifyOnPage(UploadBreachOrderPage)
+    uploadBreachOrderPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
+    uploadBreachOrderPage.continueButton().click()
+    const viewBreachOrderPage = Page.verifyOnPage(ViewBreachOrderPage)
+    viewBreachOrderPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Record appeal',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Completed',
         },
       ])
   })

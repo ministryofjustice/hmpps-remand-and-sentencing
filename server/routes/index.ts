@@ -1211,5 +1211,10 @@ export default function routes(services: Services): Router {
     breachRoutes.getViewBreachOrder,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/confirm-view-breach-order',
+    breachRoutes.confirmViewBreachOrder,
+  )
+
   return router
 }

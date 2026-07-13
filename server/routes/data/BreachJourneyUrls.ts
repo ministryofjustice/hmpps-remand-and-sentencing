@@ -33,6 +33,10 @@ export default class BreachJourneyUrls {
     return `${this.basePath(urlParameters)}/view-breach-order${backToUpload ? '?backToUpload=true' : ''}`
   }
 
+  static deleteDocument = (urlParameters: UrlParameters, hasErrors?: string) => {
+    return `${this.basePath(urlParameters)}/${urlParameters.documentUuid}/delete-document${this.getQueryParameters(hasErrors)}`
+  }
+
   static hearingDetails = (urlParameters: UrlParameters, hasErrors?: string) => {
     return `${this.basePath(urlParameters)}/hearing-details${this.getQueryParameters(hasErrors)}`
   }

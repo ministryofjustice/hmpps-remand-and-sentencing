@@ -1216,5 +1216,15 @@ export default function routes(services: Services): Router {
     breachRoutes.confirmViewBreachOrder,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/:documentUuid/delete-document',
+    breachRoutes.getDeleteDocument,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/:documentUuid/delete-document',
+    breachRoutes.submitDeleteDocument,
+  )
+
   return router
 }

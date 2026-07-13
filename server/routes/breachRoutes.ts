@@ -1,6 +1,6 @@
 import type { UrlParameters } from 'models'
 import { RequestHandler } from 'express'
-import type { BreachCourtNameForm, BreachDateForm, BreachTypeForm } from 'forms'
+import type { BreachCourtNameForm, BreachDateForm, BreachTypeForm, DeleteDocumentForm } from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'
@@ -295,6 +295,44 @@ export default class BreachRoutes extends BaseRoutes {
         ? BreachJourneyUrls.hearingDetails(urlParameters)
         : BreachJourneyUrls.taskList(urlParameters),
     )
+  }
+
+  public getDeleteDocument: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const document = this.courtAppearanceService.getUploadedDocument(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.documentUuid,
+      urlParameters.appearanceReference,
+    )
+    const deleteDocumentForm = (req.flash('deleteDocumentForm')[0] || {}) as DeleteDocumentForm
+    return res.render('pages/appeals/delete-document', {
+      ...urlParameters,
+      document,
+      deleteDocumentForm,
+      errors: req.flash('errors') || [],
+      backLink: BreachJourneyUrls.viewBreachOrder(urlParameters),
+    })
+  }
+
+  public submitDeleteDocument: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = res.locals.user
+    const deleteDocumentForm = trimForm<DeleteDocumentForm>(req.body)
+    const errors = await this.courtAppearanceService.removeUploadedDocument(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.documentUuid,
+      deleteDocumentForm,
+      username,
+      urlParameters.appearanceReference,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('deleteDocumentForm', { ...deleteDocumentForm })
+      return res.redirect(BreachJourneyUrls.deleteDocument(urlParameters, 'true'))
+    }
+    return res.redirect(BreachJourneyUrls.uploadBreachOrder(urlParameters))
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

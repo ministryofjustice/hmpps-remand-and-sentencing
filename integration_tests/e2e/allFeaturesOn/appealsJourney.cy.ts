@@ -41,7 +41,7 @@ context('Appeals journey', () => {
       type: 'APPEAL_ORDER',
     })
     cy.task('stubUploadDocument')
-    cy.task('stubCreateAppealHearing')
+    cy.task('stubCreateCourtAppearance')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })

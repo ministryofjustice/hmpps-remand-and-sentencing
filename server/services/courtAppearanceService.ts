@@ -30,7 +30,7 @@ import type {
   SentenceLengthForm,
 } from 'forms'
 import dayjs from 'dayjs'
-import { Session, SessionData } from 'express-session'
+import { SessionData } from 'express-session'
 import validate from '../validation/validation'
 import {
   alternativeSentenceLengthFormToSentenceLength,

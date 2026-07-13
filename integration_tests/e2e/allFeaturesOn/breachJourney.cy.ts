@@ -88,19 +88,16 @@ context('Breach journey', () => {
     const uploadBreachOrderPage = Page.verifyOnPage(UploadBreachOrderPage)
     uploadBreachOrderPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
     uploadBreachOrderPage.continueButton().click()
+    cy.location('pathname').should('include', '/view-breach-order')
     const viewBreachOrderPage = Page.verifyOnPage(ViewBreachOrderPage)
     viewBreachOrderPage.continueButton().click()
-    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add an appeal')
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
       .should('deep.equal', [
         {
           name: 'Add hearing information',
-          status: 'Completed',
-        },
-        {
-          name: 'Record appeal',
           status: 'Completed',
         },
         {

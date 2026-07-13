@@ -2907,6 +2907,18 @@ export default {
             warrantType: 'APPEAL',
             isSubList: false,
           },
+          {
+            outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+            outcomeName: 'DTO (Detention and Training Order)',
+            nomisCode: '3576',
+            outcomeType: 'SENTENCING',
+            displayOrder: 30,
+            relatedChargeOutcomeUuid: '8558b94a-79c1-4cc9-bd97-666048c6bc11',
+            dispositionCode: 'FINAL',
+            status: 'ACTIVE',
+            warrantType: 'SENTENCING',
+            isSubList: false,
+          },
         ],
       },
     })
@@ -4786,7 +4798,7 @@ export default {
         warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
         documents: [
           // eslint-disable-next-line no-template-curly-in-string
-          { documentUUID: '${json-unit.any-string}', documentType: 'APPEAL_ORDER', fileName: 'testfile.doc' },
+          { documentUUID: '${json-unit.any-string}', documentType: 'BREACH_ORDER', fileName: 'testfile.doc' },
         ],
         prisonId: 'MDI',
       },

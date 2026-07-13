@@ -167,15 +167,13 @@ context('Court Case Warrant Date Page', () => {
   })
 
   context('Edit appearance journey validation of warrant page', () => {
-    const futureDate = dayjs().add(10, 'day')
     beforeEach(() => {
       cy.task('happyPathStubs')
       cy.task('stubGetOffenceByCode', {})
       cy.task('stubSearchCourtCases', {})
       cy.task('stubGetOffencesByCodes', {})
       cy.task('stubGetLatestCourtAppearance', {})
-      cy.task('stubCreateCourtAppearance', { nextAppearanceDate: futureDate.format('YYYY-MM-DD') })
-      cy.task('stubCreateSentenceCourtAppearance')
+      cy.task('stubCreateCourtAppearance')
       cy.task('stubGetCourtById', {})
       cy.task('stubGetCourtsByIds')
       cy.task('stubGetAllChargeOutcomes')

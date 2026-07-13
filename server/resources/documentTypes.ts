@@ -60,6 +60,13 @@ const expectedTypes = {
       uploadLinkSegment: 'upload-appeal-order',
     },
   ],
+  BREACH_OF_SUPERVISION_REQUIREMENTS: [
+    {
+      type: 'BREACH_ORDER',
+      name: 'Breach order',
+      uploadLinkSegment: 'upload-breach-order',
+    },
+  ],
 }
 
 export default expectedTypes

@@ -14,6 +14,7 @@ import JourneyUrls from './data/JourneyUrls'
 import trimForm from '../utils/trim'
 import BreachTaskListModel from './data/BreachTaskListModel'
 import logger from '../../logger'
+import documentTypes from '../resources/documentTypes'
 
 export default class BreachRoutes extends BaseRoutes {
   constructor(
@@ -255,7 +256,45 @@ export default class BreachRoutes extends BaseRoutes {
   }
 
   public getViewBreachOrder: RequestHandler = async (req, res) => {
-    return res.render('pages/breach/view-breach-order')
+    const urlParameters = req.params as unknown as UrlParameters
+    const { backToUpload } = req.query
+    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const expectedDocumentTypes = documentTypes.BREACH_OF_SUPERVISION_REQUIREMENTS
+    const documentRows = expectedDocumentTypes.map(expectedType => {
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
+      return { ...expectedType, ...uploadedDocument }
+    })
+    const isEditJourney = this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
+    let backLink = BreachJourneyUrls.taskList(urlParameters)
+    if (backToUpload) {
+      backLink = BreachJourneyUrls.uploadBreachOrder(urlParameters)
+    } else if (isEditJourney) {
+      backLink = BreachJourneyUrls.hearingDetails(urlParameters)
+    }
+    return res.render('pages/breach/view-breach-order', {
+      ...urlParameters,
+      documentRows,
+      backLink,
+      isEditJourney,
+    })
+  }
+
+  public confirmViewBreachOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    this.courtAppearanceService.setDocumentUploadedTrue(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    return res.redirect(
+      this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
+        ? BreachJourneyUrls.hearingDetails(urlParameters)
+        : BreachJourneyUrls.taskList(urlParameters),
+    )
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

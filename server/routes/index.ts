@@ -1166,6 +1166,11 @@ export default function routes(services: Services): Router {
     breachRoutes.getTaskList,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/task-list',
+    breachRoutes.submitTaskList,
+  )
+
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/hearing-date',
     breachRoutes.getHearingDate,
@@ -1224,6 +1229,11 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/:documentUuid/delete-document',
     breachRoutes.submitDeleteDocument,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/confirmation',
+    breachRoutes.getConfirmation,
   )
 
   return router

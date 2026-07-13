@@ -41,6 +41,7 @@ export default class BreachRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, urlParameters.nomsId)
     this.offenceService.clearAllOffences(req.session, urlParameters.nomsId, urlParameters.courtCaseReference)
+    this.courtAppearanceService.initialiseBreach(req.session, urlParameters)
     return res.redirect(BreachJourneyUrls.breachType(urlParameters))
   }
 
@@ -89,6 +90,41 @@ export default class BreachRoutes extends BaseRoutes {
       ...urlParameters,
       model: new BreachTaskListModel(urlParameters, courtAppearance, caseReferenceSet),
     })
+  }
+
+  public submitTaskList: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = res.locals.user
+    const { prisonId } = res.locals.prisoner
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const courtAppearanceResponse = await this.remandAndSentencingService.createCourtAppearance(
+      username,
+      urlParameters.courtCaseReference,
+      urlParameters.appearanceReference,
+      courtAppearance,
+      prisonId,
+    )
+    const auditDetails = {
+      courtCaseUuids: [urlParameters.courtCaseReference],
+      courtAppearanceUuids: [courtAppearanceResponse.appearanceUuid],
+      chargesUuids: [],
+      sentenceUuids: [],
+      periodLengthUuids: [],
+      documentUuids: (courtAppearance.uploadedDocuments ?? []).map(document => document.documentUUID),
+    }
+    await this.auditService.logCreateHearing({
+      who: username,
+      subjectId: urlParameters.nomsId,
+      subjectType: 'PRISONER_ID',
+      correlationId: req.id,
+      details: auditDetails,
+    })
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, urlParameters.nomsId)
+    return res.redirect(BreachJourneyUrls.confirmation(urlParameters))
   }
 
   public getHearingDate: RequestHandler = async (req, res): Promise<void> => {
@@ -333,6 +369,10 @@ export default class BreachRoutes extends BaseRoutes {
       return res.redirect(BreachJourneyUrls.deleteDocument(urlParameters, 'true'))
     }
     return res.redirect(BreachJourneyUrls.uploadBreachOrder(urlParameters))
+  }
+
+  public getConfirmation: RequestHandler = async (req, res): Promise<void> => {
+    return res.render('pages/breach/confirmation')
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

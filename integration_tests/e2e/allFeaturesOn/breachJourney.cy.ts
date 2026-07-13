@@ -27,6 +27,7 @@ context('Breach journey', () => {
       type: 'BREACH_ORDER',
     })
     cy.task('stubUploadDocument')
+    cy.task('stubCreateCourtAppearance')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -105,5 +106,7 @@ context('Breach journey', () => {
           status: 'Completed',
         },
       ])
+    courtCaseTaskListPage.continueButton().click()
+    cy.task('verifyCreateBreachHearingRequest').should('equal', 1)
   })
 })

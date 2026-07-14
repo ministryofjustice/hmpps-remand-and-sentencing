@@ -1829,9 +1829,10 @@ export default class CourtAppearanceService {
     return errors
   }
 
-  initialiseBreach(session: Partial<SessionData>, urlParameter: UrlParameters) {
+  initialiseBreach(session: Partial<SessionData>, urlParameter: UrlParameters, offences: Offence[]) {
     const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
     courtAppearance.appearanceOutcomeUuid = DETENTION_TRAINING_ORDER_OUTCOME_UUID
+    courtAppearance.offences = offences
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[urlParameter.nomsId] = courtAppearance
   }

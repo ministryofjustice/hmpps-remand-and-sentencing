@@ -665,10 +665,17 @@ export default class RemandAndSentencingApiClient extends RestClient {
     )
   }
 
-  async getSentencedCharges(courtCaseUuid: string, username: string): Promise<SentencedCharges> {
+  async getSentencedCharges(
+    courtCaseUuid: string,
+    sentenceStatuses: string[],
+    username: string,
+  ): Promise<SentencedCharges> {
     return this.get(
       {
         path: `/court-case/${courtCaseUuid}/sentenced-charges`,
+        query: {
+          sentenceStatuses: sentenceStatuses.join(','),
+        },
       },
       asSystem(username),
     )

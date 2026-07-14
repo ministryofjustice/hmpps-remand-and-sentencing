@@ -4324,6 +4324,11 @@ export default {
       request: {
         method: 'GET',
         urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/sentenced-charges`,
+        queryParameters: {
+          sentenceStatuses: {
+            equalTo: 'ACTIVE',
+          },
+        },
       },
       response: {
         status: 200,
@@ -4942,6 +4947,11 @@ export default {
       request: {
         method: 'GET',
         urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/sentenced-charges`,
+        queryParameters: {
+          sentenceStatuses: {
+            equalTo: 'ACTIVE,INACTIVE',
+          },
+        },
       },
       response: {
         status: 200,

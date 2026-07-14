@@ -45,10 +45,12 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
           'Unknown document type',
       }
     })
+    const warrantTypeText = appearance.warrantType === 'SENTENCING' ? 'sentencing' : 'remand'
     return res.render('pages/courtDataIngestion/landing', {
       appearance,
       hmctsHearingId,
       nomsId,
+      warrantTypeText,
     })
   }
 
@@ -76,7 +78,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     const addOrEditCourtCase = 'add-court-case'
     const addOrEditCourtAppearance = 'add-court-appearance'
 
-    if (appearance.outcome) {
+    if (appearance.outcome || appearance.warrantType === 'SENTENCING') {
       return res.redirect(
         JourneyUrls.taskList(nomsId, addOrEditCourtCase, newCourtCaseId, addOrEditCourtAppearance, newAppearanceId),
       )

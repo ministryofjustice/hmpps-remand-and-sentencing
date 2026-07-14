@@ -45,6 +45,7 @@ export default class BreachRoutes extends BaseRoutes {
     this.offenceService.clearAllOffences(req.session, urlParameters.nomsId, urlParameters.courtCaseReference)
     const sentencedCharges = await this.remandAndSentencingService.getSentencedCharges(
       urlParameters.courtCaseReference,
+      ['ACTIVE', 'INACTIVE'],
       req.user.username,
     )
     const sessionOffences = sentencedCharges.charges

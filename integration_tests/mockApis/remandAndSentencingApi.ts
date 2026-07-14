@@ -4911,13 +4911,82 @@ export default {
         courtCode: 'ACCRYC',
         courtCaseReference: 'C894623',
         appearanceDate: '2023-05-13',
-        charges: [],
+        charges: [
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            appearanceUuid: '${json-unit.any-string}',
+            offenceCode: 'PS90037',
+            outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+            prisonId: 'MDI',
+            createChargeOrder: 0,
+            offenceStartDate: '2025-05-20',
+            chargeUuid: '95530239-a337-4fa3-b37b-8f8a1b3e1f21',
+          },
+        ],
         warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
         documents: [
           // eslint-disable-next-line no-template-curly-in-string
           { documentUUID: '${json-unit.any-string}', documentType: 'BREACH_ORDER', fileName: 'testfile.doc' },
         ],
         prisonId: 'MDI',
+      },
+    })
+  },
+
+  stubGetDtoSentencedCharges: ({
+    courtCaseUuid = '261911e2-6346-42e0-b025-a806048f4d04',
+  }: {
+    courtCaseUuid: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/sentenced-charges`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          charges: [
+            {
+              chargeUuid: '95530239-a337-4fa3-b37b-8f8a1b3e1f21',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2025-05-20',
+              outcome: {
+                outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                outcomeName: 'DTO',
+              },
+              legacyData: null,
+              createdAt: '2023-10-12T14:00:00Z',
+              sentence: {
+                sentenceUuid: '6d9e9064-94b7-4302-bb82-3ab46c4ca054',
+                chargeNumber: '2',
+                sentenceServeType: 'CONCURRENT',
+                consecutiveToSentenceUuid: null,
+                convictionDate: '2023-10-12',
+                sentenceType: {
+                  sentenceTypeUuid: '42d31e0d-35f8-4e6d-ac3d-9f2ccf72e449',
+                  description: 'DTO',
+                  classification: 'DTO',
+                },
+                legacyData: null,
+                fineAmount: null,
+                periodLengths: [
+                  {
+                    periodLengthUuid: 'd3747803-8f12-4a02-af2a-3f7de462a808',
+                    years: null,
+                    months: 6,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'TERM_LENGTH',
+                    legacyData: null,
+                  },
+                ],
+              },
+            },
+          ],
+        },
       },
     })
   },

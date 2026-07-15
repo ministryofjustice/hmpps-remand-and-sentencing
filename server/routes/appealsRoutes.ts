@@ -655,7 +655,10 @@ export default class AppealsRoutes extends BaseRoutes {
       req.flash('deleteDocumentForm', { ...deleteDocumentForm })
       return res.redirect(AppealsJourneyUrls.deleteDocument(urlParameters, 'true'))
     }
-    return res.redirect(AppealsJourneyUrls.uploadAppealsOrder(urlParameters))
+    if (deleteDocumentForm.deleteDocument === 'true') {
+      return res.redirect(AppealsJourneyUrls.uploadAppealsOrder(urlParameters))
+    }
+    return res.redirect(AppealsJourneyUrls.viewAppealsOrder(urlParameters))
   }
 
   public getConfirmation: RequestHandler = async (req, res) => {

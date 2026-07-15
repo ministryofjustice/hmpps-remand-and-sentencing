@@ -387,7 +387,10 @@ export default class BreachRoutes extends BaseRoutes {
       req.flash('deleteDocumentForm', { ...deleteDocumentForm })
       return res.redirect(BreachJourneyUrls.deleteDocument(urlParameters, 'true'))
     }
-    return res.redirect(BreachJourneyUrls.uploadBreachOrder(urlParameters))
+    if (deleteDocumentForm.deleteDocument === 'true') {
+      return res.redirect(BreachJourneyUrls.uploadBreachOrder(urlParameters))
+    }
+    return res.redirect(BreachJourneyUrls.viewBreachOrder(urlParameters))
   }
 
   public getConfirmation: RequestHandler = async (req, res): Promise<void> => {

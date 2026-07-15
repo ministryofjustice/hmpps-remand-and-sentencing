@@ -391,7 +391,8 @@ export default class BreachRoutes extends BaseRoutes {
   }
 
   public getConfirmation: RequestHandler = async (req, res): Promise<void> => {
-    return res.render('pages/breach/confirmation')
+    const urlParameters = req.params as unknown as UrlParameters
+    return res.render('pages/breach/confirmation', urlParameters)
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

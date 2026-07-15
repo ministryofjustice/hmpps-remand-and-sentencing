@@ -1,4 +1,5 @@
 import BreachCheckHearingAnswersPage from '../../pages/BreachCheckHearingAnswersPage'
+import BreachConfirmationPage from '../../pages/BreachConfirmationPage'
 import BreachCourtNamePage from '../../pages/BreachCourtNamePage'
 import BreachDatePage from '../../pages/BreachDatePage'
 import BreachTypePage from '../../pages/BreachTypePage'
@@ -109,5 +110,6 @@ context('Breach journey', () => {
       ])
     courtCaseTaskListPage.continueButton().click()
     cy.task('verifyCreateBreachHearingRequest').should('equal', 1)
+    Page.verifyOnPage(BreachConfirmationPage)
   })
 })

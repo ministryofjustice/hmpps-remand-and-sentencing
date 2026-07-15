@@ -35,4 +35,10 @@ context('Remove document confirmation page', () => {
     breachDeleteDocumentPage.continueButton().click()
     Page.verifyOnPage(UploadBreachOrderPage)
   })
+
+  it('selecting false returns back to view appeal order page', () => {
+    breachDeleteDocumentPage.radioLabelSelector('false').click()
+    breachDeleteDocumentPage.continueButton().click()
+    Page.verifyOnPage(ViewBreachOrderPage)
+  })
 })

@@ -133,20 +133,23 @@ export default abstract class TaskListModel {
 
   abstract getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus
 
-  getCourtDocumentsItem(courtAppearance: CourtAppearance): TaskListItem {
+  getCourtDocumentsItem(courtAppearance: CourtAppearance, courtDataIngestedDocumentsReviewed: boolean, courtDataIngestedDocumentsAvailable: boolean): TaskListItem {
     return {
       title: {
-        text: 'Upload court documents',
+        text: courtDataIngestedDocumentsReviewed ? 'Upload court documents' : 'Review court documents',
         classes: 'govuk-link--no-visited-state',
       },
-      href: this.getCourtDocumentsHref(courtAppearance),
-      status: this.getCourtDocumentsStatus(courtAppearance),
+      href: this.getCourtDocumentsHref(courtAppearance, courtDataIngestedDocumentsAvailable),
+      status: this.getCourtDocumentsStatus(courtAppearance, courtDataIngestedDocumentsReviewed),
     }
   }
 
-  abstract getCourtDocumentsHref(courtAppearance: CourtAppearance): string
+  abstract getCourtDocumentsHref(courtAppearance: CourtAppearance, courtDataIngestedDocumentsAvailable: boolean): string
 
-  private getCourtDocumentsStatus(courtAppearance: CourtAppearance): TaskListItemStatus {
+  private getCourtDocumentsStatus(
+    courtAppearance: CourtAppearance,
+    courtDataIngestedDocumentsReviewed: boolean,
+  ): TaskListItemStatus {
     let status: TaskListItemStatus = {
       tag: {
         text: 'Optional',
@@ -154,16 +157,23 @@ export default abstract class TaskListModel {
       },
     }
 
-    if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+    const documentCount = courtAppearance.uploadedDocuments.length
+    if (documentCount > 0 && !courtDataIngestedDocumentsReviewed) {
       status = {
-        text: 'Cannot start yet',
-        classes: 'govuk-task-list__status--cannot-start-yet',
+        text: documentCount === 1 ? '1 document uploaded' : `${documentCount} documents added`,
       }
-    }
+    } else {
+      if (!this.allAppearanceInformationFilledOut(courtAppearance)) {
+        status = {
+          text: 'Cannot start yet',
+          classes: 'govuk-task-list__status--cannot-start-yet',
+        }
+      }
 
-    if (courtAppearance.documentUploadAccepted) {
-      status = {
-        text: 'Completed',
+      if (courtAppearance.documentUploadAccepted) {
+        status = {
+          text: 'Completed',
+        }
       }
     }
     return status

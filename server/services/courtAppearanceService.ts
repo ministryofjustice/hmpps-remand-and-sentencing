@@ -995,6 +995,28 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
+  setSessionCourtDataIngestedDocumentUuids(session: Partial<SessionData>, courtDataIngestedDocuments: string[]) {
+    console.log(`Setting courtDataIngestedDocumentUuids in session: ${courtDataIngestedDocuments}`)
+    // eslint-disable-next-line no-param-reassign
+    session.courtDataIngestedDocumentUuids = courtDataIngestedDocuments
+  }
+
+  getSessionCourtDataIngestedDocumentUuids(session: Partial<SessionData>): string[] {
+    return session.courtDataIngestedDocumentUuids || []
+  }
+
+  setSessionCourtDataIngestedDocumentsReviewed(
+    session: Partial<SessionData>,
+    courtDataIngestedDocumentsReviewed: boolean,
+  ) {
+    // eslint-disable-next-line no-param-reassign
+    session.courtDataIngestedDocumentsReviewed = courtDataIngestedDocumentsReviewed
+  }
+
+  getSessionCourtDataIngestedDocumentsReviewed(session: Partial<SessionData>): boolean {
+    return session.courtDataIngestedDocumentsReviewed || false
+  }
+
   getSessionCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {
     return this.getCourtAppearance(session, nomsId, appearanceUuid)
   }
@@ -1455,6 +1477,8 @@ export default class CourtAppearanceService {
   clearSessionCourtAppearance(session: Partial<SessionData>, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]
+    // eslint-disable-next-line no-param-reassign
+    session.courtDataIngestedDocumentUuids = []
   }
 
   private getCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {

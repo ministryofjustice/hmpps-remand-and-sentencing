@@ -1516,6 +1516,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
+    const courtDataIngestedDocs = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(req.session)
+    console.log('courtDataIngestedDocs', courtDataIngestedDocs)
+    const courtDataIngestedToBeReviewed = this.courtAppearanceService.getSessionCourtDataIngestedDocumentsReviewed(
+      req.session,
+    )
+    const courtDataIngestedDocumentsAvailable = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(req.session).length > 0
+
     let appearanceOutcome
     if (warrantType !== 'SENTENCING' && courtAppearance.appearanceOutcomeUuid) {
       appearanceOutcome = await this.refDataService.getAppearanceOutcomeByUuid(
@@ -1534,6 +1541,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
           appearanceReference,
           courtAppearance,
           caseReferenceSet,
+          courtDataIngestedToBeReviewed,
+          courtDataIngestedDocumentsAvailable,
         )
         break
       default:
@@ -1546,6 +1555,8 @@ export default class CourtCaseRoutes extends BaseRoutes {
           courtAppearance,
           caseReferenceSet,
           appearanceOutcome,
+          courtDataIngestedToBeReviewed,
+          courtDataIngestedDocumentsAvailable,
         )
     }
     return res.render('pages/courtAppearance/task-list', {
@@ -2836,6 +2847,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
+    const courtDataIngestedDocumentUuids = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(req.session)
     const expectedDocumentTypes = documentTypes.NON_SENTENCING
     const documentRows = expectedDocumentTypes.map(expectedType => {
       const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
@@ -2849,6 +2861,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       courtAppearance,
       documentRows,
+      courtDataIngestedDocumentUuids,
       isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
         ? JourneyUrls.nonSentencingHearing(
@@ -2870,7 +2883,13 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
   public submitCourtDocuments: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId, appearanceReference)
+    const uploadedDocumentUuids = this.courtAppearanceService
+      .getUploadedDocuments(req.session, nomsId, appearanceReference)
+      .map(document => document.documentUUID)
+    if (this.compareDocuments(req.session, uploadedDocumentUuids)) {
+      this.courtAppearanceService.setSessionCourtDataIngestedDocumentsReviewed(req.session, true)
+      this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId, appearanceReference)
+    }
     return res.redirect(
       this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
         ? JourneyUrls.nonSentencingHearing(

@@ -56,7 +56,6 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     const { hmctsHearingId, nomsId } = urlParameters
     let appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, req.user.username)
-
     const newCourtCaseId = crypto.randomUUID()
     const newAppearanceId = crypto.randomUUID()
     appearance = {
@@ -73,6 +72,10 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       hasCommonPlatformDocuments: true,
     } as CourtAppearance
     this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, sessionAppearance)
+    this.courtAppearanceService.setSessionCourtDataIngestedDocumentUuids(
+      req.session,
+      appearance.documents.map(it => it.documentUUID),
+    )
     const addOrEditCourtCase = 'add-court-case'
     const addOrEditCourtAppearance = 'add-court-appearance'
 

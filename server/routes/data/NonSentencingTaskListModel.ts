@@ -3,7 +3,7 @@ import TaskListModel from './TaskListModel'
 import { AppearanceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import JourneyUrls from './JourneyUrls'
 
-export default class RemandTaskListModel extends TaskListModel {
+export default class NonSentencingTaskListModel extends TaskListModel {
   constructor(
     nomsId: string,
     addOrEditCourtCase: string,
@@ -13,6 +13,8 @@ export default class RemandTaskListModel extends TaskListModel {
     courtAppearance: CourtAppearance,
     caseReferenceSet: boolean,
     appearanceOutcome: AppearanceOutcome,
+    courtDataIngestedDocumentsReviewed: boolean,
+    courtDataIngestedDocumentsAvailable: boolean,
   ) {
     super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)
     this.items = [
@@ -22,7 +24,7 @@ export default class RemandTaskListModel extends TaskListModel {
     if (appearanceOutcome.dispositionCode === 'INTERIM') {
       this.items.push(this.getNextCourtAppearanceItem(courtAppearance))
     }
-    this.items.push(this.getCourtDocumentsItem(courtAppearance))
+    this.items.push(this.getCourtDocumentsItem(courtAppearance, courtDataIngestedDocumentsReviewed, courtDataIngestedDocumentsAvailable))
   }
 
   setPageHeading() {
@@ -192,9 +194,9 @@ export default class RemandTaskListModel extends TaskListModel {
     return status
   }
 
-  getCourtDocumentsHref(courtAppearance: CourtAppearance): string {
+  getCourtDocumentsHref(courtAppearance: CourtAppearance, courtDataIngestedDocumentsAvailable: boolean): string {
     let href
-    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+    if (courtDataIngestedDocumentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
       href = JourneyUrls.uploadCourtDocuments(
         this.nomsId,
         this.addOrEditCourtCase,

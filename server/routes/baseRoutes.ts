@@ -579,6 +579,12 @@ export default abstract class BaseRoutes {
     return caseReferenceSet
   }
 
+  protected compareDocuments(session, uploadedDocumentUuids: string[]): boolean {
+    const courtIngestedDocumentUuids = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(session)
+    const courtIngestedDocumentUuidsSorted = courtIngestedDocumentUuids.sort()
+    return uploadedDocumentUuids.sort().every((uuid, index) => uuid === courtIngestedDocumentUuidsSorted[index])
+  }
+
   private getDocumentErrorMessage(errorMessage: string): string {
     const match = Object.keys(BaseRoutes.documentErrorMessages).find(key => errorMessage.includes(key))
     if (match) {

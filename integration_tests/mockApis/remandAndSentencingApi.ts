@@ -5000,4 +5000,118 @@ export default {
       },
     })
   },
+
+  stubGetCourtCaseBreachLatest: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-case/fa078b3d-7c29-4f61-8120-b40b16ed9633',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          prisonerId: 'A1234AB',
+          courtCaseUuid: 'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+          status: 'ACTIVE',
+          latestAppearance: {
+            appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+            outcome: {
+              outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+              outcomeName: 'DTO (Detention and Training Order)',
+              nomisCode: '3576',
+              outcomeType: 'SENTENCING',
+              displayOrder: 30,
+            },
+            courtCode: 'ACCRYC',
+            courtCaseReference: 'C894623',
+            criminalAppealOfficeReference: null,
+            appearanceDate: '2023-12-15',
+            warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+            nextCourtAppearance: null,
+            documents: [],
+            charges: [
+              {
+                chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                offenceCode: 'PS90037',
+                offenceStartDate: '2025-12-15',
+                outcome: {
+                  outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                  outcomeName: 'DTO',
+                  nomisCode: '8855',
+                  outcomeType: 'SENTENCING',
+                  displayOrder: 20,
+                  dispositionCode: 'FINAL',
+                  status: 'ACTIVE',
+                },
+              },
+              {
+                chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+                offenceCode: 'PS90037',
+                outcome: {
+                  outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                  outcomeName: 'DTO',
+                  nomisCode: '8855',
+                  outcomeType: 'SENTENCING',
+                  displayOrder: 20,
+                  dispositionCode: 'FINAL',
+                  status: 'ACTIVE',
+                },
+              },
+            ],
+            deleteStatus: 'SUPPORTED',
+          },
+          appearances: [
+            {
+              appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+              outcome: {
+                outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+                outcomeName: 'DTO (Detention and Training Order)',
+                nomisCode: '3576',
+                outcomeType: 'SENTENCING',
+                displayOrder: 30,
+              },
+              courtCode: 'ACCRYC',
+              courtCaseReference: 'C894623',
+              criminalAppealOfficeReference: null,
+              appearanceDate: '2023-12-15',
+              warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+              nextCourtAppearance: null,
+              documents: [],
+              charges: [
+                {
+                  chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                  offenceCode: 'PS90037',
+                  offenceStartDate: '2025-12-15',
+                  outcome: {
+                    outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                    outcomeName: 'DTO (Detention and Training Order)',
+                    nomisCode: '8855',
+                    outcomeType: 'SENTENCING',
+                    displayOrder: 20,
+                    dispositionCode: 'FINAL',
+                    status: 'ACTIVE',
+                  },
+                },
+                {
+                  chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+                  offenceCode: 'PS90037',
+                  outcome: {
+                    outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                    outcomeName: 'DTO (Detention and Training Order)',
+                    nomisCode: '8855',
+                    outcomeType: 'SENTENCING',
+                    displayOrder: 20,
+                    dispositionCode: 'FINAL',
+                    status: 'ACTIVE',
+                  },
+                },
+              ],
+              deleteStatus: 'SUPPORTED',
+            },
+          ],
+        },
+      },
+    })
+  },
 }

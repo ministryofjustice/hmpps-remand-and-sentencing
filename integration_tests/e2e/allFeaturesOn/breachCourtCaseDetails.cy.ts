@@ -33,12 +33,12 @@ context('Breach Court Case details Page', () => {
               {
                 offenceCardHeader: 'PS90037 An offence description',
                 'Committed on': '15/12/2025',
-                Outcome: 'DTO (Detention and training order)',
+                Outcome: 'DTO (Detention and Training Order)',
               },
               {
                 offenceCardHeader: 'PS90037 An offence description',
                 'Committed on': 'Not entered',
-                Outcome: 'DTO (Detention and training order)',
+                Outcome: 'DTO (Detention and Training Order)',
               },
             ],
           },

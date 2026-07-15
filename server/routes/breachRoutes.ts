@@ -15,6 +15,8 @@ import trimForm from '../utils/trim'
 import BreachTaskListModel from './data/BreachTaskListModel'
 import logger from '../../logger'
 import documentTypes from '../resources/documentTypes'
+import { sortByDateDesc } from '../utils/utils'
+import { chargeToOffence } from '../utils/mappingUtils'
 
 export default class BreachRoutes extends BaseRoutes {
   constructor(
@@ -41,7 +43,24 @@ export default class BreachRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, urlParameters.nomsId)
     this.offenceService.clearAllOffences(req.session, urlParameters.nomsId, urlParameters.courtCaseReference)
-    this.courtAppearanceService.initialiseBreach(req.session, urlParameters)
+    const sentencedCharges = await this.remandAndSentencingService.getSentencedCharges(
+      urlParameters.courtCaseReference,
+      ['ACTIVE', 'INACTIVE'],
+      req.user.username,
+    )
+    const sessionOffences = sentencedCharges.charges
+      .filter(charge => charge.sentence?.sentenceType?.classification === 'DTO')
+      .sort((a, b) => {
+        return sortByDateDesc(b.createdAt, a.createdAt)
+      })
+      .map((sentencedCharge, index) => {
+        // eslint-disable-next-line no-param-reassign
+        delete sentencedCharge.sentence
+        // eslint-disable-next-line no-param-reassign
+        delete sentencedCharge.aggravatingFactors
+        return chargeToOffence(sentencedCharge, index)
+      })
+    this.courtAppearanceService.initialiseBreach(req.session, urlParameters, sessionOffences)
     return res.redirect(BreachJourneyUrls.breachType(urlParameters))
   }
 

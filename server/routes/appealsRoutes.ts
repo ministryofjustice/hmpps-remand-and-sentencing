@@ -62,6 +62,7 @@ export default class AppealsRoutes extends BaseRoutes {
     const courtAppearanceUuid = urlParameters.appearanceReference
     const sentencedCharges = await this.remandAndSentencingService.getSentencedCharges(
       urlParameters.courtCaseReference,
+      ['ACTIVE'],
       req.user.username,
     )
     const sessionOffences = sentencedCharges.charges

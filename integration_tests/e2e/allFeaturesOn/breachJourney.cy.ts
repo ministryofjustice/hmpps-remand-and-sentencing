@@ -27,6 +27,7 @@ context('Breach journey', () => {
       type: 'BREACH_ORDER',
     })
     cy.task('stubUploadDocument')
+    cy.task('stubGetDtoSentencedCharges', {})
     cy.task('stubCreateCourtAppearance')
     cy.signIn()
     cy.visit('/person/A1234AB')

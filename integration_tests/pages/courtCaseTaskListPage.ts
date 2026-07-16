@@ -23,6 +23,8 @@ export default class CourtCaseTaskListPage extends Page {
 
   uploadCourtDocumentsLink = (): PageElement => cy.get('a:contains("Upload court documents")')
 
+  reviewCourtDocumentsLink = (): PageElement => cy.get('a:contains("Review court documents")')
+
   saveDraftParagraph = (): PageElement =>
     cy.get('p:contains("To save a draft of the court case, you must first complete the appearance information.")')
 

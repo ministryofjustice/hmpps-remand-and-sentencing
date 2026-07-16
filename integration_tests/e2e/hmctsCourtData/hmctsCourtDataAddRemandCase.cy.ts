@@ -91,8 +91,8 @@ context('New Remand Court Case from hmcts data journey', () => {
           status: 'Cannot start yet',
         },
         {
-          name: 'Upload court documents',
-          status: 'Cannot start yet',
+          name: 'Review court documents',
+          status: '1 document uploaded',
         },
       ])
     courtCaseTaskListPage.hearingInformationLink().click()
@@ -138,8 +138,8 @@ context('New Remand Court Case from hmcts data journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional', // TODO should this stay as optional once some data is filled?
+          name: 'Review court documents',
+          status: '1 document uploaded',
         },
       ])
     courtCaseTaskListPage.offencesLink().click()
@@ -188,8 +188,8 @@ context('New Remand Court Case from hmcts data journey', () => {
           status: 'Incomplete',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
+          name: 'Review court documents',
+          status: '1 document uploaded',
         },
       ])
     courtCaseTaskListPage.nextCourtAppearanceLink().click()
@@ -254,8 +254,8 @@ context('New Remand Court Case from hmcts data journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Optional',
+          name: 'Review court documents',
+          status: '1 document uploaded',
         },
       ])
     courtCaseTaskListPage.continueButton().click()

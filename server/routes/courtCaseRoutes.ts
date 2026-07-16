@@ -1516,8 +1516,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
-    const courtDataIngestedDocs = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(req.session)
-    console.log('courtDataIngestedDocs', courtDataIngestedDocs)
     const courtDataIngestedDocumentUuids = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(
       req.session,
     )

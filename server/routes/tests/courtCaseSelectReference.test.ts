@@ -71,6 +71,7 @@ describe('GET Select reference', () => {
         expect(prisonerBanner).toContain('Cell numberCELL-1')
         const continueButton = $('[data-qa=continue-button]').text()
         expect(continueButton).toContain('Continue')
+        expect($('[data=qa=hearingDetails]').length).toBe(0)
       })
   })
 })

@@ -133,14 +133,17 @@ export default abstract class TaskListModel {
 
   abstract getOffenceSentenceStatus(courtAppearance: CourtAppearance): TaskListItemStatus
 
-  getCourtDocumentsItem(courtAppearance: CourtAppearance, courtDataIngestedDocumentsReviewed: boolean, courtDataIngestedDocumentsAvailable: boolean): TaskListItem {
+  getCourtDocumentsItem(
+    courtAppearance: CourtAppearance,
+    courtDataIngestedDocumentsAvailable: boolean,
+  ): TaskListItem {
     return {
       title: {
-        text: courtDataIngestedDocumentsReviewed ? 'Upload court documents' : 'Review court documents',
+        text: courtDataIngestedDocumentsAvailable ? 'Review court documents' : 'Upload court documents',
         classes: 'govuk-link--no-visited-state',
       },
       href: this.getCourtDocumentsHref(courtAppearance, courtDataIngestedDocumentsAvailable),
-      status: this.getCourtDocumentsStatus(courtAppearance, courtDataIngestedDocumentsReviewed),
+      status: this.getCourtDocumentsStatus(courtAppearance, courtDataIngestedDocumentsAvailable),
     }
   }
 
@@ -148,7 +151,7 @@ export default abstract class TaskListModel {
 
   private getCourtDocumentsStatus(
     courtAppearance: CourtAppearance,
-    courtDataIngestedDocumentsReviewed: boolean,
+    courtDataIngestedDocumentsAvailable: boolean,
   ): TaskListItemStatus {
     let status: TaskListItemStatus = {
       tag: {
@@ -158,7 +161,7 @@ export default abstract class TaskListModel {
     }
 
     const documentCount = courtAppearance.uploadedDocuments.length
-    if (documentCount > 0 && !courtDataIngestedDocumentsReviewed) {
+    if (documentCount > 0 && courtDataIngestedDocumentsAvailable) {
       status = {
         text: documentCount === 1 ? '1 document uploaded' : `${documentCount} documents added`,
       }

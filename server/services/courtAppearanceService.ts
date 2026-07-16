@@ -996,7 +996,6 @@ export default class CourtAppearanceService {
   }
 
   setSessionCourtDataIngestedDocumentUuids(session: Partial<SessionData>, courtDataIngestedDocuments: string[]) {
-    console.log(`Setting courtDataIngestedDocumentUuids in session: ${courtDataIngestedDocuments}`)
     // eslint-disable-next-line no-param-reassign
     session.courtDataIngestedDocumentUuids = courtDataIngestedDocuments
   }
@@ -1005,17 +1004,17 @@ export default class CourtAppearanceService {
     return session.courtDataIngestedDocumentUuids || []
   }
 
-  setSessionCourtDataIngestedDocumentsReviewed(
-    session: Partial<SessionData>,
-    courtDataIngestedDocumentsReviewed: boolean,
-  ) {
-    // eslint-disable-next-line no-param-reassign
-    session.courtDataIngestedDocumentsReviewed = courtDataIngestedDocumentsReviewed
-  }
-
-  getSessionCourtDataIngestedDocumentsReviewed(session: Partial<SessionData>): boolean {
-    return session.courtDataIngestedDocumentsReviewed || false
-  }
+  // setSessionCourtDataIngestedDocumentsReviewed(
+  //   session: Partial<SessionData>,
+  //   courtDataIngestedDocumentsReviewed: boolean,
+  // ) {
+  //   // eslint-disable-next-line no-param-reassign
+  //   session.courtDataIngestedDocumentsReviewed = courtDataIngestedDocumentsReviewed
+  // }
+  //
+  // getSessionCourtDataIngestedDocumentsReviewed(session: Partial<SessionData>): boolean {
+  //   return session.courtDataIngestedDocumentsReviewed || false
+  // }
 
   getSessionCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {
     return this.getCourtAppearance(session, nomsId, appearanceUuid)

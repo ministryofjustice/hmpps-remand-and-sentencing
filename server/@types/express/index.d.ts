@@ -13,7 +13,6 @@ export declare module 'express-session' {
     unknownRecallSentenceUuids: Map<string, string[]>
     aggravatingChargeUuids?: { chargeUuid: string; processed: boolean }[]
     courtDataIngestedDocumentUuids?: string[]
-    courtDataIngestedDocumentsReviewed?: boolean
   }
 }
 

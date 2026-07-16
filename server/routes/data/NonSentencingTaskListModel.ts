@@ -13,7 +13,6 @@ export default class NonSentencingTaskListModel extends TaskListModel {
     courtAppearance: CourtAppearance,
     caseReferenceSet: boolean,
     appearanceOutcome: AppearanceOutcome,
-    courtDataIngestedDocumentsReviewed: boolean,
     courtDataIngestedDocumentsAvailable: boolean,
   ) {
     super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)
@@ -24,7 +23,7 @@ export default class NonSentencingTaskListModel extends TaskListModel {
     if (appearanceOutcome.dispositionCode === 'INTERIM') {
       this.items.push(this.getNextCourtAppearanceItem(courtAppearance))
     }
-    this.items.push(this.getCourtDocumentsItem(courtAppearance, courtDataIngestedDocumentsReviewed, courtDataIngestedDocumentsAvailable))
+    this.items.push(this.getCourtDocumentsItem(courtAppearance, courtDataIngestedDocumentsAvailable))
   }
 
   setPageHeading() {

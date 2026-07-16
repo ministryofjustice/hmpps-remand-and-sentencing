@@ -42,6 +42,7 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
 import RefDataService from './refDataService'
+import { DETENTION_TRAINING_ORDER_OUTCOME_UUID } from '../utils/constants'
 
 export default class CourtAppearanceService {
   constructor(
@@ -1850,5 +1851,13 @@ export default class CourtAppearanceService {
       session.courtAppearances[urlParameter.nomsId] = courtAppearance
     }
     return errors
+  }
+
+  initialiseBreach(session: Partial<SessionData>, urlParameter: UrlParameters, offences: Offence[]) {
+    const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+    courtAppearance.appearanceOutcomeUuid = DETENTION_TRAINING_ORDER_OUTCOME_UUID
+    courtAppearance.offences = offences
+    // eslint-disable-next-line no-param-reassign
+    session.courtAppearances[urlParameter.nomsId] = courtAppearance
   }
 }

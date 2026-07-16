@@ -1,0 +1,44 @@
+{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% set pageTitle = applicationName + " - Breach successfully saved" %}
+
+{% block subNavigation %}
+{% endblock %}
+
+{% block content %}
+
+    {% set titleHtml %}
+        <span class="govuk-!-font-size-36">
+            Breach hearing successfully saved
+        </span>
+    {% endset %}
+
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({
+                titleHtml: titleHtml,
+                classes: "govuk-!-margin-bottom-6"
+            }) }}
+
+            <div class="govuk-!-margin-top-6">
+                <h2 class="govuk-heading-l">What you must do next</h2>
+            <div class="govuk-body govuk-!-margin-top-6">
+                <span>
+                    As this was a breach of supervision requirements, you must now add a term to the original sentence.
+                <span>
+                <ul class="govuk-list govuk-!-margin-top-2">
+                    <li>
+                        {{ govukButton({
+                            text: "Add a term",
+                            href: "/person/" + nomsId + "/view-court-case/" + courtCaseReference + "/details"
+                        }) }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -964,16 +964,97 @@ export default {
     })
   },
 
-  stubCreateCourtAppearance: ({ nextAppearanceDate = '' }: { nextAppearanceDate: string }): SuperAgentRequest => {
+  verifySentenceCreateCourtCaseRequestFromHmctsData: ({
+    nextAppearanceDate = '',
+  }: {
+    nextAppearanceDate: string
+  }): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern:
+        '/remand-and-sentencing-api/court-case/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
+      method: 'PUT',
+      body: {
+        prisonerId: 'A1234AB',
+        appearances: [
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            courtCaseUuid: '${json-unit.any-string}',
+            // eslint-disable-next-line no-template-curly-in-string
+            appearanceUuid: '${json-unit.any-string}',
+            outcomeUuid: '62412083-9892-48c9-bf01-7864af4a8b3c',
+            courtCode: 'ACCRYC',
+            courtCaseReference: 'C894623',
+            appearanceDate: '2023-12-15',
+            charges: [
+              {
+                // eslint-disable-next-line no-template-curly-in-string
+                appearanceUuid: '${json-unit.any-string}',
+                offenceCode: 'PS90037',
+                outcomeUuid: 'f17328cf-ceaa-43c2-930a-26cf74480e18',
+                prisonId: 'MDI',
+                createChargeOrder: 0,
+                offenceStartDate: '2023-05-10',
+                // eslint-disable-next-line no-template-curly-in-string
+                chargeUuid: '${json-unit.any-string}',
+                sentence: {
+                  chargeNumber: '1',
+                  periodLengths: [
+                    {
+                      days: 4,
+                      weeks: 3,
+                      months: 2,
+                      years: 1,
+                      periodOrder: 'years,months,weeks,days',
+                      type: 'SENTENCE_LENGTH',
+                      // eslint-disable-next-line no-template-curly-in-string
+                      periodLengthUuid: '${json-unit.any-string}',
+                      prisonId: 'MDI',
+                    },
+                  ],
+                  sentenceServeType: 'FORTHWITH',
+                  sentenceTypeId: '467e2fa8-fce1-41a4-8110-b378c727eed3',
+                  prisonId: 'MDI',
+                  // eslint-disable-next-line no-template-curly-in-string
+                  sentenceUuid: '${json-unit.any-string}',
+                  convictionDate: '2023-05-12',
+                },
+              },
+            ],
+            warrantType: 'SENTENCING',
+            documents: [
+              {
+                documentUUID: 'doc-uuid-1',
+                fileName: 'court-document.pdf',
+                uploadedAt: '2024-06-01T10:00:00Z',
+                uploadedBy: 'user1',
+              },
+            ],
+            prisonId: 'MDI',
+            overallSentenceLength: {
+              days: 2,
+              weeks: 3,
+              months: 5,
+              years: 4,
+              periodOrder: 'years,months,weeks,days',
+              type: 'OVERALL_SENTENCE_LENGTH',
+              // eslint-disable-next-line no-template-curly-in-string
+              periodLengthUuid: '${json-unit.any-string}',
+              prisonId: 'MDI',
+            },
+            overallConvictionDate: '2023-05-12',
+          },
+        ],
+        prisonId: 'MDI',
+      },
+    })
+  },
+
+  stubCreateCourtAppearance: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'PUT',
-        urlPattern: '/remand-and-sentencing-api/court-appearance/5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
-        bodyPatterns: [
-          {
-            equalToJson: `{"courtCaseUuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "outcomeUuid": "6da892fa-d85e-44de-95d4-a7f06c3a2dcb", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "appearanceDate": "2023-05-13", "prisonId": "MDI", "charges": [{"offenceCode": "PS90037", "offenceStartDate": "2023-05-12", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "chargeUuid": "71bb9f7e-971c-4c34-9a33-43478baee74f", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "createChargeOrder": 0 }, { "chargeUuid": "\${json-unit.any-string}", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "offenceCode": "PS90037", "offenceStartDate": "2023-05-10", "outcomeUuid": "85ffc6bf-6a2c-4f2b-8db8-5b466b602537", "prisonId": "MDI", "createChargeOrder": 1 }], "warrantType": "NON_SENTENCING", "nextCourtAppearance": {"appearanceDate": "${nextAppearanceDate}", "courtCode": "ACCRYC", "appearanceTypeUuid": "63e8fce0-033c-46ad-9edf-391b802d547a", "courtAppearanceSubtypeUuid": "3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73", "prisonId": "MDI"}}`,
-          },
-        ],
+        urlPattern:
+          '/remand-and-sentencing-api/court-appearance/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})',
       },
       response: {
         status: 201,
@@ -1029,29 +1110,6 @@ export default {
           appearanceTypeUuid: '63e8fce0-033c-46ad-9edf-391b802d547a',
           courtAppearanceSubtypeUuid: '3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73',
           prisonId: 'MDI',
-        },
-      },
-    })
-  },
-
-  stubCreateSentenceCourtAppearance: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'PUT',
-        urlPattern: '/remand-and-sentencing-api/court-appearance/5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
-        bodyPatterns: [
-          {
-            equalToJson:
-              // eslint-disable-next-line no-template-curly-in-string
-              '{ "courtCaseUuid" : "3fa85f64-5717-4562-b3fc-2c963f66afa6", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "outcomeUuid" : "62412083-9892-48c9-bf01-7864af4a8b3c", "courtCode" : "ACCRYC", "courtCaseReference" : "C894623", "appearanceDate" : "2023-05-13", "charges" : [ { "offenceCode" : "PS90037", "offenceStartDate" : "2023-05-12", "outcomeUuid" : "63920fee-e43a-45ff-a92d-4679f1af2527", "prisonId" : "MDI", "createChargeOrder": 0, "chargeUuid" : "71bb9f7e-971c-4c34-9a33-43478baee74f", "appearanceUuid": "5286de02-77ed-4ff6-b597-a05c3e2c4e0f", "sentence" : { "sentenceUuid": "${json-unit.any-string}", "chargeNumber" : "1", "periodLengths" : [ { "periodLengthUuid": "${json-unit.any-string}", "months" : 5, "years" : 4, "periodOrder" : "years,months,weeks,days", "type" : "SENTENCE_LENGTH", "prisonId" : "MDI" } ], "sentenceServeType" : "FORTHWITH", "sentenceTypeId" : "467e2fa8-fce1-41a4-8110-b378c727eed3", "prisonId" : "MDI", "convictionDate" : "2023-05-12" } } ], "warrantType" : "SENTENCING", "prisonId" : "MDI", "overallSentenceLength" : { "periodLengthUuid": "${json-unit.any-string}", "months" : 5, "years" : 4, "periodOrder" : "years,months,weeks,days", "type" : "OVERALL_SENTENCE_LENGTH", "prisonId" : "MDI" }, "overallConvictionDate" : "2023-05-12" }',
-          },
-        ],
-      },
-      response: {
-        status: 201,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          courtCaseUuid: 'c455ab5b-fb49-4ac3-bf44-57b7f9b73019',
         },
       },
     })
@@ -2934,6 +2992,18 @@ export default {
             warrantType: 'APPEAL',
             isSubList: false,
           },
+          {
+            outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+            outcomeName: 'DTO (Detention and Training Order)',
+            nomisCode: '3576',
+            outcomeType: 'SENTENCING',
+            displayOrder: 30,
+            relatedChargeOutcomeUuid: '8558b94a-79c1-4cc9-bd97-666048c6bc11',
+            dispositionCode: 'FINAL',
+            status: 'ACTIVE',
+            warrantType: 'SENTENCING',
+            isSubList: false,
+          },
         ],
       },
     })
@@ -4254,6 +4324,11 @@ export default {
       request: {
         method: 'GET',
         urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/sentenced-charges`,
+        queryParameters: {
+          sentenceStatuses: {
+            equalTo: 'ACTIVE',
+          },
+        },
       },
       response: {
         status: 200,
@@ -4298,27 +4373,6 @@ export default {
               },
             },
           ],
-        },
-      },
-    })
-  },
-
-  stubCreateAppealHearing: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'PUT',
-        urlPattern: '/remand-and-sentencing-api/court-appearance/([a-zA-Z0-9-]*)',
-        bodyPatterns: [
-          {
-            equalToJson: `{"courtCaseUuid": "261911e2-6346-42e0-b025-a806048f4d04", "appearanceUuid": "\${json-unit.any-string}", "outcomeUuid": "cd8c02aa-0599-4eb3-9e73-c88836258be2", "courtCode": "ACCRYC", "courtCaseReference": "C894623", "criminalAppealOfficeReference": "A12345", "appearanceDate": "2023-05-13", "charges": [{"appearanceUuid": "\${json-unit.any-string}", "offenceCode": "PS90037", "offenceStartDate": "2025-05-20", "outcomeUuid": "42a30fcd-51c0-4c18-95f9-e3a364eb9176", "prisonId": "MDI", "createChargeOrder": 0, "chargeUuid": "6683ebbb-f6a6-4744-8603-371135c36913"}], "warrantType": "APPEAL", "documents": [{"documentUUID": "\${json-unit.any-string}", "documentType": "APPEAL_ORDER", "fileName": "testfile.doc"}], "prisonId": "MDI"}`,
-          },
-        ],
-      },
-      response: {
-        status: 201,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          appearanceUuid: '5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
         },
       },
     })
@@ -4769,7 +4823,7 @@ export default {
     })
   },
 
-  stubHmctsCourtData: (): SuperAgentRequest => {
+  stubHmctsRemandCourtData: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -4801,6 +4855,38 @@ export default {
     })
   },
 
+  stubHmctsSentencingCourtData: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/hmcts-court-data/abf395c2-8e3c-419c-bd9c-71d544e5d811/appearance',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
+          outcome: null,
+          courtCode: null,
+          courtCaseReference: 'C894623',
+          criminalAppealOfficeReference: null,
+          appearanceDate: '2023-12-15',
+          warrantType: 'SENTENCING',
+          nextCourtAppearance: null,
+          documents: [
+            {
+              documentUUID: 'doc-uuid-1',
+              fileName: 'court-document.pdf',
+              uploadedAt: '2024-06-01T10:00:00Z',
+              uploadedBy: 'user1',
+            },
+          ],
+          charges: [],
+        },
+      },
+    })
+  },
+
   verifyCreateDocumentForCommonPlatformDocuments: ({ documentId = '' }: { documentId: string }): Promise<number> => {
     return verifyRequest({
       requestUrlPattern: '/remand-and-sentencing-api/uploaded-documents',
@@ -4814,6 +4900,217 @@ export default {
             uploadedBy: 'user1',
           },
         ],
+      },
+    })
+  },
+
+  verifyCreateBreachHearingRequest: (): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/court-appearance/([a-zA-Z0-9-]*)',
+      method: 'PUT',
+      body: {
+        courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
+        // eslint-disable-next-line no-template-curly-in-string
+        appearanceUuid: '${json-unit.any-string}',
+        outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+        courtCode: 'ACCRYC',
+        courtCaseReference: 'C894623',
+        appearanceDate: '2023-05-13',
+        charges: [
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            appearanceUuid: '${json-unit.any-string}',
+            offenceCode: 'PS90037',
+            outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+            prisonId: 'MDI',
+            createChargeOrder: 0,
+            offenceStartDate: '2025-05-20',
+            chargeUuid: '95530239-a337-4fa3-b37b-8f8a1b3e1f21',
+          },
+        ],
+        warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+        documents: [
+          // eslint-disable-next-line no-template-curly-in-string
+          { documentUUID: '${json-unit.any-string}', documentType: 'BREACH_ORDER', fileName: 'testfile.doc' },
+        ],
+        prisonId: 'MDI',
+      },
+    })
+  },
+
+  stubGetDtoSentencedCharges: ({
+    courtCaseUuid = '261911e2-6346-42e0-b025-a806048f4d04',
+  }: {
+    courtCaseUuid: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/remand-and-sentencing-api/court-case/${courtCaseUuid}/sentenced-charges`,
+        queryParameters: {
+          sentenceStatuses: {
+            equalTo: 'ACTIVE,INACTIVE',
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          charges: [
+            {
+              chargeUuid: '95530239-a337-4fa3-b37b-8f8a1b3e1f21',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2025-05-20',
+              outcome: {
+                outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                outcomeName: 'DTO',
+              },
+              legacyData: null,
+              createdAt: '2023-10-12T14:00:00Z',
+              sentence: {
+                sentenceUuid: '6d9e9064-94b7-4302-bb82-3ab46c4ca054',
+                chargeNumber: '2',
+                sentenceServeType: 'CONCURRENT',
+                consecutiveToSentenceUuid: null,
+                convictionDate: '2023-10-12',
+                sentenceType: {
+                  sentenceTypeUuid: '42d31e0d-35f8-4e6d-ac3d-9f2ccf72e449',
+                  description: 'DTO',
+                  classification: 'DTO',
+                },
+                legacyData: null,
+                fineAmount: null,
+                periodLengths: [
+                  {
+                    periodLengthUuid: 'd3747803-8f12-4a02-af2a-3f7de462a808',
+                    years: null,
+                    months: 6,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'TERM_LENGTH',
+                    legacyData: null,
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    })
+  },
+
+  stubGetCourtCaseBreachLatest: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-case/fa078b3d-7c29-4f61-8120-b40b16ed9633',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          prisonerId: 'A1234AB',
+          courtCaseUuid: 'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+          status: 'ACTIVE',
+          latestAppearance: {
+            appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+            outcome: {
+              outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+              outcomeName: 'DTO (Detention and Training Order)',
+              nomisCode: '3576',
+              outcomeType: 'SENTENCING',
+              displayOrder: 30,
+            },
+            courtCode: 'ACCRYC',
+            courtCaseReference: 'C894623',
+            criminalAppealOfficeReference: null,
+            appearanceDate: '2023-12-15',
+            warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+            nextCourtAppearance: null,
+            documents: [],
+            charges: [
+              {
+                chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                offenceCode: 'PS90037',
+                offenceStartDate: '2025-12-15',
+                outcome: {
+                  outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                  outcomeName: 'DTO',
+                  nomisCode: '8855',
+                  outcomeType: 'SENTENCING',
+                  displayOrder: 20,
+                  dispositionCode: 'FINAL',
+                  status: 'ACTIVE',
+                },
+              },
+              {
+                chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+                offenceCode: 'PS90037',
+                outcome: {
+                  outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                  outcomeName: 'DTO',
+                  nomisCode: '8855',
+                  outcomeType: 'SENTENCING',
+                  displayOrder: 20,
+                  dispositionCode: 'FINAL',
+                  status: 'ACTIVE',
+                },
+              },
+            ],
+            deleteStatus: 'SUPPORTED',
+          },
+          appearances: [
+            {
+              appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+              outcome: {
+                outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+                outcomeName: 'DTO (Detention and Training Order)',
+                nomisCode: '3576',
+                outcomeType: 'SENTENCING',
+                displayOrder: 30,
+              },
+              courtCode: 'ACCRYC',
+              courtCaseReference: 'C894623',
+              criminalAppealOfficeReference: null,
+              appearanceDate: '2023-12-15',
+              warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+              nextCourtAppearance: null,
+              documents: [],
+              charges: [
+                {
+                  chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+                  offenceCode: 'PS90037',
+                  offenceStartDate: '2025-12-15',
+                  outcome: {
+                    outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                    outcomeName: 'DTO (Detention and Training Order)',
+                    nomisCode: '8855',
+                    outcomeType: 'SENTENCING',
+                    displayOrder: 20,
+                    dispositionCode: 'FINAL',
+                    status: 'ACTIVE',
+                  },
+                },
+                {
+                  chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+                  offenceCode: 'PS90037',
+                  outcome: {
+                    outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                    outcomeName: 'DTO (Detention and Training Order)',
+                    nomisCode: '8855',
+                    outcomeType: 'SENTENCING',
+                    displayOrder: 20,
+                    dispositionCode: 'FINAL',
+                    status: 'ACTIVE',
+                  },
+                },
+              ],
+              deleteStatus: 'SUPPORTED',
+            },
+          ],
+        },
       },
     })
   },

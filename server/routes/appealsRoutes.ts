@@ -62,6 +62,7 @@ export default class AppealsRoutes extends BaseRoutes {
     const courtAppearanceUuid = urlParameters.appearanceReference
     const sentencedCharges = await this.remandAndSentencingService.getSentencedCharges(
       urlParameters.courtCaseReference,
+      ['ACTIVE'],
       req.user.username,
     )
     const sessionOffences = sentencedCharges.charges
@@ -654,7 +655,10 @@ export default class AppealsRoutes extends BaseRoutes {
       req.flash('deleteDocumentForm', { ...deleteDocumentForm })
       return res.redirect(AppealsJourneyUrls.deleteDocument(urlParameters, 'true'))
     }
-    return res.redirect(AppealsJourneyUrls.uploadAppealsOrder(urlParameters))
+    if (deleteDocumentForm.deleteDocument === 'true') {
+      return res.redirect(AppealsJourneyUrls.uploadAppealsOrder(urlParameters))
+    }
+    return res.redirect(AppealsJourneyUrls.viewAppealsOrder(urlParameters))
   }
 
   public getConfirmation: RequestHandler = async (req, res) => {

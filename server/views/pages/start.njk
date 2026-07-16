@@ -150,7 +150,7 @@
                                     }
                                     ]))%}
                             {% endif %}
-                            {% if courtCaseDetails.warrantType !== 'SENTENCING' and  courtCaseDetails.warrantType !== 'APPEAL'%}
+                            {% if courtCaseDetails.warrantType === 'NON_SENTENCING' %}
                               {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat(
                                       {
                                           key: { text: "Next appearance"},

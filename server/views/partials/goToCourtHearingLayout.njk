@@ -23,8 +23,12 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-!-margin-top-8">
                 {% set backToCourtHearingHref = "/person/" +  nomsId + "/" + addOrEditCourtCase +"/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/task-list"%}
-                {% if courtAppearance and courtAppearance.warrantType === 'APPEAL' %}
-                    {% set backToCourtHearingHref = "/person/" +  nomsId + "/" + addOrEditCourtCase +"/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/task-list"%}
+                {% if courtAppearance %}
+                    {% if courtAppearance.warrantType === 'APPEAL'%}
+                        {% set backToCourtHearingHref = "/person/" +  nomsId + "/" + addOrEditCourtCase +"/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/appeals/task-list"%}
+                    {% elif courtAppearance.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS'%}
+                        {% set backToCourtHearingHref = "/person/" +  nomsId + "/" + addOrEditCourtCase +"/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/task-list"%}
+                    {% endif %}
                 {% endif %}
                 <a href="{{ backToCourtHearingHref }}"
                    class="govuk-link govuk-body-m"

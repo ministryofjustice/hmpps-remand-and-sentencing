@@ -35,4 +35,10 @@ context('Remove document confirmation page', () => {
     appealDeleteDocumentPage.continueButton().click()
     Page.verifyOnPage(UploadAppealOrderPage)
   })
+
+  it('selecting false returns back to view appeal order page', () => {
+    appealDeleteDocumentPage.radioLabelSelector('false').click()
+    appealDeleteDocumentPage.continueButton().click()
+    Page.verifyOnPage(ViewAppealOrderPage)
+  })
 })

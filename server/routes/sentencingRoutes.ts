@@ -738,7 +738,7 @@ export default class SentencingRoutes extends BaseRoutes {
     const uploadedDocumentUuids = this.courtAppearanceService
       .getUploadedDocuments(req.session, nomsId, appearanceReference)
       .map(document => document.documentUUID)
-    if(this.compareDocuments(req.session, uploadedDocumentUuids)) {
+    if (this.compareDocuments(req.session, uploadedDocumentUuids)) {
       this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId, appearanceReference)
     }
     return res.redirect(

@@ -87,9 +87,12 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters.appearanceReference,
     )
     const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
+    const courtDataIngestedDocumentUuids = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(
+      req.session,
+    )
     return res.render('pages/appeals/task-list', {
       ...urlParameters,
-      model: new AppealsTaskListModel(urlParameters, courtAppearance, caseReferenceSet),
+      model: new AppealsTaskListModel(urlParameters, courtAppearance, caseReferenceSet, courtDataIngestedDocumentUuids),
     })
   }
 

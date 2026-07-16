@@ -1518,8 +1518,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
     const courtDataIngestedDocs = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(req.session)
     console.log('courtDataIngestedDocs', courtDataIngestedDocs)
-    const courtDataIngestedDocumentsAvailable =
-      this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(req.session).length > 0
+    const courtDataIngestedDocumentUuids = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(
+      req.session,
+    )
 
     let appearanceOutcome
     if (warrantType !== 'SENTENCING' && courtAppearance.appearanceOutcomeUuid) {
@@ -1539,7 +1540,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           appearanceReference,
           courtAppearance,
           caseReferenceSet,
-          courtDataIngestedDocumentsAvailable,
+          courtDataIngestedDocumentUuids,
         )
         break
       default:
@@ -1552,7 +1553,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           courtAppearance,
           caseReferenceSet,
           appearanceOutcome,
-          courtDataIngestedDocumentsAvailable,
+          courtDataIngestedDocumentUuids,
         )
     }
     return res.render('pages/courtAppearance/task-list', {
@@ -2843,7 +2844,9 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
-    const courtDataIngestedDocumentUuids = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(req.session)
+    const courtDataIngestedDocumentUuids = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(
+      req.session,
+    )
     const expectedDocumentTypes = documentTypes.NON_SENTENCING
     const documentRows = expectedDocumentTypes.map(expectedType => {
       const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}

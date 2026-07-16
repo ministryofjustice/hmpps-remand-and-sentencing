@@ -1005,18 +1005,6 @@ export default class CourtAppearanceService {
     return session.courtDataIngestedDocumentUuids || []
   }
 
-  // setSessionCourtDataIngestedDocumentsReviewed(
-  //   session: Partial<SessionData>,
-  //   courtDataIngestedDocumentsReviewed: boolean,
-  // ) {
-  //   // eslint-disable-next-line no-param-reassign
-  //   session.courtDataIngestedDocumentsReviewed = courtDataIngestedDocumentsReviewed
-  // }
-  //
-  // getSessionCourtDataIngestedDocumentsReviewed(session: Partial<SessionData>): boolean {
-  //   return session.courtDataIngestedDocumentsReviewed || false
-  // }
-
   getSessionCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {
     return this.getCourtAppearance(session, nomsId, appearanceUuid)
   }

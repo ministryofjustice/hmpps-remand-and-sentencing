@@ -10,11 +10,18 @@ export default class SentencingTaskListModel extends TaskListModel {
     addOrEditCourtAppearance: string,
     courtCaseReference: string,
     appearanceReference: string,
-    courtAppearance: CourtAppearance,
+    courtAppearance,
     caseReferenceSet: boolean,
-    courtDataIngestedDocumentsAvailable: boolean,
+    courtDataIngestedDocumentUuids: string[],
   ) {
-    super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)
+    super(
+      nomsId,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      courtCaseReference,
+      appearanceReference,
+      courtDataIngestedDocumentUuids,
+    )
     this.items = [
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getWarrantInformationItem(courtAppearance),
@@ -22,12 +29,7 @@ export default class SentencingTaskListModel extends TaskListModel {
     ]
 
     this.items.push(this.getAggravatingFactorsItem(courtAppearance))
-    this.items.push(
-      this.getCourtDocumentsItem(
-        courtAppearance,
-        courtDataIngestedDocumentsAvailable,
-      ),
-    )
+    this.items.push(this.getCourtDocumentsItem(courtAppearance, courtDataIngestedDocumentUuids))
   }
 
   setPageHeading() {

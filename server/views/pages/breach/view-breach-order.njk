@@ -1,0 +1,79 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set hideOffences = true %}
+{% set hideOutcome = true %}
+{% set pageTitle = applicationName + " - view breach order" %}
+
+{% set summaryRows = [] %}
+
+{% for documentRow in documentRows %}
+    {% if documentRow.documentUUID %}
+        {% set documentKeyHtml %}
+            <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentRow.documentUUID}}/download-document">{{ documentRow.fileName }}</a>
+            <div class="govuk-body govuk-!-margin-0">{{documentRow.name}}</div>
+          {% endset %}
+          {% set summaryRows = summaryRows.concat([
+            {
+                key: {
+                  html: documentKeyHtml
+                },
+                value: {
+                  html: govukTag({text: "Uploaded", classes: "govuk-tag--green"})
+                },
+                actions: {
+                  items: [
+                    {
+                      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/" + documentRow.documentUUID + "/delete-document",
+                      text: "Delete",
+                      visuallyHiddenText: "document",
+                      attributes: {
+                        'data-qa': 'remove-' + documentRow.type + '-document-link'
+                      }
+                    }
+                  ]
+                }
+            }
+          ])%}
+    {% else %}
+        {% set documentKeyHtml %}
+            <div class="govuk-body">
+            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/breach/{{ documentRow.uploadLinkSegment }}" data-qa="upload-document-link-{{ documentRow.uploadLinkSegment }}">
+              Upload {{ documentRow.name | lower }}
+            </a>
+          </div>
+        {% endset %}
+        {% set summaryRows = summaryRows.concat([{
+            key: {
+                html: documentKeyHtml
+            },
+            value: {
+                text: ''
+            }
+        }])%}
+    {% endif %}
+{% endfor %}
+
+{% block pageContent %}
+    <h1 class="govuk-heading-l">{% if isEditJourney %}Manage court documents {% else %} Upload the breach order{% endif %}</h1>
+    <p class="govuk-hint">
+        The file type must be a .PDF, JPG, .PNG, .DOC or .DOCX.
+      </p>
+    {{ govukSummaryList({
+        classes: 'govuk-summary-list--long-key govuk-!-margin-top-6',
+        rows: summaryRows
+    })
+    }}
+    <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible">
+    <div class="govuk-button-group govuk-!-margin-top-8">
+        {{ govukButton({
+            text: "Continue",
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/confirm-view-breach-order",
+            attributes: { 'data-qa': 'continue-button' }
+        }) }}
+        {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+    </div>
+{% endblock %}

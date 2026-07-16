@@ -18,9 +18,9 @@ import CourtCaseNextAppearanceTypePage from '../../pages/courtCaseNextAppearance
 import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import CourtCaseNextAppearanceSubtypePage from '../../pages/courtCaseNextAppearanceSubtypePage'
 import CourtCaseOverallCaseOutcomeAppliedAllPage from '../../pages/courtCaseOverallCaseOutcomeAppliedAllPage'
-import HmctsCourtDataStartPage from '../../pages/hmctsCourtDataStartPage'
+import HmctsCourtDataLandingPage from '../../pages/hmctsCourtDataLandingPage'
 
-context('New Court Case from hmcts data journey', () => {
+context('New Remand Court Case from hmcts data journey', () => {
   const remandWarrantHearingId = 'abf395c2-8e3c-419c-bd9c-71d544e5d811'
   const futureDate = dayjs().add(10, 'day')
   beforeEach(() => {
@@ -35,7 +35,7 @@ context('New Court Case from hmcts data journey', () => {
     cy.task('stubGetServiceDefinitions')
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubGetAllAppearanceSubtypes')
-    cy.task('stubHmctsCourtData')
+    cy.task('stubHmctsRemandCourtData')
     cy.task('stubCreateCourtCase')
     cy.task('stubUploadDocument')
     cy.signIn()
@@ -56,8 +56,11 @@ context('New Court Case from hmcts data journey', () => {
       outcomeType: 'REMAND',
     })
     cy.task('stubGetAppearanceTypeByUuid')
-    const startPage = Page.verifyOnPage(HmctsCourtDataStartPage)
-    startPage.continueLink().click()
+    const landingPage = Page.verifyOnPage(HmctsCourtDataLandingPage)
+    landingPage
+      .commonPlatformText()
+      .should('contain.text', 'A new remand warrant for C894623 has been added from Common Platform.')
+    landingPage.continueLink().click()
 
     const courtCaseOverallCaseOutcomePage = Page.verifyOnPageTitle(
       CourtCaseOverallCaseOutcomePage,

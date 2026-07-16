@@ -1,4 +1,5 @@
 import BreachCheckHearingAnswersPage from '../../pages/BreachCheckHearingAnswersPage'
+import BreachConfirmationPage from '../../pages/BreachConfirmationPage'
 import BreachCourtNamePage from '../../pages/BreachCourtNamePage'
 import BreachDatePage from '../../pages/BreachDatePage'
 import BreachTypePage from '../../pages/BreachTypePage'
@@ -6,6 +7,8 @@ import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePa
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
+import UploadBreachOrderPage from '../../pages/UploadBreachOrderPage'
+import ViewBreachOrderPage from '../../pages/ViewBreachOrderPage'
 
 context('Breach journey', () => {
   beforeEach(() => {
@@ -21,6 +24,12 @@ context('Breach journey', () => {
       courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
       latestSentenceAppearanceDate: '2000-01-01',
     })
+    cy.task('stubUploadTempDocument', {
+      type: 'BREACH_ORDER',
+    })
+    cy.task('stubUploadDocument')
+    cy.task('stubGetDtoSentencedCharges', {})
+    cy.task('stubCreateCourtAppearance')
     cy.signIn()
     cy.visit('/person/A1234AB')
   })
@@ -78,5 +87,29 @@ context('Breach journey', () => {
           status: 'Optional',
         },
       ])
+    courtCaseTaskListPage.uploadCourtDocumentsLink().click()
+    const uploadBreachOrderPage = Page.verifyOnPage(UploadBreachOrderPage)
+    uploadBreachOrderPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
+    uploadBreachOrderPage.continueButton().click()
+    cy.location('pathname').should('include', '/view-breach-order')
+    const viewBreachOrderPage = Page.verifyOnPage(ViewBreachOrderPage)
+    viewBreachOrderPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Completed',
+        },
+      ])
+    courtCaseTaskListPage.continueButton().click()
+    cy.task('verifyCreateBreachHearingRequest').should('equal', 1)
+    Page.verifyOnPage(BreachConfirmationPage)
   })
 })

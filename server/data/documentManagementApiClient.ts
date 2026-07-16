@@ -23,7 +23,7 @@ export default class DocumentManagementApiClient extends RestClient {
         metadata: {
           prisonerId,
           source: 'RemandSentencingUser',
-          status: 'Awaiting',
+          status: 'AWAITING',
         },
         headers: {
           'Service-Name': 'Remand and Sentencing',

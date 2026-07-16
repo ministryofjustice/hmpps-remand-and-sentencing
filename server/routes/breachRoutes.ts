@@ -1,6 +1,6 @@
 import type { UrlParameters } from 'models'
 import { RequestHandler } from 'express'
-import type { BreachCourtNameForm, BreachDateForm, BreachTypeForm } from 'forms'
+import type { BreachCourtNameForm, BreachDateForm, BreachTypeForm, DeleteDocumentForm } from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'
@@ -14,6 +14,9 @@ import JourneyUrls from './data/JourneyUrls'
 import trimForm from '../utils/trim'
 import BreachTaskListModel from './data/BreachTaskListModel'
 import logger from '../../logger'
+import documentTypes from '../resources/documentTypes'
+import { sortByDateDesc } from '../utils/utils'
+import { chargeToOffence } from '../utils/mappingUtils'
 
 export default class BreachRoutes extends BaseRoutes {
   constructor(
@@ -40,6 +43,24 @@ export default class BreachRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, urlParameters.nomsId)
     this.offenceService.clearAllOffences(req.session, urlParameters.nomsId, urlParameters.courtCaseReference)
+    const sentencedCharges = await this.remandAndSentencingService.getSentencedCharges(
+      urlParameters.courtCaseReference,
+      ['ACTIVE', 'INACTIVE'],
+      req.user.username,
+    )
+    const sessionOffences = sentencedCharges.charges
+      .filter(charge => charge.sentence?.sentenceType?.classification === 'DTO')
+      .sort((a, b) => {
+        return sortByDateDesc(b.createdAt, a.createdAt)
+      })
+      .map((sentencedCharge, index) => {
+        // eslint-disable-next-line no-param-reassign
+        delete sentencedCharge.sentence
+        // eslint-disable-next-line no-param-reassign
+        delete sentencedCharge.aggravatingFactors
+        return chargeToOffence(sentencedCharge, index)
+      })
+    this.courtAppearanceService.initialiseBreach(req.session, urlParameters, sessionOffences)
     return res.redirect(BreachJourneyUrls.breachType(urlParameters))
   }
 
@@ -88,6 +109,41 @@ export default class BreachRoutes extends BaseRoutes {
       ...urlParameters,
       model: new BreachTaskListModel(urlParameters, courtAppearance, caseReferenceSet),
     })
+  }
+
+  public submitTaskList: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = res.locals.user
+    const { prisonId } = res.locals.prisoner
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const courtAppearanceResponse = await this.remandAndSentencingService.createCourtAppearance(
+      username,
+      urlParameters.courtCaseReference,
+      urlParameters.appearanceReference,
+      courtAppearance,
+      prisonId,
+    )
+    const auditDetails = {
+      courtCaseUuids: [urlParameters.courtCaseReference],
+      courtAppearanceUuids: [courtAppearanceResponse.appearanceUuid],
+      chargesUuids: [],
+      sentenceUuids: [],
+      periodLengthUuids: [],
+      documentUuids: (courtAppearance.uploadedDocuments ?? []).map(document => document.documentUUID),
+    }
+    await this.auditService.logCreateHearing({
+      who: username,
+      subjectId: urlParameters.nomsId,
+      subjectType: 'PRISONER_ID',
+      correlationId: req.id,
+      details: auditDetails,
+    })
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, urlParameters.nomsId)
+    return res.redirect(BreachJourneyUrls.confirmation(urlParameters))
   }
 
   public getHearingDate: RequestHandler = async (req, res): Promise<void> => {
@@ -255,7 +311,91 @@ export default class BreachRoutes extends BaseRoutes {
   }
 
   public getViewBreachOrder: RequestHandler = async (req, res) => {
-    return res.render('pages/breach/view-breach-order')
+    const urlParameters = req.params as unknown as UrlParameters
+    const { backToUpload } = req.query
+    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const expectedDocumentTypes = documentTypes.BREACH_OF_SUPERVISION_REQUIREMENTS
+    const documentRows = expectedDocumentTypes.map(expectedType => {
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
+      return { ...expectedType, ...uploadedDocument }
+    })
+    const isEditJourney = this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
+    let backLink = BreachJourneyUrls.taskList(urlParameters)
+    if (backToUpload) {
+      backLink = BreachJourneyUrls.uploadBreachOrder(urlParameters)
+    } else if (isEditJourney) {
+      backLink = BreachJourneyUrls.hearingDetails(urlParameters)
+    }
+    return res.render('pages/breach/view-breach-order', {
+      ...urlParameters,
+      documentRows,
+      backLink,
+      isEditJourney,
+    })
+  }
+
+  public confirmViewBreachOrder: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    this.courtAppearanceService.setDocumentUploadedTrue(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    return res.redirect(
+      this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
+        ? BreachJourneyUrls.hearingDetails(urlParameters)
+        : BreachJourneyUrls.taskList(urlParameters),
+    )
+  }
+
+  public getDeleteDocument: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const document = this.courtAppearanceService.getUploadedDocument(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.documentUuid,
+      urlParameters.appearanceReference,
+    )
+    const deleteDocumentForm = (req.flash('deleteDocumentForm')[0] || {}) as DeleteDocumentForm
+    return res.render('pages/appeals/delete-document', {
+      ...urlParameters,
+      document,
+      deleteDocumentForm,
+      errors: req.flash('errors') || [],
+      backLink: BreachJourneyUrls.viewBreachOrder(urlParameters),
+    })
+  }
+
+  public submitDeleteDocument: RequestHandler = async (req, res) => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = res.locals.user
+    const deleteDocumentForm = trimForm<DeleteDocumentForm>(req.body)
+    const errors = await this.courtAppearanceService.removeUploadedDocument(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.documentUuid,
+      deleteDocumentForm,
+      username,
+      urlParameters.appearanceReference,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('deleteDocumentForm', { ...deleteDocumentForm })
+      return res.redirect(BreachJourneyUrls.deleteDocument(urlParameters, 'true'))
+    }
+    if (deleteDocumentForm.deleteDocument === 'true') {
+      return res.redirect(BreachJourneyUrls.uploadBreachOrder(urlParameters))
+    }
+    return res.redirect(BreachJourneyUrls.viewBreachOrder(urlParameters))
+  }
+
+  public getConfirmation: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return res.render('pages/breach/confirmation', urlParameters)
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

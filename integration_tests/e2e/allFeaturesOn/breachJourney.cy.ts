@@ -17,9 +17,6 @@ context('Breach journey', () => {
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetCourtById', {})
-    cy.task('stubGetLatestCourtAppearance', {
-      courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
-    })
     cy.task('stubGetCourtCaseValidationDates', {
       courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
       latestSentenceAppearanceDate: '2000-01-01',

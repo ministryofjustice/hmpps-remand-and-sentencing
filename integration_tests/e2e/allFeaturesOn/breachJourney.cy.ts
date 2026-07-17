@@ -3,6 +3,7 @@ import BreachConfirmationPage from '../../pages/BreachConfirmationPage'
 import BreachCourtNamePage from '../../pages/BreachCourtNamePage'
 import BreachDatePage from '../../pages/BreachDatePage'
 import BreachTypePage from '../../pages/BreachTypePage'
+import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import Page from '../../pages/page'
@@ -53,9 +54,9 @@ context('Breach journey', () => {
         },
       ])
     courtCaseTaskListPage.hearingInformationLink().click()
-    const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
-    courtCaseSelectReferencePage.radioLabelSelector('true').click()
-    courtCaseSelectReferencePage.continueButton().click()
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+    courtCaseReferencePage.input().type('C894623')
+    courtCaseReferencePage.continueButton().click()
     const breachDatePage = Page.verifyOnPage(BreachDatePage)
     breachDatePage.dayDateInput('breachDate').type('13')
     breachDatePage.monthDateInput('breachDate').type('5')

@@ -104,10 +104,10 @@ export default class BreachRoutes extends BaseRoutes {
       urlParameters.nomsId,
       urlParameters.appearanceReference,
     )
-    const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
+
     return res.render('pages/breach/task-list', {
       ...urlParameters,
-      model: new BreachTaskListModel(urlParameters, courtAppearance, caseReferenceSet),
+      model: new BreachTaskListModel(urlParameters, courtAppearance),
     })
   }
 

@@ -3,7 +3,7 @@ import BreachConfirmationPage from '../../pages/BreachConfirmationPage'
 import BreachCourtNamePage from '../../pages/BreachCourtNamePage'
 import BreachDatePage from '../../pages/BreachDatePage'
 import BreachTypePage from '../../pages/BreachTypePage'
-import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
+import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
@@ -17,9 +17,6 @@ context('Breach journey', () => {
     cy.task('stubGetOffencesByCodes', {})
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetCourtById', {})
-    cy.task('stubGetLatestCourtAppearance', {
-      courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
-    })
     cy.task('stubGetCourtCaseValidationDates', {
       courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
       latestSentenceAppearanceDate: '2000-01-01',
@@ -53,9 +50,9 @@ context('Breach journey', () => {
         },
       ])
     courtCaseTaskListPage.hearingInformationLink().click()
-    const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
-    courtCaseSelectReferencePage.radioLabelSelector('true').click()
-    courtCaseSelectReferencePage.continueButton().click()
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+    courtCaseReferencePage.input().type('C894623')
+    courtCaseReferencePage.continueButton().click()
     const breachDatePage = Page.verifyOnPage(BreachDatePage)
     breachDatePage.dayDateInput('breachDate').type('13')
     breachDatePage.monthDateInput('breachDate').type('5')

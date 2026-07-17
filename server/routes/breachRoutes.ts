@@ -105,12 +105,9 @@ export default class BreachRoutes extends BaseRoutes {
       urlParameters.appearanceReference,
     )
     const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
-    const courtDataIngestedDocumentUuids = this.courtAppearanceService.getSessionCourtDataIngestedDocumentUuids(
-      req.session,
-    )
     return res.render('pages/breach/task-list', {
       ...urlParameters,
-      model: new BreachTaskListModel(urlParameters, courtAppearance, caseReferenceSet, courtDataIngestedDocumentUuids),
+      model: new BreachTaskListModel(urlParameters, courtAppearance, caseReferenceSet),
     })
   }
 

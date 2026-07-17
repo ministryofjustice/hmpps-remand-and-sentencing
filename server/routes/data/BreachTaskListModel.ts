@@ -6,24 +6,18 @@ import JourneyUrls from './JourneyUrls'
 export default class BreachTaskListModel extends TaskListModel {
   urlParameters: UrlParameters
 
-  constructor(
-    urlParameters: UrlParameters,
-    courtAppearance: CourtAppearance,
-    caseReferenceSet: boolean,
-    courtDataIngestedDocumentUuids: string[],
-  ) {
+  constructor(urlParameters: UrlParameters, courtAppearance: CourtAppearance, caseReferenceSet: boolean) {
     super(
       urlParameters.nomsId,
       urlParameters.addOrEditCourtCase,
       urlParameters.addOrEditCourtAppearance,
       urlParameters.courtCaseReference,
       urlParameters.appearanceReference,
-      courtDataIngestedDocumentUuids,
     )
     this.urlParameters = urlParameters
     this.items = [
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
-      this.getCourtDocumentsItem(courtAppearance, courtDataIngestedDocumentUuids),
+      this.getCourtDocumentsItem(courtAppearance),
     ]
   }
 
@@ -107,9 +101,9 @@ export default class BreachTaskListModel extends TaskListModel {
     }
   }
 
-  getCourtDocumentsHref(courtAppearance: CourtAppearance, courtDataIngestedDocumentsAvailable: boolean): string {
+  getCourtDocumentsHref(courtAppearance: CourtAppearance, documentsAvailable: boolean): string {
     let href
-    if (courtDataIngestedDocumentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
+    if (documentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
       href = courtAppearance.uploadedDocuments?.length
         ? BreachJourneyUrls.viewBreachOrder(this.urlParameters)
         : BreachJourneyUrls.uploadBreachOrder(this.urlParameters)

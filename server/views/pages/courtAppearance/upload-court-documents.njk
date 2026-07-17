@@ -30,7 +30,7 @@
             <div class="govuk-body govuk-!-margin-0">{{documentRow.name}}</div>
           {% endset %}
 
-          {% set isCourtDataIngestedDocument = documentRow.documentUUID in courtDataIngestedDocumentUuids %}
+          {% set isCourtDataIngestedDocument = documentRow.courtDataIngested %}
 
           {{ govukSummaryList({
             classes: "govuk-summary-list--long-key govuk-!-margin-bottom-0",

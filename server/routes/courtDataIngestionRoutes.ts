@@ -63,6 +63,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     appearance = {
       ...appearance,
       appearanceUuid: newAppearanceId,
+      documents: appearance.documents.map(document => ({ ...document, courtDataIngested: true })),
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     this.offenceService.clearAllOffences(req.session, nomsId, newCourtCaseId)

@@ -996,15 +996,6 @@ export default class CourtAppearanceService {
     session.courtAppearances[nomsId] = courtAppearance
   }
 
-  setSessionCourtDataIngestedDocumentUuids(session: Partial<SessionData>, courtDataIngestedDocuments: string[]) {
-    // eslint-disable-next-line no-param-reassign
-    session.courtDataIngestedDocumentUuids = courtDataIngestedDocuments
-  }
-
-  getSessionCourtDataIngestedDocumentUuids(session: Partial<SessionData>): string[] {
-    return session.courtDataIngestedDocumentUuids || []
-  }
-
   getSessionCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {
     return this.getCourtAppearance(session, nomsId, appearanceUuid)
   }
@@ -1465,8 +1456,6 @@ export default class CourtAppearanceService {
   clearSessionCourtAppearance(session: Partial<SessionData>, nomsId: string) {
     // eslint-disable-next-line no-param-reassign
     delete session.courtAppearances[nomsId]
-    // eslint-disable-next-line no-param-reassign
-    session.courtDataIngestedDocumentUuids = []
   }
 
   private getCourtAppearance(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): CourtAppearance {

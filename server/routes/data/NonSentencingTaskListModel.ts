@@ -13,16 +13,8 @@ export default class NonSentencingTaskListModel extends TaskListModel {
     courtAppearance,
     caseReferenceSet: boolean,
     appearanceOutcome: AppearanceOutcome,
-    courtDataIngestedDocumentUuids: string[],
   ) {
-    super(
-      nomsId,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      courtCaseReference,
-      appearanceReference,
-      courtDataIngestedDocumentUuids,
-    )
+    super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)
     this.items = [
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getOffenceSentencesItem(courtAppearance),
@@ -30,7 +22,7 @@ export default class NonSentencingTaskListModel extends TaskListModel {
     if (appearanceOutcome.dispositionCode === 'INTERIM') {
       this.items.push(this.getNextCourtAppearanceItem(courtAppearance))
     }
-    this.items.push(this.getCourtDocumentsItem(courtAppearance, courtDataIngestedDocumentUuids))
+    this.items.push(this.getCourtDocumentsItem(courtAppearance))
   }
 
   setPageHeading() {
@@ -200,9 +192,9 @@ export default class NonSentencingTaskListModel extends TaskListModel {
     return status
   }
 
-  getCourtDocumentsHref(courtAppearance: CourtAppearance, courtDataIngestedDocumentsAvailable: boolean): string {
+  getCourtDocumentsHref(courtAppearance: CourtAppearance, documentsAvailable: boolean): string {
     let href
-    if (courtDataIngestedDocumentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
+    if (documentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
       href = JourneyUrls.uploadCourtDocuments(
         this.nomsId,
         this.addOrEditCourtCase,

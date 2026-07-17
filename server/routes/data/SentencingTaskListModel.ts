@@ -12,16 +12,8 @@ export default class SentencingTaskListModel extends TaskListModel {
     appearanceReference: string,
     courtAppearance,
     caseReferenceSet: boolean,
-    courtDataIngestedDocumentUuids: string[],
   ) {
-    super(
-      nomsId,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      courtCaseReference,
-      appearanceReference,
-      courtDataIngestedDocumentUuids,
-    )
+    super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)
     this.items = [
       this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
       this.getWarrantInformationItem(courtAppearance),
@@ -29,7 +21,7 @@ export default class SentencingTaskListModel extends TaskListModel {
     ]
 
     this.items.push(this.getAggravatingFactorsItem(courtAppearance))
-    this.items.push(this.getCourtDocumentsItem(courtAppearance, courtDataIngestedDocumentUuids))
+    this.items.push(this.getCourtDocumentsItem(courtAppearance))
   }
 
   setPageHeading() {
@@ -199,9 +191,9 @@ export default class SentencingTaskListModel extends TaskListModel {
     }
   }
 
-  getCourtDocumentsHref(courtAppearance: CourtAppearance, courtDataIngestedDocumentsAvailable: boolean): string {
+  getCourtDocumentsHref(courtAppearance: CourtAppearance, documentsAvailable: boolean): string {
     let href
-    if (courtDataIngestedDocumentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
+    if (documentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
       href = JourneyUrls.uploadCourtDocuments(
         this.nomsId,
         this.addOrEditCourtCase,

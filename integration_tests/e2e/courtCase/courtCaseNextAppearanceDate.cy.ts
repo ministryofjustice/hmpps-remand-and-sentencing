@@ -27,7 +27,8 @@ context('Next appearance date page', () => {
   })
 
   it('submitting an invalid format time results in an error', () => {
-    const futureDate = dayjs().add(1, 'year').add(0, 'day')
+
+    const futureDate = dayjs().add(2, 'days')
     courtCaseNextAppearanceDatePage.dayDateInput('nextAppearanceDate').type(futureDate.date().toString())
     courtCaseNextAppearanceDatePage.monthDateInput('nextAppearanceDate').type((futureDate.month() + 1).toString())
     courtCaseNextAppearanceDatePage.yearDateInput('nextAppearanceDate').type(futureDate.year().toString())

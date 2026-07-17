@@ -6,7 +6,7 @@ import JourneyUrls from './JourneyUrls'
 export default class BreachTaskListModel extends TaskListModel {
   urlParameters: UrlParameters
 
-  constructor(urlParameters: UrlParameters, courtAppearance: CourtAppearance, caseReferenceSet: boolean) {
+  constructor(urlParameters: UrlParameters, courtAppearance: CourtAppearance) {
     super(
       urlParameters.nomsId,
       urlParameters.addOrEditCourtCase,
@@ -16,7 +16,7 @@ export default class BreachTaskListModel extends TaskListModel {
     )
     this.urlParameters = urlParameters
     this.items = [
-      this.getAppearanceInformationItem(courtAppearance, caseReferenceSet),
+      this.getAppearanceInformationItem(courtAppearance, false),
       this.getCourtDocumentsItem(courtAppearance),
     ]
   }
@@ -45,20 +45,12 @@ export default class BreachTaskListModel extends TaskListModel {
     )
   }
 
-  getAppearanceInformationHref(courtAppearance: CourtAppearance, caseReferenceSet: boolean): string {
+  getAppearanceInformationHref(courtAppearance: CourtAppearance, _caseReferenceSet: boolean): string {
     if (this.allAppearanceInformationFilledOut(courtAppearance)) {
       return BreachJourneyUrls.checkHearingAnswers(this.urlParameters)
     }
-    if (!caseReferenceSet) {
-      return JourneyUrls.reference(
-        this.nomsId,
-        this.addOrEditCourtCase,
-        this.courtCaseReference,
-        this.addOrEditCourtAppearance,
-        this.appearanceReference,
-      )
-    }
-    return JourneyUrls.selectReference(
+
+    return JourneyUrls.reference(
       this.nomsId,
       this.addOrEditCourtCase,
       this.courtCaseReference,

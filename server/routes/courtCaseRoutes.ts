@@ -968,6 +968,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       referenceForm,
       errors: req.flash('errors') || [],
       backLink,
+      showHearingDetails: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance),
     })
   }
 

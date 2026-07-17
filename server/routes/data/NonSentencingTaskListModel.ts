@@ -10,7 +10,7 @@ export default class NonSentencingTaskListModel extends TaskListModel {
     addOrEditCourtAppearance: string,
     courtCaseReference: string,
     appearanceReference: string,
-    courtAppearance,
+    courtAppearance: CourtAppearance,
     caseReferenceSet: boolean,
     appearanceOutcome: AppearanceOutcome,
   ) {

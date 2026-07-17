@@ -10,7 +10,7 @@ export default class SentencingTaskListModel extends TaskListModel {
     addOrEditCourtAppearance: string,
     courtCaseReference: string,
     appearanceReference: string,
-    courtAppearance,
+    courtAppearance: CourtAppearance,
     caseReferenceSet: boolean,
   ) {
     super(nomsId, addOrEditCourtCase, addOrEditCourtAppearance, courtCaseReference, appearanceReference)

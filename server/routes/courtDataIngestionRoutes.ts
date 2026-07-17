@@ -75,10 +75,6 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       hasCommonPlatformDocuments: true,
     } as CourtAppearance
     this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, sessionAppearance)
-    this.courtAppearanceService.setSessionCourtDataIngestedDocumentUuids(
-      req.session,
-      appearance.documents.map(it => it.documentUUID),
-    )
     const addOrEditCourtCase = 'add-court-case'
     const addOrEditCourtAppearance = 'add-court-appearance'
 

@@ -579,16 +579,6 @@ export default abstract class BaseRoutes {
     return caseReferenceSet
   }
 
-  // protected compareDocuments(session: Partial<SessionData>, uploadedDocumentUuids: string[]): boolean {
-  //   const courtIngestedDocumentUuids = this.courtAppearanceService
-  //     .getSessionCourtDataIngestedDocumentUuids(session)
-  //     .sort()
-  //   if (courtIngestedDocumentUuids.length > 0) {
-  //     return uploadedDocumentUuids.sort().every((uuid, index) => uuid === courtIngestedDocumentUuids.sort()[index])
-  //   }
-  //   return uploadedDocumentUuids.length > 0
-  // }
-
   private getDocumentErrorMessage(errorMessage: string): string {
     const match = Object.keys(BaseRoutes.documentErrorMessages).find(key => errorMessage.includes(key))
     if (match) {

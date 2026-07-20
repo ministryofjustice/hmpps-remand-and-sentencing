@@ -736,7 +736,6 @@ export default class SentencingRoutes extends BaseRoutes {
   public submitCourtDocuments: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     this.courtAppearanceService.setDocumentUploadedTrue(req.session, nomsId, appearanceReference)
-
     return res.redirect(
       this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
         ? JourneyUrls.sentencingHearing(

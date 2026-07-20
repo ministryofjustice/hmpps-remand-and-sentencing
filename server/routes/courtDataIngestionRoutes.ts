@@ -59,12 +59,12 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     const { hmctsHearingId, nomsId } = urlParameters
     let appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, req.user.username)
-
     const newCourtCaseId = crypto.randomUUID()
     const newAppearanceId = crypto.randomUUID()
     appearance = {
       ...appearance,
       appearanceUuid: newAppearanceId,
+      documents: appearance.documents.map(document => ({ ...document, courtDataIngested: true })),
     }
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, nomsId)
     this.offenceService.clearAllOffences(req.session, nomsId, newCourtCaseId)

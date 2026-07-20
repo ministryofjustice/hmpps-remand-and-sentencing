@@ -108,9 +108,9 @@ export default class AppealsTaskListModel extends TaskListModel {
     }
   }
 
-  getCourtDocumentsHref(courtAppearance: CourtAppearance): string {
+  getCourtDocumentsHref(courtAppearance: CourtAppearance, documentsAvailable: boolean): string {
     let href
-    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+    if (documentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
       href = courtAppearance.uploadedDocuments?.length
         ? AppealsJourneyUrls.viewAppealsOrder(this.urlParameters)
         : AppealsJourneyUrls.uploadAppealsOrder(this.urlParameters)

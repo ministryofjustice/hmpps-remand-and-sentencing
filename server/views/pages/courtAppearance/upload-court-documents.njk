@@ -30,6 +30,8 @@
             <div class="govuk-body govuk-!-margin-0">{{documentRow.name}}</div>
           {% endset %}
 
+          {% set isCourtDataIngestedDocument = documentRow.courtDataIngested %}
+
           {{ govukSummaryList({
             classes: "govuk-summary-list--long-key govuk-!-margin-bottom-0",
             rows: [
@@ -38,7 +40,7 @@
                   html: documentKeyHtml
                 },
                 value: {
-                  html: govukTag({text: "Uploaded", classes: "govuk-tag--green"})
+                  html: govukTag({text: "Common platform", classes: "govuk-tag--grey"}) if isCourtDataIngestedDocument else govukTag({text: "Uploaded", classes: "govuk-tag--green"})
                 },
                 actions: {
                   items: [
@@ -50,7 +52,7 @@
                         'data-qa': 'remove-' + documentRow.type + '-document-link'
                       }
                     }
-                  ]
+                  ] if not isCourtDataIngestedDocument else []
                 }
               }
             ]

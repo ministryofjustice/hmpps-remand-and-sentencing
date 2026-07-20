@@ -1517,6 +1517,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       appearanceReference,
     )
     const caseReferenceSet = await this.getCaseReferenceSet(courtAppearance, req.user.username, urlParameters)
+
     let appearanceOutcome
     if (warrantType !== 'SENTENCING' && courtAppearance.appearanceOutcomeUuid) {
       appearanceOutcome = await this.refDataService.getAppearanceOutcomeByUuid(

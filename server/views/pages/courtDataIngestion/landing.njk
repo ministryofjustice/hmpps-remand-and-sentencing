@@ -1,47 +1,74 @@
-{% extends "../../partials/prisonerBannerLayout.njk" %}
+{% extends "../../partials/backLinkLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageTitle = applicationName + " - Warrant received" %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">
-        Review new documents and add a court case
-    </h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">
+                Review new documents and add a court case
+            </h1>
 
-    <p class="govuk-body" data-qa="common-platform-text">A new {{warrantTypeText}} warrant for <strong>{{appearance.courtCaseReference}}</strong> has been added from Common Platform.</p>
-    <p class="govuk-body">Some information has been added for you.</p>
-    <h3 class="govuk-heading-s">The following documents have been added:</h3>
+            <p class="govuk-body" data-qa="common-platform-text">A new {{warrantTypeText}} warrant for <strong>{{appearance.courtCaseReference}}</strong> has been added from Common Platform.</p>
+            <p class="govuk-body">Some information has been added for you.</p>
+            <h3 class="govuk-heading-s">The following documents have been added:</h3>
 
-    <div class="govuk-!-padding-bottom-3">
-    {% for document in appearance.documents %}
-      <a class="govuk-link govuk-link--no-visited-state prisoner-doc-link"
-         target="_blank"
-         rel="noreferrer noopener"
-         href="/api/document/{{document.documentUUID}}/view-document/{{ (document.fileName) | urlencode }}">
-        {{ document.fileName }}
-        <span class="govuk-visually-hidden">(opens in new tab)</span>
-      </a>
-       <p class="govuk-body">{{document.documentTypeDescription}}</p>
-        <hr />
-    {% endfor %}
+            <div class="govuk-!-padding-bottom-3">
+                {% set tableRows = [] %}
+                {% for document in appearance.documents %}
+                    {% set documentHtml %}
+                        <a class="govuk-link govuk-link--no-visited-state prisoner-doc-link"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            href="/api/document/{{document.documentUUID}}/view-document/{{ (document.fileName) | urlencode }}">
+                            {{ document.fileName }}
+                            <span class="govuk-visually-hidden">(opens in new tab)</span>
+                        </a>
+                        <p class="govuk-body">{{document.documentTypeDescription}}</p>
+                    {% endset %}
+                    {% set tableRows = tableRows.concat([
+                        [ {
+                            html: documentHtml
+                        },
+                        {
+                            text: appearance.appearanceDate | formatDate
+                        }]]) %}
+                {% endfor %}
+                {{
+                    govukTable({
+                        head: [
+                            {
+                                text: "Document"
+                            },
+                            {
+                                text: "Hearing date"
+                            }
+                        ],
+                        rows: tableRows
+                    })
+                }}
+            </div>
+
+            <h3 class="govuk-heading-s">What you need to do</h3>
+            <p class="govuk-body">Review the documents then continue to enter information exactly as it is written on the warrant.</p>
+
+
+            <div class="govuk-button-group">
+                {{ govukButton({
+                text: "Continue",
+                href: "/person/" + nomsId + "/review-new-documents/" + hmctsHearingId + "/start",
+                attributes: { "data-qa": "hmcts-court-data-continue" }
+                }) }}
+                {{ govukButton({
+                text: "Cancel",
+                classes: "govuk-button--secondary",
+                attributes: { 'data-qa': 'cancel-button' },
+                href: "/person/" + nomsId
+                }) }}
+            </div>
+
+        </div>
     </div>
-
-    <h3 class="govuk-heading-s">What you need to do</h3>
-    <p class="govuk-body">Review the documents then continue to enter information exactly as it is written on the warrant.</p>
-
-
-    <div class="govuk-button-group">
-        {{ govukButton({
-        text: "Continue",
-        href: "/person/" + nomsId + "/review-new-documents/" + hmctsHearingId + "/start",
-        attributes: { "data-qa": "hmcts-court-data-continue" }
-        }) }}
-        {{ govukButton({
-        text: "Cancel",
-        classes: "govuk-button--secondary",
-        attributes: { 'data-qa': 'cancel-button' },
-        href: "/person/" + nomsId
-        }) }}
-    </div>
-
 {% endblock %}

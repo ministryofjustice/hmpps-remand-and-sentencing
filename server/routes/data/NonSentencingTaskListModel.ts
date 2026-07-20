@@ -3,7 +3,7 @@ import TaskListModel from './TaskListModel'
 import { AppearanceOutcome } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import JourneyUrls from './JourneyUrls'
 
-export default class RemandTaskListModel extends TaskListModel {
+export default class NonSentencingTaskListModel extends TaskListModel {
   constructor(
     nomsId: string,
     addOrEditCourtCase: string,
@@ -192,9 +192,9 @@ export default class RemandTaskListModel extends TaskListModel {
     return status
   }
 
-  getCourtDocumentsHref(courtAppearance: CourtAppearance): string {
+  getCourtDocumentsHref(courtAppearance: CourtAppearance, documentsAvailable: boolean): string {
     let href
-    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
+    if (documentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
       href = JourneyUrls.uploadCourtDocuments(
         this.nomsId,
         this.addOrEditCourtCase,

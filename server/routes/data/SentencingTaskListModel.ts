@@ -191,10 +191,10 @@ export default class SentencingTaskListModel extends TaskListModel {
     }
   }
 
-  getCourtDocumentsHref(courtAppearance: CourtAppearance): string {
+  getCourtDocumentsHref(courtAppearance: CourtAppearance, documentsAvailable: boolean): string {
     let href
-    if (this.allAppearanceInformationFilledOut(courtAppearance)) {
-      href = JourneyUrls.sentencingUploadCourtDocuments(
+    if (documentsAvailable || this.allAppearanceInformationFilledOut(courtAppearance)) {
+      href = JourneyUrls.uploadCourtDocuments(
         this.nomsId,
         this.addOrEditCourtCase,
         this.courtCaseReference,

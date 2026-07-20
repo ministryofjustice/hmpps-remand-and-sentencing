@@ -185,8 +185,8 @@ context('Appeals journey', () => {
           status: 'Completed',
         },
         {
-          name: 'Upload court documents',
-          status: 'Completed',
+          name: 'Review court documents',
+          status: '1 document uploaded',
         },
       ])
     courtCaseTaskListPage.continueButton().click()

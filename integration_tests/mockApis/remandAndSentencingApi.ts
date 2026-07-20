@@ -945,6 +945,7 @@ export default {
               {
                 documentUUID: 'doc-uuid-1',
                 fileName: 'court-document.pdf',
+                documentType: 'HMCTS_WARRANT',
                 uploadedAt: '2024-06-01T10:00:00Z',
                 uploadedBy: 'user1',
               },
@@ -1025,6 +1026,7 @@ export default {
               {
                 documentUUID: 'doc-uuid-1',
                 fileName: 'court-document.pdf',
+                documentType: 'HMCTS_WARRANT',
                 uploadedAt: '2024-06-01T10:00:00Z',
                 uploadedBy: 'user1',
               },
@@ -4845,6 +4847,7 @@ export default {
             {
               documentUUID: 'doc-uuid-1',
               fileName: 'court-document.pdf',
+              documentType: 'HMCTS_WARRANT',
               uploadedAt: '2024-06-01T10:00:00Z',
               uploadedBy: 'user1',
             },
@@ -4877,6 +4880,7 @@ export default {
             {
               documentUUID: 'doc-uuid-1',
               fileName: 'court-document.pdf',
+              documentType: 'HMCTS_WARRANT',
               uploadedAt: '2024-06-01T10:00:00Z',
               uploadedBy: 'user1',
             },
@@ -4896,6 +4900,7 @@ export default {
           {
             documentUUID: documentId,
             fileName: 'court-document.pdf',
+            documentType: 'HMCTS_WARRANT',
             uploadedAt: '2024-06-01T10:00:00Z',
             uploadedBy: 'user1',
           },

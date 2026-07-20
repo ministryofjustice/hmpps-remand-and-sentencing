@@ -51,6 +51,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       hmctsHearingId,
       nomsId,
       warrantTypeText,
+      backLink: JourneyUrls.courtCases(nomsId),
     })
   }
 

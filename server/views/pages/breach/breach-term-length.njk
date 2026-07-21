@@ -1,0 +1,67 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+
+{% set pageTitle = applicationName + " - Add breach term length"%}
+
+{% block pageContent %}
+            <form method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                {{ govukDateInput({
+                    id: "sentenceLength",
+                    namePrefix: "sentenceLength",
+                    errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
+                    fieldset: {
+                        legend: {
+                        text: "Enter the breach term length",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    hint: offenceHint,
+                    items: [
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-years') else ''),
+                        label: "Years",
+                        name:"years",
+                        value: breachTermLengthForm["sentenceLength-years"]
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-months') else ''),
+                        label: "Months",
+                        name:"months",
+                        value: breachTermLengthForm["sentenceLength-months"]
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-weeks') else ''),
+                        label: "Weeks",
+                        name:"weeks",
+                        value: breachTermLengthForm["sentenceLength-weeks"]
+                    },
+                    {
+                        classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('sentenceLength-days') else ''),
+                        label: "Days",
+                        name:"days",
+                        value: breachTermLengthForm["sentenceLength-days"]
+                    }
+                    ]
+                }) }}
+
+                <p class="govuk-body govuk-!-margin-bottom-6">
+                    <a href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference}}/{{ addOrEditCourtAppearance }}/{{ appearanceReference}}/breach/alternative-breach-term-length{{'?submitToCheckAnswers=true' if submitToCheckAnswers else ''}}" class="govuk-link govuk-link--no-visited-state" data-qa="alternative-period-length-link">The term length is formatted differently</a>
+                </p>
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Continue",
+                        attributes: {  'data-qa': 'continue-button' }
+                    }) }}
+                    {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
+            </form>
+
+{% endblock %}

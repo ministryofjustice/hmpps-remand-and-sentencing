@@ -19,6 +19,7 @@ describe('GET Delete document', () => {
       documentUUID: '0',
       documentType: 'HMCTS_WARRANT',
       fileName: 'testfile.doc',
+      courtDataIngested: false,
     })
     return request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/0/delete-document')

@@ -1192,6 +1192,16 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/breach-term-length',
+    breachRoutes.getBreachTermLength,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/breach-term-length',
+    breachRoutes.submitBreachTermLength,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/check-hearing-answers',
     breachRoutes.getCheckHearingAnswers,
   )

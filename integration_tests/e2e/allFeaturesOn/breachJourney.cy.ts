@@ -2,6 +2,7 @@ import BreachCheckHearingAnswersPage from '../../pages/BreachCheckHearingAnswers
 import BreachConfirmationPage from '../../pages/BreachConfirmationPage'
 import BreachCourtNamePage from '../../pages/BreachCourtNamePage'
 import BreachDatePage from '../../pages/BreachDatePage'
+import BreachTermLengthPage from '../../pages/BreachTermLengthPage'
 import BreachTypePage from '../../pages/BreachTypePage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
@@ -63,11 +64,15 @@ context('Breach journey', () => {
     breachCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     breachCourtNamePage.firstAutoCompleteOption().click()
     breachCourtNamePage.continueButton().click()
+    const breachTermLengthPage = Page.verifyOnPage(BreachTermLengthPage)
+    breachTermLengthPage.daysInput().type('41')
+    breachCourtNamePage.continueButton().click()
     const breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'C894623',
       'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
+      'Breach term length': '0 years 0 months 0 weeks 41 days',
     })
     breachCheckHearingAnswersPage.continueButton().click()
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
@@ -106,7 +111,7 @@ context('Breach journey', () => {
         },
       ])
     courtCaseTaskListPage.continueButton().click()
-    cy.task('verifyCreateBreachHearingRequest').should('equal', 1)
     Page.verifyOnPage(BreachConfirmationPage)
+    cy.task('verifyCreateBreachHearingRequest').should('equal', 1)
   })
 })

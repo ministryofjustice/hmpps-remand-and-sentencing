@@ -145,7 +145,7 @@ context('Sentencing appearance details Page', () => {
     })
 
     it('can edit sentence information', () => {
-      cy.task('stubUpdateSentenceCourtAppearance')
+      cy.task('stubCreateCourtAppearance')
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
         description: 'EDS (Extended Determinate Sentence)',

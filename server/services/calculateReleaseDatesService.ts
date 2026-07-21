@@ -36,7 +36,10 @@ export default class CalculateReleaseDatesService {
     if (sentences.length && appearance.hasOverallSentenceLength === 'true') {
       // Handle single sentence here without calling CRD-API (single sentence validation occurs for all sentence types)
       if (sentences.length === 1 && sentences[0].periodLengths.length === 1) {
-        return this.checkSingleSentenceLength(sentences[0].periodLengths[0], appearance.overallSentenceLength)
+        return this.checkSingleSentenceLength(
+          sentences[0].periodLengths[0],
+          appearance.periodLengths.find(periodLength => periodLength.periodLengthType === 'OVERALL_SENTENCE_LENGTH'),
+        )
       }
 
       // Only continue to validate using the CRD API for supported types
@@ -111,7 +114,9 @@ export default class CalculateReleaseDatesService {
 
   private mapAppearanceToOverallSentenceLength(appearance: CourtAppearance): OverallSentenceLengthSentence {
     return {
-      custodialDuration: this.mapPeriodLengthToOverallSentenceLength(appearance.overallSentenceLength),
+      custodialDuration: this.mapPeriodLengthToOverallSentenceLength(
+        appearance.periodLengths.find(periodLength => periodLength.periodLengthType === 'OVERALL_SENTENCE_LENGTH'),
+      ),
     } as OverallSentenceLengthSentence
   }
 }

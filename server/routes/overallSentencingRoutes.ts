@@ -582,6 +582,11 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       await this.refDataService.getAppearanceOutcomeByUuid(appearanceOutcomeUuid, req.user.username)
     ).outcomeName
     const isAddJourney = this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance)
+    const overallSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     return res.render('pages/overallSentencing/check-overall-answers', {
       nomsId,
       courtAppearance,
@@ -591,6 +596,7 @@ export default class OverallSentencingRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       isAddJourney,
+      overallSentenceLength,
     })
   }
 

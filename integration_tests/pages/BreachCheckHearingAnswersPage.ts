@@ -10,4 +10,6 @@ export default class BreachCheckHearingAnswersPage extends Page {
   editBreachDateLink = (): PageElement => cy.get('[data-qa=edit-breach-date-link]')
 
   editCourtNameLink = (): PageElement => cy.get('[data-qa=edit-court-name-link]')
+
+  editBreachTermLink = (): PageElement => cy.get('[data-qa=edit-breach-term-link]')
 }

@@ -34,10 +34,10 @@
 {% endif %}
 
     <h1 class="govuk-heading-xl">Court cases</h1>
-    {{ thingsToDo(serviceDefinitions, 'courtCases') }}
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
+            {{ thingsToDo(serviceDefinitions, 'courtCases') }}
             {% if prisonerCourtCaseTotal %}
             {% if filterErrors | length %}
                 <div class="govuk-grid-row govuk-!-margin-top-4">
@@ -357,7 +357,7 @@
                     {% else %}
                         <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
                     {% endif %}
-                    <p class="gouk-body">
+                    <p class="govuk-body">
                         <a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey">Add a court case now</a>
                     </p>
                 {% endfor %}

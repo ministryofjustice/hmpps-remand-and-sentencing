@@ -120,8 +120,10 @@ export const courtAppearanceToCreateCourtAppearance = (
     documents: courtAppearance.uploadedDocuments,
     prisonId,
     ...(nextCourtAppearance && { nextCourtAppearance }),
-    ...(courtAppearance.overallSentenceLength && {
-      overallSentenceLength: sentenceLengthToCreatePeriodLength(courtAppearance.overallSentenceLength, prisonId),
+    ...(courtAppearance.periodLengths && {
+      periodLengths: courtAppearance.periodLengths.map(periodLength =>
+        sentenceLengthToCreatePeriodLength(periodLength, prisonId),
+      ),
     }),
     ...(courtAppearance.overallConvictionDate && {
       overallConvictionDate: dayjs(courtAppearance.overallConvictionDate).format('YYYY-MM-DD'),
@@ -423,7 +425,7 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     offences,
     ...(pageCourtCaseAppearance.overallSentenceLength && {
       hasOverallSentenceLength: 'true',
-      overallSentenceLength: periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength),
+      periodLengths: [periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength)],
     }),
     ...(pageCourtCaseAppearance.overallConvictionDate && {
       overallConvictionDate: dayjs(pageCourtCaseAppearance.overallConvictionDate).toDate(),

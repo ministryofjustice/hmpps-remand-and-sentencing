@@ -72,6 +72,26 @@
                                 }
                             ]
                         }
+                    },
+                    {
+                        key: {
+                            text: "Breach term length"
+                        },
+                        value: {
+                            text: breachTermLength | formatLengths if breachTermLength else 'Not entered'
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/breach-term-length?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "breach term length",
+                                    attributes: {
+                                        'data-qa': 'edit-breach-term-link'
+                                    }
+                                }
+                            ]
+                        }
                     }
                 ]
             }) }}

@@ -1592,7 +1592,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
         periodLengthUuids: (courtAppearance.offences ?? [])
           .flatMap(offence => offence.sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
-          .concat(courtAppearance.overallSentenceLength?.uuid)
+          .concat(courtAppearance.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
           .filter(uuid => uuid),
         documentUuids: [],
       }
@@ -1620,7 +1620,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
         periodLengthUuids: (courtAppearance.offences ?? [])
           .flatMap(offence => offence.sentence?.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
-          .concat(courtAppearance.overallSentenceLength?.uuid)
+          .concat(courtAppearance.periodLengths?.map(periodLength => periodLength.uuid) ?? [])
           .filter(uuid => uuid),
         documentUuids: [],
       }

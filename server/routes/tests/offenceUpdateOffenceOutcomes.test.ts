@@ -18,15 +18,17 @@ describe('GET Update offence outcomes', () => {
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',
       offences: [],
-      overallSentenceLength: {
-        uuid: '2',
-        years: '4',
-        months: '5',
-        weeks: '3',
-        days: '2',
-        periodOrder: ['years', 'months', 'weeks', 'days'],
-        periodLengthType: 'OVERALL_SENTENCE_LENGTH',
-      },
+      periodLengths: [
+        {
+          uuid: '2',
+          years: '4',
+          months: '5',
+          weeks: '3',
+          days: '2',
+          periodOrder: ['years', 'months', 'weeks', 'days'],
+          periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+        },
+      ],
       hasOverallSentenceLength: 'true',
     })
     defaultServices.remandAndSentencingService.getConsecutiveToDetails.mockResolvedValue({ sentences: [] })

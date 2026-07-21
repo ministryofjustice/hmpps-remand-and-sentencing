@@ -1,6 +1,7 @@
 import BreachCheckHearingAnswersPage from '../../pages/BreachCheckHearingAnswersPage'
 import BreachCourtNamePage from '../../pages/BreachCourtNamePage'
 import BreachDatePage from '../../pages/BreachDatePage'
+import BreachTermLengthPage from '../../pages/BreachTermLengthPage'
 import BreachTypePage from '../../pages/BreachTypePage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CourtCaseTaskListPage from '../../pages/courtCaseTaskListPage'
@@ -54,11 +55,15 @@ context('Breach check hearing answers page', () => {
     breachCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
     breachCourtNamePage.firstAutoCompleteOption().click()
     breachCourtNamePage.continueButton().click()
+    const breachTermLengthPage = Page.verifyOnPage(BreachTermLengthPage)
+    breachTermLengthPage.daysInput().type('41')
+    breachCourtNamePage.continueButton().click()
     breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'C894623',
       'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
+      'Breach term length': '0 years 0 months 0 weeks 41 days',
     })
   })
 
@@ -72,6 +77,7 @@ context('Breach check hearing answers page', () => {
       'Case reference number': 'G35266',
       'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
+      'Breach term length': '0 years 0 months 0 weeks 41 days',
     })
   })
 
@@ -87,6 +93,7 @@ context('Breach check hearing answers page', () => {
       'Case reference number': 'C894623',
       'Hearing date': '15/06/2024',
       'Court name': 'Accrington Youth Court',
+      'Breach term length': '0 years 0 months 0 weeks 41 days',
     })
   })
 
@@ -102,6 +109,22 @@ context('Breach check hearing answers page', () => {
       'Case reference number': 'C894623',
       'Hearing date': '13/05/2023',
       'Court name': 'Southampton Magistrate Court',
+      'Breach term length': '0 years 0 months 0 weeks 41 days',
+    })
+  })
+
+  it('can edit breach term length and return back', () => {
+    breachCheckHearingAnswersPage.editBreachTermLink().click()
+    const breachTermLengthPage = Page.verifyOnPage(BreachTermLengthPage)
+    breachTermLengthPage.daysInput().should('have.value', '41').clear()
+    breachTermLengthPage.monthsInput().type('1')
+    breachTermLengthPage.continueButton().click()
+    breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
+    breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference number': 'C894623',
+      'Hearing date': '13/05/2023',
+      'Court name': 'Accrington Youth Court',
+      'Breach term length': '0 years 1 months 0 weeks 0 days',
     })
   })
 })

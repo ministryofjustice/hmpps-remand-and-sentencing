@@ -474,6 +474,7 @@ export default abstract class BaseRoutes {
         documentUUID: documentUuid,
         documentType: documentTypeName,
         fileName: uploadedFile.originalname,
+        courtDataIngested: false,
       }
       await this.remandAndSentencingService.createUploadDocument(uploadedDocument, username)
       this.courtAppearanceService.addUploadedDocument(req.session, nomsId, uploadedDocument, appearanceReference)

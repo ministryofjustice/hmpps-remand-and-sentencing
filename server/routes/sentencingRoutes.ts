@@ -335,7 +335,7 @@ export default class SentencingRoutes extends BaseRoutes {
       hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
       courtMap,
     )
-    const overallSentenceLength = this.courtAppearanceService.getHasOverallSentenceLength(
+    const overallSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
       req.session,
       nomsId,
       appearanceReference,

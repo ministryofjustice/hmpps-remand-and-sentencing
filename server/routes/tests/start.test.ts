@@ -725,4 +725,119 @@ describe('GET Start', () => {
     expect(bannerInColumn.length).toBe(1)
     expect(bannerInColumn.text()).toContain('Enter information from a new remand warrant')
   })
+
+  it('renders the things-to-do banner once, inside the two-thirds column and below the no court cases line, in the empty state', async () => {
+    setupCourtCase()
+    defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue({
+      totalPages: 0,
+      totalElements: 0,
+      size: 20,
+      content: [],
+      number: 0,
+      sort: {
+        empty: true,
+        sorted: true,
+        unsorted: true,
+      },
+      numberOfElements: 0,
+      pageable: {
+        offset: 0,
+        sort: {
+          empty: true,
+          sorted: true,
+          unsorted: true,
+        },
+        pageSize: 0,
+        pageNumber: 0,
+        paged: true,
+        unpaged: true,
+      },
+      last: true,
+      first: true,
+      empty: true,
+      prisonerCourtCaseTotal: 0,
+    })
+    defaultServices.remandAndSentencingService.getBookingCourtCaseCount.mockResolvedValue({
+      suppliedBookingCount: 0,
+      otherBookingCount: 0,
+    })
+    defaultServices.prisonerService.getBookingDetails.mockResolvedValue({
+      activeFlag: true,
+    })
+    defaultServices.courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue({
+      services: {
+        courtCases: {
+          href: 'http://localhost:3007/person/A1234AB',
+          text: 'Court cases',
+          thingsToDo: {
+            count: 1,
+            severity: 'REQUIRED_BEFORE_CALCULATION',
+            things: [
+              {
+                title: 'Enter information from a new remand warrant',
+                message: 'A new remand warrant for TR1345678BR has been added from Common Platform.',
+                buttonText: 'Review remand warrant',
+                buttonHref: 'http://localhost:3007/person/A1234AB/review',
+                type: 'HMCTS_API_DOCUMENT_RECEIVED',
+              },
+            ],
+          },
+          maintenanceAlert: { enabled: false, message: 'placeholder' },
+        },
+      },
+      maintenanceAlert: { enabled: false, message: 'placeholder' },
+    })
+
+    const res = await request(app).get('/person/A1234AB').expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+
+    // Renders exactly once (guards against the has-cases and no-cases placements both firing)
+    expect($('.moj-ticket-panel__content').length).toBe(1)
+
+    // Sits inside the two-thirds column, so it stops at the Actions box rather than spanning full width
+    const bannerInColumn = $('.govuk-grid-column-two-thirds .moj-ticket-panel__content')
+    expect(bannerInColumn.length).toBe(1)
+    expect(bannerInColumn.text()).toContain('Enter information from a new remand warrant')
+
+    // Sits below the no court cases line in source order
+    const noCasesIndex = res.text.indexOf('There are no court cases recorded for')
+    const bannerIndex = res.text.indexOf('moj-ticket-panel__content')
+    expect(noCasesIndex).toBeGreaterThan(-1)
+    expect(bannerIndex).toBeGreaterThan(noCasesIndex)
+  })
+
+  it('still renders the things-to-do banner once, inside the two-thirds column, when the prisoner has court cases', async () => {
+    setupCourtCase()
+    defaultServices.courtCasesReleaseDatesService.getServiceDefinitions.mockResolvedValue({
+      services: {
+        courtCases: {
+          href: 'http://localhost:3007/person/A1234AB',
+          text: 'Court cases',
+          thingsToDo: {
+            count: 1,
+            severity: 'REQUIRED_BEFORE_CALCULATION',
+            things: [
+              {
+                title: 'Enter information from a new remand warrant',
+                message: 'A new remand warrant for TR1345678BR has been added from Common Platform.',
+                buttonText: 'Review remand warrant',
+                buttonHref: 'http://localhost:3007/person/A1234AB/review',
+                type: 'HMCTS_API_DOCUMENT_RECEIVED',
+              },
+            ],
+          },
+          maintenanceAlert: { enabled: false, message: 'placeholder' },
+        },
+      },
+      maintenanceAlert: { enabled: false, message: 'placeholder' },
+    })
+
+    const res = await request(app).get('/person/A1234AB').expect('Content-Type', /html/)
+    const $ = cheerio.load(res.text)
+
+    expect($('.moj-ticket-panel__content').length).toBe(1)
+    const bannerInColumn = $('.govuk-grid-column-two-thirds .moj-ticket-panel__content')
+    expect(bannerInColumn.length).toBe(1)
+    expect(bannerInColumn.text()).toContain('Enter information from a new remand warrant')
+  })
 })

@@ -950,6 +950,7 @@ export default {
                 documentType: 'HMCTS_WARRANT',
                 uploadedAt: '2024-06-01T10:00:00Z',
                 uploadedBy: 'user1',
+                courtDataIngested: false,
               },
             ],
             prisonId: 'MDI',
@@ -1031,6 +1032,7 @@ export default {
                 documentType: 'HMCTS_WARRANT',
                 uploadedAt: '2024-06-01T10:00:00Z',
                 uploadedBy: 'user1',
+                courtDataIngested: false,
               },
             ],
             prisonId: 'MDI',
@@ -3363,6 +3365,7 @@ export default {
               fileName: 'court-document.pdf',
               uploadedAt: '2024-06-01T10:00:00Z',
               uploadedBy: 'user1',
+              courtDataIngested: false,
             },
           ],
         },
@@ -3902,6 +3905,7 @@ export default {
             documentUUID: '${json-unit.any-string}',
             documentType: 'PRISON_COURT_REGISTER',
             fileName: 'testfile.doc',
+            courtDataIngested: false,
           },
         ],
       },
@@ -4393,8 +4397,13 @@ export default {
         ],
         warrantType: 'APPEAL',
         documents: [
-          // eslint-disable-next-line no-template-curly-in-string
-          { documentUUID: '${json-unit.any-string}', documentType: 'APPEAL_ORDER', fileName: 'testfile.doc' },
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            documentUUID: '${json-unit.any-string}',
+            documentType: 'APPEAL_ORDER',
+            fileName: 'testfile.doc',
+            courtDataIngested: false,
+          },
         ],
         prisonId: 'MDI',
       },
@@ -4836,6 +4845,7 @@ export default {
               documentType: 'HMCTS_WARRANT',
               uploadedAt: '2024-06-01T10:00:00Z',
               uploadedBy: 'user1',
+              courtDataIngested: false,
             },
           ],
           charges: [],
@@ -4869,6 +4879,7 @@ export default {
               documentType: 'HMCTS_WARRANT',
               uploadedAt: '2024-06-01T10:00:00Z',
               uploadedBy: 'user1',
+              courtDataIngested: false,
             },
           ],
           charges: [],
@@ -4889,6 +4900,7 @@ export default {
             documentType: 'HMCTS_WARRANT',
             uploadedAt: '2024-06-01T10:00:00Z',
             uploadedBy: 'user1',
+            courtDataIngested: false,
           },
         ],
       },
@@ -4921,8 +4933,13 @@ export default {
         ],
         warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
         documents: [
-          // eslint-disable-next-line no-template-curly-in-string
-          { documentUUID: '${json-unit.any-string}', documentType: 'BREACH_ORDER', fileName: 'testfile.doc' },
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            documentUUID: '${json-unit.any-string}',
+            documentType: 'BREACH_ORDER',
+            fileName: 'testfile.doc',
+            courtDataIngested: false,
+          },
         ],
         prisonId: 'MDI',
         periodLengths: [

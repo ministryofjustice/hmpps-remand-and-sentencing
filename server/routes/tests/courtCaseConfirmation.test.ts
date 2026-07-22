@@ -55,14 +55,12 @@ describe('GET confirmation', () => {
         expect(bookASecureMoveLink.length).toBe(1)
         const text = bookASecureMoveLink.text()
         expect(text).toContain('Book a secure move')
-        const bookAVideoLinkLink = $('[data-qa=bookAVideoLinkLink]')
-        expect(bookAVideoLinkLink.length).toBe(0)
       })
   })
 
-  it('should render book a video link link', () => {
-    const bookAVideoLinkUser = { ...user, hasBookAVideoLinkAccess: true }
-    app = appWithAllRoutes({ userSupplier: () => bookAVideoLinkUser })
+  it('should not render book a secure move link when next appearance is not a court appearance', () => {
+    const bookASecureMoveUser = { ...user, hasBookASecureMoveAccess: true }
+    app = appWithAllRoutes({ userSupplier: () => bookASecureMoveUser })
     defaultServices.remandAndSentencingService.getCourtAppearanceByAppearanceUuid.mockResolvedValue(
       getAppearance('1da09b6e-55cb-4838-a157-ee6944f2094c'),
     )
@@ -71,11 +69,6 @@ describe('GET confirmation', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        const bookAVideoLinkLink = $('[data-qa=bookAVideoLinkLink]')
-        expect(bookAVideoLinkLink.length).toBe(1)
-        const text = bookAVideoLinkLink.text()
-        expect(text).toContain('Book a video link')
-
         const bookASecureMoveLink = $('[data-qa=bookASecureMoveLink]')
         expect(bookASecureMoveLink.length).toBe(0)
       })

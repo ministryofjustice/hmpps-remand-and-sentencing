@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class BreachTermLengthPage extends Page {
   constructor() {
-    super('Enter the breach term length')
+    super('Enter the term length of the breach')
   }
 
   monthsInput = (): PageElement => cy.get('#sentenceLength-months')

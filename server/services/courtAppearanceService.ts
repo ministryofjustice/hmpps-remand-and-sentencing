@@ -1886,12 +1886,12 @@ export default class CourtAppearanceService {
         'sentenceLength-days': 'minWholeNumber:0',
       },
       {
-        'requireSentenceLength.sentenceLength-years': 'You must enter the breach term length',
+        'requireSentenceLength.sentenceLength-years': 'You must enter the term length of the breach',
         'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
         'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
-        'requireOneNonZeroSentenceLength.sentenceLength-years': `The breach term length cannot be 0`,
+        'requireOneNonZeroSentenceLength.sentenceLength-years': `The term length of the breach cannot be 0`,
       },
     )
     if (errors.length === 0) {
@@ -1900,7 +1900,7 @@ export default class CourtAppearanceService {
       const breachTerm = sentenceLengthFormToSentenceLength(
         breachTermLengthForm,
         'BREACH_OF_SUPERVISION_REQUIREMENTS',
-        'breach term length',
+        'term length of the breach',
       )
       const breachTermIndex = periodLengths.findIndex(
         periodLength => periodLength.periodLengthType === 'BREACH_OF_SUPERVISION_REQUIREMENTS',

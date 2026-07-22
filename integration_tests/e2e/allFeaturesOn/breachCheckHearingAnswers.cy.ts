@@ -63,7 +63,7 @@ context('Breach check hearing answers page', () => {
       'Case reference number': 'C894623',
       'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
-      'Breach term length': '0 years 0 months 0 weeks 41 days',
+      'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })
   })
 
@@ -77,7 +77,7 @@ context('Breach check hearing answers page', () => {
       'Case reference number': 'G35266',
       'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
-      'Breach term length': '0 years 0 months 0 weeks 41 days',
+      'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })
   })
 
@@ -93,7 +93,7 @@ context('Breach check hearing answers page', () => {
       'Case reference number': 'C894623',
       'Hearing date': '15/06/2024',
       'Court name': 'Accrington Youth Court',
-      'Breach term length': '0 years 0 months 0 weeks 41 days',
+      'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })
   })
 
@@ -109,11 +109,11 @@ context('Breach check hearing answers page', () => {
       'Case reference number': 'C894623',
       'Hearing date': '13/05/2023',
       'Court name': 'Southampton Magistrate Court',
-      'Breach term length': '0 years 0 months 0 weeks 41 days',
+      'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })
   })
 
-  it('can edit breach term length and return back', () => {
+  it('can edit term length of the breach and return back', () => {
     breachCheckHearingAnswersPage.editBreachTermLink().click()
     const breachTermLengthPage = Page.verifyOnPage(BreachTermLengthPage)
     breachTermLengthPage.daysInput().should('have.value', '41').clear()
@@ -124,7 +124,7 @@ context('Breach check hearing answers page', () => {
       'Case reference number': 'C894623',
       'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
-      'Breach term length': '0 years 1 months 0 weeks 0 days',
+      'Term length of the breach': '0 years 1 months 0 weeks 0 days',
     })
   })
 })

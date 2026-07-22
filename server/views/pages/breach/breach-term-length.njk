@@ -5,7 +5,7 @@
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 
-{% set pageTitle = applicationName + " - Add breach term length"%}
+{% set pageTitle = applicationName + " - Add term length of the breach"%}
 
 {% block pageContent %}
             <form method="post" autocomplete="off">
@@ -17,7 +17,7 @@
                     errorMessage: errors | findErrorsBeginningWith('sentenceLength'),
                     fieldset: {
                         legend: {
-                        text: "Enter the breach term length",
+                        text: "Enter the term length of the breach",
                         isPageHeading: true,
                         classes: "govuk-fieldset__legend--l"
                         }

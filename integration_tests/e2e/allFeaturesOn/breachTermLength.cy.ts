@@ -1,7 +1,7 @@
 import BreachTermLengthPage from '../../pages/BreachTermLengthPage'
 import Page from '../../pages/page'
 
-context('Add Breach term length Page', () => {
+context('Add Term length of the breach Page', () => {
   let breachTermLengthPage: BreachTermLengthPage
   beforeEach(() => {
     cy.task('happyPathStubs')
@@ -15,7 +15,7 @@ context('Add Breach term length Page', () => {
     breachTermLengthPage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem You must enter the breach term length')
+      .should('equal', 'There is a problem You must enter the term length of the breach')
   })
 
   it('submitting a decimal number results in an error', () => {
@@ -34,6 +34,6 @@ context('Add Breach term length Page', () => {
     breachTermLengthPage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The breach term length cannot be 0')
+      .should('equal', 'There is a problem The term length of the breach cannot be 0')
   })
 })

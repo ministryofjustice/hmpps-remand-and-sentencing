@@ -72,7 +72,7 @@ context('Breach journey', () => {
       'Case reference number': 'C894623',
       'Hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
-      'Breach term length': '0 years 0 months 0 weeks 41 days',
+      'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })
     breachCheckHearingAnswersPage.continueButton().click()
     courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')

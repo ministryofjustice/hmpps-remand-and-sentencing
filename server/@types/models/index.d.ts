@@ -93,6 +93,7 @@ declare module 'models' {
     legacyData?: PeriodLengthLegacyData
     description?: string
     uuid: string
+    isAlternative: boolean
   }
 
   export interface TaskListItem {

@@ -172,6 +172,7 @@ export const periodLengthToSentenceLength = (periodLength: PeriodLength): Senten
       description:
         periodLengthTypeHeadings[periodLength.periodLengthType] ?? periodLength.legacyData?.sentenceTermDescription,
       uuid: periodLength.periodLengthUuid,
+      isAlternative: periodLength.periodOrder === 'years,months,weeks,days',
     } as SentenceLength
   }
   return null
@@ -197,6 +198,7 @@ export const pagedAppearancePeriodLengthToSentenceLength = (
       periodOrder: pagedAppearancePeriodLength.order.split(','),
       periodLengthType: pagedAppearancePeriodLength.type,
       description: periodLengthTypeHeadings[pagedAppearancePeriodLength.type],
+      isAlternative: pagedAppearancePeriodLength.order === 'years,months,weeks,days',
     } as SentenceLength
   }
   return null
@@ -285,6 +287,7 @@ export const pagedSentencePeriodLengthToSentenceLength = (
         periodLengthTypeHeadings[pagedSentencePeriodLength.type] ??
         pagedSentencePeriodLength.legacyData?.sentenceTermDescription,
       uuid: pagedSentencePeriodLength.periodLengthUuid,
+      isAlternative: pagedSentencePeriodLength.order === 'years,months,weeks,days',
     } as SentenceLength
   }
   return null
@@ -321,7 +324,13 @@ export function alternativeSentenceLengthFormToSentenceLength<T>(
   periodLengthType: string,
   description: string,
 ): SentenceLength {
-  const sentenceLength = { periodOrder: [], description, periodLengthType, uuid: crypto.randomUUID() }
+  const sentenceLength = {
+    periodOrder: [],
+    description,
+    periodLengthType,
+    uuid: crypto.randomUUID(),
+    isAlternative: true,
+  }
   if (alternativeSentenceLengthForm['firstSentenceLength-value']) {
     sentenceLength[alternativeSentenceLengthForm['firstSentenceLength-period']] =
       alternativeSentenceLengthForm['firstSentenceLength-value']
@@ -384,6 +393,7 @@ export function sentenceLengthFormToSentenceLength(
     hasOverallSentenceLength: sentenceLengthForm.hasOverallSentenceLength === 'true',
     description,
     uuid: crypto.randomUUID(),
+    isAlternative: false,
   } as SentenceLength
 }
 

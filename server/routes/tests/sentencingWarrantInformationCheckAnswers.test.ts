@@ -31,6 +31,7 @@ describe('GET Warrant Information Check Answers', () => {
           months: '5',
           periodOrder: ['years', 'months', 'weeks', 'days'],
           periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+          isAlternative: false,
         },
       ],
     })

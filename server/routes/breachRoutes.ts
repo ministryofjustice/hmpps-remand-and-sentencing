@@ -1,6 +1,13 @@
 import type { UrlParameters } from 'models'
 import { RequestHandler } from 'express'
-import type { BreachCourtNameForm, BreachDateForm, BreachTypeForm, DeleteDocumentForm, SentenceLengthForm } from 'forms'
+import type {
+  BreachCourtNameForm,
+  BreachDateForm,
+  BreachTypeForm,
+  CourtCaseAlternativeSentenceLengthForm,
+  DeleteDocumentForm,
+  SentenceLengthForm,
+} from 'forms'
 import AuditService from '../services/auditService'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import CourtRegisterService from '../services/courtRegisterService'
@@ -16,7 +23,11 @@ import BreachTaskListModel from './data/BreachTaskListModel'
 import logger from '../../logger'
 import documentTypes from '../resources/documentTypes'
 import { sortByDateDesc } from '../utils/utils'
-import { chargeToOffence, sentenceLengthToSentenceLengthForm } from '../utils/mappingUtils'
+import {
+  chargeToOffence,
+  sentenceLengthToAlternativeSentenceLengthForm,
+  sentenceLengthToSentenceLengthForm,
+} from '../utils/mappingUtils'
 
 export default class BreachRoutes extends BaseRoutes {
   constructor(
@@ -305,6 +316,52 @@ export default class BreachRoutes extends BaseRoutes {
     )
   }
 
+  public getAlternativeBreachTermLength: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
+    let breachTermLengthForm = (req.flash('breachTermLengthForm')[0] || {}) as CourtCaseAlternativeSentenceLengthForm
+    if (Object.keys(breachTermLengthForm).length === 0) {
+      breachTermLengthForm = sentenceLengthToAlternativeSentenceLengthForm<CourtCaseAlternativeSentenceLengthForm>(
+        this.courtAppearanceService.getBreachTerm(req.session, urlParameters),
+      )
+    }
+    let backLink = BreachJourneyUrls.breachTermLength(urlParameters, null, submitToCheckAnswers)
+    if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      backLink = BreachJourneyUrls.hearingDetails(urlParameters)
+    } else if (submitToCheckAnswers) {
+      backLink = BreachJourneyUrls.checkHearingAnswers(urlParameters)
+    }
+    return res.render('pages/breach/alternative-breach-term-length', {
+      ...urlParameters,
+      breachTermLengthForm,
+      errors: req.flash('errors') || [],
+      backLink,
+      showHearingDetails: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance),
+    })
+  }
+
+  public submitAlternativeBreachTermLength: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
+    const breachTermLengthForm = trimForm<CourtCaseAlternativeSentenceLengthForm>(req.body)
+    const errors = this.courtAppearanceService.setAlternativeBreachTerm(
+      req.session,
+      urlParameters,
+      breachTermLengthForm,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('breachTermLengthForm', { ...breachTermLengthForm })
+      return res.redirect(BreachJourneyUrls.alternativeBreachTermLength(urlParameters, 'true', submitToCheckAnswers))
+    }
+    return this.submitRedirect(
+      res,
+      urlParameters,
+      submitToCheckAnswers,
+      BreachJourneyUrls.checkHearingAnswers(urlParameters),
+    )
+  }
+
   public getCheckHearingAnswers: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { username } = res.locals.user
@@ -315,11 +372,14 @@ export default class BreachRoutes extends BaseRoutes {
     )
     const courtDetails = await this.courtRegisterService.findCourtById(courtAppearance.courtCode, username)
     const breachTermLength = this.courtAppearanceService.getBreachTerm(req.session, urlParameters)
-
+    const breachTermHref = breachTermLength.isAlternative
+      ? BreachJourneyUrls.alternativeBreachTermLength(urlParameters, null, 'true')
+      : BreachJourneyUrls.breachTermLength(urlParameters, null, 'true')
     return res.render('pages/breach/check-hearing-answers', {
       ...urlParameters,
       courtName: courtDetails.courtName,
       breachTermLength,
+      breachTermHref,
     })
   }
 

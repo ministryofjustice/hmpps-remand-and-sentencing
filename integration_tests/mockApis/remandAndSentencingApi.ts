@@ -648,6 +648,7 @@ export default {
             },
           ],
           deleteStatus: 'SUPPORTED',
+          periodLengths: [],
         },
       },
     })
@@ -722,6 +723,16 @@ export default {
             },
           ],
           deleteStatus: 'SUPPORTED',
+          periodLengths: [
+            {
+              years: 4,
+              months: 5,
+              weeks: null,
+              days: null,
+              periodOrder: 'years,months',
+              periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+            },
+          ],
         },
       },
     })
@@ -778,6 +789,7 @@ export default {
             },
           ],
           deleteStatus: 'SUPPORTED',
+          periodLengths: [],
         },
       },
     })
@@ -2233,6 +2245,7 @@ export default {
               },
             ],
             deleteStatus: 'SUPPORTED',
+            periodLengths: [],
           },
           appearances: [
             {
@@ -2279,6 +2292,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
             {
               appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
@@ -2330,6 +2344,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
           ],
         },
@@ -2399,6 +2414,7 @@ export default {
               },
             ],
             deleteStatus: 'SUPPORTED',
+            periodLengths: [],
           },
           appearances: [
             {
@@ -2451,6 +2467,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
           ],
         },
@@ -2554,6 +2571,14 @@ export default {
               },
             ],
             deleteStatus: 'NOT_SUPPORTED',
+            periodLengths: [
+              {
+                months: 5,
+                years: 4,
+                periodOrder: 'years,months',
+                periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+              },
+            ],
           },
           appearances: [
             {
@@ -2706,6 +2731,14 @@ export default {
                 },
               ],
               deleteStatus: 'NOT_SUPPORTED',
+              periodLengths: [
+                {
+                  months: 5,
+                  years: 4,
+                  periodOrder: 'years,months',
+                  periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+                },
+              ],
             },
             {
               appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
@@ -2737,6 +2770,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
               legacyData: {
                 eventId: '1',
                 caseId: '1',
@@ -4469,6 +4503,7 @@ export default {
               },
             ],
             deleteStatus: 'SUPPORTED',
+            periodLengths: [],
           },
           appearances: [
             {
@@ -4517,6 +4552,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
           ],
         },
@@ -4579,6 +4615,7 @@ export default {
             },
           ],
           deleteStatus: 'SUPPORTED',
+          periodLengths: [],
         },
       },
     })
@@ -5078,6 +5115,7 @@ export default {
               },
             ],
             deleteStatus: 'SUPPORTED',
+            periodLengths: [],
           },
           appearances: [
             {
@@ -5126,6 +5164,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
           ],
         },

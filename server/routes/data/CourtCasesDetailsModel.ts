@@ -73,9 +73,12 @@ export default class CourtCasesDetailsModel {
     this.firstDayInCustody = dayjs(pagedCourtCase.firstDayInCustody).format(config.dateFormat)
     this.firstDayInCustodyWarrantType = pagedCourtCase.firstDayInCustodyWarrantType
     this.overallCaseOutcome = pagedCourtCase.latestCourtAppearance.outcome ?? 'Not entered'
-    if (pagedCourtCase.overallSentenceLength) {
-      this.overallSentenceLength = pagedAppearancePeriodLengthToSentenceLength(pagedCourtCase.overallSentenceLength)
-    }
+
+    this.overallSentenceLength = pagedAppearancePeriodLengthToSentenceLength(
+      pagedCourtCase.latestCourtAppearance.periodLengths.find(
+        periodLength => periodLength.type === 'OVERALL_SENTENCE_LENGTH',
+      ),
+    )
     this.convictionDate = 'Not entered'
     if (pagedCourtCase.latestCourtAppearance.convictionDate) {
       this.convictionDate = dayjs(pagedCourtCase.latestCourtAppearance.convictionDate).format(config.dateFormat)

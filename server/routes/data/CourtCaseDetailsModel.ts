@@ -66,12 +66,13 @@ export default class CourtCaseDetailsModel {
       }
       this.nextAppearanceDate = appearanceDateFormatted
     }
-
-    if (pageCourtCaseContent.latestAppearance?.overallSentenceLength) {
-      this.overallSentenceLength = formatLengths(
-        periodLengthToSentenceLength(pageCourtCaseContent.latestAppearance?.overallSentenceLength),
-      )
-    }
+    this.overallSentenceLength = formatLengths(
+      periodLengthToSentenceLength(
+        pageCourtCaseContent.latestAppearance?.periodLengths.find(
+          periodLength => periodLength.periodLengthType === 'OVERALL_SENTENCE_LENGTH',
+        ),
+      ),
+    )
     this.overallCaseStatus = pageCourtCaseContent.status
     this.hearingTotal = pageCourtCaseContent.appearances.length
     this.hearings = pageCourtCaseContent.appearances

@@ -772,7 +772,11 @@ export default class SentencingRoutes extends BaseRoutes {
       courtAppearance,
       req.user.username,
     )
-
+    const overallSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     return res.render('pages/sentencing/sentence-length-mismatch', {
       nomsId,
       courtCaseReference,
@@ -788,6 +792,7 @@ export default class SentencingRoutes extends BaseRoutes {
         addOrEditCourtAppearance,
         appearanceReference,
       ),
+      overallSentenceLength,
     })
   }
 

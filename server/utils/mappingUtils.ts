@@ -433,9 +433,11 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     uploadedDocuments: pageCourtCaseAppearance.documents,
     ...nextCourtAppearanceToCourtAppearance(pageCourtCaseAppearance.nextCourtAppearance),
     offences,
-    ...(pageCourtCaseAppearance.overallSentenceLength && {
-      hasOverallSentenceLength: 'true',
-      periodLengths: [periodLengthToSentenceLength(pageCourtCaseAppearance.overallSentenceLength)],
+    ...(pageCourtCaseAppearance.periodLengths.length && {
+      hasOverallSentenceLength: `${pageCourtCaseAppearance.periodLengths.some(periodLength => periodLength.periodLengthType === 'OVERALL_SENTENCE_LENGTH')}`,
+      periodLengths: pageCourtCaseAppearance.periodLengths.map(periodLength =>
+        periodLengthToSentenceLength(periodLength),
+      ),
     }),
     ...(pageCourtCaseAppearance.overallConvictionDate && {
       overallConvictionDate: dayjs(pageCourtCaseAppearance.overallConvictionDate).toDate(),

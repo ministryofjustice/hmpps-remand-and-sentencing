@@ -1987,6 +1987,11 @@ export default class OffenceRoutes extends BaseRoutes {
       offenceMap,
       appearanceReference,
     )
+    const overallSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     return res.render('pages/offence/check-offence-answers', {
       nomsId,
       courtCaseReference,
@@ -2007,6 +2012,7 @@ export default class OffenceRoutes extends BaseRoutes {
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       errors: req.flash('errors') || [],
       showAddMultipleCountsLink: courtAppearance.warrantType === 'NON_SENTENCING',
+      overallSentenceLength,
     })
   }
 
@@ -2074,7 +2080,11 @@ export default class OffenceRoutes extends BaseRoutes {
         appearanceReference,
       )
     }
-
+    const overallSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     return res.render('pages/offence/sentence-length-mismatch', {
       nomsId,
       courtCaseReference,
@@ -2085,6 +2095,7 @@ export default class OffenceRoutes extends BaseRoutes {
       overallSentenceLengthComparison,
       backLink,
       isAddJourney,
+      overallSentenceLength,
     })
   }
 

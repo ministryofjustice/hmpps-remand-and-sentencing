@@ -71,11 +71,13 @@
             }) }}
 
 
+{% if appearanceAttendingMediumInsetText %}
 {{ govukInsetText({
           text: appearanceAttendingMediumInsetText,
           classes: "govuk-!-margin-top-2",
           attributes: { "data-qa": "nextAppearanceDateInset" }
         }) }}
+{% endif %}
 
         {% endcall %}
 

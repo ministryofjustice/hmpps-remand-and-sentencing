@@ -59,7 +59,7 @@ import SentencingTaskListModel from './data/SentencingTaskListModel'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
 import NonSentencingTaskListModel from './data/NonSentencingTaskListModel'
 import AuditService, { Page } from '../services/auditService'
-import { COURT_APPEARANCE_TYPE_UUID, VIDEO_LINK_APPEARANCE_TYPE_UUID } from '../resources/courtAppearanceTypes'
+import { COURT_APPEARANCE_TYPE_UUID } from '../resources/courtAppearanceTypes'
 import PrisonerService from '../services/prisonerService'
 import NextCourtAppearanceJourneyUrls from './data/NextCourtAppearanceJourneyUrls'
 import AddJourneyCancelDetailsModel from './data/AddJourneyCancelDetailsModel'
@@ -2365,7 +2365,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     const appearanceAttendingMediumInsetText =
       nextAppearanceTypeUuid === COURT_APPEARANCE_TYPE_UUID
         ? 'You will still need to book transport for this person, using the Book a secure move service.'
-        : 'You will still need to book a video link for this person, using the Book a video link service.'
+        : undefined
 
     if (this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)) {
       if (warrantType === 'SENTENCING') {
@@ -2809,24 +2809,18 @@ export default class CourtCaseRoutes extends BaseRoutes {
 
     const prisonerUser = res.locals.user as PrisonUser
     let showBookASecureMoveLink = false
-    let showBookAVideoLink = false
-    if (prisonerUser.hasBookASecureMoveAccess || prisonerUser.hasBookAVideoLinkAccess) {
+    if (prisonerUser.hasBookASecureMoveAccess) {
       const courtAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
         appearanceReference,
         req.user.username,
       )
       showBookASecureMoveLink =
-        prisonerUser.hasBookASecureMoveAccess &&
         courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid === COURT_APPEARANCE_TYPE_UUID // court appearance type
-      showBookAVideoLink =
-        prisonerUser.hasBookAVideoLinkAccess &&
-        courtAppearance.nextCourtAppearance?.appearanceType?.appearanceTypeUuid === VIDEO_LINK_APPEARANCE_TYPE_UUID // video link type
     }
 
     return res.render('pages/courtAppearance/confirmation', {
       nomsId,
       showBookASecureMoveLink,
-      showBookAVideoLink,
     })
   }
 

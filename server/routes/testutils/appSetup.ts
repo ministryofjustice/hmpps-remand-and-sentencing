@@ -88,7 +88,6 @@ export const user: HmppsUser = {
   hasInactiveBookingsAccess: false,
   hasRecallsAccess: false,
   hasBookASecureMoveAccess: false,
-  hasBookAVideoLinkAccess: false,
 }
 
 const defaultPrisoner: PrisonerSearchApiPrisoner = {

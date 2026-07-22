@@ -31,7 +31,6 @@ export interface PrisonUser extends BaseUser {
   hasInactiveBookingsAccess: boolean
   hasRecallsAccess: boolean
   hasBookASecureMoveAccess: boolean
-  hasBookAVideoLinkAccess: boolean
 }
 
 /**

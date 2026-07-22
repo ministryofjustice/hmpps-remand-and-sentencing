@@ -1,0 +1,76 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "../../components/alternativeSentenceLength/macro.njk" import alternativeSentenceLength%}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Add alternative term length of the breach" %}
+
+{% block pageContent %}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        {% call govukFieldset({
+            legend: {
+                text: "Enter the term length of the breach",
+                classes: "govuk-fieldset__legend--l",
+                isPageHeading: true
+            }
+        }) %}
+
+        {{
+            alternativeSentenceLength({
+                id: "firstSentenceLength",
+                name: "firstSentenceLength",
+                errorMessage: errors | findErrorsBeginningWith('firstSentenceLength'),
+                selectedItem: breachTermLengthForm['firstSentenceLength-period'],
+                value: breachTermLengthForm['firstSentenceLength-value'],
+                label: "Term length of the breach"
+            })
+        }}
+
+        {{
+            alternativeSentenceLength({
+                id: "secondSentenceLength",
+                name: "secondSentenceLength",
+                errorMessage: errors | findErrorsBeginningWith('secondSentenceLength'),
+                selectedItem: breachTermLengthForm['secondSentenceLength-period'],
+                value: breachTermLengthForm['secondSentenceLength-value'],
+                label: "Term length of the breach"
+            })
+        }}
+
+        {{
+            alternativeSentenceLength({
+                id: "thirdSentenceLength",
+                name: "thirdSentenceLength",
+                errorMessage: errors | findErrorsBeginningWith('thirdSentenceLength'),
+                selectedItem: breachTermLengthForm['thirdSentenceLength-period'],
+                value: breachTermLengthForm['thirdSentenceLength-value'],
+                label: "Term length of the breach"
+            })
+        }}
+
+        {{
+            alternativeSentenceLength({
+                id: "fourthSentenceLength",
+                name: "fourthSentenceLength",
+                errorMessage: errors | findErrorsBeginningWith('fourthSentenceLength'),
+                selectedItem: breachTermLengthForm['fourthSentenceLength-period'],
+                value: breachTermLengthForm['fourthSentenceLength-value'],
+                label: "Term length of the breach"
+            })
+        }}
+
+
+        {% endcall %}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+{% endblock %}

@@ -27,6 +27,7 @@ describe('GET Update offence outcomes', () => {
           days: '2',
           periodOrder: ['years', 'months', 'weeks', 'days'],
           periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+          isAlternative: false,
         },
       ],
       hasOverallSentenceLength: 'true',

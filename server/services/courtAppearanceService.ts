@@ -1920,4 +1920,63 @@ export default class CourtAppearanceService {
     }
     return errors
   }
+
+  setAlternativeBreachTerm(
+    session: Partial<SessionData>,
+    urlParameter: UrlParameters,
+    breachTermLengthForm: CourtCaseAlternativeSentenceLengthForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      breachTermLengthForm,
+      {
+        'firstSentenceLength-value':
+          'requireAlternativeSentenceLength|minWholeNumber:0|requireOneNonZeroAlternativeSentenceLength',
+        'secondSentenceLength-value': 'minWholeNumber:0',
+        'thirdSentenceLength-value': 'minWholeNumber:0',
+        'fourthSentenceLength-value': 'minWholeNumber:0',
+        'firstSentenceLength-period': 'isUniqueTimePeriod',
+        'secondSentenceLength-period': 'isUniqueTimePeriod',
+        'thirdSentenceLength-period': 'isUniqueTimePeriod',
+        'fourthSentenceLength-period': 'isUniqueTimePeriod',
+      },
+      {
+        'requireAlternativeSentenceLength.firstSentenceLength-value': 'You must enter the term length of the breach',
+        'minWholeNumber.firstSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.fourthSentenceLength-value': 'The number must be a whole number, or 0',
+        'requireOneNonZeroAlternativeSentenceLength.firstSentenceLength-value':
+          'The term length of the breach cannot be 0',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+      const periodLengths = courtAppearance.periodLengths ?? []
+      const breachTerm = alternativeSentenceLengthFormToSentenceLength<CourtCaseAlternativeSentenceLengthForm>(
+        breachTermLengthForm,
+        'BREACH_OF_SUPERVISION_REQUIREMENTS',
+        'term length of the breach',
+      )
+      const breachTermIndex = periodLengths.findIndex(
+        periodLength => periodLength.periodLengthType === 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+      )
+      if (breachTermIndex !== -1) {
+        periodLengths[breachTermIndex] = {
+          ...breachTerm,
+          legacyData: periodLengths[breachTermIndex].legacyData,
+          uuid: periodLengths[breachTermIndex].uuid,
+        }
+      } else {
+        periodLengths.push(breachTerm)
+      }
+      courtAppearance.periodLengths = periodLengths
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[urlParameter.nomsId] = courtAppearance
+    }
+    return errors
+  }
 }

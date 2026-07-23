@@ -36,6 +36,7 @@ const createCourtCase = (
     ],
     source,
     deleteStatus,
+    periodLengths: [],
   }
   return {
     courtCaseUuid: '1',
@@ -104,6 +105,7 @@ describe('Consecutive to label display', () => {
         outcomeName: 'Appearance outcome',
       },
       charges: offences,
+      periodLengths: [],
     }
 
     const courtCase = {
@@ -308,6 +310,7 @@ describe('GET tests for inset text', () => {
         outcome: { outcomeUuid: '1', outcomeName: 'Offence outcome' },
       },
     ],
+    periodLengths: [],
   }
 
   const baseCourtCase: PageCourtCaseContent = {

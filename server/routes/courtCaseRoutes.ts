@@ -374,7 +374,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
           .flatMap(courtCase =>
             courtCase.latestCourtAppearance.charges
               .flatMap(charge => charge.sentence?.periodLengths?.map(periodLength => periodLength.periodLengthUuid))
-              .concat(courtCase.overallSentenceLength?.periodLengthUuid),
+              .concat(courtCase.latestCourtAppearance.periodLengths.map(periodLength => periodLength.periodLengthUuid)),
           )
           .filter(periodLengthUuid => periodLengthUuid),
       ),
@@ -575,7 +575,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
             appearance.charges
               .flatMap(charge => charge.sentence?.periodLengths)
               .map(periodLength => periodLength?.periodLengthUuid)
-              .concat(appearance.overallSentenceLength?.periodLengthUuid),
+              .concat(appearance.periodLengths.map(periodLength => periodLength.periodLengthUuid)),
           )
           .filter(periodLengthUuid => periodLengthUuid),
       ),
@@ -647,7 +647,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       ),
       periodLengthUuids: (appearance.charges ?? [])
         .flatMap(charge => charge.sentence?.periodLengths?.map(periodLength => periodLength.periodLengthUuid) ?? [])
-        .concat(appearance.overallSentenceLength?.periodLengthUuid)
+        .concat((appearance.periodLengths ?? []).map(periodLength => periodLength.periodLengthType))
         .filter(uuid => uuid),
     }
 

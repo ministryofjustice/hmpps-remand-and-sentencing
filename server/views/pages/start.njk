@@ -152,6 +152,13 @@
                                     }
                                     ]))%}
                             {% endif %}
+                            {% if courtCaseDetails.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS' %}
+                                {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat([{
+                                        key: { text: "Breach of supervision requirements"},
+                                        value: { text: courtCaseDetails.overallBreachOfSupervisionLength | formatLengths if courtCaseDetails.overallBreachOfSupervisionLength else 'Not entered' }
+                                    }
+                                    ]))%}
+                            {% endif %}
                             {% if courtCaseDetails.warrantType === 'NON_SENTENCING' %}
                               {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat(
                                       {

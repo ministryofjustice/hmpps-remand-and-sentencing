@@ -85,6 +85,7 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [],
               },
               legacyData: {
                 caseReferences: [
@@ -142,6 +143,7 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [],
               },
             },
             {
@@ -329,6 +331,16 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [
+                  {
+                    years: 1,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    order: 'years,months,weeks,days',
+                    type: 'OVERALL_SENTENCE_LENGTH',
+                  },
+                ],
               },
               canAppeal: true,
               canBreach: true,
@@ -388,6 +400,7 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [],
               },
             },
             {
@@ -446,6 +459,7 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [],
               },
               mergedFromCases: [
                 {
@@ -510,11 +524,78 @@ export default {
                     mergedFromCase: null,
                   },
                 ],
+                periodLengths: [],
               },
               mergedFromCase: [],
               mergedToCase: null,
               allAppearancesHaveRecall: false,
               canAppeal: true,
+            },
+            {
+              prisonerId: 'PRI123',
+              courtCaseUuid: 'cb0469bd-aca1-4ae7-9a65-46366ea5d48e',
+              courtCaseStatus: 'ACTIVE',
+              legacyData: {
+                caseReferences: [
+                  {
+                    offenderCaseReference: 'C894623',
+                    updatedDate: '2025-06-05T07:23:16.79636',
+                  },
+                ],
+              },
+              appearanceCount: 2,
+              caseReferences: ['C894623'],
+              firstDayInCustody: '2025-06-05',
+              firstDayInCustodyWarrantType: 'NON_SENTENCING',
+              overallSentenceLength: null,
+              latestCourtAppearance: {
+                caseReference: 'C894623',
+                criminalAppealOfficeReference: null,
+                courtCode: 'ACCRYC',
+                warrantDate: '2026-06-05',
+                warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+                outcome: 'DTO (Detention and Training Order)',
+                convictionDate: null,
+                legacyData: null,
+                nextCourtAppearance: null,
+                charges: [
+                  {
+                    offenceCode: 'PS90037',
+                    offenceStartDate: '2025-09-05',
+                    offenceEndDate: null,
+                    outcome: {
+                      outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                      outcomeName: 'DTO (Detention and Training Order)',
+                    },
+                    legacyData: {
+                      postedDate: '2025-06-05',
+                      nomisOutcomeCode: null,
+                      outcomeDescription: null,
+                      outcomeDispositionCode: null,
+                      outcomeConvictionFlag: false,
+                      offenceDescription: 'A NOMIS description',
+                    },
+                    sentence: null,
+                    mergedFromCase: null,
+                  },
+                ],
+                periodLengths: [
+                  {
+                    periodLengthUuid: '8a42be27-ece5-44a8-9636-3af62a3903a7',
+                    years: null,
+                    months: null,
+                    weeks: null,
+                    days: 41,
+                    order: 'years,months,weeks,days',
+                    type: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+                  },
+                ],
+              },
+              mergedFromCase: [],
+              mergedToCase: null,
+              allAppearancesHaveRecall: false,
+              canAppeal: true,
+              canBreach: true,
             },
           ],
           number: 0,
@@ -648,6 +729,7 @@ export default {
             },
           ],
           deleteStatus: 'SUPPORTED',
+          periodLengths: [],
         },
       },
     })
@@ -722,6 +804,16 @@ export default {
             },
           ],
           deleteStatus: 'SUPPORTED',
+          periodLengths: [
+            {
+              years: 4,
+              months: 5,
+              weeks: null,
+              days: null,
+              periodOrder: 'years,months',
+              periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+            },
+          ],
         },
       },
     })
@@ -778,6 +870,7 @@ export default {
             },
           ],
           deleteStatus: 'SUPPORTED',
+          periodLengths: [],
         },
       },
     })
@@ -1237,6 +1330,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1297,6 +1391,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1339,6 +1434,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1407,14 +1503,16 @@ export default {
               },
             },
           ],
-          overallSentenceLength: {
-            years: 4,
-            months: null,
-            weeks: null,
-            days: null,
-            periodOrder: 'years',
-            periodLengthType: 'OVERALL_SENTENCE_LENGTH',
-          },
+          periodLengths: [
+            {
+              years: 4,
+              months: null,
+              weeks: null,
+              days: null,
+              periodOrder: 'years',
+              periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+            },
+          ],
         },
       },
     })
@@ -1479,6 +1577,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1617,6 +1716,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1806,14 +1906,16 @@ export default {
               },
             },
           ],
-          overallSentenceLength: {
-            years: 4,
-            months: null,
-            weeks: null,
-            days: null,
-            periodOrder: 'years',
-            periodLengthType: 'OVERALL_SENTENCE_LENGTH',
-          },
+          periodLengths: [
+            {
+              years: 4,
+              months: null,
+              weeks: null,
+              days: null,
+              periodOrder: 'years',
+              periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+            },
+          ],
         },
       },
     })
@@ -1966,6 +2068,16 @@ export default {
             periodOrder: 'years',
             periodLengthType: 'OVERALL_SENTENCE_LENGTH',
           },
+          periodLengths: [
+            {
+              years: 4,
+              months: null,
+              weeks: null,
+              days: null,
+              periodOrder: 'years',
+              periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+            },
+          ],
         },
       },
     })
@@ -2233,6 +2345,7 @@ export default {
               },
             ],
             deleteStatus: 'SUPPORTED',
+            periodLengths: [],
           },
           appearances: [
             {
@@ -2279,6 +2392,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
             {
               appearanceUuid: 'a6400fd8-aef4-4567-b18c-d1f452651933',
@@ -2330,6 +2444,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
           ],
         },
@@ -2399,6 +2514,7 @@ export default {
               },
             ],
             deleteStatus: 'SUPPORTED',
+            periodLengths: [],
           },
           appearances: [
             {
@@ -2451,6 +2567,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
           ],
         },
@@ -2554,6 +2671,14 @@ export default {
               },
             ],
             deleteStatus: 'NOT_SUPPORTED',
+            periodLengths: [
+              {
+                months: 5,
+                years: 4,
+                periodOrder: 'years,months',
+                periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+              },
+            ],
           },
           appearances: [
             {
@@ -2706,6 +2831,14 @@ export default {
                 },
               ],
               deleteStatus: 'NOT_SUPPORTED',
+              periodLengths: [
+                {
+                  months: 5,
+                  years: 4,
+                  periodOrder: 'years,months',
+                  periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+                },
+              ],
             },
             {
               appearanceUuid: '5b4cbea0-edd3-4bac-9485-b3e3cd46ad77',
@@ -2737,6 +2870,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
               legacyData: {
                 eventId: '1',
                 caseId: '1',
@@ -4469,6 +4603,7 @@ export default {
               },
             ],
             deleteStatus: 'SUPPORTED',
+            periodLengths: [],
           },
           appearances: [
             {
@@ -4517,6 +4652,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
           ],
         },
@@ -4579,6 +4715,7 @@ export default {
             },
           ],
           deleteStatus: 'SUPPORTED',
+          periodLengths: [],
         },
       },
     })
@@ -4815,6 +4952,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -5078,6 +5216,7 @@ export default {
               },
             ],
             deleteStatus: 'SUPPORTED',
+            periodLengths: [],
           },
           appearances: [
             {
@@ -5126,6 +5265,7 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
+              periodLengths: [],
             },
           ],
         },

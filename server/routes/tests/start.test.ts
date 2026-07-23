@@ -60,6 +60,7 @@ const setupCourtCase = () => {
               createdAt: '2025-03-11T14:31:00.000Z',
             },
           ],
+          periodLengths: [],
         },
         firstDayInCustody: '',
         mergedFromCases: [],

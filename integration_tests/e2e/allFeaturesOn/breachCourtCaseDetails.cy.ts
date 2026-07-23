@@ -27,6 +27,7 @@ context('Breach Court Case details Page', () => {
           Location: 'Accrington Youth Court',
           'Breach hearing date': '15/12/2023',
           Outcome: 'DTO (Detention and Training Order)',
+          'Breach of supervision requirements': '0 years 0 months 0 weeks 41 days',
           'Court documents': 'No documents uploaded',
           Offences: {
             'offences (2)': [

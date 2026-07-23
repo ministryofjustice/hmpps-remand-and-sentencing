@@ -1,6 +1,5 @@
 import HearingUpdatedConfirmationPage from '../../pages/HearingUpdatedConfirmationPage'
 import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
-import OffenceDeleteOffencePage from '../../pages/offenceDeleteOffencePage'
 import Page from '../../pages/page'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 

@@ -26,6 +26,8 @@ export default class CourtCasesDetailsModel {
 
   overallSentenceLength: SentenceLength
 
+  overallBreachOfSupervisionLength: SentenceLength
+
   convictionDate: string
 
   warrantType: string
@@ -77,6 +79,11 @@ export default class CourtCasesDetailsModel {
     this.overallSentenceLength = pagedAppearancePeriodLengthToSentenceLength(
       pagedCourtCase.latestCourtAppearance.periodLengths.find(
         periodLength => periodLength.type === 'OVERALL_SENTENCE_LENGTH',
+      ),
+    )
+    this.overallBreachOfSupervisionLength = pagedAppearancePeriodLengthToSentenceLength(
+      pagedCourtCase.latestCourtAppearance.periodLengths.find(
+        periodLength => periodLength.type === 'BREACH_OF_SUPERVISION_REQUIREMENTS',
       ),
     )
     this.convictionDate = 'Not entered'

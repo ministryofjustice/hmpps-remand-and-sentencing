@@ -23,6 +23,7 @@ describe('GET review new documents landing', () => {
         { documentUUID: 'doc-uuid-1', fileName: 'aRemandWarrant.pdf', documentType: 'HMCTS_WARRANT' },
         { documentUUID: 'doc-uuid-2', fileName: 'mystery.pdf', documentType: 'SOMETHING_UNMAPPED' },
       ],
+      periodLengths: [],
     } as never)
 
     return request(app)
@@ -53,6 +54,7 @@ describe('GET review new documents start', () => {
     warrantType: 'NON_SENTENCING',
     charges: [],
     documents: [],
+    periodLengths: [],
   }
 
   it('clears session state and redirects to the overall case outcome page when there is no outcome', () => {

@@ -32,6 +32,7 @@ describe('mapping API to session util tests', () => {
       charges: [],
       overallSentenceLength: null,
       overallConvictionDate: null,
+      periodLengths: [],
     } as PageCourtCaseAppearance
     const result = pageCourtCaseAppearanceToCourtAppearance(appearance)
     expect(result.nextAppearanceSelect).toEqual(false)

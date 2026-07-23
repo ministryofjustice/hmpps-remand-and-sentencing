@@ -72,6 +72,26 @@
                                 }
                             ]
                         }
+                    },
+                    {
+                        key: {
+                            text: "Term length of the breach"
+                        },
+                        value: {
+                            text: breachTermLength | formatLengths if breachTermLength else 'Not entered'
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: breachTermHref,
+                                    text: "Edit",
+                                    visuallyHiddenText: "term length of the breach",
+                                    attributes: {
+                                        'data-qa': 'edit-breach-term-link'
+                                    }
+                                }
+                            ]
+                        }
                     }
                 ]
             }) }}

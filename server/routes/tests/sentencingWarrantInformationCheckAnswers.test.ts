@@ -24,13 +24,16 @@ describe('GET Warrant Information Check Answers', () => {
       overallConvictionDate: new Date(),
       overallConvictionDateAppliedAll: 'true',
       hasOverallSentenceLength: 'true',
-      overallSentenceLength: {
-        uuid: '2',
-        years: '4',
-        months: '5',
-        periodOrder: ['years', 'months', 'weeks', 'days'],
-        periodLengthType: 'OVERALL_SENTENCE_LENGTH',
-      },
+      periodLengths: [
+        {
+          uuid: '2',
+          years: '4',
+          months: '5',
+          periodOrder: ['years', 'months', 'weeks', 'days'],
+          periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+          isAlternative: false,
+        },
+      ],
     })
     defaultServices.refDataService.getAppearanceOutcomeByUuid.mockResolvedValue({
       outcomeUuid: '123',

@@ -34,10 +34,12 @@
 {% endif %}
 
     <h1 class="govuk-heading-xl">Court cases</h1>
-    {{ thingsToDo(serviceDefinitions, 'courtCases') }}
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
+            {% if courtCaseDetailModels | length %}
+            {{ thingsToDo(serviceDefinitions, 'courtCases') }}
+            {% endif %}
             {% if prisonerCourtCaseTotal %}
             {% if filterErrors | length %}
                 <div class="govuk-grid-row govuk-!-margin-top-4">
@@ -147,6 +149,13 @@
                                 {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat([{
                                         key: { text: "Overall sentence length"},
                                         value: { text: courtCaseDetails.overallSentenceLength | formatLengths if courtCaseDetails.overallSentenceLength else 'Not entered' }
+                                    }
+                                    ]))%}
+                            {% endif %}
+                            {% if courtCaseDetails.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS' %}
+                                {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat([{
+                                        key: { text: "Breach of supervision requirements"},
+                                        value: { text: courtCaseDetails.overallBreachOfSupervisionLength | formatLengths if courtCaseDetails.overallBreachOfSupervisionLength else 'Not entered' }
                                     }
                                     ]))%}
                             {% endif %}
@@ -357,7 +366,8 @@
                     {% else %}
                         <p class="govuk-body">There are no court cases recorded for {{ prisoner | firstNameSpaceLastName }}.</p>
                     {% endif %}
-                    <p class="gouk-body">
+                    {{ thingsToDo(serviceDefinitions, 'courtCases') }}
+                    <p class="govuk-body">
                         <a class="govuk-link--no-visited-state" href="/person/{{nomsId}}/add-court-case/{{newCourtCaseId}}/add-court-appearance/{{ appearanceUuid }}/new-journey">Add a court case now</a>
                     </p>
                 {% endfor %}

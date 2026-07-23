@@ -562,7 +562,9 @@ export default class CourtAppearanceService {
     nomsId: string,
     appearanceUuid: string,
   ): SentenceLength {
-    return this.getCourtAppearance(session, nomsId, appearanceUuid).overallSentenceLength
+    const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+    const periodLengths = courtAppearance.periodLengths ?? []
+    return periodLengths.find(periodLength => periodLength.periodLengthType === 'OVERALL_SENTENCE_LENGTH')
   }
 
   getHasOverallSentenceLength(session: Partial<SessionData>, nomsId: string, appearanceUuid: string): string {
@@ -605,20 +607,30 @@ export default class CourtAppearanceService {
 
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
+      const periodLengths = courtAppearance.periodLengths ?? []
+      const overallSentenceLengthIndex = periodLengths.findIndex(
+        periodLength => periodLength.periodLengthType === 'OVERALL_SENTENCE_LENGTH',
+      )
+      const overallSentenceLength = sentenceLengthFormToSentenceLength(
+        courtCaseOverallSentenceLengthForm,
+        'OVERALL_SENTENCE_LENGTH',
+        periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
+      )
       if (courtCaseOverallSentenceLengthForm.hasOverallSentenceLength === 'true') {
-        courtAppearance.overallSentenceLength = {
-          ...sentenceLengthFormToSentenceLength(
-            courtCaseOverallSentenceLengthForm,
-            'OVERALL_SENTENCE_LENGTH',
-            periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
-          ),
-          uuid: courtAppearance.overallSentenceLength?.uuid ?? crypto.randomUUID(),
+        if (overallSentenceLengthIndex !== -1) {
+          periodLengths[overallSentenceLengthIndex] = {
+            ...overallSentenceLength,
+            uuid: periodLengths[overallSentenceLengthIndex].uuid,
+            legacyData: periodLengths[overallSentenceLengthIndex].legacyData,
+          }
+        } else {
+          periodLengths.push(overallSentenceLength)
         }
+        courtAppearance.hasOverallSentenceLength = 'true'
       } else {
-        delete courtAppearance.overallSentenceLength
+        periodLengths.splice(overallSentenceLengthIndex, 1)
       }
-
-      courtAppearance.hasOverallSentenceLength = courtCaseOverallSentenceLengthForm.hasOverallSentenceLength
+      courtAppearance.periodLengths = periodLengths
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -660,8 +672,21 @@ export default class CourtAppearanceService {
         periodLengthTypeHeadings.OVERALL_SENTENCE_LENGTH,
       )
       const courtAppearance = this.getCourtAppearance(session, nomsId, appearanceUuid)
-      courtAppearance.overallSentenceLength = sentenceLength
+      const periodLengths = courtAppearance.periodLengths ?? []
+      const overallSentenceLengthIndex = periodLengths.findIndex(
+        periodLength => periodLength.periodLengthType === 'OVERALL_SENTENCE_LENGTH',
+      )
+      if (overallSentenceLengthIndex !== -1) {
+        periodLengths[overallSentenceLengthIndex] = {
+          ...sentenceLength,
+          uuid: periodLengths[overallSentenceLengthIndex].uuid,
+          legacyData: periodLengths[overallSentenceLengthIndex].legacyData,
+        }
+      } else {
+        courtAppearance.periodLengths.push(sentenceLength)
+      }
       courtAppearance.hasOverallSentenceLength = 'true'
+      courtAppearance.periodLengths = periodLengths
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[nomsId] = courtAppearance
     }
@@ -1835,5 +1860,123 @@ export default class CourtAppearanceService {
     courtAppearance.offences = offences
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[urlParameter.nomsId] = courtAppearance
+  }
+
+  getBreachTerm(session: Partial<SessionData>, urlParameter: UrlParameters) {
+    const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+    const periodLengths = courtAppearance.periodLengths ?? []
+    return periodLengths.find(periodLength => periodLength.periodLengthType === 'BREACH_OF_SUPERVISION_REQUIREMENTS')
+  }
+
+  setBreachTerm(
+    session: Partial<SessionData>,
+    urlParameter: UrlParameters,
+    breachTermLengthForm: SentenceLengthForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      breachTermLengthForm,
+      {
+        'sentenceLength-years': 'requireSentenceLength|minWholeNumber:0|requireOneNonZeroSentenceLength',
+        'sentenceLength-months': 'minWholeNumber:0',
+        'sentenceLength-weeks': 'minWholeNumber:0',
+        'sentenceLength-days': 'minWholeNumber:0',
+      },
+      {
+        'requireSentenceLength.sentenceLength-years': 'You must enter the term length of the breach',
+        'minWholeNumber.sentenceLength-years': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-months': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-weeks': 'The number must be a whole number, or 0',
+        'minWholeNumber.sentenceLength-days': 'The number must be a whole number, or 0',
+        'requireOneNonZeroSentenceLength.sentenceLength-years': `The term length of the breach cannot be 0`,
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+      const periodLengths = courtAppearance.periodLengths ?? []
+      const breachTerm = sentenceLengthFormToSentenceLength(
+        breachTermLengthForm,
+        'BREACH_OF_SUPERVISION_REQUIREMENTS',
+        'term length of the breach',
+      )
+      const breachTermIndex = periodLengths.findIndex(
+        periodLength => periodLength.periodLengthType === 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+      )
+      if (breachTermIndex !== -1) {
+        periodLengths[breachTermIndex] = {
+          ...breachTerm,
+          legacyData: periodLengths[breachTermIndex].legacyData,
+          uuid: periodLengths[breachTermIndex].uuid,
+        }
+      } else {
+        periodLengths.push(breachTerm)
+      }
+      courtAppearance.periodLengths = periodLengths
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[urlParameter.nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  setAlternativeBreachTerm(
+    session: Partial<SessionData>,
+    urlParameter: UrlParameters,
+    breachTermLengthForm: CourtCaseAlternativeSentenceLengthForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const errors = validate(
+      breachTermLengthForm,
+      {
+        'firstSentenceLength-value':
+          'requireAlternativeSentenceLength|minWholeNumber:0|requireOneNonZeroAlternativeSentenceLength',
+        'secondSentenceLength-value': 'minWholeNumber:0',
+        'thirdSentenceLength-value': 'minWholeNumber:0',
+        'fourthSentenceLength-value': 'minWholeNumber:0',
+        'firstSentenceLength-period': 'isUniqueTimePeriod',
+        'secondSentenceLength-period': 'isUniqueTimePeriod',
+        'thirdSentenceLength-period': 'isUniqueTimePeriod',
+        'fourthSentenceLength-period': 'isUniqueTimePeriod',
+      },
+      {
+        'requireAlternativeSentenceLength.firstSentenceLength-value': 'You must enter the term length of the breach',
+        'minWholeNumber.firstSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.secondSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.thirdSentenceLength-value': 'The number must be a whole number, or 0',
+        'minWholeNumber.fourthSentenceLength-value': 'The number must be a whole number, or 0',
+        'requireOneNonZeroAlternativeSentenceLength.firstSentenceLength-value':
+          'The term length of the breach cannot be 0',
+      },
+    )
+    if (errors.length === 0) {
+      const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+      const periodLengths = courtAppearance.periodLengths ?? []
+      const breachTerm = alternativeSentenceLengthFormToSentenceLength<CourtCaseAlternativeSentenceLengthForm>(
+        breachTermLengthForm,
+        'BREACH_OF_SUPERVISION_REQUIREMENTS',
+        'term length of the breach',
+      )
+      const breachTermIndex = periodLengths.findIndex(
+        periodLength => periodLength.periodLengthType === 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+      )
+      if (breachTermIndex !== -1) {
+        periodLengths[breachTermIndex] = {
+          ...breachTerm,
+          legacyData: periodLengths[breachTermIndex].legacyData,
+          uuid: periodLengths[breachTermIndex].uuid,
+        }
+      } else {
+        periodLengths.push(breachTerm)
+      }
+      courtAppearance.periodLengths = periodLengths
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[urlParameter.nomsId] = courtAppearance
+    }
+    return errors
   }
 }

@@ -23,4 +23,13 @@ context('Start Page', () => {
       'Overall case outcome': 'Sentence varied',
     })
   })
+  // TODO: only merge once breach of supervision is switched on
+  it('displays breach of supervision court case summary', () => {
+    startPage.courtCaseSummaryList('cb0469bd-aca1-4ae7-9a65-46366ea5d48e').getSummaryList().should('deep.equal', {
+      'Case references': 'C894623',
+      'First day in custody': '05/06/2025',
+      'Overall case outcome': 'DTO (Detention and Training Order)',
+      'Breach of supervision requirements': '0 years 0 months 0 weeks 41 days',
+    })
+  })
 })

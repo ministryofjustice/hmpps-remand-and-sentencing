@@ -74,10 +74,12 @@ describe('GET Court case documents', () => {
                 documentType: 'HMCTS_WARRANT',
                 fileName: 'aRemandWarrant.pdf',
                 documentUUID: '567',
+                courtDataIngested: false,
               },
             ],
             source: 'DPS',
             deleteStatus: 'SUPPORTED',
+            periodLengths: [],
           },
           appearanceDocumentsByType: {
             HMCTS_WARRANT: [

@@ -54,6 +54,7 @@ describe('GET Select reference', () => {
       documents: [],
       source: 'DPS',
       deleteStatus: 'SUPPORTED',
+      periodLengths: [],
     })
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: '1',

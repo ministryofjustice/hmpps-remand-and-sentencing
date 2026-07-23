@@ -93,11 +93,15 @@ context('Next appearance date page', () => {
     )
   })
 
-  it('shows inset text for video link', () => {
-    verifyInsetTextForOption(
-      '1da09b6e-55cb-4838-a157-ee6944f2094c',
-      'You will still need to book a video link for this person, using the Book a video link service.',
-    )
+  it('shows no inset text for video link', () => {
+    cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/next-appearance-type')
+
+    const page = Page.verifyOnPage(CourtCaseNextAppearanceTypePage)
+    page.radioLabelSelector('1da09b6e-55cb-4838-a157-ee6944f2094c').click()
+    page.continueButton().click()
+
+    const nextPage = Page.verifyOnPage(CourtCaseNextAppearanceDatePage)
+    nextPage.nextAppearanceDateInset().should('not.exist')
   })
 })
 

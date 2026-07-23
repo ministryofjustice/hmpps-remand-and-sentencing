@@ -17,6 +17,18 @@ export default class BreachJourneyUrls {
     return `${this.basePath(urlParameters)}/breach-court${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
+  static breachTermLength(urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string): string {
+    return `${this.basePath(urlParameters)}/breach-term-length${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  }
+
+  static alternativeBreachTermLength(
+    urlParameters: UrlParameters,
+    hasErrors?: string,
+    submitToCheckAnswers?: string,
+  ): string {
+    return `${this.basePath(urlParameters)}/alternative-breach-term-length${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  }
+
   static checkHearingAnswers = (urlParameters: UrlParameters) => {
     return `${this.basePath(urlParameters)}/check-hearing-answers`
   }

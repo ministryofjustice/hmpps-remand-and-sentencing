@@ -62,14 +62,9 @@
   }
 ] %}
 
-{% set overallSentenceLengthText = "Not entered" %}
-{% if hearing.overallSentenceLength %}
-  {% set overallSentenceLengthText = hearing.overallSentenceLength | formatLengths %}
-{% endif %}
-
 {% set offenceRows = [{
   key: { text: "Overall sentence length" },
-  value: { text: overallSentenceLengthText },
+  value: { text: overallSentenceLength | formatLengths if overallSentenceLength else 'Not entered'  },
   actions: {
     items: [{
       href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/sentencing/overall-sentence-length",

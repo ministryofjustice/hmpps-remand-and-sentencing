@@ -24,7 +24,6 @@ declare module 'models' {
     nextAppearanceSubTypeUuid?: string
     offences?: Offence[]
     warrantType?: string
-    overallSentenceLength?: SentenceLength
     referenceNumberSelect?: string
     appearanceInformationAccepted?: boolean
     warrantInformationAccepted?: boolean
@@ -39,6 +38,7 @@ declare module 'models' {
     documentUploadAccepted?: boolean
     criminalAppealOfficeReference?: string
     hasCommonPlatformDocuments?: boolean
+    periodLengths?: SentenceLength[]
   }
 
   export interface Offence {
@@ -88,10 +88,12 @@ declare module 'models' {
       | 'TARIFF_LENGTH'
       | 'TERM_LENGTH'
       | 'OVERALL_SENTENCE_LENGTH'
+      | 'BREACH_OF_SUPERVISION_REQUIREMENTS'
       | 'UNSUPPORTED'
     legacyData?: PeriodLengthLegacyData
     description?: string
     uuid: string
+    isAlternative: boolean
   }
 
   export interface TaskListItem {
@@ -113,6 +115,7 @@ declare module 'models' {
     documentUUID: UUID
     documentType: string
     fileName: string
+    courtDataIngested: boolean
   }
 
   export interface FileDownload {

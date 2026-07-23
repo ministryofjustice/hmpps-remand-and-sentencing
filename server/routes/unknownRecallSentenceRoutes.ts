@@ -618,6 +618,7 @@ export default class UnknownRecallSentenceRoutes extends BaseRoutes {
           periodOrder: [],
           uuid: '-1',
           description: periodLengthTypeHeadings[missingPeriodLength.type],
+          isAlternative: false,
         }),
       )
     return res.render('pages/unknownRecallSentence/check-answers', {

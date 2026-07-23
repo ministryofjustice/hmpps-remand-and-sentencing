@@ -1330,6 +1330,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1390,6 +1391,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1432,6 +1434,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1500,14 +1503,16 @@ export default {
               },
             },
           ],
-          overallSentenceLength: {
-            years: 4,
-            months: null,
-            weeks: null,
-            days: null,
-            periodOrder: 'years',
-            periodLengthType: 'OVERALL_SENTENCE_LENGTH',
-          },
+          periodLengths: [
+            {
+              years: 4,
+              months: null,
+              weeks: null,
+              days: null,
+              periodOrder: 'years',
+              periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+            },
+          ],
         },
       },
     })
@@ -1572,6 +1577,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1710,6 +1716,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })
@@ -1899,14 +1906,16 @@ export default {
               },
             },
           ],
-          overallSentenceLength: {
-            years: 4,
-            months: null,
-            weeks: null,
-            days: null,
-            periodOrder: 'years',
-            periodLengthType: 'OVERALL_SENTENCE_LENGTH',
-          },
+          periodLengths: [
+            {
+              years: 4,
+              months: null,
+              weeks: null,
+              days: null,
+              periodOrder: 'years',
+              periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+            },
+          ],
         },
       },
     })
@@ -2059,6 +2068,16 @@ export default {
             periodOrder: 'years',
             periodLengthType: 'OVERALL_SENTENCE_LENGTH',
           },
+          periodLengths: [
+            {
+              years: 4,
+              months: null,
+              weeks: null,
+              days: null,
+              periodOrder: 'years',
+              periodLengthType: 'OVERALL_SENTENCE_LENGTH',
+            },
+          ],
         },
       },
     })
@@ -4933,6 +4952,7 @@ export default {
               },
             },
           ],
+          periodLengths: [],
         },
       },
     })

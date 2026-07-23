@@ -85,6 +85,7 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [],
               },
               legacyData: {
                 caseReferences: [
@@ -142,6 +143,7 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [],
               },
             },
             {
@@ -329,6 +331,16 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [
+                  {
+                    years: 1,
+                    months: null,
+                    weeks: null,
+                    days: null,
+                    order: 'years,months,weeks,days',
+                    type: 'OVERALL_SENTENCE_LENGTH',
+                  },
+                ],
               },
               canAppeal: true,
               canBreach: true,
@@ -388,6 +400,7 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [],
               },
             },
             {
@@ -446,6 +459,7 @@ export default {
                     },
                   },
                 ],
+                periodLengths: [],
               },
               mergedFromCases: [
                 {
@@ -510,6 +524,7 @@ export default {
                     mergedFromCase: null,
                   },
                 ],
+                periodLengths: [],
               },
               mergedFromCase: [],
               mergedToCase: null,

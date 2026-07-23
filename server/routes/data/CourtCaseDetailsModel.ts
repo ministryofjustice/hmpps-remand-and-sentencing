@@ -79,6 +79,13 @@ export default class CourtCaseDetailsModel {
       .map(hearing => {
         const sortedCharges = orderCharges(hearing.charges)
         const hasAnyRecalls = hearing.charges.some(charge => charge.sentence?.hasRecall)
+        const breachOfSupervisionLength = formatLengths(
+          periodLengthToSentenceLength(
+            hearing.periodLengths.find(
+              periodLength => periodLength.periodLengthType === 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+            ),
+          ),
+        )
         return {
           ...hearing,
           charges: sortedCharges,
@@ -94,6 +101,7 @@ export default class CourtCaseDetailsModel {
                 documentType: getUiDocumentType(document.documentType, hearing.warrantType),
               }))
             : [],
+          breachOfSupervisionLength,
         }
       })
       .sort((a, b) => sortByDateDesc(a.appearanceDate, b.appearanceDate))

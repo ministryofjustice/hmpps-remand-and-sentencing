@@ -5216,7 +5216,18 @@ export default {
               },
             ],
             deleteStatus: 'SUPPORTED',
-            periodLengths: [],
+            periodLengths: [
+              {
+                years: null,
+                months: null,
+                weeks: null,
+                days: 41,
+                periodOrder: 'years,months,weeks,days',
+                periodLengthType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+                legacyData: null,
+                periodLengthUuid: '04398455-d6f9-41e3-9b89-e8f5577886d2',
+              },
+            ],
           },
           appearances: [
             {
@@ -5265,7 +5276,18 @@ export default {
                 },
               ],
               deleteStatus: 'SUPPORTED',
-              periodLengths: [],
+              periodLengths: [
+                {
+                  years: null,
+                  months: null,
+                  weeks: null,
+                  days: 41,
+                  periodOrder: 'years,months,weeks,days',
+                  periodLengthType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+                  legacyData: null,
+                  periodLengthUuid: '04398455-d6f9-41e3-9b89-e8f5577886d2',
+                },
+              ],
             },
           ],
         },

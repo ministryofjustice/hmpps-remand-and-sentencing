@@ -5294,4 +5294,122 @@ export default {
       },
     })
   },
+
+  stubGetBreachAppearanceDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-appearance/94608b2e-c532-4cea-bae7-57bfff4566cb',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+          outcome: {
+            outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+            outcomeName: 'DTO (Detention and Training Order)',
+            nomisCode: '3576',
+            outcomeType: 'SENTENCING',
+            displayOrder: 30,
+          },
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C894623',
+          criminalAppealOfficeReference: null,
+          appearanceDate: '2023-12-15',
+          warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+          nextCourtAppearance: null,
+          documents: [],
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2025-12-15',
+              outcome: {
+                outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                outcomeName: 'DTO',
+                nomisCode: '8855',
+                outcomeType: 'SENTENCING',
+                displayOrder: 20,
+                dispositionCode: 'FINAL',
+                status: 'ACTIVE',
+              },
+            },
+            {
+              chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+              offenceCode: 'PS90037',
+              outcome: {
+                outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                outcomeName: 'DTO',
+                nomisCode: '8855',
+                outcomeType: 'SENTENCING',
+                displayOrder: 20,
+                dispositionCode: 'FINAL',
+                status: 'ACTIVE',
+              },
+            },
+          ],
+          deleteStatus: 'SUPPORTED',
+          periodLengths: [
+            {
+              years: null,
+              months: null,
+              weeks: null,
+              days: 41,
+              periodOrder: 'years,months,weeks,days',
+              periodLengthType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+              legacyData: null,
+              periodLengthUuid: '04398455-d6f9-41e3-9b89-e8f5577886d2',
+            },
+          ],
+        },
+      },
+    })
+  },
+  verifyUpdateBreachCourtAppearanceRequest: (): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/court-appearance/94608b2e-c532-4cea-bae7-57bfff4566cb',
+      method: 'PUT',
+      body: {
+        courtCaseUuid: 'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+        appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+        outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+        courtCode: 'ACCRYC',
+        courtCaseReference: 'T12345678',
+        appearanceDate: '2023-12-15',
+        charges: [
+          {
+            appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+            offenceCode: 'PS90037',
+            outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+            prisonId: 'MDI',
+            createChargeOrder: 0,
+            chargeUuid: '9b622879-8191-4a7f-9fe8-71b680417220',
+          },
+          {
+            appearanceUuid: '94608b2e-c532-4cea-bae7-57bfff4566cb',
+            offenceCode: 'PS90037',
+            outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+            prisonId: 'MDI',
+            createChargeOrder: 1,
+            offenceStartDate: '2025-12-15',
+            chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+          },
+        ],
+        warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+        documents: [],
+        prisonId: 'MDI',
+        periodLengths: [
+          {
+            days: 41,
+            periodOrder: 'years,months,weeks,days',
+            type: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+            prisonId: 'MDI',
+            legacyData: null,
+            periodLengthUuid: '04398455-d6f9-41e3-9b89-e8f5577886d2',
+          },
+        ],
+      },
+    })
+  },
 }

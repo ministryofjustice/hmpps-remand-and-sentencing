@@ -157,6 +157,7 @@ export default function routes(services: Services): Router {
     services.auditService,
     services.documentManagementService,
     services.courtRegisterService,
+    services.refDataService,
   )
 
   router.get('/', async (req, res, next) => {
@@ -1254,6 +1255,21 @@ export default function routes(services: Services): Router {
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/confirmation',
     breachRoutes.getConfirmation,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/load-hearing-details',
+    breachRoutes.loadHearingDetails,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/hearing-details',
+    breachRoutes.getHearingDetails,
+  )
+
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/hearing-details',
+    breachRoutes.submitHearingDetails,
   )
 
   return router

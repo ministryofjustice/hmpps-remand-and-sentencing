@@ -22,12 +22,14 @@ import trimForm from '../utils/trim'
 import BreachTaskListModel from './data/BreachTaskListModel'
 import logger from '../../logger'
 import documentTypes from '../resources/documentTypes'
-import { sortByDateDesc } from '../utils/utils'
+import { getUiDocumentType, offencesToOffenceDescriptions, orderOffences, sortByDateDesc } from '../utils/utils'
 import {
   chargeToOffence,
+  pageCourtCaseAppearanceToCourtAppearance,
   sentenceLengthToAlternativeSentenceLengthForm,
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
+import RefDataService from '../services/refDataService'
 
 export default class BreachRoutes extends BaseRoutes {
   constructor(
@@ -38,6 +40,7 @@ export default class BreachRoutes extends BaseRoutes {
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
     courtRegisterService: CourtRegisterService,
+    private readonly refDataService: RefDataService,
   ) {
     super(
       courtAppearanceService,
@@ -500,6 +503,199 @@ export default class BreachRoutes extends BaseRoutes {
   public getConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     return res.render('pages/breach/confirmation', urlParameters)
+  }
+
+  public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = res.locals.user
+    const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+      urlParameters.appearanceReference,
+      username,
+    )
+    this.courtAppearanceService.clearSessionCourtAppearance(req.session, urlParameters.nomsId)
+    this.offenceService.clearAllOffences(req.session, urlParameters.nomsId, urlParameters.courtCaseReference)
+    this.courtAppearanceService.setSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
+    )
+    return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters))
+  }
+
+  public getHearingDetails: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { username } = res.locals.user
+    if (
+      !this.courtAppearanceService.sessionCourtAppearanceExists(
+        req.session,
+        urlParameters.nomsId,
+        urlParameters.appearanceReference,
+      )
+    ) {
+      const storedAppearance = await this.remandAndSentencingService.getCourtAppearanceByAppearanceUuid(
+        urlParameters.appearanceReference,
+        username,
+      )
+      this.offenceService.clearAllOffences(req.session, urlParameters.nomsId, urlParameters.courtCaseReference)
+      this.courtAppearanceService.setSessionCourtAppearance(
+        req.session,
+        urlParameters.nomsId,
+        pageCourtCaseAppearanceToCourtAppearance(storedAppearance),
+      )
+    }
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const consecutiveToSentenceDetailsFromApi = await this.getConsecutiveToFromApi(
+      req,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const chargeCodes = hearing.offences
+      .map(offences => offences.offenceCode)
+      .concat(
+        consecutiveToSentenceDetailsFromApi.sentences.map(consecutiveToDetails => consecutiveToDetails.offenceCode),
+      )
+    const courtIds = [hearing.courtCode, hearing.nextAppearanceCourtCode]
+      .concat(consecutiveToSentenceDetailsFromApi.sentences.map(consecutiveToDetails => consecutiveToDetails.courtCode))
+      .concat(hearing.offences.map(offence => offence.mergedFromCase?.courtCode))
+      .filter(courtId => courtId !== undefined && courtId !== null)
+    const sentenceTypeIds = hearing.offences
+      .filter(offence => offence.sentence?.sentenceTypeId)
+      .map(offence => offence.sentence?.sentenceTypeId)
+    const offenceOutcomeIds = hearing.offences.map(offence => offence.outcomeUuid)
+    const outcomePromise = hearing.appearanceOutcomeUuid
+      ? this.refDataService
+          .getAppearanceOutcomeByUuid(hearing.appearanceOutcomeUuid, req.user.username)
+          .then(outcome => outcome.outcomeName)
+      : Promise.resolve(hearing.legacyData?.outcomeDescription ?? 'Not entered')
+    const appearanceTypePromise = hearing.nextAppearanceTypeUuid
+      ? this.refDataService
+          .getAppearanceTypeByUuid(hearing.nextAppearanceTypeUuid, req.user.username)
+          .then(appearanceType => appearanceType.description)
+      : Promise.resolve('Not entered')
+    const { offences } = hearing
+    const sentenceUuids = offences
+      .filter(offence => offence.sentence?.sentenceUuid)
+      .map(offence => offence.sentence.sentenceUuid)
+    const hasSentenceAfterOnOtherCourtAppearancePromise = sentenceUuids.length
+      ? this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(sentenceUuids, username)
+      : Promise.resolve({ hasSentenceAfterOnOtherCourtAppearance: false })
+    const [
+      offenceMap,
+      courtMap,
+      sentenceTypeMap,
+      overallCaseOutcome,
+      outcomeMap,
+      appearanceTypeDescription,
+      hasSentenceAfterOnOtherCourtAppearance,
+    ] = await Promise.all([
+      this.manageOffencesService.getOffenceMap(
+        Array.from(new Set(chargeCodes)),
+        req.user.username,
+        offencesToOffenceDescriptions(hearing.offences, consecutiveToSentenceDetailsFromApi.sentences),
+      ),
+      this.courtRegisterService.getCourtMap(Array.from(new Set(courtIds)), username),
+      this.refDataService.getSentenceTypeMap(Array.from(new Set(sentenceTypeIds)), username),
+      outcomePromise,
+      this.refDataService.getChargeOutcomeMap(Array.from(new Set(offenceOutcomeIds)), username),
+      appearanceTypePromise,
+      hasSentenceAfterOnOtherCourtAppearancePromise,
+    ])
+    const [custodialOffences, nonCustodialOffences] = offences
+      .map((offence, index) => ({ ...offence, index })) // Add an index to each offence
+      .reduce(
+        ([custodialList, nonCustodialList], offence) => {
+          const outcome = outcomeMap[offence.outcomeUuid]
+          if (
+            outcome?.outcomeType === 'SENTENCING' ||
+            (offence.legacyData?.outcomeConvictionFlag === true && offence.sentence)
+          ) {
+            return [[...custodialList, offence], nonCustodialList]
+          }
+          return [custodialList, [...nonCustodialList, offence]]
+        },
+        [[], []] as [typeof offences, typeof offences],
+      )
+    const allSentenceUuids = hearing.offences
+      .map(offence => offence.sentence?.sentenceUuid)
+      .filter(sentenceUuid => sentenceUuid)
+    const consecutiveToSentenceDetailsMap = this.getConsecutiveToSentenceDetailsMap(
+      allSentenceUuids,
+      consecutiveToSentenceDetailsFromApi,
+      offenceMap,
+      courtMap,
+    )
+
+    const sessionConsecutiveToSentenceDetailsMap = this.getSessionConsecutiveToSentenceDetailsMap(
+      req,
+      urlParameters.nomsId,
+      offenceMap,
+      urlParameters.appearanceReference,
+    )
+
+    const documentsWithUiType = this.courtAppearanceService
+      .getUploadedDocuments(req.session, urlParameters.nomsId, urlParameters.appearanceReference)
+      .map(document => ({
+        ...document,
+        documentType: getUiDocumentType(document.documentType, hearing.warrantType),
+      }))
+
+    const mergedFromText = this.getMergedFromText(
+      hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
+      courtMap,
+    )
+
+    const breachOfSupervisionRequirement = this.courtAppearanceService.getBreachTerm(req.session, urlParameters)
+
+    return res.render('pages/breach/hearing-details', {
+      ...urlParameters,
+      hearing,
+      offenceMap,
+      courtMap,
+      sentenceTypeMap,
+      overallCaseOutcome,
+      outcomeMap,
+      appearanceTypeDescription,
+      custodialOffences: orderOffences(custodialOffences),
+      nonCustodialOffences: orderOffences(nonCustodialOffences),
+      consecutiveToSentenceMap: {
+        ...consecutiveToSentenceDetailsMap,
+        ...sessionConsecutiveToSentenceDetailsMap,
+      },
+      documentsWithUiType,
+      mergedFromText,
+      hasSentenceAfterOnOtherCourtAppearance:
+        hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
+      errors: req.flash('errors') || [],
+      deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],
+      breachOfSupervisionRequirement,
+      backLink: JourneyUrls.courtCaseDetails(urlParameters),
+    })
+  }
+
+  public submitHearingDetails: RequestHandler = async (req, res, next): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const errors = this.courtAppearanceService.checkOffencesHaveMandatoryFields(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters, 'true'))
+    }
+    return this.updateCourtAppearance(
+      req,
+      res,
+      next,
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.appearanceReference,
+    )
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

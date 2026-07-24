@@ -61,7 +61,7 @@ context('Breach check hearing answers page', () => {
     breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'C894623',
-      'Hearing date': '13/05/2023',
+      'Breach hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })
@@ -75,7 +75,7 @@ context('Breach check hearing answers page', () => {
     breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'G35266',
-      'Hearing date': '13/05/2023',
+      'Breach hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })
@@ -91,7 +91,7 @@ context('Breach check hearing answers page', () => {
     breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'C894623',
-      'Hearing date': '15/06/2024',
+      'Breach hearing date': '15/06/2024',
       'Court name': 'Accrington Youth Court',
       'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })
@@ -107,7 +107,7 @@ context('Breach check hearing answers page', () => {
     breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'C894623',
-      'Hearing date': '13/05/2023',
+      'Breach hearing date': '13/05/2023',
       'Court name': 'Southampton Magistrate Court',
       'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })
@@ -122,7 +122,7 @@ context('Breach check hearing answers page', () => {
     breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'C894623',
-      'Hearing date': '13/05/2023',
+      'Breach hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Term length of the breach': '0 years 1 months 0 weeks 0 days',
     })

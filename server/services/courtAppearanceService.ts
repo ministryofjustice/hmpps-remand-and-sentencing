@@ -1786,11 +1786,11 @@ export default class CourtAppearanceService {
         'breachDate-year': `required`,
       },
       {
-        'required.breachDate-year': 'Hearing date must include year',
-        'required.breachDate-month': 'Hearing date must include month',
-        'required.breachDate-day': 'Hearing date must include day',
+        'required.breachDate-year': 'The breach hearing date must include year',
+        'required.breachDate-month': 'The breach hearing date must include month',
+        'required.breachDate-day': 'The breach hearing date must include day',
         'isValidDate.breachDate-day': 'This date does not exist.',
-        'isPastOrCurrentDate.breachDate-day': `The hearing date cannot be a date in the future`,
+        'isPastOrCurrentDate.breachDate-day': `The breach hearing date cannot be a date in the future`,
         'isWithinLast100Years.breachDate-day': 'All dates must be within the last 100 years from today’s date',
       },
     )
@@ -1811,7 +1811,7 @@ export default class CourtAppearanceService {
         latestSentencingAppearanceDate = dayjs(courtCaseValidationDates.latestSentenceAppearanceDate)
         if (breachDate.isBefore(latestSentencingAppearanceDate)) {
           errors.push({
-            text: 'The hearing date must be after the sentencing warrant date in the court case',
+            text: 'The breach hearing date must be after the sentencing warrant date in the court case',
             href: '#breachDate',
           })
         }

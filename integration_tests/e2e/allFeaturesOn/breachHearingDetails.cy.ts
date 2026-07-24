@@ -31,7 +31,7 @@ context('Breach appearance details Page', () => {
   it('hearing summary shows correct data', () => {
     courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
       'Case reference': 'C894623',
-      'Hearing date': '15/12/2023',
+      'Breach hearing date': '15/12/2023',
       'Court name': 'Accrington Youth Court',
       'Breach of supervision requirements': '0 years 0 months 0 weeks 41 days',
     })

@@ -73,13 +73,13 @@ context('Breach appearance details Page', () => {
     offenceDeleteOffencePage.deleteButton().click()
     courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
     courtCaseHearingDetailsPage
-      .appealedOffences()
+      .custodialOffences()
       .getOffenceCards()
       .should('deep.equal', [
         {
           offenceCardHeader: 'PS90037 An offence description',
           'Committed on': '15/12/2025',
-          Outcome: 'Sentence varied',
+          Outcome: 'DTO',
         },
       ])
   })

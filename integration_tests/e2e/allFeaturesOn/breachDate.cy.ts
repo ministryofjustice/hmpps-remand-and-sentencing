@@ -18,7 +18,7 @@ context('Breach date page', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem Hearing date must include day Hearing date must include month Hearing date must include year',
+        'There is a problem The breach hearing date must include day The breach hearing date must include month The breach hearing date must include year',
       )
   })
 
@@ -39,7 +39,7 @@ context('Breach date page', () => {
     breachDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The hearing date cannot be a date in the future')
+      .should('equal', 'There is a problem The breach hearing date cannot be a date in the future')
   })
 
   it('date must be within the last 100 years', () => {
@@ -67,7 +67,7 @@ context('Breach date page', () => {
       .trimTextContent()
       .should(
         'equal',
-        'There is a problem The hearing date must be after the sentencing warrant date in the court case',
+        'There is a problem The breach hearing date must be after the sentencing warrant date in the court case',
       )
   })
 })

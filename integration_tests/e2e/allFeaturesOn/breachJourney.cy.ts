@@ -70,7 +70,7 @@ context('Breach journey', () => {
     const breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'C894623',
-      'Hearing date': '13/05/2023',
+      'Breach hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Term length of the breach': '0 years 0 months 0 weeks 41 days',
     })

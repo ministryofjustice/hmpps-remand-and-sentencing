@@ -698,6 +698,28 @@ export default class BreachRoutes extends BaseRoutes {
     )
   }
 
+  public checkDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.canDeleteOffence(
+      req,
+      res,
+      urlParameters,
+      BreachJourneyUrls.cannotDeleteOffence(urlParameters),
+      JourneyUrls.deleteOffence(urlParameters),
+    )
+  }
+
+  public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const cannotDeleteInformation = await this.getCannotDeleteOffenceData(req, res)
+    const backLink = BreachJourneyUrls.hearingDetails(urlParameters)
+    return res.render('pages/breach/cannot-delete-offence', {
+      ...urlParameters,
+      backLink,
+      ...cannotDeleteInformation,
+    })
+  }
+
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {
     if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
       return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters))

@@ -1272,5 +1272,15 @@ export default function routes(services: Services): Router {
     breachRoutes.submitHearingDetails,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/check-delete-offence',
+    breachRoutes.checkDeleteOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/cannot-delete-offence',
+    breachRoutes.getCannotDeleteOffence,
+  )
+
   return router
 }

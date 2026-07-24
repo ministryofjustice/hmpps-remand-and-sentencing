@@ -62,6 +62,7 @@ import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffence
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
 import DocumentManagementService from '../services/documentManagementService'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
+import BreachJourneyUrls from './data/BreachJourneyUrls'
 
 export default class OffenceRoutes extends BaseRoutes {
   constructor(
@@ -2225,6 +2226,8 @@ export default class OffenceRoutes extends BaseRoutes {
         )
       } else if (courtAppearance.warrantType === 'APPEAL') {
         cancelLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+      } else if (courtAppearance.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+        cancelLink = BreachJourneyUrls.hearingDetails(urlParameters)
       } else {
         cancelLink = JourneyUrls.nonSentencingHearing(
           nomsId,
@@ -2306,6 +2309,10 @@ export default class OffenceRoutes extends BaseRoutes {
       }
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
+      }
+
+      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+        return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters))
       }
 
       return res.redirect(
@@ -2573,6 +2580,17 @@ export default class OffenceRoutes extends BaseRoutes {
       if (warrantType === 'APPEAL') {
         return res.redirect(
           AppealsJourneyUrls.hearingDetails({
+            nomsId,
+            addOrEditCourtCase,
+            courtCaseReference,
+            addOrEditCourtAppearance,
+            appearanceReference,
+          }),
+        )
+      }
+      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+        return res.redirect(
+          BreachJourneyUrls.hearingDetails({
             nomsId,
             addOrEditCourtCase,
             courtCaseReference,

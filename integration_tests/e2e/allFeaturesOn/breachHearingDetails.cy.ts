@@ -2,6 +2,7 @@ import HearingUpdatedConfirmationPage from '../../pages/HearingUpdatedConfirmati
 import CourtCaseHearingDetailsPage from '../../pages/courtCaseHearingDetailsPage'
 import Page from '../../pages/page'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
+import OffenceDeleteOffencePage from '../../pages/offenceDeleteOffencePage'
 
 context('Breach appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -56,6 +57,31 @@ context('Breach appearance details Page', () => {
       .noNonCustodialOutcomeInset()
       .trimTextContent()
       .should('equal', 'There are no offences with non-custodial outcomes.')
+  })
+
+  it('can delete an offence from hearing', () => {
+    courtCaseHearingDetailsPage
+      .deleteOffenceLink(
+        'A1234AB',
+        'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+        '94608b2e-c532-4cea-bae7-57bfff4566cb',
+        'breach',
+        '9b622879-8191-4a7f-9fe8-71b680417220',
+      )
+      .click()
+    const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
+    offenceDeleteOffencePage.deleteButton().click()
+    courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
+    courtCaseHearingDetailsPage
+      .appealedOffences()
+      .getOffenceCards()
+      .should('deep.equal', [
+        {
+          offenceCardHeader: 'PS90037 An offence description',
+          'Committed on': '15/12/2025',
+          Outcome: 'Sentence varied',
+        },
+      ])
   })
 
   it('can submit changes to API', () => {

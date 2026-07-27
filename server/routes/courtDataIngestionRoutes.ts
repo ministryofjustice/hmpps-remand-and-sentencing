@@ -11,6 +11,7 @@ import CourtRegisterService from '../services/courtRegisterService'
 import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import DocumentManagementService from '../services/documentManagementService'
 import documentTypes from '../resources/documentTypes'
+import CourtDataIngestionService from '../services/courtDataIngestionService'
 
 export default class CourtDataIngestionRoutes extends BaseRoutes {
   constructor(
@@ -21,6 +22,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     auditService: AuditService,
     documentManagementService: DocumentManagementService,
     courtRegisterService: CourtRegisterService,
+    private readonly courtDataIngestionService: CourtDataIngestionService,
   ) {
     super(
       courtAppearanceService,
@@ -36,7 +38,10 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
   public landing: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { hmctsHearingId, nomsId } = urlParameters
-    const appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, req.user.username)
+    const [appearance, hearing] = await Promise.all([
+      this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, req.user.username),
+      this.courtDataIngestionService.getCourtHearing(hmctsHearingId, req.user.username),
+    ])
     appearance.documents = appearance.documents.map(it => {
       return {
         ...it,
@@ -48,6 +53,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     const warrantTypeText = appearance.warrantType === 'SENTENCING' ? 'sentencing' : 'remand'
     return res.render('pages/courtDataIngestion/landing', {
       appearance,
+      hearing,
       hmctsHearingId,
       nomsId,
       warrantTypeText,

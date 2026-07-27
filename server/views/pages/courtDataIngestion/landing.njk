@@ -34,6 +34,9 @@
                         },
                         {
                             text: appearance.appearanceDate | formatDate
+                        },
+                        {
+                            text: hearing.hearingType
                         }]]) %}
                 {% endfor %}
                 {{
@@ -44,6 +47,9 @@
                             },
                             {
                                 text: "Hearing date"
+                            },
+                            {
+                                text: "Hearing type"
                             }
                         ],
                         rows: tableRows

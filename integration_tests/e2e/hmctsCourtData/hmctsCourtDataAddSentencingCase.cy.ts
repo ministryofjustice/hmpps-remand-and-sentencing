@@ -41,6 +41,7 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     cy.task('stubUploadDocument')
     cy.task('stubOverallSentenceLengthFail')
     cy.task('stubGetHasSentenceToChainTo', { beforeOrOnAppearanceDate: '2023-12-15' })
+    cy.task('stubGetCourtHearing')
     cy.signIn()
     cy.visit(`/person/A1234AB/review-new-documents/${remandWarrantHearingId}/landing`)
   })

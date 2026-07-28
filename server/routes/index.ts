@@ -424,6 +424,16 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/load-update-outcome',
+    offenceRoutes.loadUpdateOffenceOutcome,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/bulk-offence-to-be-updated',
+    offenceRoutes.getBulkOffenceToBeUpdated,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/update-offence-outcome',
     offenceRoutes.getUpdateOffenceOutcome,
   )

@@ -17,8 +17,8 @@ context('Review Offences Page', () => {
   })
 
   context('repeat remand', () => {
-    beforeEach(() => {
-      cy.task('stubGetLatestCourtAppearance', {})
+    const visitReviewOffencesPage = (latestCourtAppearanceStub = 'stubGetLatestCourtAppearance') => {
+      cy.task(latestCourtAppearanceStub, {})
       cy.task('stubGetOffencesByCodes', {})
       cy.task('stubGetAllChargeOutcomes', [
         {
@@ -59,9 +59,10 @@ context('Review Offences Page', () => {
         '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/review-offences',
       )
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
-    })
+    }
 
     it('shows error if Continue button pressed without selecting an outcome', () => {
+      visitReviewOffencesPage()
       offenceReviewOffencesPage.continueButton().click()
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
       offenceReviewOffencesPage
@@ -70,7 +71,8 @@ context('Review Offences Page', () => {
         .should('equal', 'There is a problem Select whether you have finished reviewing offences.')
     })
 
-    it('update outcome and return to review offences page', () => {
+    it('update outcome and return to review offences page when there is only one offence needing an outcome', () => {
+      visitReviewOffencesPage()
       cy.task('stubGetOffenceByCode', {})
       offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
 
@@ -80,7 +82,15 @@ context('Review Offences Page', () => {
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     })
 
+    it('goes to the default update outcome page when there are multiple offences needing an outcome but the bulk outcome feature is disabled', () => {
+      visitReviewOffencesPage('stubGetLatestCourtAppearanceWithMultipleOffences')
+      cy.task('stubGetOffenceByCode', {})
+      offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
+      Page.verifyOnPage(OffenceUpdateOutcomePage)
+    })
+
     it('shows error when there are offences which need outcome updating', () => {
+      visitReviewOffencesPage()
       offenceReviewOffencesPage.radioLabelSelector('true').click()
       offenceReviewOffencesPage.continueButton().click()
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
@@ -91,6 +101,7 @@ context('Review Offences Page', () => {
     })
 
     it('can add multiple counts', () => {
+      visitReviewOffencesPage()
       cy.task('stubGetOffenceByCode', {})
       offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
 

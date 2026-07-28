@@ -316,6 +316,49 @@ export default class OffenceRoutes extends BaseRoutes {
     )
   }
 
+  public loadUpdateOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { backTo, bulkOffenceTobeUpdated } = req.query as { backTo: string; bulkOffenceTobeUpdated: string }
+
+    if (config.featureToggles.bulkOutcomeApplied && bulkOffenceTobeUpdated === 'true') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/bulk-offence-to-be-updated?backTo=${backTo}`,
+      )
+    }
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}`,
+    )
+  }
+
+  public getBulkOffenceToBeUpdated: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { backTo } = req.query as { backTo: string }
+    return res.render('pages/offence/bulk-offence-to-be-updated', {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      backTo,
+      errors: req.flash('errors') || [],
+    })
+  }
+
   public getUpdateOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
@@ -2702,6 +2745,8 @@ export default class OffenceRoutes extends BaseRoutes {
       details: auditDetails,
     })
 
+    const bulkOffenceTobeUpdated = unchangedOffences.length > 1 && changedOffences.length === 0
+
     return res.render('pages/offence/review-offences', {
       nomsId,
       courtCaseReference,
@@ -2715,6 +2760,7 @@ export default class OffenceRoutes extends BaseRoutes {
       outcomeMap,
       mergedFromText,
       courtMap,
+      bulkOffenceTobeUpdated,
       errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
     })

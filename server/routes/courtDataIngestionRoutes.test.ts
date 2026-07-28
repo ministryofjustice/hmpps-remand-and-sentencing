@@ -25,6 +25,22 @@ describe('GET review new documents landing', () => {
       ],
       periodLengths: [],
     } as never)
+    defaultServices.courtDataIngestionService.getCourtHearing.mockResolvedValue({
+      hearingId: 'abf395c2-8e3c-419c-bd9c-71d544e5d811',
+      courtName: 'Liverpool Crown Court',
+      courtId: '9b583616-049b-30f9-a14f-028a53b7cfe8',
+      courtCode: 'LVRPCC',
+      hearingDate: '2026-06-23T12:30:00',
+      caseReferences: ['28DI3664010'],
+      hearingType: 'Trial',
+      documents: [
+        {
+          documentType: 'PRISON_COURT_REGISTER',
+          documentId: 'doc-uuid-1',
+          ingestionAt: '2026-06-23T12:44:22.488095',
+        },
+      ],
+    } as never)
 
     return request(app)
       .get('/person/A1234AB/review-new-documents/hearing1/landing')
@@ -40,6 +56,7 @@ describe('GET review new documents landing', () => {
 
         expect(res.text).toContain('Remand warrant')
         expect(res.text).toContain('Unknown document type')
+        expect(res.text).toContain('Trial')
 
         const continueButton = $('[data-qa=hmcts-court-data-continue]')
         expect(continueButton.attr('href')).toBe('/person/A1234AB/review-new-documents/hearing1/start')

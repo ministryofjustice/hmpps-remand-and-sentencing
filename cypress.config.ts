@@ -13,6 +13,7 @@ import prisonApi from './integration_tests/mockApis/prisonApi'
 import courtRegisterApi from './integration_tests/mockApis/courtRegisterApi'
 import calculateReleaseDatesApi from './integration_tests/mockApis/calculateReleaseDatesApi'
 import courtCasesReleaseDatesApi from './integration_tests/mockApis/courtCasesReleaseDatesApi'
+import courtDataIngestionApi from './integration_tests/mockApis/courtDataIngestionApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -90,6 +91,7 @@ export default defineConfig({
         ...courtRegisterApi,
         ...calculateReleaseDatesApi,
         ...courtCasesReleaseDatesApi,
+        ...courtDataIngestionApi,
       })
     },
     baseUrl: 'http://localhost:3007',

@@ -13,6 +13,7 @@ context('Review court documents ingested from Common Platform', () => {
     cy.task('stubGetAllAppearanceOutcomes')
     cy.task('stubHmctsRemandCourtData')
     cy.task('stubGetAppearanceTypeByUuid')
+    cy.task('stubGetCourtHearing')
     cy.signIn()
     cy.visit(`/person/A1234AB/review-new-documents/${remandWarrantHearingId}/landing`)
 

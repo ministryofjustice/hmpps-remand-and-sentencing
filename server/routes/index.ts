@@ -147,6 +147,7 @@ export default function routes(services: Services): Router {
     services.auditService,
     services.documentManagementService,
     services.courtRegisterService,
+    services.courtDataIngestionService,
   )
 
   const breachRoutes = new BreachRoutes(

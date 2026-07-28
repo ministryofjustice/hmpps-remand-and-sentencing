@@ -24,6 +24,7 @@ import CourtRegisterService from '../../services/courtRegisterService'
 import CalculateReleaseDatesService from '../../services/calculateReleaseDatesService'
 import CourtCasesReleaseDatesService from '../../services/courtCasesReleaseDatesService'
 import RefDataService from '../../services/refDataService'
+import CourtDataIngestionService from '../../services/courtDataIngestionService'
 
 jest.mock('../../services/auditService')
 jest.mock('../../services/courtAppearanceService')
@@ -39,6 +40,7 @@ jest.mock('../../services/courtRegisterService')
 jest.mock('../../services/calculateReleaseDatesService')
 jest.mock('../../services/courtCasesReleaseDatesService')
 jest.mock('../../services/refDataService')
+jest.mock('../../services/courtDataIngestionService')
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
@@ -65,6 +67,7 @@ export const defaultServices = {
   calculateReleaseDatesService: new CalculateReleaseDatesService(null) as jest.Mocked<CalculateReleaseDatesService>,
   courtCasesReleaseDatesService: new CourtCasesReleaseDatesService(null) as jest.Mocked<CourtCasesReleaseDatesService>,
   refDataService: new RefDataService(null) as jest.Mocked<RefDataService>,
+  courtDataIngestionService: new CourtDataIngestionService(null) as jest.Mocked<CourtDataIngestionService>,
 }
 
 export const user: HmppsUser = {

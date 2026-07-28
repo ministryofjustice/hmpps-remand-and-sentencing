@@ -53,7 +53,7 @@
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
     "accessible-autocomplete": "3.0.1",
     "body-parser": "^2.3.0",
-    "brace-expansion": "5.0.7",
+    "brace-expansion": "5.0.8",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
     "compression": "^1.8.1",

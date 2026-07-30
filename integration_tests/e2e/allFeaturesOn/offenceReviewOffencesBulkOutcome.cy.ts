@@ -94,4 +94,52 @@ context('Review Offences Page bulk outcome update', () => {
 
     Page.verifyOnPage(OffenceUpdateOutcomePage)
   })
+
+  context('Which offences does the new outcome apply to', () => {
+    beforeEach(() => {
+      const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+      offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
+      const offenceBulkOffenceToBeUpdatedPage = Page.verifyOnPage(OffenceBulkOffenceToBeUpdatedPage)
+      offenceBulkOffenceToBeUpdatedPage.radioLabelSelector('true').click()
+      offenceBulkOffenceToBeUpdatedPage.continueButton().click()
+    })
+
+    it('lists each offence without an outcome yet, with the selected offence checked and locked', () => {
+      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+
+      whichOffencesPage.checkboxSelector('71bb9f7e-971c-4c34-9a33-43478baee74f').should('be.checked').and('be.disabled')
+      whichOffencesPage
+        .checkboxSelector('82cc9f7e-971c-4c34-9a33-43478baee750')
+        .should('not.be.checked')
+        .and('be.enabled')
+      cy.get('[data-qa="offenceOutcomeOptions"]').should('contain', '12 May 2023').and('not.contain', '12/05/2023')
+    })
+
+    it('navigates to the update offence outcome page with the offence hint when only one offence is selected', () => {
+      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+      whichOffencesPage.continueButton().click()
+
+      const updateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+      updateOutcomePage.offenceHint().should('exist')
+    })
+
+    it('navigates to the update offence outcome page with a plural heading and no offence hint when more than one offence is selected', () => {
+      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+      whichOffencesPage.checkboxLabelSelector('82cc9f7e-971c-4c34-9a33-43478baee750').click()
+      whichOffencesPage.continueButton().click()
+
+      const updateOutcomePage = Page.verifyOnPageTitle(
+        OffenceUpdateOutcomePage,
+        'What is the new outcome for these offences?',
+      )
+      updateOutcomePage.offenceHint().should('not.exist')
+    })
+
+    it('navigates back to the more than one offence page when back is clicked', () => {
+      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+      whichOffencesPage.backLink().click()
+
+      Page.verifyOnPage(OffenceBulkOffenceToBeUpdatedPage)
+    })
+  })
 })

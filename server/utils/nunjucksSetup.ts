@@ -20,6 +20,7 @@ import { ConsecutiveToDetails } from '@ministryofjustice/hmpps-court-cases-relea
 import {
   findErrorsBeginningWith,
   formatDate,
+  formatDateLong,
   formatDateTime,
   formatLengthsWithoutPeriodOrder,
   getAggravatingFactors,
@@ -100,6 +101,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('formatDate', formatDate)
+  njkEnv.addFilter('formatDateLong', formatDateLong)
 
   njkEnv.addFilter('formatDateTime', formatDateTime)
 

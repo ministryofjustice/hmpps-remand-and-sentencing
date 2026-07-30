@@ -88,6 +88,8 @@ export default abstract class Page {
 
   radioSelector = (value: string): PageElement => cy.get(`:radio[value="${value}"]`)
 
+  checkboxSelector = (value: string): PageElement => cy.get(`:checkbox[value="${value}"]`)
+
   autoCompleteInput = (): PageElement => cy.get('.autocomplete__input')
 
   captionText = (): PageElement => cy.get('.govuk-caption-l')

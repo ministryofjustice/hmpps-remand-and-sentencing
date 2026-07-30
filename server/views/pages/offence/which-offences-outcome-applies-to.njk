@@ -1,7 +1,52 @@
 {% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Which offences does the new outcome apply to?" %}
+{% set hideOffences = true %}
 
 {% block pageContent %}
-    <h1 class="govuk-heading-l">Which offences does the new outcome apply to?</h1>
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-which-offences-outcome-applies-to{{ "?backTo=" + backTo if backTo }}" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="offenceChargeUuids" value="{{ chargeUuid }}">
+        <span class="govuk-caption-l">Update offence outcomes</span>
+
+        {% set offenceItems = [] %}
+        {% for offence in offencesToUpdate %}
+            {% set isSelectedOffence = offence.chargeUuid === chargeUuid %}
+            {% set offenceLabel %}{{ offence.offenceCode }} - {{ offenceNameMap[offence.offenceCode] }}{% if offence.offenceStartDate %} committed on {{ offence.offenceStartDate | formatDateLong }}{% if offence.offenceEndDate %} to {{ offence.offenceEndDate | formatDateLong }}{% endif %}{% endif %}{% endset %}
+            {% set offenceItems = (offenceItems.push({
+                value: offence.chargeUuid,
+                text: offenceLabel | trim,
+                checked: isSelectedOffence,
+                disabled: isSelectedOffence,
+                attributes: {
+                    "data-qa": "offenceOutcomeCheckbox-" + loop.index0
+                }
+            }), offenceItems) %}
+        {% endfor %}
+
+        {{ govukCheckboxes({
+            name: "offenceChargeUuids",
+            fieldset: {
+                legend: {
+                    text: "Which offences does the new outcome apply to?",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            },
+            errorMessage: errors | findError('offenceChargeUuids'),
+            items: offenceItems,
+            attributes: { 'data-qa': 'offenceOutcomeOptions' }
+        }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: { 'data-qa': 'continue-button' }
+            }) }}
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
 {% endblock %}

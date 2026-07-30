@@ -443,6 +443,11 @@ export default function routes(services: Services): Router {
     offenceRoutes.getWhichOffencesOutcomeAppliesTo,
   )
 
+  router.post(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/submit-which-offences-outcome-applies-to',
+    offenceRoutes.submitWhichOffencesOutcomeAppliesTo,
+  )
+
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/offences/:chargeUuid/update-offence-outcome',
     offenceRoutes.getUpdateOffenceOutcome,

@@ -12,6 +12,7 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
+  MoreThanOneOffenceForm,
   ReviewOffencesForm,
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
@@ -329,7 +330,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (config.featureToggles.bulkOutcomeApplied && bulkOffenceTobeUpdated === 'true') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/bulk-offence-to-be-updated?backTo=${backTo}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`,
       )
     }
     return res.redirect(
@@ -337,7 +338,7 @@ export default class OffenceRoutes extends BaseRoutes {
     )
   }
 
-  public getBulkOffenceToBeUpdated: RequestHandler = async (req, res): Promise<void> => {
+  public getMoreThanOneOffenceToBeUpdated: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
       courtCaseReference,
@@ -347,15 +348,79 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { backTo } = req.query as { backTo: string }
-    return res.render('pages/offence/bulk-offence-to-be-updated', {
+    const backLink = buildReturnUrlFromKey(
+      backTo,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      chargeUuid,
+    )
+    return res.render('pages/offence/outcome-apply-to-more-than-one-offence', {
       nomsId,
       courtCaseReference,
       chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      backLink,
       backTo,
       errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitMoreThanOneOffenceToBeUpdated: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { backTo } = req.query as { backTo: string }
+    const moreThanOneOffenceForm = trimForm<MoreThanOneOffenceForm>(req.body)
+
+    const errors = this.offenceService.validateMoreThanOneOffenceForm(moreThanOneOffenceForm)
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`,
+      )
+    }
+
+    if (moreThanOneOffenceForm.moreThanOneOffence === 'true') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/which-offences-outcome-applies-to?backTo=${backTo}`,
+      )
+    }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}`,
+    )
+  }
+
+  public getWhichOffencesOutcomeAppliesTo: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { backTo } = req.query as { backTo: string }
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`
+    return res.render('pages/offence/which-offences-outcome-applies-to', {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      backLink,
     })
   }
 

@@ -112,6 +112,7 @@ context('Review Offences Page bulk outcome update', () => {
         .checkboxSelector('82cc9f7e-971c-4c34-9a33-43478baee750')
         .should('not.be.checked')
         .and('be.enabled')
+      cy.get('[data-qa="offenceOutcomeOptions"]').should('contain', '12 May 2023').and('not.contain', '12/05/2023')
     })
 
     it('navigates to the update offence outcome page with the offence hint when only one offence is selected', () => {

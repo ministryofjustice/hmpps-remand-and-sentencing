@@ -15,7 +15,7 @@
         {% set offenceItems = [] %}
         {% for offence in offencesToUpdate %}
             {% set isSelectedOffence = offence.chargeUuid === chargeUuid %}
-            {% set offenceLabel %}{{ offence.offenceCode }} - {{ offenceNameMap[offence.offenceCode] }}{% if offence.offenceStartDate %} committed on {{ offence.offenceStartDate | formatDate }}{% if offence.offenceEndDate %} to {{ offence.offenceEndDate | formatDate }}{% endif %}{% endif %}{% endset %}
+            {% set offenceLabel %}{{ offence.offenceCode }} - {{ offenceNameMap[offence.offenceCode] }}{% if offence.offenceStartDate %} committed on {{ offence.offenceStartDate | formatDateLong }}{% if offence.offenceEndDate %} to {{ offence.offenceEndDate | formatDateLong }}{% endif %}{% endif %}{% endset %}
             {% set offenceItems = (offenceItems.push({
                 value: offence.chargeUuid,
                 text: offenceLabel | trim,

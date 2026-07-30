@@ -14,6 +14,7 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
+  MoreThanOneOffenceForm,
   ReviewOffencesForm,
   SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
@@ -1006,6 +1007,18 @@ export default class OffenceService {
       },
       {
         'required.changeOffence': 'Select whether you have finished reviewing offences.',
+      },
+    )
+  }
+
+  validateMoreThanOneOffenceForm(moreThanOneOffenceForm: MoreThanOneOffenceForm) {
+    return validate(
+      moreThanOneOffenceForm,
+      {
+        moreThanOneOffence: 'required',
+      },
+      {
+        'required.moreThanOneOffence': 'Select whether or not the outcome applies to more than one offence',
       },
     )
   }

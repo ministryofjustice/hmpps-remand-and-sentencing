@@ -58,7 +58,6 @@ import config from '../config'
 import RefDataService from '../services/refDataService'
 import REPLACEMENT_OUTCOME_UUID from '../utils/constants'
 import JourneyUrls, { buildReturnUrlFromKey } from './data/JourneyUrls'
-import validate from '../validation/validation'
 import AuditService, { Page } from '../services/auditService'
 import { Offence as APIOffence } from '../@types/manageOffencesApi/manageOffencesClientTypes'
 import OffenceJourneyUrls from './data/OffenceJourneyUrls'
@@ -383,15 +382,7 @@ export default class OffenceRoutes extends BaseRoutes {
     const { backTo } = req.query as { backTo: string }
     const moreThanOneOffenceForm = trimForm<MoreThanOneOffenceForm>(req.body)
 
-    const errors = validate(
-      moreThanOneOffenceForm,
-      {
-        moreThanOneOffence: 'required',
-      },
-      {
-        'required.moreThanOneOffence': 'Select whether or not the outcome applies to more than one offence',
-      },
-    )
+    const errors = this.offenceService.validateMoreThanOneOffenceForm(moreThanOneOffenceForm)
 
     if (errors.length > 0) {
       req.flash('errors', errors)

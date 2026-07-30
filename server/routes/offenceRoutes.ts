@@ -23,7 +23,7 @@ import {
   ConsecutiveToDetails,
   PERIOD_TYPE_PRIORITY,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
-import trimForm from '../utils/trim'
+import trimForm, { normaliseToArray } from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import CourtAppearanceService from '../services/courtAppearanceService'
@@ -413,6 +413,18 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { backTo } = req.query as { backTo: string }
     const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`
+
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const remainingOffences = courtAppearance.offences.filter(
+      offence => !(offence.outcomeUuid && offence.updatedOutcome) && offence.chargeUuid !== chargeUuid,
+    )
+    const selectedOffence = courtAppearance.offences.find(offence => offence.chargeUuid === chargeUuid)
+    const offencesToUpdate = [selectedOffence, ...orderOffences(remainingOffences)]
+
     return res.render('pages/offence/which-offences-outcome-applies-to', {
       nomsId,
       courtCaseReference,
@@ -421,6 +433,50 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
       backLink,
+      offencesToUpdate,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitWhichOffencesOutcomeAppliesTo: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { backTo } = req.query as { backTo: string }
+    const selectedChargeUuids = Array.from(new Set(normaliseToArray(req.body.offenceChargeUuids)))
+
+    if (selectedChargeUuids.length > 1) {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/new-outcome-for-these-offences?chargeUuids=${selectedChargeUuids.join(',')}&backTo=${backTo}`,
+      )
+    }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}`,
+    )
+  }
+
+  public getNewOutcomeForTheseOffences: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    return res.render('pages/offence/new-outcome-for-these-offences', {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
     })
   }
 

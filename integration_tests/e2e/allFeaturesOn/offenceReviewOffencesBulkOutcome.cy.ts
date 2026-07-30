@@ -2,6 +2,7 @@ import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentence
 import OffenceReviewOffencesPage from '../../pages/offenceReviewOffencesPage'
 import OffenceBulkOffenceToBeUpdatedPage from '../../pages/offenceBulkOffenceToBeUpdatedPage'
 import OffenceWhichOffencesOutcomeAppliesToPage from '../../pages/offenceWhichOffencesOutcomeAppliesToPage'
+import OffenceNewOutcomeForTheseOffencesPage from '../../pages/offenceNewOutcomeForTheseOffencesPage'
 import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
@@ -93,5 +94,47 @@ context('Review Offences Page bulk outcome update', () => {
     offenceBulkOffenceToBeUpdatedPage.continueButton().click()
 
     Page.verifyOnPage(OffenceUpdateOutcomePage)
+  })
+
+  context('Which offences does the new outcome apply to', () => {
+    beforeEach(() => {
+      const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+      offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
+      const offenceBulkOffenceToBeUpdatedPage = Page.verifyOnPage(OffenceBulkOffenceToBeUpdatedPage)
+      offenceBulkOffenceToBeUpdatedPage.radioLabelSelector('true').click()
+      offenceBulkOffenceToBeUpdatedPage.continueButton().click()
+    })
+
+    it('lists each offence without an outcome yet, with the selected offence checked and locked', () => {
+      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+
+      whichOffencesPage.checkboxSelector('71bb9f7e-971c-4c34-9a33-43478baee74f').should('be.checked').and('be.disabled')
+      whichOffencesPage
+        .checkboxSelector('82cc9f7e-971c-4c34-9a33-43478baee750')
+        .should('not.be.checked')
+        .and('be.enabled')
+    })
+
+    it('navigates to the update offence outcome page when only one offence is selected', () => {
+      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+      whichOffencesPage.continueButton().click()
+
+      Page.verifyOnPage(OffenceUpdateOutcomePage)
+    })
+
+    it('navigates to the new outcome for these offences page when more than one offence is selected', () => {
+      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+      whichOffencesPage.checkboxLabelSelector('82cc9f7e-971c-4c34-9a33-43478baee750').click()
+      whichOffencesPage.continueButton().click()
+
+      Page.verifyOnPage(OffenceNewOutcomeForTheseOffencesPage)
+    })
+
+    it('navigates back to the more than one offence page when back is clicked', () => {
+      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+      whichOffencesPage.backLink().click()
+
+      Page.verifyOnPage(OffenceBulkOffenceToBeUpdatedPage)
+    })
   })
 })

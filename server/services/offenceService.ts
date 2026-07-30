@@ -1221,6 +1221,20 @@ export default class OffenceService {
     offence.onFinishGoToEdit = true
   }
 
+  setOutcomeUpdateChargeUuids(session: Partial<SessionData>, chargeUuids: string[]) {
+    // eslint-disable-next-line no-param-reassign
+    session.outcomeUpdateChargeUuids = chargeUuids
+  }
+
+  getOutcomeUpdateChargeUuids(session: Partial<SessionData>): string[] {
+    return session.outcomeUpdateChargeUuids || []
+  }
+
+  clearOutcomeUpdateChargeUuids(session: Partial<SessionData>) {
+    // eslint-disable-next-line no-param-reassign
+    delete session.outcomeUpdateChargeUuids
+  }
+
   setSentenceToConcurrent(
     session: Partial<SessionData>,
     nomsId: string,

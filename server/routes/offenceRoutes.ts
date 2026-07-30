@@ -348,6 +348,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { backTo } = req.query as { backTo: string }
+    this.offenceService.clearOutcomeUpdateChargeUuids(req.session)
     const backLink = buildReturnUrlFromKey(
       backTo,
       nomsId,
@@ -451,9 +452,9 @@ export default class OffenceRoutes extends BaseRoutes {
     const selectedChargeUuids = Array.from(new Set(normaliseToArray(req.body.offenceChargeUuids)))
 
     if (selectedChargeUuids.length > 1) {
-      return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?chargeUuids=${selectedChargeUuids.join(',')}&backTo=${backTo}`,
-      )
+      this.offenceService.setOutcomeUpdateChargeUuids(req.session, selectedChargeUuids)
+    } else {
+      this.offenceService.clearOutcomeUpdateChargeUuids(req.session)
     }
 
     return res.redirect(
@@ -470,12 +471,11 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, backTo, chargeUuids } = req.query as {
+    const { submitToEditOffence, backTo } = req.query as {
       submitToEditOffence: string
       backTo: string
-      chargeUuids: string
     }
-    const isMultipleOffences = Boolean(chargeUuids)
+    const isMultipleOffences = this.offenceService.getOutcomeUpdateChargeUuids(req.session).length > 1
 
     let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     if (
@@ -514,15 +514,17 @@ export default class OffenceRoutes extends BaseRoutes {
       isMultipleOffences ? undefined : this.getOffenceHint(offence, req.user.username),
     ])
 
-    const backLink = buildReturnUrlFromKey(
-      backTo,
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      addOrEditCourtAppearance,
-      appearanceReference,
-      chargeUuid,
-    )
+    const backLink = isMultipleOffences
+      ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/which-offences-outcome-applies-to?backTo=${backTo}`
+      : buildReturnUrlFromKey(
+          backTo,
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+          chargeUuid,
+        )
 
     return res.render('pages/offence/update-outcome', {
       nomsId,
@@ -537,7 +539,6 @@ export default class OffenceRoutes extends BaseRoutes {
       nonCustodialOutcomes: primaryNonCustodialOutcomes.nonCustodialOutcomes,
       offenceHint,
       isMultipleOffences,
-      chargeUuids,
       offence,
       submitToEditOffence,
       backTo,
@@ -554,8 +555,10 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, backTo, chargeUuids } = req.query
+    const { submitToEditOffence, backTo } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
+    const outcomeUpdateChargeUuids = this.offenceService.getOutcomeUpdateChargeUuids(req.session)
+    const isMultipleOffences = outcomeUpdateChargeUuids.length > 1
 
     const { errors, outcome } = await this.offenceService.updateOffenceOutcome(
       req.session,
@@ -570,7 +573,43 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true&backTo=${backTo}${submitToEditOffence ? '&submitToEditOffence=true' : ''}${chargeUuids ? `&chargeUuids=${chargeUuids}` : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true&backTo=${backTo}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+      )
+    }
+
+    if (isMultipleOffences) {
+      const otherChargeUuids = outcomeUpdateChargeUuids.filter(uuid => uuid && uuid !== chargeUuid)
+      otherChargeUuids.forEach(otherChargeUuid => {
+        const existingOffence = this.courtAppearanceService.getOffence(
+          req.session,
+          nomsId,
+          otherChargeUuid,
+          appearanceReference,
+        )
+        this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, existingOffence)
+      })
+      await Promise.all(
+        otherChargeUuids.map(otherChargeUuid =>
+          this.offenceService.updateOffenceOutcome(
+            req.session,
+            nomsId,
+            courtCaseReference,
+            offenceOutcomeForm,
+            otherChargeUuid,
+            req.user.username,
+          ),
+        ),
+      )
+      this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+      this.offenceService.clearOutcomeUpdateChargeUuids(req.session)
+      return res.redirect(
+        JourneyUrls.reviewOffences(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
 

@@ -41,6 +41,10 @@
     "node": "^24",
     "npm": "^11"
   },
+  "overrides": {
+    "js-yaml": "^4.3.0",
+    "brace-expansion": "^5.0.7"
+  },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.1079.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.3",
@@ -53,7 +57,7 @@
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
     "accessible-autocomplete": "3.0.1",
     "body-parser": "^2.3.0",
-    "brace-expansion": "5.0.7",
+    "brace-expansion": "^5.0.7",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
     "compression": "^1.8.1",

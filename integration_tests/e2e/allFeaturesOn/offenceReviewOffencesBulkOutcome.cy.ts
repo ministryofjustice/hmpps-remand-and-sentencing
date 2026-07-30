@@ -2,7 +2,6 @@ import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentence
 import OffenceReviewOffencesPage from '../../pages/offenceReviewOffencesPage'
 import OffenceBulkOffenceToBeUpdatedPage from '../../pages/offenceBulkOffenceToBeUpdatedPage'
 import OffenceWhichOffencesOutcomeAppliesToPage from '../../pages/offenceWhichOffencesOutcomeAppliesToPage'
-import OffenceNewOutcomeForTheseOffencesPage from '../../pages/offenceNewOutcomeForTheseOffencesPage'
 import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
@@ -115,19 +114,24 @@ context('Review Offences Page bulk outcome update', () => {
         .and('be.enabled')
     })
 
-    it('navigates to the update offence outcome page when only one offence is selected', () => {
+    it('navigates to the update offence outcome page with the offence hint when only one offence is selected', () => {
       const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
       whichOffencesPage.continueButton().click()
 
-      Page.verifyOnPage(OffenceUpdateOutcomePage)
+      const updateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+      updateOutcomePage.offenceHint().should('exist')
     })
 
-    it('navigates to the new outcome for these offences page when more than one offence is selected', () => {
+    it('navigates to the update offence outcome page with a plural heading and no offence hint when more than one offence is selected', () => {
       const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
       whichOffencesPage.checkboxLabelSelector('82cc9f7e-971c-4c34-9a33-43478baee750').click()
       whichOffencesPage.continueButton().click()
 
-      Page.verifyOnPage(OffenceNewOutcomeForTheseOffencesPage)
+      const updateOutcomePage = Page.verifyOnPageTitle(
+        OffenceUpdateOutcomePage,
+        'What is the new outcome for these offences?',
+      )
+      updateOutcomePage.offenceHint().should('not.exist')
     })
 
     it('navigates back to the more than one offence page when back is clicked', () => {

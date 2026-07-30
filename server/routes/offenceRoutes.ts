@@ -452,32 +452,13 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (selectedChargeUuids.length > 1) {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/new-outcome-for-these-offences?chargeUuids=${selectedChargeUuids.join(',')}&backTo=${backTo}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?chargeUuids=${selectedChargeUuids.join(',')}&backTo=${backTo}`,
       )
     }
 
     return res.redirect(
       `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}`,
     )
-  }
-
-  public getNewOutcomeForTheseOffences: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
-    return res.render('pages/offence/new-outcome-for-these-offences', {
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    })
   }
 
   public getUpdateOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
@@ -489,7 +470,12 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, backTo } = req.query as { submitToEditOffence: string; backTo: string }
+    const { submitToEditOffence, backTo, chargeUuids } = req.query as {
+      submitToEditOffence: string
+      backTo: string
+      chargeUuids: string
+    }
+    const isMultipleOffences = Boolean(chargeUuids)
 
     let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     if (
@@ -525,7 +511,7 @@ export default class OffenceRoutes extends BaseRoutes {
         courtAppearance.warrantType,
         req.user.username,
       ),
-      this.getOffenceHint(offence, req.user.username),
+      isMultipleOffences ? undefined : this.getOffenceHint(offence, req.user.username),
     ])
 
     const backLink = buildReturnUrlFromKey(
@@ -550,6 +536,8 @@ export default class OffenceRoutes extends BaseRoutes {
       primaryOutcomes: primaryNonCustodialOutcomes.primaryOutcomes,
       nonCustodialOutcomes: primaryNonCustodialOutcomes.nonCustodialOutcomes,
       offenceHint,
+      isMultipleOffences,
+      chargeUuids,
       offence,
       submitToEditOffence,
       backTo,
@@ -566,7 +554,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, backTo } = req.query
+    const { submitToEditOffence, backTo, chargeUuids } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
 
     const { errors, outcome } = await this.offenceService.updateOffenceOutcome(
@@ -582,7 +570,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true&backTo=${backTo}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true&backTo=${backTo}${submitToEditOffence ? '&submitToEditOffence=true' : ''}${chargeUuids ? `&chargeUuids=${chargeUuids}` : ''}`,
       )
     }
 

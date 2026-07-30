@@ -19,6 +19,7 @@ describe('GET Update Offence outcome', () => {
   it('should render page on repeat journey', () => {
     const outcomeUuid = '123'
     defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('NON_SENTENCING')
+    defaultServices.offenceService.getOutcomeUpdateChargeUuids.mockReturnValue([])
     defaultServices.offenceService.getSessionOffence.mockReturnValue({
       chargeUuid: '1',
       offenceCode: 'CC12345',

@@ -135,11 +135,26 @@ context('Review Offences Page bulk outcome update', () => {
       updateOutcomePage.offenceHint().should('not.exist')
     })
 
-    it('navigates back to the more than one offence page when back is clicked', () => {
-      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
-      whichOffencesPage.backLink().click()
+    context('with more than one offence selected', () => {
+      beforeEach(() => {
+        const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+        whichOffencesPage.checkboxLabelSelector('82cc9f7e-971c-4c34-9a33-43478baee750').click()
+        whichOffencesPage.continueButton().click()
+      })
 
-      Page.verifyOnPage(OffenceBulkOffenceToBeUpdatedPage)
+      it('updates the outcome for every selected offence and returns to the review offences page', () => {
+        const updateOutcomePage = Page.verifyOnPageTitle(
+          OffenceUpdateOutcomePage,
+          'What is the new outcome for these offences?',
+        )
+        updateOutcomePage.radioLabelContains('Remanded in custody').click()
+        updateOutcomePage.continueButton().click()
+
+        const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
+        offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').should('not.exist')
+        offenceReviewOffencesPage.updateOutcomeLink('82cc9f7e-971c-4c34-9a33-43478baee750').should('not.exist')
+        cy.contains('There are no offences with updated outcomes.').should('not.exist')
+      })
     })
   })
 })

@@ -51,7 +51,7 @@
 {% endfor %}
 
 {% block pageContent %}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-update-offence-outcome?backTo={{ backTo }}{{'&submitToEditOffence=true' if submitToEditOffence else ''}}{{'&chargeUuids=' + chargeUuids if chargeUuids else ''}}" autocomplete="off">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-update-offence-outcome?backTo={{ backTo }}{{'&submitToEditOffence=true' if submitToEditOffence else ''}}" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         {{ govukRadios(radiosData) }}

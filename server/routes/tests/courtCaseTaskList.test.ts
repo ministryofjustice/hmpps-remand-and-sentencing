@@ -49,4 +49,27 @@ describe('GET task list', () => {
         expect($('[data-qa=back-link]').length).toBe(0)
       })
   })
+
+  it('links to the sentencing upload court documents page on a sentencing journey', () => {
+    defaultServices.courtAppearanceService.getWarrantType.mockReturnValue('SENTENCING')
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: '1',
+      warrantType: 'SENTENCING',
+      caseReferenceNumber: 'A123',
+      warrantDate: new Date(),
+      courtCode: 'ACCRYC',
+      appearanceInformationAccepted: true,
+      offences: [],
+    })
+    return request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/task-list')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const uploadDocumentsLink = $('a:contains("Upload court documents")')
+        expect(uploadDocumentsLink.attr('href')).toBe(
+          '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/upload-court-documents',
+        )
+      })
+  })
 })

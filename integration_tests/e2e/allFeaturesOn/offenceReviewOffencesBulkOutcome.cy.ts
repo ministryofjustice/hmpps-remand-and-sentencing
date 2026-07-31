@@ -121,6 +121,13 @@ context('Review Offences Page bulk outcome update', () => {
 
       const updateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
       updateOutcomePage.offenceHint().should('exist')
+      updateOutcomePage
+        .backLink()
+        .should('have.attr', 'href')
+        .and(
+          'eq',
+          '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/review-offences',
+        )
     })
 
     it('navigates to the update offence outcome page with a plural heading and no offence hint when more than one offence is selected', () => {
@@ -154,6 +161,25 @@ context('Review Offences Page bulk outcome update', () => {
         offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').should('not.exist')
         offenceReviewOffencesPage.updateOutcomeLink('82cc9f7e-971c-4c34-9a33-43478baee750').should('not.exist')
         cy.contains('There are no offences with updated outcomes.').should('not.exist')
+      })
+
+      it('keeps a working back link on every page when navigating back from the update outcome page', () => {
+        const updateOutcomePage = Page.verifyOnPageTitle(
+          OffenceUpdateOutcomePage,
+          'What is the new outcome for these offences?',
+        )
+        updateOutcomePage.backLink().click()
+
+        const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+        whichOffencesPage.backLink().click()
+
+        Page.verifyOnPage(OffenceBulkOffenceToBeUpdatedPage)
+          .backLink()
+          .should('have.attr', 'href')
+          .and(
+            'eq',
+            '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/review-offences',
+          )
       })
     })
   })

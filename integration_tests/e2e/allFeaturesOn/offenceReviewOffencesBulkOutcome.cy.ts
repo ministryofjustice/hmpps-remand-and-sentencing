@@ -85,14 +85,21 @@ context('Review Offences Page bulk outcome update', () => {
     Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
   })
 
-  it('navigates to the update offence outcome page when no is selected', () => {
+  it('navigates to the update offence outcome page when no is selected, with a back link to the more than one offence question', () => {
     const offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
     const offenceBulkOffenceToBeUpdatedPage = Page.verifyOnPage(OffenceBulkOffenceToBeUpdatedPage)
     offenceBulkOffenceToBeUpdatedPage.radioLabelSelector('false').click()
     offenceBulkOffenceToBeUpdatedPage.continueButton().click()
 
-    Page.verifyOnPage(OffenceUpdateOutcomePage)
+    const updateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+    updateOutcomePage
+      .backLink()
+      .should('have.attr', 'href')
+      .and(
+        'eq',
+        '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/offences/71bb9f7e-971c-4c34-9a33-43478baee74f/more-than-one-offence-to-be-updated?backTo=reviewOffences',
+      )
   })
 
   context('Which offences does the new outcome apply to', () => {
@@ -115,7 +122,7 @@ context('Review Offences Page bulk outcome update', () => {
       cy.get('[data-qa="offenceOutcomeOptions"]').should('contain', '12 May 2023').and('not.contain', '12/05/2023')
     })
 
-    it('navigates to the update offence outcome page with the offence hint when only one offence is selected', () => {
+    it('navigates to the update offence outcome page with the offence hint when only one offence is selected, with a back link to the which offences page', () => {
       const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
       whichOffencesPage.continueButton().click()
 
@@ -126,7 +133,7 @@ context('Review Offences Page bulk outcome update', () => {
         .should('have.attr', 'href')
         .and(
           'eq',
-          '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/review-offences',
+          '/person/A1234AB/edit-court-case/3fa85f64-5717-4562-b3fc-2c963f66afa6/add-court-appearance/2/offences/71bb9f7e-971c-4c34-9a33-43478baee74f/which-offences-outcome-applies-to?backTo=reviewOffences',
         )
     })
 

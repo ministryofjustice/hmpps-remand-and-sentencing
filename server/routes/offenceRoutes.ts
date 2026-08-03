@@ -399,7 +399,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}&outcomeFlow=moreThanOneOffence`,
     )
   }
 
@@ -459,7 +459,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
 
     return res.redirect(
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}`,
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}&outcomeFlow=whichOffences`,
     )
   }
 
@@ -472,9 +472,10 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, backTo } = req.query as {
+    const { submitToEditOffence, backTo, outcomeFlow } = req.query as {
       submitToEditOffence: string
       backTo: string
+      outcomeFlow: string
     }
     const isMultipleOffences = this.offenceService.getOutcomeUpdateChargeUuids(req.session).length > 1
 
@@ -515,17 +516,22 @@ export default class OffenceRoutes extends BaseRoutes {
       isMultipleOffences ? undefined : this.getOffenceHint(offence, req.user.username),
     ])
 
-    const backLink = isMultipleOffences
-      ? `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/which-offences-outcome-applies-to?backTo=${backTo}`
-      : buildReturnUrlFromKey(
-          backTo,
-          nomsId,
-          addOrEditCourtCase,
-          courtCaseReference,
-          addOrEditCourtAppearance,
-          appearanceReference,
-          chargeUuid,
-        )
+    let backLink: string
+    if (isMultipleOffences || outcomeFlow === 'whichOffences') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/which-offences-outcome-applies-to?backTo=${backTo}`
+    } else if (outcomeFlow === 'moreThanOneOffence') {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`
+    } else {
+      backLink = buildReturnUrlFromKey(
+        backTo,
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+      )
+    }
 
     return res.render('pages/offence/update-outcome', {
       nomsId,
@@ -543,6 +549,7 @@ export default class OffenceRoutes extends BaseRoutes {
       offence,
       submitToEditOffence,
       backTo,
+      outcomeFlow,
       offenceOutcomeForm,
     })
   }
@@ -556,7 +563,7 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, backTo } = req.query
+    const { submitToEditOffence, backTo, outcomeFlow } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
     const outcomeUpdateChargeUuids = this.offenceService.getOutcomeUpdateChargeUuids(req.session)
     const isMultipleOffences = outcomeUpdateChargeUuids.length > 1
@@ -574,7 +581,7 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true&backTo=${backTo}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true&backTo=${backTo}${submitToEditOffence ? '&submitToEditOffence=true' : ''}${outcomeFlow ? `&outcomeFlow=${outcomeFlow}` : ''}`,
       )
     }
 

@@ -137,6 +137,31 @@ context('Review Offences Page bulk outcome update', () => {
         )
     })
 
+    it('keeps previously selected offences checked when navigating back after widening the selection', () => {
+      const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+      whichOffencesPage.continueButton().click()
+
+      let updateOutcomePage = Page.verifyOnPage(OffenceUpdateOutcomePage)
+      updateOutcomePage.backLink().click()
+
+      Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+      whichOffencesPage.checkboxSelector('71bb9f7e-971c-4c34-9a33-43478baee74f').should('be.checked')
+      whichOffencesPage.checkboxSelector('82cc9f7e-971c-4c34-9a33-43478baee750').should('not.be.checked')
+
+      whichOffencesPage.checkboxLabelSelector('82cc9f7e-971c-4c34-9a33-43478baee750').click()
+      whichOffencesPage.continueButton().click()
+
+      updateOutcomePage = Page.verifyOnPageTitle(
+        OffenceUpdateOutcomePage,
+        'What is the new outcome for these offences?',
+      )
+      updateOutcomePage.backLink().click()
+
+      Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
+      whichOffencesPage.checkboxSelector('71bb9f7e-971c-4c34-9a33-43478baee74f').should('be.checked')
+      whichOffencesPage.checkboxSelector('82cc9f7e-971c-4c34-9a33-43478baee750').should('be.checked')
+    })
+
     it('navigates to the update offence outcome page with a plural heading and no offence hint when more than one offence is selected', () => {
       const whichOffencesPage = Page.verifyOnPage(OffenceWhichOffencesOutcomeAppliesToPage)
       whichOffencesPage.checkboxLabelSelector('82cc9f7e-971c-4c34-9a33-43478baee750').click()

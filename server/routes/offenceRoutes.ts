@@ -425,6 +425,7 @@ export default class OffenceRoutes extends BaseRoutes {
     )
     const selectedOffence = courtAppearance.offences.find(offence => offence.chargeUuid === chargeUuid)
     const offencesToUpdate = [selectedOffence, ...orderOffences(remainingOffences)]
+    const selectedChargeUuids = this.offenceService.getOutcomeUpdateChargeUuids(req.session)
 
     return res.render('pages/offence/which-offences-outcome-applies-to', {
       nomsId,
@@ -436,6 +437,7 @@ export default class OffenceRoutes extends BaseRoutes {
       backLink,
       backTo,
       offencesToUpdate,
+      selectedChargeUuids,
       errors: req.flash('errors') || [],
     })
   }

@@ -131,4 +131,6 @@ export default abstract class Page {
   appealedOffences = (): PageElement => cy.get('[data-qa="appealedOffences"]')
 
   withoutAppealRecordedInset = (): PageElement => cy.get('[data-qa="withoutAppealRecordedInset"]')
+
+  nonCustodialHeading = (): PageElement => cy.get('[data-qa="nonCustodialHeading"]')
 }

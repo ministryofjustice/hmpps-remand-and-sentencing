@@ -82,13 +82,6 @@ context('Review Offences Page', () => {
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     })
 
-    it('goes to the default update outcome page when there are multiple offences needing an outcome but the bulk outcome feature is disabled', () => {
-      visitReviewOffencesPage('stubGetLatestCourtAppearanceWithMultipleOffences')
-      cy.task('stubGetOffenceByCode', {})
-      offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
-      Page.verifyOnPage(OffenceUpdateOutcomePage)
-    })
-
     it('shows error when there are offences which need outcome updating', () => {
       visitReviewOffencesPage()
       offenceReviewOffencesPage.radioLabelSelector('true').click()

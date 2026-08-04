@@ -26,7 +26,6 @@ generic-service:
     COURT_DATA_INGESTION_API_URL: "https://court-data-ingestion-api.hmpps.service.justice.gov.uk"
     FEATURES_APPEALS_ENABLED: 'true'
     FEATURES_BREACH_SUPERVISION_ENABLED: 'false'
-    FEATURES_BULK_OUTCOME_APPLIED: 'false'
 
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts

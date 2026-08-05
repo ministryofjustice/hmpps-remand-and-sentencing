@@ -517,7 +517,7 @@ export default abstract class BaseRoutes {
     return res.redirect(canDeletePath)
   }
 
-  protected async getCannotDeleteOffenceData(
+  protected async getCannotDeleteConsecutiveOffenceData(
     req,
     res,
   ): Promise<{

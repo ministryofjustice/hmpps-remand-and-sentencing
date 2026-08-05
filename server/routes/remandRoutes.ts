@@ -14,6 +14,7 @@ import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
 import { AppearanceType, CourtAppearanceSubtype } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import DocumentManagementService from '../services/documentManagementService'
+import NonSentencingJourneyUrls from './data/NonSentencingJourneyUrls'
 
 export default class RemandRoutes extends BaseRoutes {
   constructor(
@@ -204,27 +205,19 @@ export default class RemandRoutes extends BaseRoutes {
   }
 
   public checkDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
     const urlParameters = req.params as unknown as UrlParameters
     return this.canDeleteOffence(
       req,
       res,
       urlParameters,
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/non-sentencing/offences/${chargeUuid}/cannot-delete-offence`,
+      NonSentencingJourneyUrls.cannotDeleteConsecutiveOffence(urlParameters),
       JourneyUrls.deleteOffence(urlParameters),
     )
   }
 
   public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const cannotDeleteInformation = await this.getCannotDeleteOffenceData(req, res)
+    const cannotDeleteInformation = await this.getCannotDeleteConsecutiveOffenceData(req, res)
     const backLink = JourneyUrls.nonSentencingHearing(
       nomsId,
       addOrEditCourtCase,
@@ -232,7 +225,7 @@ export default class RemandRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       appearanceReference,
     )
-    return res.render('pages/courtAppearance/cannot-delete-offence', {
+    return res.render('pages/courtAppearance/cannot-delete-consecutive-offence', {
       nomsId,
       courtCaseReference,
       appearanceReference,

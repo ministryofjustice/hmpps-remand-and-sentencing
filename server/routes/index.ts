@@ -229,7 +229,7 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-delete-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-delete-consecutive-offence',
     sentencingRoutes.getCannotDeleteOffence,
   )
 
@@ -269,7 +269,7 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/offences/:chargeUuid/cannot-delete-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/offences/:chargeUuid/cannot-delete-consecutive-offence',
     remandRoutes.getCannotDeleteOffence,
   )
 
@@ -1166,7 +1166,7 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/cannot-delete-offence',
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/cannot-delete-consecutive-offence',
     appealsRoutes.getCannotDeleteOffence,
   )
 
@@ -1296,16 +1296,6 @@ export default function routes(services: Services): Router {
   router.post(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/hearing-details',
     breachRoutes.submitHearingDetails,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/check-delete-offence',
-    breachRoutes.checkDeleteOffence,
-  )
-
-  router.get(
-    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/cannot-delete-offence',
-    breachRoutes.getCannotDeleteOffence,
   )
 
   return router

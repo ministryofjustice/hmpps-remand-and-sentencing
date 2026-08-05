@@ -58,7 +58,7 @@ export default class BreachJourneyUrls {
   }
 
   static cannotDeleteOffence = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-offence`
+    return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-consecutive-offence`
   }
 
   private static basePath(urlParameters: UrlParameters): string {

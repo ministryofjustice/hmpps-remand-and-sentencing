@@ -5034,7 +5034,8 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/remand-and-sentencing-api/hmcts-court-data/abf395c2-8e3c-419c-bd9c-71d544e5d811/appearance',
+        urlPath:
+          '/remand-and-sentencing-api/hmcts-court-data/abf395c2-8e3c-419c-bd9c-71d544e5d811/prisoner/A1234AB/appearance',
       },
       response: {
         status: 200,
@@ -5068,7 +5069,8 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/remand-and-sentencing-api/hmcts-court-data/abf395c2-8e3c-419c-bd9c-71d544e5d811/appearance',
+        urlPath:
+          '/remand-and-sentencing-api/hmcts-court-data/abf395c2-8e3c-419c-bd9c-71d544e5d811/prisoner/A1234AB/appearance',
       },
       response: {
         status: 200,

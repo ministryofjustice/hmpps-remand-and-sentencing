@@ -64,7 +64,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { hmctsHearingId, nomsId } = urlParameters
-    let appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, req.user.username)
+    let appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, nomsId, req.user.username)
     const newCourtCaseId = crypto.randomUUID()
     const newAppearanceId = crypto.randomUUID()
     appearance = {

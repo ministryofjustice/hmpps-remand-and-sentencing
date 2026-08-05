@@ -10,6 +10,9 @@ export default class CourtDataIngestionApiClient extends RestClient {
   }
 
   async getCourtHearing(courtHearingId: string, prisonerNumber: string, username: string): Promise<CourtHearing> {
-    return this.get({ path: `/court-hearings/prisoner/${prisonerNumber}/hearing/${courtHearingId}` }, asSystem(username))
+    return this.get(
+      { path: `/court-hearings/prisoner/${prisonerNumber}/hearing/${courtHearingId}` },
+      asSystem(username),
+    )
   }
 }

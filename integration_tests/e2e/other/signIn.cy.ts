@@ -3,6 +3,7 @@ import AuthSignInPage from '../../pages/authSignIn'
 import Page from '../../pages/page'
 import AuthErrorPage from '../../pages/authError'
 import AuthManageDetailsPage from '../../pages/authManageDetails'
+import { Role, Roles } from '../../../server/@types/roles'
 
 context('Sign In', () => {
   beforeEach(() => {
@@ -71,7 +72,11 @@ context('Sign In', () => {
     cy.task('stubVerifyToken', true)
     cy.task('stubSignIn', {
       name: 'bobby brown',
-      roles: ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR'],
+      roles: [
+        Roles.getAuthority(Role.REMAND_AND_SENTENCING),
+        Roles.getAuthority(Role.COURT_CASES),
+        Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
+      ],
     })
 
     cy.signIn()
@@ -79,8 +84,10 @@ context('Sign In', () => {
     indexPage.fallbackHeaderUserName().contains('B. Brown')
   })
 
-  it('User without both roles is shown auth error page', () => {
-    cy.task('stubSignIn', { roles: ['ROLE_REMAND_AND_SENTENCING'] })
+  it('User without release dates calculator role is shown auth error page', () => {
+    cy.task('stubSignIn', {
+      roles: [Roles.getAuthority(Role.REMAND_AND_SENTENCING), Roles.getAuthority(Role.COURT_CASES)],
+    })
     cy.signIn({ failOnStatusCode: false })
     Page.verifyOnPage(AuthErrorPage)
   })

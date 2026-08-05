@@ -23,6 +23,7 @@ import setupCurrentCourtAppearance from './middleware/setUpCurrentCourtAppearanc
 import setupCurrentCourtCase from './middleware/setUpCurrentCourtCase'
 import setupCurrentOffence from './middleware/setupCurrentOffence'
 import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
+import { Role, Roles } from './@types/roles'
 
 const upload = multer({ dest: 'uploads/' })
 
@@ -44,7 +45,13 @@ export default function createApp(services: Services): express.Application {
   nunjucksSetup(app, services.applicationInfo)
 
   app.use(setUpAuthentication())
-  app.use(authorisationMiddleware(['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR']))
+  app.use(
+    authorisationMiddleware([
+      Roles.getAuthority(Role.REMAND_AND_SENTENCING),
+      Roles.getAuthority(Role.COURT_CASES),
+      Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
+    ]),
+  )
   app.use('/admin/reference-data', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/charge-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/appearance-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))

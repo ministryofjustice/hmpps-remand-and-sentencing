@@ -215,7 +215,7 @@ export default class RemandRoutes extends BaseRoutes {
     )
   }
 
-  public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+  public getCannotDeleteConsecutiveOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
     const cannotDeleteInformation = await this.getCannotDeleteConsecutiveOffenceData(req, res)
     const backLink = JourneyUrls.nonSentencingHearing(

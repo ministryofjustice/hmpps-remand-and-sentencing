@@ -867,7 +867,7 @@ export default class AppealsRoutes extends BaseRoutes {
     )
   }
 
-  public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+  public getCannotDeleteConsecutiveOffence: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const cannotDeleteInformation = await this.getCannotDeleteConsecutiveOffenceData(req, res)
     const backLink = AppealsJourneyUrls.hearingDetails(urlParameters)

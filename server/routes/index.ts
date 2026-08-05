@@ -230,7 +230,7 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-delete-consecutive-offence',
-    sentencingRoutes.getCannotDeleteOffence,
+    sentencingRoutes.getCannotDeleteConsecutiveOffence,
   )
 
   router.get(
@@ -270,7 +270,7 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/offences/:chargeUuid/cannot-delete-consecutive-offence',
-    remandRoutes.getCannotDeleteOffence,
+    remandRoutes.getCannotDeleteConsecutiveOffence,
   )
 
   router.get(
@@ -1167,7 +1167,7 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/cannot-delete-consecutive-offence',
-    appealsRoutes.getCannotDeleteOffence,
+    appealsRoutes.getCannotDeleteConsecutiveOffence,
   )
 
   router.get('/person/:nomsId/review-new-documents/:hmctsHearingId/landing', courtDataIngestionRoutes.landing)

@@ -39,8 +39,8 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     const urlParameters = req.params as unknown as UrlParameters
     const { hmctsHearingId, nomsId } = urlParameters
     const [appearance, hearing] = await Promise.all([
-      this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, req.user.username),
-      this.courtDataIngestionService.getCourtHearing(hmctsHearingId, req.user.username),
+      this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, nomsId, req.user.username),
+      this.courtDataIngestionService.getCourtHearing(hmctsHearingId, nomsId, req.user.username),
     ])
     appearance.documents = appearance.documents.map(it => {
       return {
@@ -64,7 +64,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
   public start: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
     const { hmctsHearingId, nomsId } = urlParameters
-    let appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, req.user.username)
+    let appearance = await this.remandAndSentencingService.getHmctsCourtData(hmctsHearingId, nomsId, req.user.username)
     const newCourtCaseId = crypto.randomUUID()
     const newAppearanceId = crypto.randomUUID()
     appearance = {

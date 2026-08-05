@@ -6,7 +6,8 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/court-data-ingestion-api/court-hearings/abf395c2-8e3c-419c-bd9c-71d544e5d811',
+        urlPath:
+          '/court-data-ingestion-api/court-hearings/prisoner/A1234AB/hearing/abf395c2-8e3c-419c-bd9c-71d544e5d811',
       },
       response: {
         status: 200,

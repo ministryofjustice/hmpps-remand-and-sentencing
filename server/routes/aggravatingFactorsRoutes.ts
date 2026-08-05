@@ -468,7 +468,12 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       chargeUuid,
     } = req.params
 
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
 
     const cancelLink = AggravatingFactorsJourneyUrls.checkAggravatingFactorsAnswers(
       nomsId,
@@ -501,15 +506,22 @@ export default class AggravatingFactorsRoutes extends BaseRoutes {
       chargeUuid,
     } = req.params
 
-    const offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const offence = courtAppearance.offences.find(o => o.chargeUuid === chargeUuid)
     if (offence) {
-      this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, {
-        ...offence,
-        aggravatingFactors: [],
-      })
+      this.courtAppearanceService.addOffence(
+        req.session,
+        nomsId,
+        chargeUuid,
+        { ...offence, aggravatingFactors: [] },
+        appearanceReference,
+      )
     }
 
-    this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
     this.aggravatingFactorsService.clearAggravatingFactors(req.session)
 
     return res.redirect(

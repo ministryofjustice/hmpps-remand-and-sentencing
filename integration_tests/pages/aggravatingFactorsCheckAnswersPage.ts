@@ -15,4 +15,16 @@ export default class AggravatingFactorsCheckAnswersPage extends Page {
 
   editAggravatingFactorLink = (chargeUuid: string): PageElement =>
     cy.get(`[data-qa="edit-aggravating-factor-link-${chargeUuid}"]`)
+
+  deleteAggravatingFactorLink = (
+    nomsId: string,
+    addOrEditCourtCase: string,
+    courtCaseReference: string,
+    addOrEditCourtAppearance: string,
+    appearanceReference: string,
+    chargeUuid: string,
+  ): PageElement =>
+    cy.get(
+      `a[href="/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/aggravating-factors/${chargeUuid}/delete-aggravating-factor"]`,
+    )
 }

@@ -99,30 +99,41 @@ context('Delete aggravating factor', () => {
 
   it('can delete aggravating factors for an offence', () => {
     const checkPage = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
+
+    // there should be two offences with aggravating factors set up in the beforeEach
+    cy.get('[data-qa^="edit-aggravating-factor-link-"]').should('have.length', 2)
+
     checkPage
       .insetText()
       .trimTextContent()
       .then(original => {
-        // find chargeUuid from the edit link and visit the delete page
+        // find chargeUuid from the edit link (its href points at select-which-aggravating-factors-apply)
         cy.get('[data-qa^="edit-aggravating-factor-link-"]')
           .first()
-          .then($el => {
-            const href = $el.attr('href')
-            if (href) {
-              const chargeMatch = href.match(/aggravating-factors\/([a-f0-9-]+)\/delete-aggravating-factor/)
-              if (chargeMatch) {
-                const chargeUuid = chargeMatch[1]
-                cy.visit(
-                  `/person/A1234AB/add-court-case/0/add-court-appearance/0/aggravating-factors/${chargeUuid}/delete-aggravating-factor`,
-                )
-                const deletePage = Page.verifyOnPage(AggravatingFactorsDeleteAggravatingFactorPage)
-                deletePage.listItems().should('exist')
-                deletePage.deleteButton().click()
-                // after deletion should return to check answers and the inset count should be decreased
-                const after = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
-                after.insetText().trimTextContent().should('not.equal', original)
-              }
+          .invoke('attr', 'href')
+          .then(href => {
+            const chargeMatch = href.match(/aggravating-factors\/([a-f0-9-]+)\//)
+            if (!chargeMatch) {
+              throw new Error(`Could not find chargeUuid in edit link href: ${href}`)
             }
+            const chargeUuid = chargeMatch[1]
+
+            // click the actual 'Delete' link on the check answers page, as a user would
+            checkPage
+              .deleteAggravatingFactorLink('A1234AB', 'add-court-case', '0', 'add-court-appearance', '0', chargeUuid)
+              .click()
+
+            const deletePage = Page.verifyOnPage(AggravatingFactorsDeleteAggravatingFactorPage)
+            // the confirmation page should list the factors that are about to be deleted
+            deletePage.listItems().find('li').should('have.length.greaterThan', 0)
+            deletePage.deleteButton().click()
+
+            // after deletion we should be back on check answers with this offence no longer listed
+            const after = Page.verifyOnPage(AggravatingFactorsCheckAnswersPage)
+            after.insetText().trimTextContent().should('not.equal', original)
+            after.insetText().should('contain', 'There is 1 sentence with aggravating factors.')
+            cy.get(`[data-qa="edit-aggravating-factor-link-${chargeUuid}"]`).should('not.exist')
+            cy.get('[data-qa^="edit-aggravating-factor-link-"]').should('have.length', 1)
           })
       })
   })

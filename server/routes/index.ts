@@ -1298,5 +1298,20 @@ export default function routes(services: Services): Router {
     breachRoutes.submitHearingDetails,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-delete-period-length-offence',
+    sentencingRoutes.getCannotDeletePeriodLengthOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/non-sentencing/offences/:chargeUuid/cannot-delete-period-length-offence',
+    remandRoutes.getCannotDeletePeriodLengthOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/appeals/offences/:chargeUuid/cannot-delete-period-length-offence',
+    appealsRoutes.getCannotDeletePeriodLengthOffence,
+  )
+
   return router
 }

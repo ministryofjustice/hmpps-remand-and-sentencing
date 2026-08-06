@@ -5486,4 +5486,40 @@ export default {
       },
     })
   },
+  stubGetSentenceDeleteStatus: ({
+    sentenceUuid = 'b0f83d31-efbe-462c-970d-5293975acb17',
+    sentenceUuidsInChain = 'b0f83d31-efbe-462c-970d-5293975acb17',
+    status = 'SUPPORTED',
+    reasons = [],
+  }: {
+    sentenceUuid: string
+    sentenceUuidsInChain: string
+    status: 'SUPPORTED' | 'NOT_SUPPORTED'
+    reasons: {
+      reason: 'HAS_SENTENCES_AFTER_ON_OTHER_COURT_APPEARANCE' | 'HAS_APPEARANCE_PERIOD_LENGTH'
+      metadata?: {
+        [key: string]: unknown
+      }
+    }[]
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPathTemplate: `/remand-and-sentencing-api/sentence/${sentenceUuid}/delete-status`,
+        queryParameters: {
+          sentenceUuidsInChain: {
+            matches: sentenceUuidsInChain,
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          status,
+          reasons,
+        },
+      },
+    })
+  },
 }

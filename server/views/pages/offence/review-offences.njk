@@ -118,7 +118,7 @@
             {% endfor %}
 
 
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-review-offences" autocomplete="off">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/review-offences" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
                 {{ govukRadios({

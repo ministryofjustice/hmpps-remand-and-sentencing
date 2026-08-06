@@ -7,7 +7,7 @@
 {% set hideOffences = true %}
 
 {% block pageContent %}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-which-offences-outcome-applies-to{{ "?backTo=" + backTo if backTo }}" autocomplete="off">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/which-offences-outcome-applies-to{{ "?backTo=" + backTo if backTo }}" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <input type="hidden" name="offenceChargeUuids" value="{{ chargeUuid }}">
         <span class="govuk-caption-l">Update offence outcomes</span>

@@ -23,7 +23,7 @@
                 not be able to return to this page, but can edit the details in the Court cases tab.</p>
             <div class="govuk-button-group">
                 <form method="post"
-                      action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-task-list" autocomplete="off">
+                      action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/task-list" autocomplete="off">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                     {{ govukButton({
                         text: "Finish and save",

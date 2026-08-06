@@ -8,7 +8,7 @@
     {{ super() }}
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-two-thirds">
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-received-custodial-sentence" autocomplete="off">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/received-custodial-sentence" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 <span class="govuk-caption-l">
                     {% if isAddCourtCase %}

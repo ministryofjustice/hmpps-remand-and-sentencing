@@ -7,7 +7,7 @@
 
 {% block pageContent %}
     {{ super() }}
-    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/submit-next-appearance-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
+    <form method="post" autocomplete="off" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/next-appearance-court-name{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <input type="hidden" name="courtCode" id="court-code" value="{{nextAppearanceCourtNameForm.courtCode}}">
         {% include "../../partials/nextAppearanceCaption.njk" %}

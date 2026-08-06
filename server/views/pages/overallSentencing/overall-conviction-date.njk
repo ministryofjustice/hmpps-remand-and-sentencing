@@ -43,7 +43,7 @@
 
 {% block pageContent %}
     {{ super() }}
-            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/submit-overall-conviction-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/overall-conviction-date{{ "?submitToCheckAnswers=true" if submitToCheckAnswers }}" autocomplete="off">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                 {% include "../../partials/overallWarrantInformationCaption.njk" %}
 

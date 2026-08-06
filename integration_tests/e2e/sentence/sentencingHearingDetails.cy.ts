@@ -253,8 +253,10 @@ context('Sentencing appearance details Page', () => {
     })
 
     it('can delete an offence sentences after on same case', () => {
-      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-        sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+      cy.task('stubGetSentenceDeleteStatus', {
+        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        sentenceUuidsInChain: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+        status: 'SUPPORTED',
       })
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
@@ -375,9 +377,15 @@ context('Sentencing appearance details Page', () => {
     })
 
     it('cannot delete an offence when there are sentences after', () => {
-      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-        sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
-        hasSentenceAfterOnOtherCourtAppearance: true,
+      cy.task('stubGetSentenceDeleteStatus', {
+        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        sentenceUuidsInChain: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+        status: 'NOT_SUPPORTED',
+        reasons: [
+          {
+            reason: 'HAS_SENTENCES_AFTER_ON_OTHER_COURT_APPEARANCE',
+          },
+        ],
       })
       cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {
         sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',

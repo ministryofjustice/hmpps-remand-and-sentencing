@@ -496,22 +496,45 @@ export default abstract class BaseRoutes {
     req,
     res,
     urlParameters: UrlParameters,
-    cannotDeletePath,
+    cannotDeleteConsecutivePath,
+    cannotDeletePeriodLength,
     canDeletePath,
   ): Promise<void> {
-    const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
+    const charge = this.courtAppearanceService.getOffence(
       req.session,
       urlParameters.nomsId,
-      urlParameters.appearanceReference,
       urlParameters.chargeUuid,
+      urlParameters.appearanceReference,
     )
-    if (sentenceUuidsInChain.length) {
-      const hasSentencesAfter = await this.remandAndSentencingService.hasSentenceAfterOnOtherCourtAppearance(
-        sentenceUuidsInChain,
-        req.user.username,
+    if (charge.sentence) {
+      const sentenceUuidsInChain = this.courtAppearanceService.getSentenceUuidsInChain(
+        req.session,
+        urlParameters.nomsId,
+        urlParameters.appearanceReference,
+        urlParameters.chargeUuid,
       )
-      if (hasSentencesAfter.hasSentenceAfterOnOtherCourtAppearance) {
-        return res.redirect(cannotDeletePath)
+      const deleteStatus = await this.remandAndSentencingService.getSentenceDeleteStatus(
+        charge.sentence.sentenceUuid,
+        sentenceUuidsInChain,
+        req.user.user,
+      )
+
+      if (deleteStatus.status === 'NOT_SUPPORTED') {
+        if (
+          deleteStatus.reasons.some(
+            deleteReason => deleteReason.reason === 'HAS_SENTENCES_AFTER_ON_OTHER_COURT_APPEARANCE',
+          )
+        ) {
+          return res.redirect(cannotDeleteConsecutivePath)
+        }
+        if (deleteStatus.reasons.some(deleteReason => deleteReason.reason === 'HAS_APPEARANCE_PERIOD_LENGTH')) {
+          const reasonDetails = deleteStatus.reasons.find(
+            deleteReason => deleteReason.reason === 'HAS_APPEARANCE_PERIOD_LENGTH',
+          )
+          return res.redirect(
+            `${cannotDeletePeriodLength}?appearanceUuid=${reasonDetails.metadata.appearanceUuid}&periodLengthType=${reasonDetails.metadata.periodLengthType}`,
+          )
+        }
       }
     }
     return res.redirect(canDeletePath)

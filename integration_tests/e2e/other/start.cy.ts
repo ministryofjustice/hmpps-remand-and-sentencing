@@ -1,6 +1,7 @@
 import StartPage from '../../pages/startPage'
 import Page from '../../pages/page'
 import PersonNotFoundPage from '../../pages/personNotFoundPage'
+import { Role, Roles } from '../../../server/@types/roles'
 
 context('Start Page', () => {
   let startPage: StartPage
@@ -178,7 +179,12 @@ context('Start Page', () => {
   it('do not display recall inset when user has access to recalls', () => {
     cy.visit('/sign-out')
     cy.task('stubSignIn', {
-      roles: ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR', 'ROLE_RECALL_MAINTAINER'],
+      roles: [
+        Roles.getAuthority(Role.REMAND_AND_SENTENCING),
+        Roles.getAuthority(Role.COURT_CASES),
+        Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
+        Roles.getAuthority(Role.RECALL_MAINTAINER),
+      ],
     })
     cy.signIn()
     cy.visit('/person/A1234AB')

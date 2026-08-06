@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import type { Response } from 'superagent'
+import { Role, Roles } from '../../server/@types/roles'
 
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
@@ -132,7 +133,12 @@ export default {
   stubAuthManageDetails: manageDetails,
   stubSignIn: (
     userToken: UserToken = {
-      roles: ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR', 'ROLE_RAS_REFERENCE_ADMIN'],
+      roles: [
+        Roles.getAuthority(Role.REMAND_AND_SENTENCING),
+        Roles.getAuthority(Role.COURT_CASES),
+        Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
+        Roles.getAuthority(Role.RAS_REFERENCE_ADMIN),
+      ],
     },
   ): Promise<[Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), token(userToken), tokenVerification.stubVerifyToken()]),

@@ -9,6 +9,7 @@ import {
   CreateChargeResponse,
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
+  DeleteSentenceStatusDetails,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LatestOffenceDate,
@@ -382,5 +383,13 @@ export default class RemandAndSentencingService {
     username: string,
   ): Promise<PageCourtCaseAppearance> {
     return this.remandAndSentencingApiClient.getHmctsCourtData(hmctsHearingId, prisonerNumber, username)
+  }
+
+  async getSentenceDeleteStatus(
+    sentenceUuid: string,
+    sentenceUuidsInChain: string[],
+    username: string,
+  ): Promise<DeleteSentenceStatusDetails> {
+    return this.remandAndSentencingApiClient.getSentenceDeleteStatus(sentenceUuid, sentenceUuidsInChain, username)
   }
 }

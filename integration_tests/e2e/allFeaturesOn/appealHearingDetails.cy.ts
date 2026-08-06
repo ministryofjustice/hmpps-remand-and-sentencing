@@ -269,8 +269,10 @@ context('Appeal appearance details Page', () => {
 
     it('can delete an offence sentences after on same case', () => {
       cy.task('stubGetOffenceByCode', {})
-      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-        sentenceUuids: '5499443b-becd-4733-bdea-f8f2f33e9b56,775cd689-565c-4540-b573-4eb555c5ec60',
+      cy.task('stubGetSentenceDeleteStatus', {
+        sentenceUuid: '5499443b-becd-4733-bdea-f8f2f33e9b56',
+        sentenceUuidsInChain: '5499443b-becd-4733-bdea-f8f2f33e9b56,775cd689-565c-4540-b573-4eb555c5ec60',
+        status: 'SUPPORTED',
       })
       courtCaseHearingDetailsPage
         .deleteOffenceLink(

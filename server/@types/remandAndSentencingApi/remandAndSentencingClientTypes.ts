@@ -141,3 +141,5 @@ export type SentenceTypeChargeOutcomes = components['schemas']['SentenceTypeChar
 export type SentencedCharges = components['schemas']['SentencedCharges']
 
 export type AggravatingFactor = components['schemas']['AggravatingFactor']
+
+export type DeleteSentenceStatusDetails = components['schemas']['DeleteSentenceStatusDetails']

@@ -70,4 +70,13 @@ describe('authorisationMiddleware', () => {
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
   })
+
+  it('should return next when user has only one of multiple required roles', () => {
+    const res = createResWithToken({ authorities: ['ROLE_TWO'] })
+
+    authorisationMiddleware(['ROLE_ONE', 'ROLE_TWO', 'ROLE_THREE'])(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
+  })
 })

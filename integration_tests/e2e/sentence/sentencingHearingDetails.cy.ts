@@ -566,7 +566,6 @@ context('Sentencing appearance details Page', () => {
         )
         .click()
       Page.verifyOnPage(CannotDeletePeriodLengthOffencePage)
-      cy.pause()
     })
   })
 

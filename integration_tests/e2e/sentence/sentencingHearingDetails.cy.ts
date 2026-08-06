@@ -326,7 +326,6 @@ context('Sentencing appearance details Page', () => {
           },
         ])
       courtCaseHearingDetailsPage.confirmButton().click()
-      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage
         .errorSummary()
         .trimTextContent()

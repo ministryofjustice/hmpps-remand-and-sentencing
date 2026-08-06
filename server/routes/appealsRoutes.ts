@@ -863,6 +863,7 @@ export default class AppealsRoutes extends BaseRoutes {
       res,
       urlParameters,
       AppealsJourneyUrls.cannotDeleteConsecutiveOffence(urlParameters),
+      AppealsJourneyUrls.cannotDeletePeriodLengthOffence(urlParameters),
       JourneyUrls.deleteOffence(urlParameters),
     )
   }
@@ -875,6 +876,17 @@ export default class AppealsRoutes extends BaseRoutes {
       ...urlParameters,
       backLink,
       ...cannotDeleteInformation,
+    })
+  }
+
+  public getCannotDeletePeriodLengthOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { appearanceUuid } = req.query
+    const backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+    return res.render('pages/appeals/cannot-delete-period-length-offence', {
+      ...urlParameters,
+      appearanceUuid,
+      backLink,
     })
   }
 

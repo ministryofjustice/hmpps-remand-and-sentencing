@@ -211,6 +211,7 @@ export default class RemandRoutes extends BaseRoutes {
       res,
       urlParameters,
       NonSentencingJourneyUrls.cannotDeleteConsecutiveOffence(urlParameters),
+      NonSentencingJourneyUrls.cannotDeletePeriodLengthOffence(urlParameters),
       JourneyUrls.deleteOffence(urlParameters),
     )
   }
@@ -233,6 +234,23 @@ export default class RemandRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       backLink,
       ...cannotDeleteInformation,
+    })
+  }
+
+  public getCannotDeletePeriodLengthOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { appearanceUuid } = req.query
+    const backLink = JourneyUrls.nonSentencingHearing(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
+    return res.render('pages/offence/cannot-delete-period-length-offence', {
+      ...urlParameters,
+      appearanceUuid,
+      backLink,
     })
   }
 }

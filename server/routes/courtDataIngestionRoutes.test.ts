@@ -46,7 +46,11 @@ describe('GET review new documents landing', () => {
       .get('/person/A1234AB/review-new-documents/hearing1/landing')
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(defaultServices.remandAndSentencingService.getHmctsCourtData).toHaveBeenCalledWith('hearing1', 'user1')
+        expect(defaultServices.remandAndSentencingService.getHmctsCourtData).toHaveBeenCalledWith(
+          'hearing1',
+          'A1234AB',
+          'user1',
+        )
 
         const $ = cheerio.load(res.text)
 

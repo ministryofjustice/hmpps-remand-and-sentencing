@@ -9,7 +9,7 @@
 
 {% block pageContent %}
 <div class="govuk-!-margin-right-8">
-  <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/upload-court-documents" autocomplete="off">
+  <form method="post" autocomplete="off">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {

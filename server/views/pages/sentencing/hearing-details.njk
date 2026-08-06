@@ -255,7 +255,7 @@
         }) }}
       {% endfor %}
 
-      <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/hearing-details" autocomplete="off">
+      <form method="post" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <div class="govuk-button-group">
           {{ govukButton({

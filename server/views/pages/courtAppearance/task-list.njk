@@ -22,8 +22,7 @@
             <p class="govuk-body">Once you have finished adding all the information, select ‘Finish and save’. You will
                 not be able to return to this page, but can edit the details in the Court cases tab.</p>
             <div class="govuk-button-group">
-                <form method="post"
-                      action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/task-list" autocomplete="off">
+                <form method="post" autocomplete="off">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                     {{ govukButton({
                         text: "Finish and save",

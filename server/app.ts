@@ -48,10 +48,10 @@ export default function createApp(services: Services): express.Application {
   app.use(
     authorisationMiddleware([
       Roles.getAuthority(Role.REMAND_AND_SENTENCING),
-      Roles.getAuthority(Role.COURT_CASES),
-      Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
-    ]),
+      Roles.getAuthority(Role.COURT_CASES)
+    ])
   )
+  app.use(authorisationMiddleware([Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)]))
   app.use('/admin/reference-data', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/charge-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))
   app.use('/admin/appearance-outcomes', authorisationMiddleware(['ROLE_RAS_REFERENCE_ADMIN']))

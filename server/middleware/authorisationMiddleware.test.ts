@@ -79,5 +79,4 @@ describe('authorisationMiddleware', () => {
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
   })
-
 })

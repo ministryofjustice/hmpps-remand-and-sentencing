@@ -35,8 +35,6 @@ export default class CourtCaseDetailsModel {
 
   mergedToInsetText?: string
 
-  showAppealRow: boolean
-
   showBreachRow: boolean
 
   showEditLink: boolean
@@ -111,7 +109,6 @@ export default class CourtCaseDetailsModel {
     this.mergedToInsetText = this.mergedToCaseDetails
       ? CourtCaseDetailsModel.buildMergedToInsetText(this.mergedToCaseDetails, courtMap)
       : undefined
-    this.showAppealRow = config.featureToggles.appeals
     this.showBreachRow = config.featureToggles.breachSupervision
     this.showEditLink = pageCourtCaseContent.status !== 'MERGED'
   }

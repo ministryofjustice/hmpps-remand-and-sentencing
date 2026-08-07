@@ -129,68 +129,19 @@
       <span data-qa="custodialOffences">
         {% for offence in custodialOffences %}
           {% set offenceId = 'offences.' + offence.index %}
-          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
-            consecutiveConcurrentLink: {
-              href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
-              text: "Select consecutive or concurrent",
-              classes: "govuk-link--no-visited-state"
-            } if offence.sentence,
-            actions: {
-              items: [
-                  {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
-                    text: "Edit",
-                    visuallyHiddenText: "edit offence",
-                    classes: "govuk-link--no-visited-state"
-                  },
-                  {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/offences/" + offence.chargeUuid + "/check-delete-offence",
-                    text: "Delete",
-                    visuallyHiddenText: "delete offence",
-                    classes: "govuk-link--no-visited-state"
-                  }
-                ]
-            }
-        })) }}
+          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors)) }}
 
         {% else %}
           {{ govukInsetText({ text: "There are no offences with custodial outcomes." }) }}
         {% endfor %}
       </span>
-
-      <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with non-custodial outcomes</h3>
-      {% for offence in nonCustodialOffences %}
-        {% set offenceId = 'offences.' + offence.index %}
-        {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, {
-            consecutiveConcurrentLink: {
-              href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/select-consecutive-concurrent",
-              text: "Select consecutive or concurrent",
-              classes: "govuk-link--no-visited-state"
-            } if offence.sentence,
-            actions: {
-              items: [
-                  {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
-                    text: "Edit",
-                    visuallyHiddenText: "edit offence",
-                    classes: "govuk-link--no-visited-state"
-                  },
-                  {
-                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/offences/" + offence.chargeUuid + "/check-delete-offence",
-                    text: "Delete",
-                    visuallyHiddenText: "delete offence",
-                    classes: "govuk-link--no-visited-state"
-                  }
-                ]
-            }
-        })) }}
-      {% else %}
-        {{ govukInsetText({
-          text: "There are no offences with non-custodial outcomes.",
-          classes: "govuk-!-margin-top-2",
-          attributes: { "data-qa": "noNonCustodialOutcomeInset" }
-        }) }}
-      {% endfor %}
+      {% if nonCustodialOffences | length > 0 %}
+        <h3 class="govuk-heading-s govuk-!-margin-top-8" data-qa="nonCustodialHeading">Offences with non-custodial outcomes</h3>
+        {% for offence in nonCustodialOffences %}
+          {% set offenceId = 'offences.' + offence.index %}
+          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors)) }}
+        {% endfor %}
+      {% endif %}
 
       <form method="post"  autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">

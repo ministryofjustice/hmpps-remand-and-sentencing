@@ -46,6 +46,12 @@ export const formatDateTime = (date?: string, showTime?: boolean): string | null
   return showTime ? dayjs(date).format(config.dateTimeFormat) : formatDate(date)
 }
 
+export const formatDateLong = (date?: string | Date): string | null => {
+  if (!date) return null
+
+  return dayjs(date).format('D MMMM YYYY')
+}
+
 export const getAsStringOrDefault = (value: unknown, defaultValue: string): string | null => {
   if (typeof value === 'string') return value
   return defaultValue

@@ -24,9 +24,8 @@ generic-service:
     RECORD_RECALLS_UI_URL: "https://record-a-recall.hmpps.service.justice.gov.uk"
     BOOK_SECURE_MOVE_UI_URL: "https://bookasecuremove.service.justice.gov.uk"
     COURT_DATA_INGESTION_API_URL: "https://court-data-ingestion-api.hmpps.service.justice.gov.uk"
-    FEATURES_APPEALS_ENABLED: 'true'
     FEATURES_BREACH_SUPERVISION_ENABLED: 'false'
-    FEATURES_BULK_OUTCOME_APPLIED: 'false'
+    FEATURES_BULK_OUTCOME_APPLIED: 'true'
 
 generic-prometheus-alerts:
   alertSeverity: legacy-replacement-alerts

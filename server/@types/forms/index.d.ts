@@ -119,6 +119,10 @@ declare module 'forms' {
     countNumber?: string
     hasCountNumber?: string
   }
+
+  export interface MoreThanOneOffenceForm {
+    moreThanOneOffence?: string
+  }
   export interface AggravatingFactorsFinishedAddingForm {
     finishedAddingAggravatingFactors?: string
   }

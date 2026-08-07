@@ -16,6 +16,7 @@ import OffenceConvictionDatePage from '../../pages/offenceConvictionDatePage'
 import CannotChangeSentenceOutcomePage from '../../pages/cannotChangeSentenceOutcomePage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
 import ErrorPage from '../../pages/error'
+import CannotDeletePeriodLengthOffencePage from '../../pages/CannotDeletePeriodLengthOffencePage'
 
 context('Sentencing appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -215,7 +216,7 @@ context('Sentencing appearance details Page', () => {
 
       cy.url().should(
         'include',
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/submit-details-edit',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/hearing-details',
       )
       const errorPage = Page.verifyOnPageTitle(ErrorPage, 'There is a problem')
       errorPage
@@ -253,8 +254,10 @@ context('Sentencing appearance details Page', () => {
     })
 
     it('can delete an offence sentences after on same case', () => {
-      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-        sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+      cy.task('stubGetSentenceDeleteStatus', {
+        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        sentenceUuidsInChain: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+        status: 'SUPPORTED',
       })
       cy.task('stubGetSentenceTypeById', {
         sentenceTypeUuid: '0197d1a8-3663-432d-b78d-16933b219ec7',
@@ -324,7 +327,6 @@ context('Sentencing appearance details Page', () => {
           },
         ])
       courtCaseHearingDetailsPage.confirmButton().click()
-      courtCaseHearingDetailsPage = Page.verifyOnPageTitle(CourtCaseHearingDetailsPage, 'Edit hearing')
       courtCaseHearingDetailsPage
         .errorSummary()
         .trimTextContent()
@@ -375,9 +377,15 @@ context('Sentencing appearance details Page', () => {
     })
 
     it('cannot delete an offence when there are sentences after', () => {
-      cy.task('stubHasSentencesAfterOnOtherCourtAppearance', {
-        sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
-        hasSentenceAfterOnOtherCourtAppearance: true,
+      cy.task('stubGetSentenceDeleteStatus', {
+        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        sentenceUuidsInChain: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+        status: 'NOT_SUPPORTED',
+        reasons: [
+          {
+            reason: 'HAS_SENTENCES_AFTER_ON_OTHER_COURT_APPEARANCE',
+          },
+        ],
       })
       cy.task('stubSentencesAfterOnOtherCourtAppearanceDetails', {
         sentenceUuids: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
@@ -531,6 +539,33 @@ context('Sentencing appearance details Page', () => {
             'Consecutive or concurrent': 'Concurrent',
           },
         ])
+    })
+
+    it('cannot delete an offence when there are period lengths associated to court appearances', () => {
+      cy.task('stubGetSentenceDeleteStatus', {
+        sentenceUuid: 'b0f83d31-efbe-462c-970d-5293975acb17',
+        sentenceUuidsInChain: 'b0f83d31-efbe-462c-970d-5293975acb17,10a45197-642a-4b20-b9d8-1ae89edf77cc',
+        status: 'NOT_SUPPORTED',
+        reasons: [
+          {
+            reason: 'HAS_APPEARANCE_PERIOD_LENGTH',
+            metadata: {
+              appearanceUuid: 'f7a6222c-f0f9-4d37-8630-5d8a0fc6eee8',
+              periodLengthType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
+            },
+          },
+        ],
+      })
+      courtCaseHearingDetailsPage
+        .deleteOffenceLink(
+          'A1234AB',
+          '83517113-5c14-4628-9133-1e3cb12e31fa',
+          '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          'sentencing',
+          'a6d6dbaf-9dc8-443d-acb4-5b52dd919f11',
+        )
+        .click()
+      Page.verifyOnPage(CannotDeletePeriodLengthOffencePage)
     })
   })
 

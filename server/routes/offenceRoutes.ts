@@ -12,6 +12,7 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
+  MoreThanOneOffenceForm,
   ReviewOffencesForm,
   SentenceLengthForm,
   UpdateOffenceOutcomesForm,
@@ -22,7 +23,7 @@ import {
   ConsecutiveToDetails,
   PERIOD_TYPE_PRIORITY,
 } from '@ministryofjustice/hmpps-court-cases-release-dates-design/hmpps/@types'
-import trimForm from '../utils/trim'
+import trimForm, { normaliseToArray } from '../utils/trim'
 import OffenceService from '../services/offenceService'
 import ManageOffencesService from '../services/manageOffencesService'
 import CourtAppearanceService from '../services/courtAppearanceService'
@@ -49,6 +50,7 @@ import CourtRegisterService from '../services/courtRegisterService'
 import BaseRoutes from './baseRoutes'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import InvalidatedFrom from '../resources/invalidatedFromTypes'
+import OutcomeFlow from '../resources/outcomeFlowTypes'
 import {
   SentenceConsecutiveToDetails,
   SentenceType,
@@ -329,7 +331,7 @@ export default class OffenceRoutes extends BaseRoutes {
 
     if (config.featureToggles.bulkOutcomeApplied && bulkOffenceTobeUpdated === 'true') {
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/bulk-offence-to-be-updated?backTo=${backTo}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`,
       )
     }
     return res.redirect(
@@ -337,7 +339,7 @@ export default class OffenceRoutes extends BaseRoutes {
     )
   }
 
-  public getBulkOffenceToBeUpdated: RequestHandler = async (req, res): Promise<void> => {
+  public getMoreThanOneOffenceToBeUpdated: RequestHandler = async (req, res): Promise<void> => {
     const {
       nomsId,
       courtCaseReference,
@@ -347,16 +349,121 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
     } = req.params
     const { backTo } = req.query as { backTo: string }
-    return res.render('pages/offence/bulk-offence-to-be-updated', {
+    this.offenceService.clearOutcomeUpdateChargeUuids(req.session)
+    const backLink = buildReturnUrlFromKey(
+      backTo,
+      nomsId,
+      addOrEditCourtCase,
+      courtCaseReference,
+      addOrEditCourtAppearance,
+      appearanceReference,
+      chargeUuid,
+    )
+    return res.render('pages/offence/outcome-apply-to-more-than-one-offence', {
       nomsId,
       courtCaseReference,
       chargeUuid,
       appearanceReference,
       addOrEditCourtCase,
       addOrEditCourtAppearance,
+      backLink,
       backTo,
       errors: req.flash('errors') || [],
     })
+  }
+
+  public submitMoreThanOneOffenceToBeUpdated: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { backTo } = req.query as { backTo: string }
+    const moreThanOneOffenceForm = trimForm<MoreThanOneOffenceForm>(req.body)
+
+    const errors = this.offenceService.validateMoreThanOneOffenceForm(moreThanOneOffenceForm)
+
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`,
+      )
+    }
+
+    if (moreThanOneOffenceForm.moreThanOneOffence === 'true') {
+      return res.redirect(
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/which-offences-outcome-applies-to?backTo=${backTo}`,
+      )
+    }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}&outcomeFlow=${OutcomeFlow.MORE_THAN_ONE_OFFENCE}`,
+    )
+  }
+
+  public getWhichOffencesOutcomeAppliesTo: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { backTo } = req.query as { backTo: string }
+    const backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`
+
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    const remainingOffences = courtAppearance.offences.filter(
+      offence => !(offence.outcomeUuid && offence.updatedOutcome) && offence.chargeUuid !== chargeUuid,
+    )
+    const selectedOffence = courtAppearance.offences.find(offence => offence.chargeUuid === chargeUuid)
+    const offencesToUpdate = [selectedOffence, ...orderOffences(remainingOffences)]
+    const selectedChargeUuids = this.offenceService.getOutcomeUpdateChargeUuids(req.session)
+
+    return res.render('pages/offence/which-offences-outcome-applies-to', {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+      backLink,
+      backTo,
+      offencesToUpdate,
+      selectedChargeUuids,
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitWhichOffencesOutcomeAppliesTo: RequestHandler = async (req, res): Promise<void> => {
+    const {
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+      appearanceReference,
+      addOrEditCourtCase,
+      addOrEditCourtAppearance,
+    } = req.params
+    const { backTo } = req.query as { backTo: string }
+    const selectedChargeUuids = Array.from(new Set(normaliseToArray(req.body.offenceChargeUuids)))
+
+    if (selectedChargeUuids.length > 1) {
+      this.offenceService.setOutcomeUpdateChargeUuids(req.session, selectedChargeUuids)
+    } else {
+      this.offenceService.clearOutcomeUpdateChargeUuids(req.session)
+    }
+
+    return res.redirect(
+      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?backTo=${backTo}&outcomeFlow=${OutcomeFlow.WHICH_OFFENCES}`,
+    )
   }
 
   public getUpdateOffenceOutcome: RequestHandler = async (req, res): Promise<void> => {
@@ -368,7 +475,12 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, backTo } = req.query as { submitToEditOffence: string; backTo: string }
+    const { submitToEditOffence, backTo, outcomeFlow } = req.query as {
+      submitToEditOffence: string
+      backTo: string
+      outcomeFlow: OutcomeFlow
+    }
+    const isMultipleOffences = this.offenceService.getOutcomeUpdateChargeUuids(req.session).length > 1
 
     let offence = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
     if (
@@ -404,18 +516,25 @@ export default class OffenceRoutes extends BaseRoutes {
         courtAppearance.warrantType,
         req.user.username,
       ),
-      this.getOffenceHint(offence, req.user.username),
+      isMultipleOffences ? undefined : this.getOffenceHint(offence, req.user.username),
     ])
 
-    const backLink = buildReturnUrlFromKey(
-      backTo,
-      nomsId,
-      addOrEditCourtCase,
-      courtCaseReference,
-      addOrEditCourtAppearance,
-      appearanceReference,
-      chargeUuid,
-    )
+    let backLink: string
+    if (isMultipleOffences || outcomeFlow === OutcomeFlow.WHICH_OFFENCES) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/which-offences-outcome-applies-to?backTo=${backTo}`
+    } else if (outcomeFlow === OutcomeFlow.MORE_THAN_ONE_OFFENCE) {
+      backLink = `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`
+    } else {
+      backLink = buildReturnUrlFromKey(
+        backTo,
+        nomsId,
+        addOrEditCourtCase,
+        courtCaseReference,
+        addOrEditCourtAppearance,
+        appearanceReference,
+        chargeUuid,
+      )
+    }
 
     return res.render('pages/offence/update-outcome', {
       nomsId,
@@ -429,9 +548,11 @@ export default class OffenceRoutes extends BaseRoutes {
       primaryOutcomes: primaryNonCustodialOutcomes.primaryOutcomes,
       nonCustodialOutcomes: primaryNonCustodialOutcomes.nonCustodialOutcomes,
       offenceHint,
+      isMultipleOffences,
       offence,
       submitToEditOffence,
       backTo,
+      outcomeFlow,
       offenceOutcomeForm,
     })
   }
@@ -445,8 +566,10 @@ export default class OffenceRoutes extends BaseRoutes {
       addOrEditCourtCase,
       addOrEditCourtAppearance,
     } = req.params
-    const { submitToEditOffence, backTo } = req.query
+    const { submitToEditOffence, backTo, outcomeFlow } = req.query
     const offenceOutcomeForm = trimForm<OffenceOffenceOutcomeForm>(req.body)
+    const outcomeUpdateChargeUuids = this.offenceService.getOutcomeUpdateChargeUuids(req.session)
+    const isMultipleOffences = outcomeUpdateChargeUuids.length > 1
 
     const { errors, outcome } = await this.offenceService.updateOffenceOutcome(
       req.session,
@@ -461,7 +584,43 @@ export default class OffenceRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('offenceOutcomeForm', { ...offenceOutcomeForm })
       return res.redirect(
-        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true&backTo=${backTo}${submitToEditOffence ? '&submitToEditOffence=true' : ''}`,
+        `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/update-offence-outcome?hasErrors=true&backTo=${backTo}${submitToEditOffence ? '&submitToEditOffence=true' : ''}${outcomeFlow ? `&outcomeFlow=${outcomeFlow}` : ''}`,
+      )
+    }
+
+    if (isMultipleOffences) {
+      const otherChargeUuids = outcomeUpdateChargeUuids.filter(uuid => uuid && uuid !== chargeUuid)
+      otherChargeUuids.forEach(otherChargeUuid => {
+        const existingOffence = this.courtAppearanceService.getOffence(
+          req.session,
+          nomsId,
+          otherChargeUuid,
+          appearanceReference,
+        )
+        this.offenceService.setSessionOffence(req.session, nomsId, courtCaseReference, existingOffence)
+      })
+      await Promise.all(
+        otherChargeUuids.map(otherChargeUuid =>
+          this.offenceService.updateOffenceOutcome(
+            req.session,
+            nomsId,
+            courtCaseReference,
+            offenceOutcomeForm,
+            otherChargeUuid,
+            req.user.username,
+          ),
+        ),
+      )
+      this.saveAllOffencesToAppearance(req.session, nomsId, appearanceReference, courtCaseReference)
+      this.offenceService.clearOutcomeUpdateChargeUuids(req.session)
+      return res.redirect(
+        JourneyUrls.reviewOffences(
+          nomsId,
+          addOrEditCourtCase,
+          courtCaseReference,
+          addOrEditCourtAppearance,
+          appearanceReference,
+        ),
       )
     }
 

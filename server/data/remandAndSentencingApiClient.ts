@@ -18,6 +18,7 @@ import {
   CreateCourtCase,
   CreateCourtCaseResponse,
   CreateSentenceType,
+  DeleteSentenceStatusDetails,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LatestOffenceDate,
@@ -681,10 +682,14 @@ export default class RemandAndSentencingApiClient extends RestClient {
     )
   }
 
-  async getHmctsCourtData(hmctsHearingId: string, username: string): Promise<PageCourtCaseAppearance> {
+  async getHmctsCourtData(
+    hmctsHearingId: string,
+    prisonerNumber: string,
+    username: string,
+  ): Promise<PageCourtCaseAppearance> {
     return this.get(
       {
-        path: `/hmcts-court-data/${hmctsHearingId}/appearance`,
+        path: `/hmcts-court-data/${hmctsHearingId}/prisoner/${prisonerNumber}/appearance`,
       },
       asSystem(username),
     )
@@ -697,6 +702,20 @@ export default class RemandAndSentencingApiClient extends RestClient {
         query: {
           statuses,
         },
+      },
+      asSystem(username),
+    )
+  }
+
+  async getSentenceDeleteStatus(
+    sentenceUuid: string,
+    sentenceUuidsInChain: string[],
+    username: string,
+  ): Promise<DeleteSentenceStatusDetails> {
+    return this.get(
+      {
+        path: `/sentence/${sentenceUuid}/delete-status`,
+        ...(sentenceUuidsInChain.length && { query: { sentenceUuidsInChain: sentenceUuidsInChain.join(',') } }),
       },
       asSystem(username),
     )

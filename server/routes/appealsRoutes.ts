@@ -862,19 +862,31 @@ export default class AppealsRoutes extends BaseRoutes {
       req,
       res,
       urlParameters,
-      AppealsJourneyUrls.cannotDeleteOffence(urlParameters),
+      AppealsJourneyUrls.cannotDeleteConsecutiveOffence(urlParameters),
+      AppealsJourneyUrls.cannotDeletePeriodLengthOffence(urlParameters),
       JourneyUrls.deleteOffence(urlParameters),
     )
   }
 
-  public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+  public getCannotDeleteConsecutiveOffence: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
-    const cannotDeleteInformation = await this.getCannotDeleteOffenceData(req, res)
+    const cannotDeleteInformation = await this.getCannotDeleteConsecutiveOffenceData(req, res)
     const backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
-    return res.render('pages/appeals/cannot-delete-offence', {
+    return res.render('pages/appeals/cannot-delete-consecutive-offence', {
       ...urlParameters,
       backLink,
       ...cannotDeleteInformation,
+    })
+  }
+
+  public getCannotDeletePeriodLengthOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { appearanceUuid } = req.query
+    const backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
+    return res.render('pages/appeals/cannot-delete-period-length-offence', {
+      ...urlParameters,
+      appearanceUuid,
+      backLink,
     })
   }
 

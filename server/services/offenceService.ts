@@ -14,6 +14,7 @@ import type {
   OffenceOffenceOutcomeForm,
   OffenceSentenceServeTypeForm,
   OffenceSentenceTypeForm,
+  MoreThanOneOffenceForm,
   ReviewOffencesForm,
   SentenceConsecutiveToForm,
   SentenceIsSentenceConsecutiveToForm,
@@ -1010,6 +1011,18 @@ export default class OffenceService {
     )
   }
 
+  validateMoreThanOneOffenceForm(moreThanOneOffenceForm: MoreThanOneOffenceForm) {
+    return validate(
+      moreThanOneOffenceForm,
+      {
+        moreThanOneOffence: 'required',
+      },
+      {
+        'required.moreThanOneOffence': 'Select whether or not the outcome applies to more than one offence',
+      },
+    )
+  }
+
   setIsSentenceConsecutiveTo(
     session: Partial<SessionData>,
     nomsId: string,
@@ -1206,6 +1219,20 @@ export default class OffenceService {
   setOnFinishGoToEdit(session: Partial<SessionData>, nomsId: string, courtCaseReference: string, chargeUuid: string) {
     const offence = this.getSessionOffence(session, nomsId, courtCaseReference, chargeUuid)
     offence.onFinishGoToEdit = true
+  }
+
+  setOutcomeUpdateChargeUuids(session: Partial<SessionData>, chargeUuids: string[]) {
+    // eslint-disable-next-line no-param-reassign
+    session.outcomeUpdateChargeUuids = chargeUuids
+  }
+
+  getOutcomeUpdateChargeUuids(session: Partial<SessionData>): string[] {
+    return session.outcomeUpdateChargeUuids || []
+  }
+
+  clearOutcomeUpdateChargeUuids(session: Partial<SessionData>) {
+    // eslint-disable-next-line no-param-reassign
+    delete session.outcomeUpdateChargeUuids
   }
 
   setSentenceToConcurrent(

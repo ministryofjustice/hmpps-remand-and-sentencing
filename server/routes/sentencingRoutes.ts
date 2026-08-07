@@ -45,6 +45,7 @@ import JourneyUrls from './data/JourneyUrls'
 import AuditService, { Page } from '../services/auditService'
 import DocumentManagementService from '../services/documentManagementService'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
+import SentencingJourneyUrls from './data/SetencingJourneyUrls'
 
 export default class SentencingRoutes extends BaseRoutes {
   constructor(
@@ -915,27 +916,20 @@ export default class SentencingRoutes extends BaseRoutes {
   }
 
   public checkDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
-    const {
-      nomsId,
-      courtCaseReference,
-      chargeUuid,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-    } = req.params
     const urlParameters = req.params as unknown as UrlParameters
     return this.canDeleteOffence(
       req,
       res,
       urlParameters,
-      `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/sentencing/offences/${chargeUuid}/cannot-delete-offence`,
+      SentencingJourneyUrls.cannotDeleteConsecutiveOffence(urlParameters),
+      SentencingJourneyUrls.cannotDeletePeriodLengthOffence(urlParameters),
       JourneyUrls.deleteOffence(urlParameters),
     )
   }
 
-  public getCannotDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+  public getCannotDeleteConsecutiveOffence: RequestHandler = async (req, res): Promise<void> => {
     const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const cannotDeleteInformation = await this.getCannotDeleteOffenceData(req, res)
+    const cannotDeleteInformation = await this.getCannotDeleteConsecutiveOffenceData(req, res)
     const backLink = JourneyUrls.sentencingHearing(
       nomsId,
       addOrEditCourtCase,
@@ -944,7 +938,7 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    return res.render('pages/sentencing/cannot-delete-offence', {
+    return res.render('pages/sentencing/cannot-delete-consecutive-offence', {
       nomsId,
       courtCaseReference,
       appearanceReference,
@@ -952,6 +946,23 @@ export default class SentencingRoutes extends BaseRoutes {
       addOrEditCourtAppearance,
       backLink,
       ...cannotDeleteInformation,
+    })
+  }
+
+  public getCannotDeletePeriodLengthOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { appearanceUuid } = req.query
+    const backLink = JourneyUrls.sentencingHearing(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
+    return res.render('pages/sentencing/cannot-delete-period-length-offence', {
+      ...urlParameters,
+      appearanceUuid,
+      backLink,
     })
   }
 

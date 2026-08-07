@@ -185,7 +185,6 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
-    appeals: get('FEATURES_APPEALS_ENABLED', false, requiredInProduction) === 'true',
     breachSupervision: get('FEATURES_BREACH_SUPERVISION_ENABLED', false, requiredInProduction) === 'true',
     bulkOutcomeApplied: get('FEATURES_BULK_OUTCOME_APPLIED', false, requiredInProduction) === 'true',
   },

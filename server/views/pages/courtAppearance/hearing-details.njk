@@ -274,7 +274,7 @@
         {% endfor %}
       </span>
 
-      <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/non-sentencing/submit-details-edit" autocomplete="off">
+      <form method="post" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <div class="govuk-button-group">
           {{ govukButton({

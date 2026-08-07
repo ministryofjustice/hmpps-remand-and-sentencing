@@ -8,7 +8,11 @@
 {% set fieldSetHtml %}
     <h1 class="govuk-fieldset__heading">
         <span class="govuk-caption-l">Update offence outcomes</span>
-        What is the new outcome for this offence?
+        {% if isMultipleOffences %}
+            What is the new outcome for these offences?
+        {% else %}
+            What is the new outcome for this offence?
+        {% endif %}
     </h1>
 {% endset %}
 
@@ -20,7 +24,7 @@
             classes: "govuk-fieldset__legend--l"
             }
         },
-        hint: offenceHint,
+        hint: offenceHint if not isMultipleOffences,
         items: []
     } %}
 
@@ -47,7 +51,7 @@
 {% endfor %}
 
 {% block pageContent %}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/submit-update-offence-outcome?backTo={{ backTo }}{{'&submitToEditOffence=true' if submitToEditOffence else ''}}" autocomplete="off">
+    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/update-offence-outcome?backTo={{ backTo }}{{'&submitToEditOffence=true' if submitToEditOffence else ''}}{{'&outcomeFlow=' + outcomeFlow if outcomeFlow}}" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         {{ govukRadios(radiosData) }}

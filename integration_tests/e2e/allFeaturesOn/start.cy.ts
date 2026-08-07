@@ -1,7 +1,7 @@
 import StartPage from '../../pages/startPage'
 import Page from '../../pages/page'
 
-// TODO: once appeals is switched on merge the context into integration_tests/e2e/other/start.cy.ts
+// TODO: once breach of supervision is switched on merge into integration_tests/e2e/other/start.cy.ts
 context('Start Page', () => {
   let startPage: StartPage
   beforeEach(() => {
@@ -16,14 +16,6 @@ context('Start Page', () => {
     startPage = Page.verifyOnPage(StartPage)
   })
 
-  it('displays appeal court case summary', () => {
-    startPage.courtCaseSummaryList('fa078b3d-7c29-4f61-8120-b40b16ed9633').getSummaryList().should('deep.equal', {
-      'Case references': 'C894623',
-      'First day in custody': '05/06/2025',
-      'Overall case outcome': 'Sentence varied',
-    })
-  })
-  // TODO: only merge once breach of supervision is switched on
   it('displays breach of supervision court case summary', () => {
     startPage.courtCaseSummaryList('cb0469bd-aca1-4ae7-9a65-46366ea5d48e').getSummaryList().should('deep.equal', {
       'Case references': 'C894623',

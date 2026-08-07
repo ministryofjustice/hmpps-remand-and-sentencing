@@ -1,6 +1,7 @@
 import StartPage from '../../pages/startPage'
 import Page from '../../pages/page'
 import PersonNotFoundPage from '../../pages/personNotFoundPage'
+import { Role, Roles } from '../../../server/@types/roles'
 
 context('Start Page', () => {
   let startPage: StartPage
@@ -178,7 +179,12 @@ context('Start Page', () => {
   it('do not display recall inset when user has access to recalls', () => {
     cy.visit('/sign-out')
     cy.task('stubSignIn', {
-      roles: ['ROLE_REMAND_AND_SENTENCING', 'ROLE_RELEASE_DATES_CALCULATOR', 'ROLE_RECALL_MAINTAINER'],
+      roles: [
+        Roles.getAuthority(Role.REMAND_AND_SENTENCING),
+        Roles.getAuthority(Role.COURT_CASES),
+        Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
+        Roles.getAuthority(Role.RECALL_MAINTAINER),
+      ],
     })
     cy.signIn()
     cy.visit('/person/A1234AB')
@@ -226,5 +232,13 @@ context('Start Page', () => {
     cy.task('stubGetServiceDefinitionsMaintenanceEnabled')
     cy.visit('/person/A1234AB')
     startPage.outageBanner().should('contain.text', 'There is due to be an outage in the future')
+  })
+
+  it('displays appeal court case summary', () => {
+    startPage.courtCaseSummaryList('fa078b3d-7c29-4f61-8120-b40b16ed9633').getSummaryList().should('deep.equal', {
+      'Case references': 'C894623',
+      'First day in custody': '05/06/2025',
+      'Overall case outcome': 'Sentence varied',
+    })
   })
 })

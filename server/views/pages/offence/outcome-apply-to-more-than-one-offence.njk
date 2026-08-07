@@ -1,0 +1,56 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/hint/macro.njk" import govukHint %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+
+
+{% set pageTitle = applicationName + " - Does this new outcome apply to more than one offence?" %}
+
+{% block pageContent %}
+            <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/offences/{{ chargeUuid }}/more-than-one-offence-to-be-updated{{ "?backTo=" + backTo if backTo }}" autocomplete="off">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <span class="govuk-caption-l">Update offence outcomes</span>
+
+                {{ govukRadios({
+                  name: "moreThanOneOffence",
+                  fieldset: {
+                                          legend: {
+                                              text: 'Does this new outcome apply to more than one offence?',
+                                              isPageHeading: true,
+                                              classes: "govuk-fieldset__legend--l"
+                                          }
+                                      },
+                                      hint: {
+                                         text: "Make sure that all offences outcomes are reviewed before saving to minimise any risk of release in error."
+                                      },
+                  errorMessage: errors | findError('moreThanOneOffence'),
+                  items: [
+                                          {
+                                              value: "true",
+                                              text: "Yes"
+                                          },
+                                          {
+                                              value: "false",
+                                              text: "No"
+                                          }
+                                      ]
+                }) }}
+
+                <div class="govuk-button-group">
+                            {{ govukButton({
+                                text: "Continue",
+                                attributes: {  'data-qa': 'continue-button' }
+                            }) }}
+                            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+                </div>
+
+
+            </form>
+
+{% endblock %}

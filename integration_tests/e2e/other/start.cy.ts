@@ -233,4 +233,12 @@ context('Start Page', () => {
     cy.visit('/person/A1234AB')
     startPage.outageBanner().should('contain.text', 'There is due to be an outage in the future')
   })
+
+  it('displays appeal court case summary', () => {
+    startPage.courtCaseSummaryList('fa078b3d-7c29-4f61-8120-b40b16ed9633').getSummaryList().should('deep.equal', {
+      'Case references': 'C894623',
+      'First day in custody': '05/06/2025',
+      'Overall case outcome': 'Sentence varied',
+    })
+  })
 })

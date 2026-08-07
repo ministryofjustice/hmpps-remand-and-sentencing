@@ -216,7 +216,7 @@ context('Sentencing appearance details Page', () => {
 
       cy.url().should(
         'include',
-        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/submit-details-edit',
+        '/person/A1234AB/edit-court-case/83517113-5c14-4628-9133-1e3cb12e31fa/edit-court-appearance/3fa85f64-5717-4562-b3fc-2c963f66afa6/sentencing/hearing-details',
       )
       const errorPage = Page.verifyOnPageTitle(ErrorPage, 'There is a problem')
       errorPage

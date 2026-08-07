@@ -20,7 +20,7 @@
   {% endif %}
 
   <form method="post"
-        action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/{{chargeUuid}}/submit-select-which-aggravating-factors-apply{{ editSuffix }}"
+        action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/aggravating-factors/{{chargeUuid}}/select-which-aggravating-factors-apply{{ editSuffix }}"
         autocomplete="off">
 
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">

@@ -19,7 +19,7 @@
                             }
                         }) }}
                     {% endif %}
-    {% if courtAppearance.hasOverallSentenceLength === 'true' %}
+    {% if overallSentenceLength %}
         {{ govukSummaryList({
                 rows: [
                     {
@@ -27,7 +27,7 @@
                             text: "Overall sentence length"
                         },
                         value: {
-                            text: courtAppearance.overallSentenceLength | formatLengths
+                            text: overallSentenceLength | formatLengths
                         }
                     }
                 ],

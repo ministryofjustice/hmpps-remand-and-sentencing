@@ -3061,7 +3061,11 @@ export default class OffenceRoutes extends BaseRoutes {
       offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
       courtMap,
     )
-
+    const overallSentenceLength = this.courtAppearanceService.getOverallCustodialSentenceLength(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
     return res.render('pages/offence/update-offence-outcomes', {
       nomsId,
       courtCaseReference,
@@ -3083,6 +3087,7 @@ export default class OffenceRoutes extends BaseRoutes {
       courtMap,
       errors: req.flash('errors') || [],
       isAddOffences: this.isAddJourney(addOrEditCourtCase, addOrEditCourtAppearance),
+      overallSentenceLength,
     })
   }
 

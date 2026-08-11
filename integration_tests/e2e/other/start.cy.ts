@@ -159,6 +159,14 @@ context('Start Page', () => {
   })
 
   it('displays inactive and recalled tags on inactive recalled case', () => {
+    cy.visit('/sign-out')
+    cy.task('stubSignIn', {
+      roles: [Roles.getAuthority(Role.REMAND_AND_SENTENCING), Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)],
+    })
+    cy.signIn()
+    cy.visit('/person/A1234AB')
+    startPage = Page.verifyOnPage(StartPage)
+
     const card = startPage.courtCaseCard('e3ef1929-98b7-4034-bfdf-5c597f51fca7')
 
     card.within(() => {
@@ -174,6 +182,31 @@ context('Start Page', () => {
         'contain.text',
         'The court case was part of a recall. To make any changes to the recall, update the details in NOMIS then reload this page.',
       )
+  })
+
+  it('should not display recall inset when user has COURT_CASES role', () => {
+    cy.visit('/sign-out')
+    cy.task('stubSignIn', {
+      roles: [Roles.getAuthority(Role.COURT_CASES), Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)],
+    })
+    cy.signIn()
+    cy.visit('/person/A1234AB')
+    startPage.recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7').should('not.exist')
+  })
+
+  /** @deprecated Remove this test when RECALL_MAINTAINER role is removed */
+  it('should not display recall inset when user has RECALL_MAINTAINER role', () => {
+    cy.visit('/sign-out')
+    cy.task('stubSignIn', {
+      roles: [
+        Roles.getAuthority(Role.REMAND_AND_SENTENCING),
+        Roles.getAuthority(Role.RECALL_MAINTAINER),
+        Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
+      ],
+    })
+    cy.signIn()
+    cy.visit('/person/A1234AB')
+    startPage.recallInset('e3ef1929-98b7-4034-bfdf-5c597f51fca7').should('not.exist')
   })
 
   it('do not display recall inset when user has access to recalls', () => {

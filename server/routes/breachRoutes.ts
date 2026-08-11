@@ -30,6 +30,7 @@ import {
   sentenceLengthToSentenceLengthForm,
 } from '../utils/mappingUtils'
 import RefDataService from '../services/refDataService'
+import config from '../config'
 
 export default class BreachRoutes extends BaseRoutes {
   constructor(
@@ -96,6 +97,7 @@ export default class BreachRoutes extends BaseRoutes {
       ...urlParameters,
       breachTypeForm,
       backLink,
+      breachImprisonableOffenceEnabled: config.featureToggles.breachImprisonableOffence,
     })
   }
 
@@ -425,7 +427,12 @@ export default class BreachRoutes extends BaseRoutes {
       urlParameters.nomsId,
       urlParameters.appearanceReference,
     )
-    const expectedDocumentTypes = documentTypes.BREACH_OF_SUPERVISION_REQUIREMENTS
+    const warrantType = this.courtAppearanceService.getWarrantType(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const expectedDocumentTypes = documentTypes[warrantType]
     const documentRows = expectedDocumentTypes.map(expectedType => {
       const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
       return { ...expectedType, ...uploadedDocument }

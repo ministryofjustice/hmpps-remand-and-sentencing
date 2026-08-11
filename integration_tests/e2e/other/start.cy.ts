@@ -198,7 +198,11 @@ context('Start Page', () => {
   it('should not display recall inset when user has RECALL_MAINTAINER role', () => {
     cy.visit('/sign-out')
     cy.task('stubSignIn', {
-      roles: [Roles.getAuthority(Role.RECALL_MAINTAINER), Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR)],
+      roles: [
+        Roles.getAuthority(Role.REMAND_AND_SENTENCING),
+        Roles.getAuthority(Role.RECALL_MAINTAINER),
+        Roles.getAuthority(Role.RELEASE_DATES_CALCULATOR),
+      ],
     })
     cy.signIn()
     cy.visit('/person/A1234AB')

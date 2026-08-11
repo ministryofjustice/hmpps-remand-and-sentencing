@@ -1745,7 +1745,7 @@ export default class CourtAppearanceService {
         breachType: 'required',
       },
       {
-        'required.breachType': 'You must select the breach type',
+        'required.breachType': 'You must select the type of breach',
       },
     )
     if (errors.length === 0) {

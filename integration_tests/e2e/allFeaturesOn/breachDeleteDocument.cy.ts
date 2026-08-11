@@ -2,6 +2,7 @@ import Page from '../../pages/page'
 import UploadBreachOrderPage from '../../pages/UploadBreachOrderPage'
 import ViewBreachOrderPage from '../../pages/ViewBreachOrderPage'
 import BreachDeleteDocumentPage from '../../pages/BreachDeleteDocumentPage'
+import BreachTypePage from '../../pages/BreachTypePage'
 
 context('Remove document confirmation page', () => {
   let breachDeleteDocumentPage: BreachDeleteDocumentPage
@@ -12,6 +13,10 @@ context('Remove document confirmation page', () => {
     })
     cy.task('stubUploadDocument')
     cy.signIn()
+    cy.visit('/person/A1234AB/edit-court-case/0/add-court-appearance/0/breach/breach-type')
+    const breachTypePage = Page.verifyOnPage(BreachTypePage)
+    breachTypePage.radioLabelSelector('BREACH_OF_SUPERVISION_REQUIREMENTS').click()
+    breachTypePage.continueButton().click()
     cy.visit('/person/A1234AB/edit-court-case/0/add-court-appearance/0/breach/upload-breach-order')
     const uploadBreachOrderPage = Page.verifyOnPage(UploadBreachOrderPage)
     uploadBreachOrderPage.fileInput().selectFile('cypress/fixtures/testfile.doc')

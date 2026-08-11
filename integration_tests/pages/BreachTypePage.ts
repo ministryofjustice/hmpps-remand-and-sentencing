@@ -2,6 +2,6 @@ import Page from './page'
 
 export default class BreachTypePage extends Page {
   constructor() {
-    super('Record a breach of supervision requirement')
+    super('What type of breach are you recording?')
   }
 }

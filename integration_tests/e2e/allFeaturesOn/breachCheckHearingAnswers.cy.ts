@@ -26,6 +26,7 @@ context('Breach check hearing answers page', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addBreachLink('261911e2-6346-42e0-b025-a806048f4d04').click()
     const breachTypePage = Page.verifyOnPage(BreachTypePage)
+    breachTypePage.radioLabelSelector('BREACH_OF_SUPERVISION_REQUIREMENTS').click()
     breachTypePage.continueButton().click()
     const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
     courtCaseTaskListPage

@@ -1,4 +1,5 @@
 import BreachAlternativeTermLengthPage from '../../pages/BreachAlternativeTermLengthPage'
+import BreachTypePage from '../../pages/BreachTypePage'
 import Page from '../../pages/page'
 
 context('Add Breach Alternative term Length Page', () => {
@@ -6,6 +7,10 @@ context('Add Breach Alternative term Length Page', () => {
   beforeEach(() => {
     cy.task('happyPathStubs')
     cy.signIn()
+    cy.visit('/person/A1234AB/edit-court-case/0/add-court-appearance/0/breach/breach-type')
+    const breachTypePage = Page.verifyOnPage(BreachTypePage)
+    breachTypePage.radioLabelSelector('BREACH_OF_SUPERVISION_REQUIREMENTS').click()
+    breachTypePage.continueButton().click()
     cy.visit('/person/A1234AB/edit-court-case/0/add-court-appearance/0/breach/alternative-breach-term-length')
     offenceAlternativePeriodLengthPage = Page.verifyOnPage(BreachAlternativeTermLengthPage)
   })

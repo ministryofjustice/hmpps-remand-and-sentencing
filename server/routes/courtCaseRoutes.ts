@@ -67,6 +67,7 @@ import RepeatJourneyCancelDetailsModel from './data/RepeatJourneyCancelDetailsMo
 import EditJourneyCancelDetailsModel from './data/EditJourneyCancelDetailsModel'
 import AppealsJourneyUrls from './data/AppealsJourneyUrls'
 import BreachJourneyUrls from './data/BreachJourneyUrls'
+import { BREACH_WARRANT_TYPES } from '../utils/constants'
 
 export default class CourtCaseRoutes extends BaseRoutes {
   constructor(
@@ -787,7 +788,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
         )
       } else if (warrantType === 'APPEAL') {
         backLink = AppealsJourneyUrls.hearingDetails(urlParameters)
-      } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      } else if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         backLink = BreachJourneyUrls.hearingDetails(urlParameters)
       } else {
         backLink = JourneyUrls.nonSentencingHearing(
@@ -801,7 +802,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     } else if (submitToCheckAnswers) {
       if (warrantType === 'APPEAL') {
         backLink = AppealsJourneyUrls.checkHearingAnswers(urlParameters)
-      } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      } else if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         backLink = BreachJourneyUrls.checkHearingAnswers(urlParameters)
       } else {
         backLink = JourneyUrls.checkAppearanceAnswers(
@@ -825,7 +826,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     } else if (warrantType === 'APPEAL') {
       backLink = AppealsJourneyUrls.taskList(urlParameters)
-    } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+    } else if (BREACH_WARRANT_TYPES.includes(warrantType)) {
       backLink = BreachJourneyUrls.taskList(urlParameters)
     }
 
@@ -876,7 +877,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.hearingDetails(urlParameters))
       }
-      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         return res.redirect(BreachJourneyUrls.hearingDetails(urlParameters))
       }
       return res.redirect(
@@ -894,7 +895,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.checkHearingAnswers(urlParameters))
       }
-      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         return res.redirect(BreachJourneyUrls.checkHearingAnswers(urlParameters))
       }
       return res.redirect(
@@ -910,7 +911,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
     if (warrantType === 'APPEAL') {
       return res.redirect(AppealsJourneyUrls.criminalOfficeReference(urlParameters))
     }
-    if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+    if (BREACH_WARRANT_TYPES.includes(warrantType)) {
       return res.redirect(BreachJourneyUrls.hearingDate(urlParameters))
     }
     return res.redirect(
@@ -954,7 +955,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       )
     } else if (warrantType === 'APPEAL') {
       backLink = AppealsJourneyUrls.taskList(urlParameters)
-    } else if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+    } else if (BREACH_WARRANT_TYPES.includes(warrantType)) {
       backLink = BreachJourneyUrls.taskList(urlParameters)
     }
     return res.render('pages/courtAppearance/select-reference', {
@@ -1010,7 +1011,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (warrantType === 'APPEAL') {
         return res.redirect(AppealsJourneyUrls.criminalOfficeReference(urlParameters))
       }
-      if (warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS') {
+      if (BREACH_WARRANT_TYPES.includes(warrantType)) {
         return res.redirect(BreachJourneyUrls.hearingDate(urlParameters))
       }
       return res.redirect(

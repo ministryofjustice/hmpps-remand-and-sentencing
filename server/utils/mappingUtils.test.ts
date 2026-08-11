@@ -30,7 +30,6 @@ describe('mapping API to session util tests', () => {
       warrantType: 'NON_SENTENCING',
       nextCourtAppearance: null,
       charges: [],
-      overallSentenceLength: null,
       overallConvictionDate: null,
       periodLengths: [],
     } as PageCourtCaseAppearance

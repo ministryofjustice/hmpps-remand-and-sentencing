@@ -1,27 +1,62 @@
 {% extends "../../partials/backLinkLayout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Record breach of supervision requirement" %}
+
+{% set pageTitle = applicationName + " - What type of breach are you recording" %}
 
 {% block content %}
     {{ super() }}
-    <h1 class="govuk-heading-l">
-        Record a breach of supervision requirement
-    </h1>
-    <p class="govuk-body">DPS currently supports recording a <span class="govuk-!-font-weight-bold">breach of supervision requirements (Section 104)</span> only.</p>
-    <p class="govuk-body">If you need to record a <span class="govuk-!-font-weight-bold">new imprisonable offence committed during supervision (Section 105)</span> continue to use NOMIS.</p>
-    <p class="govuk-body">Do you want to continue?</p>
-    <form method="post" autocomplete="off">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        <input type="hidden" name="breachType" value="BREACH_OF_SUPERVISION_REQUIREMENTS">
-        <div class="govuk-button-group">
-            {{ govukButton({
-                text: "Continue",
-                attributes: {  'data-qa': 'continue-button' }
-            }) }}
+        <form method="post" autocomplete="off">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
-            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+            {% if breachImprisonableOffenceEnabled %}
+                {{ govukRadios({
+                    name: "breachType",
+                    fieldset: {
+                        legend: {
+                            text: "What type of breach are you recording?",
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "BREACH_OF_SUPERVISION_REQUIREMENTS",
+                            text: "A breach of supervision requirements",
+                            hint: {
+                                text: "Schedule 12, paragraph 2&3 of Sentencing Act 2020. Previously section 104."
+                            }
+                        },
+                        {
+                            value: "BREACH_OF_IMPRISONABLE_OFFENCE",
+                            text: "A new imprisonable offence committed during supervision",
+                            hint: {
+                                text: "Schedule 12 paragraph 7 of Sentencing Act 2020. Previously section 105."
+                            }
+                        }
+                    ]
+                }) }}
+            {% else %}
+                <h1 class="govuk-heading-l">
+                    Record a breach of supervision requirement
+                </h1>
+                <p class="govuk-body">DPS currently supports recording a <span class="govuk-!-font-weight-bold">breach of supervision requirements (Section 104)</span> only.</p>
+                <p class="govuk-body">If you need to record a <span class="govuk-!-font-weight-bold">new imprisonable offence committed during supervision (Section 105)</span> continue to use NOMIS.</p>
+                <p class="govuk-body">Do you want to continue?</p>
+
+                <input type="hidden" name="breachType" value="BREACH_OF_SUPERVISION_REQUIREMENTS">
+            {% endif %}
+
+            <div class="govuk-button-group">
+                {{ govukButton({
+                    text: "Continue",
+                    attributes: {  'data-qa': 'continue-button' }
+                }) }}
+
+                {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
             </div>
-    </form>
+        </form>
+
 {% endblock %}

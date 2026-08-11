@@ -44,6 +44,7 @@ import type {
   PagedMergedToCase,
   SentenceToChainTo,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
+import { BREACH_WARRANT_TYPES } from './constants'
 
 type Error = {
   href: string
@@ -65,6 +66,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.buildNumber = config.buildNumber
   app.locals.adjustmentServiceUrl = config.adjustmentService.ui_url
   app.locals.bookSecureMoveServiceUrl = config.bookASecureMoveService.ui_url
+  app.locals.breachWarrantTypes = BREACH_WARRANT_TYPES
 
   if (config.environmentName === 'LOCAL') {
     app.locals.environment = 'local'

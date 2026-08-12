@@ -160,8 +160,9 @@ export default class BreachRoutes extends BaseRoutes {
       correlationId: req.id,
       details: auditDetails,
     })
+    const { warrantType } = courtAppearance
     this.courtAppearanceService.clearSessionCourtAppearance(req.session, urlParameters.nomsId)
-    return res.redirect(BreachJourneyUrls.confirmation(urlParameters))
+    return res.redirect(BreachJourneyUrls.confirmation(urlParameters, warrantType))
   }
 
   public getHearingDate: RequestHandler = async (req, res): Promise<void> => {
@@ -585,7 +586,11 @@ export default class BreachRoutes extends BaseRoutes {
 
   public getConfirmation: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
-    return res.render('pages/breach/confirmation', urlParameters)
+    const { warrantType } = req.query as { warrantType: string }
+    return res.render('pages/breach/confirmation', {
+      ...urlParameters,
+      warrantType,
+    })
   }
 
   public loadHearingDetails: RequestHandler = async (req, res): Promise<void> => {

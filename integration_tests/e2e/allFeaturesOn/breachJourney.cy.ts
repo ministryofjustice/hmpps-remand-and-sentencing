@@ -208,5 +208,8 @@ context('Breach journey', () => {
           status: '1 document uploaded',
         },
       ])
+    courtCaseTaskListPage.continueButton().click()
+    Page.verifyOnPage(BreachConfirmationPage)
+    cy.task('verifyCreateBreachImprisonableOffenceHearingRequest').should('equal', 1)
   })
 })

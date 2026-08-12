@@ -5539,4 +5539,82 @@ export default {
       },
     })
   },
+
+  verifyCreateBreachImprisonableOffenceHearingRequest: (): Promise<number> => {
+    return verifyRequest({
+      requestUrlPattern: '/remand-and-sentencing-api/court-appearance/([a-zA-Z0-9-]*)',
+      method: 'PUT',
+      body: {
+        courtCaseUuid: '261911e2-6346-42e0-b025-a806048f4d04',
+        // eslint-disable-next-line no-template-curly-in-string
+        appearanceUuid: '${json-unit.any-string}',
+        outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+        courtCode: 'ACCRYC',
+        courtCaseReference: 'C894623',
+        appearanceDate: '2023-05-13',
+        charges: [
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            appearanceUuid: '${json-unit.any-string}',
+            offenceCode: 'PS90037',
+            outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+            prisonId: 'MDI',
+            createChargeOrder: 0,
+            offenceStartDate: '2025-05-20',
+            chargeUuid: '95530239-a337-4fa3-b37b-8f8a1b3e1f21',
+          },
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            appearanceUuid: '${json-unit.any-string}',
+            offenceCode: 'SE20538',
+            outcomeUuid: '0460ad51-04ea-402a-a249-b152b052a385',
+            prisonId: 'MDI',
+            createChargeOrder: 1,
+            offenceStartDate: '2023-05-10',
+            // eslint-disable-next-line no-template-curly-in-string
+            chargeUuid: '${json-unit.any-string}',
+            sentence: {
+              // eslint-disable-next-line no-template-curly-in-string
+              sentenceUuid: '${json-unit.any-string}',
+              chargeNumber: '-1',
+              periodLengths: [
+                {
+                  // eslint-disable-next-line no-template-curly-in-string
+                  periodLengthUuid: '${json-unit.any-string}',
+                  days: 41,
+                  periodOrder: 'years,months,weeks,days',
+                  type: 'BREACH_OF_IMPRISONABLE_OFFENCE',
+                  prisonId: 'MDI',
+                },
+              ],
+              sentenceServeType: 'CONCURRENT',
+              sentenceTypeId: 'cab9e914-e0de-48d0-9e72-0e1fc9a19cf4',
+              prisonId: 'MDI',
+            },
+          },
+        ],
+        warrantType: 'BREACH_OF_IMPRISONABLE_OFFENCE',
+        documents: [
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            documentUUID: '${json-unit.any-string}',
+            documentType: 'BREACH_ORDER',
+            fileName: 'testfile.doc',
+            courtDataIngested: false,
+          },
+        ],
+        prisonId: 'MDI',
+        periodLengths: [
+          {
+            // eslint-disable-next-line no-template-curly-in-string
+            periodLengthUuid: '${json-unit.any-string}',
+            days: 41,
+            periodOrder: 'years,months,weeks,days',
+            type: 'BREACH_OF_IMPRISONABLE_OFFENCE',
+            prisonId: 'MDI',
+          },
+        ],
+      },
+    })
+  },
 }

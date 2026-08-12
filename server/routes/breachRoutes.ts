@@ -3,6 +3,7 @@ import { RequestHandler } from 'express'
 import type {
   BreachCourtNameForm,
   BreachDateForm,
+  BreachOffenceDateForm,
   BreachTypeForm,
   CourtCaseAlternativeSentenceLengthForm,
   DeleteDocumentForm,
@@ -314,12 +315,16 @@ export default class BreachRoutes extends BaseRoutes {
       req.flash('breachTermLengthForm', { ...breachTermLengthForm })
       return res.redirect(BreachJourneyUrls.breachTermLength(urlParameters, 'true', submitToCheckAnswers))
     }
-    return this.submitRedirect(
-      res,
-      urlParameters,
-      submitToCheckAnswers,
-      BreachJourneyUrls.checkHearingAnswers(urlParameters),
+    const warrantType = this.courtAppearanceService.getWarrantType(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
     )
+    let submitUrl = BreachJourneyUrls.checkHearingAnswers(urlParameters)
+    if (warrantType === 'BREACH_OF_IMPRISONABLE_OFFENCE') {
+      submitUrl = BreachJourneyUrls.breachOffenceDate(urlParameters)
+    }
+    return this.submitRedirect(res, urlParameters, submitToCheckAnswers, submitUrl)
   }
 
   public getAlternativeBreachTermLength: RequestHandler = async (req, res): Promise<void> => {
@@ -359,6 +364,74 @@ export default class BreachRoutes extends BaseRoutes {
       req.flash('errors', errors)
       req.flash('breachTermLengthForm', { ...breachTermLengthForm })
       return res.redirect(BreachJourneyUrls.alternativeBreachTermLength(urlParameters, 'true', submitToCheckAnswers))
+    }
+    const warrantType = this.courtAppearanceService.getWarrantType(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    let submitUrl = BreachJourneyUrls.checkHearingAnswers(urlParameters)
+    if (warrantType === 'BREACH_OF_IMPRISONABLE_OFFENCE') {
+      submitUrl = BreachJourneyUrls.breachOffenceDate(urlParameters)
+    }
+    return this.submitRedirect(res, urlParameters, submitToCheckAnswers, submitUrl)
+  }
+
+  public getBreachOffenceDate: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToCheckAnswers } = req.query
+    const breachOffenceDateForm = (req.flash('breachOffenceDateForm')[0] || {}) as BreachOffenceDateForm
+    let offenceStartDateDay: number | string = breachOffenceDateForm['offenceStartDate-day']
+    let offenceStartDateMonth: number | string = breachOffenceDateForm['offenceStartDate-month']
+    let offenceStartDateYear: number | string = breachOffenceDateForm['offenceStartDate-year']
+    let offenceEndDateDay: number | string = breachOffenceDateForm['offenceEndDate-day']
+    let offenceEndDateMonth: number | string = breachOffenceDateForm['offenceEndDate-month']
+    let offenceEndDateYear: number | string = breachOffenceDateForm['offenceEndDate-year']
+    const generatedBreachOffence = this.courtAppearanceService.getGeneratedBreachOffence(req.session, urlParameters)
+    if (generatedBreachOffence.offenceStartDate && Object.keys(breachOffenceDateForm).length === 0) {
+      const offenceStartDate = new Date(generatedBreachOffence.offenceStartDate)
+      offenceStartDateDay = offenceStartDate.getDate()
+      offenceStartDateMonth = offenceStartDate.getMonth() + 1
+      offenceStartDateYear = offenceStartDate.getFullYear()
+    }
+    if (generatedBreachOffence.offenceEndDate && Object.keys(breachOffenceDateForm).length === 0) {
+      const offenceEndDate = new Date(generatedBreachOffence.offenceEndDate)
+      offenceEndDateDay = offenceEndDate.getDate()
+      offenceEndDateMonth = offenceEndDate.getMonth() + 1
+      offenceEndDateYear = offenceEndDate.getFullYear()
+    }
+    const breachTerm = this.courtAppearanceService.getBreachTerm(req.session, urlParameters)
+    let backLink = BreachJourneyUrls.breachTermLength(urlParameters)
+    if (this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)) {
+      backLink = BreachJourneyUrls.hearingDetails(urlParameters)
+    } else if (submitToCheckAnswers) {
+      backLink = BreachJourneyUrls.checkHearingAnswers(urlParameters)
+    } else if (breachTerm.isAlternative) {
+      backLink = BreachJourneyUrls.alternativeBreachTermLength(urlParameters)
+    }
+    return res.render('pages/breach/breach-offence-date', {
+      ...urlParameters,
+      offenceStartDateDay,
+      offenceStartDateMonth,
+      offenceStartDateYear,
+      offenceEndDateDay,
+      offenceEndDateMonth,
+      offenceEndDateYear,
+      errors: req.flash('errors') || [],
+      backLink,
+      showHearingDetails: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance),
+    })
+  }
+
+  public submitBreachOffenceDate: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { submitToCheckAnswers } = req.query as { submitToCheckAnswers: string }
+    const breachOffenceDateForm = trimForm<BreachOffenceDateForm>(req.body)
+    const errors = this.courtAppearanceService.setBreachOffenceDate(req.session, urlParameters, breachOffenceDateForm)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      req.flash('breachOffenceDateForm', { ...breachOffenceDateForm })
+      return res.redirect(BreachJourneyUrls.breachOffenceDate(urlParameters, 'true', submitToCheckAnswers))
     }
     return this.submitRedirect(
       res,

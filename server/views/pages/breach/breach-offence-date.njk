@@ -1,0 +1,99 @@
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
+
+{% set pageTitle = applicationName + " - Enter breach offence date" %}
+
+{% block pageContent %}
+    {{ super() }}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          {% include "../../partials/hearingCaption.njk" %}
+
+            {% call govukFieldset({
+                    legend: {
+                        text: "Enter the offence dates of the breach",
+                        classes: "govuk-fieldset__legend--l",
+                        isPageHeading: true
+                    }
+            }) %}
+
+                <div id="fieldset-hint" class="govuk-hint">
+                    If you do not have the offence dates, contact the court that heard the breach.
+                </div>
+
+                {{ govukDateInput({
+                    id: "offenceStartDate",
+                    namePrefix: "offenceStartDate",
+                    errorMessage: errors | findErrorsBeginningWith('offenceStartDate'),
+                    fieldset: {
+                        legend: {
+                            text: "Offence start date",
+                            classes: "govuk-label--s govuk-!-font-weight-bold"
+                        }
+                    },
+                    items: [
+                        {
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceStartDate-day') else ''),
+                            name:"day",
+                            value: offenceStartDateDay
+                        },
+                        {
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceStartDate-month') else ''),
+                            name:"month",
+                            value: offenceStartDateMonth
+                        },
+                        {
+                            classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('offenceStartDate-year') else ''),
+                            name:"year",
+                            value: offenceStartDateYear
+                        }
+                    ]
+                }) }}
+
+                {{ govukDateInput({
+                    id: "offenceEndDate",
+                    namePrefix: "offenceEndDate",
+                    errorMessage: errors | findErrorsBeginningWith('offenceEndDate'),
+                    fieldset: {
+                        legend: {
+                            text: "Offence end date (optional)",
+                            classes: "govuk-label--s govuk-!-font-weight-bold"
+                        }
+                    },
+                    hint: {
+                        text: "This only applies to offences that occur over multiple days"
+                    },
+                    items: [
+                        {
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceEndDate-day') else ''),
+                            name:"day",
+                            value: offenceEndDateDay
+                        },
+                        {
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if errors | findError('offenceEndDate-month') else ''),
+                            name:"month",
+                            value: offenceEndDateMonth
+                        },
+                        {
+                            classes: "govuk-input--width-4" + (" govuk-input--error" if errors | findError('offenceEndDate-year') else ''),
+                            name:"year",
+                            value: offenceEndDateYear
+                        }
+                    ]
+                }) }}
+
+            {% endcall %}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: {  'data-qa': 'continue-button' }
+            }) }}
+
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
+        </div>
+    </form>
+{% endblock %}

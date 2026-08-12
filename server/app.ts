@@ -22,8 +22,8 @@ import populateCurrentPrisoner from './middleware/populateCurrentPrisoner'
 import setupCurrentCourtAppearance from './middleware/setUpCurrentCourtAppearance'
 import setupCurrentCourtCase from './middleware/setUpCurrentCourtCase'
 import setupCurrentOffence from './middleware/setupCurrentOffence'
-import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
 import { Role, Roles } from './@types/roles'
+import addUsernameAndCaseloadToTelemetry from './utils/appInsightsCustomTelemetry'
 
 const upload = multer({ dest: 'uploads/' })
 

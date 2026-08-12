@@ -454,11 +454,13 @@ export default class BreachRoutes extends BaseRoutes {
     const breachTermHref = breachTermLength.isAlternative
       ? BreachJourneyUrls.alternativeBreachTermLength(urlParameters, null, 'true')
       : BreachJourneyUrls.breachTermLength(urlParameters, null, 'true')
+    const generatedBreachOffence = this.courtAppearanceService.getGeneratedBreachOffence(req.session, urlParameters)
     return res.render('pages/breach/check-hearing-answers', {
       ...urlParameters,
       courtName: courtDetails.courtName,
       breachTermLength,
       breachTermHref,
+      generatedBreachOffence,
     })
   }
 

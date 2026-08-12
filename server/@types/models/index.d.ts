@@ -57,6 +57,7 @@ declare module 'models' {
     createChargeOrder?: number
     replicatedFromUuid?: string
     offenceDateIsSame?: string
+    isGeneratedBreachOffence?: string
   }
 
   export interface Sentence {

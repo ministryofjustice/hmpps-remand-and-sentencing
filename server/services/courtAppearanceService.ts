@@ -6,6 +6,7 @@ import type {
   AppealOverallCaseOutcomeForm,
   BreachCourtNameForm,
   BreachDateForm,
+  BreachOffenceDateForm,
   BreachTypeForm,
   CourtCaseAlternativeSentenceLengthForm,
   CourtCaseCaseOutcomeAppliedAllForm,
@@ -1751,6 +1752,17 @@ export default class CourtAppearanceService {
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
       courtAppearance.warrantType = breachTypeForm.breachType
+      if (breachTypeForm.breachType === 'BREACH_OF_IMPRISONABLE_OFFENCE') {
+        const breachOffence = this.generateBreachOfImprisonableOffenceOffence()
+        const breachOffenceIndex = courtAppearance.offences.findIndex(
+          offence => offence.offenceCode === breachOffence.offenceCode,
+        )
+        if (breachOffenceIndex !== -1) {
+          courtAppearance.offences[breachOffenceIndex] = breachOffence
+        } else {
+          courtAppearance.offences.push(breachOffence)
+        }
+      }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameters.nomsId] = courtAppearance
     }
@@ -1904,21 +1916,35 @@ export default class CourtAppearanceService {
         warrantType,
         'term length of the breach',
       )
-      const breachTermIndex = periodLengths.findIndex(periodLength => periodLength.periodLengthType === warrantType)
-      if (breachTermIndex !== -1) {
-        periodLengths[breachTermIndex] = {
-          ...breachTerm,
-          legacyData: periodLengths[breachTermIndex].legacyData,
-          uuid: periodLengths[breachTermIndex].uuid,
-        }
-      } else {
-        periodLengths.push(breachTerm)
-      }
+      this.addOrUpdateBreachTerm(periodLengths, warrantType, breachTerm)
+
+      courtAppearance.offences
+        .filter(offence => offence.isGeneratedBreachOffence === 'true')
+        .forEach(offence => {
+          const sentencePeriodLengths = offence.sentence?.periodLengths ?? []
+          this.addOrUpdateBreachTerm(sentencePeriodLengths, warrantType, breachTerm)
+          // eslint-disable-next-line no-param-reassign
+          offence.sentence.periodLengths = sentencePeriodLengths
+        })
       courtAppearance.periodLengths = periodLengths
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameter.nomsId] = courtAppearance
     }
     return errors
+  }
+
+  private addOrUpdateBreachTerm(periodLengths: SentenceLength[], warrantType: string, breachTerm: SentenceLength) {
+    const breachTermIndex = periodLengths.findIndex(periodLength => periodLength.periodLengthType === warrantType)
+    if (breachTermIndex !== -1) {
+      // eslint-disable-next-line no-param-reassign
+      periodLengths[breachTermIndex] = {
+        ...breachTerm,
+        legacyData: periodLengths[breachTermIndex].legacyData,
+        uuid: periodLengths[breachTermIndex].uuid,
+      }
+    } else {
+      periodLengths.push(breachTerm)
+    }
   }
 
   setAlternativeBreachTerm(
@@ -1962,20 +1988,155 @@ export default class CourtAppearanceService {
         warrantType,
         'term length of the breach',
       )
-      const breachTermIndex = periodLengths.findIndex(periodLength => periodLength.periodLengthType === warrantType)
-      if (breachTermIndex !== -1) {
-        periodLengths[breachTermIndex] = {
-          ...breachTerm,
-          legacyData: periodLengths[breachTermIndex].legacyData,
-          uuid: periodLengths[breachTermIndex].uuid,
-        }
-      } else {
-        periodLengths.push(breachTerm)
-      }
-      courtAppearance.periodLengths = periodLengths
+      this.addOrUpdateBreachTerm(periodLengths, warrantType, breachTerm)
+
+      courtAppearance.offences
+        .filter(offence => offence.isGeneratedBreachOffence === 'true')
+        .forEach(offence => {
+          const sentencePeriodLengths = offence.sentence?.periodLengths ?? []
+          this.addOrUpdateBreachTerm(sentencePeriodLengths, warrantType, breachTerm)
+          // eslint-disable-next-line no-param-reassign
+          offence.sentence.periodLengths = sentencePeriodLengths
+        })
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameter.nomsId] = courtAppearance
     }
     return errors
+  }
+
+  getGeneratedBreachOffence(session: Partial<SessionData>, urlParameter: UrlParameters): Offence {
+    const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+    return courtAppearance.offences.find(offence => offence.isGeneratedBreachOffence === 'true') ?? ({} as Offence)
+  }
+
+  setBreachOffenceDate(
+    session: Partial<SessionData>,
+    urlParameter: UrlParameters,
+    breachOffenceDateForm: BreachOffenceDateForm,
+  ): {
+    text?: string
+    html?: string
+    href: string
+  }[] {
+    const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+    const warrantDate = this.getWarrantDate(session, urlParameter.nomsId, urlParameter.appearanceReference)
+    let isValidOffenceStartDateRule = ''
+    let startDateString = ''
+    const warrantDateString = toDateString(
+      warrantDate.getFullYear().toString(),
+      (warrantDate.getMonth() + 1).toString(),
+      warrantDate.getDate().toString(),
+    )
+    if (
+      breachOffenceDateForm['offenceStartDate-day'] &&
+      breachOffenceDateForm['offenceStartDate-month'] &&
+      breachOffenceDateForm['offenceStartDate-year']
+    ) {
+      startDateString = toDateString(
+        breachOffenceDateForm['offenceStartDate-year'],
+        breachOffenceDateForm['offenceStartDate-month'],
+        breachOffenceDateForm['offenceStartDate-day'],
+      )
+      isValidOffenceStartDateRule = `|isValidDate:${startDateString}|isPastDate:${startDateString}|isWithinLast100Years:${startDateString}|isSameOrBeforeWarrantDate:${warrantDateString},${startDateString}`
+    }
+
+    let isValidOffenceEndDateRule = ''
+    let endDateString = ''
+    if (
+      breachOffenceDateForm['offenceEndDate-day'] &&
+      breachOffenceDateForm['offenceEndDate-month'] &&
+      breachOffenceDateForm['offenceEndDate-year']
+    ) {
+      endDateString = toDateString(
+        breachOffenceDateForm['offenceEndDate-year'],
+        breachOffenceDateForm['offenceEndDate-month'],
+        breachOffenceDateForm['offenceEndDate-day'],
+      )
+      isValidOffenceEndDateRule = `|isValidDate:${endDateString}|isPastDate:${endDateString}|isWithinLast100Years:${endDateString}|isSameOrBeforeWarrantDate:${warrantDateString},${endDateString}`
+      if (startDateString) {
+        isValidOffenceEndDateRule += `|isAfterDate:${startDateString},${endDateString}`
+      }
+    }
+
+    const errors = validate(
+      breachOffenceDateForm,
+      {
+        'offenceStartDate-day': `required${isValidOffenceStartDateRule}`,
+        'offenceStartDate-month': `required`,
+        'offenceStartDate-year': `required`,
+        'offenceEndDate-day': `requiredFieldWith:offenceEndDate-month,offenceEndDate-year${isValidOffenceEndDateRule}`,
+        'offenceEndDate-month': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-year',
+        'offenceEndDate-year': 'requiredFieldWith:offenceEndDate-day,offenceEndDate-month',
+      },
+      {
+        'required.offenceStartDate-year': 'Offence start date must include year',
+        'required.offenceStartDate-month': 'Offence start date must include month',
+        'required.offenceStartDate-day': 'Offence start date must include day',
+        'isValidDate.offenceStartDate-day': 'This date does not exist.',
+        'isPastDate.offenceStartDate-day': 'The offence start date must be a date from the past',
+        'isWithinLast100Years.offenceStartDate-day': 'All dates must be within the last 100 years from today’s date',
+        'isSameOrBeforeWarrantDate.offenceStartDate-day':
+          'The offence start date must be on or before the warrant date',
+        'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
+        'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
+        'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
+        'isValidDate.offenceEndDate-day': 'This date does not exist.',
+        'isPastDate.offenceEndDate-day': 'The offence end date must be a date from the past',
+        'isAfterDate.offenceEndDate-day': 'The offence end date must be after the offence start date',
+        'isWithinLast100Years.offenceEndDate-day': 'All dates must be within the last 100 years from today’s date',
+        'isSameOrBeforeWarrantDate.offenceEndDate-day': 'The offence end date must be on or before the warrant date',
+      },
+    )
+    if (errors.length === 0) {
+      const offenceStartDate = dayjs({
+        year: breachOffenceDateForm['offenceStartDate-year'],
+        month: parseInt(breachOffenceDateForm['offenceStartDate-month'], 10) - 1,
+        day: breachOffenceDateForm['offenceStartDate-day'],
+      })
+      courtAppearance.offences
+        .filter(offence => offence.isGeneratedBreachOffence === 'true')
+        .forEach(offence => {
+          // eslint-disable-next-line no-param-reassign
+          offence.offenceStartDate = offenceStartDate.toDate()
+        })
+      if (breachOffenceDateForm['offenceEndDate-day']) {
+        const offenceEndDate = dayjs({
+          year: breachOffenceDateForm['offenceEndDate-year'],
+          month: parseInt(breachOffenceDateForm['offenceEndDate-month'], 10) - 1,
+          day: breachOffenceDateForm['offenceEndDate-day'],
+        })
+        courtAppearance.offences
+          .filter(offence => offence.isGeneratedBreachOffence === 'true')
+          .forEach(offence => {
+            // eslint-disable-next-line no-param-reassign
+            offence.offenceEndDate = offenceEndDate.toDate()
+          })
+      } else {
+        courtAppearance.offences
+          .filter(offence => offence.isGeneratedBreachOffence === 'true')
+          .forEach(offence => {
+            // eslint-disable-next-line no-param-reassign
+            delete offence.offenceEndDate
+          })
+      }
+      // eslint-disable-next-line no-param-reassign
+      session.courtAppearances[urlParameter.nomsId] = courtAppearance
+    }
+    return errors
+  }
+
+  private generateBreachOfImprisonableOffenceOffence(): Offence {
+    return {
+      offenceCode: 'SE20538',
+      outcomeUuid: '0460ad51-04ea-402a-a249-b152b052a385', // detention training order outcome
+      chargeUuid: crypto.randomUUID(),
+      isGeneratedBreachOffence: 'true',
+      sentence: {
+        sentenceUuid: crypto.randomUUID(),
+        periodLengths: [],
+        sentenceServeType: 'CONCURRENT',
+        sentenceTypeClassification: 'DTO',
+      },
+    }
   }
 }

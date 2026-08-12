@@ -29,6 +29,10 @@ export default class BreachJourneyUrls {
     return `${this.basePath(urlParameters)}/alternative-breach-term-length${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
   }
 
+  static breachOffenceDate(urlParameters: UrlParameters, hasErrors?: string, submitToCheckAnswers?: string): string {
+    return `${this.basePath(urlParameters)}/breach-offence-date${this.getQueryParameters(hasErrors, submitToCheckAnswers)}`
+  }
+
   static checkHearingAnswers = (urlParameters: UrlParameters) => {
     return `${this.basePath(urlParameters)}/check-hearing-answers`
   }

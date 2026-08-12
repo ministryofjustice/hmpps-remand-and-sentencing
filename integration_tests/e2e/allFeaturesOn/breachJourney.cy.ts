@@ -2,6 +2,7 @@ import BreachCheckHearingAnswersPage from '../../pages/BreachCheckHearingAnswers
 import BreachConfirmationPage from '../../pages/BreachConfirmationPage'
 import BreachCourtNamePage from '../../pages/BreachCourtNamePage'
 import BreachDatePage from '../../pages/BreachDatePage'
+import BreachOffenceDatePage from '../../pages/BreachOffenceDatePage'
 import BreachTermLengthPage from '../../pages/BreachTermLengthPage'
 import BreachTypePage from '../../pages/BreachTypePage'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
@@ -16,6 +17,11 @@ context('Breach journey', () => {
     cy.task('happyPathStubs')
     cy.task('stubSearchCourtCases', {})
     cy.task('stubGetOffencesByCodes', {})
+    cy.task('stubGetOffencesByCodes', {
+      offenceCode: 'PS90037',
+      offenceDescription: 'An offence description',
+      legacyOffenceCode: 'SE20538',
+    })
     cy.task('stubGetCourtsByIds')
     cy.task('stubGetCourtById', {})
     cy.task('stubGetCourtCaseValidationDates', {
@@ -67,7 +73,7 @@ context('Breach journey', () => {
     breachCourtNamePage.continueButton().click()
     const breachTermLengthPage = Page.verifyOnPage(BreachTermLengthPage)
     breachTermLengthPage.daysInput().type('41')
-    breachCourtNamePage.continueButton().click()
+    breachTermLengthPage.continueButton().click()
     const breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'C894623',
@@ -152,6 +158,18 @@ context('Breach journey', () => {
     breachCourtNamePage.continueButton().click()
     const breachTermLengthPage = Page.verifyOnPage(BreachTermLengthPage)
     breachTermLengthPage.daysInput().type('41')
-    breachCourtNamePage.continueButton().click()
+    breachTermLengthPage.continueButton().click()
+    const breachOffenceDatePage = Page.verifyOnPage(BreachOffenceDatePage)
+    breachOffenceDatePage.dayDateInput('offenceStartDate').type('10')
+    breachOffenceDatePage.monthDateInput('offenceStartDate').type('5')
+    breachOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
+    breachOffenceDatePage.continueButton().click()
+    const breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
+    breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
+      'Case reference number': 'C894623',
+      'Breach hearing date': '13/05/2023',
+      'Court name': 'Accrington Youth Court',
+      'Term length of the breach': '0 years 0 months 0 weeks 41 days',
+    })
   })
 })

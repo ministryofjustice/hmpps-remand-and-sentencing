@@ -61,9 +61,6 @@ describe('GET review new documents landing', () => {
         expect(res.text).toContain('Remand warrant')
         expect(res.text).toContain('Unknown document type')
         expect(res.text).toContain('Trial')
-
-        const continueButton = $('[data-qa=hmcts-court-data-continue]')
-        expect(continueButton.attr('href')).toBe('/person/A1234AB/review-new-documents/hearing1/start')
       })
   })
 })

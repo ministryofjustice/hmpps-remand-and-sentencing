@@ -71,7 +71,7 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     landingPage
       .commonPlatformText()
       .should('contain.text', 'A new sentencing warrant for C894623 has been added from Common Platform.')
-    landingPage.continueLink().click()
+    landingPage.continueButton().click()
 
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a court case')
     courtCaseTaskListPage

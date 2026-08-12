@@ -1115,7 +1115,7 @@ export default {
                 documentType: 'HMCTS_WARRANT',
                 uploadedAt: '2024-06-01T10:00:00Z',
                 uploadedBy: 'user1',
-                courtDataIngested: false,
+                courtDataIngested: true,
               },
             ],
             prisonId: 'MDI',
@@ -1197,7 +1197,7 @@ export default {
                 documentType: 'HMCTS_WARRANT',
                 uploadedAt: '2024-06-01T10:00:00Z',
                 uploadedBy: 'user1',
-                courtDataIngested: false,
+                courtDataIngested: true,
               },
             ],
             prisonId: 'MDI',
@@ -1240,20 +1240,26 @@ export default {
   },
 
   verifyCreateCourtAppearanceRequest: ({
+    courtCaseUuid = '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     nextAppearanceDate = '',
+    appearanceDate = '2023-05-13',
+    documents = undefined,
   }: {
+    courtCaseUuid: string
     nextAppearanceDate: string
+    appearanceDate: string
+    documents?: unknown[]
   }): Promise<number> => {
     return verifyRequest({
       requestUrlPattern: '/remand-and-sentencing-api/court-appearance/5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
       method: 'PUT',
       body: {
-        courtCaseUuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        courtCaseUuid,
         appearanceUuid: '5286de02-77ed-4ff6-b597-a05c3e2c4e0f',
         outcomeUuid: '6da892fa-d85e-44de-95d4-a7f06c3a2dcb',
         courtCode: 'ACCRYC',
         courtCaseReference: 'C894623',
-        appearanceDate: '2023-05-13',
+        appearanceDate,
         prisonId: 'MDI',
         charges: [
           {
@@ -1284,6 +1290,7 @@ export default {
           courtAppearanceSubtypeUuid: '3f1c9e42-7c8a-4c1e-9a5d-2f6b8d1a9e73',
           prisonId: 'MDI',
         },
+        documents,
       },
     })
   },
@@ -5043,7 +5050,7 @@ export default {
         jsonBody: {
           appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
           outcome: null,
-          courtCode: null,
+          courtCode: 'BRSTMC',
           courtCaseReference: 'C894623',
           criminalAppealOfficeReference: null,
           appearanceDate: '2023-12-15',
@@ -5060,6 +5067,11 @@ export default {
             },
           ],
           charges: [],
+          overallConvictionDate: null,
+          legacyData: null,
+          periodLengths: [],
+          source: 'DPS',
+          deleteStatus: 'SUPPORTED',
         },
       },
     })
@@ -5078,7 +5090,7 @@ export default {
         jsonBody: {
           appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
           outcome: null,
-          courtCode: null,
+          courtCode: 'BRSTMC',
           courtCaseReference: 'C894623',
           criminalAppealOfficeReference: null,
           appearanceDate: '2023-12-15',
@@ -5095,6 +5107,11 @@ export default {
             },
           ],
           charges: [],
+          overallConvictionDate: null,
+          legacyData: null,
+          periodLengths: [],
+          source: 'DPS',
+          deleteStatus: 'SUPPORTED',
         },
       },
     })
@@ -5112,7 +5129,7 @@ export default {
             documentType: 'HMCTS_WARRANT',
             uploadedAt: '2024-06-01T10:00:00Z',
             uploadedBy: 'user1',
-            courtDataIngested: false,
+            courtDataIngested: true,
           },
         ],
       },

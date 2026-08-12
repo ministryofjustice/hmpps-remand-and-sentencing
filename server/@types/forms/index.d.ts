@@ -289,4 +289,12 @@ declare module 'forms' {
     courtName?: string
     courtCode?: string
   }
+
+  export interface CourtDataLandingForm {
+    addToExistingCase: string
+  }
+
+  export interface CourtDataSelectCaseForm {
+    courtCase: string
+  }
 }

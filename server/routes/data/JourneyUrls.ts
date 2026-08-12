@@ -280,6 +280,18 @@ export default class JourneyUrls {
   static deleteOffence = (urlParameters: UrlParameters) => {
     return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/offences/${urlParameters.chargeUuid}/delete-offence`
   }
+
+  static courtDataIngestionStart = (nomsId: string, hearingId: string, courtCase?: string) => {
+    return `/person/${nomsId}/review-new-documents/${hearingId}/start${courtCase ? `/${courtCase}` : ''}`
+  }
+
+  static courtDataIngestionLanding = (nomsId: string, hearingId: string, existingCase: boolean) => {
+    return `/person/${nomsId}/review-new-documents/${hearingId}/landing${existingCase ? '/existing-case' : ''}`
+  }
+
+  static courtDataIngestionSelectCase = (nomsId: string, hearingId: string) => {
+    return `/person/${nomsId}/review-new-documents/${hearingId}/select-court-case`
+  }
 }
 
 export const urlMapByName = {

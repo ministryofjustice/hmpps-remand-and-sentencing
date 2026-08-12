@@ -6,6 +6,4 @@ export default class HmctsCourtDataLandingPage extends Page {
   }
 
   commonPlatformText = (): PageElement => cy.get('[data-qa=common-platform-text]')
-
-  continueLink = (): PageElement => cy.get('[data-qa=hmcts-court-data-continue]')
 }

@@ -34,15 +34,17 @@ import { SessionData } from 'express-session'
 import validate from '../validation/validation'
 import {
   alternativeSentenceLengthFormToSentenceLength,
+  chargeToOffence,
   sentenceLengthFormToSentenceLength,
 } from '../utils/mappingUtils'
 import RemandAndSentencingService from './remandAndSentencingService'
-import { convertToTitleCase, toDateString } from '../utils/utils'
+import { convertToTitleCase, sortByDateDesc, toDateString } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
 import RefDataService from './refDataService'
 import { DETENTION_TRAINING_ORDER_OUTCOME_UUID } from '../utils/constants'
+import { PageCourtCaseAppearance } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class CourtAppearanceService {
   constructor(
@@ -1978,5 +1980,23 @@ export default class CourtAppearanceService {
       session.courtAppearances[urlParameter.nomsId] = courtAppearance
     }
     return errors
+  }
+
+  addChargesFromPreviousAppearance(
+    session: Partial<SessionData>,
+    nomsId: string,
+    courtAppearanceUuid: string,
+    previousCourtAppearance: PageCourtCaseAppearance,
+  ) {
+    previousCourtAppearance.charges
+      .filter(charge => {
+        const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
+        return !dispositionCode || dispositionCode === 'INTERIM' || dispositionCode === 'I'
+      })
+      .sort((a, b) => {
+        return sortByDateDesc(b.createdAt, a.createdAt)
+      })
+      .map((charge, index) => chargeToOffence(charge, index))
+      .forEach(offence => this.addOffence(session, nomsId, offence.chargeUuid, offence, courtAppearanceUuid))
   }
 }

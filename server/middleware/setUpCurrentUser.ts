@@ -5,6 +5,7 @@ import logger from '../../logger'
 import UserService from '../services/userService'
 import { CaseLoad } from '../@types/prisonApi/types'
 import { AuthSource } from '../interfaces/hmppsUser'
+import { Role, Roles } from '../@types/roles'
 
 export default function setUpCurrentUser(userService: UserService) {
   const router = express.Router()
@@ -33,9 +34,11 @@ export default function setUpCurrentUser(userService: UserService) {
       res.locals.user.authSource = authSource
 
       if (res.locals.user.authSource === 'nomis') {
+        const recallRoles = [Roles.getRole(Role.RECALL_MAINTAINER), Roles.getRole(Role.COURT_CASES)]
+
         res.locals.user.staffId = userId !== undefined ? parseInt(userId, 10) : undefined
         res.locals.user.hasInactiveBookingsAccess = userRoles.includes('INACTIVE_BOOKINGS')
-        res.locals.user.hasRecallsAccess = userRoles.includes('RECALL_MAINTAINER')
+        res.locals.user.hasRecallsAccess = userRoles.some(role => recallRoles.includes(role))
         res.locals.user.hasBookASecureMoveAccess = userRoles.includes('PECS_PRISON')
         await getUserCaseLoads(res, userService)
       }

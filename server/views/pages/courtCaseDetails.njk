@@ -67,7 +67,7 @@
                       {% include "../partials/court-case-details/displayNonSentencingHearingRow.njk" %}
                     {% elif hearing.warrantType == 'APPEAL' %}
                       {% include "../partials/court-case-details/displayAppealHearingRow.njk" %}
-                    {% elif hearing.warrantType == 'BREACH_OF_SUPERVISION_REQUIREMENTS' and courtCaseDetails.showBreachRow %}
+                    {% elif breachWarrantTypes.includes(hearing.warrantType) and courtCaseDetails.showBreachRow %}
                       {% include "../partials/court-case-details/displayBreachHearingRow.njk" %}
                     {% else %}
                       {% include "../partials/court-case-details/displaySentencingHearingRow.njk" %}

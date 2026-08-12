@@ -1766,7 +1766,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/hmcts-court-data/{courtHearingId}/appearance': {
+  '/hmcts-court-data/{courtHearingId}/prisoner/{prisonerNumber}/appearance': {
     parameters: {
       query?: never
       header?: never
@@ -2437,7 +2437,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 14:36:27.429978544 */
+      /** @example 04:22:37.442047846 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2550,7 +2550,6 @@ export interface components {
       /** Format: date */
       appearanceDate: string
       warrantType: string
-      overallSentenceLength?: components['schemas']['CreatePeriodLength'] | null
       nextCourtAppearance?: components['schemas']['CreateNextCourtAppearance'] | null
       charges: components['schemas']['CreateCharge'][]
       /** Format: date */
@@ -2572,7 +2571,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:36:27.429978544 */
+      /** @example 04:22:37.442047846 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -2602,6 +2601,7 @@ export interface components {
         | 'TERM_LENGTH'
         | 'OVERALL_SENTENCE_LENGTH'
         | 'BREACH_OF_SUPERVISION_REQUIREMENTS'
+        | 'BREACH_OF_IMPRISONABLE_OFFENCE'
         | 'UNSUPPORTED'
       prisonId: string
       legacyData?: components['schemas']['PeriodLengthLegacyData'] | null
@@ -3174,21 +3174,28 @@ export interface components {
        * Format: uuid
        * @description The ID of the hearing for this thing to do
        */
-      hearingId: string | null
+      hearingId: string
       /** @description The case reference of the hearing for this thing to do */
-      courtCaseReference: string | null
+      courtCaseReference: string
       /**
        * Format: date
        * @description The date of the hearing for this thing to do
        */
-      hearingDate: string | null
+      hearingDate: string
       /** @description The type of the hearing for this thing to do */
-      hearingType: string | null
+      hearingType: string
+      /**
+       * @description The type of the hearing for this thing to do
+       * @enum {string}
+       */
+      warrantType: 'REMAND' | 'SENTENCING'
+      /** @description The ID of the existing court case for this warrant */
+      courtCaseUuid?: string | null
     }
     ThingToDo: {
       /** @enum {string} */
-      type: 'NEW_REMAND_WARRANT' | 'NEW_SENTENCING_WARRANT'
-      hearingThingsToDoData?: components['schemas']['HearingThingsToDoData'] | null
+      type: 'NEW_WARRANT'
+      hearingThingsToDoData: components['schemas']['HearingThingsToDoData']
     }
     ThingsToDo: {
       prisonerId: string
@@ -3258,6 +3265,7 @@ export interface components {
         | 'TERM_LENGTH'
         | 'OVERALL_SENTENCE_LENGTH'
         | 'BREACH_OF_SUPERVISION_REQUIREMENTS'
+        | 'BREACH_OF_IMPRISONABLE_OFFENCE'
         | 'UNSUPPORTED'
       legacyData?: components['schemas']['PeriodLengthLegacyData'] | null
       /** Format: uuid */
@@ -3567,7 +3575,6 @@ export interface components {
       warrantType: string
       nextCourtAppearance?: components['schemas']['NextCourtAppearance'] | null
       charges: components['schemas']['Charge'][]
-      overallSentenceLength?: components['schemas']['PeriodLength'] | null
       /** Format: date */
       overallConvictionDate?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -3611,7 +3618,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:36:27.429978544 */
+      /** @example 04:22:37.442047846 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3643,6 +3650,7 @@ export interface components {
         | 'TERM_LENGTH'
         | 'OVERALL_SENTENCE_LENGTH'
         | 'BREACH_OF_SUPERVISION_REQUIREMENTS'
+        | 'BREACH_OF_IMPRISONABLE_OFFENCE'
         | 'UNSUPPORTED'
       legacyData?: components['schemas']['PeriodLengthLegacyData'] | null
       /** Format: uuid */
@@ -3770,6 +3778,7 @@ export interface components {
         | 'TERM_LENGTH'
         | 'OVERALL_SENTENCE_LENGTH'
         | 'BREACH_OF_SUPERVISION_REQUIREMENTS'
+        | 'BREACH_OF_IMPRISONABLE_OFFENCE'
         | 'UNSUPPORTED'
       auto: boolean
       periodLength?: components['schemas']['PeriodLengthDetail'] | null
@@ -3786,6 +3795,7 @@ export interface components {
         | 'TERM_LENGTH'
         | 'OVERALL_SENTENCE_LENGTH'
         | 'BREACH_OF_SUPERVISION_REQUIREMENTS'
+        | 'BREACH_OF_IMPRISONABLE_OFFENCE'
         | 'UNSUPPORTED'
       description: string
     }
@@ -3902,7 +3912,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 14:36:27.429978544 */
+      /** @example 04:22:37.442047846 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -3925,7 +3935,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:36:27.429978544 */
+      /** @example 04:22:37.442047846 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -3980,7 +3990,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 14:36:27.429978544 */
+      /** @example 04:22:37.442047846 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -3992,7 +4002,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:36:27.429978544 */
+      /** @example 04:22:37.442047846 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4142,6 +4152,7 @@ export interface components {
         | 'TERM_LENGTH'
         | 'OVERALL_SENTENCE_LENGTH'
         | 'BREACH_OF_SUPERVISION_REQUIREMENTS'
+        | 'BREACH_OF_IMPRISONABLE_OFFENCE'
         | 'UNSUPPORTED'
     }
     PagedCharge: {
@@ -4176,7 +4187,6 @@ export interface components {
       caseReferences: string[]
       /** Format: date */
       firstDayInCustody: string
-      overallSentenceLength?: components['schemas']['PagedAppearancePeriodLength'] | null
       latestCourtAppearance: components['schemas']['PagedLatestCourtAppearance']
       mergedFromCases: components['schemas']['PagedMergedFromCase'][]
       allAppearancesHaveRecall: boolean
@@ -4225,7 +4235,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 14:36:27.429978544 */
+      /** @example 04:22:37.442047846 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -4269,6 +4279,7 @@ export interface components {
         | 'TERM_LENGTH'
         | 'OVERALL_SENTENCE_LENGTH'
         | 'BREACH_OF_SUPERVISION_REQUIREMENTS'
+        | 'BREACH_OF_IMPRISONABLE_OFFENCE'
         | 'UNSUPPORTED'
         | null
       legacyData?: components['schemas']['PeriodLengthLegacyData'] | null
@@ -8780,6 +8791,7 @@ export interface operations {
       header?: never
       path: {
         courtHearingId: string
+        prisonerNumber: string
       }
       cookie?: never
     }

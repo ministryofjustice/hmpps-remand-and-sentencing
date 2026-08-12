@@ -67,6 +67,13 @@ const expectedTypes = {
       uploadLinkSegment: 'upload-breach-order',
     },
   ],
+  BREACH_OF_IMPRISONABLE_OFFENCE: [
+    {
+      type: 'BREACH_ORDER',
+      name: 'Breach order',
+      uploadLinkSegment: 'upload-breach-order',
+    },
+  ],
 }
 
 export default expectedTypes

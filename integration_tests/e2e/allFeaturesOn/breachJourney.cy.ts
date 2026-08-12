@@ -35,6 +35,7 @@ context('Breach journey', () => {
     const startPage = Page.verifyOnPage(StartPage)
     startPage.addBreachLink('261911e2-6346-42e0-b025-a806048f4d04').click()
     const breachTypePage = Page.verifyOnPage(BreachTypePage)
+    breachTypePage.radioLabelSelector('BREACH_OF_SUPERVISION_REQUIREMENTS').click()
     breachTypePage.continueButton().click()
     let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
     courtCaseTaskListPage
@@ -113,5 +114,44 @@ context('Breach journey', () => {
     courtCaseTaskListPage.continueButton().click()
     Page.verifyOnPage(BreachConfirmationPage)
     cy.task('verifyCreateBreachHearingRequest').should('equal', 1)
+  })
+
+  it('fill in Breach of imprisonable offence journey', () => {
+    const startPage = Page.verifyOnPage(StartPage)
+    startPage.addBreachLink('261911e2-6346-42e0-b025-a806048f4d04').click()
+    const breachTypePage = Page.verifyOnPage(BreachTypePage)
+    breachTypePage.radioLabelSelector('BREACH_OF_IMPRISONABLE_OFFENCE').click()
+    breachTypePage.continueButton().click()
+    const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Incomplete',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Cannot start yet',
+        },
+      ])
+    courtCaseTaskListPage.hearingInformationLink().click()
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+    courtCaseReferencePage.input().type('C894623')
+    courtCaseReferencePage.continueButton().click()
+    const breachDatePage = Page.verifyOnPage(BreachDatePage)
+    breachDatePage.dayDateInput('breachDate').type('13')
+    breachDatePage.monthDateInput('breachDate').type('5')
+    breachDatePage.yearDateInput('breachDate').type('2023')
+    breachDatePage.continueButton().click()
+    const breachCourtNamePage = Page.verifyOnPage(BreachCourtNamePage)
+    breachCourtNamePage.autoCompleteInput().type('cou')
+    breachCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
+    breachCourtNamePage.firstAutoCompleteOption().click()
+    breachCourtNamePage.continueButton().click()
+    const breachTermLengthPage = Page.verifyOnPage(BreachTermLengthPage)
+    breachTermLengthPage.daysInput().type('41')
+    breachCourtNamePage.continueButton().click()
   })
 })

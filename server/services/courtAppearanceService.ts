@@ -1747,7 +1747,7 @@ export default class CourtAppearanceService {
         breachType: 'required',
       },
       {
-        'required.breachType': 'You must select the breach type',
+        'required.breachType': 'You must select the type of breach',
       },
     )
     if (errors.length === 0) {
@@ -1866,8 +1866,9 @@ export default class CourtAppearanceService {
 
   getBreachTerm(session: Partial<SessionData>, urlParameter: UrlParameters) {
     const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+    const { warrantType } = courtAppearance
     const periodLengths = courtAppearance.periodLengths ?? []
-    return periodLengths.find(periodLength => periodLength.periodLengthType === 'BREACH_OF_SUPERVISION_REQUIREMENTS')
+    return periodLengths.find(periodLength => periodLength.periodLengthType === warrantType)
   }
 
   setBreachTerm(
@@ -1898,15 +1899,14 @@ export default class CourtAppearanceService {
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+      const { warrantType } = courtAppearance
       const periodLengths = courtAppearance.periodLengths ?? []
       const breachTerm = sentenceLengthFormToSentenceLength(
         breachTermLengthForm,
-        'BREACH_OF_SUPERVISION_REQUIREMENTS',
+        warrantType,
         'term length of the breach',
       )
-      const breachTermIndex = periodLengths.findIndex(
-        periodLength => periodLength.periodLengthType === 'BREACH_OF_SUPERVISION_REQUIREMENTS',
-      )
+      const breachTermIndex = periodLengths.findIndex(periodLength => periodLength.periodLengthType === warrantType)
       if (breachTermIndex !== -1) {
         periodLengths[breachTermIndex] = {
           ...breachTerm,
@@ -1957,15 +1957,14 @@ export default class CourtAppearanceService {
     )
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, urlParameter.nomsId, urlParameter.appearanceReference)
+      const { warrantType } = courtAppearance
       const periodLengths = courtAppearance.periodLengths ?? []
       const breachTerm = alternativeSentenceLengthFormToSentenceLength<CourtCaseAlternativeSentenceLengthForm>(
         breachTermLengthForm,
-        'BREACH_OF_SUPERVISION_REQUIREMENTS',
+        warrantType,
         'term length of the breach',
       )
-      const breachTermIndex = periodLengths.findIndex(
-        periodLength => periodLength.periodLengthType === 'BREACH_OF_SUPERVISION_REQUIREMENTS',
-      )
+      const breachTermIndex = periodLengths.findIndex(periodLength => periodLength.periodLengthType === warrantType)
       if (breachTermIndex !== -1) {
         periodLengths[breachTermIndex] = {
           ...breachTerm,

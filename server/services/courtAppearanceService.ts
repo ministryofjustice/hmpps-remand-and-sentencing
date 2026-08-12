@@ -1755,15 +1755,15 @@ export default class CourtAppearanceService {
       const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
       courtAppearance.warrantType = breachTypeForm.breachType
       if (breachTypeForm.breachType === 'BREACH_OF_IMPRISONABLE_OFFENCE') {
-        const breachOffence = this.generateBreachOfImprisonableOffenceOffence()
-        const breachOffenceIndex = courtAppearance.offences.findIndex(
-          offence => offence.offenceCode === breachOffence.offenceCode,
+        const existingBreachOffence = this.getGeneratedBreachOffence(session, urlParameters)
+        const breachOffence = this.generateBreachOfImprisonableOffenceOffence(existingBreachOffence?.chargeUuid)
+        this.addOffence(
+          session,
+          urlParameters.nomsId,
+          breachOffence.chargeUuid,
+          breachOffence,
+          urlParameters.appearanceReference,
         )
-        if (breachOffenceIndex !== -1) {
-          courtAppearance.offences[breachOffenceIndex] = breachOffence
-        } else {
-          courtAppearance.offences.push(breachOffence)
-        }
       }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameters.nomsId] = courtAppearance
@@ -2145,13 +2145,14 @@ export default class CourtAppearanceService {
       .forEach(offence => this.addOffence(session, nomsId, offence.chargeUuid, offence, courtAppearanceUuid))
   }
 
-  private generateBreachOfImprisonableOffenceOffence(): Offence {
+  private generateBreachOfImprisonableOffenceOffence(chargeUuid: string): Offence {
     return {
       offenceCode: 'SE20538',
       outcomeUuid: '0460ad51-04ea-402a-a249-b152b052a385', // detention training order outcome
-      chargeUuid: crypto.randomUUID(),
+      chargeUuid: chargeUuid ?? crypto.randomUUID(),
       isGeneratedBreachOffence: 'true',
       sentence: {
+        countNumber: '-1',
         sentenceUuid: crypto.randomUUID(),
         periodLengths: [],
         sentenceServeType: 'CONCURRENT',

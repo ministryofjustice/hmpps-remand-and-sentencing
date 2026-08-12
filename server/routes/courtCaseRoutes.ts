@@ -38,7 +38,6 @@ import {
   convertToTitleCase,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
-import { chargeToOffence } from '../utils/mappingUtils'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import logger from '../../logger'
 import CourtCasesReleaseDatesService from '../services/courtCasesReleaseDatesService'
@@ -1419,18 +1418,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
       if (latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid) {
         courtAppearanceUuid = latestCourtAppearance.nextCourtAppearance?.futureSkeletonAppearanceUuid
       }
-      latestCourtAppearance.charges
-        .filter(charge => {
-          const dispositionCode = charge.outcome?.dispositionCode ?? charge.legacyData?.outcomeDispositionCode
-          return !dispositionCode || dispositionCode === 'INTERIM' || dispositionCode === 'I'
-        })
-        .sort((a, b) => {
-          return sortByDateDesc(b.createdAt, a.createdAt)
-        })
-        .map((charge, index) => chargeToOffence(charge, index))
-        .forEach(offence =>
-          this.courtAppearanceService.addOffence(req.session, nomsId, offence.chargeUuid, offence, courtAppearanceUuid),
-        )
+      this.courtAppearanceService.addChargesFromPreviousAppearance(
+        req.session,
+        nomsId,
+        courtAppearanceUuid,
+        latestCourtAppearance,
+      )
     }
     return res.redirect(
       JourneyUrls.receivedCustodialSentence(
@@ -1571,11 +1564,10 @@ export default class CourtCaseRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
+    if (courtAppearance.hasCommonPlatformDocuments) {
+      await this.remandAndSentencingService.createUploadDocuments(courtAppearance.uploadedDocuments, username)
+    }
     if (addOrEditCourtCase === 'add-court-case') {
-      if (courtAppearance.hasCommonPlatformDocuments) {
-        await this.remandAndSentencingService.createUploadDocuments(courtAppearance.uploadedDocuments, username)
-      }
-
       const courtCase = { appearances: [courtAppearance] } as CourtCase
       const courtCaseResponse = await this.remandAndSentencingService.createCourtCase(
         nomsId,

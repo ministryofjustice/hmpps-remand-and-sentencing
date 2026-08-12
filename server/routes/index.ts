@@ -1170,8 +1170,19 @@ export default function routes(services: Services): Router {
     appealsRoutes.getCannotDeleteConsecutiveOffence,
   )
 
-  router.get('/person/:nomsId/review-new-documents/:hmctsHearingId/landing', courtDataIngestionRoutes.landing)
-  router.get('/person/:nomsId/review-new-documents/:hmctsHearingId/start', courtDataIngestionRoutes.start)
+  const landingUrl = '/person/:nomsId/review-new-documents/:hmctsHearingId/landing'
+  router.get([landingUrl, `${landingUrl}/:existingCase`], courtDataIngestionRoutes.landing)
+  router.post([landingUrl, `${landingUrl}/:existingCase`], courtDataIngestionRoutes.submitLanding)
+  router.get(
+    '/person/:nomsId/review-new-documents/:hmctsHearingId/select-court-case',
+    courtDataIngestionRoutes.selectCourtCase,
+  )
+  router.post(
+    '/person/:nomsId/review-new-documents/:hmctsHearingId/select-court-case',
+    courtDataIngestionRoutes.submitSelectCourtCase,
+  )
+  const startUrl = '/person/:nomsId/review-new-documents/:hmctsHearingId/start'
+  router.get([startUrl, `${startUrl}/:caseId`], courtDataIngestionRoutes.start)
 
   router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/new-journey',

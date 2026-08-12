@@ -290,6 +290,14 @@ declare module 'forms' {
     courtCode?: string
   }
 
+  export interface CourtDataLandingForm {
+    addToExistingCase: string
+  }
+
+  export interface CourtDataSelectCaseForm {
+    courtCase: string
+  }
+
   export interface BreachOffenceDateForm {
     'offenceStartDate-day'?: string
     'offenceStartDate-month'?: string

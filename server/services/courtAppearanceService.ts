@@ -1752,12 +1752,16 @@ export default class CourtAppearanceService {
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
       courtAppearance.warrantType = breachTypeForm.breachType
-      if (
-        breachTypeForm.breachType === 'BREACH_OF_IMPRISONABLE_OFFENCE' &&
-        !courtAppearance.offences.some(offence => offence.isGeneratedBreachOffence === 'true')
-      ) {
+      if (breachTypeForm.breachType === 'BREACH_OF_IMPRISONABLE_OFFENCE') {
         const breachOffence = this.generateBreachOfImprisonableOffenceOffence()
-        courtAppearance.offences.push(breachOffence)
+        const breachOffenceIndex = courtAppearance.offences.findIndex(
+          offence => offence.offenceCode === breachOffence.offenceCode,
+        )
+        if (breachOffenceIndex !== -1) {
+          courtAppearance.offences[breachOffenceIndex] = breachOffence
+        } else {
+          courtAppearance.offences.push(breachOffence)
+        }
       }
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameters.nomsId] = courtAppearance

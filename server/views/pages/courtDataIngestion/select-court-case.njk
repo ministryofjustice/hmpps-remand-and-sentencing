@@ -22,7 +22,7 @@
     {%- set caseRow = {
         value: case.courtCaseUuid,
         text: case.latestCourtAppearance.caseReference + ' at ' + courtMap[case.latestCourtAppearance.courtCode] + ' last heard on ' + (case.latestCourtAppearance.warrantDate | formatDate),
-        checked: case.courtCaseUuid === courtDataSelectCaseForm.caseReference
+        checked: case.courtCaseUuid === courtDataSelectCaseForm.courtCase
     } -%}
     {{ radiosData.items.push(caseRow) }}
 {% endfor %}

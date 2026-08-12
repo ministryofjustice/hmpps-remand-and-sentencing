@@ -13,8 +13,8 @@ import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import DocumentManagementService from '../services/documentManagementService'
 import documentTypes from '../resources/documentTypes'
 import CourtDataIngestionService from '../services/courtDataIngestionService'
-import validate from '../validation/validation'
 import trimForm from '../utils/trim'
+import CourtDataJourneyUrls from './data/CourtDataJourneyUrls'
 
 export default class CourtDataIngestionRoutes extends BaseRoutes {
   constructor(
@@ -75,25 +75,21 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     const { hmctsHearingId, nomsId } = urlParameters
 
     if (!existingCase) {
-      return res.redirect(JourneyUrls.courtDataIngestionStart(nomsId, hmctsHearingId))
+      return res.redirect(CourtDataJourneyUrls.courtDataIngestionStart(nomsId, hmctsHearingId))
     }
 
     const courtDataLandingForm = trimForm<CourtDataLandingForm>(req.body)
-    const errors = validate(
-      courtDataLandingForm,
-      { addToExistingCase: 'required' },
-      { 'required.addToExistingCase': 'You must select if this is a new case or not' },
-    )
+    const errors = this.courtDataIngestionService.validateLandingForm(courtDataLandingForm)
     if (errors.length) {
       req.flash('errors', errors)
       req.flash('courtDataLandingForm', { ...courtDataLandingForm })
-      return res.redirect(JourneyUrls.courtDataIngestionLanding(nomsId, hmctsHearingId, existingCase))
+      return res.redirect(CourtDataJourneyUrls.courtDataIngestionLanding(nomsId, hmctsHearingId, existingCase))
     }
 
     if (courtDataLandingForm.addToExistingCase === 'true') {
-      return res.redirect(JourneyUrls.courtDataIngestionSelectCase(nomsId, hmctsHearingId))
+      return res.redirect(CourtDataJourneyUrls.courtDataIngestionSelectCase(nomsId, hmctsHearingId))
     }
-    return res.redirect(JourneyUrls.courtDataIngestionStart(nomsId, hmctsHearingId))
+    return res.redirect(CourtDataJourneyUrls.courtDataIngestionStart(nomsId, hmctsHearingId))
   }
 
   public selectCourtCase: RequestHandler = async (req, res): Promise<void> => {
@@ -122,7 +118,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       courtMap,
       courtDataSelectCaseForm,
       errors: req.flash('errors') || [],
-      backLink: JourneyUrls.courtDataIngestionStart(nomsId, hmctsHearingId),
+      backLink: CourtDataJourneyUrls.courtDataIngestionStart(nomsId, hmctsHearingId),
     })
   }
 
@@ -131,18 +127,16 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
     const { hmctsHearingId, nomsId } = urlParameters
 
     const courtDataSelectCaseForm = trimForm<CourtDataSelectCaseForm>(req.body)
-    const errors = validate(
-      courtDataSelectCaseForm,
-      { courtCase: 'required' },
-      { 'required.courtCase': 'You must select a case' },
-    )
+    const errors = this.courtDataIngestionService.validateCourtDataSelectCaseForm(courtDataSelectCaseForm)
     if (errors.length) {
       req.flash('errors', errors)
       req.flash('courtDataSelectCaseForm', { ...courtDataSelectCaseForm })
-      return res.redirect(JourneyUrls.courtDataIngestionSelectCase(nomsId, hmctsHearingId))
+      return res.redirect(CourtDataJourneyUrls.courtDataIngestionSelectCase(nomsId, hmctsHearingId))
     }
 
-    return res.redirect(JourneyUrls.courtDataIngestionStart(nomsId, hmctsHearingId, courtDataSelectCaseForm.courtCase))
+    return res.redirect(
+      CourtDataJourneyUrls.courtDataIngestionStart(nomsId, hmctsHearingId, courtDataSelectCaseForm.courtCase),
+    )
   }
 
   public start: RequestHandler = async (req, res): Promise<void> => {

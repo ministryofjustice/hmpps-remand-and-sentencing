@@ -5,14 +5,7 @@
 
 {% set pageTitle = applicationName + " - Check breach hearing answers" %}
 
-{% block content %}
-    <div class="govuk-grid-row govuk-!-margin-top-4">
-        <div class="govuk-grid-column-two-thirds">
-            {% include "../../partials/hearingCaption.njk" %}
-            <h1 class="govuk-heading-l">Check your answers</h1>
-
-            {{ govukSummaryList({
-                rows: [
+{% set summaryListRows = [
                     {
                         key: {
                             text: "Case reference number"
@@ -93,7 +86,39 @@
                             ]
                         }
                     }
-                ]
+                ]%}
+
+{% if courtAppearance.warrantType === 'BREACH_OF_IMPRISONABLE_OFFENCE' %}
+    {% set summaryListRows = summaryListRows.concat({
+                        key: {
+                            text: "Offence date"
+                        },
+                        value: {
+                            text: generatedBreachOffence.offenceStartDate | formatDate + (" to " + generatedBreachOffence.offenceEndDate | formatDate if generatedBreachOffence.offenceEndDate else '')
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/breach-offence-date?submitToCheckAnswers=true",
+                                    text: "Edit",
+                                    visuallyHiddenText: "offence date",
+                                    attributes: {
+                                        'data-qa': 'edit-breach-offence-date-link'
+                                    }
+                                }
+                            ]
+                        }
+                    })%}
+{% endif %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% include "../../partials/hearingCaption.njk" %}
+            <h1 class="govuk-heading-l">Check your answers</h1>
+
+            {{ govukSummaryList({
+                rows: summaryListRows
             }) }}
 
             <form method="post" autocomplete="off">

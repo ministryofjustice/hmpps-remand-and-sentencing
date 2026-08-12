@@ -2156,6 +2156,7 @@ export default class CourtAppearanceService {
         periodLengths: [],
         sentenceServeType: 'CONCURRENT',
         sentenceTypeClassification: 'DTO',
+        sentenceTypeId: 'cab9e914-e0de-48d0-9e72-0e1fc9a19cf4', // detention training order 2020 sentence type
       },
     }
   }

@@ -128,7 +128,7 @@ context('Breach journey', () => {
     const breachTypePage = Page.verifyOnPage(BreachTypePage)
     breachTypePage.radioLabelSelector('BREACH_OF_IMPRISONABLE_OFFENCE').click()
     breachTypePage.continueButton().click()
-    const courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
+    let courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
     courtCaseTaskListPage
       .taskList()
       .getTaskList()
@@ -170,6 +170,43 @@ context('Breach journey', () => {
       'Breach hearing date': '13/05/2023',
       'Court name': 'Accrington Youth Court',
       'Term length of the breach': '0 years 0 months 0 weeks 41 days',
+      'Offence date': '10/05/2023',
     })
+    breachCheckHearingAnswersPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Upload court documents',
+          status: 'Optional',
+        },
+      ])
+    courtCaseTaskListPage.uploadCourtDocumentsLink().click()
+    const uploadBreachOrderPage = Page.verifyOnPage(UploadBreachOrderPage)
+    uploadBreachOrderPage.fileInput().selectFile('cypress/fixtures/testfile.doc')
+    uploadBreachOrderPage.continueButton().click()
+    cy.location('pathname').should('include', '/view-breach-order')
+    const viewBreachOrderPage = Page.verifyOnPage(ViewBreachOrderPage)
+    viewBreachOrderPage.continueButton().click()
+    courtCaseTaskListPage = Page.verifyOnPageTitle(CourtCaseTaskListPage, 'Add a breach')
+    courtCaseTaskListPage
+      .taskList()
+      .getTaskList()
+      .should('deep.equal', [
+        {
+          name: 'Add hearing information',
+          status: 'Completed',
+        },
+        {
+          name: 'Review court documents',
+          status: '1 document uploaded',
+        },
+      ])
   })
 })

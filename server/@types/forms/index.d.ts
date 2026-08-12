@@ -289,4 +289,13 @@ declare module 'forms' {
     courtName?: string
     courtCode?: string
   }
+
+  export interface BreachOffenceDateForm {
+    'offenceStartDate-day'?: string
+    'offenceStartDate-month'?: string
+    'offenceStartDate-year'?: string
+    'offenceEndDate-day'?: string
+    'offenceEndDate-month'?: string
+    'offenceEndDate-year'?: string
+  }
 }

@@ -158,12 +158,12 @@ context('Breach journey', () => {
     breachCourtNamePage.continueButton().click()
     const breachTermLengthPage = Page.verifyOnPage(BreachTermLengthPage)
     breachTermLengthPage.daysInput().type('41')
-    breachCourtNamePage.continueButton().click()
+    breachTermLengthPage.continueButton().click()
     const breachOffenceDatePage = Page.verifyOnPage(BreachOffenceDatePage)
     breachOffenceDatePage.dayDateInput('offenceStartDate').type('10')
     breachOffenceDatePage.monthDateInput('offenceStartDate').type('5')
     breachOffenceDatePage.yearDateInput('offenceStartDate').type('2023')
-    breachCourtNamePage.continueButton().click()
+    breachOffenceDatePage.continueButton().click()
     const breachCheckHearingAnswersPage = Page.verifyOnPage(BreachCheckHearingAnswersPage)
     breachCheckHearingAnswersPage.summaryList().getSummaryList().should('deep.equal', {
       'Case reference number': 'C894623',

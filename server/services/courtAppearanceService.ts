@@ -1752,7 +1752,10 @@ export default class CourtAppearanceService {
     if (errors.length === 0) {
       const courtAppearance = this.getCourtAppearance(session, urlParameters.nomsId, urlParameters.appearanceReference)
       courtAppearance.warrantType = breachTypeForm.breachType
-      if (breachTypeForm.breachType === 'BREACH_OF_IMPRISONABLE_OFFENCE') {
+      if (
+        breachTypeForm.breachType === 'BREACH_OF_IMPRISONABLE_OFFENCE' &&
+        !courtAppearance.offences.some(offence => offence.isGeneratedBreachOffence === 'true')
+      ) {
         const breachOffence = this.generateBreachOfImprisonableOffenceOffence()
         courtAppearance.offences.push(breachOffence)
       }
@@ -1917,7 +1920,7 @@ export default class CourtAppearanceService {
           const sentencePeriodLengths = offence.sentence?.periodLengths ?? []
           this.addOrUpdateBreachTerm(sentencePeriodLengths, warrantType, breachTerm)
           // eslint-disable-next-line no-param-reassign
-          offence.sentence.periodLengths = periodLengths
+          offence.sentence.periodLengths = sentencePeriodLengths
         })
       courtAppearance.periodLengths = periodLengths
       // eslint-disable-next-line no-param-reassign
@@ -1981,17 +1984,16 @@ export default class CourtAppearanceService {
         warrantType,
         'term length of the breach',
       )
-      const breachTermIndex = periodLengths.findIndex(periodLength => periodLength.periodLengthType === warrantType)
-      if (breachTermIndex !== -1) {
-        periodLengths[breachTermIndex] = {
-          ...breachTerm,
-          legacyData: periodLengths[breachTermIndex].legacyData,
-          uuid: periodLengths[breachTermIndex].uuid,
-        }
-      } else {
-        periodLengths.push(breachTerm)
-      }
-      courtAppearance.periodLengths = periodLengths
+      this.addOrUpdateBreachTerm(periodLengths, warrantType, breachTerm)
+
+      courtAppearance.offences
+        .filter(offence => offence.isGeneratedBreachOffence === 'true')
+        .forEach(offence => {
+          const sentencePeriodLengths = offence.sentence?.periodLengths ?? []
+          this.addOrUpdateBreachTerm(sentencePeriodLengths, warrantType, breachTerm)
+          // eslint-disable-next-line no-param-reassign
+          offence.sentence.periodLengths = sentencePeriodLengths
+        })
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameter.nomsId] = courtAppearance
     }

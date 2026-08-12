@@ -98,7 +98,7 @@ context('Add Breach Offence Date Page', () => {
       .should('equal', 'There is a problem This date does not exist.')
   })
 
-  it('submitting an invalid end date results in an error', () => {
+  it('submitting an invalid future end date results in an error', () => {
     breachOffenceDatePage.dayDateInput('offenceStartDate').type('15')
     breachOffenceDatePage.monthDateInput('offenceStartDate').type('1')
     breachOffenceDatePage.yearDateInput('offenceStartDate').type('2024')

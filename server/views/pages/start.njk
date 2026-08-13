@@ -159,6 +159,13 @@
                                     }
                                     ]))%}
                             {% endif %}
+                            {% if courtCaseDetails.warrantType === 'BREACH_OF_IMPRISONABLE_OFFENCE' %}
+                                {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat([{
+                                        key: { text: "Breach due to imprisonable offence"},
+                                        value: { text: courtCaseDetails.overallBreachOfImprisonableOffenceLength | formatLengths if courtCaseDetails.overallBreachOfImprisonableOffenceLength else 'Not entered' }
+                                    }
+                                ]))%}
+                            {% endif %}
                             {% if courtCaseDetails.warrantType === 'NON_SENTENCING' %}
                               {% set courtCaseSummaryRows = (courtCaseSummaryRows.concat(
                                       {

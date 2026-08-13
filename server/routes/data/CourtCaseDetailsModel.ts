@@ -84,6 +84,13 @@ export default class CourtCaseDetailsModel {
             ),
           ),
         )
+        const breachOfImprisonableOffence = formatLengths(
+          periodLengthToSentenceLength(
+            hearing.periodLengths.find(
+              periodLength => periodLength.periodLengthType === 'BREACH_OF_IMPRISONABLE_OFFENCE',
+            ),
+          ),
+        )
         return {
           ...hearing,
           charges: sortedCharges,
@@ -100,6 +107,7 @@ export default class CourtCaseDetailsModel {
               }))
             : [],
           breachOfSupervisionLength,
+          breachOfImprisonableOffence,
         }
       })
       .sort((a, b) => sortByDateDesc(a.appearanceDate, b.appearanceDate))

@@ -81,10 +81,17 @@
         </div>
 
         <div class="govuk-grid-one-third">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Breach of supervision requirements</h3>
-            <p class="govuk-body govuk-!-margin-bottom-2" data-qa="breach-of-supervision-requirements">
-              {{ hearing.breachOfSupervisionLength if hearing.breachOfSupervisionLength else 'Not entered' }}
-            </p>
+            {% if hearing.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS' %}
+              <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Breach of supervision requirements</h3>
+              <p class="govuk-body govuk-!-margin-bottom-2" data-qa="breach-of-supervision-requirements">
+                {{ hearing.breachOfSupervisionLength if hearing.breachOfSupervisionLength else 'Not entered' }}
+              </p>
+            {% else %}
+              <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Breach due to imprisonable offence</h3>
+              <p class="govuk-body govuk-!-margin-bottom-2" data-qa="breach-due-to-imprisonable-offence">
+                {{ hearing.breachOfImprisonableOffence if hearing.breachOfImprisonableOffence else 'Not entered' }}
+              </p>
+            {% endif %}
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Court documents</h3>
             <ul class="govuk-list govuk-list--no--bullet govuk-!-margin-bottom-3" data-qa="court-documents">
                 {% if hearing.documentsWithUiType | length == 0 %}

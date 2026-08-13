@@ -44,6 +44,26 @@ context('Breach Court Case details Page', () => {
             ],
           },
         },
+        {
+          'Case reference': 'C894623',
+          Location: 'Accrington Youth Court',
+          'Breach hearing date': '15/10/2023',
+          Outcome: 'DTO (Detention and Training Order)',
+          'Breach due to imprisonable offence': '0 years 3 months 0 weeks 0 days',
+          'Court documents': 'No documents uploaded',
+          Offences: {
+            'offences (1)': [
+              {
+                offenceCardHeader: 'PS90037 An offence description',
+                'Committed on': '15/10/2023',
+                'Consecutive or concurrent': 'Concurrent',
+                Outcome: 'DTO (Detention and Training Order)',
+                'Sentence type': 'DTO',
+                'Breach of imprisonable offence': '0 years 3 months 0 weeks 0 days',
+              },
+            ],
+          },
+        },
       ])
   })
 

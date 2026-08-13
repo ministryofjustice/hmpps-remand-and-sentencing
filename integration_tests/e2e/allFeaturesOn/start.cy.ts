@@ -30,7 +30,7 @@ context('Start Page', () => {
       'Case references': 'HT32511',
       'First day in custody': '05/06/2025',
       'Overall case outcome': 'DTO (Detention and Training Order)',
-      'Breach of supervision requirements': '0 years 0 months 0 weeks 41 days',
+      'Breach due to imprisonable offence': '0 years 3 months 0 weeks 0 days',
     })
   })
 })

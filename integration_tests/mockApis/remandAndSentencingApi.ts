@@ -5774,4 +5774,100 @@ export default {
       },
     })
   },
+
+  stubGetBreachImprisonableOffenceAppearanceDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/remand-and-sentencing-api/court-appearance/bff8834a-bb17-4e2b-8336-32505be88c3a',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          appearanceUuid: 'bff8834a-bb17-4e2b-8336-32505be88c3a',
+          outcome: {
+            outcomeUuid: 'bcc438da-b3b4-4ca8-a870-9d17543e4317',
+            outcomeName: 'DTO (Detention and Training Order)',
+            nomisCode: '3576',
+            outcomeType: 'SENTENCING',
+            displayOrder: 30,
+          },
+          courtCode: 'ACCRYC',
+          courtCaseReference: 'C894623',
+          criminalAppealOfficeReference: null,
+          appearanceDate: '2023-12-15',
+          warrantType: 'BREACH_OF_IMPRISONABLE_OFFENCE',
+          nextCourtAppearance: null,
+          documents: [],
+          charges: [
+            {
+              chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
+              offenceCode: 'PS90037',
+              offenceStartDate: '2025-12-15',
+              outcome: {
+                outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                outcomeName: 'DTO',
+                nomisCode: '8855',
+                outcomeType: 'SENTENCING',
+                displayOrder: 20,
+                dispositionCode: 'FINAL',
+                status: 'ACTIVE',
+              },
+            },
+            {
+              chargeUuid: '7752d0c5-38bf-4528-b5cb-5bf23dfdc350',
+              offenceCode: 'SE20538',
+              outcome: {
+                outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
+                outcomeName: 'DTO',
+                nomisCode: '8855',
+                outcomeType: 'SENTENCING',
+                displayOrder: 20,
+                dispositionCode: 'FINAL',
+                status: 'ACTIVE',
+              },
+              sentence: {
+                sentenceUuid: 'a3902e94-a098-446a-a16e-7946044c57e0',
+                chargeNumber: '-1',
+                periodLengths: [
+                  {
+                    years: null,
+                    months: 3,
+                    weeks: null,
+                    days: null,
+                    periodOrder: 'years,months,weeks,days',
+                    periodLengthType: 'BREACH_OF_IMPRISONABLE_OFFENCE',
+                    legacyData: null,
+                    periodLengthUuid: '04398455-d6f9-41e3-9b89-e8f5577886d2',
+                  },
+                ],
+                sentenceServeType: 'CONCURRENT',
+                sentenceType: {
+                  sentenceTypeUuid: 'cab9e914-e0de-48d0-9e72-0e1fc9a19cf4',
+                  description: 'DTO',
+                  classification: 'DTO',
+                  displayOrder: 20,
+                },
+                hasRecall: false,
+              },
+            },
+          ],
+          deleteStatus: 'SUPPORTED',
+          periodLengths: [
+            {
+              years: null,
+              months: 3,
+              weeks: null,
+              days: null,
+              periodOrder: 'years,months,weeks,days',
+              periodLengthType: 'BREACH_OF_IMPRISONABLE_OFFENCE',
+              legacyData: null,
+              periodLengthUuid: '04398455-d6f9-41e3-9b89-e8f5577886d2',
+            },
+          ],
+        },
+      },
+    })
+  },
 }

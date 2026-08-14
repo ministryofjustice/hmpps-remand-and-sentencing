@@ -23,6 +23,7 @@ import {
 import { sortByDateDesc } from './utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import config from '../config'
+import { BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE } from './constants'
 
 const sentenceLengthToCreatePeriodLength = (sentenceLength: SentenceLength, prisonId: string): CreatePeriodLength => {
   return {
@@ -420,6 +421,14 @@ export function pageCourtCaseAppearanceToCourtAppearance(
     })
     .map(chargeToOffence)
   populateConsecutiveToSentenceUuid(offences)
+  if (pageCourtCaseAppearance.warrantType === 'BREACH_OF_IMPRISONABLE_OFFENCE') {
+    offences
+      .filter(offence => offence.offenceCode === BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE)
+      .forEach(offence => {
+        // eslint-disable-next-line no-param-reassign
+        offence.isGeneratedBreachOffence = 'true'
+      })
+  }
   return {
     appearanceUuid: pageCourtCaseAppearance.appearanceUuid,
     caseReferenceNumber: pageCourtCaseAppearance.courtCaseReference,

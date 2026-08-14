@@ -1124,9 +1124,10 @@ export default class CourtAppearanceService {
         this.resetChain(existingOffence.sentence.sentenceUuid, courtAppearance)
       }
       offence.sentence?.periodLengths?.forEach(sentencePeriodLength => {
-        const appearancePeriodLengthIndex = courtAppearance.periodLengths.findIndex(
-          appearancePeriodLength => appearancePeriodLength.uuid === sentencePeriodLength.uuid,
-        )
+        const appearancePeriodLengthIndex =
+          courtAppearance.periodLengths?.findIndex(
+            appearancePeriodLength => appearancePeriodLength.uuid === sentencePeriodLength.uuid,
+          ) ?? -1
         if (appearancePeriodLengthIndex !== -1) {
           courtAppearance.periodLengths[appearancePeriodLengthIndex] = sentencePeriodLength
         }

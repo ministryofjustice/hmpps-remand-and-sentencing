@@ -1,0 +1,31 @@
+{% extends "../../partials/goToCourtHearingLayout.njk" %}
+{% from "moj/components/interruption-card/macro.njk" import interruptionCard %}
+
+{% set pageTitle = "offence - cannot delete period length offence" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-two-thirds">
+            {% call interruptionCard({
+                heading: "You must delete the breach hearing, before you can delete this offence",
+                primaryAction: {
+                    text: "Cancel and go back to all hearings",
+                    href: "/person/" + nomsId + "/view-court-case/" + courtCaseReference + "/details",
+                    style: "link",
+                    attributes: {
+                        "data-qa": "continue-button"
+                    }
+                },
+                secondaryAction: {
+                    text: "Go back to edit hearing",
+                    href: backLink
+                }
+            })%}
+                <p class="govuk-body govuk-!-width-three-quarters">
+                    This offence includes a breach of supervision requirement.
+                </p>
+                <p class="govuk-body govuk-!-width-three-quarters">To delete this offence, you must first delete the breach hearing.</p>
+            {%- endcall %}
+        </div>
+    </div>
+{% endblock %}

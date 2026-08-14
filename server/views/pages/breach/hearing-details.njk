@@ -49,18 +49,19 @@
     }
   },
   {
-    key: { text: "Breach of supervision requirements" },
-    value: { text: breachOfSupervisionRequirement | formatLengths if breachOfSupervisionRequirement else 'Not entered' },
+    key: { text: "Breach of supervision requirements" if hearing.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS' else 'Breach due to imprisonable offence' },
+    value: { text: breachTerm | formatLengths if breachTerm else 'Not entered' },
     actions: {
       items: [{
         href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/breach-term-length",
         text: "Edit",
-        visuallyHiddenText: "breach of supervision requirements",
+        visuallyHiddenText: "breach of supervision requirements" if hearing.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS' else 'breach due to imprisonable offence',
         classes: "govuk-link--no-visited-state"
       }]
     }
   }
 ] %}
+
 
 {% set documentSummaryRows = [] %}
 
@@ -129,7 +130,26 @@
       <span data-qa="custodialOffences">
         {% for offence in custodialOffences %}
           {% set offenceId = 'offences.' + offence.index %}
-          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors)) }}
+          {% set extraParams = undefined %}
+          {% if offence.isGeneratedBreachOffence === 'true' %}
+            {% set extraParams = {
+                actions: {
+                  items: [{
+                      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + offence.chargeUuid + "/load-edit-offence",
+                      text: "Edit",
+                      visuallyHiddenText: "edit offence",
+                      classes: "govuk-link--no-visited-state"
+                    },{
+                      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/offences/" + offence.chargeUuid + "/check-delete-offence",
+                      text: "Delete",
+                      visuallyHiddenText: "delete offence",
+                      classes: "govuk-link--no-visited-state"
+                    }]
+                }
+              }%}
+          {% endif %}
+
+          {{ offenceCard(offence | offenceToOffenceCard(offenceId, offenceMap, outcomeMap, consecutiveToSentenceMap, sentenceTypeMap, courtMap, errors, extraParams)) }}
 
         {% else %}
           {{ govukInsetText({ text: "There are no offences with custodial outcomes." }) }}

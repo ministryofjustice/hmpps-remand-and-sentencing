@@ -736,7 +736,7 @@ export default class BreachRoutes extends BaseRoutes {
       courtMap,
     )
 
-    const breachOfSupervisionRequirement = this.courtAppearanceService.getBreachTerm(req.session, urlParameters)
+    const breachTerm = this.courtAppearanceService.getBreachTerm(req.session, urlParameters)
 
     return res.render('pages/breach/hearing-details', {
       ...urlParameters,
@@ -759,7 +759,7 @@ export default class BreachRoutes extends BaseRoutes {
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
       errors: req.flash('errors') || [],
       deleteOffenceDetails: req.flash('deleteOffenceDetails')[0],
-      breachOfSupervisionRequirement,
+      breachTerm,
       backLink: JourneyUrls.courtCaseDetails(urlParameters),
     })
   }
@@ -784,6 +784,40 @@ export default class BreachRoutes extends BaseRoutes {
       urlParameters.courtCaseReference,
       urlParameters.appearanceReference,
     )
+  }
+
+  public checkDeleteOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    return this.canDeleteOffence(
+      req,
+      res,
+      urlParameters,
+      BreachJourneyUrls.cannotDeleteConsecutiveOffence(urlParameters),
+      BreachJourneyUrls.cannotDeletePeriodLengthOffence(urlParameters),
+      JourneyUrls.deleteOffence(urlParameters),
+    )
+  }
+
+  public getCannotDeleteConsecutiveOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const cannotDeleteInformation = await this.getCannotDeleteConsecutiveOffenceData(req, res)
+    const backLink = BreachJourneyUrls.hearingDetails(urlParameters)
+    return res.render('pages/breach/cannot-delete-consecutive-offence', {
+      ...urlParameters,
+      backLink,
+      ...cannotDeleteInformation,
+    })
+  }
+
+  public getCannotDeletePeriodLengthOffence: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { appearanceUuid } = req.query
+    const backLink = BreachJourneyUrls.hearingDetails(urlParameters)
+    return res.render('pages/breach/cannot-delete-period-length-offence', {
+      ...urlParameters,
+      appearanceUuid,
+      backLink,
+    })
   }
 
   private submitRedirect(res, urlParameters: UrlParameters, submitToCheckAnswers, fallbackUrl) {

@@ -44,7 +44,7 @@ import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import logger from '../../logger'
 import DocumentManagementService from './documentManagementService'
 import RefDataService from './refDataService'
-import { DETENTION_TRAINING_ORDER_OUTCOME_UUID } from '../utils/constants'
+import { BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE, DETENTION_TRAINING_ORDER_OUTCOME_UUID } from '../utils/constants'
 import { PageCourtCaseAppearance } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 
 export default class CourtAppearanceService {
@@ -1123,6 +1123,14 @@ export default class CourtAppearanceService {
       if (existingOffence.sentence && !offence.sentence) {
         this.resetChain(existingOffence.sentence.sentenceUuid, courtAppearance)
       }
+      offence.sentence?.periodLengths?.forEach(sentencePeriodLength => {
+        const appearancePeriodLengthIndex = courtAppearance.periodLengths.findIndex(
+          appearancePeriodLength => appearancePeriodLength.uuid === sentencePeriodLength.uuid,
+        )
+        if (appearancePeriodLengthIndex !== -1) {
+          courtAppearance.periodLengths[appearancePeriodLengthIndex] = sentencePeriodLength
+        }
+      })
     }
 
     // eslint-disable-next-line no-param-reassign
@@ -2147,7 +2155,7 @@ export default class CourtAppearanceService {
 
   private generateBreachOfImprisonableOffenceOffence(chargeUuid: string): Offence {
     return {
-      offenceCode: 'SE20538',
+      offenceCode: BREACH_OF_IMPRISONABLE_OFFENCE_OFFENCE_CODE,
       outcomeUuid: '0460ad51-04ea-402a-a249-b152b052a385', // detention training order outcome
       chargeUuid: chargeUuid ?? crypto.randomUUID(),
       isGeneratedBreachOffence: 'true',

@@ -1334,5 +1334,20 @@ export default function routes(services: Services): Router {
     appealsRoutes.getCannotDeletePeriodLengthOffence,
   )
 
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/check-delete-offence',
+    breachRoutes.checkDeleteOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/cannot-delete-consecutive-offence',
+    breachRoutes.getCannotDeleteConsecutiveOffence,
+  )
+
+  router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/breach/offences/:chargeUuid/cannot-delete-period-length-offence',
+    breachRoutes.getCannotDeletePeriodLengthOffence,
+  )
+
   return router
 }

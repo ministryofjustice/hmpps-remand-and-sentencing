@@ -531,9 +531,14 @@ export default abstract class BaseRoutes {
           const reasonDetails = deleteStatus.reasons.find(
             deleteReason => deleteReason.reason === 'HAS_APPEARANCE_PERIOD_LENGTH',
           )
-          return res.redirect(
-            `${cannotDeletePeriodLength}?appearanceUuid=${reasonDetails.metadata.appearanceUuid}&periodLengthType=${reasonDetails.metadata.periodLengthType}`,
-          )
+          if (
+            !charge.isGeneratedBreachOffence &&
+            reasonDetails.metadata.periodLengthType !== 'BREACH_OF_IMPRISONABLE_OFFENCE'
+          ) {
+            return res.redirect(
+              `${cannotDeletePeriodLength}?appearanceUuid=${reasonDetails.metadata.appearanceUuid}&periodLengthType=${reasonDetails.metadata.periodLengthType}`,
+            )
+          }
         }
       }
     }

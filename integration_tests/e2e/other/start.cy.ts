@@ -274,4 +274,8 @@ context('Start Page', () => {
       'Overall case outcome': 'Sentence varied',
     })
   })
+
+  it('filter panel is open by default', () => {
+    startPage.filterSortSummaryPanel().should('have.attr', 'open')
+  })
 })

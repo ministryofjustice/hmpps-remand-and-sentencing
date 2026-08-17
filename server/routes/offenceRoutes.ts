@@ -2659,7 +2659,11 @@ export default class OffenceRoutes extends BaseRoutes {
 
         const expectedPeriodLengthTypes = sentenceTypePeriodLengths[sentenceType.classification]?.periodLengths ?? []
         expectedPeriodLengthTypes
-          .filter(expectedType => !periodLengths.some(periodLength => periodLength.type === expectedType.type))
+          .filter(
+            expectedType =>
+              !periodLengths.some(periodLength => periodLength.type === expectedType.type) &&
+              !offence.isGeneratedBreachOffence,
+          )
           .map(expectedType => {
             return {
               key: periodLengthTypeHeadings[expectedType.type].toLowerCase(),
@@ -2710,6 +2714,7 @@ export default class OffenceRoutes extends BaseRoutes {
       sentenceTypeClassification: sentenceType?.classification,
       showHearingDetails: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
       showOutcomeCta: this.isRepeatJourney(addOrEditCourtCase, addOrEditCourtAppearance) && !offence.updatedOutcome,
+      isBreachGeneratedOffence: offence.isGeneratedBreachOffence === 'true',
     })
   }
 

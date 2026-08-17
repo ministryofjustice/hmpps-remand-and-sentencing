@@ -4,6 +4,7 @@ import Page from '../../pages/page'
 import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CannotDeleteSentencePage from '../../pages/cannotDeleteSentencePage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
+import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
 
 context('Breach appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -164,13 +165,38 @@ context('Breach appearance details Page', () => {
           '7752d0c5-38bf-4528-b5cb-5bf23dfdc350',
         )
         .click()
-      const editOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      let editOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
       editOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
         Offence: 'SE20538 An offence description',
         'Committed on': '10/10/2023',
         Outcome: 'DTO',
         'Sentence type': 'DTO',
         'Breach due to imprisonable offence': '0 years 3 months 0 weeks 0 days',
+        'Consecutive or concurrent': 'Concurrent',
+      })
+      editOffencePage
+        .editPeriodLengthLink(
+          'A1234AB',
+          'edit',
+          'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+          'bff8834a-bb17-4e2b-8336-32505be88c3a',
+          '7752d0c5-38bf-4528-b5cb-5bf23dfdc350',
+          'BREACH_OF_IMPRISONABLE_OFFENCE',
+        )
+        .click()
+      const offencePeriodLengthPage = Page.verifyOnPageTitle(
+        OffencePeriodLengthPage,
+        'breach due to imprisonable offence',
+      )
+      offencePeriodLengthPage.monthsInput().should('have.value', '3').clear().type('6')
+      offencePeriodLengthPage.continueButton().click()
+      editOffencePage = Page.verifyOnPageTitle(OffenceEditOffencePage, 'offence')
+      editOffencePage.editSummaryList().getSummaryList().should('deep.equal', {
+        Offence: 'SE20538 An offence description',
+        'Committed on': '10/10/2023',
+        Outcome: 'DTO',
+        'Sentence type': 'DTO',
+        'Breach due to imprisonable offence': '0 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
       })
     })

@@ -9,6 +9,12 @@ function httpError(message: string, status: number): HTTPError {
   return Object.assign(new Error(message), { status }) as unknown as HTTPError
 }
 
+// Shaped like the real SanitisedError thrown by @ministryofjustice/hmpps-rest-client API clients —
+// .responseStatus, no .status. See errorHandlerStatusMismatch.test.ts for the full unmocked proof.
+function sanitisedError(message: string, responseStatus: number): HTTPError {
+  return Object.assign(new Error(message), { responseStatus }) as unknown as HTTPError
+}
+
 jest.mock('./data/sessionRecoveryStore')
 
 let app: Express
@@ -114,5 +120,25 @@ describe('auth error handling (401/403)', () => {
     expect(saveSession).not.toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
     expect(res.render).toHaveBeenCalledWith('pages/error')
+  })
+
+  it('recognises a SanitisedError-shaped 401 (.responseStatus, no .status) the same as a real API client throws', async () => {
+    const { req, res } = createReqRes({ nomsId: 'A1234BC', username: 'user1' })
+    const error = sanitisedError('unauthorized', 401)
+
+    await createErrorHandler(false)(error, req, res, next)
+
+    expect(saveSession).toHaveBeenCalledWith('user1', 'A1234BC', req.session)
+    expect(res.redirect).toHaveBeenCalledWith('/sign-out')
+  })
+
+  it('recognises a SanitisedError-shaped 403 (.responseStatus, no .status) the same as a real API client throws', async () => {
+    const { req, res } = createReqRes({ nomsId: 'A1234BC', username: 'user1' })
+    const error = sanitisedError('forbidden', 403)
+
+    await createErrorHandler(false)(error, req, res, next)
+
+    expect(saveSession).toHaveBeenCalledWith('user1', 'A1234BC', req.session)
+    expect(res.redirect).toHaveBeenCalledWith('/sign-out')
   })
 })

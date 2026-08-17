@@ -1,4 +1,4 @@
-import session, { MemoryStore, Store } from 'express-session'
+import session, { MemoryStore, Store, Session, SessionData } from 'express-session'
 import { RedisStore } from 'connect-redis'
 import express, { Router } from 'express'
 import type { CourtAppearance, CourtCase, Offence } from 'models'
@@ -6,6 +6,16 @@ import { randomUUID } from 'crypto'
 import { createRedisClient } from '../data/redisClient'
 import config from '../config'
 import logger from '../../logger'
+
+/**
+ * Merges journey data recovered from sessionRecoveryStore into a (new) session. Excludes `cookie`:
+ * that's session-store-owned metadata (expiry etc.) for the old, now-destroyed session and must not
+ * overwrite the new session's own cookie.
+ */
+export function restoreJourneySession(currentSession: Session & Partial<SessionData>, recovered: Partial<SessionData>) {
+  const { cookie, ...journeyData } = recovered as Record<string, unknown>
+  Object.assign(currentSession, journeyData)
+}
 
 export default function setUpWebSession(): Router {
   let store: Store

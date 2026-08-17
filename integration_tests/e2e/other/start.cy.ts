@@ -90,14 +90,12 @@ context('Start Page', () => {
 
   it('can sort by earliest', () => {
     cy.task('stubSearchCourtCases', { sortBy: 'APPEARANCE_DATE_ASC' })
-    startPage.filterSortSummary().click()
     startPage.radioLabelContains('Court appearance (earliest)').click()
     startPage.applyButton().click()
     Page.verifyOnPage(StartPage)
   })
 
   it('displays include previous periods checkbox label with count filter with total', () => {
-    startPage.filterSortSummary().click()
     startPage.includeCasesFromPreviousPeriodsLabel(1)
   })
 

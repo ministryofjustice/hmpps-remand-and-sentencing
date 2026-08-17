@@ -47,7 +47,8 @@
     value: {
       text: outcome | outcomeValueOrLegacy(offence.legacyData)
     },
-    actions: [] if isBreachGeneratedOffence else [{
+    actions:{
+      items: [] if isBreachGeneratedOffence else [{
       href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-outcome?submitToEditOffence=true",
       text: "Edit",
       visuallyHiddenText: "outcome",
@@ -56,6 +57,7 @@
         'data-qa': 'edit-offence-outcome-' + chargeUuid
       }
     }]
+    }
   }%}
 {% endif %}
 

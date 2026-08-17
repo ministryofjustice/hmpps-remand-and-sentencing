@@ -5818,6 +5818,7 @@ export default {
             {
               chargeUuid: '7752d0c5-38bf-4528-b5cb-5bf23dfdc350',
               offenceCode: 'SE20538',
+              offenceStartDate: '2023-10-10',
               outcome: {
                 outcomeUuid: 'e022f78a-016a-4e11-905b-66a1fee27584',
                 outcomeName: 'DTO',

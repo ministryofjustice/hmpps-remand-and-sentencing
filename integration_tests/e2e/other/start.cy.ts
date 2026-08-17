@@ -276,4 +276,10 @@ context('Start Page', () => {
   it('filter panel is open by default', () => {
     startPage.filterSortSummaryPanel().should('have.attr', 'open')
   })
+
+  it('filter panel is visible when toggled closed then opened', () => {
+    startPage.filterSortSummary().click() // Close
+    startPage.filterSortSummary().click() // Open
+    startPage.filterSortSummaryPanel().should('have.attr', 'open')
+  })
 })

@@ -110,3 +110,33 @@ describe('GET review new documents start', () => {
       )
   })
 })
+
+describe('GET review new documents select court case', () => {
+  it('back link returns to the review new documents page, not the start route', () => {
+    defaultServices.remandAndSentencingService.searchCourtCases.mockResolvedValue({
+      content: [
+        {
+          courtCaseUuid: 'court-case-1',
+          latestCourtAppearance: {
+            caseReference: 'CASE123',
+            courtCode: 'LVRPCC',
+            warrantDate: '2026-06-23',
+          },
+        },
+      ],
+    } as never)
+    defaultServices.courtRegisterService.getCourtMap.mockResolvedValue({
+      LVRPCC: 'Liverpool Crown Court',
+    } as never)
+
+    return request(app)
+      .get('/person/A1234AB/review-new-documents/hearing1/select-court-case')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+          '/person/A1234AB/review-new-documents/hearing1/landing/existing-case',
+        )
+      })
+  })
+})

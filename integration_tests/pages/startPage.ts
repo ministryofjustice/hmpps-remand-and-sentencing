@@ -40,6 +40,8 @@ export default class StartPage extends Page {
 
   filterSortSummary = (): PageElement => cy.get('[data-qa=filterSortSummary]')
 
+  filterSortSummaryPanel = (): PageElement => cy.get('.filter-box')
+
   addAppearanceLink = (courtCaseReference: string): PageElement =>
     cy.get(`[data-qa=add-appearance-link-${courtCaseReference}]`)
 

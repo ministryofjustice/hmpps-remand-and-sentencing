@@ -118,7 +118,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       courtMap,
       courtDataSelectCaseForm,
       errors: req.flash('errors') || [],
-      backLink: CourtDataJourneyUrls.courtDataIngestionStart(nomsId, hmctsHearingId),
+      backLink: CourtDataJourneyUrls.courtDataIngestionLanding(nomsId, hmctsHearingId, true),
     })
   }
 

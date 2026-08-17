@@ -17,7 +17,11 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">
-                Review new documents and add a court case
+                {% if existingCase %}
+                    Review new documents and choose how you want to add information
+                {% else %}
+                    Review new documents and add a court case
+                {% endif %}
             </h1>
 
             <p class="govuk-body" data-qa="common-platform-text">A new {{warrantTypeText}} warrant for <strong>{{appearance.courtCaseReference}}</strong> has been added from Common Platform.</p>
@@ -89,7 +93,7 @@
                                 text: "Add a new court case"
                             }
                         ]
-                    }) }}  
+                    }) }}
                 {% else %}
                     <h3 class="govuk-heading-s">What you need to do</h3>
                     <p class="govuk-body">Review the documents then continue to enter information exactly as it is written on the warrant.</p>

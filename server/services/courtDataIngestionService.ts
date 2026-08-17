@@ -14,7 +14,7 @@ export default class CourtDataIngestionService {
     return validate(
       courtDataLandingForm,
       { addToExistingCase: 'required' },
-      { 'required.addToExistingCase': 'You must select if this is a new case or not' },
+      { 'required.addToExistingCase': 'You must choose whether you want to add a new court case or a new hearing.' },
     )
   }
 

@@ -110,3 +110,39 @@ describe('GET review new documents start', () => {
       )
   })
 })
+
+describe('GET review new documents landing headings', () => {
+  const stubLandingServices = () => {
+    defaultServices.remandAndSentencingService.getHmctsCourtData.mockResolvedValue({
+      courtCaseReference: 'CASE123',
+      warrantType: 'NON_SENTENCING',
+      charges: [],
+      documents: [],
+      periodLengths: [],
+    } as never)
+    defaultServices.courtDataIngestionService.getCourtHearing.mockResolvedValue({
+      hearingId: 'hearing1',
+      documents: [],
+    } as never)
+  }
+
+  it('asks the user to choose how to add information on the existing case variant', () => {
+    stubLandingServices()
+    return request(app)
+      .get('/person/A1234AB/review-new-documents/hearing1/landing/existing-case')
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('h1').text().trim()).toStrictEqual('Review new documents and choose how you want to add information')
+      })
+  })
+
+  it('keeps the add a court case heading when there is no choice to make', () => {
+    stubLandingServices()
+    return request(app)
+      .get('/person/A1234AB/review-new-documents/hearing1/landing')
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('h1').text().trim()).toStrictEqual('Review new documents and add a court case')
+      })
+  })
+})

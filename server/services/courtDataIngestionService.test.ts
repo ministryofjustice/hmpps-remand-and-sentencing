@@ -1,19 +1,34 @@
 import type { CourtDataLandingForm } from 'forms'
 import CourtDataIngestionService from './courtDataIngestionService'
+import CourtDataIngestionApiClient from '../data/courtDataIngestionApiClient'
 
-const courtDataIngestionService = new CourtDataIngestionService(null)
+jest.mock('../data/courtDataIngestionApiClient')
 
-describe('validateLandingForm', () => {
-  it('returns no errors when a choice has been made', () => {
-    expect(courtDataIngestionService.validateLandingForm({ addToExistingCase: 'true' })).toHaveLength(0)
+describe('courtDataIngestionService', () => {
+  let courtDataIngestionApiClient: jest.Mocked<CourtDataIngestionApiClient>
+  let service: CourtDataIngestionService
+
+  beforeEach(() => {
+    courtDataIngestionApiClient = new CourtDataIngestionApiClient(null) as jest.Mocked<CourtDataIngestionApiClient>
+    service = new CourtDataIngestionService(courtDataIngestionApiClient)
   })
 
-  it('asks the user to choose between a new court case and a new hearing when nothing is selected', () => {
-    expect(courtDataIngestionService.validateLandingForm({} as CourtDataLandingForm)).toStrictEqual([
-      {
-        text: 'You must choose whether you want to add a new court case or a new hearing.',
-        href: '#addToExistingCase',
-      },
-    ])
+  describe('validateLandingForm', () => {
+    it('no errors if a choice has been made', () => {
+      const courtDataLandingForm = { addToExistingCase: 'true' } as CourtDataLandingForm
+      const errors = service.validateLandingForm(courtDataLandingForm)
+      expect(errors.length).toBe(0)
+    })
+
+    it('the correct error is returned if no choice has been made', () => {
+      const courtDataLandingForm = {} as CourtDataLandingForm
+      const errors = service.validateLandingForm(courtDataLandingForm)
+      expect(errors).toEqual([
+        {
+          href: '#addToExistingCase',
+          text: 'You must choose whether you want to add a new court case or a new hearing.',
+        },
+      ])
+    })
   })
 })

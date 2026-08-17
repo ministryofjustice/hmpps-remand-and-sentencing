@@ -14,6 +14,51 @@ afterEach(() => {
 })
 
 describe('GET review new documents landing', () => {
+  const appearance = {
+    courtCaseReference: 'CASE123',
+    warrantType: 'NON_SENTENCING',
+    charges: [],
+    documents: [],
+    periodLengths: [],
+  }
+
+  const hearing = {
+    hearingId: 'abf395c2-8e3c-419c-bd9c-71d544e5d811',
+    courtName: 'Liverpool Crown Court',
+    hearingDate: '2026-06-23T12:30:00',
+    caseReferences: ['28DI3664010'],
+    hearingType: 'Trial',
+    documents: [],
+  }
+
+  it('asks how the user wants to add the information when adding to an existing case', () => {
+    defaultServices.remandAndSentencingService.getHmctsCourtData.mockResolvedValue(appearance as never)
+    defaultServices.courtDataIngestionService.getCourtHearing.mockResolvedValue(hearing as never)
+
+    return request(app)
+      .get('/person/A1234AB/review-new-documents/hearing1/landing/existing-case')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text()
+        expect(heading).toContain('Review new documents and choose how you want to add information')
+      })
+  })
+
+  it('states that a court case is being added when there is no choice to make', () => {
+    defaultServices.remandAndSentencingService.getHmctsCourtData.mockResolvedValue(appearance as never)
+    defaultServices.courtDataIngestionService.getCourtHearing.mockResolvedValue(hearing as never)
+
+    return request(app)
+      .get('/person/A1234AB/review-new-documents/hearing1/landing')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text()
+        expect(heading).toContain('Review new documents and add a court case')
+      })
+  })
+
   it('renders each document with a view-document link and its type description', () => {
     defaultServices.remandAndSentencingService.getHmctsCourtData.mockResolvedValue({
       courtCaseReference: 'CASE123',

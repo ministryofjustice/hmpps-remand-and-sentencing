@@ -118,6 +118,16 @@ sequenceDiagram
 
 ## Edge cases
 
+- **Voluntary sign-out must NOT be recoverable.** If a user deliberately clicks "Sign out"
+  (`server/views/partials/header.njk:39` → `GET /sign-out` → `setUpAuthentication.ts:63-71`), that
+  route destroys the session directly and never passes through `errorHandler.ts`. The snapshot hook
+  lives *only* in the `401`/`403` branch of `errorHandler.ts`, not in the `/sign-out` route itself —
+  so a deliberate logout takes no snapshot and progress is correctly discarded, exactly as it
+  behaves today. Recovery only ever triggers on the involuntary path: a downstream API call failing
+  with `401`/`403` because the token has expired/been invalidated (e.g. the ~2 hour token lifetime),
+  which is caught by `errorHandler.ts` and *then* redirects to `/sign-out`. This distinction is
+  load-bearing — the two paths must stay separate; do not move the snapshot call into the shared
+  `/sign-out` handler, or a deliberate logout would start being "recovered" too.
 - **No `nomsId` in scope** (error occurs on a route not under `/person/:nomsId`) — skip the snapshot;
   behaviour is unchanged from today (session still destroyed, no recovery possible, same as now).
 - **User never comes back** — TTL of 30 minutes means the Redis entry self-expires; no manual cleanup

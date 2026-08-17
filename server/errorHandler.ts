@@ -2,13 +2,21 @@ import type { Request, Response, NextFunction } from 'express'
 import type { HTTPError } from 'superagent'
 import logger from '../logger'
 import FullPageError from './model/FullPageError'
+import { saveSession } from './data/sessionRecoveryStore'
 
 export default function createErrorHandler(production: boolean) {
-  return (error: HTTPError | FullPageError, req: Request, res: Response, _next: NextFunction): void => {
+  return async (error: HTTPError | FullPageError, req: Request, res: Response, _next: NextFunction): Promise<void> => {
     logger.error(`Error handling request for '${req.originalUrl}', user '${res.locals.user?.username}'`, error)
 
-    // Auth errors → log user out
+    // Auth errors → log user out. If a prisoner journey is in progress, snapshot it so it can be
+    // restored once the user has re-authenticated (see populateCurrentPrisoner). A deliberate
+    // sign-out never reaches this handler, so it's never snapshotted here.
     if (error.status === 401 || error.status === 403) {
+      const username = res.locals.user?.username
+      const { nomsId } = req.params
+      if (username && nomsId) {
+        await saveSession(username, nomsId, req.session)
+      }
       return res.redirect('/sign-out')
     }
 

@@ -158,6 +158,16 @@ sequenceDiagram
 - Manual/integration: reproduce a 401 mid-journey (e.g. via a test double that forces a downstream
   401), confirm sign-out → sign-in → return to the same prisoner restores previously entered answers.
 
+- **Walking away without logging out (e.g. end of shift, back the next day) is NOT recovered.**
+  Two separate reasons: (1) no snapshot is ever taken, because the snapshot only fires from a live
+  `401`/`403` on an active request — if the user simply stops interacting, no request ever errors;
+  (2) even if one had been taken, the 30 minute recovery TTL and the underlying session's own
+  ~2 hour idle expiry (`config.session.expiryMinutes`, `setUpWebSession.ts:25`) will both have long
+  lapsed by the next day. This is a deliberate scope boundary, not an oversight: solving "resume a
+  journey after walking away for hours/overnight" is a different feature (autosave/draft persistence
+  on a much longer TTL, triggered on edits rather than on an auth error) and is not part of this
+  change.
+
 ## Out of scope for this change
 
 - **Recalls** — the equivalent fix needs to be made in the Recalls service's own repository (separate

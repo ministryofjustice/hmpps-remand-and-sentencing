@@ -62,7 +62,10 @@ context('New Remand hearing from hmcts data journey', () => {
       outcomeType: 'REMAND',
     })
     cy.task('stubGetAppearanceTypeByUuid')
-    const landingPage = Page.verifyOnPage(HmctsCourtDataLandingPage)
+    const landingPage = Page.verifyOnPageTitle(
+      HmctsCourtDataLandingPage,
+      'Review new documents and choose how you want to add information',
+    )
     landingPage
       .commonPlatformText()
       .should('contain.text', 'A new remand warrant for C894623 has been added from Common Platform.')

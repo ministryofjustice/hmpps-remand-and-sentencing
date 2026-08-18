@@ -1317,8 +1317,9 @@ export default class OffenceService {
 
       expectedPeriodLengthType.forEach(expectedPeriodLength => {
         if (
-          !offence.sentence.periodLengths ||
-          !offence.sentence.periodLengths.some(pl => pl.periodLengthType === expectedPeriodLength.type)
+          (!offence.sentence.periodLengths ||
+            !offence.sentence.periodLengths.some(pl => pl.periodLengthType === expectedPeriodLength.type)) &&
+          !offence.isGeneratedBreachOffence
         ) {
           errors.push({
             text: `You must enter the ${periodLengthTypeHeadings[expectedPeriodLength.type].toLowerCase()}`,

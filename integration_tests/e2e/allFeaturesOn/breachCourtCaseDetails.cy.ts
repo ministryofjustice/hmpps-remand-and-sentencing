@@ -59,7 +59,7 @@ context('Breach Court Case details Page', () => {
                 'Consecutive or concurrent': 'Concurrent',
                 Outcome: 'DTO (Detention and Training Order)',
                 'Sentence type': 'DTO',
-                'Breach of imprisonable offence': '0 years 3 months 0 weeks 0 days',
+                'Breach due to imprisonable offence': '0 years 3 months 0 weeks 0 days',
               },
             ],
           },

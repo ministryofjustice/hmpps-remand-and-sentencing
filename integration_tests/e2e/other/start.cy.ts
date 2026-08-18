@@ -90,14 +90,12 @@ context('Start Page', () => {
 
   it('can sort by earliest', () => {
     cy.task('stubSearchCourtCases', { sortBy: 'APPEARANCE_DATE_ASC' })
-    startPage.filterSortSummary().click()
     startPage.radioLabelContains('Court appearance (earliest)').click()
     startPage.applyButton().click()
     Page.verifyOnPage(StartPage)
   })
 
   it('displays include previous periods checkbox label with count filter with total', () => {
-    startPage.filterSortSummary().click()
     startPage.includeCasesFromPreviousPeriodsLabel(1)
   })
 
@@ -273,5 +271,15 @@ context('Start Page', () => {
       'First day in custody': '05/06/2025',
       'Overall case outcome': 'Sentence varied',
     })
+  })
+
+  it('filter panel is open by default', () => {
+    startPage.filterSortSummaryPanel().should('have.attr', 'open')
+  })
+
+  it('filter panel is visible when toggled closed then opened', () => {
+    startPage.filterSortSummary().click() // Close
+    startPage.filterSortSummary().click() // Open
+    startPage.filterSortSummaryPanel().should('have.attr', 'open')
   })
 })

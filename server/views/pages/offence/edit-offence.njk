@@ -34,6 +34,34 @@
 {% endif %}
 
 
+{% if showOutcomeCta %}
+  {% set outcomeRow = {
+    key: { text: "Outcome" },
+    value: {
+      html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/update-offence-outcome?submitToEditOffence=true&backTo=editOffence" class="govuk-link govuk-link--no-visited-state" data-qa="update-outcome-cta">Update outcome</a>'
+    }
+  }%}
+{% else %}
+  {% set outcomeRow = {
+    key: { text: "Outcome" },
+    value: {
+      text: outcome | outcomeValueOrLegacy(offence.legacyData)
+    },
+    actions:{
+      items: [] if isBreachGeneratedOffence else [{
+      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-outcome?submitToEditOffence=true",
+      text: "Edit",
+      visuallyHiddenText: "outcome",
+      classes: "govuk-link--no-visited-state",
+      attributes: {
+        'data-qa': 'edit-offence-outcome-' + chargeUuid
+      }
+    }]
+    }
+  }%}
+{% endif %}
+
+
 {% set summaryRows=[{
   key: {
     text: "Offence"
@@ -42,7 +70,7 @@
     text: offence.offenceCode + " " + offenceMap[offence.offenceCode]
   },
   actions: {
-    items: [{
+    items: [] if isBreachGeneratedOffence else [{
       href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-code?submitToEditOffence=true",
       text: "Edit",
       visuallyHiddenText: "offence code",
@@ -54,27 +82,7 @@
   }
 },
 offenceDateRow,
-{
-  key: {
-    text: "Outcome"
-  },
-  value: {
-    html: '<a href="/person/' + nomsId + '/' + addOrEditCourtCase + '/' + courtCaseReference + '/' + addOrEditCourtAppearance + '/' + appearanceReference + '/offences/' + chargeUuid + '/update-offence-outcome?submitToEditOffence=true&backTo=editOffence" class="govuk-link govuk-link--no-visited-state" data-qa="update-outcome-cta">Update outcome</a>'
-  } if showOutcomeCta else {
-    text: outcome | outcomeValueOrLegacy(offence.legacyData)
-  },
-  actions: {
-    items: [] if showOutcomeCta else [{
-      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/offence-outcome?submitToEditOffence=true",
-      text: "Edit",
-      visuallyHiddenText: "outcome",
-      classes: "govuk-link--no-visited-state",
-      attributes: {
-        'data-qa': 'edit-offence-outcome-' + chargeUuid
-      }
-    }]
-  }
-}] %}
+outcomeRow] %}
 
 {% if offence.sentence %}
   {% set countNumberHref= "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/count-number?submitToEditOffence=true" %}
@@ -144,7 +152,7 @@ offenceDateRow,
         text: sentenceType
       },
       actions: {
-        items: [{
+        items: [] if isBreachGeneratedOffence else [{
           href: sentenceTypeValidatorHref,
           text: "Edit",
           visuallyHiddenText: "sentence type",
@@ -164,7 +172,8 @@ offenceDateRow,
     }%}
   {% endif %}
 
-  {% set summaryRows = ([countNumberRow].concat(summaryRows, [convictionDateRow, sentenceTypeRow])) %}
+
+  {% set periodLengthRows = [] %}
 
   {% for periodLength in periodLengths %}
     {% set periodLengthEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/period-length?periodLengthType=" + periodLength.type + "&submitToEditOffence=true" %}
@@ -191,7 +200,7 @@ offenceDateRow,
         {% set periodLengthEditLink = "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + chargeUuid + "/correct-many-period-length?periodLengthType=" + periodLength.type + (("&legacyCode= " + periodLength.legacyCode) if periodLength.legacyCode) %}
       {% endif %}
     {% endif %}
-    {% set summaryRows = (summaryRows.concat({
+    {% set periodLengthRows = (periodLengthRows.concat({
       key: { text: periodLength.key | capitalize },
       value: periodLengthValue,
       actions: {
@@ -234,10 +243,10 @@ offenceDateRow,
       }
     }%}
     {% endif %}
-    {% set summaryRows = summaryRows.concat([fineAmountRow]) %}
   {% endif %}
 
-  {% set summaryRows = (summaryRows.concat({
+  {% set consecutiveOrConcurrentRows = [] %}
+  {% set consecutiveOrConcurrentRows = (consecutiveOrConcurrentRows.concat({
     key: { text: "Consecutive or concurrent" },
     value: { text: offence.sentence.sentenceServeType | capitalize },
     actions: {
@@ -263,7 +272,7 @@ offenceDateRow,
         text: consecutiveToDetails | consecutiveToDetailsToDescription | removeTo
       } %}
     {% endif %}
-    {% set summaryRows = (summaryRows.concat({
+    {% set consecutiveOrConcurrentRows = (consecutiveOrConcurrentRows.concat({
       key: { text: "Consecutive to" },
       value: consecutiveToValue,
       actions: {
@@ -310,7 +319,14 @@ offenceDateRow,
       value: { html: addLink }
     } %}
   {% endif %}
-  {% set summaryRows = summaryRows.concat([aggravatingFactorsRow]) %}
+
+  {% if isBreachGeneratedOffence %}
+    {% set summaryRows = (summaryRows.concat([sentenceTypeRow], periodLengthRows, consecutiveOrConcurrentRows)) %}
+  {% else %}
+    {% set summaryRows = ([countNumberRow].concat(summaryRows, [convictionDateRow, sentenceTypeRow], periodLengthRows, [fineAmountRow], consecutiveOrConcurrentRows, [aggravatingFactorsRow])) %}
+  {% endif %}
+
+
 {% endif %}
 
 

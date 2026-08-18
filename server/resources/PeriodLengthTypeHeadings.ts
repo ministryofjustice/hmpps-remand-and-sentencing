@@ -5,7 +5,7 @@ const periodLengthTypeHeadings = {
   TARIFF_LENGTH: 'Tariff length',
   TERM_LENGTH: 'Term length',
   BREACH_OF_SUPERVISION_REQUIREMENTS: 'Breach of supervision requirements',
-  BREACH_OF_IMPRISONABLE_OFFENCE: 'Breach of imprisonable offence',
+  BREACH_OF_IMPRISONABLE_OFFENCE: 'Breach due to imprisonable offence',
   OVERALL_SENTENCE_LENGTH: 'Overall sentence length',
 }
 

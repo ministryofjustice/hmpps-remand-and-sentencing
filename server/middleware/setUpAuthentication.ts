@@ -6,6 +6,8 @@ import { VerificationClient, AuthenticatedRequest } from '@ministryofjustice/hmp
 import config from '../config'
 import { HmppsUser } from '../interfaces/hmppsUser'
 import generateOauthClientToken from '../utils/clientCredentials'
+import extractNomsIdFromUrl from '../utils/extractNomsIdFromUrl'
+import { saveSession } from '../data/sessionRecoveryStore'
 import logger from '../../logger'
 
 passport.serializeUser((user, done) => {
@@ -78,6 +80,18 @@ export default function setupAuthentication() {
     if (req.isAuthenticated() && (await tokenVerificationClient.verifyToken(req as unknown as AuthenticatedRequest))) {
       return next()
     }
+
+    // Token has been invalidated. If a prisoner journey is in progress, snapshot it to Redis
+    // (keyed by username + nomsId) so it can be restored once the new session is set up — see
+    // setUpWebSession.ts. Note: this only ever fires for the user's own browser token; it does not
+    // cover the system/client-credentials token used by asSystem()-authenticated API calls, which
+    // this middleware has no visibility into (tracked separately as tech debt).
+    const username = (req.user as HmppsUser)?.username
+    const nomsId = extractNomsIdFromUrl(req.originalUrl)
+    if (username && nomsId) {
+      await saveSession(username, nomsId, req.session)
+    }
+
     req.session.returnTo = req.originalUrl
     return res.redirect('/sign-in')
   })

@@ -13,6 +13,12 @@ export declare module 'express-session' {
     unknownRecallSentenceUuids: Map<string, string[]>
     aggravatingChargeUuids?: { chargeUuid: string; processed: boolean }[]
     outcomeUpdateChargeUuids?: string[]
+    // Set by Passport's serializeUser once a user has logged in — stores exactly what the OAuth2
+    // verify callback produced ({ token, username, authSource }, see setUpAuthentication.ts), not
+    // the fuller HmppsUser profile assembled later by setUpCurrentUser.ts. Present on the raw session
+    // before passport.session() has run for a given request, which is what lets us read the username
+    // at points in the middleware chain that run before passport.session() (e.g. setUpWebSession.ts).
+    passport?: { user?: Express.User }
   }
 }
 

@@ -5,6 +5,7 @@ import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
 import CannotDeleteSentencePage from '../../pages/cannotDeleteSentencePage'
 import OffenceEditOffencePage from '../../pages/offenceEditOffencePage'
 import OffencePeriodLengthPage from '../../pages/offencePeriodLengthPage'
+import OffenceDeleteOffencePage from '../../pages/offenceDeleteOffencePage'
 
 context('Breach appearance details Page', () => {
   let courtCaseHearingDetailsPage: CourtCaseHearingDetailsPage
@@ -205,6 +206,36 @@ context('Breach appearance details Page', () => {
         'Breach hearing date': '15/12/2023',
         'Court name': 'Accrington Youth Court',
         'Breach due to imprisonable offence': '0 years 6 months 0 weeks 0 days',
+      })
+    })
+
+    it('deleting the sentence results in hiding the period length', () => {
+      cy.task('stubGetSentenceDeleteStatus', {
+        sentenceUuid: 'a3902e94-a098-446a-a16e-7946044c57e0',
+        sentenceUuidsInChain: 'a3902e94-a098-446a-a16e-7946044c57e0',
+        status: 'SUPPORTED',
+      })
+      cy.task('stubGetSentenceTypeById', {
+        sentenceTypeUuid: 'cab9e914-e0de-48d0-9e72-0e1fc9a19cf4',
+        description: 'DTO',
+        classification: 'DTO',
+      })
+      cy.task('stubGetOffencesByCodes', {})
+      courtCaseHearingDetailsPage
+        .deleteOffenceLink(
+          'A1234AB',
+          'fa078b3d-7c29-4f61-8120-b40b16ed9633',
+          'bff8834a-bb17-4e2b-8336-32505be88c3a',
+          'breach',
+          '7752d0c5-38bf-4528-b5cb-5bf23dfdc350',
+        )
+        .click()
+      const offenceDeleteOffencePage = Page.verifyOnPage(OffenceDeleteOffencePage)
+      offenceDeleteOffencePage.deleteButton().click()
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'C894623',
+        'Breach hearing date': '15/12/2023',
+        'Court name': 'Accrington Youth Court',
       })
     })
   })

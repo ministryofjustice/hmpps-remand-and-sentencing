@@ -46,7 +46,7 @@ describe('populateCurrentPrisoner', () => {
     prisonerSearchService = { getPrisonerDetails: jest.fn() } as unknown as jest.Mocked<PrisonerSearchService>
   })
 
-  it('restores recovered session data and clears it after successfully loading the prisoner', async () => {
+  it('restores previously-saved session progress from Redis once the prisoner is successfully loaded, then clears the Redis entry', async () => {
     prisonerSearchService.getPrisonerDetails.mockResolvedValue({ prisonId: 'MDI' } as PrisonerSearchApiPrisoner)
     ;(restoreAndClearSession as jest.Mock).mockResolvedValue({
       courtAppearances: { A1234BC: { appearanceUuid: '123' } },

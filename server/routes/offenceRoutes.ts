@@ -1738,7 +1738,12 @@ export default class OffenceRoutes extends BaseRoutes {
     const { periodLengthType, submitToEditOffence, invalidatedFrom } = req.query
     const submitQuery = this.periodLengthQueryParameterToString(periodLengthType, submitToEditOffence, invalidatedFrom)
     const offenceAlternativeSentenceLengthForm = trimForm<OffenceAlternativePeriodLengthForm>(req.body)
-    const { sentence } = this.offenceService.getSessionOffence(req.session, nomsId, courtCaseReference, chargeUuid)
+    const { sentence, isGeneratedBreachOffence } = this.offenceService.getSessionOffence(
+      req.session,
+      nomsId,
+      courtCaseReference,
+      chargeUuid,
+    )
     this.offenceService.setInitialPeriodLengths(
       req.session,
       nomsId,
@@ -1768,7 +1773,7 @@ export default class OffenceRoutes extends BaseRoutes {
     }
     const allPeriodLengthsEntered = allPeriodLengthTypesEntered(sentence)
     const nextPeriodLengthType = getNextPeriodLengthType(sentence, periodLengthType as string)
-    if (nextPeriodLengthType && !allPeriodLengthsEntered) {
+    if (nextPeriodLengthType && !allPeriodLengthsEntered && !isGeneratedBreachOffence) {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/period-length${this.periodLengthQueryParameterToString(nextPeriodLengthType, submitToEditOffence, invalidatedFrom)}`,
       )

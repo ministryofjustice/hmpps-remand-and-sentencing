@@ -36,7 +36,6 @@ import {
   orderOffences,
   consecutiveToSentenceDetailsToOffenceDescriptions,
   convertToTitleCase,
-  getUiDocumentType,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import { PrisonUser } from '../interfaces/hmppsUser'

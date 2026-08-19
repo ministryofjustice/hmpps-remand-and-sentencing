@@ -30,6 +30,7 @@ generic-service:
     FEATURES_BREACH_SUPERVISION_ENABLED: 'true'
     FEATURES_BULK_OUTCOME_APPLIED: 'true'
     FEATURES_BREACH_IMPRISONABLE_OFFENCE_ENABLED: 'true'
+    FEATURES_MULTIPLE_TYPE_DOCUMENT_UPLOAD: 'true'
 
   scheduledDowntime:
     enabled: true

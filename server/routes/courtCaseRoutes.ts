@@ -36,6 +36,7 @@ import {
   orderOffences,
   consecutiveToSentenceDetailsToOffenceDescriptions,
   convertToTitleCase,
+  getUiDocumentType,
 } from '../utils/utils'
 import DocumentManagementService from '../services/documentManagementService'
 import { PrisonUser } from '../interfaces/hmppsUser'
@@ -2818,41 +2819,27 @@ export default class CourtCaseRoutes extends BaseRoutes {
   }
 
   public getCourtDocumentsPage: RequestHandler = async (req, res): Promise<void> => {
-    const { nomsId, courtCaseReference, appearanceReference, addOrEditCourtCase, addOrEditCourtAppearance } = req.params
-    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
-      req.session,
-      nomsId,
-      appearanceReference,
-    )
-    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference)
-    const expectedDocumentTypes = documentTypes.NON_SENTENCING
-    const documentRows = expectedDocumentTypes.map(expectedType => {
-      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
-      return { ...expectedType, ...uploadedDocument }
-    })
+    const urlParameters = req.params as unknown as UrlParameters
+    const documentRowMetadata = this.getDocumentRowMetadata(req, urlParameters, documentTypes.NON_SENTENCING)
     return res.render('pages/courtAppearance/upload-court-documents', {
-      nomsId,
-      courtCaseReference,
-      appearanceReference,
-      addOrEditCourtCase,
-      addOrEditCourtAppearance,
-      courtAppearance,
-      documentRows,
-      isEditJourney: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance),
-      backLink: this.isEditJourney(addOrEditCourtCase, addOrEditCourtAppearance)
+      ...urlParameters,
+      ...documentRowMetadata,
+      isMultiTypeUploadEnabled: config.featureToggles.multipleTypeDocumentUpload,
+      isEditJourney: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance),
+      backLink: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
         ? JourneyUrls.nonSentencingHearing(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
+            urlParameters.nomsId,
+            urlParameters.addOrEditCourtCase,
+            urlParameters.courtCaseReference,
+            urlParameters.addOrEditCourtAppearance,
+            urlParameters.appearanceReference,
           )
         : JourneyUrls.taskList(
-            nomsId,
-            addOrEditCourtCase,
-            courtCaseReference,
-            addOrEditCourtAppearance,
-            appearanceReference,
+            urlParameters.nomsId,
+            urlParameters.addOrEditCourtCase,
+            urlParameters.courtCaseReference,
+            urlParameters.addOrEditCourtAppearance,
+            urlParameters.appearanceReference,
           ),
     })
   }

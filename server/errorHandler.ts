@@ -17,14 +17,14 @@ function extractNomsIdFromUrl(originalUrl: string): string | undefined {
 export default function createErrorHandler(production: boolean) {
   return async (error: HTTPError | FullPageError, req: Request, res: Response, _next: NextFunction): Promise<void> => {
     logger.error(`Error handling request for '${req.originalUrl}', user '${res.locals.user?.username}'`, error)
+    const username = res.locals.user?.username
+    const nomsId = req.params?.nomsId ?? extractNomsIdFromUrl(req.originalUrl)
+    if (username && nomsId) {
+      await saveSession(username, nomsId, req.session)
+    }
 
     const status = extractStatus(error)
     if (status === 401 || status === 403) {
-      const username = res.locals.user?.username
-      const nomsId = req.params?.nomsId ?? extractNomsIdFromUrl(req.originalUrl)
-      if (username && nomsId) {
-        await saveSession(username, nomsId, req.session)
-      }
       return res.redirect('/sign-out')
     }
 

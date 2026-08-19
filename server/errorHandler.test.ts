@@ -111,13 +111,13 @@ describe('auth error handling (401/403)', () => {
     expect(res.redirect).toHaveBeenCalledWith('/sign-out')
   })
 
-  it('does not snapshot or redirect to sign-out for non-auth errors', async () => {
+  it('still snapshots (any error can mean lost work) but does not redirect to sign-out for non-auth errors', async () => {
     const { req, res } = createReqRes({ nomsId: 'A1234BC', username: 'user1' })
     const error = httpError('server error', 500)
 
     await createErrorHandler(false)(error, req, res, next)
 
-    expect(saveSession).not.toHaveBeenCalled()
+    expect(saveSession).toHaveBeenCalledWith('user1', 'A1234BC', req.session)
     expect(res.redirect).not.toHaveBeenCalled()
     expect(res.render).toHaveBeenCalledWith('pages/error')
   })

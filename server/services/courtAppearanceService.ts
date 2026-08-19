@@ -2097,7 +2097,7 @@ export default class CourtAppearanceService {
         'isPastDate.offenceStartDate-day': 'The offence start date must be a date from the past',
         'isWithinLast100Years.offenceStartDate-day': 'All dates must be within the last 100 years from today’s date',
         'isSameOrBeforeWarrantDate.offenceStartDate-day':
-          'The offence start date must be on or before the warrant date',
+          'The offence start date must be on or before the hearing date of the breach',
         'requiredFieldWith.offenceEndDate-day': 'Offence end date must include day',
         'requiredFieldWith.offenceEndDate-month': 'Offence end date must include month',
         'requiredFieldWith.offenceEndDate-year': 'Offence end date must include year',
@@ -2105,7 +2105,8 @@ export default class CourtAppearanceService {
         'isPastDate.offenceEndDate-day': 'The offence end date must be a date from the past',
         'isAfterDate.offenceEndDate-day': 'The offence end date must be after the offence start date',
         'isWithinLast100Years.offenceEndDate-day': 'All dates must be within the last 100 years from today’s date',
-        'isSameOrBeforeWarrantDate.offenceEndDate-day': 'The offence end date must be on or before the warrant date',
+        'isSameOrBeforeWarrantDate.offenceEndDate-day':
+          'The offence end date must be on or before the hearing date of the breach',
       },
     )
     if (errors.length === 0) {

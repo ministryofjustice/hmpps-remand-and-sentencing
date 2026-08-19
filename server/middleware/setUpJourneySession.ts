@@ -4,11 +4,6 @@ import type { CourtAppearance, CourtCase, Offence } from 'models'
 import logger from '../../logger'
 import { restoreAndClearSession } from '../data/sessionRecoveryStore'
 
-// Journey-scoped session concerns (default shape + recovery), consolidated in one place and mounted
-// after auth — as opposed to setUpWebSession.ts, which only owns the raw Express session/cookie
-// machinery and has to be mounted before auth exists (passport.session() needs the store already
-// created). Keeping both defaults and recovery here means there's a single place to look when
-// debugging what's in req.session for a prisoner journey.
 export const initialiseJourneySessionDefaults: RequestHandler = (req, res, next) => {
   if (!req.session.courtCases) {
     req.session.courtCases = new Map<string, CourtCase>()

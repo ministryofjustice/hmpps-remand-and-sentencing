@@ -47,10 +47,13 @@
         classes: "govuk-link--no-visited-state"
       }]
     }
-  },
-  {
+  }
+] %}
+
+{% if breachTerm %}
+  {% set hearingSummaryRows = hearingSummaryRows.concat({
     key: { text: "Breach of supervision requirements" if hearing.warrantType === 'BREACH_OF_SUPERVISION_REQUIREMENTS' else 'Breach due to imprisonable offence' },
-    value: { text: breachTerm | formatLengths if breachTerm else 'Not entered' },
+    value: { text: breachTerm | formatLengths },
     actions: {
       items: [{
         href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/breach/breach-term-length",
@@ -59,8 +62,8 @@
         classes: "govuk-link--no-visited-state"
       }]
     }
-  }
-] %}
+  }) %}
+{% endif %}
 
 
 {% set documentSummaryRows = [] %}

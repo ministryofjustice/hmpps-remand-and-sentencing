@@ -127,7 +127,7 @@ context('Add Breach Offence Date Page', () => {
       .should('equal', 'There is a problem The offence end date must be after the offence start date')
   })
 
-  it('Offence dates must be before or on the warrant date', () => {
+  it('Offence dates must be before or on the hearing date of the breach', () => {
     breachOffenceDatePage.dayDateInput('offenceStartDate').clear().type('09')
     breachOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
     breachOffenceDatePage.yearDateInput('offenceStartDate').clear().type('2025')
@@ -135,7 +135,7 @@ context('Add Breach Offence Date Page', () => {
     breachOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence start date must be on or before the warrant date')
+      .should('equal', 'There is a problem The offence start date must be on or before the hearing date of the breach')
 
     breachOffenceDatePage.dayDateInput('offenceStartDate').clear().type('07')
     breachOffenceDatePage.monthDateInput('offenceStartDate').clear().type('07')
@@ -148,7 +148,7 @@ context('Add Breach Offence Date Page', () => {
     breachOffenceDatePage
       .errorSummary()
       .trimTextContent()
-      .should('equal', 'There is a problem The offence end date must be on or before the warrant date')
+      .should('equal', 'There is a problem The offence end date must be on or before the hearing date of the breach')
   })
 
   it('Dates must be within 100 years', () => {

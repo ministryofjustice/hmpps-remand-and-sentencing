@@ -1155,6 +1155,16 @@ export default class CourtAppearanceService {
     if (index !== -1) {
       offence = courtAppearance.offences[index]
       courtAppearance.offences.splice(index, 1)
+      if (offence.sentence?.periodLengths && courtAppearance.periodLengths) {
+        offence.sentence?.periodLengths.forEach(periodLength => {
+          const appearancePeriodLengthIndex = courtAppearance.periodLengths?.findIndex(
+            appearancePeriodLength => appearancePeriodLength.uuid === periodLength.uuid,
+          )
+          if (appearancePeriodLengthIndex !== -1) {
+            courtAppearance.periodLengths.splice(appearancePeriodLengthIndex, 1)
+          }
+        })
+      }
     }
     // eslint-disable-next-line no-param-reassign
     session.courtAppearances[nomsId] = courtAppearance

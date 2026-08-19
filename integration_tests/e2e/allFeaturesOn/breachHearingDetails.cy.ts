@@ -199,6 +199,13 @@ context('Breach appearance details Page', () => {
         'Breach due to imprisonable offence': '0 years 6 months 0 weeks 0 days',
         'Consecutive or concurrent': 'Concurrent',
       })
+      editOffencePage.continueButton().click()
+      courtCaseHearingDetailsPage.hearingSummaryList().getSummaryList().should('deep.equal', {
+        'Case reference': 'C894623',
+        'Breach hearing date': '15/12/2023',
+        'Court name': 'Accrington Youth Court',
+        'Breach due to imprisonable offence': '0 years 6 months 0 weeks 0 days',
+      })
     })
   })
 })

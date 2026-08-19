@@ -187,7 +187,6 @@ export default {
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
     breachSupervision: get('FEATURES_BREACH_SUPERVISION_ENABLED', false, requiredInProduction) === 'true',
-    bulkOutcomeApplied: get('FEATURES_BULK_OUTCOME_APPLIED', false, requiredInProduction) === 'true',
     breachImprisonableOffence:
       get('FEATURES_BREACH_IMPRISONABLE_OFFENCE_ENABLED', false, requiredInProduction) === 'true',
   },

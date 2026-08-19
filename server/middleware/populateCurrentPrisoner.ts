@@ -4,8 +4,7 @@ import PrisonerSearchService from '../services/prisonerSearchService'
 import { PrisonUser } from '../interfaces/hmppsUser'
 import FullPageError from '../model/FullPageError'
 import { PrisonerSearchApiPrisoner } from '../@types/prisonerSearchApi/prisonerSearchTypes'
-import { restoreAndClearSession } from '../data/sessionRecoveryStore'
-import { restoreJourneySession } from './setUpWebSession'
+import { restoreRecoveredJourneySession } from './setUpJourneySession'
 
 export default function populateCurrentPrisoner(prisonerSearchService: PrisonerSearchService): RequestHandler {
   return async (req, res, next) => {
@@ -20,11 +19,7 @@ export default function populateCurrentPrisoner(prisonerSearchService: PrisonerS
           throw FullPageError.notInCaseLoadError()
         }
 
-        const recoveredSession = await restoreAndClearSession(user.username, nomsId)
-        if (recoveredSession) {
-          restoreJourneySession(req.session, recoveredSession)
-          logger.info(`Restored session data for user ${user.username} and prisoner ${nomsId} after token refresh`)
-        }
+        await restoreRecoveredJourneySession(req.session, user.username, nomsId)
       } catch (error) {
         logger.error(error, `Failed to get prisoner with prisoner number: ${nomsId}`)
         if (error.responseStatus === 404) {

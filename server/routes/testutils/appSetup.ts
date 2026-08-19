@@ -11,6 +11,7 @@ import { PrisonerSearchApiPrisoner } from '../../@types/prisonerSearchApi/prison
 import AuditService from '../../services/auditService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
+import setUpJourneySession from '../../middleware/setUpJourneySession'
 import CourtAppearanceService from '../../services/courtAppearanceService'
 import PrisonerService from '../../services/prisonerService'
 import UserService from '../../services/userService'
@@ -120,6 +121,7 @@ function appSetup(
 
   nunjucksSetup(app, services.applicationInfo)
   app.use(setUpWebSession())
+  app.use(setUpJourneySession())
   app.use((req, res, next) => {
     req.user = userSupplier() as Express.User
     req.flash = flashProvider

@@ -1,4 +1,10 @@
+import { createHmac } from 'crypto'
 import type { Session, SessionData } from 'express-session'
+import config from '../config'
+
+function expectedKey(username: string, nomsId: string) {
+  return `session-recovery:${createHmac('sha256', config.session.secret).update(`${username}:${nomsId}`).digest('hex')}`
+}
 
 const mockClient = {
   connect: jest.fn().mockResolvedValue(undefined),
@@ -12,13 +18,16 @@ describe('sessionRecoveryStore', () => {
   let saveSession: typeof import('./sessionRecoveryStore').saveSession
   let restoreAndClearSession: typeof import('./sessionRecoveryStore').restoreAndClearSession
 
-  function loadStoreWithRedisEnabled(enabled: boolean) {
+  function loadStoreWithRedisEnabled(enabled: boolean, recoveryTtlMinutes?: number) {
     jest.clearAllMocks()
     jest.isolateModules(() => {
       jest.doMock('./redisClient', () => ({ createRedisClient: jest.fn(() => mockClient) }))
       // eslint-disable-next-line global-require, @typescript-eslint/no-require-imports
-      const config = require('../config').default
-      config.redis.enabled = enabled
+      const isolatedConfig = require('../config').default
+      isolatedConfig.redis.enabled = enabled
+      if (recoveryTtlMinutes !== undefined) {
+        isolatedConfig.session.recoveryTtlMinutes = recoveryTtlMinutes
+      }
       // eslint-disable-next-line global-require, @typescript-eslint/no-require-imports
       const store = require('./sessionRecoveryStore')
       saveSession = store.saveSession
@@ -37,9 +46,17 @@ describe('sessionRecoveryStore', () => {
 
       await saveSession('user1', 'A1234BC', session)
 
-      expect(mockClient.set).toHaveBeenCalledWith('session-recovery:user1:A1234BC', JSON.stringify(session), {
+      expect(mockClient.set).toHaveBeenCalledWith(expectedKey('user1', 'A1234BC'), JSON.stringify(session), {
         EX: 1800,
       })
+    })
+
+    it('does not store username/nomsId in human-readable form in the key', async () => {
+      await saveSession('user1', 'A1234BC', {} as unknown as Session & Partial<SessionData>)
+
+      const keyUsed = mockClient.set.mock.calls[0][0] as string
+      expect(keyUsed).not.toContain('user1')
+      expect(keyUsed).not.toContain('A1234BC')
     })
 
     it('fails soft and does not throw when the redis set call fails', async () => {
@@ -55,8 +72,8 @@ describe('sessionRecoveryStore', () => {
 
       const result = await restoreAndClearSession('user1', 'A1234BC')
 
-      expect(mockClient.get).toHaveBeenCalledWith('session-recovery:user1:A1234BC')
-      expect(mockClient.del).toHaveBeenCalledWith('session-recovery:user1:A1234BC')
+      expect(mockClient.get).toHaveBeenCalledWith(expectedKey('user1', 'A1234BC'))
+      expect(mockClient.del).toHaveBeenCalledWith(expectedKey('user1', 'A1234BC'))
       expect(result).toEqual({ offences: { key: {} } })
     })
 
@@ -84,6 +101,24 @@ describe('sessionRecoveryStore', () => {
 
       const keysUsed = mockClient.set.mock.calls.map(call => call[0])
       expect(new Set(keysUsed).size).toBe(3)
+    })
+  })
+
+  describe('TTL', () => {
+    it('defaults to 30 minutes when SESSION_RECOVERY_TTL_MINUTES is not set', async () => {
+      loadStoreWithRedisEnabled(true)
+
+      await saveSession('user1', 'A1234BC', {} as unknown as Session & Partial<SessionData>)
+
+      expect(mockClient.set).toHaveBeenCalledWith(expect.any(String), expect.any(String), { EX: 1800 })
+    })
+
+    it('is driven by config.session.recoveryTtlMinutes', async () => {
+      loadStoreWithRedisEnabled(true, 5)
+
+      await saveSession('user1', 'A1234BC', {} as unknown as Session & Partial<SessionData>)
+
+      expect(mockClient.set).toHaveBeenCalledWith(expect.any(String), expect.any(String), { EX: 300 })
     })
   })
 

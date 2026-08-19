@@ -1,3 +1,4 @@
+import { createHmac } from 'crypto'
 import express from 'express'
 import session, { MemoryStore } from 'express-session'
 import request from 'supertest'
@@ -155,7 +156,7 @@ describe.each([401, 403])('full snapshot/restore loop against a real %i', authFa
     expect(failureResponse.status).toBe(302)
     expect(failureResponse.headers.location).toBe('/sign-out')
 
-    const snapshotKey = 'session-recovery:user1:A1234BC'
+    const snapshotKey = `session-recovery:${createHmac('sha256', config.session.secret).update('user1:A1234BC').digest('hex')}`
     expect(fakeRedisStore.has(snapshotKey)).toBe(true)
     const snapshot = JSON.parse(fakeRedisStore.get(snapshotKey) as string)
     expect(snapshot.courtAppearances).toEqual(COURT_APPEARANCE_IN_PROGRESS)

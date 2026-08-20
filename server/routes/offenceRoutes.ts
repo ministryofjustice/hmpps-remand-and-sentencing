@@ -329,7 +329,7 @@ export default class OffenceRoutes extends BaseRoutes {
     } = req.params
     const { backTo, bulkOffenceTobeUpdated } = req.query as { backTo: string; bulkOffenceTobeUpdated: string }
 
-    if (config.featureToggles.bulkOutcomeApplied && bulkOffenceTobeUpdated === 'true') {
+    if (bulkOffenceTobeUpdated === 'true') {
       return res.redirect(
         `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/${addOrEditCourtAppearance}/${appearanceReference}/offences/${chargeUuid}/more-than-one-offence-to-be-updated?backTo=${backTo}`,
       )

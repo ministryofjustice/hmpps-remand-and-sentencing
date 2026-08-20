@@ -189,5 +189,6 @@ export default {
     breachSupervision: get('FEATURES_BREACH_SUPERVISION_ENABLED', false, requiredInProduction) === 'true',
     breachImprisonableOffence:
       get('FEATURES_BREACH_IMPRISONABLE_OFFENCE_ENABLED', false, requiredInProduction) === 'true',
+    sentenceStatus: get('FEATURES_SENTENCE_STATUS_ENABLED', false, requiredInProduction) === 'true',
   },
 }

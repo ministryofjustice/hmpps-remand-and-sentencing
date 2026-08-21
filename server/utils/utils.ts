@@ -7,6 +7,7 @@ import {
   PeriodLengthLegacyData,
   SentenceConsecutiveToDetails,
   SentencesToChainToResponse,
+  UploadedDocument,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import { getDocumentTypeNameMap } from '../resources/documentTypes'
 
@@ -138,9 +139,36 @@ export const extractKeyValue = (object, value: string) => {
   return Object.keys(object)[Object.values(object).indexOf(value)]
 }
 
-export function getUiDocumentType(documentType: string, warrantType: string): string {
+export function getUiDocumentType(
+  documentType: string,
+  warrantType: string,
+): {
+  name: string
+  order: number
+} {
   const documentTypeMap = getDocumentTypeNameMap()
-  return documentTypeMap[`${warrantType}_${documentType}`] ?? documentTypeMap[documentType] ?? 'Court Document'
+  return (
+    documentTypeMap[`${warrantType}_${documentType}`] ??
+    documentTypeMap[documentType] ?? { name: 'Court Document', order: 99 }
+  )
+}
+
+export function getSortedDocumentsWithUiDocumentType(
+  documents: UploadedDocument[],
+  warrantType: string,
+): UploadedDocument[] {
+  return Array.isArray(documents)
+    ? documents
+        .map(document => {
+          const documentTypeMetaData = getUiDocumentType(document.documentType, warrantType)
+          return {
+            ...document,
+            documentType: documentTypeMetaData.name,
+            order: documentTypeMetaData.order,
+          }
+        })
+        .sort((a, b) => a.order - b.order)
+    : []
 }
 
 enum OffenceGroup {

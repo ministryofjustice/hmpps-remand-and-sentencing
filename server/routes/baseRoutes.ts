@@ -510,7 +510,7 @@ export default abstract class BaseRoutes {
     const uploadedDocumentRows = uploadedDocuments.map(uploadedDocument => {
       return {
         ...uploadedDocument,
-        name: getUiDocumentType(uploadedDocument.documentType, courtAppearance.warrantType),
+        name: getUiDocumentType(uploadedDocument.documentType, courtAppearance.warrantType).name,
       }
     })
     return {

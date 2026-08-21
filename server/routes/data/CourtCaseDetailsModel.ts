@@ -8,7 +8,7 @@ import {
 } from '../../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
 import config from '../../config'
 import { periodLengthToSentenceLength } from '../../utils/mappingUtils'
-import { formatDate, getUiDocumentType, orderCharges, sortByDateDesc } from '../../utils/utils'
+import { formatDate, getSortedDocumentsWithUiDocumentType, orderCharges, sortByDateDesc } from '../../utils/utils'
 
 export default class CourtCaseDetailsModel {
   courtCaseUuid: string
@@ -100,12 +100,7 @@ export default class CourtCaseDetailsModel {
             hearing.charges.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),
             courtMap,
           ),
-          documentsWithUiType: Array.isArray(hearing.documents)
-            ? hearing.documents.map(document => ({
-                ...document,
-                documentType: getUiDocumentType(document.documentType, hearing.warrantType),
-              }))
-            : [],
+          documentsWithUiType: getSortedDocumentsWithUiDocumentType(hearing.documents, hearing.warrantType),
           breachOfSupervisionLength,
           breachOfImprisonableOffence,
         }

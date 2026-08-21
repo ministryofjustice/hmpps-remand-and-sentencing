@@ -8,7 +8,7 @@ import ManageOffencesService from '../services/manageOffencesService'
 import { pageCourtCaseAppearanceToCourtAppearance } from '../utils/mappingUtils'
 import RemandAndSentencingService from '../services/remandAndSentencingService'
 import CourtRegisterService from '../services/courtRegisterService'
-import { getUiDocumentType, offencesToOffenceDescriptions, orderOffences } from '../utils/utils'
+import { getSortedDocumentsWithUiDocumentType, offencesToOffenceDescriptions, orderOffences } from '../utils/utils'
 import RefDataService from '../services/refDataService'
 import JourneyUrls from './data/JourneyUrls'
 import AuditService from '../services/auditService'
@@ -137,12 +137,10 @@ export default class RemandRoutes extends BaseRoutes {
       offenceMap,
       courtMap,
     )
-    const documentsWithUiType = this.courtAppearanceService
-      .getUploadedDocuments(req.session, nomsId, appearanceReference)
-      .map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, hearing.warrantType),
-      }))
+    const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
+      this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference),
+      hearing.warrantType,
+    )
 
     const mergedFromText = this.getMergedFromText(
       hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),

@@ -19,7 +19,7 @@ import sentenceServeTypes from '../resources/sentenceServeTypes'
 import {
   convertToTitleCase,
   extractKeyValue,
-  getUiDocumentType,
+  getSortedDocumentsWithUiDocumentType,
   offencesToOffenceDescriptions,
   orderOffences,
   sentencesToChainToResponseToOffenceDescriptions,
@@ -325,12 +325,10 @@ export default class SentencingRoutes extends BaseRoutes {
       appearanceReference,
     )
 
-    const documentsWithUiType = this.courtAppearanceService
-      .getUploadedDocuments(req.session, nomsId, appearanceReference)
-      .map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, hearing.warrantType),
-      }))
+    const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
+      this.courtAppearanceService.getUploadedDocuments(req.session, nomsId, appearanceReference),
+      hearing.warrantType,
+    )
 
     const mergedFromText = this.getMergedFromText(
       hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),

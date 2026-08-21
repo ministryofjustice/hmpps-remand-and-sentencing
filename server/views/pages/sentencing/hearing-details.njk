@@ -79,7 +79,14 @@
 
 {% for document in documentsWithUiType %}
   {% set documentRowHtml %}
-    <a class="govuk-link govuk-link--no-visited-state" target="_blank"
+    {% if isMultiTypeUploadEnabled %}
+      <a class="govuk-link govuk-link--no-visited-state" target="_blank"
+        href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/download-document">
+        {{ document.fileName }}
+      </a>
+      <div class="govuk-body govuk-!-margin-0">{{ documentRow.documentType }}</div>
+    {% else %}
+      <a class="govuk-link govuk-link--no-visited-state" target="_blank"
        href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ document.documentUUID }}/download-document">
       <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg"
            viewBox="0 0 16 20" width="20" height="16">
@@ -87,6 +94,7 @@
       </svg>
       {{ document.documentType }}
     </a>
+    {% endif %}
   {% endset %}
   {% set documentSummaryRows = documentSummaryRows.concat([{ key: { html: documentRowHtml } }]) %}
 {% else %}

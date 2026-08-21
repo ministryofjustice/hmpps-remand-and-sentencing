@@ -23,7 +23,12 @@ import trimForm from '../utils/trim'
 import BreachTaskListModel from './data/BreachTaskListModel'
 import logger from '../../logger'
 import documentTypes from '../resources/documentTypes'
-import { getUiDocumentType, offencesToOffenceDescriptions, orderOffences, sortByDateDesc } from '../utils/utils'
+import {
+  getSortedDocumentsWithUiDocumentType,
+  offencesToOffenceDescriptions,
+  orderOffences,
+  sortByDateDesc,
+} from '../utils/utils'
 import {
   chargeToOffence,
   pageCourtCaseAppearanceToCourtAppearance,
@@ -715,12 +720,14 @@ export default class BreachRoutes extends BaseRoutes {
       urlParameters.appearanceReference,
     )
 
-    const documentsWithUiType = this.courtAppearanceService
-      .getUploadedDocuments(req.session, urlParameters.nomsId, urlParameters.appearanceReference)
-      .map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, hearing.warrantType),
-      }))
+    const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
+      this.courtAppearanceService.getUploadedDocuments(
+        req.session,
+        urlParameters.nomsId,
+        urlParameters.appearanceReference,
+      ),
+      hearing.warrantType,
+    )
 
     const mergedFromText = this.getMergedFromText(
       hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),

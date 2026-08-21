@@ -23,7 +23,7 @@ import CourtRegisterService from '../services/courtRegisterService'
 import logger from '../../logger'
 import RefDataService from '../services/refDataService'
 import {
-  getUiDocumentType,
+  getSortedDocumentsWithUiDocumentType,
   offencesToOffenceDescriptions,
   orderOffences,
   outcomeValueOrLegacy,
@@ -785,12 +785,14 @@ export default class AppealsRoutes extends BaseRoutes {
       urlParameters.appearanceReference,
     )
 
-    const documentsWithUiType = this.courtAppearanceService
-      .getUploadedDocuments(req.session, urlParameters.nomsId, urlParameters.appearanceReference)
-      .map(document => ({
-        ...document,
-        documentType: getUiDocumentType(document.documentType, hearing.warrantType),
-      }))
+    const documentsWithUiType = getSortedDocumentsWithUiDocumentType(
+      this.courtAppearanceService.getUploadedDocuments(
+        req.session,
+        urlParameters.nomsId,
+        urlParameters.appearanceReference,
+      ),
+      hearing.warrantType,
+    )
 
     const mergedFromText = this.getMergedFromText(
       hearing.offences?.filter(offence => offence.mergedFromCase != null).map(offence => offence.mergedFromCase),

@@ -2823,7 +2823,6 @@ export default class CourtCaseRoutes extends BaseRoutes {
     return res.render('pages/courtAppearance/upload-court-documents', {
       ...urlParameters,
       ...documentRowMetadata,
-      isMultiTypeUploadEnabled: config.featureToggles.multipleTypeDocumentUpload,
       isEditJourney: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance),
       backLink: this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
         ? JourneyUrls.nonSentencingHearing(

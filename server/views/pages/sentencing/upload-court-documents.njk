@@ -10,6 +10,7 @@
 {% block pageContent %}
 <div class="govuk-!-margin-right-8">
   <form method="post" autocomplete="off">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
         text: "Manage court documents" if isEditJourney else "Upload court documents",
@@ -21,51 +22,13 @@
       The file type must be a .PDF, JPG, .PNG, .DOC or .DOCX.
     </p>
 
-  {% for documentRow in documentRows %}
-        {% if documentRow.documentUUID %}
-          {% set documentKeyHtml %}
-            <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentRow.documentUUID}}/download-document">{{documentRow.fileName}}</a>
-            <div class="govuk-body govuk-!-margin-0">{{documentRow.name}}</div>
-          {% endset %}
-
-          {{ govukSummaryList({
-            classes: "govuk-summary-list--long-key govuk-!-margin-bottom-0",
-            rows: [
-              {
-                key: {
-                  html: documentKeyHtml
-                },
-                value: {
-                  html: govukTag({text: "Uploaded", classes: "govuk-tag--green"})
-                },
-                actions: {
-                  items: [
-                    {
-                      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/" + documentRow.documentUUID + "/delete-document",
-                      text: "Delete",
-                      visuallyHiddenText: "document"
-                    }
-                  ]
-                }
-              }
-            ]
-          }) }}
-
-        {% else %}
-          <div class="govuk-form-group {% if loop.first %}govuk-!-margin-top-8{% else %}govuk-!-margin-top-6{% endif %} govuk-body">
-            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ documentRow.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}">
-              Upload {{ documentRow.name | lower }}
-            </a>
-          </div>
-        {% endif %}
-
-        {% if not loop.last %}
-          <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-4">
-        {% endif %}
-      {% endfor %}
+    {% if isMultiTypeUploadEnabled %}
+      {% include "../../partials/documents/displayMultiTypeUpload.njk" %}
+    {% else %}
+      {% include "../../partials/documents/displaySingleTypeUpload.njk" %}
+    {% endif %}
 
 
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     <div class="govuk-button-group govuk-!-margin-top-8">
       {{ govukButton({
           text: "Continue",

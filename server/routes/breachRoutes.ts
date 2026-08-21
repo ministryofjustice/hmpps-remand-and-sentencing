@@ -499,21 +499,12 @@ export default class BreachRoutes extends BaseRoutes {
   public getViewBreachOrder: RequestHandler = async (req, res) => {
     const urlParameters = req.params as unknown as UrlParameters
     const { backToUpload } = req.query
-    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(
-      req.session,
-      urlParameters.nomsId,
-      urlParameters.appearanceReference,
-    )
     const warrantType = this.courtAppearanceService.getWarrantType(
       req.session,
       urlParameters.nomsId,
       urlParameters.appearanceReference,
     )
-    const expectedDocumentTypes = documentTypes[warrantType]
-    const documentRows = expectedDocumentTypes.map(expectedType => {
-      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
-      return { ...expectedType, ...uploadedDocument }
-    })
+    const documentRowMetadata = this.getDocumentRowMetadata(req, urlParameters, documentTypes[warrantType])
     const isEditJourney = this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
     let backLink = BreachJourneyUrls.taskList(urlParameters)
     if (backToUpload) {
@@ -523,7 +514,7 @@ export default class BreachRoutes extends BaseRoutes {
     }
     return res.render('pages/breach/view-breach-order', {
       ...urlParameters,
-      documentRows,
+      ...documentRowMetadata,
       backLink,
       isEditJourney,
     })

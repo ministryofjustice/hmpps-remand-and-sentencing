@@ -20,7 +20,7 @@
       actions: {
         items: [
           {
-            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/" + documentRow.documentUUID + "/delete-document",
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + documentUrlPathPrefix + documentRow.documentUUID + "/delete-document",
             text: "Delete",
             visuallyHiddenText: "document",
             attributes: {
@@ -44,7 +44,7 @@
 
 {% for expectedDocumentType in expectedDocumentTypes %}
     <div class="govuk-form-group govuk-!-margin-top-6 govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ expectedDocumentType.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}" data-qa="upload-document-link-{{ expectedDocumentType.uploadLinkSegment }}">
+        <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}{{ documentUrlPathPrefix }}{{ expectedDocumentType.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}" data-qa="upload-document-link-{{ expectedDocumentType.uploadLinkSegment }}">
         Upload {{ expectedDocumentType.name | lower }}
         </a>
     </div>

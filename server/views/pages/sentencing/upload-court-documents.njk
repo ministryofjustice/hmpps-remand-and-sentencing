@@ -21,7 +21,7 @@
     <p class="govuk-hint">
       The file type must be a .PDF, JPG, .PNG, .DOC or .DOCX.
     </p>
-
+    {% set documentUrlPathPrefix = '/' %}
     {% if isMultiTypeUploadEnabled %}
       {% include "../../partials/documents/displayMultiTypeUpload.njk" %}
     {% else %}

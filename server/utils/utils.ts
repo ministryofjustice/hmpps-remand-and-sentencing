@@ -163,7 +163,7 @@ export function getSortedDocumentsWithUiDocumentType(
           const documentTypeMetaData = getUiDocumentType(document.documentType, warrantType)
           return {
             ...document,
-            documentType: documentTypeMetaData.name,
+            typeName: documentTypeMetaData.name,
             order: documentTypeMetaData.order,
           }
         })

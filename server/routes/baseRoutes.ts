@@ -20,7 +20,7 @@ import {
   pageCourtCaseAppearanceToCourtAppearance,
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
 } from '../utils/mappingUtils'
-import { formatDate, getUiDocumentType } from '../utils/utils'
+import { formatDate, getSortedDocumentsWithUiDocumentType, getUiDocumentType } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
@@ -507,12 +507,7 @@ export default abstract class BaseRoutes {
       const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
       return { ...expectedType, ...uploadedDocument }
     })
-    const uploadedDocumentRows = uploadedDocuments.map(uploadedDocument => {
-      return {
-        ...uploadedDocument,
-        name: getUiDocumentType(uploadedDocument.documentType, courtAppearance.warrantType).name,
-      }
-    })
+    const uploadedDocumentRows = getSortedDocumentsWithUiDocumentType(uploadedDocuments, courtAppearance.warrantType)
     return {
       singleTypeDocumentRows,
       uploadedDocumentRows,

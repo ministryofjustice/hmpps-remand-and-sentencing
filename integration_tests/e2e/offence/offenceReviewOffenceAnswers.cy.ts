@@ -1,6 +1,7 @@
 import ReceivedCustodialSentencePage from '../../pages/receivedCustodialSentencePage'
 import OffenceReviewOffencesPage from '../../pages/offenceReviewOffencesPage'
 import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
+import OffenceBulkOffenceToBeUpdatedPage from '../../pages/offenceBulkOffenceToBeUpdatedPage'
 import Page from '../../pages/page'
 import StartPage from '../../pages/startPage'
 import CourtCaseOverallCaseOutcomePage from '../../pages/courtCaseOverallCaseOutcomePage'
@@ -82,11 +83,11 @@ context('Review Offences Page', () => {
       offenceReviewOffencesPage = Page.verifyOnPage(OffenceReviewOffencesPage)
     })
 
-    it('goes to the default update outcome page when there are multiple offences needing an outcome but the bulk outcome feature is disabled', () => {
+    it('goes to the bulk offence to be updated page when there are multiple offences needing an outcome', () => {
       visitReviewOffencesPage('stubGetLatestCourtAppearanceWithMultipleOffences')
       cy.task('stubGetOffenceByCode', {})
       offenceReviewOffencesPage.updateOutcomeLink('71bb9f7e-971c-4c34-9a33-43478baee74f').click()
-      Page.verifyOnPage(OffenceUpdateOutcomePage)
+      Page.verifyOnPage(OffenceBulkOffenceToBeUpdatedPage)
     })
 
     it('shows error when there are offences which need outcome updating', () => {

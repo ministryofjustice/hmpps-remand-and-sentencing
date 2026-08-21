@@ -2019,6 +2019,7 @@ export default class CourtAppearanceService {
           // eslint-disable-next-line no-param-reassign
           offence.sentence.periodLengths = sentencePeriodLengths
         })
+      courtAppearance.periodLengths = periodLengths
       // eslint-disable-next-line no-param-reassign
       session.courtAppearances[urlParameter.nomsId] = courtAppearance
     }

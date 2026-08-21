@@ -319,8 +319,8 @@
                         {% if courtCaseDetails.canBreach %}
                             {% set _ = actions.push({
                                 href: "/person/" + nomsId + "/edit-court-case/" + courtCaseDetails.courtCaseUuid + "/add-court-appearance/" + courtCaseDetails.newAppearanceUuid + "/breach/new-journey",
-                                text: "Add breach",
-                                visuallyHiddenText: "Add breach",
+                                text: "Add DTO breach",
+                                visuallyHiddenText: "Add DTO breach",
                                 attributes: {
                                         'data-qa': 'add-breach-link-' + courtCaseDetails.courtCaseUuid
                                     }

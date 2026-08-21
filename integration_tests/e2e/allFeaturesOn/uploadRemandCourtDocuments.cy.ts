@@ -18,7 +18,7 @@ context('Upload remand court document page', () => {
     cy.visit('/person/A1234AB/add-court-case/0/add-court-appearance/0/upload-court-documents')
     uploadRemandCourtDocumentsPage = Page.verifyOnPage(UploadRemandCourtDocumentsPage)
   })
-
+  // TODO: once multiple doc types have been enabled this test replaces the test in integration_tests/e2e/documents/uploadRemandCourtDocuments.cy.ts
   it(`uploads a document and shows on the upload court documents page`, () => {
     uploadRemandCourtDocumentsPage.uploadDocumentLink('warrant').should('contain.text', 'Upload remand warrant').click()
     const documentUploadPage = Page.verifyOnPageTitle(DocumentUploadPage, 'remand warrant')
@@ -26,6 +26,6 @@ context('Upload remand court document page', () => {
     documentUploadPage.continueButton().click()
     uploadRemandCourtDocumentsPage = Page.verifyOnPage(UploadRemandCourtDocumentsPage)
     cy.contains('testfile.doc')
-    uploadRemandCourtDocumentsPage.uploadDocumentLink('warrant').should('not.exist')
+    uploadRemandCourtDocumentsPage.uploadDocumentLink('warrant').should('exist')
   })
 })

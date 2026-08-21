@@ -11,4 +11,6 @@ export default class UploadRemandCourtDocumentsPage extends Page {
 
   commonPlatformTag = (fileName: string): PageElement =>
     this.documentLink(fileName).parents('.govuk-summary-list__row').find('.govuk-tag:contains("Common platform")')
+
+  uploadDocumentLink = (type: string): PageElement => cy.get(`[data-qa=upload-document-link-${type}]`)
 }

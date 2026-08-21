@@ -581,16 +581,7 @@ export default class AppealsRoutes extends BaseRoutes {
   public getViewAppealOrder: RequestHandler = async (req, res) => {
     const urlParameters = req.params as unknown as UrlParameters
     const { backToUpload } = req.query
-    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(
-      req.session,
-      urlParameters.nomsId,
-      urlParameters.appearanceReference,
-    )
-    const expectedDocumentTypes = documentTypes.APPEAL
-    const documentRows = expectedDocumentTypes.map(expectedType => {
-      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
-      return { ...expectedType, ...uploadedDocument }
-    })
+    const documentRowMetadata = this.getDocumentRowMetadata(req, urlParameters, documentTypes.APPEAL)
     const isEditJourney = this.isEditJourney(urlParameters.addOrEditCourtCase, urlParameters.addOrEditCourtAppearance)
     let backLink = AppealsJourneyUrls.taskList(urlParameters)
     if (backToUpload) {
@@ -600,7 +591,7 @@ export default class AppealsRoutes extends BaseRoutes {
     }
     return res.render('pages/appeals/view-appeal-order', {
       ...urlParameters,
-      documentRows,
+      ...documentRowMetadata,
       backLink,
       isEditJourney,
     })

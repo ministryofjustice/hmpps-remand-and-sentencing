@@ -23,52 +23,12 @@
         The file type must be a .PDF, JPG, .PNG, .DOC or .DOCX.
       </p>
 
-      {% for documentRow in documentRows %}
-        {% if documentRow.documentUUID %}
-          {% set documentKeyHtml %}
-            <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentRow.documentUUID}}/download-document">{{ documentRow.fileName }}</a>
-            <div class="govuk-body govuk-!-margin-0">{{documentRow.name}}</div>
-          {% endset %}
-
-          {% set isCourtDataIngestedDocument = documentRow.courtDataIngested %}
-
-          {{ govukSummaryList({
-            classes: "govuk-summary-list--long-key govuk-!-margin-bottom-0",
-            rows: [
-              {
-                key: {
-                  html: documentKeyHtml
-                },
-                value: {
-                  html: govukTag({text: "Common platform", classes: "govuk-tag--grey"}) if isCourtDataIngestedDocument else govukTag({text: "Uploaded", classes: "govuk-tag--green"})
-                },
-                actions: {
-                  items: [
-                    {
-                      href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/" + documentRow.documentUUID + "/delete-document",
-                      text: "Delete",
-                      visuallyHiddenText: "document",
-                      attributes: {
-                        'data-qa': 'remove-' + documentRow.type + '-document-link'
-                      }
-                    }
-                  ] if not isCourtDataIngestedDocument else []
-                }
-              }
-            ]
-          }) }}
-        {% else %}
-          <div class="govuk-form-group {% if loop.first %}govuk-!-margin-top-8{% else %}govuk-!-margin-top-6{% endif %} govuk-body">
-            <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{ documentRow.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}" data-qa="upload-document-link-{{ documentRow.uploadLinkSegment }}">
-              Upload {{ documentRow.name | lower }}
-            </a>
-          </div>
-        {% endif %}
-
-        {% if not loop.last %}
-          <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-4">
-        {% endif %}
-      {% endfor %}
+      {% set documentUrlPathPrefix = '/' %}
+      {% if isMultiTypeUploadEnabled %}
+        {% include "../../partials/documents/displayMultiTypeUpload.njk" %}
+      {% else %}
+        {% include "../../partials/documents/displaySingleTypeUpload.njk" %}
+      {% endif %}
 
       <div class="govuk-button-group govuk-!-margin-top-8">
         {{ govukButton({

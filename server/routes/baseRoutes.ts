@@ -20,7 +20,7 @@ import {
   pageCourtCaseAppearanceToCourtAppearance,
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
 } from '../utils/mappingUtils'
-import { formatDate } from '../utils/utils'
+import { formatDate, getUiDocumentType } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'
@@ -490,6 +490,34 @@ export default abstract class BaseRoutes {
       }
     }
     return res.redirect(redirectSuccessToPath)
+  }
+
+  protected getDocumentRowMetadata(req, urlParameters: UrlParameters, expectedDocumentTypes) {
+    const courtAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const uploadedDocuments = this.courtAppearanceService.getUploadedDocuments(
+      req.session,
+      urlParameters.nomsId,
+      urlParameters.appearanceReference,
+    )
+    const singleTypeDocumentRows = expectedDocumentTypes.map(expectedType => {
+      const uploadedDocument = uploadedDocuments.find(document => document.documentType === expectedType.type) ?? {}
+      return { ...expectedType, ...uploadedDocument }
+    })
+    const uploadedDocumentRows = uploadedDocuments.map(uploadedDocument => {
+      return {
+        ...uploadedDocument,
+        name: getUiDocumentType(uploadedDocument.documentType, courtAppearance.warrantType),
+      }
+    })
+    return {
+      singleTypeDocumentRows,
+      uploadedDocumentRows,
+      expectedDocumentTypes,
+    }
   }
 
   protected async canDeleteOffence(

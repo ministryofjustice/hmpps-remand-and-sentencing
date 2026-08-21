@@ -1,0 +1,51 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set summaryListRows = [] %}
+
+{% for documentRow in uploadedDocumentRows %}
+  {% set documentKeyHtml %}
+      <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentRow.documentUUID}}/download-document">{{ documentRow.fileName }}</a>
+      <div class="govuk-body govuk-!-margin-0">{{documentRow.name}}</div>
+  {% endset %}
+
+  {% set isCourtDataIngestedDocument = documentRow.courtDataIngested %}
+
+  {% set summaryListRows = summaryListRows.concat({
+      key: {
+        html: documentKeyHtml
+      },
+      value: {
+        html: govukTag({text: "Common platform", classes: "govuk-tag--grey"}) if isCourtDataIngestedDocument else govukTag({text: "Uploaded", classes: "govuk-tag--green"})
+      },
+      actions: {
+        items: [
+          {
+            href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference + "/" + addOrEditCourtAppearance + "/" + appearanceReference + documentUrlPathPrefix + documentRow.documentUUID + "/delete-document",
+            text: "Delete",
+            visuallyHiddenText: "document",
+            attributes: {
+              'data-qa': 'remove-' + documentRow.documentType + '-document-link'
+            }
+          }
+        ] if not isCourtDataIngestedDocument else []
+      }
+    })%}
+{% endfor %}
+
+
+{{ govukSummaryList({
+    classes: "govuk-summary-list--long-key",
+    rows: summaryListRows
+}) }}
+
+{% if uploadedDocumentRows.length > 0 %}
+    <hr class="govuk-section-break govuk-section-break--visible">
+{% endif %}
+
+{% for expectedDocumentType in expectedDocumentTypes %}
+    <div class="govuk-form-group govuk-!-margin-top-6 govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}{{ documentUrlPathPrefix }}{{ expectedDocumentType.uploadLinkSegment }}/upload-documents?_csrf={{ csrfToken }}" data-qa="upload-document-link-{{ expectedDocumentType.uploadLinkSegment }}">
+        Upload {{ expectedDocumentType.name | lower }}
+        </a>
+    </div>
+{% endfor %}

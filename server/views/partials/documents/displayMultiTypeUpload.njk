@@ -5,7 +5,7 @@
 {% for documentRow in uploadedDocumentRows %}
   {% set documentKeyHtml %}
       <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/{{documentRow.documentUUID}}/download-document">{{ documentRow.fileName }}</a>
-      <div class="govuk-body govuk-!-margin-0">{{ documentRow.documentType }}</div>
+      <div class="govuk-body govuk-!-margin-0">{{ documentRow.typeName }}</div>
   {% endset %}
 
   {% set isCourtDataIngestedDocument = documentRow.courtDataIngested %}

@@ -20,7 +20,7 @@ import {
   pageCourtCaseAppearanceToCourtAppearance,
   sentenceConsecutiveToDetailsToConsecutiveToDetails,
 } from '../utils/mappingUtils'
-import { formatDate, getSortedDocumentsWithUiDocumentType, getUiDocumentType } from '../utils/utils'
+import { formatDate, getSortedDocumentsWithUiDocumentType } from '../utils/utils'
 import periodLengthTypeHeadings from '../resources/PeriodLengthTypeHeadings'
 import { GroupedPeriodLengths } from './data/GroupedPeriodLengths'
 import config from '../config'

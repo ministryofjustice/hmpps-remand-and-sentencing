@@ -1157,7 +1157,12 @@ export default class CourtCaseRoutes extends BaseRoutes {
         ),
       )
     }
-    if (addOrEditCourtCase === 'edit-court-case') {
+    const sessionAppearance = this.courtAppearanceService.getSessionCourtAppearance(
+      req.session,
+      nomsId,
+      appearanceReference,
+    )
+    if (addOrEditCourtCase === 'edit-court-case' && !sessionAppearance.isCommonPlatformJourney) {
       try {
         const latestCourtAppearance = await this.remandAndSentencingService.getLatestCourtAppearanceByCourtCaseUuid(
           req.user.username,
@@ -1564,7 +1569,7 @@ export default class CourtCaseRoutes extends BaseRoutes {
       nomsId,
       appearanceReference,
     )
-    if (courtAppearance.hasCommonPlatformDocuments) {
+    if (courtAppearance.isCommonPlatformJourney) {
       await this.remandAndSentencingService.createUploadDocuments(courtAppearance.uploadedDocuments, username)
     }
     if (addOrEditCourtCase === 'add-court-case') {

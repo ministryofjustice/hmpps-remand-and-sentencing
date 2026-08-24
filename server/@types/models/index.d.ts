@@ -37,7 +37,7 @@ declare module 'models' {
     uploadedDocuments?: UploadedDocument[]
     documentUploadAccepted?: boolean
     criminalAppealOfficeReference?: string
-    hasCommonPlatformDocuments?: boolean
+    isCommonPlatformJourney?: boolean
     periodLengths?: SentenceLength[]
   }
 

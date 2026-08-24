@@ -72,7 +72,7 @@ export default abstract class TaskListModel {
         this.appearanceReference,
       )
     }
-    if (this.isAddCourtCase() || !caseReferenceSet) {
+    if (this.isAddCourtCase() || !caseReferenceSet || courtAppearance.isCommonPlatformJourney) {
       return JourneyUrls.reference(
         this.nomsId,
         this.addOrEditCourtCase,

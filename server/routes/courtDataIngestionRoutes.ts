@@ -168,7 +168,7 @@ export default class CourtDataIngestionRoutes extends BaseRoutes {
       nextAppearanceSelect: undefined,
       nextAppearanceTimeSet: undefined,
       nextCourtAppearanceAccepted: undefined,
-      hasCommonPlatformDocuments: true,
+      isCommonPlatformJourney: true,
     } as CourtAppearance
     this.courtAppearanceService.setSessionCourtAppearance(req.session, nomsId, sessionAppearance)
     if (req.params.caseId) {

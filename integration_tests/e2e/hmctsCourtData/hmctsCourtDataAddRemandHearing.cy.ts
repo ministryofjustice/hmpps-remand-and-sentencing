@@ -16,11 +16,11 @@ import CourtCaseConfirmationPage from '../../pages/courtCaseConfirmationPage'
 import CourtCaseNextAppearanceSubtypePage from '../../pages/courtCaseNextAppearanceSubtypePage'
 import HmctsCourtDataLandingPage from '../../pages/hmctsCourtDataLandingPage'
 import HmctsCourtDataSelectCasePage from '../../pages/hmctsCourtDataSelectCasePage'
-import CourtCaseSelectReferencePage from '../../pages/courtCaseSelectReferencePage'
-import CourtCaseSelectCourtNamePage from '../../pages/courtCaseSelectCourtNamePage'
 import OffenceReviewOffencesPage from '../../pages/offenceReviewOffencesPage'
 import OffenceUpdateOutcomePage from '../../pages/offenceUpdateOutcomePage'
 import OffenceOffenceOutcomePage from '../../pages/offenceOffenceOutcomePage'
+import CourtCaseReferencePage from '../../pages/courtCaseReferencePage'
+import CourtCaseCourtNamePage from '../../pages/courtCaseCourtNamePage'
 
 context('New Remand hearing from hmcts data journey', () => {
   const remandWarrantHearingId = 'abf395c2-8e3c-419c-bd9c-71d544e5d811'
@@ -107,9 +107,9 @@ context('New Remand hearing from hmcts data journey', () => {
       ])
     courtCaseTaskListPage.hearingInformationLink().click()
 
-    const courtCaseSelectReferencePage = Page.verifyOnPageTitle(CourtCaseSelectReferencePage, 'C894623')
-    courtCaseSelectReferencePage.radioLabelSelector('true').click()
-    courtCaseSelectReferencePage.continueButton().click()
+    const courtCaseReferencePage = Page.verifyOnPageTitle(CourtCaseReferencePage, 'Enter the case reference')
+    courtCaseReferencePage.input().should('have.value', 'C894623')
+    courtCaseReferencePage.continueButton().click()
 
     const courtCaseWarrantDatePage = Page.verifyOnPageTitle(CourtCaseWarrantDatePage, 'warrant')
     courtCaseWarrantDatePage.dayDateInput('warrantDate').should('have.value', '15')
@@ -117,12 +117,9 @@ context('New Remand hearing from hmcts data journey', () => {
     courtCaseWarrantDatePage.yearDateInput('warrantDate').should('have.value', '2023')
     courtCaseWarrantDatePage.continueButton().click()
 
-    const courtCaseSelectCourtNamePage = Page.verifyOnPageTitle(
-      CourtCaseSelectCourtNamePage,
-      'Was the hearing at Accrington Youth Court?',
-    )
-    courtCaseSelectCourtNamePage.radioLabelSelector('true').click()
-    courtCaseSelectCourtNamePage.continueButton().click()
+    const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
+    courtCaseCourtNamePage.autoCompleteInput().should('have.value', 'Accrington Youth Court')
+    courtCaseCourtNamePage.continueButton().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)
     courtCaseCheckAnswersPage.summaryList().getSummaryList().should('deep.equal', {

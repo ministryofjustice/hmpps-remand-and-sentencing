@@ -110,9 +110,7 @@ context('New Sentencing Court Case from hmcts data journey', () => {
     courtCaseWarrantDatePage.yearDateInput('warrantDate').should('have.value', '2023')
     courtCaseWarrantDatePage.continueButton().click()
     const courtCaseCourtNamePage = Page.verifyOnPageTitle(CourtCaseCourtNamePage, 'What is the court name?')
-    courtCaseCourtNamePage.autoCompleteInput().type('cou')
-    courtCaseCourtNamePage.firstAutoCompleteOption().contains('Accrington Youth Court')
-    courtCaseCourtNamePage.firstAutoCompleteOption().click()
+    courtCaseCourtNamePage.autoCompleteInput().should('have.value', 'Accrington Youth Court')
     courtCaseCourtNamePage.continueButton().click()
 
     const courtCaseCheckAnswersPage = Page.verifyOnPage(CourtCaseCheckAnswersPage)

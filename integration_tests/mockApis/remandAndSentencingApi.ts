@@ -5137,7 +5137,7 @@ export default {
         jsonBody: {
           appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
           outcome: null,
-          courtCode: 'BRSTMC',
+          courtCode: 'ACCRYC',
           courtCaseReference: 'C894623',
           criminalAppealOfficeReference: null,
           appearanceDate: '2023-12-15',
@@ -5177,7 +5177,7 @@ export default {
         jsonBody: {
           appearanceUuid: '7f026c9c-db6f-40f1-a317-b199dfff0d29',
           outcome: null,
-          courtCode: 'BRSTMC',
+          courtCode: 'ACCRYC',
           courtCaseReference: 'C894623',
           criminalAppealOfficeReference: null,
           appearanceDate: '2023-12-15',

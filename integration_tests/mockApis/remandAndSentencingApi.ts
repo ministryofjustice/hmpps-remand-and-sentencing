@@ -5363,7 +5363,13 @@ export default {
             appearanceDate: '2023-12-15',
             warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
             nextCourtAppearance: null,
-            documents: [],
+            documents: [
+              {
+                documentUUID: 'd6139c95-ef3e-4693-8bd0-96c07bb9f7e6',
+                documentType: 'BREACH_ORDER',
+                fileName: 'breachOrder001.doc',
+              },
+            ],
             charges: [
               {
                 chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',
@@ -5423,7 +5429,13 @@ export default {
               appearanceDate: '2023-12-15',
               warrantType: 'BREACH_OF_SUPERVISION_REQUIREMENTS',
               nextCourtAppearance: null,
-              documents: [],
+              documents: [
+                {
+                  documentUUID: 'd6139c95-ef3e-4693-8bd0-96c07bb9f7e6',
+                  documentType: 'BREACH_ORDER',
+                  fileName: 'breachOrder001.doc',
+                },
+              ],
               charges: [
                 {
                   chargeUuid: '71bb9f7e-971c-4c34-9a33-43478baee74f',

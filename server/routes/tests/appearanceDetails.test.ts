@@ -2,8 +2,10 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, defaultServices } from '../testutils/appSetup'
+import config from '../../config'
 
 let app: Express
+const sentenceStatusFeatureToggleWasEnabled = config.featureToggles.sentenceStatus
 
 beforeEach(() => {
   app = appWithAllRoutes({})
@@ -11,6 +13,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+  config.featureToggles.sentenceStatus = sentenceStatusFeatureToggleWasEnabled
 })
 
 describe('GET /sentencing/hearing-details', () => {
@@ -103,7 +106,8 @@ describe('GET /sentencing/hearing-details', () => {
       })
   })
 
-  it('shows the Mark sentences as inactive button when there is an active sentence', async () => {
+  it('shows the Mark sentences as inactive button when there is an active sentence and the feature flag is enabled', async () => {
+    config.featureToggles.sentenceStatus = true
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: 'appearance-uuid',
       offences: [
@@ -132,7 +136,38 @@ describe('GET /sentencing/hearing-details', () => {
       })
   })
 
+  it('does not show the Mark sentences as inactive button when the feature flag is disabled, even with an active sentence', async () => {
+    config.featureToggles.sentenceStatus = false
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CC12345',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '999',
+            status: 'ACTIVE',
+          },
+        },
+      ],
+    })
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(0)
+      })
+  })
+
   it('does not show the Mark sentences as inactive button when there are no active sentences', async () => {
+    config.featureToggles.sentenceStatus = true
     defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
       appearanceUuid: 'appearance-uuid',
       offences: [

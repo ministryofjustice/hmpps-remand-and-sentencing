@@ -136,12 +136,23 @@
         attributes: { "data-qa": "overallSummaryList" }
       }) }}
 
-      {{ govukButton({
-        text: "Add an offence",
-        classes: "govuk-button--link",
-        href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
-        attributes: { "data-qa": "addAnotherOffence" }
-      }) }}
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Add an offence",
+          classes: "govuk-button--link",
+          href: "/person/" + nomsId + "/" + addOrEditCourtCase + "/" + courtCaseReference  + "/" + addOrEditCourtAppearance + "/" + appearanceReference + "/offences/" + hearing.offences | length + "/add-another-offence",
+          attributes: { "data-qa": "addAnotherOffence" }
+        }) }}
+
+        {% if hasActiveSentence %}
+          {{ govukButton({
+            text: "Mark sentences as inactive",
+            classes: "govuk-button--secondary",
+            href: selectSentencesToMarkAsInactiveLink,
+            attributes: { "data-qa": "markSentencesAsInactive" }
+          }) }}
+        {% endif %}
+      </div>
 
       <h3 class="govuk-heading-s govuk-!-margin-top-8">Offences with custodial outcomes</h3>
       <span data-qa="custodialOffences">

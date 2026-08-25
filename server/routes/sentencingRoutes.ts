@@ -362,6 +362,11 @@ export default class SentencingRoutes extends BaseRoutes {
       mergedFromText,
       hasSentenceAfterOnOtherCourtAppearance:
         hasSentenceAfterOnOtherCourtAppearance.hasSentenceAfterOnOtherCourtAppearance,
+      hasActiveSentence:
+        config.featureToggles.sentenceStatus && hearing.offences.some(offence => offence.sentence?.status === 'ACTIVE'),
+      selectSentencesToMarkAsInactiveLink: SentencingJourneyUrls.selectSentencesToMarkAsInactive(
+        req.params as unknown as UrlParameters,
+      ),
       errors: req.flash('errors') || [],
       backLink: `/person/${nomsId}/${addOrEditCourtCase}/${courtCaseReference}/details`,
       overallSentenceLength,
@@ -946,6 +951,21 @@ export default class SentencingRoutes extends BaseRoutes {
     return res.render('pages/sentencing/cannot-delete-period-length-offence', {
       ...urlParameters,
       appearanceUuid,
+      backLink,
+    })
+  }
+
+  public getSelectSentencesToMarkAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const backLink = JourneyUrls.sentencingHearing(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
+    return res.render('pages/sentencing/select-sentences-to-mark-as-inactive', {
+      ...urlParameters,
       backLink,
     })
   }

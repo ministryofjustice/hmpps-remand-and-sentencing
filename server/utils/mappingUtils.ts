@@ -215,6 +215,7 @@ export const apiSentenceToSentence = (apiSentence: APISentence): Sentence => {
     sentenceTypeClassification: apiSentence.sentenceType?.classification,
     consecutiveToSentenceUuid: apiSentence.consecutiveToSentenceUuid ?? undefined,
     fineAmount: apiSentence.fineAmount?.fineAmount,
+    status: apiSentence.status,
     ...(apiSentence.convictionDate && { convictionDate: dayjs(apiSentence.convictionDate).toDate() }),
     ...(apiSentence.legacyData && { legacyData: { ...apiSentence.legacyData } }),
   } as Sentence

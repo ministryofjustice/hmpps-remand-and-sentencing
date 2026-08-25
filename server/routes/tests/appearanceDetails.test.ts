@@ -102,4 +102,75 @@ describe('GET /sentencing/hearing-details', () => {
         )
       })
   })
+
+  it('shows the Mark sentences as inactive button when there is an active sentence', async () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CC12345',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '999',
+            status: 'ACTIVE',
+          },
+        },
+      ],
+    })
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(1)
+      })
+  })
+
+  it('does not show the Mark sentences as inactive button when there are no active sentences', async () => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CC12345',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '3',
+            countNumber: '1',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '999',
+            status: 'INACTIVE',
+          },
+        },
+      ],
+    })
+
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="markSentencesAsInactive"]')).toHaveLength(0)
+      })
+  })
+})
+
+describe('GET /sentencing/select-sentences-to-mark-as-inactive', () => {
+  it('renders the select sentences to mark as inactive page', async () => {
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/select-sentences-to-mark-as-inactive')
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('h1').text().trim()).toEqual('Select the sentences to mark as inactive')
+      })
+  })
 })

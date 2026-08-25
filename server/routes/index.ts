@@ -229,6 +229,11 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
+    '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/select-sentences-to-mark-as-inactive',
+    sentencingRoutes.getSelectSentencesToMarkAsInactive,
+  )
+
+  router.get(
     '/person/:nomsId/:addOrEditCourtCase/:courtCaseReference/:addOrEditCourtAppearance/:appearanceReference/sentencing/offences/:chargeUuid/cannot-delete-consecutive-offence',
     sentencingRoutes.getCannotDeleteConsecutiveOffence,
   )

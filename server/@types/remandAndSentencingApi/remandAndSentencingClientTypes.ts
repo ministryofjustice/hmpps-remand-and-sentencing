@@ -90,6 +90,9 @@ export type HasSentenceAfterOnOtherCourtAppearanceResponse =
 export type SentencesAfterOnOtherCourtAppearanceDetailsResponse =
   components['schemas']['SentencesAfterOnOtherCourtAppearanceDetailsResponse']
 
+export type SentenceUuidsWithActiveSentencesAfterResponse =
+  components['schemas']['SentenceUuidsWithActiveSentencesAfterResponse']
+
 export type MergedFromCase = components['schemas']['MergedFromCase']
 
 export type MergedToCaseDetails = components['schemas']['MergedToCaseDetails']

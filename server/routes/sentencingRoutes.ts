@@ -14,7 +14,7 @@ import sentenceTypePeriodLengths from '../resources/sentenceTypePeriodLengths'
 import BaseRoutes from './baseRoutes'
 import CourtAppearanceService from '../services/courtAppearanceService'
 import ManageOffencesService from '../services/manageOffencesService'
-import trimForm from '../utils/trim'
+import trimForm, { normaliseToArray } from '../utils/trim'
 import sentenceServeTypes from '../resources/sentenceServeTypes'
 import {
   convertToTitleCase,
@@ -957,6 +957,7 @@ export default class SentencingRoutes extends BaseRoutes {
 
   public getSelectSentencesToMarkAsInactive: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, appearanceReference } = urlParameters
     const backLink = JourneyUrls.sentencingHearing(
       urlParameters.nomsId,
       urlParameters.addOrEditCourtCase,
@@ -964,7 +965,79 @@ export default class SentencingRoutes extends BaseRoutes {
       urlParameters.addOrEditCourtAppearance,
       urlParameters.appearanceReference,
     )
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const activeSentenceOffences = orderOffences(
+      hearing.offences.filter(offence => offence.sentence?.status === 'ACTIVE'),
+    )
+
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      Array.from(new Set(activeSentenceOffences.map(offence => offence.offenceCode))),
+      req.user.username,
+      offencesToOffenceDescriptions(hearing.offences, []),
+    )
+
+    // Sentences shown here can only be consecutive to another sentence on this same hearing, so a
+    // local lookup by sentenceUuid is enough — no need for the cross-appearance consecutive-to API call.
+    const countNumberBySentenceUuid = Object.fromEntries(
+      hearing.offences
+        .filter(offence => offence.sentence?.sentenceUuid)
+        .map(offence => [offence.sentence.sentenceUuid, offence.sentence.countNumber]),
+    )
+
     return res.render('pages/sentencing/select-sentences-to-mark-as-inactive', {
+      ...urlParameters,
+      backLink,
+      activeSentenceOffences,
+      offenceMap,
+      countNumberBySentenceUuid,
+      selectedChargeUuids: this.offenceService.getSentencesToMarkAsInactiveChargeUuids(req.session),
+      errors: req.flash('errors') || [],
+    })
+  }
+
+  public submitSelectSentencesToMarkAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, appearanceReference } = urlParameters
+    const selectedChargeUuids = Array.from(new Set(normaliseToArray(req.body.sentenceChargeUuids)))
+
+    const errors = this.offenceService.setSentencesToMarkAsInactiveChargeUuids(req.session, selectedChargeUuids)
+    if (errors.length > 0) {
+      req.flash('errors', errors)
+      return res.redirect(SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters))
+    }
+
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const selectedSentenceUuids = hearing.offences
+      .filter(offence => selectedChargeUuids.includes(offence.chargeUuid))
+      .map(offence => offence.sentence?.sentenceUuid)
+      .filter((sentenceUuid): sentenceUuid is string => Boolean(sentenceUuid))
+
+    const { sentenceUuidsWithActiveSentencesAfter } =
+      await this.remandAndSentencingService.getSentenceUuidsWithActiveSentencesAfter(
+        selectedSentenceUuids,
+        req.user.username,
+      )
+
+    if (sentenceUuidsWithActiveSentencesAfter.length > 0) {
+      return res.redirect(SentencingJourneyUrls.cannotMarkSentencesAsInactive(urlParameters))
+    }
+
+    return res.redirect(SentencingJourneyUrls.provideReasonForMarkingSentencesAsInactive(urlParameters))
+  }
+
+  public getProvideReasonForMarkingSentencesAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const backLink = SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters)
+    return res.render('pages/sentencing/provide-reason-for-marking-sentences-as-inactive', {
+      ...urlParameters,
+      backLink,
+    })
+  }
+
+  public getCannotMarkSentencesAsInactive: RequestHandler = async (req, res): Promise<void> => {
+    const urlParameters = req.params as unknown as UrlParameters
+    const backLink = SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters)
+    return res.render('pages/sentencing/cannot-mark-sentences-as-inactive', {
       ...urlParameters,
       backLink,
     })

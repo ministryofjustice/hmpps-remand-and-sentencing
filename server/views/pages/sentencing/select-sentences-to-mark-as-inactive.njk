@@ -11,14 +11,9 @@
 
         {% set sentenceItems = [] %}
         {% for offence in activeSentenceOffences %}
+            {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}
             {% set labelHtml %}
-                {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}
-                {% if countDescription %}
-                    <div data-qa="markAsInactiveOffenceCount-{{ loop.index0 }}">
-                        {{ countDescription }}
-                    </div>
-                {% endif %}
-                <div>
+                <div data-qa="markAsInactiveOffence-{{ loop.index0 }}">
                     {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}
                 </div>
             {% endset %}
@@ -28,6 +23,9 @@
                     Committed on {{ offence.offenceStartDate | formatDate }}
                     {{ ' to ' + (offence.offenceEndDate | formatDate) if offence.offenceEndDate }}
                     <br>
+                {% endif %}
+                {% if countDescription %}
+                    {{ countDescription }}<br>
                 {% endif %}
                 {% if offence.sentence.consecutiveToSentenceUuid %}
                     Consecutive to {{ countNumberBySentenceUuid[offence.sentence.consecutiveToSentenceUuid] | formatCountNumber }}

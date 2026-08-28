@@ -6,7 +6,7 @@
 {% set pageTitle = applicationName + " - Select the sentences to mark as inactive" %}
 
 {% block pageContent %}
-    <form method="post" action="/person/{{ nomsId }}/{{ addOrEditCourtCase }}/{{ courtCaseReference }}/{{ addOrEditCourtAppearance }}/{{ appearanceReference }}/sentencing/select-sentences-to-mark-as-inactive" autocomplete="off">
+    <form method="post" autocomplete="off">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         {% set sentenceItems = [] %}
@@ -35,12 +35,12 @@
             {% endset %}
 
             {% set sentenceItems = (sentenceItems.push({
-                value: offence.chargeUuid,
+                value: offence.sentence.sentenceUuid,
                 html: labelHtml,
                 hint: {
                     html: hintHtml
                 },
-                checked: selectedChargeUuids and offence.chargeUuid in selectedChargeUuids,
+                checked: selectedSentenceUuids and offence.sentence.sentenceUuid in selectedSentenceUuids,
                 attributes: {
                     "data-qa": "markAsInactiveCheckbox-" + loop.index0
                 }
@@ -48,7 +48,7 @@
         {% endfor %}
 
         {{ govukCheckboxes({
-            name: "sentenceChargeUuids",
+            name: "sentenceUuids",
             fieldset: {
                 legend: {
                     text: "Select the sentences to mark as inactive",
@@ -56,7 +56,7 @@
                     classes: "govuk-fieldset__legend--l"
                 }
             },
-            errorMessage: errors | findError('sentenceChargeUuids'),
+            errorMessage: errors | findError('sentenceUuids'),
             items: sentenceItems,
             attributes: { 'data-qa': 'markAsInactiveOptions' }
         }) }}

@@ -1235,21 +1235,21 @@ export default class OffenceService {
     delete session.outcomeUpdateChargeUuids
   }
 
-  setSentencesToMarkAsInactiveChargeUuids(session: Partial<SessionData>, sentenceChargeUuids: string[]) {
+  setSentencesToMarkAsInactiveSentenceUuids(session: Partial<SessionData>, sentenceUuids: string[]) {
     const errors = validate(
-      { sentenceChargeUuids },
-      { sentenceChargeUuids: 'required' },
-      { 'required.sentenceChargeUuids': 'Mark at least one sentence as inactive' },
+      { sentenceUuids },
+      { sentenceUuids: 'required' },
+      { 'required.sentenceUuids': 'Mark at least one sentence as inactive' },
     )
     if (errors.length === 0) {
       // eslint-disable-next-line no-param-reassign
-      session.sentencesToMarkAsInactiveChargeUuids = sentenceChargeUuids
+      session.sentencesToMarkAsInactiveSentenceUuids = sentenceUuids
     }
     return errors
   }
 
-  getSentencesToMarkAsInactiveChargeUuids(session: Partial<SessionData>): string[] {
-    return session.sentencesToMarkAsInactiveChargeUuids || []
+  getSentencesToMarkAsInactiveSentenceUuids(session: Partial<SessionData>): string[] {
+    return session.sentencesToMarkAsInactiveSentenceUuids || []
   }
 
   setSentenceToConcurrent(

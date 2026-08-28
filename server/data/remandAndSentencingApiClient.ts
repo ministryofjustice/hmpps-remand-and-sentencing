@@ -445,7 +445,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
     sentenceUuids: string[],
     username: string,
   ): Promise<SentenceUuidsWithActiveSentencesAfterResponse> {
-    return (await this.get(
+    return this.get<SentenceUuidsWithActiveSentencesAfterResponse>(
       {
         path: `/sentence/has-active-sentences-after-on-other-court-appearance`,
         query: {
@@ -453,7 +453,7 @@ export default class RemandAndSentencingApiClient extends RestClient {
         },
       },
       asSystem(username),
-    )) as unknown as Promise<SentenceUuidsWithActiveSentencesAfterResponse>
+    )
   }
 
   async getSentencesAfterOnOtherCourtAppearanceDetails(

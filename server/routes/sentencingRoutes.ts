@@ -990,27 +990,20 @@ export default class SentencingRoutes extends BaseRoutes {
       activeSentenceOffences,
       offenceMap,
       countNumberBySentenceUuid,
-      selectedChargeUuids: this.offenceService.getSentencesToMarkAsInactiveChargeUuids(req.session),
+      selectedSentenceUuids: this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session),
       errors: req.flash('errors') || [],
     })
   }
 
   public submitSelectSentencesToMarkAsInactive: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
-    const { nomsId, appearanceReference } = urlParameters
-    const selectedChargeUuids = Array.from(new Set(normaliseToArray(req.body.sentenceChargeUuids)))
+    const selectedSentenceUuids = Array.from(new Set(normaliseToArray(req.body.sentenceUuids)))
 
-    const errors = this.offenceService.setSentencesToMarkAsInactiveChargeUuids(req.session, selectedChargeUuids)
+    const errors = this.offenceService.setSentencesToMarkAsInactiveSentenceUuids(req.session, selectedSentenceUuids)
     if (errors.length > 0) {
       req.flash('errors', errors)
-      return res.redirect(SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters))
+      return res.redirect(`${SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters)}?hasErrors=true`)
     }
-
-    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
-    const selectedSentenceUuids = hearing.offences
-      .filter(offence => selectedChargeUuids.includes(offence.chargeUuid))
-      .map(offence => offence.sentence?.sentenceUuid)
-      .filter((sentenceUuid): sentenceUuid is string => Boolean(sentenceUuid))
 
     const { sentenceUuidsWithActiveSentencesAfter } =
       await this.remandAndSentencingService.getSentenceUuidsWithActiveSentencesAfter(

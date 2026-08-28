@@ -146,3 +146,5 @@ export type SentencedCharges = components['schemas']['SentencedCharges']
 export type AggravatingFactor = components['schemas']['AggravatingFactor']
 
 export type DeleteSentenceStatusDetails = components['schemas']['DeleteSentenceStatusDetails']
+
+export type FixSingleSentenceMultipleChargesPeople = components['schemas']['FixSingleSentenceMultipleChargesPeople']

@@ -692,6 +692,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/person-admin/fix-many-charges-to-sentence': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Fixes the single sentence to many charges issue for prisoner ids
+     * @description Fix all single sentence to many charges for prisoner ids
+     */
+    post: operations['cleanupManyChargesToSentence']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/next-court-appearance-admin/link-latest-court-appearances': {
     parameters: {
       query?: never
@@ -979,7 +999,7 @@ export interface paths {
      *           linked to multiple charges. This endpoint identifies all court cases with this issue and creates
      *           new sentences for each charge, ensuring that each sentence is correctly linked to its respective charge.
      */
-    post: operations['cleanupManyChargesToSentence']
+    post: operations['cleanupManyChargesToSentence_1']
     delete?: never
     options?: never
     head?: never
@@ -2438,7 +2458,7 @@ export interface components {
       previousSentenceIds?: string[] | null
       originalSentenceId?: string | null
       isOnFutureAppearance?: boolean | null
-      isBreach: boolean | null
+      isBreach?: boolean | null
       courtAppearanceIds?: string[] | null
       chargeIds?: string[] | null
       periodLengthIds?: string[] | null
@@ -2478,7 +2498,7 @@ export interface components {
       outcomeDescription?: string | null
       /** Format: date-time */
       nextEventDateTime?: string | null
-      /** @example 10:11:03.017277811 */
+      /** @example 14:15:17.20194901 */
       appearanceTime?: string | null
       outcomeDispositionCode?: string | null
       outcomeConvictionFlag?: boolean | null
@@ -2612,7 +2632,7 @@ export interface components {
     CreateNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:11:03.017277811 */
+      /** @example 14:15:17.20194901 */
       appearanceTime?: string | null
       courtCode: string
       /** Format: uuid */
@@ -2799,6 +2819,9 @@ export interface components {
       /** @enum {string} */
       isRecallPossible: 'YES' | 'UNKNOWN_PRE_RECALL_MAPPING' | 'RECALL_TYPE_AND_SENTENCE_MAPPING_NOT_POSSIBLE'
       sentenceIds: string[]
+    }
+    FixSingleSentenceMultipleChargesPeople: {
+      prisonerIds: string[]
     }
     LegacySentenceCreatedResponse: {
       prisonerId: string
@@ -3666,7 +3689,7 @@ export interface components {
     NextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:11:03.017277811 */
+      /** @example 14:15:17.20194901 */
       appearanceTime?: string | null
       courtCode: string
       appearanceType: components['schemas']['AppearanceType']
@@ -3960,7 +3983,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:11:03.017277811 */
+      /** @example 14:15:17.20194901 */
       appearanceTime: string
       nomisOutcomeCode?: string | null
       legacyData?: components['schemas']['CourtAppearanceLegacyData'] | null
@@ -3983,7 +4006,7 @@ export interface components {
     ReconciliationNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:11:03.017277811 */
+      /** @example 14:15:17.20194901 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4038,7 +4061,7 @@ export interface components {
       courtCode: string
       /** Format: date */
       appearanceDate: string
-      /** @example 10:11:03.017277811 */
+      /** @example 14:15:17.20194901 */
       appearanceTime: string
       charges: components['schemas']['LegacyCharge'][]
       nextCourtAppearance?: components['schemas']['LegacyNextCourtAppearance'] | null
@@ -4050,7 +4073,7 @@ export interface components {
     LegacyNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:11:03.017277811 */
+      /** @example 14:15:17.20194901 */
       appearanceTime?: string | null
       courtId: string
     }
@@ -4174,9 +4197,9 @@ export interface components {
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
-      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      paged?: boolean
       unpaged?: boolean
     }
     PagedAppearancePeriodLength: {
@@ -4283,7 +4306,7 @@ export interface components {
     PagedNextCourtAppearance: {
       /** Format: date */
       appearanceDate: string
-      /** @example 10:11:03.017277811 */
+      /** @example 14:15:17.20194901 */
       appearanceTime?: string | null
       courtCode?: string | null
       appearanceTypeDescription: string
@@ -6560,6 +6583,28 @@ export interface operations {
       }
     }
   }
+  cleanupManyChargesToSentence: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FixSingleSentenceMultipleChargesPeople']
+      }
+    }
+    responses: {
+      /** @description fix triggered */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   linkLatestCourtAppearances: {
     parameters: {
       query?: never
@@ -7146,7 +7191,7 @@ export interface operations {
       }
     }
   }
-  cleanupManyChargesToSentence: {
+  cleanupManyChargesToSentence_1: {
     parameters: {
       query?: never
       header?: never

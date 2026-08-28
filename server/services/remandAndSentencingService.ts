@@ -10,6 +10,7 @@ import {
   CreateCourtAppearanceResponse,
   CreateCourtCaseResponse,
   DeleteSentenceStatusDetails,
+  FixSingleSentenceMultipleChargesPeople,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LatestOffenceDate,
@@ -399,5 +400,15 @@ export default class RemandAndSentencingService {
     username: string,
   ): Promise<DeleteSentenceStatusDetails> {
     return this.remandAndSentencingApiClient.getSentenceDeleteStatus(sentenceUuid, sentenceUuidsInChain, username)
+  }
+
+  async fixPrisonersManyChargesToSentence(prisonerIds: string[], username: string): Promise<void> {
+    const fixSingleSentenceMultipleChargesPeople: FixSingleSentenceMultipleChargesPeople = {
+      prisonerIds,
+    }
+    return this.remandAndSentencingApiClient.fixPrisonersManyChargesToSentence(
+      fixSingleSentenceMultipleChargesPeople,
+      username,
+    )
   }
 }

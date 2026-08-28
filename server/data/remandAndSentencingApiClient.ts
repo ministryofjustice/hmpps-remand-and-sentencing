@@ -19,6 +19,7 @@ import {
   CreateCourtCaseResponse,
   CreateSentenceType,
   DeleteSentenceStatusDetails,
+  FixSingleSentenceMultipleChargesPeople,
   HasSentenceAfterOnOtherCourtAppearanceResponse,
   HasSentenceToChainToResponse,
   LatestOffenceDate,
@@ -732,6 +733,19 @@ export default class RemandAndSentencingApiClient extends RestClient {
       {
         path: `/sentence/${sentenceUuid}/delete-status`,
         ...(sentenceUuidsInChain.length && { query: { sentenceUuidsInChain: sentenceUuidsInChain.join(',') } }),
+      },
+      asSystem(username),
+    )
+  }
+
+  async fixPrisonersManyChargesToSentence(
+    fixSingleSentenceMultipleChargesPeople: FixSingleSentenceMultipleChargesPeople,
+    username: string,
+  ): Promise<void> {
+    return this.post(
+      {
+        path: '/person-admin/fix-many-charges-to-sentence',
+        data: fixSingleSentenceMultipleChargesPeople,
       },
       asSystem(username),
     )

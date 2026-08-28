@@ -19,6 +19,7 @@ import AggravatingFactorsRoutes from './aggravatingFactorsRoutes'
 import AppealsRoutes from './appealsRoutes'
 import CourtDataIngestionRoutes from './courtDataIngestionRoutes'
 import BreachRoutes from './breachRoutes'
+import datafixAdminRoutes from './datafixAdminRoutes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -28,6 +29,7 @@ export default function routes(services: Services): Router {
   router.use('/admin/charge-outcomes', chargeOutcomeDataAdminRoutes(services))
   router.use('/admin/appearance-outcomes', appearanceOutcomeDataAdminRoutes(services))
   router.use('/admin/sentence-type', sentenceTypeDataAdminRoutes(services))
+  router.use('/admin/data-fix', datafixAdminRoutes(services))
 
   const courtCaseRoutes = new CourtCaseRoutes(
     services.offenceService,

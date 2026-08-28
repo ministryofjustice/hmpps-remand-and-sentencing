@@ -1040,9 +1040,6 @@ export default class SentencingRoutes extends BaseRoutes {
     )
     const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
     const selectedSentenceUuids = this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session)
-
-    // The active sentences blocking the selection are always on this same hearing, so a local
-    // lookup by consecutiveToSentenceUuid is enough — no cross-appearance API call is needed.
     const activeConsecutiveOffences = orderOffences(
       hearing.offences.filter(
         offence =>

@@ -1,11 +1,72 @@
-{% extends "../../partials/backLinkLayout.njk" %}
+{% extends "../../partials/hearingDetailsLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "components/cancelHearingButton/macro.njk" import cancelToConfirm %}
 
 {% set pageTitle = applicationName + " - Select the sentences to mark as inactive" %}
 
-{% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">Select the sentences to mark as inactive</h1>
+{% block pageContent %}
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        {% set sentenceItems = [] %}
+        {% for offence in activeSentenceOffences %}
+            {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}
+            {% set labelHtml %}
+                <div data-qa="markAsInactiveOffence-{{ loop.index0 }}">
+                    {{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}
+                </div>
+            {% endset %}
+
+            {% set hintHtml %}
+                {% if offence.offenceStartDate %}
+                    Committed on {{ offence.offenceStartDate | formatDate }}
+                    {{ ' to ' + (offence.offenceEndDate | formatDate) if offence.offenceEndDate }}
+                    <br>
+                {% endif %}
+                {% if countDescription %}
+                    {{ countDescription }}<br>
+                {% endif %}
+                {% if offence.sentence.consecutiveToSentenceUuid %}
+                    Consecutive to {{ countNumberBySentenceUuid[offence.sentence.consecutiveToSentenceUuid] | formatCountNumber }}
+                {% else %}
+                    Concurrent
+                {% endif %}
+            {% endset %}
+
+            {% set sentenceItems = (sentenceItems.push({
+                value: offence.sentence.sentenceUuid,
+                html: labelHtml,
+                hint: {
+                    html: hintHtml
+                },
+                checked: selectedSentenceUuids and offence.sentence.sentenceUuid in selectedSentenceUuids,
+                attributes: {
+                    "data-qa": "markAsInactiveCheckbox-" + loop.index0
+                }
+            }), sentenceItems) %}
+        {% endfor %}
+
+        {{ govukCheckboxes({
+            name: "sentenceUuids",
+            fieldset: {
+                legend: {
+                    text: "Select the sentences to mark as inactive",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            },
+            errorMessage: errors | findError('sentenceUuids'),
+            items: sentenceItems,
+            attributes: { 'data-qa': 'markAsInactiveOptions' }
+        }) }}
+
+        <div class="govuk-button-group">
+            {{ govukButton({
+                text: "Continue",
+                attributes: { 'data-qa': 'continue-button' }
+            }) }}
+            {{ cancelToConfirm(nomsId, addOrEditCourtCase, courtCaseReference, addOrEditCourtAppearance, appearanceReference, currentPageUrl) }}
         </div>
-    </div>
+    </form>
 {% endblock %}

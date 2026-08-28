@@ -29,6 +29,7 @@ import {
   SentenceDetails,
   SentenceDetailsForConsecValidation,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
+  SentenceUuidsWithActiveSentencesAfterResponse,
   SentencesToChainToResponse,
   SentenceTypeIsValid,
 } from '../@types/remandAndSentencingApi/remandAndSentencingClientTypes'
@@ -275,6 +276,13 @@ export default class RemandAndSentencingService {
     username: string,
   ): Promise<HasSentenceAfterOnOtherCourtAppearanceResponse> {
     return this.remandAndSentencingApiClient.hasSentenceAfterOnOtherCourtAppearance(sentenceUuids, username)
+  }
+
+  async getSentenceUuidsWithActiveSentencesAfter(
+    sentenceUuids: string[],
+    username: string,
+  ): Promise<SentenceUuidsWithActiveSentencesAfterResponse> {
+    return this.remandAndSentencingApiClient.getSentenceUuidsWithActiveSentencesAfter(sentenceUuids, username)
   }
 
   async getSentencesAfterOnOtherCourtAppearanceDetails(

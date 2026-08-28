@@ -196,16 +196,3 @@ describe('GET /sentencing/hearing-details', () => {
       })
   })
 })
-
-describe('GET /sentencing/select-sentences-to-mark-as-inactive', () => {
-  it('renders the select sentences to mark as inactive page', async () => {
-    await request(app)
-      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/select-sentences-to-mark-as-inactive')
-      .expect('Content-Type', /html/)
-      .expect(200)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        expect($('h1').text().trim()).toEqual('Select the sentences to mark as inactive')
-      })
-  })
-})

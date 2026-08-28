@@ -38,6 +38,7 @@ import {
   SentencedCharges,
   SentenceDetails,
   SentencesAfterOnOtherCourtAppearanceDetailsResponse,
+  SentenceUuidsWithActiveSentencesAfterResponse,
   SentencesToChainToResponse,
   SentenceType,
   SentenceTypeChargeOutcomes,
@@ -439,6 +440,21 @@ export default class RemandAndSentencingApiClient extends RestClient {
       },
       asSystem(username),
     )) as unknown as Promise<HasSentenceAfterOnOtherCourtAppearanceResponse>
+  }
+
+  async getSentenceUuidsWithActiveSentencesAfter(
+    sentenceUuids: string[],
+    username: string,
+  ): Promise<SentenceUuidsWithActiveSentencesAfterResponse> {
+    return this.get<SentenceUuidsWithActiveSentencesAfterResponse>(
+      {
+        path: `/sentence/has-active-sentences-after-on-other-court-appearance`,
+        query: {
+          sentenceUuids: sentenceUuids.join(','),
+        },
+      },
+      asSystem(username),
+    )
   }
 
   async getSentencesAfterOnOtherCourtAppearanceDetails(

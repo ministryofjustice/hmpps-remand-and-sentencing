@@ -171,14 +171,119 @@ describe('GET /sentencing/provide-reason-for-marking-sentences-as-inactive', () 
 })
 
 describe('GET /sentencing/cannot-mark-sentences-as-inactive', () => {
-  it('renders the cannot mark sentences as inactive stub page', async () => {
+  beforeEach(() => {
+    defaultServices.courtAppearanceService.getSessionCourtAppearance.mockReturnValue({
+      appearanceUuid: 'appearance-uuid',
+      offences: [
+        {
+          chargeUuid: '2',
+          offenceCode: 'CJ88001',
+          outcomeUuid: '123',
+          offenceStartDate: new Date('2025-07-21'),
+          sentence: {
+            sentenceUuid: '10',
+            countNumber: '1',
+            sentenceServeType: 'FORTHWITH',
+            sentenceTypeClassification: 'STANDARD',
+            status: 'ACTIVE',
+          },
+        },
+        {
+          chargeUuid: '5',
+          offenceCode: 'CJ88001',
+          outcomeUuid: '123',
+          offenceStartDate: new Date('2025-07-21'),
+          sentence: {
+            sentenceUuid: '11',
+            countNumber: '2',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '10',
+            status: 'ACTIVE',
+          },
+        },
+        {
+          chargeUuid: '6',
+          offenceCode: 'AB6789',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '12',
+            countNumber: '3',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '10',
+            status: 'INACTIVE',
+          },
+        },
+        {
+          chargeUuid: '7',
+          offenceCode: 'AB6789',
+          outcomeUuid: '123',
+          sentence: {
+            sentenceUuid: '13',
+            countNumber: '4',
+            sentenceServeType: 'CONSECUTIVE',
+            sentenceTypeClassification: 'STANDARD',
+            consecutiveToSentenceUuid: '99',
+            status: 'ACTIVE',
+          },
+        },
+      ],
+    })
+    defaultServices.manageOffencesService.getOffenceMap.mockResolvedValue({
+      CJ88001: 'Common assault',
+      AB6789: 'Another offence description',
+    })
+    defaultServices.offenceService.getSentencesToMarkAsInactiveSentenceUuids.mockReturnValue(['10'])
+  })
+
+  it('renders the cannot mark sentences as inactive page', async () => {
     await request(app)
       .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/cannot-mark-sentences-as-inactive')
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('h1').text().trim()).toEqual('You cannot mark these sentences as inactive')
+        expect($('h1').text().trim()).toEqual('You cannot mark a sentence inactive with active consecutive sentences')
+      })
+  })
+
+  it('only shows active sentences that are consecutive to a selected sentence', async () => {
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/cannot-mark-sentences-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa^="activeConsecutiveOffence-"]')).toHaveLength(1)
+        expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('CJ88001')
+        expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Common assault')
+        expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Count 2')
+        expect($('[data-qa="activeConsecutiveOffence-0"]').text()).toContain('Consecutive to Count 1')
+      })
+  })
+
+  it('links the cancel changes button to the edit hearing page', async () => {
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/cannot-mark-sentences-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-qa="cancel-button"]').attr('href')).toEqual(
+          '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/hearing-details',
+        )
+      })
+  })
+
+  it('links "go back to select sentences" and the back link to the select sentences page', async () => {
+    await request(app)
+      .get('/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/cannot-mark-sentences-as-inactive')
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const selectSentencesUrl =
+          '/person/A1234AB/add-court-case/0/add-court-appearance/0/sentencing/select-sentences-to-mark-as-inactive'
+        expect($('[data-qa="go-back-to-select-sentences-link"]').attr('href')).toEqual(selectSentencesUrl)
+        expect($('[data-qa="back-link"]').attr('href')).toEqual(selectSentencesUrl)
       })
   })
 })

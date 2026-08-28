@@ -1029,10 +1029,47 @@ export default class SentencingRoutes extends BaseRoutes {
 
   public getCannotMarkSentencesAsInactive: RequestHandler = async (req, res): Promise<void> => {
     const urlParameters = req.params as unknown as UrlParameters
+    const { nomsId, appearanceReference } = urlParameters
     const backLink = SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters)
+    const editHearingLink = JourneyUrls.sentencingHearing(
+      urlParameters.nomsId,
+      urlParameters.addOrEditCourtCase,
+      urlParameters.courtCaseReference,
+      urlParameters.addOrEditCourtAppearance,
+      urlParameters.appearanceReference,
+    )
+    const hearing = this.courtAppearanceService.getSessionCourtAppearance(req.session, nomsId, appearanceReference)
+    const selectedSentenceUuids = this.offenceService.getSentencesToMarkAsInactiveSentenceUuids(req.session)
+
+    // The active sentences blocking the selection are always on this same hearing, so a local
+    // lookup by consecutiveToSentenceUuid is enough — no cross-appearance API call is needed.
+    const activeConsecutiveOffences = orderOffences(
+      hearing.offences.filter(
+        offence =>
+          offence.sentence?.status === 'ACTIVE' &&
+          selectedSentenceUuids.includes(offence.sentence.consecutiveToSentenceUuid),
+      ),
+    )
+
+    const offenceMap = await this.manageOffencesService.getOffenceMap(
+      Array.from(new Set(activeConsecutiveOffences.map(offence => offence.offenceCode))),
+      req.user.username,
+      offencesToOffenceDescriptions(hearing.offences, []),
+    )
+
+    const countNumberBySentenceUuid = Object.fromEntries(
+      hearing.offences
+        .filter(offence => offence.sentence?.sentenceUuid)
+        .map(offence => [offence.sentence.sentenceUuid, offence.sentence.countNumber]),
+    )
+
     return res.render('pages/sentencing/cannot-mark-sentences-as-inactive', {
       ...urlParameters,
       backLink,
+      editHearingLink,
+      activeConsecutiveOffences,
+      offenceMap,
+      countNumberBySentenceUuid,
     })
   }
 

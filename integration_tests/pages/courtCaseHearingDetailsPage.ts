@@ -71,4 +71,6 @@ export default class CourtCaseAppearanceDetailsPage extends Page {
     )
 
   notificationBannerContent = (): PageElement => cy.get('[data-qa="notification-banner-content"]')
+
+  markSentencesAsInactiveLink = (): PageElement => cy.get('[data-qa="markSentencesAsInactive"]')
 }

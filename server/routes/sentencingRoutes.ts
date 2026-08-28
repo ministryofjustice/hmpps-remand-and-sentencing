@@ -1002,7 +1002,7 @@ export default class SentencingRoutes extends BaseRoutes {
     const errors = this.offenceService.setSentencesToMarkAsInactiveSentenceUuids(req.session, selectedSentenceUuids)
     if (errors.length > 0) {
       req.flash('errors', errors)
-      return res.redirect(`${SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters)}?hasErrors=true`)
+      return res.redirect(SentencingJourneyUrls.selectSentencesToMarkAsInactive(urlParameters, 'true'))
     }
 
     const { sentenceUuidsWithActiveSentencesAfter } =

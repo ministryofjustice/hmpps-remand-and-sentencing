@@ -9,8 +9,8 @@ export default class SentencingJourneyUrls {
     return `${this.basePath(urlParameters)}/offences/${urlParameters.chargeUuid}/cannot-delete-period-length-offence`
   }
 
-  static selectSentencesToMarkAsInactive = (urlParameters: UrlParameters) => {
-    return `${this.basePath(urlParameters)}/select-sentences-to-mark-as-inactive`
+  static selectSentencesToMarkAsInactive = (urlParameters: UrlParameters, hasErrors?: string) => {
+    return `${this.basePath(urlParameters)}/select-sentences-to-mark-as-inactive${this.getQueryParameters(hasErrors)}`
   }
 
   static provideReasonForMarkingSentencesAsInactive = (urlParameters: UrlParameters) => {
@@ -23,5 +23,12 @@ export default class SentencingJourneyUrls {
 
   private static basePath(urlParameters: UrlParameters): string {
     return `/person/${urlParameters.nomsId}/${urlParameters.addOrEditCourtCase}/${urlParameters.courtCaseReference}/${urlParameters.addOrEditCourtAppearance}/${urlParameters.appearanceReference}/sentencing`
+  }
+
+  private static getQueryParameters(hasErrors?: string): string {
+    if (!hasErrors) {
+      return ''
+    }
+    return `?hasErrors=${hasErrors}`
   }
 }

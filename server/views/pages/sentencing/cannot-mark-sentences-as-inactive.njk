@@ -8,7 +8,7 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">You cannot mark a sentence inactive with active consecutive sentences</h1>
 
-            <p class="govuk-body">The following sentences cannot be marked as inactive because they have an active sentence consecutive to them:</p>
+            <p class="govuk-body">One or more of the sentences have an active consecutive sentences. They are:</p>
 
             {% for offence in blockedOffences %}
                 {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}

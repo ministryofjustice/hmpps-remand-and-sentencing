@@ -10,7 +10,7 @@
 
             <p class="govuk-body">One or more of the sentences have an active consecutive sentences. They are:</p>
 
-            {% for offence in activeConsecutiveOffences %}
+            {% for offence in blockedOffences %}
                 {% set countDescription = offence.sentence.countNumber | formatCountNumber(offence.sentence.legacyData.nomisLineReference) %}
                 <p class="govuk-body" data-qa="activeConsecutiveOffence-{{ loop.index0 }}">
                     <strong>{{ offence.offenceCode }} - {{ offenceMap[offence.offenceCode] }}</strong><br>
@@ -21,7 +21,13 @@
                     {% if countDescription %}
                         {{ countDescription }}<br>
                     {% endif %}
-                    Consecutive to {{ countNumberBySentenceUuid[offence.sentence.consecutiveToSentenceUuid] | formatCountNumber }}
+                    {% if offence.sentence.consecutiveToSentenceUuid %}
+                        Consecutive to {{ countNumberBySentenceUuid[offence.sentence.consecutiveToSentenceUuid] | formatCountNumber }}
+                    {% elif offence.sentence.sentenceServeType === 'FORTHWITH' %}
+                        Forthwith
+                    {% else %}
+                        Concurrent
+                    {% endif %}
                 </p>
             {% endfor %}
 

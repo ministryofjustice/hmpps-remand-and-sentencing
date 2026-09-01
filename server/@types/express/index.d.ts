@@ -14,6 +14,7 @@ export declare module 'express-session' {
     aggravatingChargeUuids?: { chargeUuid: string; processed: boolean }[]
     outcomeUpdateChargeUuids?: string[]
     sentencesToMarkAsInactiveSentenceUuids?: string[]
+    sentenceUuidsWithActiveSentencesAfter?: string[]
   }
 }
 
